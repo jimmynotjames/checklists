@@ -8,10 +8,11 @@
     <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
         <attribute name="itemDetails" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="itemName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="itemStatus" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Checklist" inverseName="items" inverseEntity="Checklist" syncable="YES"/>
     </entity>
     <elements>
         <element name="Checklist" positionX="261" positionY="198" width="128" height="90"/>
-        <element name="Item" positionX="270" positionY="207" width="128" height="90"/>
+        <element name="Item" positionX="270" positionY="207" width="128" height="105"/>
     </elements>
 </model>
