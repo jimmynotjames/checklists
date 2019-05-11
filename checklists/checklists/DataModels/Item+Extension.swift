@@ -17,6 +17,8 @@ extension Item {
     var coreDataValue: String {
       return rawValue
     }
+
+    static let defaultValue: ItemStatus = .unchecked
   }
 
   var isChecked: Bool {
@@ -25,11 +27,14 @@ extension Item {
 
   var itemStatus: ItemStatus {
     get {
-      guard let status = ItemStatus(rawValue: itemStatusString ?? "unchecked") else { assertionFailure(); return .unchecked }
+      guard
+        let statusString = statusString,
+        let status = ItemStatus(rawValue: statusString) else { assertionFailure(); return .unchecked }
+
         return status
     }
     set {
-      itemStatusString = newValue.rawValue
+      statusString = newValue.rawValue
     }
   }
 }
