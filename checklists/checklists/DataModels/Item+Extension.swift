@@ -9,7 +9,7 @@
 import Foundation
 
 extension Item {
-  // Using an enum instead of a Bool because eventually I want to add 'deleted'
+  // Using an enum instead of a Bool because eventually I want to add 'ignored' or 'deleted'
   enum ItemStatus: String {
     case unchecked = "unchecked" // NOTE: Also used as default value in core data schema file and in other places.
     case checked = "checked"
