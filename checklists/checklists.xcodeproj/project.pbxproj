@@ -19,6 +19,8 @@
 		323ADC9022828C0C00644931 /* checklistsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323ADC8F22828C0C00644931 /* checklistsUITests.swift */; };
 		323ADCA0228292A400644931 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 323ADC9F228292A400644931 /* StoreKit.framework */; };
 		32A964712291E14F00CAB7C0 /* ItemContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A964702291E14F00CAB7C0 /* ItemContentView.swift */; };
+		32A964742291ECA300CAB7C0 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964722291ECA300CAB7C0 /* RealmSwift.framework */; };
+		32A964752291ECA300CAB7C0 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964732291ECA300CAB7C0 /* Realm.framework */; };
 		32F4C840228686DE000D63CF /* Item+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4C83F228686DE000D63CF /* Item+Extension.swift */; };
 		32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4C84322875308000D63CF /* ItemTableViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -60,6 +62,8 @@
 		323ADC9D2282929A00644931 /* checklists.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = checklists.entitlements; sourceTree = "<group>"; };
 		323ADC9F228292A400644931 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		32A964702291E14F00CAB7C0 /* ItemContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemContentView.swift; sourceTree = "<group>"; };
+		32A964722291ECA300CAB7C0 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
+		32A964732291ECA300CAB7C0 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/iOS/Realm.framework; sourceTree = "<group>"; };
 		32F4C83F228686DE000D63CF /* Item+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Item+Extension.swift"; sourceTree = "<group>"; };
 		32F4C84322875308000D63CF /* ItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -70,6 +74,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				323ADCA0228292A400644931 /* StoreKit.framework in Frameworks */,
+				32A964742291ECA300CAB7C0 /* RealmSwift.framework in Frameworks */,
+				32A964752291ECA300CAB7C0 /* Realm.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,6 +156,8 @@
 		323ADC9E228292A400644931 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				32A964732291ECA300CAB7C0 /* Realm.framework */,
+				32A964722291ECA300CAB7C0 /* RealmSwift.framework */,
 				323ADC9F228292A400644931 /* StoreKit.framework */,
 			);
 			name = Frameworks;
@@ -191,6 +199,7 @@
 				323ADC6322828C0900644931 /* Sources */,
 				323ADC6422828C0900644931 /* Frameworks */,
 				323ADC6522828C0900644931 /* Resources */,
+				32A964762291ECE900CAB7C0 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -317,6 +326,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		32A964762291ECE900CAB7C0 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		323ADC6322828C0900644931 /* Sources */ = {
@@ -508,6 +539,10 @@
 				CODE_SIGN_ENTITLEMENTS = checklists/checklists.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = EDMB3Z5KAY;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = checklists/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -527,6 +562,10 @@
 				CODE_SIGN_ENTITLEMENTS = checklists/checklists.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = EDMB3Z5KAY;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = checklists/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
