@@ -16,7 +16,7 @@ class ChecklistsViewController: UITableViewController {
 
   private var checklists: Results<Checklist>!
 
-  // MARK: UITableViewController overrides
+  // MARK: - UITableViewController overrides
   override func viewDidLoad() {
     super.viewDidLoad()
     self.navigationItem.rightBarButtonItem = self.editButtonItem

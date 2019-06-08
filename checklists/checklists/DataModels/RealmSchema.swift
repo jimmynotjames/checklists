@@ -9,36 +9,8 @@
 import Foundation
 import RealmSwift
 
-class Item: Object {
-
-  enum Status: Int {
-    case unchecked
-    case checked
-
-    static let defaultValue: Status = .unchecked
-  }
-
-  @objc dynamic var name: String = ""
-  @objc dynamic var notes: String?
-  @objc dynamic var statusRaw: Int = Status.defaultValue.rawValue
-
-  var status: Status {
-    get {
-      return Status(rawValue: statusRaw) ?? Status.defaultValue
-    }
-    set {
-      statusRaw = newValue.rawValue
-    }
-  }
-
-  convenience init(name: String, notes: String? = nil) {
-    self.init()
-    self.name = name
-    self.notes = notes
-  }
-}
-
 class Checklist: Object {
+  @objc dynamic var id = NSUUID().uuidString
   @objc dynamic var name: String = ""
   @objc dynamic var notes: String?
   @objc dynamic var sortNumber: Double = 0.0
@@ -68,3 +40,34 @@ class Checklist: Object {
     return checklist.sortNumber + 1.0
   }
 }
+
+class Item: Object {
+
+  enum Status: Int {
+    case unchecked
+    case checked
+
+    static let defaultValue: Status = .unchecked
+  }
+
+  @objc dynamic var id = NSUUID().uuidString
+  @objc dynamic var name: String = ""
+  @objc dynamic var notes: String?
+  @objc dynamic var statusRaw: Int = Status.defaultValue.rawValue
+
+  var status: Status {
+    get {
+      return Status(rawValue: statusRaw) ?? Status.defaultValue
+    }
+    set {
+      statusRaw = newValue.rawValue
+    }
+  }
+
+  convenience init(name: String, notes: String? = nil) {
+    self.init()
+    self.name = name
+    self.notes = notes
+  }
+}
+
