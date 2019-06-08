@@ -41,12 +41,12 @@ class Item: Object {
 class Checklist: Object {
   @objc dynamic var name: String = ""
   @objc dynamic var notes: String?
-  @objc dynamic var sortNumber: Int = 0 // Not performant, but for small dataset, this should be fine, and better for debugging readability.
+  @objc dynamic var sortNumber: Double = 0.0
   @objc dynamic var lastModified: Date = Date()
 
   let items = List<Item>()
 
-  convenience init(name: String, notes: String? = nil, sortNumber: Int? = nil, items: [Item]) {
+  convenience init(name: String, notes: String? = nil, sortNumber: Double? = nil, items: [Item]) {
     self.init()
     self.name = name
     self.notes = notes
@@ -54,5 +54,17 @@ class Checklist: Object {
       self.sortNumber = sortNumber
     }
     self.items.append(objectsIn: items)
+  }
+
+  func calculateSortNumber(between checklist1: Checklist, and checklist2: Checklist) -> Double {
+    return (checklist1.sortNumber + checklist2.sortNumber) / 2.0
+  }
+
+  func calculateSortNumber(before checklist: Checklist) -> Double {
+    return checklist.sortNumber - 1.0
+  }
+
+  func calculateSortNumber(after checklist: Checklist) -> Double {
+    return checklist.sortNumber + 1.0
   }
 }
