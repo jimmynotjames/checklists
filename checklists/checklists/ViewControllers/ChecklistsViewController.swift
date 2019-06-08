@@ -9,9 +9,10 @@
 import UIKit
 import RealmSwift
 
+private let checklistsSection = 0
+
 class ChecklistsViewController: UITableViewController {
 
-  private let checklistsSection = 0
   private var isFirstTimeLaunch: Bool = true
 
   private var checklists: Results<Checklist>!
@@ -50,10 +51,15 @@ class ChecklistsViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "ChecklistCell", for: indexPath)
-    cell.textLabel?.text = checklists[indexPath.row].name
-    cell.detailTextLabel?.text = checklists[indexPath.row].notes
-    return cell
+    if indexPath.section == checklistsSection {
+      let cell = tableView.dequeueReusableCell(withIdentifier: "ChecklistCell", for: indexPath)
+      cell.textLabel?.text = checklists[indexPath.row].name
+      cell.detailTextLabel?.text = checklists[indexPath.row].notes
+      return cell
+    } else {
+      assertionFailure()
+      return UITableViewCell()
+    }
   }
 
   override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -105,14 +111,18 @@ class ChecklistsViewController: UITableViewController {
     return indexPath.section == checklistsSection
   }
 
-  /*
-   // MARK: - Navigation
+  // MARK: - Navigation
 
-   // In a storyboard-based application, you will often want to do a little preparation before navigation
-   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-   // Get the new view controller using segue.destination.
-   // Pass the selected object to the new view controller.
-   }
-   */
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if let identifier = segue.identifier,
+      identifier == "showChecklist",
+      let checklistViewController = segue.destination as? ChecklistViewController,
+      let cell = sender as? UITableViewCell,
+      let indexPath = tableView.indexPath(for: cell) {
 
+      checklistViewController.checklist = checklists[indexPath.row]
+    }
+    // Get the new view controller using segue.destination.
+    // Pass the selected object to the new view controller.
+  }
 }

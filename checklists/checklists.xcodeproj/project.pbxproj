@@ -22,6 +22,7 @@
 		32D721EB22AB487500794F6D /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964732291ECA300CAB7C0 /* Realm.framework */; };
 		32D721EC22AB487500794F6D /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964722291ECA300CAB7C0 /* RealmSwift.framework */; };
 		32D721EE22AB4BC000794F6D /* ChecklistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D721ED22AB4BC000794F6D /* ChecklistsViewController.swift */; };
+		32D721F222AC56FB00794F6D /* ChecklistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D721F122AC56FB00794F6D /* ChecklistViewController.swift */; };
 		32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4C84322875308000D63CF /* ItemTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +66,7 @@
 		32A964792297AE6700CAB7C0 /* TestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestData.swift; sourceTree = "<group>"; };
 		32A9647B2297AFF400CAB7C0 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
 		32D721ED22AB4BC000794F6D /* ChecklistsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistsViewController.swift; sourceTree = "<group>"; };
+		32D721F122AC56FB00794F6D /* ChecklistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistViewController.swift; sourceTree = "<group>"; };
 		32F4C84322875308000D63CF /* ItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -185,6 +187,7 @@
 			isa = PBXGroup;
 			children = (
 				32D721ED22AB4BC000794F6D /* ChecklistsViewController.swift */,
+				32D721F122AC56FB00794F6D /* ChecklistViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -355,6 +358,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				32A9647A2297AE6700CAB7C0 /* TestData.swift in Sources */,
+				32D721F222AC56FB00794F6D /* ChecklistViewController.swift in Sources */,
 				32A964782297A0A300CAB7C0 /* RealmSchema.swift in Sources */,
 				3233C794228BAD3C002BF01D /* CheckboxButton.swift in Sources */,
 				323ADC6B22828C0900644931 /* AppDelegate.swift in Sources */,

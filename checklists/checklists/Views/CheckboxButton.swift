@@ -23,9 +23,20 @@ class CheckboxButton: UIButton {
     setContentCompressionResistancePriority(.required, for: .horizontal)
     setContentHuggingPriority(.required, for: .vertical)
     setContentCompressionResistancePriority(.required, for: .vertical)
+
+    [heightAnchor.constraint(equalToConstant: 44.0),
+     widthAnchor.constraint(equalToConstant: 44.0)
+     ].forEach { $0.isActive = true  }
   }
 
   required init?(coder aDecoder: NSCoder) {
     fatalError("This init() not supported.")
+  }
+
+  func setCheckboxState(with itemStatus: Item.Status) {
+    switch itemStatus {
+    case .checked: isSelected = true
+    case .unchecked: isSelected = false
+    }
   }
 }

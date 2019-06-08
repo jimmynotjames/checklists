@@ -15,8 +15,25 @@ struct ItemContentViewModel {
 class ItemContentView: UIView {
   private let checkboxButton = CheckboxButton()
   private let nameField = UITextField()
-  private let notesField = UITextView()
+  private let notesTextView = UITextView()
   private let containerView = UIView()
+
+  var item: Item? {
+    didSet {
+      if let item = item {
+        checkboxButton.setCheckboxState(with: item.status)
+        nameField.text = item.name
+        if let notes = item.notes {
+          notesTextView.text = notes
+        }
+      } else {
+        checkboxButton.setCheckboxState(with: .unchecked)
+        nameField.text = nil
+        notesTextView.text = ""
+      }
+    }
+  }
+
 
   convenience init() {
     self.init(frame: .zero)
@@ -26,8 +43,9 @@ class ItemContentView: UIView {
     super.init(frame: frame)
 
     addSubview(checkboxButton)
+    addSubview(containerView)
     containerView.addSubview(nameField)
-    containerView.addSubview(notesField)
+    containerView.addSubview(notesTextView)
 
     installConstraints()
   }
@@ -40,7 +58,7 @@ class ItemContentView: UIView {
     let views = [ "checkboxButton": checkboxButton,
                   "containerView": containerView,
                   "nameField": nameField,
-                  "notesField": notesField ]
+                  "notesTextView": notesTextView ]
     views.forEach({ $0.value.translatesAutoresizingMaskIntoConstraints = false })
 
     NSLayoutConstraint.activate(
@@ -48,9 +66,11 @@ class ItemContentView: UIView {
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[checkboxButton]", options: [], metrics: nil, views: views),
 
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[containerView]|", options: [], metrics: nil, views: views),
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameField]-[notesField]|", options: [], metrics: nil, views: views),
+       NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameField]-[notesTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[nameField]|", options: [], metrics: nil, views: views),
-       NSLayoutConstraint.constraints(withVisualFormat: "H:|[notesField]|", options: [], metrics: nil, views: views),
+       NSLayoutConstraint.constraints(withVisualFormat: "H:|[notesTextView]|", options: [], metrics: nil, views: views),
         ].flatMap({ $0 }))
+    notesTextView.heightAnchor.constraint(equalToConstant: 50.0).isActive = true // TODO: Add this to array.
+
   }
 }
