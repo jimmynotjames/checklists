@@ -16,10 +16,15 @@ class ChecklistsViewController: UITableViewController {
 
   private var checklists: Results<Checklist>!
 
+  @objc func addChecklistButtonTapped() {
+    print("Add Checklist Tapped.")
+  }
+
   // MARK: - UITableViewController overrides
   override func viewDidLoad() {
     super.viewDidLoad()
-    self.navigationItem.rightBarButtonItem = self.editButtonItem
+    let addChecklistButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addChecklistButtonTapped))
+    self.navigationItem.setRightBarButtonItems([addChecklistButton, self.editButtonItem], animated: false)
 
     let realm = DBManager.realm
     checklists = realm.objects(Checklist.self).sorted(byKeyPath: "sortNumber")
