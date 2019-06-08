@@ -51,9 +51,9 @@ class ChecklistsViewController: UITableViewController {
     return cell
   }
 
-   override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-    return true
-   }
+  override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    return indexPath.section == checklistsSection
+  }
 
   override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
@@ -73,20 +73,32 @@ class ChecklistsViewController: UITableViewController {
     }
   }
 
-  /*
-   // Override to support rearranging the table view.
-   override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
+  override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
+    guard fromIndexPath.section == checklistsSection && to.section == checklistsSection else { assertionFailure(); return }
 
-   }
-   */
+    let fromIndex = fromIndexPath.row
+    let toIndex = to.row
 
-  /*
-   // Override to support conditional rearranging of the table view.
-   override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-   // Return false if you do not want the item to be re-orderable.
-   return true
-   }
-   */
+    guard fromIndex != toIndex else { return }
+
+    let checklist = checklists[fromIndex]
+    let sortNumber: Double
+    switch toIndex {
+    case 0:
+      sortNumber = checklist.calculateSortNumber(before: checklists[0])
+    case checklists.count - 1:
+      sortNumber = checklist.calculateSortNumber(after: checklists[checklists.count - 1])
+    default:
+      sortNumber = checklist.calculateSortNumber(between: checklists[toIndex], and: checklists[toIndex+1])
+    }
+    DBManager.write {
+      checklist.sortNumber = sortNumber
+    }
+  }
+
+  override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+    return indexPath.section == checklistsSection
+  }
 
   /*
    // MARK: - Navigation
