@@ -24,6 +24,7 @@
 		32D721EA22AB486E00794F6D /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 323ADC9F228292A400644931 /* StoreKit.framework */; };
 		32D721EB22AB487500794F6D /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964732291ECA300CAB7C0 /* Realm.framework */; };
 		32D721EC22AB487500794F6D /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964722291ECA300CAB7C0 /* RealmSwift.framework */; };
+		32D721EE22AB4BC000794F6D /* ChecklistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D721ED22AB4BC000794F6D /* ChecklistsViewController.swift */; };
 		32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4C84322875308000D63CF /* ItemTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +70,7 @@
 		32A964772297A0A300CAB7C0 /* RealmSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmSchema.swift; sourceTree = "<group>"; };
 		32A964792297AE6700CAB7C0 /* TestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestData.swift; sourceTree = "<group>"; };
 		32A9647B2297AFF400CAB7C0 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
+		32D721ED22AB4BC000794F6D /* ChecklistsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistsViewController.swift; sourceTree = "<group>"; };
 		32F4C84322875308000D63CF /* ItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -191,6 +193,7 @@
 		32F4C84222875289000D63CF /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				32D721ED22AB4BC000794F6D /* ChecklistsViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -367,6 +370,7 @@
 				323ADC6B22828C0900644931 /* AppDelegate.swift in Sources */,
 				323ADC7022828C0900644931 /* MasterViewController.swift in Sources */,
 				32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */,
+				32D721EE22AB4BC000794F6D /* ChecklistsViewController.swift in Sources */,
 				32A9647C2297AFF400CAB7C0 /* DBManager.swift in Sources */,
 				32A964712291E14F00CAB7C0 /* ItemContentView.swift in Sources */,
 				323ADC7222828C0900644931 /* DetailViewController.swift in Sources */,

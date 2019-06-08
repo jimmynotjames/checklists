@@ -26,10 +26,12 @@ class TestData {
 
     checklists.append(Checklist(name: "Checklist1 Name",
                                 notes: "Checklist1\nnotes",
+                                sortNumber: 0,
                                 items: [Item(name: "task 1"),
                                         Item(name: "task 2", notes: "some notes for\ntask 2\nFOOBAR")]))
 
     checklists.append(Checklist(name: "Checklist 2 FOOBAR",
+                                sortNumber: 1,
                                 items: [Item(name: "task a"),
                                         Item(name: "task b")]))
 

@@ -41,15 +41,18 @@ class Item: Object {
 class Checklist: Object {
   @objc dynamic var name: String = ""
   @objc dynamic var notes: String?
+  @objc dynamic var sortNumber: Int = 0 // Not performant, but for small dataset, this should be fine, and better for debugging readability.
   @objc dynamic var lastModified: Date = Date()
 
   let items = List<Item>()
 
-  convenience init(name: String, notes: String? = nil, items: [Item]) {
+  convenience init(name: String, notes: String? = nil, sortNumber: Int? = nil, items: [Item]) {
     self.init()
     self.name = name
     self.notes = notes
+    if let sortNumber = sortNumber {
+      self.sortNumber = sortNumber
+    }
     self.items.append(objectsIn: items)
   }
-
 }

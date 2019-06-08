@@ -37,9 +37,10 @@ extension DBManager {
     print("-------------DEBUG: Printing all checklists...")
     let realm = self.realm
 
-    for checklist in realm.objects(Checklist.self) {
+    for checklist in realm.objects(Checklist.self).sorted(byKeyPath: "sortNumber") {
       print("Checklist Name: \(checklist.name)")
-      print("Checklist Notes: \(String(describing: checklist.notes))")
+      print("notes: \(String(describing: checklist.notes))")
+      print("sortNumber: \(checklist.sortNumber)")
       print("Items: \(checklist.items)")
     }
     print("-------------COMPLETED printing all checklists...")
