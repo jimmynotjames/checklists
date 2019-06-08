@@ -26,7 +26,7 @@ class ChecklistsViewController: UITableViewController {
     loadChecklists()
   }
 
-  func viewDidAppear(animated: Bool) {
+  override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     if isFirstTimeLaunch {
       isFirstTimeLaunch = false
