@@ -31,3 +31,18 @@ class DBManager {
   }
 }
 
+// MARK: Debugging methods
+extension DBManager {
+  static func printChecklists() {
+    print("-------------DEBUG: Printing all checklists...")
+    let realm = self.realm
+
+    for checklist in realm.objects(Checklist.self) {
+      print("Checklist Name: \(checklist.name)")
+      print("Checklist Notes: \(String(describing: checklist.notes))")
+      print("Items: \(checklist.items)")
+    }
+    print("-------------COMPLETED printing all checklists...")
+  }
+
+}

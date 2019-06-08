@@ -27,8 +27,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     controller.managedObjectContext = self.persistentContainer.viewContext
 
     // TODO: REMOVE DEBUG
+    TestData.clearDatabase()
     TestData.insertTestData()
-    TestData.printTestData()
+    DBManager.printChecklists()
 
     return true
   }
