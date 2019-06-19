@@ -9,10 +9,14 @@
 import UIKit
 
 class ItemTableViewCell: UITableViewCell {
-  private let itemContentView = ItemContentView()
+  private let itemCellViewController = ItemCellViewController()
+  private lazy var itemContentView: ItemContentView = {
+    return itemCellViewController.view as! ItemContentView
+  }()
 
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
+
     itemContentView.translatesAutoresizingMaskIntoConstraints = false
     contentView.addSubview(itemContentView)
 
@@ -33,6 +37,6 @@ class ItemTableViewCell: UITableViewCell {
   }
 
   func setContentView(with item: Item) {
-    itemContentView.item = item
+    itemCellViewController.item = item
   }
 }

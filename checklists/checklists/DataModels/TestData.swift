@@ -47,6 +47,10 @@ class TestData {
                                 items: [Item(name: "item a"),
                                         Item(name: "item b")]))
 
+    checklists.append(Checklist(name: "Testing Cell Reuse",
+                                sortNumber: 5.0,
+                                items: (1...30).map({ Item(name: "some item \($0)") })))
+
     DBManager.write {
       realm.add(checklists)
     }
