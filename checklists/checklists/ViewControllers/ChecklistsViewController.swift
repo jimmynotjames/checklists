@@ -13,7 +13,7 @@ private let checklistsSection = 0
 
 class ChecklistsViewController: UITableViewController {
 
-  private var isFirstTimeLaunch: Bool = true
+  private var isFirstTimeLaunch: Bool = true // TODO: MAY NOT NEED THIS: https://developer.apple.com/documentation/uikit/uitableviewcontroller
 
   private var checklists: Results<Checklist>!
 

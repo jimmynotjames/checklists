@@ -9,34 +9,32 @@
 import UIKit
 
 class ItemTableViewCell: UITableViewCell {
-  private let itemCellViewController = ItemCellViewController()
-  private lazy var itemContentView: ItemContentView = {
-    return itemCellViewController.view as! ItemContentView
-  }()
+  var itemCellViewController: ItemCellViewController?
+  var itemContentView: ItemContentView?
 
-  override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
-
-    itemContentView.translatesAutoresizingMaskIntoConstraints = false
-    contentView.addSubview(itemContentView)
-
-    [contentView.topAnchor.constraint(equalTo: itemContentView.topAnchor),
-     contentView.bottomAnchor.constraint(equalTo: itemContentView.bottomAnchor),
-     contentView.leftAnchor.constraint(equalTo: itemContentView.leftAnchor),
-     contentView.rightAnchor.constraint(equalTo: itemContentView.rightAnchor)
-    ].forEach { $0.isActive = true  }
+  func setViewController(with itemCellViewController: ItemCellViewController) {
+    self.itemCellViewController = itemCellViewController
+    resetView(with: itemCellViewController.view as! ItemContentView)
   }
 
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("This init() not supported.")
+  private func resetView(with newItemContentView: ItemContentView) {
+    if let itemContentView = itemContentView {
+      itemContentView.removeFromSuperview()
+    }
+    newItemContentView.translatesAutoresizingMaskIntoConstraints = false
+    contentView.addSubview(newItemContentView)
+
+    [contentView.topAnchor.constraint(equalTo: newItemContentView.topAnchor),
+     contentView.bottomAnchor.constraint(equalTo: newItemContentView.bottomAnchor),
+     contentView.leftAnchor.constraint(equalTo: newItemContentView.leftAnchor),
+     contentView.rightAnchor.constraint(equalTo: newItemContentView.rightAnchor)
+      ].forEach { $0.isActive = true  }
+
+    itemContentView = newItemContentView
   }
 
   // TODO: Delete this template code?
   override func setSelected(_ selected: Bool, animated: Bool) {
     super.setSelected(selected, animated: animated)
-  }
-
-  func setContentView(with item: Item) {
-    itemCellViewController.item = item
   }
 }

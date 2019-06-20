@@ -10,15 +10,20 @@ import UIKit
 
 class ItemCellViewController: UIViewController {
 
-  var item: Item? {
-    didSet {
-      itemContentView.item = item
-    }
-  }
+  let item: Item
 
   lazy var itemContentView: ItemContentView = {
     return self.view as! ItemContentView
   }()
+
+  init(item: Item) {
+    self.item = item
+    super.init(nibName: nil, bundle: nil)
+  }
+
+  required init?(coder aDecoder: NSCoder) {
+    fatalError()
+  }
 
   override func loadView() {
     view = ItemContentView()
@@ -26,5 +31,6 @@ class ItemCellViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    itemContentView.item = item
   }
 }
