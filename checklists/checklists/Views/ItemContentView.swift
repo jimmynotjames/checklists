@@ -11,20 +11,25 @@ import UIKit
 protocol ItemContentViewDelegate: class {
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView)
   func itemContentView(_ itemContentView: ItemContentView, nameFieldUpdatedWith name: String)
+  func itemContentView(_ itemContentView: ItemContentView, notesFieldUpdatedWith notes: String)
 }
 
 class ItemContentView: UIView {
-  private let checkboxButton: CheckboxButton = {
+  private lazy var checkboxButton: CheckboxButton = {
     let button = CheckboxButton()
     button.addTarget(self, action: #selector(checkboxButtonTapped(sender:)), for: .touchUpInside)
     return button
   }()
-  lazy private var nameField: UITextField = {
+  private lazy var nameField: UITextField = {
     let textField = UITextField()
     textField.delegate = self
     return textField
   }()
-  private let notesTextView = UITextView()
+  private lazy var notesTextView: UITextView = {
+    let textView = UITextView()
+    textView.delegate = self
+    return textView
+  }()
   private let containerView = UIView()
 
   var item: Item? {
@@ -95,5 +100,11 @@ class ItemContentView: UIView {
 extension ItemContentView: UITextFieldDelegate {
   func textFieldDidEndEditing(_ textField: UITextField) {
     delegate?.itemContentView(self, nameFieldUpdatedWith: textField.text ?? "")
+  }
+}
+
+extension ItemContentView: UITextViewDelegate {
+  func textViewDidEndEditing(_ textView: UITextView) {
+    delegate?.itemContentView(self, notesFieldUpdatedWith: textView.text)
   }
 }

@@ -48,4 +48,10 @@ extension ItemCellViewController: ItemContentViewDelegate {
       item.name = name
     }
   }
+
+  func itemContentView(_ itemContentView: ItemContentView, notesFieldUpdatedWith notes: String) {
+    DBManager.write {
+      item.notes = notes
+    }
+  }
 }
