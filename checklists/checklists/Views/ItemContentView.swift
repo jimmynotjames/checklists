@@ -8,13 +8,22 @@
 
 import UIKit
 
-struct ItemContentViewModel {
-  
+protocol ItemContentViewDelegate: class {
+  func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView)
+  func itemContentView(_ itemContentView: ItemContentView, nameFieldUpdatedWith name: String)
 }
 
 class ItemContentView: UIView {
-  private let checkboxButton = CheckboxButton()
-  private let nameField = UITextField()
+  private let checkboxButton: CheckboxButton = {
+    let button = CheckboxButton()
+    button.addTarget(self, action: #selector(checkboxButtonTapped(sender:)), for: .touchUpInside)
+    return button
+  }()
+  lazy private var nameField: UITextField = {
+    let textField = UITextField()
+    textField.delegate = self
+    return textField
+  }()
   private let notesTextView = UITextView()
   private let containerView = UIView()
 
@@ -34,6 +43,7 @@ class ItemContentView: UIView {
     }
   }
 
+  weak var delegate: ItemContentViewDelegate?
 
   convenience init() {
     self.init(frame: .zero)
@@ -54,6 +64,10 @@ class ItemContentView: UIView {
     fatalError("This init() not supported.")
   }
 
+  func setDelegate(_ delegate: ItemContentViewDelegate) {
+    self.delegate =  delegate
+  }
+
   private func installConstraints() {
     let views = [ "checkboxButton": checkboxButton,
                   "containerView": containerView,
@@ -71,6 +85,15 @@ class ItemContentView: UIView {
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[notesTextView]|", options: [], metrics: nil, views: views),
         ].flatMap({ $0 }))
     notesTextView.heightAnchor.constraint(equalToConstant: 50.0).isActive = true // TODO: Add this to array.
+  }
 
+  @objc func checkboxButtonTapped(sender: UIButton) {
+    delegate?.itemContentViewCheckboxButtonTapped(self)
+  }
+}
+
+extension ItemContentView: UITextFieldDelegate {
+  func textFieldDidEndEditing(_ textField: UITextField) {
+    delegate?.itemContentView(self, nameFieldUpdatedWith: textField.text ?? "")
   }
 }

@@ -17,8 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
     // TODO: REMOVE DEBUG
-    TestData.clearDatabase()
-    TestData.insertTestData()
+    // TestData.clearDatabase()
+    // TestData.insertTestData()
     DBManager.printChecklists()
 
     return true

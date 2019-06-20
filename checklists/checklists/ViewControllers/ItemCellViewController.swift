@@ -11,10 +11,9 @@ import UIKit
 class ItemCellViewController: UIViewController {
 
   let item: Item
-
-  lazy var itemContentView: ItemContentView = {
+  var itemContentView: ItemContentView {
     return self.view as! ItemContentView
-  }()
+  }
 
   init(item: Item) {
     self.item = item
@@ -27,10 +26,26 @@ class ItemCellViewController: UIViewController {
 
   override func loadView() {
     view = ItemContentView()
+    itemContentView.delegate = self
   }
 
   override func viewDidLoad() {
     super.viewDidLoad()
     itemContentView.item = item
+  }
+}
+
+extension ItemCellViewController: ItemContentViewDelegate {
+  func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView) {
+    DBManager.write {
+      item.toggleStatus()
+    }
+    itemContentView.item = item
+  }
+
+  func itemContentView(_ itemContentView: ItemContentView, nameFieldUpdatedWith name: String) {
+    DBManager.write {
+      item.name = name
+    }
   }
 }

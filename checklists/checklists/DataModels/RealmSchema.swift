@@ -69,5 +69,12 @@ class Item: Object {
     self.name = name
     self.notes = notes
   }
+
+  func toggleStatus() {
+    switch status {
+    case .unchecked: status = .checked
+    case .checked: status = .unchecked
+    }
+  }
 }
 
