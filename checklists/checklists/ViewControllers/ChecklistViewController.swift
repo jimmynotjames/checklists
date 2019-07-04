@@ -36,8 +36,7 @@ class ChecklistViewController: UITableViewController {
 
     tableView.register(ItemTableViewCell.self, forCellReuseIdentifier: itemCellReuseIdentifier)
 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem
+    self.navigationItem.rightBarButtonItem = self.editButtonItem
   }
 
   // MARK: - Table view data source
@@ -100,11 +99,12 @@ class ChecklistViewController: UITableViewController {
     return .delete
   }
 
-  /*
-   // Override to support conditional rearranging of the table view.
-   override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-   // Return false if you do not want the item to be re-orderable.
-   return true
-   }
-   */
+  override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+    guard indexPath.section == 0 else { assertionFailure(); return false } // TODO: May not be necessary if I don't do second section.
+    return true
+  }
+
+  override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+    checklist.moveItem(from: sourceIndexPath.row, to: destinationIndexPath.row)
+  }
 }

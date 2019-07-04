@@ -48,6 +48,16 @@ class Checklist: Object {
       DBManager.realm.delete(item)
     }
   }
+
+  func moveItem(from fromIndex: Int, to toIndex: Int) {
+    guard fromIndex >= 0 && fromIndex < items.count else { assertionFailure(); return }
+    guard toIndex >= 0 && toIndex < items.count else { assertionFailure(); return }
+    guard fromIndex != toIndex else { return }
+
+    DBManager.write {
+      items.move(from: fromIndex, to: toIndex)
+    }
+  }
 }
 
 /*
