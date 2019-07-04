@@ -49,6 +49,16 @@ class Checklist: Object {
     }
   }
 
+  func swapItemsAt(_ index1: Int, _  index2: Int) {
+    guard index1 >= 0 && index1 < items.count else { assertionFailure(); return }
+    guard index2 >= 0 && index2 < items.count else { assertionFailure(); return }
+    guard index1 != index2 else { return }
+
+    DBManager.write {
+      items.swapAt(index1, index2)
+    }
+  }
+
   func moveItem(from fromIndex: Int, to toIndex: Int) {
     guard fromIndex >= 0 && fromIndex < items.count else { assertionFailure(); return }
     guard toIndex >= 0 && toIndex < items.count else { assertionFailure(); return }

@@ -29,6 +29,10 @@ class ChecklistViewController: UITableViewController {
    */
   var itemViewControllersDict: [ Item: ItemCellViewController ] = [:]
 
+  // For drag/reorder of cells.
+  var snapshotView: UIView = UIView()
+  var sourceIndexPath: IndexPath = IndexPath(row: 0, section: 0)
+
   override func viewDidLoad() {
     super.viewDidLoad()
 
@@ -36,7 +40,9 @@ class ChecklistViewController: UITableViewController {
 
     tableView.register(ItemTableViewCell.self, forCellReuseIdentifier: itemCellReuseIdentifier)
 
-    self.navigationItem.rightBarButtonItem = self.editButtonItem
+    let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognizer(sender:)))
+    longPressGestureRecognizer.minimumPressDuration = 0.25
+    tableView.addGestureRecognizer(longPressGestureRecognizer)
   }
 
   // MARK: - Table view data source
@@ -106,5 +112,79 @@ class ChecklistViewController: UITableViewController {
 
   override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
     checklist.moveItem(from: sourceIndexPath.row, to: destinationIndexPath.row)
+  }
+}
+
+extension ChecklistViewController {
+  @objc func longPressGestureRecognizer(sender: Any) {
+    guard let longPress = sender as? UILongPressGestureRecognizer else { assertionFailure(); return }
+    let location = longPress.location(in: tableView)
+    guard let indexPath = tableView.indexPathForRow(at: location) else { return }
+
+    switch longPress.state {
+    case .began: startDragging(at: indexPath, location: location)
+    case .changed: dragging(at: indexPath, location: location)
+    default: endDragging(at: indexPath, location: location)
+    }
+  }
+
+  private func startDragging(at indexPath: IndexPath, location: CGPoint) {
+    sourceIndexPath = indexPath
+    guard let cell = tableView.cellForRow(at: indexPath) else { assertionFailure(); return }
+    snapshotView = snapshotFrom(view: cell)
+    var center = cell.center
+    snapshotView.center = center
+    snapshotView.alpha = 0.0
+    tableView.addSubview(snapshotView)
+    UIView.animate(withDuration: 0.15) {
+      // Offset for gesture location.
+      center.y = location.y
+      self.snapshotView.center = cell.center
+      self.snapshotView.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
+      self.snapshotView.alpha = 0.98
+      cell.alpha = 0.0
+      cell.isHidden = true
+    }
+  }
+
+  private func dragging(at indexPath: IndexPath, location: CGPoint) {
+    var center = snapshotView.center
+    center.y = location.y
+    snapshotView.center = center
+    guard indexPath != sourceIndexPath else { return }
+    checklist.swapItemsAt(sourceIndexPath.row, indexPath.row)
+    tableView.moveRow(at: sourceIndexPath, to: indexPath)
+    sourceIndexPath = indexPath
+  }
+
+  private func endDragging(at: IndexPath, location: CGPoint) {
+    guard let cell = tableView.cellForRow(at: sourceIndexPath) else { assertionFailure(); return }
+    cell.alpha = 0.0
+    UIView.animate(withDuration: 0.1, animations: {
+      self.snapshotView.center =  cell.center
+      self.snapshotView.transform = CGAffineTransform.identity
+      self.snapshotView.alpha = 0.0
+      cell.alpha = 1.0
+    }, completion: { finished in
+      cell.isHidden = false
+      self.snapshotView.removeFromSuperview()
+    })
+  }
+
+  private func snapshotFrom(view: UIView) -> UIView {
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, false, 0.0)
+    guard let graphicsContext = UIGraphicsGetCurrentContext() else { UIGraphicsEndImageContext(); assertionFailure(); return UIView() }
+    view.layer.render(in: graphicsContext)
+    let image = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+
+    let snapshotView = UIImageView(image: image)
+    snapshotView.layer.masksToBounds = false
+    snapshotView.layer.cornerRadius = 0.0
+    snapshotView.layer.shadowOffset = CGSize(width: -5.0, height: 0.0)
+    snapshotView.layer.shadowRadius = 5.0
+    snapshotView.layer.shadowOpacity = 0.4
+
+    return snapshotView
   }
 }
