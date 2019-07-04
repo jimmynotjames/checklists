@@ -39,8 +39,21 @@ class Checklist: Object {
   func calculateSortNumber(after checklist: Checklist) -> Double {
     return checklist.sortNumber + 1.0
   }
+
+  func remove(at index: Int) {
+    guard index >= 0 && index < items.count else { assertionFailure(); return }
+    DBManager.write {
+      let item = items[index]
+      items.remove(at: index)
+      DBManager.realm.delete(item)
+    }
+  }
 }
 
+/*
+ TODO: I haven't figured out how to do this via the schema yet, but I want
+ to constrain is so an Item is attached to only one Checklist.
+ */
 class Item: Object {
 
   enum Status: Int {

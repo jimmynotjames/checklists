@@ -45,5 +45,4 @@ extension DBManager {
     }
     print("-------------COMPLETED printing all checklists...")
   }
-
 }
