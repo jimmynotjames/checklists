@@ -51,6 +51,12 @@ class TestData {
                                 sortNumber: 5.0,
                                 items: (1...30).map({ Item(name: "some item \($0)") })))
 
+    checklists.append(Checklist(name: "Long List 1",
+                                sortNumber: 6.0,
+                                items: (1...30).map({
+                                  Item(name: "some item \($0)",
+                                       notes: $0 % 2 == 0 ? "some for \($0)" : "some\nodd\nnotes for \($0)" ) })))
+
     DBManager.write {
       realm.add(checklists)
     }

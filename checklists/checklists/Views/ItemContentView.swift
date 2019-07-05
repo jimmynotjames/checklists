@@ -59,8 +59,8 @@ class ItemContentView: UIView {
 
     addSubview(checkboxButton)
     addSubview(containerView)
-    containerView.addSubview(nameField)
     containerView.addSubview(notesTextView)
+    containerView.addSubview(nameField) // Name field needs to be in front due to overlapping textView
 
     installConstraints()
   }
@@ -81,13 +81,13 @@ class ItemContentView: UIView {
     views.forEach({ $0.value.translatesAutoresizingMaskIntoConstraints = false })
 
     NSLayoutConstraint.activate(
-      [NSLayoutConstraint.constraints(withVisualFormat: "H:|[checkboxButton]-[containerView]|", options: [], metrics: nil, views: views),
+      [NSLayoutConstraint.constraints(withVisualFormat: "H:|-4-[checkboxButton]-(-4)-[containerView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[checkboxButton]", options: [], metrics: nil, views: views),
 
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|[containerView]|", options: [], metrics: nil, views: views),
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameField]-[notesTextView]|", options: [], metrics: nil, views: views),
+       NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[containerView]-8-|", options: [], metrics: nil, views: views),
+       NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameField]-(-4)-[notesTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[nameField]|", options: [], metrics: nil, views: views),
-       NSLayoutConstraint.constraints(withVisualFormat: "H:|[notesTextView]|", options: [], metrics: nil, views: views),
+       NSLayoutConstraint.constraints(withVisualFormat: "H:|-(-4)-[notesTextView]|", options: [], metrics: nil, views: views),
         ].flatMap({ $0 }))
     notesTextView.heightAnchor.constraint(equalToConstant: 50.0).isActive = true // TODO: Add this to array.
   }
