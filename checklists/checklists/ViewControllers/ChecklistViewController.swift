@@ -61,7 +61,7 @@ class ChecklistViewController: UITableViewController {
       guard indexPath.row >= 0 && indexPath.row < checklist.items.count else { assertionFailure(); return UITableViewCell() }
 
       let item = checklist.items[indexPath.row]
-      let itemCellViewController = itemViewControllersDict[item] ?? ItemCellViewController(item: item)
+      let itemCellViewController = itemViewControllersDict[item] ?? ItemCellViewController(item: item, delegate: self)
       itemViewControllersDict[item] = itemCellViewController
       cell.setViewController(with: itemCellViewController)
       return cell
@@ -188,3 +188,11 @@ extension ChecklistViewController {
     return snapshotView
   }
 }
+
+extension ChecklistViewController: ItemCellViewControllerDelegate {
+  func cellHeightRequiresRefresh() {
+    tableView.beginUpdates()
+    tableView.endUpdates()
+  }
+}
+

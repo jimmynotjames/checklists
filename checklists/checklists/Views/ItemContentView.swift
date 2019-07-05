@@ -10,6 +10,8 @@ import UIKit
 
 protocol ItemContentViewDelegate: class {
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView)
+  func itemContentViewNameFieldDidBeginEditing(_ itemContentView: ItemContentView)
+  func itemContentViewDidFinishEditing(_ itemContentView: ItemContentView)
   func itemContentView(_ itemContentView: ItemContentView, nameFieldUpdatedWith name: String)
   func itemContentView(_ itemContentView: ItemContentView, notesFieldUpdatedWith notes: String)
 }
@@ -28,7 +30,6 @@ class ItemContentView: UIView {
         nameField.text = nil
         notesTextView.text = ""
       }
-      updateTextViewHeight(isExpanded: item?.notes != nil && item!.notes!.count > 0)
     }
   }
 
@@ -57,6 +58,8 @@ class ItemContentView: UIView {
   private let containerView = UIView()
 
   private var textViewVerticalHeightConstraint: NSLayoutConstraint?
+
+  private var wasInputFieldTapped: Bool = false
 
   convenience init() {
     self.init(frame: .zero)
@@ -89,6 +92,16 @@ class ItemContentView: UIView {
     textViewVerticalHeightConstraint!.isActive = true
   }
 
+  /*
+   I need to detect when to collapse the view (if notes are empty), but if user taps from one input
+   field to another, I can't tell properly with just endEditing...().
+   */
+  override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    let view = super.hitTest(point, with: event)
+    wasInputFieldTapped = view != nil && (view! == nameField || view! == notesTextView)
+    return view
+  }
+
   private func installConstraints() {
     let views = [ "checkboxButton": checkboxButton,
                   "containerView": containerView,
@@ -110,11 +123,22 @@ class ItemContentView: UIView {
   @objc func checkboxButtonTapped(sender: UIButton) {
     delegate?.itemContentViewCheckboxButtonTapped(self)
   }
+
+  private func finishEditingViewIfNecessary() {
+    if !wasInputFieldTapped {
+      delegate?.itemContentViewDidFinishEditing(self)
+    }
+  }
 }
 
 extension ItemContentView: UITextFieldDelegate {
+  func textFieldDidBeginEditing(_ textField: UITextField) {
+    delegate?.itemContentViewNameFieldDidBeginEditing(self)
+    wasInputFieldTapped = false
+  }
   func textFieldDidEndEditing(_ textField: UITextField) {
     delegate?.itemContentView(self, nameFieldUpdatedWith: textField.text ?? "")
+    finishEditingViewIfNecessary()
   }
 
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -124,7 +148,11 @@ extension ItemContentView: UITextFieldDelegate {
 }
 
 extension ItemContentView: UITextViewDelegate {
+  func textViewDidBeginEditing(_ textView: UITextView) {
+    wasInputFieldTapped = false
+  }
   func textViewDidEndEditing(_ textView: UITextView) {
     delegate?.itemContentView(self, notesFieldUpdatedWith: textView.text)
+    finishEditingViewIfNecessary()
   }
 }

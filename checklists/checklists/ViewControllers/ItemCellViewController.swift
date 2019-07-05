@@ -8,16 +8,30 @@
 
 import UIKit
 
+protocol ItemCellViewControllerDelegate: class {
+  func cellHeightRequiresRefresh()
+}
+
 class ItemCellViewController: UIViewController {
 
-  let item: Item
-  var itemContentView: ItemContentView {
+  weak var delegate: ItemCellViewControllerDelegate?
+
+  private let item: Item
+  private var itemContentView: ItemContentView {
     return self.view as! ItemContentView
   }
+  private var isExpanded: Bool = false
 
-  init(item: Item) {
+  init(item: Item, delegate: ItemCellViewControllerDelegate) {
     self.item = item
+    self.delegate = delegate
     super.init(nibName: nil, bundle: nil)
+    resetExpandedState()
+  }
+
+  func resetExpandedState() {
+    isExpanded = item.notes?.count ?? 0 > 0
+    itemContentView.updateTextViewHeight(isExpanded: isExpanded)
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -32,15 +46,27 @@ class ItemCellViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     itemContentView.item = item
+    resetExpandedState()
   }
 }
 
 extension ItemCellViewController: ItemContentViewDelegate {
+  func itemContentViewDidFinishEditing(_ itemContentView: ItemContentView) {
+    resetExpandedState()
+    delegate?.cellHeightRequiresRefresh()
+  }
+
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView) {
     DBManager.write {
       item.toggleStatus()
     }
     itemContentView.item = item
+  }
+
+  func itemContentViewNameFieldDidBeginEditing(_ itemContentView: ItemContentView) {
+    isExpanded = true
+    itemContentView.updateTextViewHeight(isExpanded: isExpanded)
+    delegate?.cellHeightRequiresRefresh()
   }
 
   func itemContentView(_ itemContentView: ItemContentView, nameFieldUpdatedWith name: String) {
