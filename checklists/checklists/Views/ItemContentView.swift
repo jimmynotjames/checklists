@@ -42,13 +42,16 @@ class ItemContentView: UIView {
   private lazy var nameField: UITextField = {
     let textField = UITextField()
     textField.delegate = self
+    textField.font = UIFont.systemFont(ofSize: 20.0, weight: .regular)
     textField.returnKeyType = .done
     return textField
   }()
   private lazy var notesTextView: UITextView = {
     let textView = UITextView()
     textView.delegate = self
+    textView.font = UIFont.systemFont(ofSize: 14.0)
     textView.textContainer.heightTracksTextView = true
+    textView.alwaysBounceVertical = false
     return textView
   }()
   private let containerView = UIView()
@@ -82,7 +85,7 @@ class ItemContentView: UIView {
     if let textViewVerticalHeightConstraint = textViewVerticalHeightConstraint {
       textViewVerticalHeightConstraint.isActive = false
     }
-    textViewVerticalHeightConstraint = notesTextView.heightAnchor.constraint(equalToConstant: isExpanded ? 50.0 : 0.0)
+    textViewVerticalHeightConstraint = notesTextView.heightAnchor.constraint(equalToConstant: isExpanded ? 68.0 : 0.0)
     textViewVerticalHeightConstraint!.isActive = true
   }
 
@@ -97,7 +100,7 @@ class ItemContentView: UIView {
       [NSLayoutConstraint.constraints(withVisualFormat: "H:|-4-[checkboxButton]-(-4)-[containerView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[checkboxButton]", options: [], metrics: nil, views: views),
 
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[containerView]-8-|", options: [], metrics: nil, views: views),
+       NSLayoutConstraint.constraints(withVisualFormat: "V:|-8-[containerView]-8-|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameField]-(-4)-[notesTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[nameField]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|-(-4)-[notesTextView]|", options: [], metrics: nil, views: views),
