@@ -15,23 +15,6 @@ protocol ItemContentViewDelegate: class {
 }
 
 class ItemContentView: UIView {
-  private lazy var checkboxButton: CheckboxButton = {
-    let button = CheckboxButton()
-    button.addTarget(self, action: #selector(checkboxButtonTapped(sender:)), for: .touchUpInside)
-    return button
-  }()
-  private lazy var nameField: UITextField = {
-    let textField = UITextField()
-    textField.delegate = self
-    return textField
-  }()
-  private lazy var notesTextView: UITextView = {
-    let textView = UITextView()
-    textView.delegate = self
-    return textView
-  }()
-  private let containerView = UIView()
-
   var item: Item? {
     didSet {
       if let item = item {
@@ -45,10 +28,32 @@ class ItemContentView: UIView {
         nameField.text = nil
         notesTextView.text = ""
       }
+      updateTextViewHeight(isExpanded: item?.notes != nil && item!.notes!.count > 0)
     }
   }
 
   weak var delegate: ItemContentViewDelegate?
+
+  private lazy var checkboxButton: CheckboxButton = {
+    let button = CheckboxButton()
+    button.addTarget(self, action: #selector(checkboxButtonTapped(sender:)), for: .touchUpInside)
+    return button
+  }()
+  private lazy var nameField: UITextField = {
+    let textField = UITextField()
+    textField.delegate = self
+    textField.returnKeyType = .done
+    return textField
+  }()
+  private lazy var notesTextView: UITextView = {
+    let textView = UITextView()
+    textView.delegate = self
+    textView.textContainer.heightTracksTextView = true
+    return textView
+  }()
+  private let containerView = UIView()
+
+  private var textViewVerticalHeightConstraint: NSLayoutConstraint?
 
   convenience init() {
     self.init(frame: .zero)
@@ -73,6 +78,14 @@ class ItemContentView: UIView {
     self.delegate =  delegate
   }
 
+  func updateTextViewHeight(isExpanded: Bool) {
+    if let textViewVerticalHeightConstraint = textViewVerticalHeightConstraint {
+      textViewVerticalHeightConstraint.isActive = false
+    }
+    textViewVerticalHeightConstraint = notesTextView.heightAnchor.constraint(equalToConstant: isExpanded ? 50.0 : 0.0)
+    textViewVerticalHeightConstraint!.isActive = true
+  }
+
   private func installConstraints() {
     let views = [ "checkboxButton": checkboxButton,
                   "containerView": containerView,
@@ -89,7 +102,6 @@ class ItemContentView: UIView {
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[nameField]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|-(-4)-[notesTextView]|", options: [], metrics: nil, views: views),
         ].flatMap({ $0 }))
-    notesTextView.heightAnchor.constraint(equalToConstant: 50.0).isActive = true // TODO: Add this to array.
   }
 
   @objc func checkboxButtonTapped(sender: UIButton) {
@@ -100,6 +112,11 @@ class ItemContentView: UIView {
 extension ItemContentView: UITextFieldDelegate {
   func textFieldDidEndEditing(_ textField: UITextField) {
     delegate?.itemContentView(self, nameFieldUpdatedWith: textField.text ?? "")
+  }
+
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    textField.resignFirstResponder()
+    return false
   }
 }
 
