@@ -85,11 +85,13 @@ class ItemContentView: UIView {
   }
 
   func updateTextViewHeight(isExpanded: Bool) {
+    let height: CGFloat = isExpanded ? 68.0 : 0.0
     if let textViewVerticalHeightConstraint = textViewVerticalHeightConstraint {
-      textViewVerticalHeightConstraint.isActive = false
+      textViewVerticalHeightConstraint.constant = height
+    } else {
+      textViewVerticalHeightConstraint = notesTextView.heightAnchor.constraint(equalToConstant: height)
+      textViewVerticalHeightConstraint!.isActive = true
     }
-    textViewVerticalHeightConstraint = notesTextView.heightAnchor.constraint(equalToConstant: isExpanded ? 68.0 : 0.0)
-    textViewVerticalHeightConstraint!.isActive = true
   }
 
   /*
