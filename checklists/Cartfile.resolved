@@ -1,1 +1,2 @@
-github "realm/realm-cocoa" "v3.16.1"
+github "KennethTsang/GrowingTextView" "0.7.0"
+github "realm/realm-cocoa" "v3.17.3"
