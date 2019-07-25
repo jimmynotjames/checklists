@@ -43,6 +43,7 @@ class ChecklistViewController: UITableViewController {
 
     // Admittedly a bit hacky, as this is already in the view hierarchy in IB, but want to properly set it while not creating a separate xib file and custom UIView.
     tableView.tableHeaderView = checklistInfoHeaderView
+    tableView.separatorStyle = .none
 
     checklistNameTextField.delegate = self
     checklistNotesTextView.delegate = self

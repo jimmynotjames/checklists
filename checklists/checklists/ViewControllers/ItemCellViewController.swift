@@ -48,8 +48,11 @@ class ItemCellViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     itemContentView.item = item
-    //  setExpandedState()
-    setExpandedState(isExpandedOverride: false)
+    setExpandedState()
+    // Need to do the below to force it to get the initial layout done. Otherwise,
+    // cell gets stretched with more height, and stretches one or other components with it.
+    itemContentView.setNeedsLayout()
+    itemContentView.layoutIfNeeded()
   }
 }
 

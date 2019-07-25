@@ -55,6 +55,7 @@ class ItemContentView: UIView {
     textView.font = UIFont.systemFont(ofSize: 14.0)
     textView.textContainer.heightTracksTextView = true
     textView.alwaysBounceVertical = false
+    textView.bounces = false
     textView.placeholder = "Notes"
     textView.placeholderColor = .lightGray
     return textView
@@ -88,7 +89,7 @@ class ItemContentView: UIView {
 
   func updateTextViewHeight(isExpanded: Bool) {
     notesTextView.maxHeight = isExpanded ? 32.0 : 0.0
-    notesTextView.maxHeight = isExpanded ? 160.0 : 0.01  // zero means it's infinite.
+    notesTextView.maxHeight = isExpanded ? 0.0 : 0.01  // zero means it's infinite.
   }
 
   /*
@@ -117,7 +118,13 @@ class ItemContentView: UIView {
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameField]-(-4)-[notesTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[nameField]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|-(-4)-[notesTextView]|", options: [], metrics: nil, views: views),
+       [nameField.heightAnchor.constraint(equalToConstant: nameField.intrinsicContentSize.height)] // See below
         ].flatMap({ $0 }))
+    /*
+     Setting nameField's height as constraint because the height keeps rendering at larger height on initial display, and correcting after
+     interacting with it. Theory is that GrowingTextView is fluctuating its height, causing cell to be bigger and stretch out
+     the nameField (though setting contentHugging didn't help. This might product unsatisfiable constraints, so might be brittle.
+     */
   }
 
   @objc func checkboxButtonTapped(sender: UIButton) {
