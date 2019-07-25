@@ -20,18 +20,20 @@ class ItemCellViewController: UIViewController {
   private var itemContentView: ItemContentView {
     return self.view as! ItemContentView
   }
-  private var isExpanded: Bool = false
+  private var isExpanded: Bool?
 
   init(item: Item, delegate: ItemCellViewControllerDelegate) {
     self.item = item
     self.delegate = delegate
     super.init(nibName: nil, bundle: nil)
-    resetExpandedState()
   }
 
-  func resetExpandedState() {
-    isExpanded = item.notes?.count ?? 0 > 0
-    itemContentView.updateTextViewHeight(isExpanded: isExpanded)
+  func setExpandedState(isExpandedOverride: Bool? = nil) {
+    let newIsExpanded = isExpandedOverride != nil ? isExpandedOverride! : item.notes?.count ?? 0 > 0
+    if isExpanded == nil || isExpanded! != newIsExpanded  {
+      itemContentView.updateTextViewHeight(isExpanded: newIsExpanded)
+    }
+    isExpanded = newIsExpanded
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -46,13 +48,14 @@ class ItemCellViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     itemContentView.item = item
-    resetExpandedState()
+    //  setExpandedState()
+    setExpandedState(isExpandedOverride: false)
   }
 }
 
 extension ItemCellViewController: ItemContentViewDelegate {
   func itemContentViewDidFinishEditing(_ itemContentView: ItemContentView) {
-    resetExpandedState()
+    setExpandedState()
     delegate?.cellHeightRequiresRefresh()
   }
 
@@ -64,8 +67,11 @@ extension ItemCellViewController: ItemContentViewDelegate {
   }
 
   func itemContentViewNameFieldDidBeginEditing(_ itemContentView: ItemContentView) {
-    isExpanded = true
-    itemContentView.updateTextViewHeight(isExpanded: isExpanded)
+    setExpandedState(isExpandedOverride: true)
+    delegate?.cellHeightRequiresRefresh()
+  }
+
+  func itemContentViewHeightUpdated(_ itemContentView: ItemContentView) {
     delegate?.cellHeightRequiresRefresh()
   }
 

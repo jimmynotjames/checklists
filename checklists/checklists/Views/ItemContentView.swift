@@ -7,11 +7,13 @@
 //
 
 import UIKit
+import GrowingTextView
 
 protocol ItemContentViewDelegate: class {
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView)
   func itemContentViewNameFieldDidBeginEditing(_ itemContentView: ItemContentView)
   func itemContentViewDidFinishEditing(_ itemContentView: ItemContentView)
+  func itemContentViewHeightUpdated(_ itemContentView: ItemContentView)
   func itemContentView(_ itemContentView: ItemContentView, nameFieldUpdatedWith name: String)
   func itemContentView(_ itemContentView: ItemContentView, notesFieldUpdatedWith notes: String)
 }
@@ -47,17 +49,17 @@ class ItemContentView: UIView {
     textField.returnKeyType = .done
     return textField
   }()
-  private lazy var notesTextView: UITextView = {
-    let textView = UITextView()
+  private lazy var notesTextView: GrowingTextView = {
+    let textView = GrowingTextView()
     textView.delegate = self
     textView.font = UIFont.systemFont(ofSize: 14.0)
     textView.textContainer.heightTracksTextView = true
     textView.alwaysBounceVertical = false
+    textView.placeholder = "Notes"
+    textView.placeholderColor = .lightGray
     return textView
   }()
   private let containerView = UIView()
-
-  private var textViewVerticalHeightConstraint: NSLayoutConstraint?
 
   private var wasInputFieldTapped: Bool = false
 
@@ -85,13 +87,8 @@ class ItemContentView: UIView {
   }
 
   func updateTextViewHeight(isExpanded: Bool) {
-    let height: CGFloat = isExpanded ? 68.0 : 0.0
-    if let textViewVerticalHeightConstraint = textViewVerticalHeightConstraint {
-      textViewVerticalHeightConstraint.constant = height
-    } else {
-      textViewVerticalHeightConstraint = notesTextView.heightAnchor.constraint(equalToConstant: height)
-      textViewVerticalHeightConstraint!.isActive = true
-    }
+    notesTextView.maxHeight = isExpanded ? 32.0 : 0.0
+    notesTextView.maxHeight = isExpanded ? 160.0 : 0.01  // zero means it's infinite.
   }
 
   /*
@@ -105,7 +102,8 @@ class ItemContentView: UIView {
   }
 
   private func installConstraints() {
-    let views = [ "checkboxButton": checkboxButton,
+    let views = [ "itemContentView": self, // No actual effect, except to suppress intermediate unsatisfiable constraint warnings.
+                  "checkboxButton": checkboxButton,
                   "containerView": containerView,
                   "nameField": nameField,
                   "notesTextView": notesTextView ]
@@ -155,5 +153,11 @@ extension ItemContentView: UITextViewDelegate {
   func textViewDidEndEditing(_ textView: UITextView) {
     delegate?.itemContentView(self, notesFieldUpdatedWith: textView.text)
     finishEditingViewIfNecessary()
+  }
+}
+
+extension ItemContentView: GrowingTextViewDelegate {
+  func textViewDidChangeHeight(_ textView: GrowingTextView, height: CGFloat) {
+    delegate?.itemContentViewHeightUpdated(self)
   }
 }
