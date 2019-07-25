@@ -32,10 +32,10 @@ class AddItemTableViewCell: UITableViewCell {
     addButton.translatesAutoresizingMaskIntoConstraints = false
 
     [contentView.topAnchor.constraint(equalTo: addButton.topAnchor, constant: -16.0),
-     contentView.bottomAnchor.constraint(equalTo: addButton.bottomAnchor),
-     contentView.leftAnchor.constraint(equalTo: addButton.leftAnchor, constant: -8.0),
-     contentView.rightAnchor.constraint(equalTo: addButton.rightAnchor, constant: 8.0),
-     contentView.heightAnchor.constraint(equalToConstant: 60.0)
+     contentView.bottomAnchor.constraint(equalTo: addButton.bottomAnchor, constant: 16.0),
+     contentView.leftAnchor.constraint(equalTo: addButton.leftAnchor, constant: -16.0),
+     contentView.rightAnchor.constraint(equalTo: addButton.rightAnchor, constant: 16.0),
+     contentView.heightAnchor.constraint(equalToConstant: 72.0)
       ].forEach { $0.isActive = true  }
   }
 
