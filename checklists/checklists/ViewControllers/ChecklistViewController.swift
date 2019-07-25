@@ -41,17 +41,19 @@ class ChecklistViewController: UITableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    tableView.register(ItemTableViewCell.self, forCellReuseIdentifier: itemCellReuseIdentifier)
+    tableView.separatorStyle = .none
+
     // Admittedly a bit hacky, as this is already in the view hierarchy in IB, but want to properly set it while not creating a separate xib file and custom UIView.
     tableView.tableHeaderView = checklistInfoHeaderView
-    tableView.separatorStyle = .none
+    //  Despite Apple docs saying the width is set, it is not, and StackOverflow seems to only show manual methods like this.
+    checklistInfoHeaderView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
 
     checklistNameTextField.delegate = self
     checklistNotesTextView.delegate = self
 
     checklistNameTextField.text = checklist.name
     checklistNotesTextView.text = checklist.notes
-
-    tableView.register(ItemTableViewCell.self, forCellReuseIdentifier: itemCellReuseIdentifier)
 
     let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognizer(sender:)))
     longPressGestureRecognizer.minimumPressDuration = 0.25
