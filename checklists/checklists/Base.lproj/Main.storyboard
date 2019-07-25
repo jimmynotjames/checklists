@@ -67,9 +67,44 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="7Eq-WV-FuG">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="104"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <textField opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Name" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="YSw-DD-TTd">
+                                    <rect key="frame" x="16" y="24" width="382" height="32"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="32" id="IDg-Qt-wpj"/>
+                                    </constraints>
+                                    <nil key="textColor"/>
+                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                                </textField>
+                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qFy-KA-xUU">
+                                    <rect key="frame" x="12" y="60" width="390" height="32"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="32" id="w55-bE-qR2"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES" calendarEvent="YES" shipmentTrackingNumber="YES" flightNumber="YES" lookupSuggestion="YES"/>
+                                </textView>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstItem="YSw-DD-TTd" firstAttribute="top" secondItem="7Eq-WV-FuG" secondAttribute="top" constant="24" id="4W6-AH-dDm"/>
+                                <constraint firstItem="qFy-KA-xUU" firstAttribute="top" secondItem="YSw-DD-TTd" secondAttribute="bottom" constant="4" id="FRt-Ep-5hS"/>
+                                <constraint firstAttribute="trailing" secondItem="qFy-KA-xUU" secondAttribute="trailing" constant="12" id="MyU-me-mEU"/>
+                                <constraint firstAttribute="bottom" secondItem="qFy-KA-xUU" secondAttribute="bottom" constant="12" id="VwZ-uK-0ih"/>
+                                <constraint firstAttribute="trailing" secondItem="YSw-DD-TTd" secondAttribute="trailing" constant="16" id="cH9-ZK-EC3"/>
+                                <constraint firstItem="YSw-DD-TTd" firstAttribute="leading" secondItem="7Eq-WV-FuG" secondAttribute="leading" constant="16" id="joG-7M-2un"/>
+                                <constraint firstItem="qFy-KA-xUU" firstAttribute="leading" secondItem="7Eq-WV-FuG" secondAttribute="leading" constant="12" id="orS-2a-vKK"/>
+                            </constraints>
+                        </view>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="notInUse" id="P2f-C5-jUC">
-                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="132" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="P2f-C5-jUC" id="DL3-cc-aF2">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
@@ -82,10 +117,14 @@
                             <outlet property="delegate" destination="xTE-Wz-jT7" id="iST-U9-1Ol"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <outlet property="checklistNameTextField" destination="YSw-DD-TTd" id="AFN-uK-y4N"/>
+                        <outlet property="checklistNotesTextView" destination="qFy-KA-xUU" id="tYd-lQ-XS2"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U9f-Ko-PlG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="652" y="358"/>
+            <point key="canvasLocation" x="623.1884057971015" y="357.58928571428572"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="3bu-EK-Jud">

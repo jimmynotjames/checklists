@@ -142,7 +142,6 @@ extension ItemContentView: UITextFieldDelegate {
     delegate?.itemContentView(self, nameFieldUpdatedWith: textField.text ?? "")
     finishEditingViewIfNecessary()
   }
-
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
     textField.resignFirstResponder()
     return false

@@ -14,6 +14,10 @@ private let itemCellReuseIdentifier = "ItemCell"
 class ChecklistViewController: UITableViewController {
   var checklist: Checklist! // Expected to be set on seque or right after init(). Behavior undefined if this is set/reset after viewDidLoad().
 
+  @IBOutlet weak var checklistNameTextField: UITextField!
+
+  @IBOutlet weak var checklistNotesTextView: UITextView!
+
   /*
    Architectural Discussion:
    One option was to have each Cell hold a view controller and reset each cell+VC on cell reuse.
@@ -36,7 +40,11 @@ class ChecklistViewController: UITableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    navigationItem.title = checklist.name
+    checklistNameTextField.delegate = self
+    checklistNotesTextView.delegate = self
+
+    checklistNameTextField.text = checklist.name
+    checklistNotesTextView.text = checklist.notes
 
     tableView.register(ItemTableViewCell.self, forCellReuseIdentifier: itemCellReuseIdentifier)
 
@@ -114,6 +122,8 @@ class ChecklistViewController: UITableViewController {
     checklist.moveItem(from: sourceIndexPath.row, to: destinationIndexPath.row)
   }
 }
+
+// MARK: - For Drag-drop reordering of cells.
 
 extension ChecklistViewController {
   @objc func longPressGestureRecognizer(sender: Any) {
@@ -196,3 +206,22 @@ extension ChecklistViewController: ItemCellViewControllerDelegate {
   }
 }
 
+extension ChecklistViewController: UITextFieldDelegate {
+  func textFieldDidEndEditing(_ textField: UITextField) {
+    DBManager.write {
+      checklist.name = checklistNameTextField.text ?? "No Name"
+    }
+  }
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    textField.resignFirstResponder()
+    return false
+  }
+}
+
+extension ChecklistViewController: UITextViewDelegate {
+  func textViewDidEndEditing(_ textView: UITextView) {
+    DBManager.write {
+      checklist.notes = checklistNotesTextView.text
+    }
+  }
+}
