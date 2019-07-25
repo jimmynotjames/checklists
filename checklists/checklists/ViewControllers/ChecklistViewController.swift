@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import GrowingTextView
 
 private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
@@ -14,9 +15,9 @@ private let itemCellReuseIdentifier = "ItemCell"
 class ChecklistViewController: UITableViewController {
   var checklist: Checklist! // Expected to be set on seque or right after init(). Behavior undefined if this is set/reset after viewDidLoad().
 
+  @IBOutlet weak var checklistInfoHeaderView: UIView!
   @IBOutlet weak var checklistNameTextField: UITextField!
-
-  @IBOutlet weak var checklistNotesTextView: UITextView!
+  @IBOutlet weak var checklistNotesTextView: GrowingTextView!
 
   /*
    Architectural Discussion:
@@ -39,6 +40,9 @@ class ChecklistViewController: UITableViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    // Admittedly a bit hacky, as this is already in the view hierarchy in IB, but want to properly set it while not creating a separate xib file and custom UIView.
+    tableView.tableHeaderView = checklistInfoHeaderView
 
     checklistNameTextField.delegate = self
     checklistNotesTextView.delegate = self
@@ -222,6 +226,16 @@ extension ChecklistViewController: UITextViewDelegate {
   func textViewDidEndEditing(_ textView: UITextView) {
     DBManager.write {
       checklist.notes = checklistNotesTextView.text
+    }
+  }
+}
+
+extension ChecklistViewController: GrowingTextViewDelegate {
+  func textViewDidChangeHeight(_ textView: GrowingTextView, height: CGFloat) {
+    UIView.animate(withDuration: 0.2) {
+      self.tableView.setNeedsLayout()
+      self.tableView.layoutIfNeeded()
+      self.tableView.tableHeaderView = self.checklistInfoHeaderView // According to StackOverflow, this seems to be the accepted-yet-janky way of pushing the cells down as the header expands.
     }
   }
 }
