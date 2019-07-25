@@ -25,6 +25,9 @@
 		32D721EA22AB486E00794F6D /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 323ADC9F228292A400644931 /* StoreKit.framework */; };
 		32D721EE22AB4BC000794F6D /* ChecklistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D721ED22AB4BC000794F6D /* ChecklistsViewController.swift */; };
 		32D721F222AC56FB00794F6D /* ChecklistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D721F122AC56FB00794F6D /* ChecklistViewController.swift */; };
+		32E767DC22EA4639003C8634 /* AddItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DB22EA4639003C8634 /* AddItemTableViewCell.swift */; };
+		32E767DE22EA4743003C8634 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32E767DD22EA4743003C8634 /* Colors.xcassets */; };
+		32E767E022EA6476003C8634 /* CLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DF22EA6476003C8634 /* CLButton.swift */; };
 		32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4C84322875308000D63CF /* ItemTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +74,9 @@
 		32A9647B2297AFF400CAB7C0 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
 		32D721ED22AB4BC000794F6D /* ChecklistsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistsViewController.swift; sourceTree = "<group>"; };
 		32D721F122AC56FB00794F6D /* ChecklistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistViewController.swift; sourceTree = "<group>"; };
+		32E767DB22EA4639003C8634 /* AddItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemTableViewCell.swift; sourceTree = "<group>"; };
+		32E767DD22EA4743003C8634 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		32E767DF22EA6476003C8634 /* CLButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLButton.swift; sourceTree = "<group>"; };
 		32F4C84322875308000D63CF /* ItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -136,6 +142,7 @@
 				323ADC7622828C0C00644931 /* Assets.xcassets */,
 				323ADC7822828C0C00644931 /* LaunchScreen.storyboard */,
 				323ADC7B22828C0C00644931 /* Info.plist */,
+				32E767DD22EA4743003C8634 /* Colors.xcassets */,
 			);
 			path = checklists;
 			sourceTree = "<group>";
@@ -182,9 +189,11 @@
 		32F4C8412287525B000D63CF /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				32F4C84322875308000D63CF /* ItemTableViewCell.swift */,
+				32E767DB22EA4639003C8634 /* AddItemTableViewCell.swift */,
 				3233C793228BAD3C002BF01D /* CheckboxButton.swift */,
+				32E767DF22EA6476003C8634 /* CLButton.swift */,
 				32A964702291E14F00CAB7C0 /* ItemContentView.swift */,
+				32F4C84322875308000D63CF /* ItemTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -316,6 +325,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				323ADC7A22828C0C00644931 /* LaunchScreen.storyboard in Resources */,
+				32E767DE22EA4743003C8634 /* Colors.xcassets in Resources */,
 				323ADC7722828C0C00644931 /* Assets.xcassets in Resources */,
 				323ADC7522828C0900644931 /* Main.storyboard in Resources */,
 			);
@@ -365,9 +375,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32E767E022EA6476003C8634 /* CLButton.swift in Sources */,
 				32A9647A2297AE6700CAB7C0 /* TestData.swift in Sources */,
 				32D721F222AC56FB00794F6D /* ChecklistViewController.swift in Sources */,
 				32A964782297A0A300CAB7C0 /* RealmSchema.swift in Sources */,
+				32E767DC22EA4639003C8634 /* AddItemTableViewCell.swift in Sources */,
 				324E167022B9F4B100DC4882 /* ItemCellViewController.swift in Sources */,
 				3233C794228BAD3C002BF01D /* CheckboxButton.swift in Sources */,
 				323ADC6B22828C0900644931 /* AppDelegate.swift in Sources */,

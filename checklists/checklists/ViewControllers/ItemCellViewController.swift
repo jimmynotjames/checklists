@@ -54,6 +54,10 @@ class ItemCellViewController: UIViewController {
     itemContentView.setNeedsLayout()
     itemContentView.layoutIfNeeded()
   }
+
+  func startEditing() {
+    itemContentView.startEditing()
+  }
 }
 
 extension ItemCellViewController: ItemContentViewDelegate {

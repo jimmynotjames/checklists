@@ -92,6 +92,10 @@ class ItemContentView: UIView {
     notesTextView.maxHeight = isExpanded ? 0.0 : 0.01  // zero means it's infinite.
   }
 
+  func startEditing() {
+    _ = nameField.becomeFirstResponder()
+  }
+
   /*
    I need to detect when to collapse the view (if notes are empty), but if user taps from one input
    field to another, I can't tell properly with just endEditing...().

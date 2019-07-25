@@ -11,6 +11,7 @@ import GrowingTextView
 
 private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
+private let AddItemCellReuseIdentifier = "AddItem"
 
 class ChecklistViewController: UITableViewController {
   var checklist: Checklist! // Expected to be set on seque or right after init(). Behavior undefined if this is set/reset after viewDidLoad().
@@ -32,7 +33,7 @@ class ChecklistViewController: UITableViewController {
 
    To account for above issues, easier to use a dictionary. This way, mapping will always sync up.
    */
-  var itemViewControllersDict: [ Item: ItemCellViewController ] = [:]
+  var itemViewControllersDict: [ String: ItemCellViewController ] = [:] // String = Item.id (i.e. the UUID)
 
   // For drag/reorder of cells.
   var snapshotView: UIView = UIView()
@@ -42,6 +43,7 @@ class ChecklistViewController: UITableViewController {
     super.viewDidLoad()
 
     tableView.register(ItemTableViewCell.self, forCellReuseIdentifier: itemCellReuseIdentifier)
+    tableView.register(AddItemTableViewCell.self, forCellReuseIdentifier: AddItemCellReuseIdentifier)
     tableView.separatorStyle = .none
 
     // Admittedly a bit hacky, as this is already in the view hierarchy in IB, but want to properly set it while not creating a separate xib file and custom UIView.
@@ -57,6 +59,7 @@ class ChecklistViewController: UITableViewController {
 
     let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognizer(sender:)))
     longPressGestureRecognizer.minimumPressDuration = 0.25
+    longPressGestureRecognizer.cancelsTouchesInView = false // If tap and hold on Add button, there's issues without this.
     tableView.addGestureRecognizer(longPressGestureRecognizer)
   }
 
@@ -67,23 +70,27 @@ class ChecklistViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return checklist.items.count
+    return checklist.items.count + 1
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if indexPath.section == itemsSection {
-      guard let cell = tableView.dequeueReusableCell(withIdentifier: itemCellReuseIdentifier, for: indexPath) as? ItemTableViewCell else { assertionFailure(); return UITableViewCell() }
-      guard indexPath.row >= 0 && indexPath.row < checklist.items.count else { assertionFailure(); return UITableViewCell() }
+      if indexPath.row >= 0 && indexPath.row < checklist.items.count {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: itemCellReuseIdentifier, for: indexPath) as? ItemTableViewCell else { assertionFailure(); return UITableViewCell() }
 
-      let item = checklist.items[indexPath.row]
-      let itemCellViewController = itemViewControllersDict[item] ?? ItemCellViewController(item: item, delegate: self)
-      itemViewControllersDict[item] = itemCellViewController
-      cell.setViewController(with: itemCellViewController)
-      return cell
-    } else {
-      assertionFailure()
-      return UITableViewCell()
+        let item = checklist.items[indexPath.row]
+        let itemCellViewController = itemViewControllersDict[item.id] ?? ItemCellViewController(item: item, delegate: self)
+        itemViewControllersDict[item.id] = itemCellViewController
+        cell.setViewController(with: itemCellViewController)
+        return cell
+      } else if indexPath.row == checklist.items.count {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: AddItemCellReuseIdentifier, for: indexPath) as? AddItemTableViewCell else { assertionFailure(); return UITableViewCell() }
+        cell.delegate = self
+        return cell
+      }
     }
+    assertionFailure()
+    return UITableViewCell()
   }
 
   override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
@@ -136,7 +143,7 @@ extension ChecklistViewController {
   @objc func longPressGestureRecognizer(sender: Any) {
     guard let longPress = sender as? UILongPressGestureRecognizer else { assertionFailure(); return }
     let location = longPress.location(in: tableView)
-    guard let indexPath = tableView.indexPathForRow(at: location) else { return }
+    guard let indexPath = tableView.indexPathForRow(at: location), indexPath.row < checklist.items.count else { return } // Don't let the Add Button move.
 
     switch longPress.state {
     case .began: startDragging(at: indexPath, location: location)
@@ -240,5 +247,21 @@ extension ChecklistViewController: GrowingTextViewDelegate {
       self.tableView.layoutIfNeeded()
       self.tableView.tableHeaderView = self.checklistInfoHeaderView // According to StackOverflow, this seems to be the accepted-yet-janky way of pushing the cells down as the header expands.
     }
+  }
+}
+
+extension ChecklistViewController: AddItemTableViewCellDelegate {
+  func addItemTableViewCellTapped() {
+    let item = Item(name: "", notes: nil)
+    DBManager.write {
+      checklist.items.append(item)
+    }
+    tableView.performBatchUpdates({
+      tableView.insertRows(at: [IndexPath(row: checklist.items.count - 1, section: itemsSection)], with: .top)
+    }, completion: { success in
+      if success {
+        self.itemViewControllersDict[item.id]?.startEditing()
+      }
+    })
   }
 }
