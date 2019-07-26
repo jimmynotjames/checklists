@@ -39,7 +39,7 @@ class ChecklistsViewController: UITableViewController {
     tableView.dropDelegate = self
 
     let addChecklistButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addChecklistButtonTapped))
-    self.navigationItem.setRightBarButtonItems([addChecklistButton, self.editButtonItem], animated: false)
+    self.navigationItem.setRightBarButtonItems([addChecklistButton], animated: false)
 
     let realm = DBManager.realm
     checklists = realm.objects(Checklist.self).sorted(byKeyPath: "sortNumber")
