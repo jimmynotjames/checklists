@@ -129,7 +129,7 @@ class ChecklistViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-    guard indexPath.section == 0 else { assertionFailure(); return }
+    guard indexPath.section == itemsSection else { assertionFailure(); return }
     if editingStyle == .delete {
       checklist.remove(at: indexPath.row)
       tableView.deleteRows(at: [indexPath], with: .fade)
@@ -140,12 +140,12 @@ class ChecklistViewController: UITableViewController {
 
   // TODO: This may not be necessary if I don't do a second section.
   override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-    guard indexPath.section == 0 else { assertionFailure(); return .none }
-    return .delete
+    guard indexPath.section == itemsSection else { assertionFailure(); return .none }
+    return indexPath.row < checklist.items.count ? .delete : .none // Accounts for Add button.
   }
 
   override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-    guard indexPath.section == 0 else { assertionFailure(); return false }
+    guard indexPath.section == itemsSection else { assertionFailure(); return false }
     return indexPath.row < checklist.items.count // Don't move the Add button.
   }
 

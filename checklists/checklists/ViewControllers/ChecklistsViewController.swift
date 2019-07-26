@@ -87,11 +87,15 @@ class ChecklistsViewController: UITableViewController {
         indexPath.row >= 0 &&
         indexPath.row < checklists.count else { assertionFailure(); return }
 
-      DBManager.write {
-        let realm = DBManager.realm
-        realm.delete(checklists[indexPath.row])
-      }
-      tableView.deleteRows(at: [indexPath], with: .fade)
+      let alertController = UIAlertController(title: nil, message: "Delete this checklist? This cannot be undone.", preferredStyle: .alert)
+      alertController.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { alertAction in
+        DBManager.write {
+          DBManager.realm.delete(self.checklists[indexPath.row])
+        }
+        self.tableView.deleteRows(at: [indexPath], with: .fade)
+      }))
+      alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+      present(alertController, animated: true, completion: nil)
     } else if editingStyle == .insert {
       assertionFailure()
       // TODO: Do something else here??
