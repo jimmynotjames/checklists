@@ -47,7 +47,6 @@ class ChecklistViewController: UITableViewController {
 
     tableView.register(ItemTableViewCell.self, forCellReuseIdentifier: itemCellReuseIdentifier)
     tableView.register(AddItemTableViewCell.self, forCellReuseIdentifier: AddItemCellReuseIdentifier)
-    tableView.separatorStyle = .none
 
     // Admittedly a bit hacky, as this is already in the view hierarchy in IB, but want to properly set it while not creating a separate xib file and custom UIView.
     tableView.tableHeaderView = checklistInfoHeaderView
