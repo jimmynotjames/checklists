@@ -33,6 +33,11 @@ class ChecklistsViewController: UITableViewController {
   // MARK: - UITableViewController overrides
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    tableView.dragInteractionEnabled = true
+    tableView.dragDelegate = self
+    tableView.dropDelegate = self
+
     let addChecklistButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addChecklistButtonTapped))
     self.navigationItem.setRightBarButtonItems([addChecklistButton, self.editButtonItem], animated: false)
 
@@ -133,5 +138,49 @@ class ChecklistsViewController: UITableViewController {
     }
     // Get the new view controller using segue.destination.
     // Pass the selected object to the new view controller.
+  }
+}
+
+// MARK: - Drag/Drop Reorder
+
+extension ChecklistsViewController: UITableViewDragDelegate  {
+  func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+    guard indexPath.section == checklistsSection else { assertionFailure(); return [] }
+    return checklists[indexPath.row].dragItems()
+  }
+}
+
+extension ChecklistsViewController: UITableViewDropDelegate {
+  func tableView(_ tableView: UITableView, canHandle session: UIDropSession) -> Bool {
+    return session.canLoadObjects(ofClass: NSString.self)
+  }
+
+  func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
+    if tableView.hasActiveDrag {
+      if session.items.count > 1 {
+        return UITableViewDropProposal(operation: .cancel)
+      } else {
+        return UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+      }
+    } else { // dropped from external to app
+      return UITableViewDropProposal(operation: .cancel)
+    }
+  }
+
+  func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
+    let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(row: checklists.count, section: checklistsSection)
+    assert(coordinator.items.count == 1)
+    guard let dropItem = coordinator.items.first else { assertionFailure(); return }
+    let itemProvider = dropItem.dragItem.itemProvider
+    itemProvider.loadObject(ofClass: NSString.self) { string, error in
+      if let checklistId = string as? String {
+        if let sourceIndex = self.checklists.firstIndex(where: { checklist in return checklist.id == checklistId }) {
+          Checklist.moveChecklist(from: sourceIndex, to: destinationIndexPath.row, checklists: self.checklists)
+          DispatchQueue.main.async {
+            tableView.moveRow(at: IndexPath(row: sourceIndex, section: destinationIndexPath.section), to: destinationIndexPath)
+          }
+        }
+      }
+    }
   }
 }

@@ -45,6 +45,10 @@ class ChecklistViewController: UITableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    tableView.dragInteractionEnabled = true
+    tableView.dragDelegate = self
+    tableView.dropDelegate = self
+
     tableView.register(ItemTableViewCell.self, forCellReuseIdentifier: itemCellReuseIdentifier)
     tableView.register(AddItemTableViewCell.self, forCellReuseIdentifier: AddItemCellReuseIdentifier)
 
@@ -58,11 +62,6 @@ class ChecklistViewController: UITableViewController {
 
     checklistNameTextField.text = checklist.name
     checklistNotesTextView.text = checklist.notes
-
-    let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognizer(sender:)))
-    longPressGestureRecognizer.minimumPressDuration = 0.25
-    longPressGestureRecognizer.cancelsTouchesInView = false // If tap and hold on Add button, there's issues without this.
-    tableView.addGestureRecognizer(longPressGestureRecognizer)
 
     if isNewChecklist {
       navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
@@ -146,88 +145,12 @@ class ChecklistViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-    guard indexPath.section == 0 else { assertionFailure(); return false } // TODO: May not be necessary if I don't do second section.
-    return true
+    guard indexPath.section == 0 else { assertionFailure(); return false }
+    return indexPath.row < checklist.items.count // Don't move the Add button.
   }
 
   override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
     checklist.moveItem(from: sourceIndexPath.row, to: destinationIndexPath.row)
-  }
-}
-
-// MARK: - For Drag-drop reordering of cells.
-
-extension ChecklistViewController {
-  @objc func longPressGestureRecognizer(sender: Any) {
-    guard let longPress = sender as? UILongPressGestureRecognizer else { assertionFailure(); return }
-    let location = longPress.location(in: tableView)
-    guard let indexPath = tableView.indexPathForRow(at: location), indexPath.row < checklist.items.count else { return } // Don't let the Add Button move.
-
-    switch longPress.state {
-    case .began: startDragging(at: indexPath, location: location)
-    case .changed: dragging(at: indexPath, location: location)
-    default: endDragging(at: indexPath, location: location)
-    }
-  }
-
-  private func startDragging(at indexPath: IndexPath, location: CGPoint) {
-    sourceIndexPath = indexPath
-    guard let cell = tableView.cellForRow(at: indexPath) else { assertionFailure(); return }
-    snapshotView = snapshotFrom(view: cell)
-    var center = cell.center
-    snapshotView.center = center
-    snapshotView.alpha = 0.0
-    tableView.addSubview(snapshotView)
-    UIView.animate(withDuration: 0.15) {
-      // Offset for gesture location.
-      center.y = location.y
-      self.snapshotView.center = cell.center
-      self.snapshotView.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
-      self.snapshotView.alpha = 0.98
-      cell.alpha = 0.0
-      cell.isHidden = true
-    }
-  }
-
-  private func dragging(at indexPath: IndexPath, location: CGPoint) {
-    var center = snapshotView.center
-    center.y = location.y
-    snapshotView.center = center
-    guard indexPath != sourceIndexPath else { return }
-    checklist.swapItemsAt(sourceIndexPath.row, indexPath.row)
-    tableView.moveRow(at: sourceIndexPath, to: indexPath)
-    sourceIndexPath = indexPath
-  }
-
-  private func endDragging(at: IndexPath, location: CGPoint) {
-    guard let cell = tableView.cellForRow(at: sourceIndexPath) else { assertionFailure(); return }
-    cell.alpha = 0.0
-    UIView.animate(withDuration: 0.1, animations: {
-      self.snapshotView.center =  cell.center
-      self.snapshotView.transform = CGAffineTransform.identity
-      self.snapshotView.alpha = 0.0
-      cell.alpha = 1.0
-    }, completion: { finished in
-      cell.isHidden = false
-      self.snapshotView.removeFromSuperview()
-    })
-  }
-
-  private func snapshotFrom(view: UIView) -> UIView {
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, false, 0.0)
-    guard let graphicsContext = UIGraphicsGetCurrentContext() else { UIGraphicsEndImageContext(); assertionFailure(); return UIView() }
-    view.layer.render(in: graphicsContext)
-    let image = UIGraphicsGetImageFromCurrentImageContext()
-    UIGraphicsEndImageContext()
-
-    let snapshotView = UIImageView(image: image)
-    snapshotView.layer.masksToBounds = false
-    snapshotView.layer.cornerRadius = 0.0
-    snapshotView.layer.shadowOffset = CGSize(width: -5.0, height: 0.0)
-    snapshotView.layer.shadowRadius = 5.0
-    snapshotView.layer.shadowOpacity = 0.4
-
-    return snapshotView
   }
 }
 
@@ -281,5 +204,50 @@ extension ChecklistViewController: AddItemTableViewCellDelegate {
         self.itemViewControllersDict[item.id]?.startEditing()
       }
     })
+  }
+}
+
+// MARK: - Drag/Drop Reorder
+
+extension ChecklistViewController: UITableViewDragDelegate  {
+  func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+    guard indexPath.section == itemsSection else { assertionFailure(); return [] }
+    guard indexPath.row < checklist.items.count else { return [] } // Don't drag the Add button.
+    return checklist.items[indexPath.row].dragItems()
+  }
+}
+
+extension ChecklistViewController: UITableViewDropDelegate {
+  func tableView(_ tableView: UITableView, canHandle session: UIDropSession) -> Bool {
+    return session.canLoadObjects(ofClass: NSString.self)
+  }
+
+  func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
+    if tableView.hasActiveDrag {
+      if session.items.count > 1 || destinationIndexPath?.row ?? -1 >= checklist.items.count { // Don't move past Add button.
+        return UITableViewDropProposal(operation: .cancel)
+      } else {
+        return UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+      }
+    } else { // dropped from external to app
+      return UITableViewDropProposal(operation: .cancel)
+    }
+  }
+
+  func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
+    let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(row: checklist.items.count, section: itemsSection)
+    assert(coordinator.items.count == 1)
+    guard let dropItem = coordinator.items.first else { assertionFailure(); return }
+    let itemProvider = dropItem.dragItem.itemProvider
+    itemProvider.loadObject(ofClass: NSString.self) { string, error in
+      if let itemId = string as? String {
+        if let sourceIndex = self.checklist.items.firstIndex(where: { item in return item.id == itemId }) {
+          self.checklist.moveItem(from: sourceIndex, to: destinationIndexPath.row)
+          DispatchQueue.main.async {
+            tableView.moveRow(at: IndexPath(row: sourceIndex, section: destinationIndexPath.section), to: destinationIndexPath)
+          }
+        }
+      }
+    }
   }
 }

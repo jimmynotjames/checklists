@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import UIKit
+import MobileCoreServices
 import RealmSwift
 
 class Checklist: Object {
@@ -38,6 +40,20 @@ class Checklist: Object {
 
   static func calculateSortNumber(after checklist: Checklist) -> Double {
     return checklist.sortNumber + 1.0
+  }
+
+  static func moveChecklist(from fromIndex: Int, to toIndex: Int, checklists: Results<Checklist>) {
+    let sortNumber: Double
+    switch toIndex {
+    case 0:
+      sortNumber = Checklist.calculateSortNumber(before: checklists[0])
+    case checklists.count:
+      sortNumber = Checklist.calculateSortNumber(after: checklists[toIndex - 1])
+    default: sortNumber = Checklist.calculateSortNumber(between: checklists[toIndex-1], and: checklists[toIndex])
+    }
+    DBManager.write {
+      checklists[fromIndex].sortNumber = sortNumber
+    }
   }
 
   // When list is empty
@@ -72,6 +88,16 @@ class Checklist: Object {
     DBManager.write {
       items.move(from: fromIndex, to: toIndex)
     }
+  }
+
+  func dragItems() -> [UIDragItem] {
+    let itemProvider = NSItemProvider()
+    itemProvider.registerDataRepresentation(forTypeIdentifier: kUTTypePlainText as String, visibility: .ownProcess) { completion in
+      let data = self.id.data(using: .utf8)
+      completion(data, nil)
+      return nil
+    }
+    return [UIDragItem(itemProvider: itemProvider)]
   }
 }
 
@@ -113,6 +139,16 @@ class Item: Object {
     case .unchecked: status = .checked
     case .checked: status = .unchecked
     }
+  }
+
+  func dragItems() -> [UIDragItem] {
+    let itemProvider = NSItemProvider()
+    itemProvider.registerDataRepresentation(forTypeIdentifier: kUTTypePlainText as String, visibility: .ownProcess) { completion in
+      let data = self.id.data(using: .utf8)
+      completion(data, nil)
+      return nil
+    }
+    return [UIDragItem(itemProvider: itemProvider)]
   }
 }
 
