@@ -18,7 +18,16 @@ class ChecklistsViewController: UITableViewController {
   private var checklists: Results<Checklist>!
 
   @objc func addChecklistButtonTapped() {
-    print("Add Checklist Tapped.")
+    guard let checklistViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Checklist") as? ChecklistViewController else { assertionFailure(); return }
+    let sortNumber = checklists.isEmpty ? Checklist.startingSortNumber() : Checklist.calculateSortNumber(after: checklists.last!)
+    let checklist = Checklist(name: "", notes: nil, sortNumber: sortNumber, items: [])
+    DBManager.write {
+      DBManager.realm.add(checklist)
+    }
+    checklistViewController.checklist = checklist
+    checklistViewController.isNewChecklist = true
+    let navigationController = UINavigationController(rootViewController: checklistViewController)
+    present(navigationController, animated: true, completion: nil)
   }
 
   // MARK: - UITableViewController overrides
@@ -96,11 +105,11 @@ class ChecklistsViewController: UITableViewController {
     let sortNumber: Double
     switch toIndex {
     case 0:
-      sortNumber = checklist.calculateSortNumber(before: checklists[0])
+      sortNumber = Checklist.calculateSortNumber(before: checklists[0])
     case checklists.count - 1:
-      sortNumber = checklist.calculateSortNumber(after: checklists[checklists.count - 1])
+      sortNumber = Checklist.calculateSortNumber(after: checklists[checklists.count - 1])
     default:
-      sortNumber = checklist.calculateSortNumber(between: checklists[toIndex], and: checklists[toIndex+1])
+      sortNumber = Checklist.calculateSortNumber(between: checklists[toIndex], and: checklists[toIndex+1])
     }
     DBManager.write {
       checklist.sortNumber = sortNumber

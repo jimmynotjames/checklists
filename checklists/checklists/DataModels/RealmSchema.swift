@@ -28,16 +28,21 @@ class Checklist: Object {
     self.items.append(objectsIn: items)
   }
 
-  func calculateSortNumber(between checklist1: Checklist, and checklist2: Checklist) -> Double {
+  static func calculateSortNumber(between checklist1: Checklist, and checklist2: Checklist) -> Double {
     return (checklist1.sortNumber + checklist2.sortNumber) / 2.0
   }
 
-  func calculateSortNumber(before checklist: Checklist) -> Double {
+  static func calculateSortNumber(before checklist: Checklist) -> Double {
     return checklist.sortNumber - 1.0
   }
 
-  func calculateSortNumber(after checklist: Checklist) -> Double {
+  static func calculateSortNumber(after checklist: Checklist) -> Double {
     return checklist.sortNumber + 1.0
+  }
+
+  // When list is empty
+  static func startingSortNumber() -> Double {
+    return 8.0
   }
 
   func remove(at index: Int) {

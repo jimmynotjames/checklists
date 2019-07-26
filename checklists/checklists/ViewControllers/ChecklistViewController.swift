@@ -12,6 +12,7 @@ import GrowingTextView
 private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
 private let AddItemCellReuseIdentifier = "AddItem"
+private let defaultChecklistName = "No Name"
 
 class ChecklistViewController: UITableViewController {
   var checklist: Checklist! // Expected to be set on seque or right after init(). Behavior undefined if this is set/reset after viewDidLoad().
@@ -35,9 +36,11 @@ class ChecklistViewController: UITableViewController {
    */
   var itemViewControllersDict: [ String: ItemCellViewController ] = [:] // String = Item.id (i.e. the UUID)
 
+  var isNewChecklist: Bool = false
+
   // For drag/reorder of cells.
-  var snapshotView: UIView = UIView()
-  var sourceIndexPath: IndexPath = IndexPath(row: 0, section: 0)
+  private var snapshotView: UIView = UIView()
+  private var sourceIndexPath: IndexPath = IndexPath(row: 0, section: 0)
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -61,6 +64,22 @@ class ChecklistViewController: UITableViewController {
     longPressGestureRecognizer.minimumPressDuration = 0.25
     longPressGestureRecognizer.cancelsTouchesInView = false // If tap and hold on Add button, there's issues without this.
     tableView.addGestureRecognizer(longPressGestureRecognizer)
+
+    if isNewChecklist {
+      navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+    }
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    if isNewChecklist {
+      isNewChecklist = false // safeguard against future times viewDidAppear might get called.
+      checklistNameTextField.becomeFirstResponder()
+    }
+  }
+
+  @objc func doneButtonTapped() {
+    dismiss(animated: true, completion: nil)
   }
 
   // MARK: - Table view data source
@@ -223,7 +242,7 @@ extension ChecklistViewController: ItemCellViewControllerDelegate {
 extension ChecklistViewController: UITextFieldDelegate {
   func textFieldDidEndEditing(_ textField: UITextField) {
     DBManager.write {
-      checklist.name = checklistNameTextField.text ?? "No Name"
+      checklist.name = checklistNameTextField.hasText ? checklistNameTextField.text ?? defaultChecklistName : defaultChecklistName // Accounts for both nil and empty string.
     }
   }
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
