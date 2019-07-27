@@ -65,6 +65,8 @@ class ChecklistViewController: UITableViewController {
 
     if isNewChecklist {
       navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+    } else {
+      navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetButtonTapped))
     }
   }
 
@@ -78,6 +80,15 @@ class ChecklistViewController: UITableViewController {
 
   @objc func doneButtonTapped() {
     dismiss(animated: true, completion: nil)
+  }
+
+  @objc func resetButtonTapped() {
+    DBManager.write {
+      checklist.items.forEach { item in
+        item.status = .unchecked
+      }
+    }
+    tableView.reloadData()
   }
 
   // MARK: - Table view data source
@@ -138,7 +149,6 @@ class ChecklistViewController: UITableViewController {
     }
   }
 
-  // TODO: This may not be necessary if I don't do a second section.
   override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
     guard indexPath.section == itemsSection else { assertionFailure(); return .none }
     return indexPath.row < checklist.items.count ? .delete : .none // Accounts for Add button.

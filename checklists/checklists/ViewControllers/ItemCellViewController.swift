@@ -55,6 +55,11 @@ class ItemCellViewController: UIViewController {
     itemContentView.layoutIfNeeded()
   }
 
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    itemContentView.item = item
+  }
+
   func startEditing() {
     itemContentView.startEditing()
   }
