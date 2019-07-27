@@ -16,12 +16,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+    updateNavigationBarAppearance()
+
     // TODO: REMOVE DEBUG
     TestData.clearDatabase()
     TestData.insertTestData()
     DBManager.printChecklists()
 
     return true
+  }
+
+  private func updateNavigationBarAppearance() {
+    let navigationBarAppearance = UINavigationBar.appearance()
+    navigationBarAppearance.tintColor = Colors.tealColor
+    navigationBarAppearance.setBackgroundImage(UIImage(), for: .default)
+    navigationBarAppearance.shadowImage = UIImage()
   }
 
   func applicationWillResignActive(_ application: UIApplication) {

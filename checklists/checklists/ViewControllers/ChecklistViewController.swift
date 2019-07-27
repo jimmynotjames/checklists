@@ -54,7 +54,7 @@ class ChecklistViewController: UITableViewController {
 
     // Admittedly a bit hacky, as this is already in the view hierarchy in IB, but want to properly set it while not creating a separate xib file and custom UIView.
     tableView.tableHeaderView = checklistInfoHeaderView
-    //  Despite Apple docs saying the width is set, it is not, and StackOverflow seems to only show manual methods like this.
+    //  Despite Apple docs saying the width is set, it is not (as of iOS 12), and StackOverflow seems to only show manual methods like this.
     checklistInfoHeaderView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
 
     checklistNameTextField.delegate = self
@@ -105,7 +105,7 @@ class ChecklistViewController: UITableViewController {
     if indexPath.section == itemsSection {
       if indexPath.row >= 0 && indexPath.row < checklist.items.count {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: itemCellReuseIdentifier, for: indexPath) as? ItemTableViewCell else { assertionFailure(); return UITableViewCell() }
-
+        cell.backgroundColor = .clear
         let item = checklist.items[indexPath.row]
         let itemCellViewController = itemViewControllersDict[item.id] ?? ItemCellViewController(item: item, delegate: self)
         itemViewControllersDict[item.id] = itemCellViewController
@@ -113,6 +113,7 @@ class ChecklistViewController: UITableViewController {
         return cell
       } else if indexPath.row == checklist.items.count {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: AddItemCellReuseIdentifier, for: indexPath) as? AddItemTableViewCell else { assertionFailure(); return UITableViewCell() }
+        cell.backgroundColor = .clear
         cell.delegate = self
         return cell
       }

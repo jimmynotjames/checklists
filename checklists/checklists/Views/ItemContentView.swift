@@ -58,6 +58,7 @@ class ItemContentView: UIView {
     textView.bounces = false
     textView.placeholder = "Notes"
     textView.placeholderColor = .lightGray
+    textView.backgroundColor = .clear
     return textView
   }()
   private let containerView = UIView()
