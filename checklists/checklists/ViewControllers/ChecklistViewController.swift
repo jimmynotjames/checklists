@@ -11,7 +11,6 @@ import GrowingTextView
 
 private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
-private let AddItemCellReuseIdentifier = "AddItem"
 private let defaultChecklistName = "No Name"
 
 class ChecklistViewController: UITableViewController {
@@ -50,12 +49,17 @@ class ChecklistViewController: UITableViewController {
     tableView.dropDelegate = self
 
     tableView.register(ItemTableViewCell.self, forCellReuseIdentifier: itemCellReuseIdentifier)
-    tableView.register(AddItemTableViewCell.self, forCellReuseIdentifier: AddItemCellReuseIdentifier)
 
     // Admittedly a bit hacky, as this is already in the view hierarchy in IB, but want to properly set it while not creating a separate xib file and custom UIView.
     tableView.tableHeaderView = checklistInfoHeaderView
-    //  Despite Apple docs saying the width is set, it is not (as of iOS 12), and StackOverflow seems to only show manual methods like this.
+
+    let tableFooterView = AddItemButtonTableFooterView(frame: .zero)
+    tableFooterView.delegate = self
+    tableView.tableFooterView = tableFooterView
+
+    //  Despite Apple docs saying the width is set, it is not (as of iOS 12), and StackOverflow seems to only show manual ways like this.
     checklistInfoHeaderView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
+    tableFooterView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
 
     checklistNameTextField.delegate = self
     checklistNotesTextView.delegate = self
@@ -98,7 +102,7 @@ class ChecklistViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return checklist.items.count + 1
+    return checklist.items.count
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -110,11 +114,6 @@ class ChecklistViewController: UITableViewController {
         let itemCellViewController = itemViewControllersDict[item.id] ?? ItemCellViewController(item: item, delegate: self)
         itemViewControllersDict[item.id] = itemCellViewController
         cell.setViewController(with: itemCellViewController)
-        return cell
-      } else if indexPath.row == checklist.items.count {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: AddItemCellReuseIdentifier, for: indexPath) as? AddItemTableViewCell else { assertionFailure(); return UITableViewCell() }
-        cell.backgroundColor = .clear
-        cell.delegate = self
         return cell
       }
     }
@@ -152,12 +151,12 @@ class ChecklistViewController: UITableViewController {
 
   override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
     guard indexPath.section == itemsSection else { assertionFailure(); return .none }
-    return indexPath.row < checklist.items.count ? .delete : .none // Accounts for Add button.
+    return .delete
   }
 
   override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
     guard indexPath.section == itemsSection else { assertionFailure(); return false }
-    return indexPath.row < checklist.items.count // Don't move the Add button.
+    return true
   }
 
   override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
@@ -202,7 +201,7 @@ extension ChecklistViewController: GrowingTextViewDelegate {
   }
 }
 
-extension ChecklistViewController: AddItemTableViewCellDelegate {
+extension ChecklistViewController: AddItemButtonTableFooterViewDelegate {
   func addItemTableViewCellTapped() {
     let item = Item(name: "", notes: nil)
     DBManager.write {
@@ -222,8 +221,7 @@ extension ChecklistViewController: AddItemTableViewCellDelegate {
 
 extension ChecklistViewController: UITableViewDragDelegate  {
   func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-    guard indexPath.section == itemsSection else { assertionFailure(); return [] }
-    guard indexPath.row < checklist.items.count else { return [] } // Don't drag the Add button.
+    guard indexPath.section == itemsSection, indexPath.row < checklist.items.count else { assertionFailure(); return [] }
     return checklist.items[indexPath.row].dragItems()
   }
 }
@@ -235,7 +233,7 @@ extension ChecklistViewController: UITableViewDropDelegate {
 
   func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
     if tableView.hasActiveDrag {
-      if session.items.count > 1 || destinationIndexPath?.row ?? -1 >= checklist.items.count { // Don't move past Add button.
+      if session.items.count > 1 {
         return UITableViewDropProposal(operation: .cancel)
       } else {
         return UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
