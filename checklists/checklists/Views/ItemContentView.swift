@@ -27,6 +27,9 @@ class ItemContentView: UIView {
         if let notes = item.notes {
           notesTextView.text = notes
         }
+        let textColor = item.status == .checked ? Colors.inactiveText : .black
+        nameField.textColor = textColor
+        notesTextView.textColor = textColor
       } else {
         checkboxButton.setCheckboxState(with: .unchecked)
         nameField.text = nil

@@ -9,6 +9,7 @@
 import UIKit
 
 class Colors {
-  static let tealColor = UIColor(named: "Teal") ?? .darkGray
   static let defaultBackground = UIColor(named: "defaultBackground") ?? .white
+  static let inactiveText = UIColor(named: "inactiveText") ?? .darkGray
+  static let tealColor = UIColor(named: "Teal") ?? .darkGray
 }
