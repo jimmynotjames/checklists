@@ -16,8 +16,8 @@ class CheckboxButton: UIButton {
   override init(frame: CGRect) {
     super.init(frame: .zero)
 
-    setImage(UIImage(named: "CheckboxUnchecked44"), for: .normal)
-    setImage(UIImage(named: "CheckboxChecked44"), for: .selected)
+    setImage(UIImage(named: "CheckboxUncheckedIcon"), for: .normal)
+    setImage(UIImage(named: "CheckboxCheckedIcon"), for: .selected)
 
     contentEdgeInsets = UIEdgeInsets(top: 12.0, left: 12.0, bottom: 12.0, right: 12.0)
 
