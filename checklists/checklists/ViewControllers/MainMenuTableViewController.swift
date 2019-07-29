@@ -28,10 +28,12 @@ extension MainMenuEnabledViewController where Self: UIViewController {
 
 class MainMenuTableViewController: UITableViewController {
 
-  var preferredHeight: CGFloat = 265.0
+  var preferredHeight: CGFloat = 282.0
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    tableView.contentInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 0.0, right: 0.0)
   }
 
   // MARK: - Table view data source
