@@ -30,6 +30,10 @@ class ChecklistsViewController: UITableViewController {
     present(navigationController, animated: true, completion: nil)
   }
 
+  @objc func menuButtonTapped() {
+    presentPopoverMainMenu()
+  }
+
   // MARK: - UITableViewController overrides
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -38,8 +42,11 @@ class ChecklistsViewController: UITableViewController {
     tableView.dragDelegate = self
     tableView.dropDelegate = self
 
+    let menuButton = UIBarButtonItem(image: UIImage(named: "MenuIcon"), style: .plain, target: self, action: #selector(menuButtonTapped))
+    navigationItem.setLeftBarButton(menuButton, animated: false)
+
     let addChecklistButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addChecklistButtonTapped))
-    self.navigationItem.setRightBarButtonItems([addChecklistButton], animated: false)
+    navigationItem.setRightBarButton(addChecklistButton, animated: false)
 
     let realm = DBManager.realm
     checklists = realm.objects(Checklist.self).sorted(byKeyPath: "sortNumber")
@@ -186,5 +193,14 @@ extension ChecklistsViewController: UITableViewDropDelegate {
         }
       }
     }
+  }
+}
+
+extension ChecklistsViewController : MainMenuEnabledViewController {
+  var baselineWidth: CGFloat { return view.frame.width }
+  var popoverBarButtonItem: UIBarButtonItem { return navigationItem.leftBarButtonItem ?? UIBarButtonItem() }
+
+  func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+    return .none
   }
 }

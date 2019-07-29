@@ -10,6 +10,7 @@
 		3216689322E947C00017C126 /* GrowingTextView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3220B11A22E93C6A003180B9 /* GrowingTextView.framework */; };
 		3220B11822E93C6A003180B9 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964732291ECA300CAB7C0 /* Realm.framework */; };
 		3220B11922E93C6A003180B9 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964722291ECA300CAB7C0 /* RealmSwift.framework */; };
+		322CA9FB22EEA6A2009ACC4D /* MainMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322CA9FA22EEA6A2009ACC4D /* MainMenuTableViewController.swift */; };
 		3233C794228BAD3C002BF01D /* CheckboxButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3233C793228BAD3C002BF01D /* CheckboxButton.swift */; };
 		323ADC6B22828C0900644931 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323ADC6A22828C0900644931 /* AppDelegate.swift */; };
 		323ADC7522828C0900644931 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 323ADC7322828C0900644931 /* Main.storyboard */; };
@@ -51,6 +52,7 @@
 
 /* Begin PBXFileReference section */
 		3220B11A22E93C6A003180B9 /* GrowingTextView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GrowingTextView.framework; path = Carthage/Build/iOS/GrowingTextView.framework; sourceTree = "<group>"; };
+		322CA9FA22EEA6A2009ACC4D /* MainMenuTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuTableViewController.swift; sourceTree = "<group>"; };
 		3233C793228BAD3C002BF01D /* CheckboxButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckboxButton.swift; sourceTree = "<group>"; };
 		323ADC6722828C0900644931 /* checklists.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = checklists.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		323ADC6A22828C0900644931 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 				32D721ED22AB4BC000794F6D /* ChecklistsViewController.swift */,
 				32D721F122AC56FB00794F6D /* ChecklistViewController.swift */,
 				324E166F22B9F4B100DC4882 /* ItemCellViewController.swift */,
+				322CA9FA22EEA6A2009ACC4D /* MainMenuTableViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -391,6 +394,7 @@
 				32D721EE22AB4BC000794F6D /* ChecklistsViewController.swift in Sources */,
 				32A9647C2297AFF400CAB7C0 /* DBManager.swift in Sources */,
 				32A964712291E14F00CAB7C0 /* ItemContentView.swift in Sources */,
+				322CA9FB22EEA6A2009ACC4D /* MainMenuTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
