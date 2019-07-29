@@ -38,8 +38,12 @@ class CheckboxButton: UIButton {
   // Note: Must be called within write transaction.
   func setCheckboxState(with itemStatus: Item.Status) {
     switch itemStatus {
-    case .checked: isSelected = true
-    case .unchecked: isSelected = false
+    case .checked:
+      isSelected = true
+      tintColor = Colors.inactiveText
+    case .unchecked:
+      isSelected = false
+      tintColor = .black
     }
   }
 }
