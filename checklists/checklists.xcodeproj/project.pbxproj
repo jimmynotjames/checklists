@@ -144,9 +144,9 @@
 				323ADC6A22828C0900644931 /* AppDelegate.swift */,
 				323ADC7322828C0900644931 /* Main.storyboard */,
 				323ADC7622828C0C00644931 /* Assets.xcassets */,
+				32E767DD22EA4743003C8634 /* Colors.xcassets */,
 				323ADC7822828C0C00644931 /* LaunchScreen.storyboard */,
 				323ADC7B22828C0C00644931 /* Info.plist */,
-				32E767DD22EA4743003C8634 /* Colors.xcassets */,
 			);
 			path = checklists;
 			sourceTree = "<group>";

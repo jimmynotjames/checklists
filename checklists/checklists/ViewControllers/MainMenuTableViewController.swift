@@ -19,7 +19,7 @@ extension MainMenuEnabledViewController where Self: UIViewController {
   func presentPopoverMainMenu() {
     guard let mainMenuViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainMenu") as? MainMenuTableViewController else { assertionFailure(); return }
     mainMenuViewController.modalPresentationStyle = .popover
-    mainMenuViewController.preferredContentSize = CGSize(width: baselineWidth * 0.55, height: mainMenuViewController.preferredHeight)
+    mainMenuViewController.preferredContentSize = CGSize(width: baselineWidth * 0.58, height: mainMenuViewController.preferredHeight)
     mainMenuViewController.popoverPresentationController?.delegate = self
     mainMenuViewController.popoverPresentationController?.barButtonItem = popoverBarButtonItem
     self.present(mainMenuViewController, animated: true, completion: nil)
@@ -28,7 +28,7 @@ extension MainMenuEnabledViewController where Self: UIViewController {
 
 class MainMenuTableViewController: UITableViewController {
 
-  var preferredHeight: CGFloat = 282.0
+  var preferredHeight: CGFloat = 238.0
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -45,7 +45,7 @@ class MainMenuTableViewController: UITableViewController {
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     // #warning Incomplete implementation, return the number of rows
-    return 6
+    return 5
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -53,17 +53,20 @@ class MainMenuTableViewController: UITableViewController {
     let text: String
     switch indexPath.row {
     case 0:
-      text = "Checklists"
-    case 1:
-      text = "Donate"
-    case 2:
       text = "Feedback"
-    case 3:
+      cell.imageView?.image = UIImage(named: "FeedbackIcon25x25")
+    case 1:
       text = "Rate in App Store"
-    case 4:
+      cell.imageView?.image = UIImage(named: "RateInAppStore25x25")
+    case 2:
+      text = "Donate!"
+      cell.imageView?.image = UIImage(named: "DonateIcon25x25")
+    case 3:
       text = "About"
-    case 5:
+      cell.imageView?.image = UIImage(named: "AboutMeIcon25x25")
+    case 4:
       text = "Privacy Policy"
+      cell.imageView?.image = UIImage(named: "PrivacyPolicyIcon25x25")
     default:
       assertionFailure()
       text = ""

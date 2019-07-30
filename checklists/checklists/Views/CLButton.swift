@@ -10,7 +10,7 @@ import UIKit
 
 class CLButton: UIButton {
   private let normalColor: UIColor = Colors.defaultBackground
-  private let highlightedColor: UIColor = Colors.tealColor
+  private let highlightedColor: UIColor = Colors.teal
 
   override var isHighlighted: Bool {
     get {

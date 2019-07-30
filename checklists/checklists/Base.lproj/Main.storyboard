@@ -166,23 +166,28 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" name="defaultBackground"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="navigationMenuItem" textLabel="8jM-oL-tDa" style="IBUITableViewCellStyleDefault" id="XAo-21-9Fi">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="navigationMenuItem" textLabel="8jM-oL-tDa" imageView="irG-qu-2IL" style="IBUITableViewCellStyleDefault" id="XAo-21-9Fi">
                                 <rect key="frame" x="0.0" y="28" width="222" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="XAo-21-9Fi" id="dYh-ip-vBT">
                                     <rect key="frame" x="0.0" y="0.0" width="222" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Menu Option" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="8jM-oL-tDa">
-                                            <rect key="frame" x="16" y="0.0" width="190" height="44"/>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Menu Option" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" id="8jM-oL-tDa">
+                                            <rect key="frame" x="56" y="0.0" width="150" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                            <color key="textColor" name="Teal"/>
+                                            <color key="textColor" name="teal"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="DonateIcon25x25" id="irG-qu-2IL">
+                                            <rect key="frame" x="16" y="9" width="25" height="25"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </imageView>
                                     </subviews>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" name="teal"/>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -194,15 +199,16 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bPJ-cn-xAs" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-997" y="844"/>
+            <point key="canvasLocation" x="-997.10144927536237" y="843.75"/>
         </scene>
     </scenes>
     <resources>
-        <namedColor name="Teal">
-            <color red="0.21568627450980393" green="0.50980392156862742" blue="0.53333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
+        <image name="DonateIcon25x25" width="25" height="25"/>
         <namedColor name="defaultBackground">
             <color red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="teal">
+            <color red="0.21568627450980393" green="0.50980392156862742" blue="0.53333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

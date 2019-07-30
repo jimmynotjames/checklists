@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
   private func updateNavigationBarAppearance() {
     let navigationBarAppearance = UINavigationBar.appearance()
-    navigationBarAppearance.tintColor = Colors.tealColor
+    navigationBarAppearance.tintColor = Colors.teal
     navigationBarAppearance.setBackgroundImage(UIImage(), for: .default)
     navigationBarAppearance.shadowImage = UIImage()
   }

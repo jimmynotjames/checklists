@@ -42,7 +42,7 @@ class ChecklistsViewController: UITableViewController {
     tableView.dragDelegate = self
     tableView.dropDelegate = self
 
-    let menuButton = UIBarButtonItem(image: UIImage(named: "MenuIcon"), style: .plain, target: self, action: #selector(menuButtonTapped))
+    let menuButton = UIBarButtonItem(image: UIImage(named: "MenuIcon25x25"), style: .plain, target: self, action: #selector(menuButtonTapped))
     navigationItem.setLeftBarButton(menuButton, animated: false)
 
     let addChecklistButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addChecklistButtonTapped))
