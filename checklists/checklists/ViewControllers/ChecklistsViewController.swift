@@ -17,6 +17,34 @@ class ChecklistsViewController: UITableViewController {
 
   private var checklists: Results<Checklist>!
 
+  // MARK: - UITableViewController overrides
+  override func viewDidLoad() {
+    super.viewDidLoad()
+
+    let realm = DBManager.realm
+    checklists = realm.objects(Checklist.self).sorted(byKeyPath: "sortNumber")
+
+    tableView.dragInteractionEnabled = true
+    tableView.dragDelegate = self
+    tableView.dropDelegate = self
+    tableView.tableFooterView = tableFooterView(tableWidth: tableView.frame.size.width)
+
+    let menuButton = UIBarButtonItem(image: UIImage(named: "MenuIcon25x25"), style: .plain, target: self, action: #selector(menuButtonTapped))
+    navigationItem.setLeftBarButton(menuButton, animated: false)
+
+    let addChecklistButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addChecklistButtonTapped))
+    navigationItem.setRightBarButton(addChecklistButton, animated: false)
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    if isFirstTimeLaunch {
+      isFirstTimeLaunch = false
+    } else {
+      tableView.reloadData()
+    }
+  }
+
   @objc func addChecklistButtonTapped() {
     guard let checklistViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Checklist") as? ChecklistViewController else { assertionFailure(); return }
     let sortNumber = checklists.isEmpty ? Checklist.startingSortNumber() : Checklist.calculateSortNumber(after: checklists.last!)
@@ -34,31 +62,15 @@ class ChecklistsViewController: UITableViewController {
     presentPopoverMainMenu()
   }
 
-  // MARK: - UITableViewController overrides
-  override func viewDidLoad() {
-    super.viewDidLoad()
-
-    tableView.dragInteractionEnabled = true
-    tableView.dragDelegate = self
-    tableView.dropDelegate = self
-
-    let menuButton = UIBarButtonItem(image: UIImage(named: "MenuIcon25x25"), style: .plain, target: self, action: #selector(menuButtonTapped))
-    navigationItem.setLeftBarButton(menuButton, animated: false)
-
-    let addChecklistButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addChecklistButtonTapped))
-    navigationItem.setRightBarButton(addChecklistButton, animated: false)
-
-    let realm = DBManager.realm
-    checklists = realm.objects(Checklist.self).sorted(byKeyPath: "sortNumber")
-  }
-
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    if isFirstTimeLaunch {
-      isFirstTimeLaunch = false
-    } else {
-      tableView.reloadData()
-    }
+  private func tableFooterView(tableWidth: CGFloat) -> UILabel {
+    let versionNumberString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? "0.0.0"
+    // Apple says that a tableFooterView is auto-sized to the proper height and width, but as of iOS 12, that doesn't seem to work.
+    let label = UILabel(frame: CGRect(x: 0.0, y: 0.0, width: tableWidth, height: 18.0))
+    label.font = label.font.withSize(14.0)
+    label.textColor = .lightGray
+    label.textAlignment = .center
+    label.text = "(Version \(versionNumberString))"
+    return label
   }
 
   // MARK: - Table view data source

@@ -28,7 +28,11 @@ extension MainMenuEnabledViewController where Self: UIViewController {
 
 class MainMenuTableViewController: UITableViewController {
 
-  var preferredHeight: CGFloat = 238.0
+  static private let numberOfRows = 4
+
+  var preferredHeight: CGFloat = {
+    return CGFloat(numberOfRows) * 44.0 + 18.0
+  }()
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -45,7 +49,7 @@ class MainMenuTableViewController: UITableViewController {
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     // #warning Incomplete implementation, return the number of rows
-    return 5
+    return MainMenuTableViewController.numberOfRows
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -62,9 +66,6 @@ class MainMenuTableViewController: UITableViewController {
       text = "Donate!"
       cell.imageView?.image = UIImage(named: "DonateIcon25x25")
     case 3:
-      text = "About"
-      cell.imageView?.image = UIImage(named: "AboutMeIcon25x25")
-    case 4:
       text = "Privacy Policy"
       cell.imageView?.image = UIImage(named: "PrivacyPolicyIcon25x25")
     default:
@@ -76,6 +77,26 @@ class MainMenuTableViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
+    switch indexPath.row {
+    case 0:
+      // TODO: Update email to correct email and subject line to reflect app name.
+      guard let url = URL(string: "mailto:foobar@gmail.com?subject=Feedback%20for%20Checklists%20App") else { assertionFailure(); return }
+      UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    case 1:
+      // TODO: Update ID here to represent uplaoded app.
+      guard let url = URL(string: "https://itunes.apple.com/app/id583674365?action=write-review") else { assertionFailure(); return }
+      UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    case 2:
+      // TODO Segue to donation page.
+      assertionFailure()
+    case 3:
+      // TODO: Update with privacy policy link.
+      guard let url = URL(string: "https://www.yahoo.com") else { assertionFailure(); return }
+      UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    default:
+      assertionFailure()
+    }
+    tableView.cellForRow(at: indexPath)?.isSelected = false
+    dismiss(animated: true, completion: nil)
   }
 }
