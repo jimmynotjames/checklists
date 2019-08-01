@@ -9,6 +9,9 @@
 import UIKit
 import GrowingTextView
 
+private var minNameFieldHeight: CGFloat = 24.0
+private var minNotesTextViewHeight: CGFloat = 32.0
+
 protocol ItemContentViewDelegate: class {
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView)
   func itemContentViewNameFieldDidBeginEditing(_ itemContentView: ItemContentView)
@@ -52,19 +55,23 @@ class ItemContentView: UIView {
     textField.returnKeyType = .done
     return textField
   }()
-  private lazy var notesTextView: GrowingTextView = {
-    let textView = GrowingTextView()
-    textView.delegate = self
+  private lazy var notesTextView: CLTextView = {
+    let textView = CLTextView()
+    textView.placeholderText = "Notes"
     textView.font = UIFont.systemFont(ofSize: 14.0)
-    textView.textContainer.heightTracksTextView = true
-    textView.alwaysBounceVertical = false
-    textView.bounces = false
-    textView.placeholder = "Notes"
-    textView.placeholderColor = .lightGray
-    textView.backgroundColor = .clear
+    textView.delegate = self
     return textView
   }()
   private let containerView = UIView()
+
+  private lazy var nameFieldHeightConstraint: NSLayoutConstraint = {
+    // return nameField.heightAnchor.constraint(greaterThanOrEqualToConstant: minNameFieldHeight)
+    return nameField.heightAnchor.constraint(equalToConstant: minNameFieldHeight) // TODO: Update this back to original for expanding text
+  }()
+
+  private lazy var notesTextViewHeightConstraint: NSLayoutConstraint = {
+    return notesTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 0.0)
+  }()
 
   private var wasInputFieldTapped: Bool = false
 
@@ -78,7 +85,7 @@ class ItemContentView: UIView {
     addSubview(checkboxButton)
     addSubview(containerView)
     containerView.addSubview(notesTextView)
-    containerView.addSubview(nameField) // Name field needs to be in front due to overlapping textView
+    containerView.addSubview(nameField)
 
     installConstraints()
   }
@@ -92,8 +99,13 @@ class ItemContentView: UIView {
   }
 
   func updateTextViewHeight(isExpanded: Bool) {
-    notesTextView.maxHeight = isExpanded ? 32.0 : 0.0
-    notesTextView.maxHeight = isExpanded ? 0.0 : 0.01  // zero means it's infinite.
+    notesTextViewHeightConstraint.isActive = false
+    if isExpanded {
+      notesTextViewHeightConstraint = notesTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: minNotesTextViewHeight)
+    } else {
+      notesTextViewHeightConstraint = notesTextView.heightAnchor.constraint(equalToConstant: 0.0)
+    }
+    notesTextViewHeightConstraint.isActive = true
   }
 
   func startEditing() {
@@ -118,21 +130,19 @@ class ItemContentView: UIView {
                   "notesTextView": notesTextView ]
     views.forEach({ $0.value.translatesAutoresizingMaskIntoConstraints = false })
 
+    nameField.setContentCompressionResistancePriority(.required, for: .vertical)
+    nameField.setContentHuggingPriority(.required, for: .vertical)
+
     NSLayoutConstraint.activate(
       [NSLayoutConstraint.constraints(withVisualFormat: "H:|-4-[checkboxButton]-(-4)-[containerView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[checkboxButton]", options: [], metrics: nil, views: views),
 
        NSLayoutConstraint.constraints(withVisualFormat: "V:|-8-[containerView]-8-|", options: [], metrics: nil, views: views),
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameField]-(-4)-[notesTextView]|", options: [], metrics: nil, views: views),
+       NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameField]-(4)-[notesTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[nameField]|", options: [], metrics: nil, views: views),
-       NSLayoutConstraint.constraints(withVisualFormat: "H:|-(-4)-[notesTextView]|", options: [], metrics: nil, views: views),
-       [nameField.heightAnchor.constraint(equalToConstant: nameField.intrinsicContentSize.height)] // See below
+       NSLayoutConstraint.constraints(withVisualFormat: "H:|[notesTextView]|", options: [], metrics: nil, views: views),
+       [nameFieldHeightConstraint, notesTextViewHeightConstraint]
         ].flatMap({ $0 }))
-    /*
-     Setting nameField's height as constraint because the height keeps rendering at larger height on initial display, and correcting after
-     interacting with it. Theory is that GrowingTextView is fluctuating its height, causing cell to be bigger and stretch out
-     the nameField (though setting contentHugging didn't help. This might product unsatisfiable constraints, so might be brittle.
-     */
   }
 
   @objc func checkboxButtonTapped(sender: UIButton) {
@@ -169,10 +179,7 @@ extension ItemContentView: UITextViewDelegate {
     delegate?.itemContentView(self, notesFieldUpdatedWith: textView.text)
     finishEditingViewIfNecessary()
   }
-}
-
-extension ItemContentView: GrowingTextViewDelegate {
-  func textViewDidChangeHeight(_ textView: GrowingTextView, height: CGFloat) {
+  func textViewDidChange(_ textView: UITextView) {
     delegate?.itemContentViewHeightUpdated(self)
   }
 }

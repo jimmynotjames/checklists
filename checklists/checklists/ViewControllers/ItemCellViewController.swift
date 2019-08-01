@@ -9,7 +9,7 @@
 import UIKit
 
 protocol ItemCellViewControllerDelegate: class {
-  func cellHeightRequiresRefresh()
+  func cellHeightRequiresRefresh(animated: Bool)
 }
 
 class ItemCellViewController: UIViewController {
@@ -49,10 +49,6 @@ class ItemCellViewController: UIViewController {
     super.viewDidLoad()
     itemContentView.item = item
     setExpandedState()
-    // Need to do the below to force it to get the initial layout done. Otherwise,
-    // cell gets stretched with more height, and stretches one or other components with it.
-    itemContentView.setNeedsLayout()
-    itemContentView.layoutIfNeeded()
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -68,7 +64,7 @@ class ItemCellViewController: UIViewController {
 extension ItemCellViewController: ItemContentViewDelegate {
   func itemContentViewDidFinishEditing(_ itemContentView: ItemContentView) {
     setExpandedState()
-    delegate?.cellHeightRequiresRefresh()
+    delegate?.cellHeightRequiresRefresh(animated: true)
   }
 
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView) {
@@ -80,11 +76,11 @@ extension ItemCellViewController: ItemContentViewDelegate {
 
   func itemContentViewNameFieldDidBeginEditing(_ itemContentView: ItemContentView) {
     setExpandedState(isExpandedOverride: true)
-    delegate?.cellHeightRequiresRefresh()
+    delegate?.cellHeightRequiresRefresh(animated: true)
   }
 
   func itemContentViewHeightUpdated(_ itemContentView: ItemContentView) {
-    delegate?.cellHeightRequiresRefresh()
+    delegate?.cellHeightRequiresRefresh(animated: false)
   }
 
   func itemContentView(_ itemContentView: ItemContentView, nameFieldUpdatedWith name: String) {

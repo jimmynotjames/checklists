@@ -165,9 +165,15 @@ class ChecklistViewController: UITableViewController {
 }
 
 extension ChecklistViewController: ItemCellViewControllerDelegate {
-  func cellHeightRequiresRefresh() {
+  func cellHeightRequiresRefresh(animated: Bool) {
+    if !animated {
+      UIView.setAnimationsEnabled(false) // When table view is scrolled up a bit and user types in text view, jitters without this.
+    }
     tableView.beginUpdates()
     tableView.endUpdates()
+    if !animated {
+      UIView.setAnimationsEnabled(true)
+    }
   }
 }
 

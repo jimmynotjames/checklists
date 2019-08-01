@@ -18,6 +18,7 @@
 		323ADC7A22828C0C00644931 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 323ADC7822828C0C00644931 /* LaunchScreen.storyboard */; };
 		323ADC8522828C0C00644931 /* checklistsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323ADC8422828C0C00644931 /* checklistsTests.swift */; };
 		323ADC9022828C0C00644931 /* checklistsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323ADC8F22828C0C00644931 /* checklistsUITests.swift */; };
+		323FCF2922F2A33E00F761BB /* CLTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FCF2822F2A33E00F761BB /* CLTextView.swift */; };
 		324E167022B9F4B100DC4882 /* ItemCellViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324E166F22B9F4B100DC4882 /* ItemCellViewController.swift */; };
 		32A964712291E14F00CAB7C0 /* ItemContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A964702291E14F00CAB7C0 /* ItemContentView.swift */; };
 		32A964782297A0A300CAB7C0 /* RealmSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A964772297A0A300CAB7C0 /* RealmSchema.swift */; };
@@ -68,6 +69,7 @@
 		323ADC9122828C0C00644931 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		323ADC9D2282929A00644931 /* checklists.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = checklists.entitlements; sourceTree = "<group>"; };
 		323ADC9F228292A400644931 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		323FCF2822F2A33E00F761BB /* CLTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLTextView.swift; sourceTree = "<group>"; };
 		324E166F22B9F4B100DC4882 /* ItemCellViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCellViewController.swift; sourceTree = "<group>"; };
 		32A964702291E14F00CAB7C0 /* ItemContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemContentView.swift; sourceTree = "<group>"; };
 		32A964722291ECA300CAB7C0 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
@@ -196,9 +198,10 @@
 				32E767DB22EA4639003C8634 /* AddItemButtonTableFooterView.swift */,
 				3233C793228BAD3C002BF01D /* CheckboxButton.swift */,
 				32E767DF22EA6476003C8634 /* CLButton.swift */,
+				323FCF2822F2A33E00F761BB /* CLTextView.swift */,
+				32AECAEA22ED118100747080 /* Colors.swift */,
 				32A964702291E14F00CAB7C0 /* ItemContentView.swift */,
 				32F4C84322875308000D63CF /* ItemTableViewCell.swift */,
-				32AECAEA22ED118100747080 /* Colors.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -384,6 +387,7 @@
 				32E767E022EA6476003C8634 /* CLButton.swift in Sources */,
 				32A9647A2297AE6700CAB7C0 /* TestData.swift in Sources */,
 				32D721F222AC56FB00794F6D /* ChecklistViewController.swift in Sources */,
+				323FCF2922F2A33E00F761BB /* CLTextView.swift in Sources */,
 				32A964782297A0A300CAB7C0 /* RealmSchema.swift in Sources */,
 				32E767DC22EA4639003C8634 /* AddItemButtonTableFooterView.swift in Sources */,
 				324E167022B9F4B100DC4882 /* ItemCellViewController.swift in Sources */,
@@ -500,7 +504,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -555,7 +559,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
