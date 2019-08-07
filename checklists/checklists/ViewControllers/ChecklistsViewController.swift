@@ -32,7 +32,7 @@ class ChecklistsViewController: UITableViewController {
     let menuButton = UIBarButtonItem(image: UIImage(named: "MenuIcon25x25"), style: .plain, target: self, action: #selector(menuButtonTapped))
     navigationItem.setLeftBarButton(menuButton, animated: false)
 
-    let addChecklistButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addChecklistButtonTapped))
+    let addChecklistButton = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(addChecklistButtonTapped))
     navigationItem.setRightBarButton(addChecklistButton, animated: false)
   }
 
