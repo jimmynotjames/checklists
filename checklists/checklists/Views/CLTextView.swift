@@ -6,6 +6,14 @@
 //  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
+/*
+ Two major features here:
+ - Adjusted UITextView so that it grows/shrinks height as user is typing.
+ - Added placeholder text.
+
+ To use, set a >= minimum height constraint and it will show with a minimum height and grow as it expands beyond that.
+ */
+
 import UIKit
 
 protocol CLTextViewDelegate: UITextViewDelegate {
@@ -14,7 +22,7 @@ protocol CLTextViewDelegate: UITextViewDelegate {
 
 class CLTextView: UITextView {
 
-  var placeholderText: String? {
+  @objc var placeholderText: String? { // @objc to allow setting in InterfaceBuilder
     didSet {
       placeholderLabel.text = placeholderText
       updatePlaceholderLabel()
