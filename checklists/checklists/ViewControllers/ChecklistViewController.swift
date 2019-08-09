@@ -35,6 +35,7 @@ class ChecklistViewController: UITableViewController {
   var itemViewControllersDict: [ String: ItemCellViewController ] = [:] // String = Item.id (i.e. the UUID)
 
   var isNewChecklist: Bool = false
+  var isJumpingToFirstItem: Bool = false
 
   // For drag/reorder of cells.
   private var snapshotView: UIView = UIView()
@@ -77,12 +78,19 @@ class ChecklistViewController: UITableViewController {
     } else {
       navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetButtonTapped))
     }
+    if checklist.items.count == 0 {
+      let item = Item(name: "", notes: nil)
+      DBManager.write {
+        checklist.items.append(item)
+      }
+    }
   }
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     if isNewChecklist {
-      isNewChecklist = false // safeguard against future times viewDidAppear might get called.
+      isNewChecklist = false // safeguard against future times viewWillAppear/viewDidAppear might get called.
+      isJumpingToFirstItem = true
       checklistNameTextField.becomeFirstResponder()
     }
   }
@@ -98,6 +106,20 @@ class ChecklistViewController: UITableViewController {
       }
     }
     tableView.reloadData()
+  }
+
+  private func insertNewItem(becomeFirstResponder: Bool) {
+    let item = Item(name: "", notes: nil)
+    DBManager.write {
+      checklist.items.append(item)
+    }
+    tableView.performBatchUpdates({
+      tableView.insertRows(at: [IndexPath(row: checklist.items.count - 1, section: itemsSection)], with: .top)
+    }, completion: { success in
+      if success && becomeFirstResponder {
+        self.itemViewControllersDict[item.id]?.startEditing()
+      }
+    })
   }
 
   // MARK: - Table view data source
@@ -182,7 +204,13 @@ extension ChecklistViewController: ItemCellViewControllerDelegate {
   }
 }
 
+// For the Checklist Name field.
 extension ChecklistViewController: UITextFieldDelegate {
+  func textFieldDidBeginEditing(_ textField: UITextField) {
+    if textField.hasText {
+      isJumpingToFirstItem = false // Handling odd use case.
+    }
+  }
   func textFieldDidEndEditing(_ textField: UITextField) {
     DBManager.write {
       checklist.name = checklistNameTextField.hasText ? checklistNameTextField.text ?? defaultChecklistName : defaultChecklistName // Accounts for both nil and empty string.
@@ -190,10 +218,17 @@ extension ChecklistViewController: UITextFieldDelegate {
   }
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
     textField.resignFirstResponder()
+    if isJumpingToFirstItem {
+      isJumpingToFirstItem = false
+      if let itemId = checklist.items.first?.id, let viewController = itemViewControllersDict[itemId] {
+        viewController.startEditing()
+      }
+    }
     return false
   }
 }
 
+// For the Checklist Notes field.
 extension ChecklistViewController: UITextViewDelegate {
   func textViewDidEndEditing(_ textView: UITextView) {
     DBManager.write {
@@ -210,17 +245,7 @@ extension ChecklistViewController: UITextViewDelegate {
 
 extension ChecklistViewController: AddItemButtonTableFooterViewDelegate {
   func addItemTableViewCellTapped() {
-    let item = Item(name: "", notes: nil)
-    DBManager.write {
-      checklist.items.append(item)
-    }
-    tableView.performBatchUpdates({
-      tableView.insertRows(at: [IndexPath(row: checklist.items.count - 1, section: itemsSection)], with: .top)
-    }, completion: { success in
-      if success {
-        self.itemViewControllersDict[item.id]?.startEditing()
-      }
-    })
+    insertNewItem(becomeFirstResponder: true)
   }
 }
 
