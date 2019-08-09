@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3216689322E947C00017C126 /* GrowingTextView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3220B11A22E93C6A003180B9 /* GrowingTextView.framework */; };
 		3220B11822E93C6A003180B9 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964732291ECA300CAB7C0 /* Realm.framework */; };
 		3220B11922E93C6A003180B9 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964722291ECA300CAB7C0 /* RealmSwift.framework */; };
 		322CA9FB22EEA6A2009ACC4D /* MainMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322CA9FA22EEA6A2009ACC4D /* MainMenuTableViewController.swift */; };
@@ -94,7 +93,6 @@
 				32D721EA22AB486E00794F6D /* StoreKit.framework in Frameworks */,
 				3220B11822E93C6A003180B9 /* Realm.framework in Frameworks */,
 				3220B11922E93C6A003180B9 /* RealmSwift.framework in Frameworks */,
-				3216689322E947C00017C126 /* GrowingTextView.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,7 +365,6 @@
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/GrowingTextView.framework",
 			);
 			outputFileListPaths = (
 			);

@@ -56,7 +56,15 @@ class CLTextView: UITextView {
 
   init() {
     super.init(frame: .zero, textContainer: nil)
+    commonInit()
+  }
 
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    commonInit()
+  }
+
+  private func commonInit() {
     isScrollEnabled = false
     textContainer.heightTracksTextView = true
 
@@ -82,10 +90,6 @@ class CLTextView: UITextView {
       [NSLayoutConstraint.constraints(withVisualFormat: "H:|[placeholderLabel]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[placeholderLabel]|", options: [], metrics: nil, views: views),
         ].flatMap({ $0 }))
-  }
-
-  required init?(coder aDecoder: NSCoder) {
-    fatalError()
   }
 
   deinit {

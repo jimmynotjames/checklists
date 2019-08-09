@@ -7,18 +7,17 @@
 //
 
 import UIKit
-import GrowingTextView
 
 private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
-private let defaultChecklistName = "No Name"
+private let defaultChecklistName = "Checklist"
 
 class ChecklistViewController: UITableViewController {
   var checklist: Checklist! // Expected to be set on seque or right after init(). Behavior undefined if this is set/reset after viewDidLoad().
 
   @IBOutlet weak var checklistInfoHeaderView: UIView!
   @IBOutlet weak var checklistNameTextField: UITextField!
-  @IBOutlet weak var checklistNotesTextView: GrowingTextView!
+  @IBOutlet weak var checklistNotesTextView: CLTextView!
 
   /*
    Architectural Discussion:
@@ -50,8 +49,11 @@ class ChecklistViewController: UITableViewController {
 
     tableView.register(ItemTableViewCell.self, forCellReuseIdentifier: itemCellReuseIdentifier)
 
-    // Admittedly a bit hacky, as this is already in the view hierarchy in IB, but want to properly set it while not creating a separate xib file and custom UIView.
-    tableView.tableHeaderView = checklistInfoHeaderView
+    checklistNameTextField.delegate = self
+    checklistNotesTextView.delegate = self
+
+    checklistNameTextField.text = checklist.name
+    checklistNotesTextView.text = checklist.notes
 
     let tableFooterView = AddItemButtonTableFooterView(frame: .zero)
     tableFooterView.delegate = self
@@ -61,11 +63,14 @@ class ChecklistViewController: UITableViewController {
     checklistInfoHeaderView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
     tableFooterView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
 
-    checklistNameTextField.delegate = self
-    checklistNotesTextView.delegate = self
-
-    checklistNameTextField.text = checklist.name
-    checklistNotesTextView.text = checklist.notes
+    // If I don't call this, the header view's frame's height isn't set and an extensive Notes section will overlap the top of the cells.
+    checklistInfoHeaderView.setNeedsLayout()
+    checklistInfoHeaderView.layoutIfNeeded()
+    /*
+     Admittedly a bit hacky, as this is already in the view hierarchy in IB, but want to properly set it while
+     not creating a separate xib file and custom UIView. This also adjusts the tableView for the newly calculated frame height.
+     */
+    tableView.tableHeaderView = checklistInfoHeaderView
 
     if isNewChecklist {
       navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
@@ -195,15 +200,11 @@ extension ChecklistViewController: UITextViewDelegate {
       checklist.notes = checklistNotesTextView.text
     }
   }
-}
-
-extension ChecklistViewController: GrowingTextViewDelegate {
-  func textViewDidChangeHeight(_ textView: GrowingTextView, height: CGFloat) {
-    UIView.animate(withDuration: 0.2) {
-      self.tableView.setNeedsLayout()
-      self.tableView.layoutIfNeeded()
-      self.tableView.tableHeaderView = self.checklistInfoHeaderView // According to StackOverflow, this seems to be the accepted-yet-janky way of pushing the cells down as the header expands.
-    }
+  func textViewDidChange(_ textView: UITextView) {
+    // According to StackOverflow, this seems to be the accepted-yet-janky way of pushing the cells down as the header expands.
+    tableView.setNeedsLayout()
+    tableView.layoutIfNeeded()
+    tableView.tableHeaderView = self.checklistInfoHeaderView
   }
 }
 

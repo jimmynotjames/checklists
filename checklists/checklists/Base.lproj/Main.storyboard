@@ -71,8 +71,8 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" name="defaultBackground"/>
                         <view key="tableHeaderView" contentMode="scaleToFill" id="7Eq-WV-FuG">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="104"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="112"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <textField opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Name" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="YSw-DD-TTd">
                                     <rect key="frame" x="16" y="24" width="382" height="32"/>
@@ -83,20 +83,16 @@
                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                 </textField>
-                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="qFy-KA-xUU" customClass="GrowingTextView" customModule="GrowingTextView">
-                                    <rect key="frame" x="12" y="60" width="390" height="32"/>
+                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="qFy-KA-xUU" customClass="CLTextView" customModule="checklists" customModuleProvider="target">
+                                    <rect key="frame" x="16" y="60" width="382" height="36"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="32" id="drI-X8-ia5"/>
+                                    </constraints>
                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="placeholder" value="Notes"/>
-                                        <userDefinedRuntimeAttribute type="color" keyPath="placeholderColor">
-                                            <color key="value" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </userDefinedRuntimeAttribute>
-                                        <userDefinedRuntimeAttribute type="number" keyPath="minHeight">
-                                            <integer key="value" value="18"/>
-                                        </userDefinedRuntimeAttribute>
-                                        <userDefinedRuntimeAttribute type="boolean" keyPath="trimWhiteSpaceWhenEndEditing" value="NO"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="placeholderText" value="Notes"/>
                                     </userDefinedRuntimeAttributes>
                                 </textView>
                             </subviews>
@@ -104,11 +100,11 @@
                             <constraints>
                                 <constraint firstItem="YSw-DD-TTd" firstAttribute="top" secondItem="7Eq-WV-FuG" secondAttribute="top" constant="24" id="4W6-AH-dDm"/>
                                 <constraint firstItem="qFy-KA-xUU" firstAttribute="top" secondItem="YSw-DD-TTd" secondAttribute="bottom" constant="4" id="FRt-Ep-5hS"/>
-                                <constraint firstAttribute="trailing" secondItem="qFy-KA-xUU" secondAttribute="trailing" constant="12" id="MyU-me-mEU"/>
-                                <constraint firstAttribute="bottom" secondItem="qFy-KA-xUU" secondAttribute="bottom" constant="12" id="VwZ-uK-0ih"/>
+                                <constraint firstAttribute="trailing" secondItem="qFy-KA-xUU" secondAttribute="trailing" constant="16" id="MyU-me-mEU"/>
+                                <constraint firstAttribute="bottom" secondItem="qFy-KA-xUU" secondAttribute="bottom" constant="16" id="VwZ-uK-0ih"/>
                                 <constraint firstAttribute="trailing" secondItem="YSw-DD-TTd" secondAttribute="trailing" constant="16" id="cH9-ZK-EC3"/>
                                 <constraint firstItem="YSw-DD-TTd" firstAttribute="leading" secondItem="7Eq-WV-FuG" secondAttribute="leading" constant="16" id="joG-7M-2un"/>
-                                <constraint firstItem="qFy-KA-xUU" firstAttribute="leading" secondItem="7Eq-WV-FuG" secondAttribute="leading" constant="12" id="orS-2a-vKK"/>
+                                <constraint firstItem="qFy-KA-xUU" firstAttribute="leading" secondItem="7Eq-WV-FuG" secondAttribute="leading" constant="16" id="orS-2a-vKK"/>
                             </constraints>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="boolean" keyPath="translatesAutoresizingMaskIntoConstraints" value="NO"/>
@@ -116,7 +112,7 @@
                         </view>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="notInUse" id="P2f-C5-jUC">
-                                <rect key="frame" x="0.0" y="132" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="140" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="P2f-C5-jUC" id="DL3-cc-aF2">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import GrowingTextView
 
 private var minNameFieldHeight: CGFloat = 24.0
 private var minNotesTextViewHeight: CGFloat = 32.0
