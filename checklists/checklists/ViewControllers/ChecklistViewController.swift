@@ -105,7 +105,17 @@ class ChecklistViewController: UITableViewController {
         item.status = .unchecked
       }
     }
-    tableView.reloadData()
+
+    UIView.animate(withDuration: 0.0, animations: {
+      self.tableView.reloadData()
+    }, completion: { success in
+      self.scrollToTop()
+    })
+  }
+
+  private func scrollToTop() {
+    let yOffset = -(self.navigationController?.navigationBar.frame.size.height ?? 0.0) - 20.0 // The -20.0 is from trial and error.
+    self.tableView.setContentOffset(CGPoint(x: 0.0, y: yOffset), animated: true)
   }
 
   private func insertNewItem(becomeFirstResponder: Bool) {
