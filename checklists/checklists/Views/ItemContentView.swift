@@ -70,10 +70,6 @@ class ItemContentView: UIView {
   }()
   private let containerView = UIView()
 
-  private lazy var nameTextViewHeightConstraint: NSLayoutConstraint = {
-    return nameTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: minNameFieldHeight)
-  }()
-
   private lazy var notesTextViewHeightConstraint: NSLayoutConstraint = {
     return notesTextView.heightAnchor.constraint(equalToConstant: 0.0)
   }()
@@ -146,7 +142,7 @@ class ItemContentView: UIView {
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameTextView]-(4)-[notesTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[nameTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[notesTextView]|", options: [], metrics: nil, views: views),
-       [nameTextViewHeightConstraint, notesTextViewHeightConstraint]
+       [nameTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: minNameFieldHeight), notesTextViewHeightConstraint]
         ].flatMap({ $0 }))
   }
 
