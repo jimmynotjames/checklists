@@ -57,14 +57,14 @@ class ItemContentView: UIView {
   private lazy var nameTextView: CLTextView = {
     let textView = CLTextView()
     textView.delegate = self
-    textView.font = UIFont.systemFont(ofSize: 20.0, weight: .regular)
+    textView.font = UIFont.systemFont(ofSize: 22.0, weight: .regular)
     textView.returnKeyType = .done
     return textView
   }()
   private lazy var notesTextView: CLTextView = {
     let textView = CLTextView()
     textView.placeholderText = "Notes"
-    textView.font = UIFont.systemFont(ofSize: 14.0)
+    textView.font = UIFont.systemFont(ofSize: 15.0)
     textView.delegate = self
     return textView
   }()
@@ -138,7 +138,7 @@ class ItemContentView: UIView {
       [NSLayoutConstraint.constraints(withVisualFormat: "H:|-4-[checkboxButton]-(-4)-[containerView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[checkboxButton]", options: [], metrics: nil, views: views),
 
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|-8-[containerView]-8-|", options: [], metrics: nil, views: views),
+       NSLayoutConstraint.constraints(withVisualFormat: "V:|-7-[containerView]-8-|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameTextView]-(4)-[notesTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[nameTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[notesTextView]|", options: [], metrics: nil, views: views),
