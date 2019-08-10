@@ -12,6 +12,7 @@ class ItemTableViewCell: UITableViewCell {
   var itemCellViewController: ItemCellViewController?
   var itemContentView: ItemContentView?
 
+  // https://williamboles.me/hosting-viewcontrollers-in-cells/
   override func prepareForReuse() {
     if let itemContentView = itemContentView, itemContentView.superview == contentView {
       itemContentView.removeFromSuperview()
