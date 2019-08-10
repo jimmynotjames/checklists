@@ -147,6 +147,7 @@ class ChecklistViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    print(indexPath)
     if indexPath.section == itemsSection {
       if indexPath.row >= 0 && indexPath.row < checklist.items.count {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: itemCellReuseIdentifier, for: indexPath) as? ItemTableViewCell else { assertionFailure(); return UITableViewCell() }
@@ -154,6 +155,7 @@ class ChecklistViewController: UITableViewController {
         let item = checklist.items[indexPath.row]
         let itemCellViewController = itemViewControllersDict[item.id] ?? ItemCellViewController(item: item, delegate: self)
         itemViewControllersDict[item.id] = itemCellViewController
+        addChild(itemCellViewController)
         cell.setViewController(with: itemCellViewController)
         return cell
       }
@@ -168,7 +170,6 @@ class ChecklistViewController: UITableViewController {
 
   override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
     if let childViewController = (cell as? ItemTableViewCell)?.itemCellViewController {
-      addChild(childViewController)
       childViewController.didMove(toParent: self)
     }
   }

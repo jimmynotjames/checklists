@@ -12,15 +12,20 @@ class ItemTableViewCell: UITableViewCell {
   var itemCellViewController: ItemCellViewController?
   var itemContentView: ItemContentView?
 
+  override func prepareForReuse() {
+    if let itemContentView = itemContentView, itemContentView.superview == contentView {
+      itemContentView.removeFromSuperview()
+    }
+    itemContentView = nil
+  }
+
   func setViewController(with itemCellViewController: ItemCellViewController) {
     self.itemCellViewController = itemCellViewController
     resetView(with: itemCellViewController.view as! ItemContentView)
   }
 
   private func resetView(with newItemContentView: ItemContentView) {
-    if let itemContentView = itemContentView {
-      itemContentView.removeFromSuperview()
-    }
+    assert(itemContentView == nil)
     newItemContentView.translatesAutoresizingMaskIntoConstraints = false
     contentView.addSubview(newItemContentView)
 
