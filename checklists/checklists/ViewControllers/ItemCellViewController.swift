@@ -10,6 +10,7 @@ import UIKit
 
 protocol ItemCellViewControllerDelegate: class {
   func cellHeightRequiresRefresh(animated: Bool)
+  func insertNewItemAfter(itemId: String)
 }
 
 class ItemCellViewController: UIViewController {
@@ -48,6 +49,10 @@ class ItemCellViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     itemContentView.item = item
+    itemContentView.addAnotherButtonTappedAction = { [weak self] in
+      guard let `self` = self else { assertionFailure(); return }
+      self.delegate?.insertNewItemAfter(itemId: self.item.id)
+    }
     setExpandedState()
   }
 

@@ -42,6 +42,13 @@ class ItemContentView: UIView {
 
   weak var delegate: ItemContentViewDelegate?
 
+  var addAnotherButtonTappedAction: (() -> Void)? {
+    didSet {
+      nameTextView.addAnotherButtonTappedAction = addAnotherButtonTappedAction
+      notesTextView.addAnotherButtonTappedAction = addAnotherButtonTappedAction
+    }
+  }
+
   private lazy var checkboxButton: CheckboxButton = {
     let button = CheckboxButton()
     button.addTarget(self, action: #selector(checkboxButtonTapped(sender:)), for: .touchUpInside)

@@ -22,6 +22,19 @@ protocol CLTextViewDelegate: UITextViewDelegate {
 
 class CLTextView: UITextView {
 
+  var addAnotherButtonTappedAction: (() -> Void)? {
+    didSet {
+      if addAnotherButtonTappedAction != nil {
+       inputAccessoryView = inputAccessoryToolbar
+      } else {
+        inputAccessoryView = nil
+      }
+    }
+  }
+  @objc func addAnotherTapped() {
+    addAnotherButtonTappedAction?()
+  }
+
   @objc var placeholderText: String? { // @objc to allow setting in InterfaceBuilder
     didSet {
       placeholderLabel.text = placeholderText
@@ -53,6 +66,20 @@ class CLTextView: UITextView {
       placeholderLabel.font = font ?? UIFont.systemFont(ofSize: 8.0)
     }
   }
+
+  private lazy var inputAccessoryToolbar: UIToolbar = {
+    let toolbar = UIToolbar()
+    let addButton = UIBarButtonItem(title: "Add Another", style: .plain, target: self, action: #selector(addAnotherTapped))
+    addButton.tintColor = Colors.teal
+    let buttons = [
+      UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+      addButton,
+      UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+    ]
+    toolbar.setItems(buttons, animated: false)
+    toolbar.sizeToFit()
+    return toolbar
+  }()
 
   private lazy var placeholderLabel: UILabel = {
     let label = UILabel()

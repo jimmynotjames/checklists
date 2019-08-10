@@ -109,12 +109,16 @@ class ChecklistViewController: UITableViewController {
   }
 
   private func insertNewItem(becomeFirstResponder: Bool) {
+    insertNewItem(at: checklist.items.count, becomeFirstResponder: becomeFirstResponder)
+  }
+
+  private func insertNewItem(at index: Int, becomeFirstResponder: Bool) {
     let item = Item(name: "", notes: nil)
     DBManager.write {
-      checklist.items.append(item)
+      checklist.items.insert(item, at: index)
     }
     tableView.performBatchUpdates({
-      tableView.insertRows(at: [IndexPath(row: checklist.items.count - 1, section: itemsSection)], with: .top)
+      tableView.insertRows(at: [IndexPath(row: index, section: itemsSection)], with: .top)
     }, completion: { success in
       if success && becomeFirstResponder {
         self.itemViewControllersDict[item.id]?.startEditing()
@@ -201,6 +205,10 @@ extension ChecklistViewController: ItemCellViewControllerDelegate {
     if !animated {
       UIView.setAnimationsEnabled(true)
     }
+  }
+  func insertNewItemAfter(itemId: String) {
+    guard let index = checklist.items.index(matching: "id == '\(itemId)'") else { assertionFailure(); return }
+    insertNewItem(at: index+1, becomeFirstResponder: true)
   }
 }
 
