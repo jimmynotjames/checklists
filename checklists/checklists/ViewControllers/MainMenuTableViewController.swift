@@ -86,8 +86,7 @@ class MainMenuTableViewController: UITableViewController {
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     switch indexPath.row {
     case 0:
-      // TODO: Update email to correct email and subject line to reflect app name.
-      guard let url = URL(string: "mailto:foobar@gmail.com?subject=Feedback%20for%20Checklists%20App") else { assertionFailure(); return }
+      guard let url = URL(string: "mailto:jimmyho.appfeedback@gmail.com?subject=Feedback%20for%20Checklists%20App") else { assertionFailure(); return }
       UIApplication.shared.open(url, options: [:], completionHandler: nil)
     case 1:
       // TODO: Update ID here to represent uplaoded app.
