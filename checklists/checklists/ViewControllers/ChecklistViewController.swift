@@ -23,8 +23,6 @@ class ChecklistViewController: UITableViewController {
   var isJumpingToFirstItem: Bool = false
   var isResetting: Bool = false
 
-  var expandedItemIndexPath: IndexPath? // If user is editing this is always expanded.
-
   // For drag/reorder of cells.
   private var snapshotView: UIView = UIView()
   private var sourceIndexPath: IndexPath = IndexPath(row: 0, section: 0)
@@ -93,8 +91,12 @@ class ChecklistViewController: UITableViewController {
         item.status = .unchecked
       }
     }
-    isResetting = true
-    self.scrollToTop()
+    if tableView.contentOffset.y == topYOffset() {
+      self.tableView.reloadData()
+    } else {
+      isResetting = true
+      self.scrollToTop()
+    }
   }
 
   override func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -105,7 +107,7 @@ class ChecklistViewController: UITableViewController {
   }
 
   private func scrollToTop() {
-    self.tableView.setContentOffset(CGPoint(x: 0.0, y: topYOffset()), animated: true)
+    tableView.setContentOffset(CGPoint(x: 0.0, y: topYOffset()), animated: true)
   }
 
   private func topYOffset() -> CGFloat {
@@ -156,9 +158,6 @@ class ChecklistViewController: UITableViewController {
     assert(indexPath.row >= 0 && indexPath.row < checklist.items.count && indexPath.section == itemsSection)
     guard let cell = tableView.dequeueReusableCell(withIdentifier: itemCellReuseIdentifier, for: indexPath) as? ItemTableViewCell else { assertionFailure(); return UITableViewCell() }
     cell.itemContentView.item = checklist.items[indexPath.row]
-    if let expandedItemIndexPath = expandedItemIndexPath, indexPath == expandedItemIndexPath {
-      cell.itemContentView.updateTextViewHeight(isExpanded: true)
-    }
     cell.itemContentView.addAnotherButtonTappedAction = { [weak self] in
       guard let `self` = self else { assertionFailure(); return }
       self.insertNewItem(at: indexPath.row + 1, becomeFirstResponder: true)
