@@ -89,8 +89,7 @@ class MainMenuTableViewController: UITableViewController {
       guard let url = URL(string: "mailto:jimmyho.appfeedback@gmail.com?subject=Feedback%20for%20Checklists%20App") else { assertionFailure(); return }
       UIApplication.shared.open(url, options: [:], completionHandler: nil)
     case 1:
-      // TODO: Update ID here to represent uplaoded app.
-      guard let url = URL(string: "https://itunes.apple.com/app/id583674365?action=write-review") else { assertionFailure(); return }
+      guard let url = URL(string: "https://itunes.apple.com/app/id1475724536?action=write-review") else { assertionFailure(); return }
       UIApplication.shared.open(url, options: [:], completionHandler: nil)
     case 2:
       // TODO Segue to donation page.
