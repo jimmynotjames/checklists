@@ -53,10 +53,10 @@ class SettingsViewController: UITableViewController {
       roundCheckboxButton.isUserInteractionEnabled = false // use the cell selection mechanism.
       switch indexPath.row {
       case AppTheme.defaultBougie.rawValue:
-        themeNameLabel.text = "Bougie"
+        themeNameLabel.text = "Bougie (Default)"
         roundCheckboxButton.isSelected = (AppTheme.defaultBougie == SettingsManager.currentAppTheme)
       case AppTheme.extraBougie.rawValue:
-        themeNameLabel.text = "Cuter Bougie"
+        themeNameLabel.text = "Even Cuter Bougie"
         roundCheckboxButton.isSelected = (AppTheme.extraBougie == SettingsManager.currentAppTheme)
       case AppTheme.unicorns.rawValue:
         themeNameLabel.text = "UNICORNS!!!"
