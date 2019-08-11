@@ -110,7 +110,7 @@ class SettingsViewController: UITableViewController {
       let textLabel = view.textLabel
       else { assertionFailure(); return }
     view.backgroundColor = .clear
-    view.tintColor = .clear
+    view.tintColor = Colors.defaultBackground // Not clear so if header sticks to top, things don't overlap while scroling up.
     textLabel.font = .systemFont(ofSize: 14.0)
     textLabel.textColor = Colors.inactiveText
   }
