@@ -47,7 +47,7 @@ class ChecklistsViewController: UITableViewController {
 
   @objc func addChecklistButtonTapped() {
     guard let checklistViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Checklist") as? ChecklistViewController else { assertionFailure(); return }
-    let sortNumber = checklists.isEmpty ? Checklist.startingSortNumber() : Checklist.calculateSortNumber(after: checklists.last!)
+    let sortNumber = checklists.isEmpty ? Checklist.startingSortNumber() : Checklist.calculateSortNumber(before: checklists.first!)
     let checklist = Checklist(name: "", notes: nil, sortNumber: sortNumber, items: [])
     DBManager.write {
       DBManager.realm.add(checklist)
