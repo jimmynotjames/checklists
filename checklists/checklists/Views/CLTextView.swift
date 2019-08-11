@@ -112,6 +112,8 @@ class CLTextView: UITextView {
 
     updatePlaceholderLabel()
 
+    textDropDelegate = self
+
     NotificationCenter.default.addObserver(self, selector: #selector(textDidChange), name: UITextView.textDidChangeNotification, object: self)
   }
 
@@ -143,5 +145,13 @@ class CLTextView: UITextView {
     } else {
       placeholderLabel.isHidden = true
     }
+  }
+}
+
+// Need this because the reordering of rows using Drag/Drop is causing it to accidentally drop into the textView instead of inserting in between rows.
+extension CLTextView: UITextDropDelegate {
+  // TODO: This may have long-term consequences in iPad and Mac App, if we move there. Maybe people will want to drop text in there??
+  func textDroppableView(_ textDroppableView: UIView & UITextDroppable, proposalForDrop drop: UITextDropRequest) -> UITextDropProposal {
+    return UITextDropProposal(operation: .cancel)
   }
 }
