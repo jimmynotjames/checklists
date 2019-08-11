@@ -28,7 +28,7 @@ extension MainMenuEnabledViewController where Self: UIViewController {
 
 class MainMenuTableViewController: UITableViewController {
 
-  static private let numberOfRows = 4
+  static private let numberOfRows = 5
 
   var preferredHeight: CGFloat = {
     return CGFloat(numberOfRows) * 44.0 + 18.0
@@ -66,6 +66,9 @@ class MainMenuTableViewController: UITableViewController {
       text = "Donate!"
       cell.imageView?.image = UIImage(named: "DonateIcon25x25")
     case 3:
+      text = "Settings"
+      cell.imageView?.image = UIImage(named: "SettingsIcon25x25")
+    case 4:
       text = "Privacy Policy"
       cell.imageView?.image = UIImage(named: "PrivacyPolicyIcon25x25")
     default:
@@ -90,6 +93,9 @@ class MainMenuTableViewController: UITableViewController {
       // TODO Segue to donation page.
       assertionFailure()
     case 3:
+      // TODO Segue to Settings page.
+      assertionFailure()
+    case 4:
       // TODO: Update with privacy policy link.
       guard let url = URL(string: "https://www.yahoo.com") else { assertionFailure(); return }
       UIApplication.shared.open(url, options: [:], completionHandler: nil)
