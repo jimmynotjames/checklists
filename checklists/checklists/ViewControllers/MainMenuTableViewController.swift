@@ -28,7 +28,7 @@ extension MainMenuEnabledViewController where Self: UIViewController {
 
 class MainMenuTableViewController: UITableViewController {
 
-  static private let numberOfRows = 5
+  static private let numberOfRows = 4
 
   var preferredHeight: CGFloat = {
     return CGFloat(numberOfRows) * 44.0 + 18.0
@@ -68,9 +68,6 @@ class MainMenuTableViewController: UITableViewController {
     case 3:
       text = "Settings"
       cell.imageView?.image = UIImage(named: "SettingsIcon25x25")
-    case 4:
-      text = "Privacy Policy"
-      cell.imageView?.image = UIImage(named: "PrivacyPolicyIcon25x25")
     default:
       assertionFailure()
       text = ""
@@ -95,10 +92,6 @@ class MainMenuTableViewController: UITableViewController {
     case 3:
       // TODO Segue to Settings page.
       assertionFailure()
-    case 4:
-      // TODO: Update with privacy policy link.
-      guard let url = URL(string: "https://www.yahoo.com") else { assertionFailure(); return }
-      UIApplication.shared.open(url, options: [:], completionHandler: nil)
     default:
       assertionFailure()
     }
