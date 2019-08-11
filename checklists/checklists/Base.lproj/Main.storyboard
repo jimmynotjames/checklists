@@ -15,7 +15,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="Checklists" id="IZ3-MB-JwW" customClass="ChecklistsViewController" customModule="checklists" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="yGV-T2-P72">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" name="defaultBackground"/>
                         <color key="sectionIndexBackgroundColor" name="defaultBackground"/>
@@ -54,6 +54,7 @@
                             <outlet property="delegate" destination="IZ3-MB-JwW" id="XWs-be-fff"/>
                         </connections>
                     </tableView>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" id="tQz-yY-Upv">
                         <barButtonItem key="backBarButtonItem" title=" " id="eWJ-sw-ZwS"/>
                     </navigationItem>
@@ -67,7 +68,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="Checklist" id="xTE-Wz-jT7" customClass="ChecklistViewController" customModule="checklists" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="JJz-SV-Ryp">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" name="defaultBackground"/>
                         <view key="tableHeaderView" contentMode="scaleToFill" id="7Eq-WV-FuG">
@@ -125,6 +126,7 @@
                             <outlet property="delegate" destination="xTE-Wz-jT7" id="iST-U9-1Ol"/>
                         </connections>
                     </tableView>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <connections>
                         <outlet property="checklistInfoHeaderView" destination="7Eq-WV-FuG" id="096-dL-yfj"/>
                         <outlet property="checklistNameTextField" destination="YSw-DD-TTd" id="AFN-uK-y4N"/>

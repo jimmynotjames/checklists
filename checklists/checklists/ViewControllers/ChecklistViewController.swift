@@ -91,7 +91,7 @@ class ChecklistViewController: UITableViewController {
         item.status = .unchecked
       }
     }
-    if tableView.contentOffset.y == topYOffset() {
+    if tableView.contentOffset.y == 0.0 {
       self.tableView.reloadData()
     } else {
       isResetting = true
@@ -100,18 +100,14 @@ class ChecklistViewController: UITableViewController {
   }
 
   override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    if isResetting == true && scrollView.contentOffset.y == topYOffset() {
+    if isResetting == true && scrollView.contentOffset.y == 0.0 {
       isResetting = false
       self.tableView.reloadData()
     }
   }
 
   private func scrollToTop() {
-    tableView.setContentOffset(CGPoint(x: 0.0, y: topYOffset()), animated: true)
-  }
-
-  private func topYOffset() -> CGFloat {
-    return -(self.navigationController?.navigationBar.frame.size.height ?? 0.0) - 20.0 // The -20.0 is from trial and error.
+    tableView.setContentOffset(CGPoint(x: 0.0, y: 0.0), animated: true)
   }
 
   private func insertNewItem(becomeFirstResponder: Bool) {
