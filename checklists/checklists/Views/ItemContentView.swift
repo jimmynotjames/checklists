@@ -28,10 +28,13 @@ class ItemContentView: UIView {
         nameTextView.text = item.name
         if let notes = item.notes {
           notesTextView.text = notes
+        } else {
+          notesTextView.text = ""
         }
         let textColor = item.status == .checked ? Colors.inactiveText : .black
         nameTextView.textColor = textColor
         notesTextView.textColor = textColor
+        refreshHeight()
       } else {
         checkboxButton.setCheckboxState(with: .unchecked)
         nameTextView.text = ""
@@ -99,6 +102,10 @@ class ItemContentView: UIView {
     self.delegate =  delegate
   }
 
+  func refreshHeight() {
+    updateTextViewHeight(isExpanded: item?.notes?.count ?? 0 > 0)
+  }
+
   func updateTextViewHeight(isExpanded: Bool) {
     notesTextViewHeightConstraint.isActive = false
     if isExpanded {
@@ -152,6 +159,7 @@ class ItemContentView: UIView {
 
   private func finishEditingViewIfNecessary() {
     if !wasInputFieldTapped {
+      refreshHeight()
       delegate?.itemContentViewDidFinishEditing(self)
     }
   }

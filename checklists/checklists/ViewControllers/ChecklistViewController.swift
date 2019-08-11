@@ -19,23 +19,11 @@ class ChecklistViewController: UITableViewController {
   @IBOutlet weak var checklistNameTextField: UITextField!
   @IBOutlet weak var checklistNotesTextView: CLTextView!
 
-  /*
-   Architectural Discussion:
-   One option was to have each Cell hold a view controller and reset each cell+VC on cell reuse.
-   Issue with that is preserving view state (such as expanded/collapsed, editing mode, etc.). If
-   user scrolls it off screen, I'd have to capture it somehow and no easy way without maintaining
-   an array.
-
-   Another option was to have an array view controllers. This is cleaner but since users can
-   arbitrarily reorder and remove Items, I would have to remember to update the VC array everytime
-   I update the Checklist.items. Not that hard, but still.
-
-   To account for above issues, easier to use a dictionary. This way, mapping will always sync up.
-   */
-  var itemViewControllersDict: [ String: ItemCellViewController ] = [:] // String = Item.id (i.e. the UUID)
-
   var isNewChecklist: Bool = false
   var isJumpingToFirstItem: Bool = false
+  var isResetting: Bool = false
+
+  var expandedItemIndexPath: IndexPath? // If user is editing this is always expanded.
 
   // For drag/reorder of cells.
   private var snapshotView: UIView = UIView()
@@ -106,11 +94,16 @@ class ChecklistViewController: UITableViewController {
       }
     }
 
-    UIView.animate(withDuration: 0.0, animations: {
+    isResetting = true
+    self.scrollToTop()
+  }
+
+  override func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
+    super.scrollViewDidScrollToTop(scrollView)
+    if isResetting {
+      isResetting = false
       self.tableView.reloadData()
-    }, completion: { success in
-      self.scrollToTop()
-    })
+    }
   }
 
   private func scrollToTop() {
@@ -131,9 +124,21 @@ class ChecklistViewController: UITableViewController {
       tableView.insertRows(at: [IndexPath(row: index, section: itemsSection)], with: .top)
     }, completion: { success in
       if success && becomeFirstResponder {
-        self.itemViewControllersDict[item.id]?.startEditing()
+        guard let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: itemsSection)) as? ItemTableViewCell else { assertionFailure(); return }
+        cell.itemContentView.startEditing()
       }
     })
+  }
+
+  func cellHeightRequiresRefresh(animated: Bool) {
+    if !animated {
+      UIView.setAnimationsEnabled(false) // When table view is scrolled up a bit and user types in text view, jitters without this.
+    }
+    tableView.beginUpdates()
+    tableView.endUpdates()
+    if !animated {
+      UIView.setAnimationsEnabled(true)
+    }
   }
 
   // MARK: - Table view data source
@@ -147,38 +152,22 @@ class ChecklistViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    print(indexPath)
-    if indexPath.section == itemsSection {
-      if indexPath.row >= 0 && indexPath.row < checklist.items.count {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: itemCellReuseIdentifier, for: indexPath) as? ItemTableViewCell else { assertionFailure(); return UITableViewCell() }
-        cell.backgroundColor = .clear
-        let item = checklist.items[indexPath.row]
-        let itemCellViewController = itemViewControllersDict[item.id] ?? ItemCellViewController(item: item, delegate: self)
-        itemViewControllersDict[item.id] = itemCellViewController
-        addChild(itemCellViewController)
-        cell.setViewController(with: itemCellViewController)
-        return cell
-      }
+    assert(indexPath.row >= 0 && indexPath.row < checklist.items.count && indexPath.section == itemsSection)
+    guard let cell = tableView.dequeueReusableCell(withIdentifier: itemCellReuseIdentifier, for: indexPath) as? ItemTableViewCell else { assertionFailure(); return UITableViewCell() }
+    cell.itemContentView.item = checklist.items[indexPath.row]
+    if let expandedItemIndexPath = expandedItemIndexPath, indexPath == expandedItemIndexPath {
+      cell.itemContentView.updateTextViewHeight(isExpanded: true)
     }
-    assertionFailure()
-    return UITableViewCell()
+    cell.itemContentView.addAnotherButtonTappedAction = { [weak self] in
+      guard let `self` = self else { assertionFailure(); return }
+      self.insertNewItem(at: indexPath.row + 1, becomeFirstResponder: true)
+    }
+    cell.itemContentView.delegate = self
+    return cell
   }
 
   override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
     return false
-  }
-
-  override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-    if let childViewController = (cell as? ItemTableViewCell)?.itemCellViewController {
-      childViewController.didMove(toParent: self)
-    }
-  }
-
-  override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-    if let childViewController = (cell as? ItemTableViewCell)?.itemCellViewController {
-      childViewController.willMove(toParent: nil)
-      childViewController.removeFromParent()
-    }
   }
 
   override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -206,23 +195,6 @@ class ChecklistViewController: UITableViewController {
   }
 }
 
-extension ChecklistViewController: ItemCellViewControllerDelegate {
-  func cellHeightRequiresRefresh(animated: Bool) {
-    if !animated {
-      UIView.setAnimationsEnabled(false) // When table view is scrolled up a bit and user types in text view, jitters without this.
-    }
-    tableView.beginUpdates()
-    tableView.endUpdates()
-    if !animated {
-      UIView.setAnimationsEnabled(true)
-    }
-  }
-  func insertNewItemAfter(itemId: String) {
-    guard let index = checklist.items.index(matching: "id == '\(itemId)'") else { assertionFailure(); return }
-    insertNewItem(at: index+1, becomeFirstResponder: true)
-  }
-}
-
 // For the Checklist Name field.
 extension ChecklistViewController: UITextFieldDelegate {
   func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -239,9 +211,12 @@ extension ChecklistViewController: UITextFieldDelegate {
     textField.resignFirstResponder()
     if isJumpingToFirstItem {
       isJumpingToFirstItem = false
-      if let itemId = checklist.items.first?.id, let viewController = itemViewControllersDict[itemId] {
-        viewController.startEditing()
-      }
+      guard
+        checklist.items.count == 1,
+        let cell = tableView.cellForRow(at: IndexPath(row: 0, section: itemsSection)) as? ItemTableViewCell
+        else { assertionFailure(); return false }
+
+      cell.itemContentView.startEditing()
     }
     return false
   }
@@ -308,6 +283,49 @@ extension ChecklistViewController: UITableViewDropDelegate {
           }
         }
       }
+    }
+  }
+}
+
+// MARK: - ItemContentViewDelegate - responding to cell events.
+
+/*
+ This is architecturally questionable, as I'm passing the Item back from the ItemContentView to update
+ the database as opposed to looking it up, but it's convenient right now. In a true MVVM
+ model this wouldn't be possible.
+ */
+extension ChecklistViewController: ItemContentViewDelegate {
+  func itemContentViewDidFinishEditing(_ itemContentView: ItemContentView) {
+    cellHeightRequiresRefresh(animated: true)
+  }
+
+  func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView) {
+    DBManager.write {
+      let item = itemContentView.item
+      item?.toggleStatus()
+      itemContentView.item = item // Re-render after toggle.
+    }
+  }
+
+  func itemContentViewNameFieldDidBeginEditing(_ itemContentView: ItemContentView) {
+    itemContentView.updateTextViewHeight(isExpanded: true)
+    cellHeightRequiresRefresh(animated: true)
+  }
+
+  func itemContentViewHeightUpdated(_ itemContentView: ItemContentView) {
+    // Don't animate, or stuff gets jittery when table view is scrolled up and user is typing in text view.
+    cellHeightRequiresRefresh(animated: false)
+  }
+
+  func itemContentView(_ itemContentView: ItemContentView, nameFieldUpdatedWith name: String) {
+    DBManager.write {
+      itemContentView.item?.name = name
+    }
+  }
+
+  func itemContentView(_ itemContentView: ItemContentView, notesFieldUpdatedWith notes: String) {
+    DBManager.write {
+      itemContentView.item?.notes = notes
     }
   }
 }
