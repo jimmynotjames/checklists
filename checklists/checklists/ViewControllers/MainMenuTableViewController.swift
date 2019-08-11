@@ -15,20 +15,27 @@ protocol MainMenuEnabledViewController: UIPopoverPresentationControllerDelegate 
   func presentPopoverMainMenu()
 }
 
-extension MainMenuEnabledViewController where Self: UIViewController {
+extension MainMenuEnabledViewController where Self: UIViewController, Self: MainMenuTableViewControllerDelegate {
   func presentPopoverMainMenu() {
     guard let mainMenuViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainMenu") as? MainMenuTableViewController else { assertionFailure(); return }
     mainMenuViewController.modalPresentationStyle = .popover
     mainMenuViewController.preferredContentSize = CGSize(width: baselineWidth * 0.58, height: mainMenuViewController.preferredHeight)
     mainMenuViewController.popoverPresentationController?.delegate = self
     mainMenuViewController.popoverPresentationController?.barButtonItem = popoverBarButtonItem
+    mainMenuViewController.delegate = self
     self.present(mainMenuViewController, animated: true, completion: nil)
   }
+}
+
+protocol MainMenuTableViewControllerDelegate: class {
+  func openSettingsPage()
 }
 
 class MainMenuTableViewController: UITableViewController {
 
   static private let numberOfRows = 4
+
+  weak var delegate: MainMenuTableViewControllerDelegate?
 
   var preferredHeight: CGFloat = {
     return CGFloat(numberOfRows) * 44.0 + 18.0
@@ -90,8 +97,9 @@ class MainMenuTableViewController: UITableViewController {
       // TODO Segue to donation page.
       assertionFailure()
     case 3:
-      // TODO Segue to Settings page.
-      assertionFailure()
+      dismiss(animated: true) {
+        self.delegate?.openSettingsPage()
+      }
     default:
       assertionFailure()
     }

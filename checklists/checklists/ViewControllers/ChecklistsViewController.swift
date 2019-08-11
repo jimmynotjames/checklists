@@ -27,7 +27,6 @@ class ChecklistsViewController: UITableViewController {
     tableView.dragInteractionEnabled = true
     tableView.dragDelegate = self
     tableView.dropDelegate = self
-    tableView.tableFooterView = tableFooterView(tableWidth: tableView.frame.size.width)
 
     let menuButton = UIBarButtonItem(image: UIImage(named: "MenuIcon25x25"), style: .plain, target: self, action: #selector(menuButtonTapped))
     navigationItem.setLeftBarButton(menuButton, animated: false)
@@ -60,17 +59,6 @@ class ChecklistsViewController: UITableViewController {
 
   @objc func menuButtonTapped() {
     presentPopoverMainMenu()
-  }
-
-  private func tableFooterView(tableWidth: CGFloat) -> UILabel {
-    let versionNumberString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? "0.0.0"
-    // Apple says that a tableFooterView is auto-sized to the proper height and width, but as of iOS 12, that doesn't seem to work.
-    let label = UILabel(frame: CGRect(x: 0.0, y: 0.0, width: tableWidth, height: 18.0))
-    label.font = label.font.withSize(14.0)
-    label.textColor = .lightGray
-    label.textAlignment = .center
-    label.text = "(Version \(versionNumberString))"
-    return label
   }
 
   // MARK: - Table view data source
@@ -208,7 +196,15 @@ extension ChecklistsViewController: UITableViewDropDelegate {
   }
 }
 
-extension ChecklistsViewController : MainMenuEnabledViewController {
+extension ChecklistsViewController: MainMenuTableViewControllerDelegate {
+  func openSettingsPage() {
+    let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+    let settingsViewController = storyBoard.instantiateViewController(withIdentifier: "Settings")
+    present(settingsViewController, animated: true)
+  }
+}
+
+extension ChecklistsViewController: MainMenuEnabledViewController {
   var baselineWidth: CGFloat { return view.frame.width }
   var popoverBarButtonItem: UIBarButtonItem { return navigationItem.leftBarButtonItem ?? UIBarButtonItem() }
 
