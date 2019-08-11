@@ -81,6 +81,11 @@ class ChecklistViewController: UITableViewController {
     }
   }
 
+  override func viewWillDisappear(_ animated: Bool) {
+    navigationController?.navigationBar.shadowImage = UIImage() // Architecturally not sustainable if we have more pages like this.
+    super.viewWillDisappear(animated)
+  }
+
   @objc func doneButtonTapped() {
     dismiss(animated: true, completion: nil)
   }
@@ -100,9 +105,24 @@ class ChecklistViewController: UITableViewController {
   }
 
   override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    if isResetting == true && scrollView.contentOffset.y == 0.0 {
+    let currentY: CGFloat = scrollView.contentOffset.y
+    let thresholdY: CGFloat = 52.0
+
+    if isResetting == true && currentY == 0.0 {
       isResetting = false
       self.tableView.reloadData()
+    }
+    if currentY <= thresholdY && navigationItem.title != nil {
+      UIView.animate(withDuration: 0.4, animations: {
+        self.navigationItem.title = nil
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+      })
+    }
+    if currentY > thresholdY && navigationItem.title == nil {
+        UIView.animate(withDuration: 0.4, animations: {
+          self.navigationItem.title = self.checklist.name
+          self.navigationController?.navigationBar.shadowImage = nil
+        })
     }
   }
 

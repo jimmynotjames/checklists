@@ -33,6 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     navigationBarAppearance.shadowImage = UIImage()
     navigationBarAppearance.isTranslucent = false
     navigationBarAppearance.barTintColor = Colors.defaultBackground
+    navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: Colors.teal]
   }
 
   func applicationWillResignActive(_ application: UIApplication) {
