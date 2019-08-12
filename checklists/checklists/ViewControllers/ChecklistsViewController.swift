@@ -202,6 +202,12 @@ extension ChecklistsViewController: MainMenuTableViewControllerDelegate {
     let settingsViewController = storyBoard.instantiateViewController(withIdentifier: "Settings")
     present(settingsViewController, animated: true)
   }
+
+  func openDonatePage() {
+    let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+    let settingsViewController = storyBoard.instantiateViewController(withIdentifier: "Donate")
+    present(settingsViewController, animated: true)
+  }
 }
 
 extension ChecklistsViewController: MainMenuEnabledViewController {

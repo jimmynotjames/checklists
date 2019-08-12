@@ -29,6 +29,7 @@ extension MainMenuEnabledViewController where Self: UIViewController, Self: Main
 
 protocol MainMenuTableViewControllerDelegate: class {
   func openSettingsPage()
+  func openDonatePage()
 }
 
 class MainMenuTableViewController: UITableViewController {
@@ -92,8 +93,9 @@ class MainMenuTableViewController: UITableViewController {
       guard let url = URL(string: "https://itunes.apple.com/app/id1475724536?action=write-review") else { assertionFailure(); return }
       UIApplication.shared.open(url, options: [:], completionHandler: nil)
     case 2:
-      // TODO Segue to donation page.
-      assertionFailure()
+      dismiss(animated: true) {
+        self.delegate?.openDonatePage()
+      }
     case 3:
       dismiss(animated: true) {
         self.delegate?.openSettingsPage()

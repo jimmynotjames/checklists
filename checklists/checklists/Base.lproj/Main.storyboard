@@ -7,6 +7,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -213,7 +214,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sm3-AY-i4r">
-                                    <rect key="frame" x="16" y="14" width="382" height="28"/>
+                                    <rect key="frame" x="16" y="14" width="382" height="29"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
                                     <nil key="textColor"/>
@@ -223,7 +224,7 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="trailing" secondItem="Sm3-AY-i4r" secondAttribute="trailing" constant="16" id="Kv4-h1-B5F"/>
-                                <constraint firstAttribute="bottom" secondItem="Sm3-AY-i4r" secondAttribute="bottom" constant="30" id="Rby-ii-zCp"/>
+                                <constraint firstAttribute="bottom" secondItem="Sm3-AY-i4r" secondAttribute="bottom" constant="29" id="Rby-ii-zCp"/>
                                 <constraint firstItem="Sm3-AY-i4r" firstAttribute="leading" secondItem="o8V-aA-BfP" secondAttribute="leading" constant="16" id="UXE-Tc-PRT"/>
                                 <constraint firstItem="Sm3-AY-i4r" firstAttribute="top" secondItem="o8V-aA-BfP" secondAttribute="top" constant="14" id="WrJ-Hr-VgS"/>
                             </constraints>
@@ -295,7 +296,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uRI-hr-fJL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="621.73913043478262" y="1052.6785714285713"/>
+            <point key="canvasLocation" x="-207" y="1054"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="95Q-Ab-151">
@@ -316,7 +317,113 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Tg-oQ-YwE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-91" y="1054"/>
+            <point key="canvasLocation" x="-359" y="1054"/>
+        </scene>
+        <!--Donate View Controller-->
+        <scene sceneID="Eaf-YW-7gz">
+            <objects>
+                <viewController id="sW3-He-p6Y" customClass="DonateViewController" customModule="checklists" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Pj2-6S-Bz4">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ULb-qZ-wwt">
+                                <rect key="frame" x="16" y="220" width="382" height="191"/>
+                                <string key="text">(If you want to donate more, just do the purchase more than once!)
+
+Your donations will go towards new apps and/or supporting this app. Or I might buy Taylor Swift art. In the least, I promise to not do anything with it that would make the angels weep or dolphins cry.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Good app. Worth at least a cup bougie coffee." lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fYi-ji-lyw">
+                                <rect key="frame" x="94" y="72" width="304" height="48"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rLI-Bk-v8d">
+                                <rect key="frame" x="16" y="74" width="80" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="6wU-Nb-h9p"/>
+                                    <constraint firstAttribute="width" constant="80" id="C6b-aC-1lY"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="$1.99">
+                                    <color key="titleColor" name="teal"/>
+                                </state>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This app saved my tail at least a couple of times." lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NYy-xf-E1n">
+                                <rect key="frame" x="94" y="140" width="300" height="48"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Donate!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jhk-JE-A8C">
+                                <rect key="frame" x="16" y="14" width="382" height="29"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zs3-AR-q6s">
+                                <rect key="frame" x="16" y="142" width="80" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="51G-jG-jBr"/>
+                                    <constraint firstAttribute="width" constant="80" id="ctd-ZL-Gcw"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="$4.99">
+                                    <color key="titleColor" name="teal"/>
+                                </state>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" name="defaultBackground"/>
+                        <constraints>
+                            <constraint firstItem="ULb-qZ-wwt" firstAttribute="top" secondItem="Zs3-AR-q6s" secondAttribute="bottom" constant="34" id="4Z7-fR-b6c"/>
+                            <constraint firstItem="GeI-28-end" firstAttribute="trailing" secondItem="Jhk-JE-A8C" secondAttribute="trailing" constant="16" id="4md-Hm-S3f"/>
+                            <constraint firstItem="Zs3-AR-q6s" firstAttribute="leading" secondItem="GeI-28-end" secondAttribute="leading" constant="16" id="5PP-HN-GaR"/>
+                            <constraint firstItem="fYi-ji-lyw" firstAttribute="leading" secondItem="rLI-Bk-v8d" secondAttribute="trailing" constant="-2" id="F6W-nQ-p38"/>
+                            <constraint firstItem="NYy-xf-E1n" firstAttribute="leading" secondItem="Zs3-AR-q6s" secondAttribute="trailing" constant="-2" id="Gqi-Ip-5mG"/>
+                            <constraint firstItem="Zs3-AR-q6s" firstAttribute="top" secondItem="rLI-Bk-v8d" secondAttribute="bottom" constant="24" id="Hvq-fS-5ga"/>
+                            <constraint firstItem="NYy-xf-E1n" firstAttribute="centerY" secondItem="Zs3-AR-q6s" secondAttribute="centerY" id="JYw-l8-Wry"/>
+                            <constraint firstItem="fYi-ji-lyw" firstAttribute="centerY" secondItem="rLI-Bk-v8d" secondAttribute="centerY" id="R2y-VB-gdN"/>
+                            <constraint firstItem="rLI-Bk-v8d" firstAttribute="leading" secondItem="GeI-28-end" secondAttribute="leading" constant="16" id="SDI-dv-jJw"/>
+                            <constraint firstItem="GeI-28-end" firstAttribute="trailing" secondItem="ULb-qZ-wwt" secondAttribute="trailing" constant="16" id="WZV-p6-B0O"/>
+                            <constraint firstItem="ULb-qZ-wwt" firstAttribute="leading" secondItem="GeI-28-end" secondAttribute="leading" constant="16" id="dYi-1G-BtO"/>
+                            <constraint firstItem="Jhk-JE-A8C" firstAttribute="leading" secondItem="GeI-28-end" secondAttribute="leading" constant="16" id="eeo-Bq-WoX"/>
+                            <constraint firstItem="rLI-Bk-v8d" firstAttribute="top" secondItem="Jhk-JE-A8C" secondAttribute="bottom" constant="31" id="gdk-Qp-ypp"/>
+                            <constraint firstItem="GeI-28-end" firstAttribute="trailing" secondItem="fYi-ji-lyw" secondAttribute="trailing" constant="16" id="pdo-15-Hic"/>
+                            <constraint firstItem="Jhk-JE-A8C" firstAttribute="top" secondItem="GeI-28-end" secondAttribute="top" constant="14" id="rAl-Kx-XSJ"/>
+                            <constraint firstItem="GeI-28-end" firstAttribute="trailing" secondItem="NYy-xf-E1n" secondAttribute="trailing" constant="20" id="yn3-gi-rwn"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="GeI-28-end"/>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <navigationItem key="navigationItem" id="aqF-Yu-5mC"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tk7-gV-isP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="667" y="1054"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="3Z0-S2-Z1E">
+            <objects>
+                <navigationController storyboardIdentifier="Donate" automaticallyAdjustsScrollViewInsets="NO" id="slN-pd-HyX" sceneMemberID="viewController">
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="7pp-D0-cQa">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="sW3-He-p6Y" kind="relationship" relationship="rootViewController" id="huB-xp-Hmr"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mw1-Or-QyZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="532" y="1054"/>
         </scene>
     </scenes>
     <resources>
