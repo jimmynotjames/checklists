@@ -50,12 +50,8 @@ class DonateViewController: UITableViewController {
     return cell
    }
 
-   override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-    return false
-   }
-
-   // Override to support conditional rearranging of the table view.
-   override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-    return false
-   }
+  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    guard let cell = tableView.cellForRow(at: indexPath) else { assertionFailure(); return }
+    cell.isSelected = false
+  }
 }
