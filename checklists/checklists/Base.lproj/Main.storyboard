@@ -347,11 +347,11 @@
                             </constraints>
                         </view>
                         <view key="tableFooterView" contentMode="scaleToFill" id="LNA-1K-tyk">
-                            <rect key="frame" x="0.0" y="174" width="414" height="251"/>
+                            <rect key="frame" x="0.0" y="174" width="414" height="219"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ULb-qZ-wwt">
-                                    <rect key="frame" x="16" y="16" width="382" height="219"/>
+                                    <rect key="frame" x="16" y="16" width="382" height="195"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <string key="text">Your donations will support this app. Or I might buy Taylor Swift art. In the very least, I promise to not do anything that would make the angels weep or dolphins cry.
 
@@ -363,7 +363,7 @@
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
-                                <constraint firstAttribute="bottom" secondItem="ULb-qZ-wwt" secondAttribute="bottom" constant="16" id="IAf-6s-YYc"/>
+                                <constraint firstAttribute="bottom" secondItem="ULb-qZ-wwt" secondAttribute="bottom" constant="8" id="IAf-6s-YYc"/>
                                 <constraint firstAttribute="trailing" secondItem="ULb-qZ-wwt" secondAttribute="trailing" constant="16" id="h67-nQ-F6e"/>
                                 <constraint firstItem="ULb-qZ-wwt" firstAttribute="top" secondItem="LNA-1K-tyk" secondAttribute="top" constant="16" id="wNa-sK-by0"/>
                                 <constraint firstItem="ULb-qZ-wwt" firstAttribute="leading" secondItem="LNA-1K-tyk" secondAttribute="leading" constant="16" id="xPY-Pu-BHX"/>
