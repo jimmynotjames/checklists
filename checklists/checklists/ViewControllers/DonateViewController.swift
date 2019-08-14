@@ -11,7 +11,7 @@ import UIKit
 class DonateViewController: UITableViewController {
   // var purchaseItems: [(String, String)] = [] // (price, description)
   var purchaseItems: [(String, String)] = [("$1.99", "Good app; worth a cup of bougie coffee."),
-                                           ("$4.99", "This app saved my ass more than once!"),
+                                           ("$4.99", "This app saved me more than once!"),
                                            ("$9.99", "I'm a good person who's always kind to dogs.")]
 
   override func viewDidLoad() {
