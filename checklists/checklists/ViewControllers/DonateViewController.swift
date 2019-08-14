@@ -9,20 +9,33 @@
 import UIKit
 
 class DonateViewController: UITableViewController {
-  // var purchaseItems: [(String, String)] = [] // (price, description)
+  var purchaseItems: [(String, String)] = [] // (price, description)
+  /* FOR TESTING
   var purchaseItems: [(String, String)] = [("$1.99", "Good app; worth a cup of bougie coffee."),
                                            ("$4.99", "This app saved me more than once!"),
                                            ("$9.99", "I'm a good person who's always kind to dogs.")]
+  */
 
   var errorMessageSection = 0
   var purchaseItemsSection = 1
-  var isShowingPurchaseUnavailable = false
+
+  enum State {
+    case notLoaded
+    case productsLoaded
+    case errorLoadingProducts(message: String)
+    case purchaseUnavailable
+  }
+  var state: State = .notLoaded
 
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
 
-    isShowingPurchaseUnavailable = !StoreObserver.shared.isAuthorizedForPayments
+    if StoreObserver.shared.isAuthorizedForPayments {
+      StoreObserver.shared.fetchProducts()
+    } else {
+      state = .purchaseUnavailable
+    }
   }
 
   @objc func doneButtonTapped() {
@@ -40,8 +53,13 @@ class DonateViewController: UITableViewController {
     case purchaseItemsSection:
       return purchaseItems.count
     case errorMessageSection:
-      if isShowingPurchaseUnavailable {
+      switch state {
+      case .notLoaded:
+        return 2
+      case .errorLoadingProducts(_), .purchaseUnavailable:
         return 1
+      case .productsLoaded:
+        return 0
       }
     default:
       assertionFailure()
@@ -50,7 +68,6 @@ class DonateViewController: UITableViewController {
   }
 
    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
     switch indexPath.section {
     case purchaseItemsSection:
       let cell = tableView.dequeueReusableCell(withIdentifier: "PurchaseItemRow", for: indexPath)
@@ -62,16 +79,29 @@ class DonateViewController: UITableViewController {
 
       priceLabel.text = purchaseItems[index].0
       descriptionLabel.text = purchaseItems[index].1
-      if isShowingPurchaseUnavailable {
+      if case .purchaseUnavailable = state {
         cell.selectionStyle = .none
       }
       return cell
     case errorMessageSection:
-      let cell = tableView.dequeueReusableCell(withIdentifier: "ErrorMessageRow", for: indexPath)
-      cell.selectionStyle = .none
-      if isShowingPurchaseUnavailable {
+      if indexPath.row == 0 {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ErrorMessageRow", for: indexPath)
+        cell.selectionStyle = .none
         guard let errorMsgLabel = cell.viewWithTag(3) as? UILabel else { assertionFailure(); return UITableViewCell() }
-        errorMsgLabel.text = "Oops! Unable to donate because this device is not configured for In-App Purchase!"
+        switch state {
+        case .productsLoaded:
+          assertionFailure()
+        case .notLoaded:
+          errorMsgLabel.text = "Loading possible donations..."
+        case .purchaseUnavailable:
+          errorMsgLabel.text = "Oops! Unable to donate because this device is not configured for In-App Purchase!"
+        case .errorLoadingProducts(let message):
+          errorMsgLabel.text = message
+        }
+        return cell
+      } else if indexPath.row == 1 {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ActivityIndicatorRow", for: indexPath)
+        cell.selectionStyle = .none
         return cell
       }
     default:
@@ -85,6 +115,7 @@ class DonateViewController: UITableViewController {
     guard let cell = tableView.cellForRow(at: indexPath) else { assertionFailure(); return }
     cell.isSelected = false
 
-    guard indexPath.section == purchaseItemsSection && !isShowingPurchaseUnavailable else { return }
+    // TODO: may have to add more use cases here to ensure it doesn't do stuff on tap.
+    guard indexPath.section == purchaseItemsSection else { return }
   }
 }

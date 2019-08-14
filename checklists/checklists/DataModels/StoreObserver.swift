@@ -16,7 +16,23 @@ class StoreObserver: NSObject, SKPaymentTransactionObserver {
     return SKPaymentQueue.canMakePayments()
   }
 
-  func paymentQueue(_ queue: SKPaymentQueue,updatedTransactions transactions: [SKPaymentTransaction]) {
+  private let productIdentifiers = Set(["com.jimmyho.checklists.donation.tier2"])
+  private lazy var productRequest: SKProductsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
 
+  func fetchProducts() {
+    productRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
+    productRequest.delegate = self
+
+    productRequest.start()
+  }
+
+  func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+
+  }
+}
+
+extension StoreObserver: SKProductsRequestDelegate {
+  func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
+    print(response)
   }
 }
