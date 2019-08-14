@@ -347,7 +347,7 @@
                             </constraints>
                         </view>
                         <view key="tableFooterView" contentMode="scaleToFill" id="LNA-1K-tyk">
-                            <rect key="frame" x="0.0" y="174" width="414" height="219"/>
+                            <rect key="frame" x="0.0" y="248" width="414" height="219"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ULb-qZ-wwt">
@@ -370,21 +370,45 @@
                             </constraints>
                         </view>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PurchaseItemRow" rowHeight="74" id="O5k-Pr-YUa">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ErrorMessageRow" rowHeight="74" id="O5k-Pr-YUa">
                                 <rect key="frame" x="0.0" y="100" width="414" height="74"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="O5k-Pr-YUa" id="hyI-8o-dfL">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="74"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="$1.99" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jg0-uu-a6p">
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Oop! Error message here." lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1ER-aV-yAe">
+                                            <rect key="frame" x="16" y="8" width="382" height="58"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                            <color key="textColor" name="salmonRed"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="1ER-aV-yAe" secondAttribute="bottom" constant="8" id="Fqd-p1-v84"/>
+                                        <constraint firstAttribute="trailing" secondItem="1ER-aV-yAe" secondAttribute="trailing" constant="16" id="M0o-hV-vOQ"/>
+                                        <constraint firstItem="1ER-aV-yAe" firstAttribute="top" secondItem="hyI-8o-dfL" secondAttribute="top" constant="8" id="VWj-dF-aqp"/>
+                                        <constraint firstItem="1ER-aV-yAe" firstAttribute="leading" secondItem="hyI-8o-dfL" secondAttribute="leading" constant="16" id="Yzy-qE-TXC"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PurchaseItemRow" rowHeight="74" id="Gad-ZM-VO7">
+                                <rect key="frame" x="0.0" y="174" width="414" height="74"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Gad-ZM-VO7" id="SQd-Pt-zAn">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="74"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="$1.99" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UmH-bB-6cD">
                                             <rect key="frame" x="16" y="25" width="51.5" height="24"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                             <color key="textColor" name="teal"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Good app. Worth at least a cup of bougie coffee." lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fYi-ji-lyw">
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Good app. Worth at least a cup of bougie coffee." lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rZi-bc-1gt">
                                             <rect key="frame" x="100" y="8" width="298" height="58"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="20"/>
@@ -393,12 +417,12 @@
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstAttribute="bottom" secondItem="fYi-ji-lyw" secondAttribute="bottom" constant="8" id="1cU-5I-9oZ"/>
-                                        <constraint firstItem="Jg0-uu-a6p" firstAttribute="leading" secondItem="hyI-8o-dfL" secondAttribute="leading" constant="16" id="2A9-Su-b26"/>
-                                        <constraint firstItem="fYi-ji-lyw" firstAttribute="leading" secondItem="hyI-8o-dfL" secondAttribute="leading" constant="100" id="OBk-oj-Oh4"/>
-                                        <constraint firstItem="Jg0-uu-a6p" firstAttribute="centerY" secondItem="hyI-8o-dfL" secondAttribute="centerY" id="Zy3-Wc-dfV"/>
-                                        <constraint firstItem="fYi-ji-lyw" firstAttribute="top" secondItem="hyI-8o-dfL" secondAttribute="top" constant="8" id="jCQ-FQ-AE5"/>
-                                        <constraint firstAttribute="trailing" secondItem="fYi-ji-lyw" secondAttribute="trailing" constant="16" id="wvk-hg-3qT"/>
+                                        <constraint firstAttribute="bottom" secondItem="rZi-bc-1gt" secondAttribute="bottom" constant="8" id="5e1-aW-CH9"/>
+                                        <constraint firstItem="rZi-bc-1gt" firstAttribute="top" secondItem="SQd-Pt-zAn" secondAttribute="top" constant="8" id="7g5-Ve-Y5l"/>
+                                        <constraint firstItem="UmH-bB-6cD" firstAttribute="leading" secondItem="SQd-Pt-zAn" secondAttribute="leading" constant="16" id="JHp-Xx-4K6"/>
+                                        <constraint firstAttribute="trailing" secondItem="rZi-bc-1gt" secondAttribute="trailing" constant="16" id="Wa2-0Q-WNS"/>
+                                        <constraint firstItem="UmH-bB-6cD" firstAttribute="centerY" secondItem="SQd-Pt-zAn" secondAttribute="centerY" id="kKq-fe-qW5"/>
+                                        <constraint firstItem="rZi-bc-1gt" firstAttribute="leading" secondItem="SQd-Pt-zAn" secondAttribute="leading" constant="100" id="p4J-nx-g71"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -443,6 +467,9 @@
         </namedColor>
         <namedColor name="inactiveText">
             <color red="0.49019607843137253" green="0.49019607843137253" blue="0.49019607843137253" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="salmonRed">
+            <color red="0.92941176470588238" green="0.40000000000000002" blue="0.39215686274509803" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="teal">
             <color red="0.21568627450980393" green="0.50980392156862742" blue="0.53333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
