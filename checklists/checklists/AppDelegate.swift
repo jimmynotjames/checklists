@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import StoreKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
@@ -17,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
     updateNavigationBarAppearance()
+
+    SKPaymentQueue.default().add(StoreObserver.shared)
 
     // TODO: REMOVE DEBUG
     TestData.clearDatabase()
@@ -58,6 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
     // TODO: SAVE Realm state here??
+    SKPaymentQueue.default().remove(StoreObserver.shared)
   }
 }
 
