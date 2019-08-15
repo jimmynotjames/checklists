@@ -326,7 +326,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" name="defaultBackground"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" misplaced="YES" id="6VW-RH-4Zy">
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="6VW-RH-4Zy">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="72"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
@@ -347,7 +347,7 @@
                             </constraints>
                         </view>
                         <view key="tableFooterView" contentMode="scaleToFill" id="LNA-1K-tyk">
-                            <rect key="frame" x="0.0" y="338" width="414" height="219"/>
+                            <rect key="frame" x="0.0" y="415" width="414" height="219"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ULb-qZ-wwt">
@@ -394,32 +394,38 @@
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ActivityIndicatorRow" rowHeight="90" id="Gad-ZM-VO7">
-                                <rect key="frame" x="0.0" y="174" width="414" height="90"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LoadingMessageActivityIndicatorRow" rowHeight="167" id="Gad-ZM-VO7">
+                                <rect key="frame" x="0.0" y="174" width="414" height="167"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Gad-ZM-VO7" id="SQd-Pt-zAn">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="90"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="167"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading message here." lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6C7-DS-dQ3">
+                                            <rect key="frame" x="16" y="8" width="382" height="34"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                            <color key="textColor" name="salmonRed"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                         <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="JBS-Ag-7Bb">
-                                            <rect key="frame" x="182" y="31" width="50" height="37"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="50" id="3T0-5E-3Nd"/>
-                                                <constraint firstAttribute="height" constant="50" id="e47-oG-GBU"/>
-                                            </constraints>
+                                            <rect key="frame" x="188.5" y="86" width="37" height="37"/>
                                             <color key="color" name="inactiveText"/>
                                         </activityIndicatorView>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="JBS-Ag-7Bb" firstAttribute="centerX" secondItem="SQd-Pt-zAn" secondAttribute="centerX" id="Elt-DD-u33"/>
-                                        <constraint firstItem="JBS-Ag-7Bb" firstAttribute="centerY" secondItem="SQd-Pt-zAn" secondAttribute="centerY" multiplier="1.15" id="IS6-g4-G0F"/>
-                                        <constraint firstAttribute="bottomMargin" secondItem="JBS-Ag-7Bb" secondAttribute="bottom" constant="7" id="JCU-tG-aQ1"/>
+                                        <constraint firstItem="6C7-DS-dQ3" firstAttribute="leading" secondItem="SQd-Pt-zAn" secondAttribute="leading" constant="16" id="Frw-GZ-vXw"/>
+                                        <constraint firstItem="JBS-Ag-7Bb" firstAttribute="centerX" secondItem="SQd-Pt-zAn" secondAttribute="centerX" id="XF2-9f-aXK"/>
+                                        <constraint firstItem="6C7-DS-dQ3" firstAttribute="top" secondItem="SQd-Pt-zAn" secondAttribute="top" constant="8" id="a1o-3u-YbI"/>
+                                        <constraint firstItem="JBS-Ag-7Bb" firstAttribute="top" secondItem="6C7-DS-dQ3" secondAttribute="bottom" constant="44" id="mgl-xA-6hE"/>
+                                        <constraint firstAttribute="bottom" secondItem="JBS-Ag-7Bb" secondAttribute="bottom" constant="44" id="rXZ-0Y-ZLS"/>
+                                        <constraint firstAttribute="trailing" secondItem="6C7-DS-dQ3" secondAttribute="trailing" constant="16" id="wlK-AX-5dD"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PurchaseItemRow" rowHeight="74" id="WxC-Za-BJQ">
-                                <rect key="frame" x="0.0" y="264" width="414" height="74"/>
+                                <rect key="frame" x="0.0" y="341" width="414" height="74"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WxC-Za-BJQ" id="tT9-aR-X8Y">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="74"/>

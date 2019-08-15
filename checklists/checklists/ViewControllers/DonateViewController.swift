@@ -16,16 +16,16 @@ class DonateViewController: UITableViewController {
                                            ("$9.99", "I'm a good person who's always kind to dogs.")]
   */
 
-  var errorMessageSection = 0
+  var messageSection = 0
   var purchaseItemsSection = 1
 
   enum State {
-    case notLoaded
+    case loading
     case productsLoaded
     case errorLoadingProducts(message: String)
     case purchaseUnavailable
   }
-  var state: State = .notLoaded
+  var state: State = .loading
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -52,11 +52,9 @@ class DonateViewController: UITableViewController {
     switch section {
     case purchaseItemsSection:
       return purchaseItems.count
-    case errorMessageSection:
+    case messageSection:
       switch state {
-      case .notLoaded:
-        return 2
-      case .errorLoadingProducts(_), .purchaseUnavailable:
+      case .loading, .errorLoadingProducts(_), .purchaseUnavailable:
         return 1
       case .productsLoaded:
         return 0
@@ -83,25 +81,28 @@ class DonateViewController: UITableViewController {
         cell.selectionStyle = .none
       }
       return cell
-    case errorMessageSection:
+    case messageSection:
       if indexPath.row == 0 {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ErrorMessageRow", for: indexPath)
+        let cell: UITableViewCell
+        switch state {
+        case .loading:
+          cell = tableView.dequeueReusableCell(withIdentifier: "LoadingMessageActivityIndicatorRow", for: indexPath)
+        default:
+          cell = tableView.dequeueReusableCell(withIdentifier: "ErrorMessageRow", for: indexPath)
+        }
         cell.selectionStyle = .none
-        guard let errorMsgLabel = cell.viewWithTag(3) as? UILabel else { assertionFailure(); return UITableViewCell() }
+        
+        guard let msgLabel = cell.viewWithTag(3) as? UILabel else { assertionFailure(); return UITableViewCell() }
         switch state {
         case .productsLoaded:
           assertionFailure()
-        case .notLoaded:
-          errorMsgLabel.text = "Loading possible donations..."
+        case .loading:
+          msgLabel.text = "Loading possible donations..."
         case .purchaseUnavailable:
-          errorMsgLabel.text = "Oops! Unable to donate because this device is not configured for In-App Purchase!"
+          msgLabel.text = "Oops! Unable to donate because this device is not configured for In-App Purchase!"
         case .errorLoadingProducts(let message):
-          errorMsgLabel.text = message
+          msgLabel.text = message
         }
-        return cell
-      } else if indexPath.row == 1 {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ActivityIndicatorRow", for: indexPath)
-        cell.selectionStyle = .none
         return cell
       }
     default:
