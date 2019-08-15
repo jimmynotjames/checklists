@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import StoreKit
 
 class DonateViewController: UITableViewController {
   var messageSection = 0
@@ -109,7 +110,7 @@ class DonateViewController: UITableViewController {
         case .loading:
           cell = tableView.dequeueReusableCell(withIdentifier: "LoadingMessageActivityIndicatorRow", for: indexPath)
         default:
-          cell = tableView.dequeueReusableCell(withIdentifier: "ErrorMessageRow", for: indexPath)
+          cell = tableView.dequeueReusableCell(withIdentifier: "MessageRow", for: indexPath)
         }
         cell.selectionStyle = .none
         
@@ -136,9 +137,13 @@ class DonateViewController: UITableViewController {
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     guard let cell = tableView.cellForRow(at: indexPath) else { assertionFailure(); return }
     cell.isSelected = false
-
-    // TODO: may have to add more use cases here to ensure it doesn't do stuff on tap.
     guard indexPath.section == purchaseItemsSection else { return }
+    switch state {
+    case .productsLoaded(let donationProducts):
+      StoreObserver.shared.purchaseDonationProduct(product: donationProducts[indexPath.row].product)
+    default:
+      assertionFailure()
+    }
   }
 }
 
@@ -149,5 +154,9 @@ extension DonateViewController: StoreObserverDelegate {
 
   func didReceiveProducts(donationProducts: [DonationProduct]) {
     setDonationProducts(donationProducts: donationProducts)
+  }
+
+  func transactionDidUpdate(with state: SKPaymentTransactionState, errorDescription: String?) {
+    // TODO
   }
 }

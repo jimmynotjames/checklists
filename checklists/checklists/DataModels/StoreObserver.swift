@@ -12,15 +12,16 @@ import StoreKit
 protocol StoreObserverDelegate: class {
   func errorRetrievingProducts(errorCode: StoreObserver.ErrorCode)
   func didReceiveProducts(donationProducts: [DonationProduct])
+  func transactionDidUpdate(with state: SKPaymentTransactionState, errorDescription: String?)
 }
 
 struct DonationProduct {
+  let product: SKProduct
   let priceString: String
   let description: String
-  let productId: String
 }
 
-class StoreObserver: NSObject, SKPaymentTransactionObserver {
+class StoreObserver: NSObject {
   enum ErrorCode: Int {
     case zeroProductsReturned = 101
     case generalFetchError = 102
@@ -34,7 +35,9 @@ class StoreObserver: NSObject, SKPaymentTransactionObserver {
     return SKPaymentQueue.canMakePayments()
   }
 
-  private let productIdentifiers = Set(["com.jimmyho.checklists.donation.tier2"])
+  private let productIdentifiers = Set(["com.jimmyho.checklists.donation.tierA",
+                                        "com.jimmyho.checklists.donation.tierB",
+                                        "com.jimmyho.checklists.donation.tierC"])
   private lazy var productRequest: SKProductsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
 
   func fetchProducts() {
@@ -43,8 +46,34 @@ class StoreObserver: NSObject, SKPaymentTransactionObserver {
     productRequest.start()
   }
 
-  func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+  func purchaseDonationProduct(product: SKProduct) {
+    SKPaymentQueue.default().add(SKPayment(product: product))
+  }
+}
 
+extension StoreObserver: SKPaymentTransactionObserver {
+  func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+    transactions.forEach { transaction in
+      switch transaction.transactionState {
+      case .restored:
+        assertionFailure() // This should never happen.
+      case .deferred:
+        print("DEFERRED: \(transaction)")
+      case .failed:
+        if let errorDescription = transaction.error?.localizedDescription {
+          print("FAILED: \(errorDescription)")
+        }
+        SKPaymentQueue.default().finishTransaction(transaction)
+      case .purchasing:
+        print("PURCHASING")
+      case .purchased:
+        print("PURCHASED")
+        SKPaymentQueue.default().finishTransaction(transaction)
+      default:
+        assertionFailure()
+      }
+      delegate?.transactionDidUpdate(with: transaction.transactionState, errorDescription: transaction.error?.localizedDescription)
+    }
   }
 }
 
@@ -57,9 +86,11 @@ extension StoreObserver: SKProductsRequestDelegate {
       return
     }
     let donationProducts = products.map { product in
-        return DonationProduct(priceString: product.regularPrice,
-                               description: product.localizedDescription,
-                               productId: product.productIdentifier)
+        DonationProduct(product: product,
+                        priceString: product.regularPrice,
+                        description: product.localizedDescription)
+    }.sorted { (product1, product2) -> Bool in
+      return product1.product.productIdentifier < product2.product.productIdentifier
     }
     delegate?.didReceiveProducts(donationProducts: donationProducts)
   }
