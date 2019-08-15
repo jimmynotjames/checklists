@@ -9,19 +9,12 @@
 import UIKit
 
 class DonateViewController: UITableViewController {
-  var purchaseItems: [(String, String)] = [] // (price, description)
-  /* FOR TESTING
-  var purchaseItems: [(String, String)] = [("$1.99", "Good app; worth a cup of bougie coffee."),
-                                           ("$4.99", "This app saved me more than once!"),
-                                           ("$9.99", "I'm a good person who's always kind to dogs.")]
-  */
-
   var messageSection = 0
   var purchaseItemsSection = 1
 
   enum State {
     case loading
-    case productsLoaded
+    case productsLoaded(donationProducts: [DonationProduct])
     case errorLoadingProducts(message: String)
     case purchaseUnavailable
   }
@@ -31,8 +24,11 @@ class DonateViewController: UITableViewController {
     super.viewDidLoad()
     navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
 
-    if StoreObserver.shared.isAuthorizedForPayments {
-      StoreObserver.shared.fetchProducts()
+    let storeObserver = StoreObserver.shared
+
+    if storeObserver.isAuthorizedForPayments {
+      storeObserver.delegate = self
+      storeObserver.fetchProducts()
     } else {
       state = .purchaseUnavailable
     }
@@ -40,6 +36,20 @@ class DonateViewController: UITableViewController {
 
   @objc func doneButtonTapped() {
     dismiss(animated: true, completion: nil)
+  }
+
+  private func setError(with message: String) {
+    state = .errorLoadingProducts(message: message)
+    reloadAnimated()
+  }
+
+  private func setDonationProducts(donationProducts: [DonationProduct]) {
+    state = .productsLoaded(donationProducts: donationProducts)
+    reloadAnimated()
+  }
+
+  private func reloadAnimated() {
+    tableView.reloadSections([0, 1], with: .fade)
   }
 
   // MARK: - Table view data source
@@ -51,7 +61,12 @@ class DonateViewController: UITableViewController {
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     switch section {
     case purchaseItemsSection:
-      return purchaseItems.count
+      switch state {
+      case .productsLoaded(let donationProducts):
+        return donationProducts.count
+      default:
+        return 0
+      }
     case messageSection:
       switch state {
       case .loading, .errorLoadingProducts(_), .purchaseUnavailable:
@@ -75,8 +90,14 @@ class DonateViewController: UITableViewController {
         let descriptionLabel = cell.viewWithTag(2) as? UILabel
         else { assertionFailure(); return UITableViewCell() }
 
-      priceLabel.text = purchaseItems[index].0
-      descriptionLabel.text = purchaseItems[index].1
+      switch state {
+      case .productsLoaded(let donationProducts):
+        priceLabel.text = donationProducts[index].priceString
+        descriptionLabel.text = donationProducts[index].description
+      default:
+        assertionFailure()
+      }
+
       if case .purchaseUnavailable = state {
         cell.selectionStyle = .none
       }
@@ -97,7 +118,7 @@ class DonateViewController: UITableViewController {
         case .productsLoaded:
           assertionFailure()
         case .loading:
-          msgLabel.text = "Loading possible donations..."
+          msgLabel.text = "Loading donation options..."
         case .purchaseUnavailable:
           msgLabel.text = "Oops! Unable to donate because this device is not configured for In-App Purchase!"
         case .errorLoadingProducts(let message):
@@ -118,5 +139,15 @@ class DonateViewController: UITableViewController {
 
     // TODO: may have to add more use cases here to ensure it doesn't do stuff on tap.
     guard indexPath.section == purchaseItemsSection else { return }
+  }
+}
+
+extension DonateViewController: StoreObserverDelegate {
+  func errorRetrievingProducts(errorCode: StoreObserver.ErrorCode) {
+    setError(with: "Oops! There was an issue getting donation options from the App Store (code: \(errorCode.rawValue))")
+  }
+
+  func didReceiveProducts(donationProducts: [DonationProduct]) {
+    setDonationProducts(donationProducts: donationProducts)
   }
 }
