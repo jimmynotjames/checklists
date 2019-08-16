@@ -145,6 +145,7 @@ extension DonateViewController: StoreObserverDelegate {
       self.state = .successfulPurchase
     case .failed:
       self.state = .unsuccessfulPurchase(message: errorDescription ?? "Unknown")
+    // TODO: If user cancels, need to just have no message and remove activity indicator.
     default:
       assertionFailure()
       self.state = .productsLoaded(donationProducts: loadedDonationProducts)
