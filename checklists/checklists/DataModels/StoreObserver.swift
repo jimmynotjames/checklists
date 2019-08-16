@@ -57,18 +57,11 @@ extension StoreObserver: SKPaymentTransactionObserver {
       switch transaction.transactionState {
       case .restored:
         assertionFailure() // This should never happen.
-      case .deferred:
-        print("DEFERRED: \(transaction)")
-      case .failed:
-        if let errorDescription = transaction.error?.localizedDescription {
-          print("FAILED: \(errorDescription)")
-        }
+      case .purchasing, .deferred:
+        print("Purchasing or Deferred...")
+      case .purchased, .failed:
         SKPaymentQueue.default().finishTransaction(transaction)
-      case .purchasing:
-        print("PURCHASING")
-      case .purchased:
-        print("PURCHASED")
-        SKPaymentQueue.default().finishTransaction(transaction)
+        // TODO: If user navigates away from page, and then this returns, we should show something, like an alert or something. And maybe show history of donations?
       default:
         assertionFailure()
       }
@@ -95,15 +88,6 @@ extension StoreObserver: SKProductsRequestDelegate {
     delegate?.didReceiveProducts(donationProducts: donationProducts)
   }
 }
-
-
-/*
- TODO: REMOVE
- FOR TESTING
- var purchaseItems: [(String, String)] = [("$1.99", "Good app; worth a cup of bougie coffee."),
- ("$4.99", "This app saved me more than once!"),
- ("$9.99", "I'm a good person who's always kind to dogs.")]
- */
 
 // Copied/modified from https://developer.apple.com/documentation/storekit/in-app_purchase/offering_completing_and_restoring_in-app_purchases
 extension SKProduct {
