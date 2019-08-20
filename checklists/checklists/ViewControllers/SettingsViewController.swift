@@ -136,7 +136,7 @@ class SettingsViewController: UITableViewController {
     let backgroundView = UIView()
     backgroundView.backgroundColor = .clear
     view.backgroundView = backgroundView
-    view.tintColor = Colors.defaultBackground // Not clear so if header sticks to top, things don't overlap while scroling up.
+    view.tintColor = Colors.defaultBackground // Not clear so if header sticks to top, things don't overlap while scrolling up.
     textLabel.font = .systemFont(ofSize: 14.0)
     textLabel.textColor = Colors.inactiveText
   }
