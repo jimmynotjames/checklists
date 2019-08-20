@@ -18,7 +18,7 @@ enum AppTheme: Int {
 class SettingsManager {
   static private(set) var currentAppTheme: AppTheme = .defaultBougie
 
-  static func setCurretAppTheme(appTheme: AppTheme) {
+  static func setCurrentAppTheme(appTheme: AppTheme) {
     currentAppTheme = appTheme
     // TODO: notifications
   }

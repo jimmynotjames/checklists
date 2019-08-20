@@ -9,6 +9,7 @@
 import UIKit
 
 private let themesSection = 0
+private let infoSection = 1
 
 class SettingsViewController: UITableViewController {
   override func viewDidLoad() {
@@ -24,14 +25,17 @@ class SettingsViewController: UITableViewController {
   // MARK: - Table view data source
 
   override func numberOfSections(in tableView: UITableView) -> Int {
-    return 1
+    return 2
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     switch section {
-    case 0:
+    case themesSection:
       return 3
+    case infoSection:
+      return 1
     default:
+      assertionFailure()
       return 0
     }
   }
@@ -44,11 +48,20 @@ class SettingsViewController: UITableViewController {
     return (themeNameLabel, roundCheckButton)
   }
 
+  func retrieveInfoViews(from cell: UITableViewCell) -> (UIImageView, UILabel) {
+    guard
+      let imageView = cell.viewWithTag(1) as? UIImageView,
+      let label = cell.viewWithTag(2) as? UILabel
+      else { assertionFailure(); return (UIImageView(), UILabel()) }
+    return (imageView, label)
+  }
+
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell: UITableViewCell
 
-    if indexPath.section == themesSection {
-      let cell = tableView.dequeueReusableCell(withIdentifier: "themeItem", for: indexPath)
+    switch indexPath.section {
+    case themesSection:
+      cell = tableView.dequeueReusableCell(withIdentifier: "ThemeItemRow", for: indexPath)
       let (themeNameLabel, roundCheckboxButton) = retrieveThemeViews(from: cell)
       roundCheckboxButton.isUserInteractionEnabled = false // use the cell selection mechanism.
       switch indexPath.row {
@@ -64,42 +77,53 @@ class SettingsViewController: UITableViewController {
       default:
         assertionFailure()
       }
-      cell.selectionStyle = .gray
-      return cell
+    case infoSection:
+      cell = tableView.dequeueReusableCell(withIdentifier: "InfoRow", for: indexPath)
+      let (imageView, label) = retrieveInfoViews(from: cell)
+      imageView.image = UIImage(named: "PrivacyPolicyIcon25x25")
+      label.text = "Privacy Policy"
+    default:
+      assertionFailure()
+      cell = UITableViewCell()
     }
-    assertionFailure()
-    cell = UITableViewCell()
     return cell
   }
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    if indexPath.section == themesSection {
-      guard let cell = tableView.cellForRow(at: indexPath) else { assertionFailure(); return }
-      cell.isSelected = false
+    guard let cell = tableView.cellForRow(at: indexPath) else { assertionFailure(); return }
+    cell.isSelected = false
 
+    switch indexPath.section {
+    case themesSection:
       switch indexPath.row {
       case AppTheme.defaultBougie.rawValue:
-        SettingsManager.setCurretAppTheme(appTheme: .defaultBougie)
+        SettingsManager.setCurrentAppTheme(appTheme: .defaultBougie)
         print("DEFAULT")
       case AppTheme.extraBougie.rawValue:
-        SettingsManager.setCurretAppTheme(appTheme: .extraBougie)
+        SettingsManager.setCurrentAppTheme(appTheme: .extraBougie)
         print("BOUGIE")
       case AppTheme.unicorns.rawValue:
-        SettingsManager.setCurretAppTheme(appTheme: .unicorns)
+        SettingsManager.setCurrentAppTheme(appTheme: .unicorns)
         print("UNICORN")
       default:
         assertionFailure()
       }
+      tableView.reloadData()
+    case infoSection:
+      guard let url = URL(string: "https://www.termsfeed.com/privacy-policy/0420e699b562320b2beb80af0a4e08b9") else { assertionFailure(); return }
+      UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    default:
+      assertionFailure()
     }
-    tableView.reloadData()
   }
 
   override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
     switch section {
     case themesSection:
       return "THEMES"
+    case infoSection:
+      return "INFO"
     default:
-      assertionFailure()
       return nil
     }
   }
@@ -109,7 +133,9 @@ class SettingsViewController: UITableViewController {
       let view = view as? UITableViewHeaderFooterView,
       let textLabel = view.textLabel
       else { assertionFailure(); return }
-    view.backgroundColor = .clear
+    let backgroundView = UIView()
+    backgroundView.backgroundColor = .clear
+    view.backgroundView = backgroundView
     view.tintColor = Colors.defaultBackground // Not clear so if header sticks to top, things don't overlap while scroling up.
     textLabel.font = .systemFont(ofSize: 14.0)
     textLabel.textColor = Colors.inactiveText
