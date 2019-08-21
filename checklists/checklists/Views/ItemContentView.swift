@@ -18,6 +18,9 @@ protocol ItemContentViewDelegate: class {
   func itemContentViewHeightUpdated(_ itemContentView: ItemContentView)
   func itemContentView(_ itemContentView: ItemContentView, nameFieldUpdatedWith name: String)
   func itemContentView(_ itemContentView: ItemContentView, notesFieldUpdatedWith notes: String)
+
+  func itemContentViewDidReturnOnNameField(_ itemContentView: ItemContentView)
+  func itemContentViewDidBackspaceEmpty(_ itemContentView: ItemContentView)
 }
 
 class ItemContentView: UIView {
@@ -45,12 +48,7 @@ class ItemContentView: UIView {
 
   weak var delegate: ItemContentViewDelegate?
 
-  var addAnotherButtonTappedAction: (() -> Void)? {
-    didSet {
-      nameTextView.addAnotherButtonTappedAction = addAnotherButtonTappedAction
-      notesTextView.addAnotherButtonTappedAction = addAnotherButtonTappedAction
-    }
-  }
+  var isEditing = false
 
   private lazy var checkboxButton: CheckboxButton = {
     let button = CheckboxButton()
@@ -61,13 +59,20 @@ class ItemContentView: UIView {
     let textView = CLTextView()
     textView.delegate = self
     textView.font = UIFont.systemFont(ofSize: 22.0, weight: .regular)
-    textView.returnKeyType = .done
+    textView.inputAccessoryButtonTappedAction = {
+      textView.resignFirstResponder()
+    }
+    textView.returnKeyType = .next
     return textView
   }()
   private lazy var notesTextView: CLTextView = {
     let textView = CLTextView()
     textView.placeholderText = "Notes"
     textView.font = UIFont.systemFont(ofSize: 15.0)
+    textView.inputAccessoryButtonTappedAction = {
+      textView.resignFirstResponder()
+    }
+    textView.returnKeyType = .default
     textView.delegate = self
     return textView
   }()
@@ -117,6 +122,7 @@ class ItemContentView: UIView {
   }
 
   func startEditing() {
+    isEditing = true
     _ = nameTextView.becomeFirstResponder()
   }
 
@@ -161,27 +167,14 @@ class ItemContentView: UIView {
     if !wasInputFieldTapped {
       refreshHeight()
       delegate?.itemContentViewDidFinishEditing(self)
+      isEditing = false
     }
-  }
-}
-
-extension ItemContentView: UITextFieldDelegate {
-  func textFieldDidBeginEditing(_ textField: UITextField) {
-    delegate?.itemContentViewNameFieldDidBeginEditing(self)
-    wasInputFieldTapped = false
-  }
-  func textFieldDidEndEditing(_ textField: UITextField) {
-    delegate?.itemContentView(self, nameFieldUpdatedWith: textField.text ?? "")
-    finishEditingViewIfNecessary()
-  }
-  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-    textField.resignFirstResponder()
-    return false
   }
 }
 
 extension ItemContentView: UITextViewDelegate {
   func textViewDidBeginEditing(_ textView: UITextView) {
+    isEditing = true
     if textView == nameTextView {
       delegate?.itemContentViewNameFieldDidBeginEditing(self)
     }
@@ -203,8 +196,17 @@ extension ItemContentView: UITextViewDelegate {
   }
   func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
     if text == "\n" && textView == nameTextView {
-      textView.resignFirstResponder()
+      delegate?.itemContentViewDidReturnOnNameField(self)
       return false
+    }
+    if text.count == 0 && textView.text.count == 0 { // Assume someone backspaced on empty field
+      if textView == nameTextView && !notesTextView.hasText { // Both fields should be empty to call.
+        delegate?.itemContentViewDidBackspaceEmpty(self)
+        return false
+      } else if textView == notesTextView {
+        nameTextView.becomeFirstResponder()
+        return false
+      }
     }
     return true
   }

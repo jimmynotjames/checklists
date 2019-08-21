@@ -22,17 +22,18 @@ protocol CLTextViewDelegate: UITextViewDelegate {
 
 class CLTextView: UITextView {
 
-  var addAnotherButtonTappedAction: (() -> Void)? {
+  var inputAccessoryButtonName: String = "Dismiss"
+  var inputAccessoryButtonTappedAction: (() -> Void)? {
     didSet {
-      if addAnotherButtonTappedAction != nil {
-       inputAccessoryView = inputAccessoryToolbar
+      if inputAccessoryButtonTappedAction != nil {
+        inputAccessoryView = inputAccessoryToolbar
       } else {
         inputAccessoryView = nil
       }
     }
   }
-  @objc func addAnotherTapped() {
-    addAnotherButtonTappedAction?()
+  @objc func inputAccessoryButtonTapped() {
+    inputAccessoryButtonTappedAction?()
   }
 
   @objc var placeholderText: String? { // @objc to allow setting in InterfaceBuilder
@@ -69,12 +70,11 @@ class CLTextView: UITextView {
 
   private lazy var inputAccessoryToolbar: UIToolbar = {
     let toolbar = UIToolbar()
-    let addButton = UIBarButtonItem(title: "Add Another", style: .plain, target: self, action: #selector(addAnotherTapped))
-    addButton.tintColor = Colors.teal
+    let button = UIBarButtonItem(title: inputAccessoryButtonName, style: .plain, target: self, action: #selector(inputAccessoryButtonTapped))
+    button.tintColor = Colors.teal
     let buttons = [
       UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-      addButton,
-      UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+      button,
     ]
     toolbar.setItems(buttons, animated: false)
     toolbar.sizeToFit()

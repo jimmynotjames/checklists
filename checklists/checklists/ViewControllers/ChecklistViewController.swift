@@ -86,6 +86,17 @@ class ChecklistViewController: UITableViewController {
     super.viewWillDisappear(animated)
   }
 
+  override func viewDidDisappear(_ animated: Bool) {
+    DBManager.write {
+      checklist.items.forEach { item in
+        if item.name.count == 0 && (item.notes == nil || item.notes!.count == 0) {
+          DBManager.realm.delete(item)
+        }
+      }
+    }
+    super.viewDidDisappear(animated)
+  }
+
   @objc func doneButtonTapped() {
     dismiss(animated: true, completion: nil)
   }
@@ -136,8 +147,9 @@ class ChecklistViewController: UITableViewController {
 
   private func insertNewItem(at index: Int, becomeFirstResponder: Bool) {
     let item = Item(name: "", notes: nil)
+    self.collapseEditingCellIfNecessary()
     DBManager.write {
-      checklist.items.insert(item, at: index)
+      self.checklist.items.insert(item, at: index)
     }
     tableView.performBatchUpdates({
       tableView.insertRows(at: [IndexPath(row: index, section: itemsSection)], with: .top)
@@ -149,6 +161,14 @@ class ChecklistViewController: UITableViewController {
     })
   }
 
+  private func collapseEditingCellIfNecessary() {
+    tableView.visibleCells.forEach { cell in
+      if let cell = cell as? ItemTableViewCell, cell.itemContentView.isEditing {
+        cell.itemContentView.refreshHeight()
+      }
+    }
+  }
+
   func cellHeightRequiresRefresh(animated: Bool) {
     if !animated {
       UIView.setAnimationsEnabled(false) // When table view is scrolled up a bit and user types in text view, jitters without this.
@@ -158,6 +178,11 @@ class ChecklistViewController: UITableViewController {
     if !animated {
       UIView.setAnimationsEnabled(true)
     }
+  }
+
+  func deleteItem(at index: Int) {
+    checklist.remove(at: index)
+    tableView.deleteRows(at: [IndexPath(item: index, section: itemsSection)], with: .fade)
   }
 
   // MARK: - Table view data source
@@ -174,10 +199,6 @@ class ChecklistViewController: UITableViewController {
     assert(indexPath.row >= 0 && indexPath.row < checklist.items.count && indexPath.section == itemsSection)
     guard let cell = tableView.dequeueReusableCell(withIdentifier: itemCellReuseIdentifier, for: indexPath) as? ItemTableViewCell else { assertionFailure(); return UITableViewCell() }
     cell.itemContentView.item = checklist.items[indexPath.row]
-    cell.itemContentView.addAnotherButtonTappedAction = { [weak self] in
-      guard let `self` = self else { assertionFailure(); return }
-      self.insertNewItem(at: indexPath.row + 1, becomeFirstResponder: true)
-    }
     cell.itemContentView.delegate = self
     return cell
   }
@@ -189,8 +210,7 @@ class ChecklistViewController: UITableViewController {
   override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
     guard indexPath.section == itemsSection else { assertionFailure(); return }
     if editingStyle == .delete {
-      checklist.remove(at: indexPath.row)
-      tableView.deleteRows(at: [indexPath], with: .fade)
+      deleteItem(at: indexPath.row)
     } else if editingStyle == .insert {
       assertionFailure()
     }
@@ -342,6 +362,26 @@ extension ChecklistViewController: ItemContentViewDelegate {
   func itemContentView(_ itemContentView: ItemContentView, notesFieldUpdatedWith notes: String) {
     DBManager.write {
       itemContentView.item?.notes = notes
+    }
+  }
+
+  func itemContentViewDidReturnOnNameField(_ itemContentView: ItemContentView) {
+    guard
+      let item = itemContentView.item,
+      let index = checklist.items.index(of: item)
+      else { assertionFailure(); return }
+    insertNewItem(at: index + 1, becomeFirstResponder: true)
+  }
+
+  func itemContentViewDidBackspaceEmpty(_ itemContentView: ItemContentView) {
+    guard
+      let item = itemContentView.item,
+      let index = checklist.items.index(of: item)
+      else { assertionFailure(); return }
+    if index > 0 { // Nothing happens if backspaced on first item in list.
+      guard let cell = tableView.cellForRow(at: IndexPath(item: index - 1, section: itemsSection)) as? ItemTableViewCell else { assertionFailure(); return }
+      cell.itemContentView.startEditing()
+      deleteItem(at: index)
     }
   }
 }
