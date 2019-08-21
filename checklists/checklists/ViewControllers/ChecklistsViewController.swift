@@ -97,7 +97,9 @@ class ChecklistsViewController: UITableViewController {
       let alertController = UIAlertController(title: nil, message: "Delete this checklist? This cannot be undone.", preferredStyle: .alert)
       alertController.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { alertAction in
         DBManager.write {
-          DBManager.realm.delete(self.checklists[indexPath.row])
+          let checklist = self.checklists[indexPath.row]
+          DBManager.realm.delete(checklist.items)
+          DBManager.realm.delete(checklist)
         }
         self.tableView.deleteRows(at: [indexPath], with: .fade)
       }))
