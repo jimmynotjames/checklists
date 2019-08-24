@@ -42,6 +42,10 @@ class ChecklistViewController: UITableViewController {
     checklistNameTextField.text = checklist.name
     checklistNotesTextView.text = checklist.notes
 
+    checklistNotesTextView.inputAccessoryButtonTappedAction = { [weak self] in
+      self?.checklistNotesTextView.resignFirstResponder()
+    }
+
     let tableFooterView = AddItemButtonTableFooterView(frame: .zero)
     tableFooterView.delegate = self
     tableView.tableFooterView = tableFooterView
