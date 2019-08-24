@@ -78,8 +78,6 @@ class DonateViewController: UITableViewController {
     } else {
       state = .purchaseUnavailable
     }
-
-    print(storeManager.retrievePriorPurchases())
   }
 
   @objc func doneButtonTapped() {
