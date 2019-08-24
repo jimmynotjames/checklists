@@ -9,6 +9,17 @@
 import Foundation
 import StoreKit
 
+// Copied/modified from https://developer.apple.com/documentation/storekit/in-app_purchase/offering_completing_and_restoring_in-app_purchases
+extension SKProduct {
+  /// - returns: The cost of the product formatted in the local currency.
+  var regularPrice: String {
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .currency
+    formatter.locale = self.priceLocale
+    return formatter.string(from: self.price) ?? "0.00"
+  }
+}
+
 protocol StoreManagerDelegate: class {
   func errorRetrievingProducts(errorCode: StoreManager.ErrorCode)
   func didReceiveProducts(donationProducts: [DonationProduct])
@@ -40,6 +51,7 @@ class StoreManager: NSObject {
                                         "com.jimmyho.checklists.donation.tierB",
                                         "com.jimmyho.checklists.donation.tierC"])
   private lazy var productRequest: SKProductsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
+  private var loadedDonationProductsDict: [String: DonationProduct] = [:]
 
   func fetchProducts() {
     productRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
@@ -52,6 +64,39 @@ class StoreManager: NSObject {
   }
 }
 
+// MARK: - NSUserDefaults
+// No way to 'restore' consumable purchases, so no way to give user a history, so we have to user NSUserDefaults,
+// which won't survive app reinstall, but best we can do for now.
+
+private let keyPrice = "price"
+private let keyDate = "date"
+private let purchaseHistoryKey = "reChecklistPurchaseHistory"
+
+extension StoreManager {
+  func archivePurchase(productId: String) {
+    var updatedPurchases: [[String: Any]]
+    if let purchases = UserDefaults.standard.object(forKey: purchaseHistoryKey) as? [[String: Any]] {
+      updatedPurchases = purchases
+    } else {
+      updatedPurchases = []
+    }
+    guard let priceString = loadedDonationProductsDict[productId]?.priceString else { assertionFailure(); return }
+    updatedPurchases.append([ keyPrice: priceString, keyDate: Date() ])
+    UserDefaults.standard.setValue(updatedPurchases, forKey: purchaseHistoryKey)
+  }
+
+  func retrievePriorPurchases() -> [(priceString: String, date: Date)] {
+    if let purchases = UserDefaults.standard.object(forKey: purchaseHistoryKey) as? [[String: Any]] {
+      return purchases.compactMap { purchase in
+        guard let priceString = purchase[keyPrice] as? String, let date = purchase[keyDate] as? Date else { assertionFailure(); return nil }
+        return (priceString, date)
+      }
+    } else {
+      return []
+    }
+  }
+}
+
 extension StoreManager: SKPaymentTransactionObserver {
   func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
     transactions.forEach { transaction in
@@ -60,7 +105,10 @@ extension StoreManager: SKPaymentTransactionObserver {
         assertionFailure() // This should never happen.
       case .purchasing, .deferred:
         print("Purchasing or Deferred...")
-      case .purchased, .failed:
+      case .purchased:
+        SKPaymentQueue.default().finishTransaction(transaction)
+        archivePurchase(productId: transaction.payment.productIdentifier)
+      case .failed:
         SKPaymentQueue.default().finishTransaction(transaction)
       default:
         assertionFailure()
@@ -89,17 +137,12 @@ extension StoreManager: SKProductsRequestDelegate {
     }.sorted { (product1, product2) -> Bool in
       return product1.product.productIdentifier < product2.product.productIdentifier
     }
-    delegate?.didReceiveProducts(donationProducts: donationProducts)
-  }
-}
 
-// Copied/modified from https://developer.apple.com/documentation/storekit/in-app_purchase/offering_completing_and_restoring_in-app_purchases
-extension SKProduct {
-  /// - returns: The cost of the product formatted in the local currency.
-  var regularPrice: String {
-    let formatter = NumberFormatter()
-    formatter.numberStyle = .currency
-    formatter.locale = self.priceLocale
-    return formatter.string(from: self.price) ?? "0.00"
+    loadedDonationProductsDict = [:]
+    donationProducts.forEach { donationProduct in
+      loadedDonationProductsDict[donationProduct.product.productIdentifier] = donationProduct
+    }
+
+    delegate?.didReceiveProducts(donationProducts: donationProducts)
   }
 }

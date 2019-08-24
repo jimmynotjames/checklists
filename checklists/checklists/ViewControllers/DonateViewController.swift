@@ -12,7 +12,11 @@ import ToastSwiftFramework
 
 class DonateViewController: UITableViewController {
   let purchaseItemsSection = 0
+  let infoSection = 1
+  let purchaseHistorySection = 2
+
   var loadedDonationProducts: [DonationProduct] = []
+  var purchaseHistoryItems: [(priceString: String, date: Date)] = StoreManager.shared.retrievePriorPurchases()
 
   var messageCellText: String?
   var messageCellReuseIdentifier: String = "MessageRow"
@@ -44,6 +48,8 @@ class DonateViewController: UITableViewController {
         showActivityIndicator()
       case .successfulPurchase:
         showToast(message: "Purchase successful! Thanks for your donation!!!")
+        purchaseHistoryItems = StoreManager.shared.retrievePriorPurchases()
+        tableView.reloadSections([purchaseHistorySection], with: .fade)
       case .unsuccessfulPurchase(let errorMessage):
         showToast(message: "Oops! Something went wrong. Check your connection, maybe try again later? (System message: \(errorMessage))")
       case .deferredPurchase:
@@ -51,6 +57,13 @@ class DonateViewController: UITableViewController {
       }
     }
   }
+
+  private lazy var dateFormatter: DateFormatter = {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateStyle = .medium
+    dateFormatter.timeStyle = .short
+    return dateFormatter
+  }()
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -65,6 +78,8 @@ class DonateViewController: UITableViewController {
     } else {
       state = .purchaseUnavailable
     }
+
+    print(storeManager.retrievePriorPurchases())
   }
 
   @objc func doneButtonTapped() {
@@ -94,25 +109,73 @@ class DonateViewController: UITableViewController {
   // MARK: - Table view data source
 
   override func numberOfSections(in tableView: UITableView) -> Int {
-    return 1
+    return 3
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    guard section == purchaseItemsSection else { assertionFailure(); return 0 }
-    return loadedDonationProducts.count
+    switch section {
+    case purchaseItemsSection:
+      return loadedDonationProducts.count
+    case infoSection:
+      return 1
+    case purchaseHistorySection:
+      return purchaseHistoryItems.count
+    default:
+      assertionFailure()
+    }
+    return 0
   }
 
    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "PurchaseItemRow", for: indexPath)
-    guard
-      let priceLabel = cell.viewWithTag(1) as? UILabel,
-      let descriptionLabel = cell.viewWithTag(2) as? UILabel
-      else { assertionFailure(); return UITableViewCell() }
+    let cell: UITableViewCell
+    switch indexPath.section {
+    case purchaseItemsSection:
+      cell = tableView.dequeueReusableCell(withIdentifier: "PurchaseItemRow", for: indexPath)
+      guard
+        let priceLabel = cell.viewWithTag(1) as? UILabel,
+        let descriptionLabel = cell.viewWithTag(2) as? UILabel
+        else { assertionFailure(); return UITableViewCell() }
 
-    let index = indexPath.row
-    priceLabel.text = loadedDonationProducts[index].priceString
-    descriptionLabel.text = loadedDonationProducts[index].description
+      let index = indexPath.row
+      priceLabel.text = loadedDonationProducts[index].priceString
+      descriptionLabel.text = loadedDonationProducts[index].description
+    case infoSection:
+      cell = tableView.dequeueReusableCell(withIdentifier: "InfoRow", for: indexPath)
+    case purchaseHistorySection:
+      cell = tableView.dequeueReusableCell(withIdentifier: "PurchasedItemRow", for: indexPath)
+      guard
+        let priceLabel = cell.viewWithTag(1) as? UILabel,
+        let descriptionLabel = cell.viewWithTag(2) as? UILabel
+        else { assertionFailure(); return UITableViewCell() }
+
+      priceLabel.text = purchaseHistoryItems[indexPath.row].priceString
+      descriptionLabel.text = dateFormatter.string(from: purchaseHistoryItems[indexPath.row].date)
+    default:
+      assertionFailure()
+      cell = UITableViewCell()
+    }
     return cell
+  }
+
+  override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    if section == purchaseHistorySection && purchaseHistoryItems.count > 0 {
+      return "PRIOR DONATIONS"
+    } else {
+      return nil
+    }
+  }
+
+  override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    guard
+      let view = view as? UITableViewHeaderFooterView,
+      let textLabel = view.textLabel
+      else { assertionFailure(); return }
+    let backgroundView = UIView()
+    backgroundView.backgroundColor = .clear
+    view.backgroundView = backgroundView
+    view.tintColor = Colors.defaultBackground // Not clear so if header sticks to top, things don't overlap while scrolling up.
+    textLabel.font = .systemFont(ofSize: 15.0)
+    textLabel.textColor = Colors.inactiveText
   }
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
