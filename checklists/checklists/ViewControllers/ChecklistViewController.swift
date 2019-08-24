@@ -147,18 +147,27 @@ class ChecklistViewController: UITableViewController {
 
   private func insertNewItem(at index: Int, becomeFirstResponder: Bool) {
     let item = Item(name: "", notes: nil)
-    self.collapseEditingCellIfNecessary()
     DBManager.write {
       self.checklist.items.insert(item, at: index)
     }
-    tableView.performBatchUpdates({
-      tableView.insertRows(at: [IndexPath(row: index, section: itemsSection)], with: .top)
-    }, completion: { success in
-      if success && becomeFirstResponder {
-        guard let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: itemsSection)) as? ItemTableViewCell else { assertionFailure(); return }
-        cell.itemContentView.startEditing()
-      }
-    })
+    let updates = {
+      self.tableView.performBatchUpdates({
+        self.collapseEditingCellIfNecessary()
+        self.tableView.insertRows(at: [IndexPath(row: index, section: itemsSection)], with: .top)
+      }, completion: { success in
+        if success && becomeFirstResponder {
+          guard let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: itemsSection)) as? ItemTableViewCell else { assertionFailure(); return }
+          cell.itemContentView.startEditing()
+        }
+      })
+    }
+    /*
+     This just isn't about making the animation snappier. If we're slow, and the user starts typing right after hitting Return,
+     the letters go into the prior cell, not the new one, and there isn't an easy way to prevent that while keeping the animation
+     smooth except to go faster. For example, I could resignFirstResponder() immediately, but then the keyboard drops and comes
+     back up super fast, which makes it feel jittery.
+     */
+    UIView.animate(withDuration: 0.01, animations: updates, completion: nil)
   }
 
   private func collapseEditingCellIfNecessary() {
