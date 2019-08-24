@@ -9,10 +9,11 @@
 import Foundation
 import StoreKit
 
-protocol StoreObserverDelegate: class {
-  func errorRetrievingProducts(errorCode: StoreObserver.ErrorCode)
+protocol StoreManagerDelegate: class {
+  func errorRetrievingProducts(errorCode: StoreManager.ErrorCode)
   func didReceiveProducts(donationProducts: [DonationProduct])
   func transactionDidUpdate(with state: SKPaymentTransactionState, errorDescription: String?)
+  func transactionDidCancel()
 }
 
 struct DonationProduct {
@@ -21,15 +22,15 @@ struct DonationProduct {
   let description: String
 }
 
-class StoreObserver: NSObject {
+class StoreManager: NSObject {
   enum ErrorCode: Int {
     case zeroProductsReturned = 101
     case generalFetchError = 102
   }
 
-  static let shared = StoreObserver()
+  static let shared = StoreManager()
 
-  weak var delegate: StoreObserverDelegate?
+  weak var delegate: StoreManagerDelegate?
 
   var isAuthorizedForPayments: Bool {
     return SKPaymentQueue.canMakePayments()
@@ -51,7 +52,7 @@ class StoreObserver: NSObject {
   }
 }
 
-extension StoreObserver: SKPaymentTransactionObserver {
+extension StoreManager: SKPaymentTransactionObserver {
   func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
     transactions.forEach { transaction in
       switch transaction.transactionState {
@@ -61,16 +62,19 @@ extension StoreObserver: SKPaymentTransactionObserver {
         print("Purchasing or Deferred...")
       case .purchased, .failed:
         SKPaymentQueue.default().finishTransaction(transaction)
-        // TODO: If user navigates away from page, and then this returns, we should show something, like an alert or something. And maybe show history of donations?
       default:
         assertionFailure()
       }
-      delegate?.transactionDidUpdate(with: transaction.transactionState, errorDescription: transaction.error?.localizedDescription)
+      if let error = transaction.error as NSError?, SKError.paymentCancelled.rawValue == error.code {
+        delegate?.transactionDidCancel()
+      } else {
+        delegate?.transactionDidUpdate(with: transaction.transactionState, errorDescription: transaction.error?.localizedDescription)
+      }
     }
   }
 }
 
-extension StoreObserver: SKProductsRequestDelegate {
+extension StoreManager: SKProductsRequestDelegate {
   func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
     let products = response.products
     guard products.count > 0 else {

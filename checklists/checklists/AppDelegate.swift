@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
     updateNavigationBarAppearance()
 
-    SKPaymentQueue.default().add(StoreObserver.shared)
+    SKPaymentQueue.default().add(StoreManager.shared)
 
     // TODO: REMOVE DEBUG
     TestData.clearDatabase()
@@ -61,7 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
     // TODO: SAVE Realm state here??
-    SKPaymentQueue.default().remove(StoreObserver.shared)
+    SKPaymentQueue.default().remove(StoreManager.shared)
   }
 }
 

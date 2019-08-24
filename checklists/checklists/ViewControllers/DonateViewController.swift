@@ -56,11 +56,11 @@ class DonateViewController: UITableViewController {
     super.viewDidLoad()
     navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
 
-    let storeObserver = StoreObserver.shared
+    let storeManager = StoreManager.shared
 
-    if storeObserver.isAuthorizedForPayments {
-      storeObserver.delegate = self
-      storeObserver.fetchProducts()
+    if storeManager.isAuthorizedForPayments {
+      storeManager.delegate = self
+      storeManager.fetchProducts()
       state = .loading
     } else {
       state = .purchaseUnavailable
@@ -119,13 +119,13 @@ class DonateViewController: UITableViewController {
     guard let cell = tableView.cellForRow(at: indexPath) else { assertionFailure(); return }
     cell.isSelected = false
     guard indexPath.section == purchaseItemsSection else { return }
-    StoreObserver.shared.purchaseDonationProduct(product: loadedDonationProducts[indexPath.row].product)
+    StoreManager.shared.purchaseDonationProduct(product: loadedDonationProducts[indexPath.row].product)
     state = .purchasing
   }
 }
 
-extension DonateViewController: StoreObserverDelegate {
-  func errorRetrievingProducts(errorCode: StoreObserver.ErrorCode) {
+extension DonateViewController: StoreManagerDelegate {
+  func errorRetrievingProducts(errorCode: StoreManager.ErrorCode) {
     state = .errorLoadingProducts(errorCode: String(errorCode.rawValue))
   }
 
@@ -145,10 +145,13 @@ extension DonateViewController: StoreObserverDelegate {
       self.state = .successfulPurchase
     case .failed:
       self.state = .unsuccessfulPurchase(message: errorDescription ?? "Unknown")
-    // TODO: If user cancels, need to just have no message and remove activity indicator.
     default:
       assertionFailure()
       self.state = .productsLoaded(donationProducts: loadedDonationProducts)
     }
+  }
+
+  func transactionDidCancel() {
+    self.state = .productsLoaded(donationProducts: loadedDonationProducts)
   }
 }
