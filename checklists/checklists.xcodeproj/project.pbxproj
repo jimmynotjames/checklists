@@ -36,6 +36,7 @@
 		32E767DE22EA4743003C8634 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32E767DD22EA4743003C8634 /* Colors.xcassets */; };
 		32E767E022EA6476003C8634 /* CLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DF22EA6476003C8634 /* CLButton.swift */; };
 		32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4C84322875308000D63CF /* ItemTableViewCell.swift */; };
+		32F8F1AF2311E71900F12306 /* CLTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F8F1AE2311E71900F12306 /* CLTextField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +94,7 @@
 		32E767DD22EA4743003C8634 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		32E767DF22EA6476003C8634 /* CLButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLButton.swift; sourceTree = "<group>"; };
 		32F4C84322875308000D63CF /* ItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableViewCell.swift; sourceTree = "<group>"; };
+		32F8F1AE2311E71900F12306 /* CLTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLTextField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,6 +217,7 @@
 				32A964702291E14F00CAB7C0 /* ItemContentView.swift */,
 				32F4C84322875308000D63CF /* ItemTableViewCell.swift */,
 				322DE13A22FFE1F600C6E57A /* RoundCheckboxButton.swift */,
+				32F8F1AE2311E71900F12306 /* CLTextField.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -398,6 +401,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32F8F1AF2311E71900F12306 /* CLTextField.swift in Sources */,
 				32E767E022EA6476003C8634 /* CLButton.swift in Sources */,
 				32A9647A2297AE6700CAB7C0 /* TestData.swift in Sources */,
 				32D721F222AC56FB00794F6D /* ChecklistViewController.swift in Sources */,

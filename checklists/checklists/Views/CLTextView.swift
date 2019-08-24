@@ -152,6 +152,6 @@ class CLTextView: UITextView {
 extension CLTextView: UITextDropDelegate {
   // TODO: This may have long-term consequences in iPad and Mac App, if we move there. Maybe people will want to drop text in there??
   func textDroppableView(_ textDroppableView: UIView & UITextDroppable, proposalForDrop drop: UITextDropRequest) -> UITextDropProposal {
-    return UITextDropProposal(operation: .cancel)
+    return UITextDropProposal(operation: .forbidden)
   }
 }
