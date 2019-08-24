@@ -54,7 +54,9 @@ class ChecklistsViewController: UITableViewController {
     checklistViewController.checklist = checklist
     checklistViewController.isNewChecklist = true
     let navigationController = UINavigationController(rootViewController: checklistViewController)
-    present(navigationController, animated: true, completion: nil)
+    present(navigationController, animated: true) {
+      self.tableView.setContentOffset(CGPoint(x: 0.0, y: 0.0), animated: false)
+    }
   }
 
   @objc func menuButtonTapped() {
@@ -149,8 +151,6 @@ class ChecklistsViewController: UITableViewController {
 
       checklistViewController.checklist = checklists[indexPath.row]
     }
-    // Get the new view controller using segue.destination.
-    // Pass the selected object to the new view controller.
   }
 }
 
