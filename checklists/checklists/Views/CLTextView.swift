@@ -22,7 +22,7 @@ protocol CLTextViewDelegate: UITextViewDelegate {
 
 class CLTextView: UITextView {
 
-  var inputAccessoryButtonName: String = "Dismiss"
+  var inputAccessoryButtonName: String = "Done"
   var inputAccessoryButtonTappedAction: (() -> Void)? {
     didSet {
       if inputAccessoryButtonTappedAction != nil {
