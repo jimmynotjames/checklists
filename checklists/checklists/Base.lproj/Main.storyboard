@@ -85,7 +85,7 @@
                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                 </textField>
                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="qFy-KA-xUU" customClass="CLTextView" customModule="checklists" customModuleProvider="target">
-                                    <rect key="frame" x="16" y="58" width="382" height="42"/>
+                                    <rect key="frame" x="16" y="58" width="382" height="43"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="32" id="drI-X8-ia5"/>
@@ -102,7 +102,7 @@
                                 <constraint firstItem="YSw-DD-TTd" firstAttribute="top" secondItem="7Eq-WV-FuG" secondAttribute="top" constant="22" id="4W6-AH-dDm"/>
                                 <constraint firstItem="qFy-KA-xUU" firstAttribute="top" secondItem="YSw-DD-TTd" secondAttribute="bottom" constant="4" id="FRt-Ep-5hS"/>
                                 <constraint firstAttribute="trailing" secondItem="qFy-KA-xUU" secondAttribute="trailing" constant="16" id="MyU-me-mEU"/>
-                                <constraint firstAttribute="bottom" secondItem="qFy-KA-xUU" secondAttribute="bottom" constant="16" id="VwZ-uK-0ih"/>
+                                <constraint firstAttribute="bottom" secondItem="qFy-KA-xUU" secondAttribute="bottom" constant="15" id="VwZ-uK-0ih"/>
                                 <constraint firstAttribute="trailing" secondItem="YSw-DD-TTd" secondAttribute="trailing" constant="16" id="cH9-ZK-EC3"/>
                                 <constraint firstItem="YSw-DD-TTd" firstAttribute="leading" secondItem="7Eq-WV-FuG" secondAttribute="leading" constant="16" id="joG-7M-2un"/>
                                 <constraint firstItem="qFy-KA-xUU" firstAttribute="leading" secondItem="7Eq-WV-FuG" secondAttribute="leading" constant="16" id="orS-2a-vKK"/>
@@ -208,12 +208,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" name="defaultBackground"/>
                         <color key="sectionIndexColor" name="inactiveText"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" misplaced="YES" id="o8V-aA-BfP">
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="o8V-aA-BfP">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="64"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sm3-AY-i4r">
-                                    <rect key="frame" x="16" y="14" width="382" height="29"/>
+                                    <rect key="frame" x="16" y="14" width="382" height="30"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
                                     <nil key="textColor"/>
@@ -223,7 +223,7 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="trailing" secondItem="Sm3-AY-i4r" secondAttribute="trailing" constant="16" id="Kv4-h1-B5F"/>
-                                <constraint firstAttribute="bottom" secondItem="Sm3-AY-i4r" secondAttribute="bottom" constant="21" id="Rby-ii-zCp"/>
+                                <constraint firstAttribute="bottom" secondItem="Sm3-AY-i4r" secondAttribute="bottom" constant="20" id="Rby-ii-zCp"/>
                                 <constraint firstItem="Sm3-AY-i4r" firstAttribute="leading" secondItem="o8V-aA-BfP" secondAttribute="leading" constant="16" id="UXE-Tc-PRT"/>
                                 <constraint firstItem="Sm3-AY-i4r" firstAttribute="top" secondItem="o8V-aA-BfP" secondAttribute="top" constant="14" id="WrJ-Hr-VgS"/>
                             </constraints>
@@ -341,12 +341,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" name="defaultBackground"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" misplaced="YES" id="6VW-RH-4Zy">
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="6VW-RH-4Zy">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="72"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Donate!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jhk-JE-A8C">
-                                    <rect key="frame" x="16" y="14" width="382" height="29"/>
+                                    <rect key="frame" x="16" y="14" width="382" height="30"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
                                     <nil key="textColor"/>
@@ -358,7 +358,7 @@
                                 <constraint firstItem="Jhk-JE-A8C" firstAttribute="top" secondItem="6VW-RH-4Zy" secondAttribute="top" constant="14" id="6x5-au-WNF"/>
                                 <constraint firstItem="Jhk-JE-A8C" firstAttribute="leading" secondItem="6VW-RH-4Zy" secondAttribute="leading" constant="16" id="8vs-sa-PQD"/>
                                 <constraint firstAttribute="trailing" secondItem="Jhk-JE-A8C" secondAttribute="trailing" constant="16" id="QN3-pa-4nS"/>
-                                <constraint firstAttribute="bottom" secondItem="Jhk-JE-A8C" secondAttribute="bottom" constant="29" id="W5q-gu-lGE"/>
+                                <constraint firstAttribute="bottom" secondItem="Jhk-JE-A8C" secondAttribute="bottom" constant="28" id="W5q-gu-lGE"/>
                             </constraints>
                         </view>
                         <prototypes>
