@@ -389,6 +389,7 @@
                                         <constraint firstItem="1ij-IS-q0R" firstAttribute="leading" secondItem="tT9-aR-X8Y" secondAttribute="leading" constant="100" id="HSV-41-nym"/>
                                         <constraint firstAttribute="bottom" secondItem="1ij-IS-q0R" secondAttribute="bottom" constant="8" id="PxW-z4-zUN"/>
                                         <constraint firstItem="Ltc-bm-XFV" firstAttribute="centerY" secondItem="tT9-aR-X8Y" secondAttribute="centerY" id="bEY-GR-eDx"/>
+                                        <constraint firstItem="1ij-IS-q0R" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Ltc-bm-XFV" secondAttribute="trailing" priority="999" constant="16" id="bhQ-5K-F46"/>
                                         <constraint firstItem="Ltc-bm-XFV" firstAttribute="leading" secondItem="tT9-aR-X8Y" secondAttribute="leading" constant="16" id="cEo-TB-Fni"/>
                                         <constraint firstAttribute="trailing" secondItem="1ij-IS-q0R" secondAttribute="trailing" constant="16" id="vgF-xk-v1P"/>
                                     </constraints>
@@ -420,6 +421,8 @@
                                     <constraints>
                                         <constraint firstItem="ikC-5p-eSV" firstAttribute="top" secondItem="zLe-PU-LKU" secondAttribute="top" constant="8" id="5M8-iI-OfB"/>
                                         <constraint firstAttribute="trailing" secondItem="ikC-5p-eSV" secondAttribute="trailing" constant="16" id="GEi-K9-DrU"/>
+                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ikC-5p-eSV" secondAttribute="trailing" priority="999" constant="16" id="I2y-dl-IWB"/>
+                                        <constraint firstItem="ikC-5p-eSV" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="dbM-8P-h8s" secondAttribute="trailing" priority="999" constant="10" id="IZX-3e-tqv"/>
                                         <constraint firstAttribute="bottom" secondItem="ikC-5p-eSV" secondAttribute="bottom" constant="8" id="Lw8-Uy-Wh9"/>
                                         <constraint firstItem="ikC-5p-eSV" firstAttribute="leading" secondItem="zLe-PU-LKU" secondAttribute="leading" constant="80" id="PCn-3H-MH0"/>
                                         <constraint firstItem="dbM-8P-h8s" firstAttribute="leading" secondItem="zLe-PU-LKU" secondAttribute="leading" constant="16" id="XjV-dV-wmO"/>
