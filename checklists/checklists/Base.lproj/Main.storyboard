@@ -72,7 +72,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" name="defaultBackground"/>
                         <view key="tableHeaderView" contentMode="scaleToFill" id="7Eq-WV-FuG">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="116"/>
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="117"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <textField opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Name" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="YSw-DD-TTd" customClass="CLTextField" customModule="checklists" customModuleProvider="target">
@@ -85,7 +85,7 @@
                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                 </textField>
                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="qFy-KA-xUU" customClass="CLTextView" customModule="checklists" customModuleProvider="target">
-                                    <rect key="frame" x="16" y="58" width="382" height="43"/>
+                                    <rect key="frame" x="16" y="58" width="382" height="44"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="32" id="drI-X8-ia5"/>
@@ -113,7 +113,7 @@
                         </view>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="notInUse" id="P2f-C5-jUC">
-                                <rect key="frame" x="0.0" y="144" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="145" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="P2f-C5-jUC" id="DL3-cc-aF2">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -209,11 +209,11 @@
                         <color key="backgroundColor" name="defaultBackground"/>
                         <color key="sectionIndexColor" name="inactiveText"/>
                         <view key="tableHeaderView" contentMode="scaleToFill" id="o8V-aA-BfP">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="64"/>
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="65"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sm3-AY-i4r">
-                                    <rect key="frame" x="16" y="14" width="382" height="30"/>
+                                    <rect key="frame" x="16" y="14" width="382" height="31"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
                                     <nil key="textColor"/>
@@ -230,7 +230,7 @@
                         </view>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ThemeItemRow" rowHeight="48" id="raD-z2-keY">
-                                <rect key="frame" x="0.0" y="119.5" width="414" height="48"/>
+                                <rect key="frame" x="0.0" y="120.5" width="414" height="48"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="raD-z2-keY" id="bpR-tn-st2">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="48"/>
@@ -267,7 +267,7 @@
                                 <color key="tintColor" name="teal"/>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="InfoRow" id="nSn-59-ESl">
-                                <rect key="frame" x="0.0" y="167.5" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="168.5" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nSn-59-ESl" id="fib-Da-av7">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -346,7 +346,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Donate!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jhk-JE-A8C">
-                                    <rect key="frame" x="16" y="14" width="382" height="30"/>
+                                    <rect key="frame" x="16" y="14" width="382" height="31"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
                                     <nil key="textColor"/>
@@ -358,7 +358,7 @@
                                 <constraint firstItem="Jhk-JE-A8C" firstAttribute="top" secondItem="6VW-RH-4Zy" secondAttribute="top" constant="14" id="6x5-au-WNF"/>
                                 <constraint firstItem="Jhk-JE-A8C" firstAttribute="leading" secondItem="6VW-RH-4Zy" secondAttribute="leading" constant="16" id="8vs-sa-PQD"/>
                                 <constraint firstAttribute="trailing" secondItem="Jhk-JE-A8C" secondAttribute="trailing" constant="16" id="QN3-pa-4nS"/>
-                                <constraint firstAttribute="bottom" secondItem="Jhk-JE-A8C" secondAttribute="bottom" constant="28" id="W5q-gu-lGE"/>
+                                <constraint firstAttribute="bottom" secondItem="Jhk-JE-A8C" secondAttribute="bottom" constant="27" id="W5q-gu-lGE"/>
                             </constraints>
                         </view>
                         <prototypes>
