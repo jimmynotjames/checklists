@@ -290,8 +290,9 @@ extension ChecklistViewController {
         self.tableView.contentInset = contentInsets
         self.tableView.scrollIndicatorInsets = contentInsets
         self.tableView.scrollRectToVisible(cellFrame, animated: false)
-        // Known issue: As of iOS 12, when animated = false, it scrolls just one cell too much. Weird. Doesn't happen when animated = true,
-        // but then the animation is too slow and when user types quickly after tapping to edit, the animation halts.
+        // Known issue: As of iOS 12, when animated = false, on ONLY THE SIMULATOR, it scrolls just one cell too much. Weird.
+        // Doesn't happen when animated = true, but then the animation is too slow and when user types quickly after tapping to edit,
+        // the animation halts.
       }
     }
   }
