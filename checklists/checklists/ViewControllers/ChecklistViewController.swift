@@ -12,7 +12,16 @@ private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
 private let defaultChecklistName = "Checklist"
 
-class ChecklistViewController: UITableViewController {
+/*
+ Discussion about UITableViewController:
+ Had to ditch it because the keyboard dynamics weren't working. The two main issues:
+ 1. When the user tapped to edit a field and quickly started typing, it would halt the animation to move the cell above the keyboard.
+ 2. When the list is super-long with lots of notes, the entire tableView would jitter up and down very quickly and/or
+    have the wrong contentOffset.
+ For some reason, when I implement manually with a couple slightly different coding things, this is all fixed. Urgghh...
+ */
+class ChecklistViewController: UIViewController {
+  @IBOutlet var tableView: UITableView!
   var checklist: Checklist! // Expected to be set on seque or right after init(). Behavior undefined if this is set/reset after viewDidLoad().
 
   @IBOutlet weak var checklistInfoHeaderView: UIView!
@@ -29,6 +38,12 @@ class ChecklistViewController: UITableViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardAppear(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardDisappear(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
+
+    tableView.delegate = self
+    tableView.dataSource = self
 
     tableView.dragInteractionEnabled = true
     tableView.dragDelegate = self
@@ -82,6 +97,8 @@ class ChecklistViewController: UITableViewController {
       isNewChecklist = false // safeguard against future times viewWillAppear/viewDidAppear might get called.
       isJumpingToFirstItem = true
       checklistNameTextField.becomeFirstResponder()
+    } else {
+      self.tableView.flashScrollIndicators()
     }
   }
 
@@ -116,28 +133,6 @@ class ChecklistViewController: UITableViewController {
     } else {
       isResetting = true
       self.scrollToTop()
-    }
-  }
-
-  override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    let currentY: CGFloat = scrollView.contentOffset.y
-    let thresholdY: CGFloat = 52.0
-
-    if isResetting == true && currentY == 0.0 {
-      isResetting = false
-      self.tableView.reloadData()
-    }
-    if currentY <= thresholdY && navigationItem.title != nil {
-      UIView.animate(withDuration: 0.4, animations: {
-        self.navigationItem.title = nil
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-      })
-    }
-    if currentY > thresholdY && navigationItem.title == nil {
-        UIView.animate(withDuration: 0.4, animations: {
-          self.navigationItem.title = self.checklist.name
-          self.navigationController?.navigationBar.shadowImage = nil
-        })
     }
   }
 
@@ -197,18 +192,18 @@ class ChecklistViewController: UITableViewController {
     checklist.remove(at: index)
     tableView.deleteRows(at: [IndexPath(item: index, section: itemsSection)], with: .fade)
   }
+}
 
-  // MARK: - Table view data source
-
-  override func numberOfSections(in tableView: UITableView) -> Int {
+extension ChecklistViewController: UITableViewDataSource {
+  func numberOfSections(in tableView: UITableView) -> Int {
     return 1
   }
 
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return checklist.items.count
   }
 
-  override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     assert(indexPath.row >= 0 && indexPath.row < checklist.items.count && indexPath.section == itemsSection)
     guard let cell = tableView.dequeueReusableCell(withIdentifier: itemCellReuseIdentifier, for: indexPath) as? ItemTableViewCell else { assertionFailure(); return UITableViewCell() }
     cell.itemContentView.item = checklist.items[indexPath.row]
@@ -216,11 +211,18 @@ class ChecklistViewController: UITableViewController {
     return cell
   }
 
-  override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-    return false
+  func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+    guard indexPath.section == itemsSection else { assertionFailure(); return false }
+    return true
   }
 
-  override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+  func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+    checklist.moveItem(from: sourceIndexPath.row, to: destinationIndexPath.row)
+  }
+}
+
+extension ChecklistViewController: UITableViewDelegate {
+  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
     guard indexPath.section == itemsSection else { assertionFailure(); return }
     if editingStyle == .delete {
       deleteItem(at: indexPath.row)
@@ -229,18 +231,86 @@ class ChecklistViewController: UITableViewController {
     }
   }
 
-  override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+  func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+    return false
+  }
+
+  func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
     guard indexPath.section == itemsSection else { assertionFailure(); return .none }
     return .delete
   }
+}
 
-  override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-    guard indexPath.section == itemsSection else { assertionFailure(); return false }
-    return true
+extension ChecklistViewController: UIScrollViewDelegate {
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    let currentY: CGFloat = scrollView.contentOffset.y
+    let thresholdY: CGFloat = 52.0
+
+    if isResetting == true && currentY == 0.0 {
+      isResetting = false
+      self.tableView.reloadData()
+    }
+    if currentY <= thresholdY && navigationItem.title != nil {
+      UIView.animate(withDuration: 0.4, animations: {
+        self.navigationItem.title = nil
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+      })
+    }
+    if currentY > thresholdY && navigationItem.title == nil {
+      UIView.animate(withDuration: 0.4, animations: {
+        self.navigationItem.title = self.checklist.name
+        self.navigationController?.navigationBar.shadowImage = nil
+      })
+    }
+  }
+}
+
+// MARK: - Keyboard dynamics.
+// https://developer.apple.com/library/archive/documentation/StringsTextFonts/Conceptual/TextAndWebiPhoneOS/KeyboardManagement/KeyboardManagement.html
+extension ChecklistViewController {
+  @objc func onKeyboardAppear(_ notification: NSNotification) {
+    guard
+      let userInfo = notification.userInfo,
+      let keyboardHeight = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.size.height
+      else { assertionFailure(); return }
+
+    let cell = findEditingCell()
+
+    var visibleFrame = tableView.frame
+    visibleFrame.size.height = visibleFrame.size.height - keyboardHeight
+
+    // Conversion is unnecessary, as Cell's superview is actually tableView in iOS 12, but paranoid future-proofing.
+    let cellFrame = tableView.convert(cell.frame, from: cell.superview)
+
+    if !visibleFrame.contains(cellFrame) { // If even partially covered, move it.
+      let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyboardHeight, right: 0.0)
+      // iOS 12: If user taps to edit, and then quickly starts typing, it halts the animation to scroll the cell above
+      // the keyboard if using the default scrollRectToVisible with animated=true, so need this animation block. Also, snappier.
+      UIView.animate(withDuration: 0.1) {
+        self.tableView.contentInset = contentInsets
+        self.tableView.scrollIndicatorInsets = contentInsets
+        self.tableView.scrollRectToVisible(cellFrame, animated: false)
+        // Known issue: As of iOS 12, when animated = false, it scrolls just one cell too much. Weird. Doesn't happen when animated = true,
+        // but then the animation is too slow and when user types quickly after tapping to edit, the animation halts.
+      }
+    }
   }
 
-  override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-    checklist.moveItem(from: sourceIndexPath.row, to: destinationIndexPath.row)
+  @objc func onKeyboardDisappear(_ notification: NSNotification) {
+    UIView.animate(withDuration: 0.1) { // At bottom of list, it will animate back down more smoothly.
+      self.tableView.contentInset = .zero
+      self.tableView.scrollIndicatorInsets = .zero
+    }
+  }
+
+  private func findEditingCell() -> UITableViewCell {
+    for cell in tableView.visibleCells {
+      if let cell = cell as? ItemTableViewCell, cell.itemContentView.isEditing {
+        return cell
+      }
+    }
+    assertionFailure()
+    return UITableViewCell()
   }
 }
 

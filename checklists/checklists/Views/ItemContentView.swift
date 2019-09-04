@@ -48,7 +48,11 @@ class ItemContentView: UIView {
 
   weak var delegate: ItemContentViewDelegate?
 
-  var isEditing = false
+  var isEditing: Bool {
+    get {
+      return nameTextView.isFirstResponder || notesTextView.isFirstResponder
+    }
+  }
 
   private lazy var checkboxButton: CheckboxButton = {
     let button = CheckboxButton()
@@ -103,10 +107,6 @@ class ItemContentView: UIView {
     fatalError("This init() not supported.")
   }
 
-  func setDelegate(_ delegate: ItemContentViewDelegate) {
-    self.delegate =  delegate
-  }
-
   func refreshHeight() {
     updateTextViewHeight(isExpanded: item?.notes?.count ?? 0 > 0)
   }
@@ -122,7 +122,6 @@ class ItemContentView: UIView {
   }
 
   func startEditing() {
-    isEditing = true
     _ = nameTextView.becomeFirstResponder()
   }
 
@@ -167,14 +166,12 @@ class ItemContentView: UIView {
     if !wasInputFieldTapped {
       refreshHeight()
       delegate?.itemContentViewDidFinishEditing(self)
-      isEditing = false
     }
   }
 }
 
 extension ItemContentView: UITextViewDelegate {
   func textViewDidBeginEditing(_ textView: UITextView) {
-    isEditing = true
     if textView == nameTextView {
       delegate?.itemContentViewNameFieldDidBeginEditing(self)
     }

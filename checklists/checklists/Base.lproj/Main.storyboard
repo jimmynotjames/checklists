@@ -71,7 +71,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" name="defaultBackground"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" id="7Eq-WV-FuG">
+                        <view key="tableHeaderView" contentMode="scaleToFill" misplaced="YES" id="7Eq-WV-FuG">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="118"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <subviews>
@@ -84,7 +84,7 @@
                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                 </textField>
-                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="qFy-KA-xUU" customClass="CLTextView" customModule="checklists" customModuleProvider="target">
+                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qFy-KA-xUU" customClass="CLTextView" customModule="checklists" customModuleProvider="target">
                                     <rect key="frame" x="16" y="58" width="382" height="45"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
@@ -131,6 +131,7 @@
                         <outlet property="checklistInfoHeaderView" destination="7Eq-WV-FuG" id="096-dL-yfj"/>
                         <outlet property="checklistNameTextField" destination="YSw-DD-TTd" id="AFN-uK-y4N"/>
                         <outlet property="checklistNotesTextView" destination="qFy-KA-xUU" id="55X-eP-yqm"/>
+                        <outlet property="tableView" destination="JJz-SV-Ryp" id="HRG-1K-ajG"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U9f-Ko-PlG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -208,12 +209,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" name="defaultBackground"/>
                         <color key="sectionIndexColor" name="inactiveText"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" id="o8V-aA-BfP">
+                        <view key="tableHeaderView" contentMode="scaleToFill" misplaced="YES" id="o8V-aA-BfP">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="66"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sm3-AY-i4r">
-                                    <rect key="frame" x="16" y="14" width="382" height="32"/>
+                                    <rect key="frame" x="16" y="14" width="382" height="29"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
                                     <nil key="textColor"/>
@@ -341,12 +342,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" name="defaultBackground"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" id="6VW-RH-4Zy">
+                        <view key="tableHeaderView" contentMode="scaleToFill" misplaced="YES" id="6VW-RH-4Zy">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="73"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Donate!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jhk-JE-A8C">
-                                    <rect key="frame" x="16" y="14" width="382" height="32"/>
+                                    <rect key="frame" x="16" y="14" width="382" height="29"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
                                     <nil key="textColor"/>
