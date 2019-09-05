@@ -57,7 +57,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3220B11A22E93C6A003180B9 /* GrowingTextView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GrowingTextView.framework; path = Carthage/Build/iOS/GrowingTextView.framework; sourceTree = "<group>"; };
 		322CA9FA22EEA6A2009ACC4D /* MainMenuTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuTableViewController.swift; sourceTree = "<group>"; };
 		322DE13A22FFE1F600C6E57A /* RoundCheckboxButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundCheckboxButton.swift; sourceTree = "<group>"; };
 		322DE13C22FFE4E500C6E57A /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -186,7 +185,6 @@
 			isa = PBXGroup;
 			children = (
 				3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */,
-				3220B11A22E93C6A003180B9 /* GrowingTextView.framework */,
 				32A964732291ECA300CAB7C0 /* Realm.framework */,
 				32A964722291ECA300CAB7C0 /* RealmSwift.framework */,
 				323ADC9F228292A400644931 /* StoreKit.framework */,
