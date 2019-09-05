@@ -17,6 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+    Flurry.startSession("BQTJY88YMP27MFMRRJTY")
+
     updateNavigationBarAppearance()
 
     SKPaymentQueue.default().add(StoreManager.shared)
