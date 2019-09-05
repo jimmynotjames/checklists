@@ -80,6 +80,12 @@ class DonateViewController: UITableViewController {
     }
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    Flurry.logPageView()
+    AnalyticsManager.logDonatePageViewed()
+  }
+
   @objc func doneButtonTapped() {
     dismiss(animated: true, completion: nil)
   }
@@ -180,14 +186,17 @@ class DonateViewController: UITableViewController {
     guard let cell = tableView.cellForRow(at: indexPath) else { assertionFailure(); return }
     cell.isSelected = false
     guard indexPath.section == purchaseItemsSection else { return }
-    StoreManager.shared.purchaseDonationProduct(product: loadedDonationProducts[indexPath.row].product)
+    let product = loadedDonationProducts[indexPath.row].product
+    StoreManager.shared.purchaseDonationProduct(product: product)
     state = .purchasing
+    AnalyticsManager.logDonation(productId: product.productIdentifier)
   }
 }
 
 extension DonateViewController: StoreManagerDelegate {
   func errorRetrievingProducts(errorCode: StoreManager.ErrorCode) {
     state = .errorLoadingProducts(errorCode: String(errorCode.rawValue))
+    AnalyticsManager.logProductLoadingError(errorMessage: String(errorCode.rawValue))
   }
 
   func didReceiveProducts(donationProducts: [DonationProduct]) {
@@ -205,7 +214,9 @@ extension DonateViewController: StoreManagerDelegate {
     case .purchased:
       self.state = .successfulPurchase
     case .failed:
-      self.state = .unsuccessfulPurchase(message: errorDescription ?? "Unknown")
+      let message = errorDescription ?? "Unknown"
+      self.state = .unsuccessfulPurchase(message: message)
+      AnalyticsManager.logPurchaseError(errorMessage: message)
     default:
       assertionFailure()
       self.state = .productsLoaded(donationProducts: loadedDonationProducts)

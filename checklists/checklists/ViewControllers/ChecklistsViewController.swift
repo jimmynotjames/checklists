@@ -39,9 +39,11 @@ class ChecklistsViewController: UITableViewController {
     super.viewDidAppear(animated)
     if isFirstTimeLaunch {
       isFirstTimeLaunch = false
+      Flurry.logAllPageViews(forTarget: navigationController)
     } else {
       tableView.reloadData()
     }
+    AnalyticsManager.logChecklistsViewed(numChecklists: checklists.count)
   }
 
   @objc func addChecklistButtonTapped() {
@@ -207,8 +209,8 @@ extension ChecklistsViewController: MainMenuTableViewControllerDelegate {
 
   func openDonatePage() {
     let storyBoard = UIStoryboard(name: "Main", bundle: nil)
-    let settingsViewController = storyBoard.instantiateViewController(withIdentifier: "Donate")
-    present(settingsViewController, animated: true)
+    let donateViewController = storyBoard.instantiateViewController(withIdentifier: "Donate")
+    present(donateViewController, animated: true)
   }
 }
 

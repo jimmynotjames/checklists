@@ -44,19 +44,21 @@ class MainMenuTableViewController: UITableViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-
     tableView.contentInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 0.0, right: 0.0)
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    AnalyticsManager.logMainMenuViewed()
   }
 
   // MARK: - Table view data source
 
   override func numberOfSections(in tableView: UITableView) -> Int {
-    // #warning Incomplete implementation, return the number of sections
     return 1
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    // #warning Incomplete implementation, return the number of rows
     return MainMenuTableViewController.numberOfRows
   }
 
@@ -87,9 +89,11 @@ class MainMenuTableViewController: UITableViewController {
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     switch indexPath.row {
     case 0:
+      AnalyticsManager.logSendFeedback()
       guard let url = URL(string: "mailto:jimmyho.appfeedback@gmail.com?subject=Feedback%20for%20Checklists%20App") else { assertionFailure(); return }
       UIApplication.shared.open(url, options: [:], completionHandler: nil)
     case 1:
+      AnalyticsManager.logRateInAppStore()
       guard let url = URL(string: "https://itunes.apple.com/app/id1475724536?action=write-review") else { assertionFailure(); return }
       UIApplication.shared.open(url, options: [:], completionHandler: nil)
     case 2:

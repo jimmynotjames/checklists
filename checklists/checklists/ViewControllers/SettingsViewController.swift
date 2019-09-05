@@ -18,6 +18,12 @@ class SettingsViewController: UITableViewController {
     tableView.tableFooterView = tableFooterView(tableWidth: tableView.frame.size.width)
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    Flurry.logPageView()
+    AnalyticsManager.logSettingsViewed()
+  }
+
   @objc func doneButtonTapped() {
     dismiss(animated: true, completion: nil)
   }
@@ -110,6 +116,7 @@ class SettingsViewController: UITableViewController {
       }
       tableView.reloadData()
     case infoSection:
+      AnalyticsManager.logViewPrivacyPolicy()
       guard let url = URL(string: "https://www.termsfeed.com/privacy-policy/0420e699b562320b2beb80af0a4e08b9") else { assertionFailure(); return }
       UIApplication.shared.open(url, options: [:], completionHandler: nil)
     default:

@@ -100,6 +100,7 @@ class ChecklistViewController: UIViewController {
     } else {
       self.tableView.flashScrollIndicators()
     }
+    AnalyticsManager.logChecklistViewed(numItems: checklist.items.count, numItemsWithNotes: checklist.items.filter({ $0.notes != nil && $0.notes!.count > 0 }).count)
   }
 
   override func viewWillDisappear(_ animated: Bool) {
