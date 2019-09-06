@@ -101,10 +101,6 @@ class Checklist: Object {
   }
 }
 
-/*
- TODO: I haven't figured out how to do this via the schema yet, but I want
- to constrain is so an Item is attached to only one Checklist.
- */
 class Item: Object {
 
   enum Status: Int {

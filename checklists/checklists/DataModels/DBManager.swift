@@ -15,7 +15,7 @@ class DBManager {
       return try Realm()
     } catch let error as NSError {
       fatalError(error.description)
-      // TODO: Try to some more elegant error handling here?
+      // TODO: Try to some more elegant error handling here? Also, log to Flurry
     }
   }()
 
@@ -26,7 +26,7 @@ class DBManager {
       }
     } catch let error as NSError {
       fatalError(error.description)
-      // TODO: Try to some more elegant error handling here?
+      // TODO: Try to some more elegant error handling here? Also, log to Flurry
     }
   }
 }

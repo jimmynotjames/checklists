@@ -13,7 +13,7 @@ private let checklistsSection = 0
 
 class ChecklistsViewController: UITableViewController {
 
-  private var isFirstTimeLaunch: Bool = true // TODO: MAY NOT NEED THIS: https://developer.apple.com/documentation/uikit/uitableviewcontroller
+  private var isFirstTimeLaunch: Bool = true
 
   private var checklists: Results<Checklist>!
 
@@ -47,6 +47,7 @@ class ChecklistsViewController: UITableViewController {
   }
 
   @objc func addChecklistButtonTapped() {
+    AnalyticsManager.logNewChecklist()
     guard let checklistViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Checklist") as? ChecklistViewController else { assertionFailure(); return }
     let sortNumber = checklists.isEmpty ? Checklist.startingSortNumber() : Checklist.calculateSortNumber(before: checklists.first!)
     let checklist = Checklist(name: "", notes: nil, sortNumber: sortNumber, items: [])
@@ -111,7 +112,6 @@ class ChecklistsViewController: UITableViewController {
       present(alertController, animated: true, completion: nil)
     } else if editingStyle == .insert {
       assertionFailure()
-      // TODO: Do something else here??
     }
   }
 
