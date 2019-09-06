@@ -157,14 +157,12 @@ class SettingsViewController: UITableViewController {
   }
 
   private func tableFooterView(tableWidth: CGFloat) -> UILabel {
-    let versionNumberString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? "0.0.0"
-    let buildNumberString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") ?? "0"
     // Apple says that a tableFooterView is auto-sized to the proper height and width, but as of iOS 12, that doesn't seem to work.
     let label = UILabel(frame: CGRect(x: 0.0, y: 0.0, width: tableWidth, height: 36.0))
     label.font = label.font.withSize(14.0)
     label.textColor = .lightGray
     label.textAlignment = .center
-    label.text = "Version \(versionNumberString) (\(buildNumberString))"
+    label.text = "Version \(SettingsManager.versionBuildString)"
     return label
   }
 }

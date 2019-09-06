@@ -22,4 +22,10 @@ class SettingsManager {
     currentAppTheme = appTheme
     // TODO: notifications
   }
+
+  static var versionBuildString: String = {
+    let versionNumberString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? "0.0.0"
+    let buildNumberString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") ?? "0"
+    return "\(versionNumberString) (\(buildNumberString))"
+  }()
 }

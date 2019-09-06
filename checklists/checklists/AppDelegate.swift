@@ -16,10 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
   var window: UIWindow?
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
-    // TODO: Change Flurry Log Level before publishing app? It might only be console logging.
-    let versionNumberString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0"
-    let sessionBuilder = FlurrySessionBuilder.init().withCrashReporting(true)?.withLogLevel(FlurryLogLevelAll)?.withAppVersion(versionNumberString)
+    let sessionBuilder = FlurrySessionBuilder.init().withCrashReporting(true)?.withLogLevel(FlurryLogLevelAll)?.withAppVersion(SettingsManager.versionBuildString)
     Flurry.startSession("BQTJY88YMP27MFMRRJTY", with: sessionBuilder)
 
     updateNavigationBarAppearance()
