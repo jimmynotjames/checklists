@@ -16,11 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
   var window: UIWindow?
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    let sessionBuilder = FlurrySessionBuilder.init().withCrashReporting(true)?.withLogLevel(FlurryLogLevelAll)?.withAppVersion(SettingsManager.versionBuildString)
-    Flurry.startSession("BQTJY88YMP27MFMRRJTY", with: sessionBuilder)
+    AnalyticsManager.appLaunched()
 
     updateNavigationBarAppearance()
-
     SKPaymentQueue.default().add(StoreManager.shared)
 
     // TODO: REMOVE DEBUG

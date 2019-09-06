@@ -26,6 +26,10 @@ class SettingsManager {
   static var versionBuildString: String = {
     let versionNumberString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? "0.0.0"
     let buildNumberString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") ?? "0"
+    #if DEBUG
+    return "\(versionNumberString) (\(buildNumberString)) - DEBUG"
+    #else
     return "\(versionNumberString) (\(buildNumberString))"
+    #endif
   }()
 }
