@@ -18,6 +18,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     AnalyticsManager.appLaunched()
 
+    // From the Apple docs, I'm slightly worried about power usage by turning this on, but can find nothing online saying this is a power hog.
+    // TODO-DEFERRED: Nevertheless, once we collect stats on landscape/portrait, maybe remove this?
+    UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+    NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged), name: UIDevice.orientationDidChangeNotification, object: nil)
+
     updateNavigationBarAppearance()
     SKPaymentQueue.default().add(StoreManager.shared)
 
@@ -37,6 +42,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     navigationBarAppearance.isTranslucent = false
     navigationBarAppearance.barTintColor = Colors.defaultBackground
     navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: Colors.teal]
+  }
+
+  @objc func orientationChanged(notification: NSNotification!) {
+    AnalyticsManager.logDeviceOrientationChange()
   }
 
   func applicationWillResignActive(_ application: UIApplication) {
@@ -61,6 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
     SKPaymentQueue.default().remove(StoreManager.shared)
+    UIDevice.current.endGeneratingDeviceOrientationNotifications() // Honestly, I doubt this is necessary, but whatevs.
   }
 }
 
