@@ -299,8 +299,9 @@
 			buildPhases = (
 				323ADC6322828C0900644931 /* Sources */,
 				323ADC6422828C0900644931 /* Frameworks */,
-				323ADC6522828C0900644931 /* Resources */,
 				32F040422335BA51007CB244 /* Embed Frameworks */,
+				32F040482336E70B007CB244 /* ShellScript */,
+				323ADC6522828C0900644931 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -428,6 +429,29 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		32F040482336E70B007CB244 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/ToastSwiftFramework.framework",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n/usr/local/bin/carthage copy-frameworks\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		323ADC6322828C0900644931 /* Sources */ = {
