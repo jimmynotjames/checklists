@@ -193,37 +193,46 @@ class DonateViewController: UITableViewController {
   }
 }
 
+// As of Xcode 11/iOS 13, events from StoreKit seems to happening off main thread, so need to wrap stuff.
 extension DonateViewController: StoreManagerDelegate {
   func errorRetrievingProducts(errorCode: StoreManager.ErrorCode) {
-    state = .errorLoadingProducts(errorCode: String(errorCode.rawValue))
-    AnalyticsManager.logProductLoadingError(errorMessage: String(errorCode.rawValue))
+    DispatchQueue.main.async {
+      self.state = .errorLoadingProducts(errorCode: String(errorCode.rawValue))
+      AnalyticsManager.logProductLoadingError(errorMessage: String(errorCode.rawValue))
+    }
   }
 
   func didReceiveProducts(donationProducts: [DonationProduct]) {
-    state = .productsLoaded(donationProducts: donationProducts)
+    DispatchQueue.main.async {
+      self.state = .productsLoaded(donationProducts: donationProducts)
+    }
   }
 
   func transactionDidUpdate(with state: SKPaymentTransactionState, errorDescription: String?) {
-    switch state {
-    case .restored:
-      assertionFailure() // This should never happen.
-    case .deferred:
-      self.state = .deferredPurchase
-    case .purchasing:
-      print("Purchasing...")
-    case .purchased:
-      self.state = .successfulPurchase
-    case .failed:
-      let message = errorDescription ?? "Unknown"
-      self.state = .unsuccessfulPurchase(message: message)
-      AnalyticsManager.logPurchaseError(errorMessage: message)
-    default:
-      assertionFailure()
-      self.state = .productsLoaded(donationProducts: loadedDonationProducts)
+    DispatchQueue.main.async {
+      switch state {
+      case .restored:
+        assertionFailure() // This should never happen.
+      case .deferred:
+        self.state = .deferredPurchase
+      case .purchasing:
+        print("Purchasing...")
+      case .purchased:
+        self.state = .successfulPurchase
+      case .failed:
+        let message = errorDescription ?? "Unknown"
+        self.state = .unsuccessfulPurchase(message: message)
+        AnalyticsManager.logPurchaseError(errorMessage: message)
+      default:
+        assertionFailure()
+        self.state = .productsLoaded(donationProducts: self.loadedDonationProducts)
+      }
     }
   }
 
   func transactionDidCancel() {
-    self.state = .productsLoaded(donationProducts: loadedDonationProducts)
+    DispatchQueue.main.async {
+      self.state = .productsLoaded(donationProducts: self.loadedDonationProducts)
+    }
   }
 }
