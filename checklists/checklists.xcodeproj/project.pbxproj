@@ -23,7 +23,6 @@
 		323FCF2922F2A33E00F761BB /* CLTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FCF2822F2A33E00F761BB /* CLTextView.swift */; };
 		324A03222303A38700958D3E /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324A03212303A38700958D3E /* StoreManager.swift */; };
 		324A03242303AABB00958D3E /* DonateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324A03232303AABB00958D3E /* DonateViewController.swift */; };
-		3255F49C2305DC850018CB92 /* ToastSwiftFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */; };
 		32A928992320A032005F9B34 /* libFlurry_9.3.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A928982320A032005F9B34 /* libFlurry_9.3.1.a */; };
 		32A9289F2320A76D005F9B34 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A9289E2320A76D005F9B34 /* SystemConfiguration.framework */; };
 		32A928A42320CED0005F9B34 /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A928A32320CED0005F9B34 /* AnalyticsManager.swift */; };
@@ -38,6 +37,12 @@
 		32E767DC22EA4639003C8634 /* AddItemButtonTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DB22EA4639003C8634 /* AddItemButtonTableFooterView.swift */; };
 		32E767DE22EA4743003C8634 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32E767DD22EA4743003C8634 /* Colors.xcassets */; };
 		32E767E022EA6476003C8634 /* CLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DF22EA6476003C8634 /* CLButton.swift */; };
+		32F040402335BA51007CB244 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964732291ECA300CAB7C0 /* Realm.framework */; };
+		32F040412335BA51007CB244 /* Realm.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964732291ECA300CAB7C0 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		32F040432335BA68007CB244 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964722291ECA300CAB7C0 /* RealmSwift.framework */; };
+		32F040442335BA68007CB244 /* RealmSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964722291ECA300CAB7C0 /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		32F040452335BC79007CB244 /* ToastSwiftFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */; };
+		32F040462335BC79007CB244 /* ToastSwiftFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4C84322875308000D63CF /* ItemTableViewCell.swift */; };
 		32F8F1AF2311E71900F12306 /* CLTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F8F1AE2311E71900F12306 /* CLTextField.swift */; };
 /* End PBXBuildFile section */
@@ -58,6 +63,22 @@
 			remoteInfo = checklists;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		32F040422335BA51007CB244 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				32F040442335BA68007CB244 /* RealmSwift.framework in Embed Frameworks */,
+				32F040462335BC79007CB244 /* ToastSwiftFramework.framework in Embed Frameworks */,
+				32F040412335BA51007CB244 /* Realm.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		322CA9FA22EEA6A2009ACC4D /* MainMenuTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuTableViewController.swift; sourceTree = "<group>"; };
@@ -115,8 +136,10 @@
 				32D721EA22AB486E00794F6D /* StoreKit.framework in Frameworks */,
 				3220B11822E93C6A003180B9 /* Realm.framework in Frameworks */,
 				3220B11922E93C6A003180B9 /* RealmSwift.framework in Frameworks */,
+				32F040402335BA51007CB244 /* Realm.framework in Frameworks */,
 				32A928992320A032005F9B34 /* libFlurry_9.3.1.a in Frameworks */,
-				3255F49C2305DC850018CB92 /* ToastSwiftFramework.framework in Frameworks */,
+				32F040432335BA68007CB244 /* RealmSwift.framework in Frameworks */,
+				32F040452335BC79007CB244 /* ToastSwiftFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,7 +300,7 @@
 				323ADC6322828C0900644931 /* Sources */,
 				323ADC6422828C0900644931 /* Frameworks */,
 				323ADC6522828C0900644931 /* Resources */,
-				32A964762291ECE900CAB7C0 /* ShellScript */,
+				32F040422335BA51007CB244 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -405,29 +428,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		32A964762291ECE900CAB7C0 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/ToastSwiftFramework.framework",
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		323ADC6322828C0900644931 /* Sources */ = {
