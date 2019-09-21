@@ -44,7 +44,7 @@ class MainMenuTableViewController: UITableViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    tableView.contentInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 0.0, right: 0.0)
+    tableView.contentInset = UIEdgeInsets(top: 24.0, left: 0.0, bottom: 0.0, right: 0.0)
   }
 
   override func viewDidAppear(_ animated: Bool) {
