@@ -12,6 +12,10 @@ private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
 private let defaultChecklistName = "Checklist"
 
+protocol ChecklistViewControllerDelegate: class {
+  func didDismissChecklistViewController(_ ChecklistViewController: ChecklistViewController)
+}
+
 /*
  Discussion about UITableViewController:
  Had to ditch it because the keyboard dynamics weren't working. The two main issues:
@@ -23,6 +27,8 @@ private let defaultChecklistName = "Checklist"
 class ChecklistViewController: UIViewController {
   @IBOutlet var tableView: UITableView!
   var checklist: Checklist! // Expected to be set on seque or right after init(). Behavior undefined if this is set/reset after viewDidLoad().
+
+  weak var delegate: ChecklistViewControllerDelegate?
 
   @IBOutlet weak var checklistInfoHeaderView: UIView!
   @IBOutlet weak var checklistNameTextField: UITextField!
@@ -119,6 +125,7 @@ class ChecklistViewController: UIViewController {
         }
       }
     }
+    delegate?.didDismissChecklistViewController(self)
     super.viewDidDisappear(animated)
   }
 

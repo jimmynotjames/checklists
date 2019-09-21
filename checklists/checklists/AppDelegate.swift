@@ -27,9 +27,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     SKPaymentQueue.default().add(StoreManager.shared)
 
     // TODO: REMOVE DEBUG
-    TestData.clearDatabase()
-    TestData.insertTestData()
-    DBManager.printChecklists()
+    SampleData.clearDatabase()
+    SampleData.insertFirstTimeLaunchData()
+    SampleData.insertTestData2()
 
     return true
   }

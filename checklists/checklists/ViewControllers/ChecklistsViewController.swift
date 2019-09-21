@@ -40,8 +40,6 @@ class ChecklistsViewController: UITableViewController {
     if isFirstTimeLaunch {
       isFirstTimeLaunch = false
       Flurry.logAllPageViews(forTarget: navigationController)
-    } else {
-      tableView.reloadData()
     }
     AnalyticsManager.logChecklistsViewed(numChecklists: checklists.count)
   }
@@ -55,6 +53,7 @@ class ChecklistsViewController: UITableViewController {
       DBManager.realm.add(checklist)
     }
     checklistViewController.checklist = checklist
+    checklistViewController.delegate = self
     checklistViewController.isNewChecklist = true
     let navigationController = UINavigationController(rootViewController: checklistViewController)
     present(navigationController, animated: true) {
@@ -152,7 +151,14 @@ class ChecklistsViewController: UITableViewController {
       let indexPath = tableView.indexPath(for: cell) {
 
       checklistViewController.checklist = checklists[indexPath.row]
+      checklistViewController.delegate = self
     }
+  }
+}
+
+extension ChecklistsViewController: ChecklistViewControllerDelegate {
+  func didDismissChecklistViewController(_ ChecklistViewController: ChecklistViewController) {
+    tableView.reloadData()
   }
 }
 
