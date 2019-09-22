@@ -90,7 +90,7 @@ class MainMenuTableViewController: UITableViewController {
     switch indexPath.row {
     case 0:
       AnalyticsManager.logSendFeedback()
-      guard let url = URL(string: "mailto:jimmyho.appfeedback@gmail.com?subject=Feedback%20for%20Checklists%20App") else { assertionFailure(); return }
+      guard let url = URL(string: "mailto:jimmyho.appfeedback@gmail.com?subject=Feedback%20for%20reChecklist%20App") else { assertionFailure(); return }
       UIApplication.shared.open(url, options: [:], completionHandler: nil)
     case 1:
       AnalyticsManager.logRateInAppStore()
