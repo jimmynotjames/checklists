@@ -7,7 +7,7 @@ site.github.is_project_page: false
 layout: default
 ---
 
-<img src='/images/reChecklistAppIcon1024x1024.png' align='right' width='150' height='150'>
+<img src='images/reChecklistAppIcon1024x1024.png' align='right' width='150' height='150'>
 
 You can create lists that can be reset with a single tap to do again.
 
