@@ -17,8 +17,8 @@ title: reChecklist iPhone App
 email: jimmyho.appfeedback@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   General info and support page
-baseurl: "/checklists" # the subpath of your site, e.g. /blog
-url: "https://jimmynotjames.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: 
 github_username: jimmynotjames
 
