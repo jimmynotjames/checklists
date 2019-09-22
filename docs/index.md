@@ -11,7 +11,7 @@ You can create lists that can be reset with a single tap to do again.
 
 Whether it’s a packing list or a multi-step task, never forget a crucial thing again. Also great for learning a complex habit or routine by using the checklist until it's natural.
 
-Comes with cute themes, because, well, how is life worth living without cute things.
+Comes with cute themes, because, well, how is life worth living without cute things?
 
 [Download the App!](https://itunes.apple.com/app/id1475724536)
 
