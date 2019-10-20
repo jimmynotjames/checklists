@@ -36,9 +36,7 @@
 		32E767DC22EA4639003C8634 /* AddItemButtonTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DB22EA4639003C8634 /* AddItemButtonTableFooterView.swift */; };
 		32E767DE22EA4743003C8634 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32E767DD22EA4743003C8634 /* Colors.xcassets */; };
 		32E767E022EA6476003C8634 /* CLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DF22EA6476003C8634 /* CLButton.swift */; };
-		32F040402335BA51007CB244 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964732291ECA300CAB7C0 /* Realm.framework */; };
 		32F040412335BA51007CB244 /* Realm.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964732291ECA300CAB7C0 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		32F040432335BA68007CB244 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964722291ECA300CAB7C0 /* RealmSwift.framework */; };
 		32F040442335BA68007CB244 /* RealmSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964722291ECA300CAB7C0 /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		32F040452335BC79007CB244 /* ToastSwiftFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */; };
 		32F040462335BC79007CB244 /* ToastSwiftFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -136,9 +134,7 @@
 				32D721EA22AB486E00794F6D /* StoreKit.framework in Frameworks */,
 				3220B11822E93C6A003180B9 /* Realm.framework in Frameworks */,
 				3220B11922E93C6A003180B9 /* RealmSwift.framework in Frameworks */,
-				32F040402335BA51007CB244 /* Realm.framework in Frameworks */,
 				32A928992320A032005F9B34 /* libFlurry_9.3.1.a in Frameworks */,
-				32F040432335BA68007CB244 /* RealmSwift.framework in Frameworks */,
 				32F040452335BC79007CB244 /* ToastSwiftFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -355,7 +351,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1020;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1110;
 				ORGANIZATIONNAME = "Jimmy Ho";
 				TargetAttributes = {
 					323ADC6622828C0900644931 = {
