@@ -17,6 +17,8 @@ class ChecklistsViewController: UITableViewController {
 
   private var checklists: Results<Checklist>!
 
+  private let addChecklistButton = CLCircleButton.addChecklistButton()
+
   // MARK: - UITableViewController overrides
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -31,8 +33,19 @@ class ChecklistsViewController: UITableViewController {
     let menuButton = UIBarButtonItem(image: UIImage(named: "MenuIcon25x25"), style: .plain, target: self, action: #selector(menuButtonTapped))
     navigationItem.setLeftBarButton(menuButton, animated: false)
 
-    let addChecklistButton = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(addChecklistButtonTapped))
-    navigationItem.setRightBarButton(addChecklistButton, animated: false)
+    setUpAddChecklistButton()
+  }
+
+  private func setUpAddChecklistButton() {
+    addChecklistButton.addTarget(self, action: #selector(addChecklistButtonTapped), for: .touchUpInside)
+
+    tableView.addSubview(addChecklistButton)
+    let views = [ "button": addChecklistButton ]
+    views.forEach({ $0.value.translatesAutoresizingMaskIntoConstraints = false })
+
+    let bottomOffset: CGFloat = -20.0 + (UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0.0)
+    addChecklistButton.bottomAnchor.constraint(equalTo: tableView.safeAreaLayoutGuide.bottomAnchor, constant: bottomOffset).isActive = true
+    addChecklistButton.rightAnchor.constraint(equalTo: tableView.safeAreaLayoutGuide.rightAnchor, constant: -20.0).isActive = true
   }
 
   override func viewDidAppear(_ animated: Bool) {
