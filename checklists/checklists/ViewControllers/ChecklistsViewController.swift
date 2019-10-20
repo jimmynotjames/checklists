@@ -11,7 +11,7 @@ import RealmSwift
 
 private let checklistsSection = 0
 
-class ChecklistsViewController: UITableViewController {
+class ChecklistsViewController: UITableViewController, MainMenuEnabledViewController {
 
   private var isFirstTimeLaunch: Bool = true
 
@@ -75,7 +75,7 @@ class ChecklistsViewController: UITableViewController {
   }
 
   @objc func menuButtonTapped() {
-    presentPopoverMainMenu()
+    presentMenuMenuModal()
   }
 
   // MARK: - Table view data source
@@ -230,14 +230,5 @@ extension ChecklistsViewController: MainMenuTableViewControllerDelegate {
     let storyBoard = UIStoryboard(name: "Main", bundle: nil)
     let donateViewController = storyBoard.instantiateViewController(withIdentifier: "Donate")
     present(donateViewController, animated: true)
-  }
-}
-
-extension ChecklistsViewController: MainMenuEnabledViewController {
-  var baselineWidth: CGFloat { return view.frame.width }
-  var popoverBarButtonItem: UIBarButtonItem { return navigationItem.leftBarButtonItem ?? UIBarButtonItem() }
-
-  func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
-    return .none
   }
 }

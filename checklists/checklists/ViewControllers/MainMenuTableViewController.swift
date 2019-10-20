@@ -9,21 +9,23 @@
 import UIKit
 
 protocol MainMenuEnabledViewController: UIPopoverPresentationControllerDelegate {
-  var baselineWidth: CGFloat { get } // Width of the presenting view controller's view.
-  var popoverBarButtonItem: UIBarButtonItem { get } // The popover will hang off of this.
-
-  func presentPopoverMainMenu()
+  func presentMenuMenuModal()
 }
 
 extension MainMenuEnabledViewController where Self: UIViewController, Self: MainMenuTableViewControllerDelegate {
-  func presentPopoverMainMenu() {
+  func presentMenuMenuModal() {
     guard let mainMenuViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainMenu") as? MainMenuTableViewController else { assertionFailure(); return }
-    mainMenuViewController.modalPresentationStyle = .popover
-    mainMenuViewController.preferredContentSize = CGSize(width: baselineWidth * 0.58, height: mainMenuViewController.preferredHeight)
-    mainMenuViewController.popoverPresentationController?.delegate = self
-    mainMenuViewController.popoverPresentationController?.barButtonItem = popoverBarButtonItem
     mainMenuViewController.delegate = self
-    self.present(mainMenuViewController, animated: true, completion: nil)
+
+    let navigationController = UINavigationController(rootViewController: mainMenuViewController)
+    navigationController.modalTransitionStyle = mainMenuViewController.modalTransitionStyle
+    navigationController.modalPresentationStyle = mainMenuViewController.modalPresentationStyle
+    navigationController.transitioningDelegate = mainMenuViewController
+
+    navigationController.navigationBar.barTintColor = Colors.darkBlueGray
+    navigationController.navigationBar.tintColor = Colors.defaultBackground
+
+    present(navigationController, animated: true)
   }
 }
 
@@ -44,12 +46,18 @@ class MainMenuTableViewController: UITableViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    tableView.contentInset = UIEdgeInsets(top: 24.0, left: 0.0, bottom: 0.0, right: 0.0)
+    tableView.contentInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 0.0, right: 0.0)
+
+    navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "StopIcon"), style: .plain, target: self, action: #selector(dismissButtonTapped))
   }
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     AnalyticsManager.logMainMenuViewed()
+  }
+
+  @objc func dismissButtonTapped() {
+    dismiss(animated: true, completion: nil)
   }
 
   // MARK: - Table view data source
@@ -62,27 +70,32 @@ class MainMenuTableViewController: UITableViewController {
     return MainMenuTableViewController.numberOfRows
   }
 
+  override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    return 60.0
+  }
+
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "navigationMenuItem", for: indexPath)
     let text: String
     switch indexPath.row {
     case 0:
       text = "Feedback"
-      cell.imageView?.image = UIImage(named: "FeedbackIcon25x25")
+      cell.imageView?.image = UIImage(named: "MainMenuFeedbackIcon")
     case 1:
       text = "Rate in App Store"
-      cell.imageView?.image = UIImage(named: "RateInAppStore25x25")
+      cell.imageView?.image = UIImage(named: "MainMenuRateInAppStoreIcon")
     case 2:
       text = "Donate!"
-      cell.imageView?.image = UIImage(named: "DonateIcon25x25")
+      cell.imageView?.image = UIImage(named: "MainMenuDonateIcon")
     case 3:
       text = "Settings"
-      cell.imageView?.image = UIImage(named: "SettingsIcon25x25")
+      cell.imageView?.image = UIImage(named: "MainMenuSettingsIcon")
     default:
       assertionFailure()
       text = ""
     }
     cell.textLabel?.text = text
+    cell.selectionStyle = .none
     return cell
   }
 
@@ -97,11 +110,11 @@ class MainMenuTableViewController: UITableViewController {
       guard let url = URL(string: "https://itunes.apple.com/app/id1475724536?action=write-review") else { assertionFailure(); return }
       UIApplication.shared.open(url, options: [:], completionHandler: nil)
     case 2:
-      dismiss(animated: true) {
+      dismiss(animated: false) {
         self.delegate?.openDonatePage()
       }
     case 3:
-      dismiss(animated: true) {
+      dismiss(animated: false) {
         self.delegate?.openSettingsPage()
       }
     default:
@@ -109,5 +122,62 @@ class MainMenuTableViewController: UITableViewController {
     }
     tableView.cellForRow(at: indexPath)?.isSelected = false
     dismiss(animated: true, completion: nil)
+  }
+}
+
+extension MainMenuTableViewController: UIViewControllerTransitioningDelegate {
+  func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    return MainMenuTransitionAnimator(type: .presenting)
+  }
+
+  func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    return MainMenuTransitionAnimator(type: .dismissing)
+  }
+}
+
+class MainMenuTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
+  enum TransitionType {
+    case presenting
+    case dismissing
+  }
+  let type: TransitionType
+
+  required init(type: TransitionType) {
+    self.type = type
+    super.init()
+  }
+
+  func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+    return 0.2
+  }
+
+  func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+    guard let toViewController = transitionContext.viewController(forKey: .to) else { return }
+    guard let toView = transitionContext.view(forKey: .to) else { return }
+    transitionContext.containerView.addSubview(toView)
+
+    /*
+     If we're presenting, then move the frame to the left, so it whooshes in to the right.
+     If we're dismissing, then place the underlying view controller to the right so it whooshes left,
+     giving the effect that the menu is collapsing.
+     */
+    let finalFrame = transitionContext.finalFrame(for: toViewController)
+    var toViewFrame = toView.frame
+    toViewFrame.origin.x = finalFrame.origin.x
+    switch type {
+    case .presenting:
+      toViewFrame.origin.x -= finalFrame.size.width
+    case .dismissing:
+      toViewFrame.origin.x += finalFrame.size.width
+    }
+    toView.frame = toViewFrame
+
+    UIView.animate(withDuration: 0.2, animations: {
+      toView.frame = finalFrame
+    }, completion: { success in
+      if success {
+        transitionContext.completeTransition(true)
+      }
+    })
   }
 }
