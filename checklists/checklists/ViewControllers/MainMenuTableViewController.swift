@@ -121,7 +121,6 @@ class MainMenuTableViewController: UITableViewController {
       assertionFailure()
     }
     tableView.cellForRow(at: indexPath)?.isSelected = false
-    dismiss(animated: true, completion: nil)
   }
 }
 
