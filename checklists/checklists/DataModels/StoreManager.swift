@@ -37,6 +37,7 @@ class StoreManager: NSObject {
   enum ErrorCode: Int {
     case zeroProductsReturned = 101
     case generalFetchError = 102
+    case errorRetrievingProducts = 103
   }
 
   static let shared = StoreManager()
@@ -144,5 +145,10 @@ extension StoreManager: SKProductsRequestDelegate {
     }
 
     delegate?.didReceiveProducts(donationProducts: donationProducts)
+  }
+
+  func request(_ request: SKRequest, didFailWithError error: Error) {
+    print("Error retrieving products - didFailWithError: \(error)")
+    delegate?.errorRetrievingProducts(errorCode: .errorRetrievingProducts)
   }
 }
