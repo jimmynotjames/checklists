@@ -9,6 +9,7 @@
 import UIKit
 
 private let diameter: CGFloat = 60.0
+private let insetRadius: CGFloat = 10.0
 
 class CLCircleButton: UIButton {
 
@@ -23,6 +24,8 @@ class CLCircleButton: UIButton {
 
   override init(frame: CGRect) {
     super.init(frame: frame)
+
+    imageEdgeInsets = UIEdgeInsets(top: insetRadius, left: insetRadius, bottom: insetRadius, right: insetRadius)
 
     backgroundColor = Colors.defaultBackground
     layer.borderColor = Colors.defaultBackground.cgColor

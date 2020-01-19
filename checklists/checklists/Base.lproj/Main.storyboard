@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="jzV-8k-EEW">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="jzV-8k-EEW">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -153,50 +153,6 @@
             </objects>
             <point key="canvasLocation" x="-857.97101449275374" y="357.58928571428572"/>
         </scene>
-        <!--Main Menu Table View Controller-->
-        <scene sceneID="VnD-DM-E41">
-            <objects>
-                <tableViewController storyboardIdentifier="MainMenu" modalPresentationStyle="fullScreen" id="qgu-96-Qt7" customClass="MainMenuTableViewController" customModule="checklists" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="9XJ-LR-Kfj">
-                        <rect key="frame" x="0.0" y="0.0" width="222" height="270"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" name="darkBlueGray"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="navigationMenuItem" textLabel="8jM-oL-tDa" imageView="irG-qu-2IL" rowHeight="90" style="IBUITableViewCellStyleDefault" id="XAo-21-9Fi">
-                                <rect key="frame" x="0.0" y="28" width="222" height="90"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="XAo-21-9Fi" id="dYh-ip-vBT">
-                                    <rect key="frame" x="0.0" y="0.0" width="222" height="90"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Menu Option" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" id="8jM-oL-tDa">
-                                            <rect key="frame" x="60" y="0.0" width="146" height="90"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="22"/>
-                                            <color key="textColor" name="defaultBackground"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="MainMenuRateInAppStoreIcon" id="irG-qu-2IL">
-                                            <rect key="frame" x="16" y="31" width="29" height="28"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </imageView>
-                                    </subviews>
-                                </tableViewCellContentView>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="qgu-96-Qt7" id="DFo-pN-9oH"/>
-                            <outlet property="delegate" destination="qgu-96-Qt7" id="BP8-1J-NGk"/>
-                        </connections>
-                    </tableView>
-                    <size key="freeformSize" width="222" height="270"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="bPJ-cn-xAs" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-997.10144927536237" y="843.75"/>
-        </scene>
         <!--Settings View Controller-->
         <scene sceneID="xg9-VW-70q">
             <objects>
@@ -309,6 +265,60 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uRI-hr-fJL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="61" y="1054"/>
+        </scene>
+        <!--Main Menu Table View Controller-->
+        <scene sceneID="zg7-Zj-d5f">
+            <objects>
+                <tableViewController storyboardIdentifier="MainMenu" modalPresentationStyle="fullScreen" id="sBB-kA-eLq" customClass="MainMenuTableViewController" customModule="checklists" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="R4v-iD-W9b">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" name="darkBlueGray"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="navigationMenuItem" rowHeight="60" id="xn3-4i-AIW">
+                                <rect key="frame" x="0.0" y="28" width="414" height="60"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="xn3-4i-AIW" id="FgD-OR-MgY">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="60"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="102" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Menu Option" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kGi-3X-KUO">
+                                            <rect key="frame" x="72" y="8" width="322" height="44"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="44" id="HN1-rd-Dxj"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="22"/>
+                                            <color key="textColor" name="defaultBackground"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="101" contentMode="scaleAspectFit" horizontalHuggingPriority="999" verticalHuggingPriority="999" horizontalCompressionResistancePriority="999" verticalCompressionResistancePriority="999" image="MainMenuRateInAppStoreIcon" translatesAutoresizingMaskIntoConstraints="NO" id="BMz-jD-Liq">
+                                            <rect key="frame" x="20" y="8" width="44" height="44"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="44" id="bEH-ec-PY4"/>
+                                                <constraint firstAttribute="height" constant="44" id="vTP-da-Ocr"/>
+                                            </constraints>
+                                        </imageView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="kGi-3X-KUO" firstAttribute="centerY" secondItem="FgD-OR-MgY" secondAttribute="centerY" id="171-Il-HBP"/>
+                                        <constraint firstItem="BMz-jD-Liq" firstAttribute="centerY" secondItem="kGi-3X-KUO" secondAttribute="centerY" id="75d-sy-TbW"/>
+                                        <constraint firstItem="kGi-3X-KUO" firstAttribute="leading" secondItem="BMz-jD-Liq" secondAttribute="trailing" constant="8" id="DSH-VE-4Ch"/>
+                                        <constraint firstItem="BMz-jD-Liq" firstAttribute="leading" secondItem="FgD-OR-MgY" secondAttribute="leadingMargin" id="H3L-if-Arb"/>
+                                        <constraint firstAttribute="trailing" secondItem="kGi-3X-KUO" secondAttribute="trailing" constant="20" id="VV3-u6-Nk3"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="sBB-kA-eLq" id="nFa-5m-dri"/>
+                            <outlet property="delegate" destination="sBB-kA-eLq" id="vce-V7-PSY"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="AMF-FI-pKZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-858" y="1055"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="95Q-Ab-151">
@@ -487,7 +497,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="MainMenuRateInAppStoreIcon" width="29" height="28"/>
+        <image name="MainMenuRateInAppStoreIcon" width="195" height="195"/>
         <image name="RoundCheckboxUnchecked25x25" width="25" height="25"/>
         <namedColor name="darkBlueGray">
             <color red="0.20000000000000001" green="0.43137254901960786" blue="0.56862745098039214" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

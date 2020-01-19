@@ -76,25 +76,27 @@ class MainMenuTableViewController: UITableViewController {
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "navigationMenuItem", for: indexPath)
-    let text: String
+
+    guard
+      let imageView: UIImageView = cell.viewWithTag(101) as? UIImageView,
+      let label: UILabel = cell.viewWithTag(102) as? UILabel
+      else { assertionFailure(); return cell }
     switch indexPath.row {
     case 0:
-      text = "Feedback"
-      cell.imageView?.image = UIImage(named: "MainMenuFeedbackIcon")
+      label.text = "Feedback"
+      imageView.image = UIImage(named: "MainMenuFeedbackIcon")
     case 1:
-      text = "Rate in App Store"
-      cell.imageView?.image = UIImage(named: "MainMenuRateInAppStoreIcon")
+      label.text = "Rate in App Store"
+      imageView.image = UIImage(named: "MainMenuRateInAppStoreIcon")
     case 2:
-      text = "Donate!"
-      cell.imageView?.image = UIImage(named: "MainMenuDonateIcon")
+      label.text = "Donate!"
+      imageView.image = UIImage(named: "MainMenuDonateIcon")
     case 3:
-      text = "Settings"
-      cell.imageView?.image = UIImage(named: "MainMenuSettingsIcon")
+      label.text = "Settings"
+      imageView.image = UIImage(named: "MainMenuSettingsIcon")
     default:
       assertionFailure()
-      text = ""
     }
-    cell.textLabel?.text = text
     cell.selectionStyle = .none
     return cell
   }
