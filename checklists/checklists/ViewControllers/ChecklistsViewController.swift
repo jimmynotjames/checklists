@@ -33,6 +33,10 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
     let menuButton = UIBarButtonItem(image: UIImage(named: "MenuIcon25x25"), style: .plain, target: self, action: #selector(menuButtonTapped))
     navigationItem.setLeftBarButton(menuButton, animated: false)
 
+    // Currently not in use, but inserted during debugging to get the icon sizing right, relative to menuButton.
+    // let rightMenuButton = UIBarButtonItem(image: UIImage(named: "MoreMenuIcon32x32"), style: .plain, target: self, action: #selector(menuButtonTapped))
+    // navigationItem.setRightBarButton(rightMenuButton, animated: false)
+
     setUpAddChecklistButton()
   }
 
