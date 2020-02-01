@@ -161,16 +161,28 @@ class ChecklistViewController: UIViewController {
     DBManager.write {
       self.checklist.items.insert(item, at: index)
     }
+
     let updates = {
       self.tableView.performBatchUpdates({
         self.collapseEditingCellIfNecessary()
         self.tableView.insertRows(at: [IndexPath(row: index, section: itemsSection)], with: .top)
-      }, completion: { success in
-        if success && becomeFirstResponder {
+      }, completion: nil)
+    }
+
+    let startEditingBlock: ((Bool) -> ()) = { success in
+      if success {
+        /*
+         So, even though I do wait until completion of animation, when I don't have the async delay,
+         for very long lists, for some reason, it doesn't scroll up the table view when the keyboard comes up.
+         In shorter lists, it works fine, medium-ish lists are intermittent. So, by adding 5 ms and doing it async,
+         it's as if I'm giving the table view a chance to gather itself and get situated before I startEditing().
+         That's not a great explanation, but this is what it is as of iOS 13.
+         */
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.005, execute: {
           guard let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: itemsSection)) as? ItemTableViewCell else { assertionFailure(); return }
           cell.itemContentView.startEditing()
-        }
-      })
+        })
+      }
     }
     /*
      This just isn't about making the animation snappier. If we're slow, and the user starts typing right after hitting Return,
@@ -178,7 +190,7 @@ class ChecklistViewController: UIViewController {
      smooth except to go faster. For example, I could resignFirstResponder() immediately, but then the keyboard drops and comes
      back up super fast, which makes it feel jittery.
      */
-    UIView.animate(withDuration: 0.01, animations: updates, completion: nil)
+    UIView.animate(withDuration: 0.01, animations: updates, completion: becomeFirstResponder ? startEditingBlock : nil)
   }
 
   private func collapseEditingCellIfNecessary() {
