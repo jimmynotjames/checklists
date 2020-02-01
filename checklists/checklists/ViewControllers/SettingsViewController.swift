@@ -8,8 +8,8 @@
 
 import UIKit
 
-private let themesSection = 0
-private let infoSection = 1
+private let themesSection = 999 // Change back when I add this back in.
+private let infoSection = 0
 
 class SettingsViewController: UITableViewController {
   override func viewDidLoad() {
@@ -31,7 +31,7 @@ class SettingsViewController: UITableViewController {
   // MARK: - Table view data source
 
   override func numberOfSections(in tableView: UITableView) -> Int {
-    return 2
+    return 1
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

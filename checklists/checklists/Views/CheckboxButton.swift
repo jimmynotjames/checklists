@@ -43,7 +43,7 @@ class CheckboxButton: UIButton {
       tintColor = Colors.inactiveText
     case .unchecked:
       isSelected = false
-      tintColor = .black
+      tintColor = Colors.teal
     }
   }
 }
