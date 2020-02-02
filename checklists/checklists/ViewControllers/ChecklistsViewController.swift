@@ -116,7 +116,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
         indexPath.row >= 0 &&
         indexPath.row < checklists.count else { assertionFailure(); return }
 
-      let alertController = UIAlertController(title: nil, message: "Delete this checklist? This cannot be undone.", preferredStyle: .alert)
+      let alertController = UIAlertController(title: nil, message: "Are you sure? This cannot be undone.", preferredStyle: .alert)
       alertController.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { alertAction in
         DBManager.write {
           let checklist = self.checklists[indexPath.row]
