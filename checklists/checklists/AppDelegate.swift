@@ -10,6 +10,8 @@ import UIKit
 import RealmSwift
 import StoreKit
 
+private let launchedAtLeastOnceKey = "launchedAtLeastOnce"
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
 
@@ -26,10 +28,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     updateNavigationBarAppearance()
     SKPaymentQueue.default().add(StoreManager.shared)
 
-    // TODO: REMOVE DEBUG
-    SampleData.clearDatabase()
-    SampleData.insertFirstTimeLaunchData()
-    SampleData.insertTestData2()
+    #if DEBUG
+    // SampleData.clearDatabase()
+    #endif
+
+    let isFirstTimeLaunch = !UserDefaults.standard.bool(forKey: launchedAtLeastOnceKey)
+    if isFirstTimeLaunch {
+      SampleData.insertFirstTimeLaunchData()
+      UserDefaults.standard.set(true, forKey: launchedAtLeastOnceKey)
+    }
+
+    #if DEBUG
+    // SampleData.insertTestData2()
+    #endif
 
     return true
   }

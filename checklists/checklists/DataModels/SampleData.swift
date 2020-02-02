@@ -126,7 +126,7 @@ class SampleData {
                                         Item(name: "Traffic and weather reports"),
                                         Item(name: "Breakfast"),
                                         Item(name: "Journaling"),
-                                        Item(name: "Argue politics on Twitter or Facebook", notes: "(kidding!)")
+                                        Item(name: "Argue politics on Facebook")
     ]))
 
     DBManager.write {
