@@ -31,6 +31,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
     tableView.dropDelegate = self
 
     let menuButton = UIBarButtonItem(image: UIImage(named: "MenuIcon25x25"), style: .plain, target: self, action: #selector(menuButtonTapped))
+    menuButton.accessibilityLabel = "Miscellaneous Menu"
     navigationItem.setLeftBarButton(menuButton, animated: false)
 
     // Currently not in use, but inserted during debugging to get the icon sizing right, relative to menuButton.

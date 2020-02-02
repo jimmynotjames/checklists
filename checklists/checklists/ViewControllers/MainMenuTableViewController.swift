@@ -49,6 +49,7 @@ class MainMenuTableViewController: UITableViewController {
     tableView.contentInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 0.0, right: 0.0)
 
     navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "StopIcon"), style: .plain, target: self, action: #selector(dismissButtonTapped))
+    navigationItem.leftBarButtonItem?.accessibilityLabel = "Close menu"
   }
 
   override func viewDidAppear(_ animated: Bool) {

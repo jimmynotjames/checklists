@@ -14,7 +14,9 @@ private let insetRadius: CGFloat = 10.0
 class CLCircleButton: UIButton {
 
   static func addChecklistButton() -> CLCircleButton {
-    return CLCircleButton(iconName: "AddChecklistIcon")
+    let button = CLCircleButton(iconName: "AddChecklistIcon")
+    button.accessibilityLabel = "Add new checklist."
+    return button
   }
 
   convenience init(iconName: String) {
