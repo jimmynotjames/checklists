@@ -447,9 +447,9 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JK0-ND-dzX">
-                                            <rect key="frame" x="16" y="35" width="382" height="77"/>
+                                            <rect key="frame" x="16" y="35" width="382" height="86"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <string key="text">Your donations will support this app and other things. I promise not to do anything that would make the angels weep or dolphins cry.</string>
+                                            <string key="text">Your donations will support this app and other things. I promise not to do anything with the money that would make the angels weep or dolphins cry.</string>
                                             <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -457,7 +457,7 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="JK0-ND-dzX" firstAttribute="leading" secondItem="SMV-A5-XE5" secondAttribute="leading" constant="16" id="1Oy-nL-Xs5"/>
-                                        <constraint firstAttribute="bottom" secondItem="JK0-ND-dzX" secondAttribute="bottom" constant="20" id="Aca-GG-HI1"/>
+                                        <constraint firstAttribute="bottom" secondItem="JK0-ND-dzX" secondAttribute="bottom" constant="11" id="Aca-GG-HI1"/>
                                         <constraint firstAttribute="trailing" secondItem="JK0-ND-dzX" secondAttribute="trailing" constant="16" id="fLJ-FJ-6Qi"/>
                                         <constraint firstItem="JK0-ND-dzX" firstAttribute="top" secondItem="SMV-A5-XE5" secondAttribute="topMargin" constant="24" id="gxq-KH-RXG"/>
                                     </constraints>
@@ -474,7 +474,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qua-L7-e48" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="959" y="1055"/>
+            <point key="canvasLocation" x="957.97101449275374" y="1054.6875"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="3Z0-S2-Z1E">
