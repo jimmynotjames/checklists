@@ -26,8 +26,8 @@ class CheckboxButton: UIButton {
     setContentHuggingPriority(.required, for: .vertical)
     setContentCompressionResistancePriority(.required, for: .vertical)
 
-    [heightAnchor.constraint(equalToConstant: 44.0),
-     widthAnchor.constraint(equalToConstant: 44.0)
+    [heightAnchor.constraint(equalToConstant: 48.0),
+     widthAnchor.constraint(equalToConstant: 48.0)
      ].forEach { $0.isActive = true  }
   }
 

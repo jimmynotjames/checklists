@@ -97,10 +97,10 @@ class ItemContentView: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    addSubview(checkboxButton)
     addSubview(containerView)
     containerView.addSubview(notesTextView)
     containerView.addSubview(nameTextView)
+    addSubview(checkboxButton) // checkbox needs to be in front due to overlapping tap targets, so prefer checkbox.
 
     installConstraints()
   }
@@ -149,10 +149,10 @@ class ItemContentView: UIView {
     nameTextView.setContentHuggingPriority(.required, for: .vertical)
 
     NSLayoutConstraint.activate(
-      [NSLayoutConstraint.constraints(withVisualFormat: "H:|-4-[checkboxButton]-(-4)-[containerView]|", options: [], metrics: nil, views: views),
+      [NSLayoutConstraint.constraints(withVisualFormat: "H:|-2-[checkboxButton]-(-4)-[containerView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[checkboxButton]", options: [], metrics: nil, views: views),
 
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|-7-[containerView]-8-|", options: [], metrics: nil, views: views),
+       NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[containerView]-8-|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameTextView]-(4)-[notesTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[nameTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[notesTextView]|", options: [], metrics: nil, views: views),
