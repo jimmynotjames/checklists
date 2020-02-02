@@ -108,6 +108,7 @@ class DonateViewController: UITableViewController {
     hideActivityIndicator()
     view.hideAllToasts()
     view.makeToast(message, duration: 10000.0, position: .center)
+    UIAccessibility.post(notification: .screenChanged, argument: message)
   }
 
   // MARK: - Table view data source
