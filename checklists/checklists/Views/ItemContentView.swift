@@ -67,6 +67,7 @@ class ItemContentView: UIView {
       textView.resignFirstResponder()
     }
     textView.returnKeyType = .next
+    textView.accessibilityLabel = "checklist item: "
     return textView
   }()
   private lazy var notesTextView: CLTextView = {
@@ -78,6 +79,7 @@ class ItemContentView: UIView {
     }
     textView.returnKeyType = .default
     textView.delegate = self
+    textView.accessibilityLabel = "optional notes: "
     return textView
   }()
   private let containerView = UIView()

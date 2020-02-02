@@ -63,6 +63,9 @@ class ChecklistViewController: UIViewController {
     checklistNameTextField.text = checklist.name
     checklistNotesTextView.text = checklist.notes
 
+    checklistNameTextField.accessibilityLabel = "Checklist Name: "
+    checklistNotesTextView.accessibilityLabel = "Checklist Notes: "
+
     checklistNotesTextView.inputAccessoryButtonTappedAction = { [weak self] in
       self?.checklistNotesTextView.resignFirstResponder()
     }
