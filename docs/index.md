@@ -9,7 +9,7 @@ layout: default
 
 Checklists that can be reset with a single tap to do again.
 
-Never forget a crucial step again. Train a complex task by using a checklist until it's natural. 
+Learn a new routine or train a complex task by using a checklist until it's natural. Never forget a crucial step again.
 
 Use for recurring checklists, like packing lists and shopping lists.
 
