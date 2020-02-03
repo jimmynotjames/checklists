@@ -9,7 +9,9 @@ layout: default
 
 You can create lists that can be reset with a single tap to do again.
 
-Whether it’s a packing list or a multi-step task, never forget a crucial thing again. Also great for learning a complex habit or routine by using the checklist until it's natural.
+Never forget a crucial step again. Train a complex task by using a checklist until it's natural. 
+
+Use for recurring checklists, like packing lists and shopping lists.
 
 [Download the App!](https://itunes.apple.com/app/id1475724536)
 
