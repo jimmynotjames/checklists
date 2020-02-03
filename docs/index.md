@@ -7,7 +7,7 @@ site.github.is_project_page: false
 layout: default
 ---
 
-You can create lists that can be reset with a single tap to do again.
+Checklists that can be reset with a single tap to do again.
 
 Never forget a crucial step again. Train a complex task by using a checklist until it's natural. 
 
