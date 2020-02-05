@@ -48,7 +48,8 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
     let views = [ "button": addChecklistButton ]
     views.forEach({ $0.value.translatesAutoresizingMaskIntoConstraints = false })
 
-    let bottomOffset: CGFloat = -20.0 + (UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0.0)
+    let baseOffset: CGFloat = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.safeAreaInsets.bottom ?? 0.0
+    let bottomOffset: CGFloat = -20.0 + baseOffset
     addChecklistButton.bottomAnchor.constraint(equalTo: tableView.safeAreaLayoutGuide.bottomAnchor, constant: bottomOffset).isActive = true
     addChecklistButton.rightAnchor.constraint(equalTo: tableView.safeAreaLayoutGuide.rightAnchor, constant: -20.0).isActive = true
   }

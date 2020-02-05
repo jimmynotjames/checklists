@@ -27,16 +27,13 @@ class ItemContentView: UIView {
   var item: Item? {
     didSet {
       if let item = item {
-        checkboxButton.setCheckboxState(with: item.status)
         nameTextView.text = item.name
         if let notes = item.notes {
           notesTextView.text = notes
         } else {
           notesTextView.text = ""
         }
-        let textColor = item.status == .checked ? Colors.inactiveText : .black
-        nameTextView.textColor = textColor
-        notesTextView.textColor = textColor
+        updateCheckedStatus()
         refreshHeight()
       } else {
         checkboxButton.setCheckboxState(with: .unchecked)
@@ -127,6 +124,13 @@ class ItemContentView: UIView {
     _ = nameTextView.becomeFirstResponder()
   }
 
+  func updateCheckedStatus() {
+    guard let status = item?.status else { return }
+    checkboxButton.setCheckboxState(with: status)
+    let textColor = status == .checked ? Colors.inactiveText : .black
+    nameTextView.textColor = textColor
+    notesTextView.textColor = textColor
+  }
   /*
    I need to detect when to collapse the view (if notes are empty), but if user taps from one input
    field to another, I can't tell properly with just endEditing...().

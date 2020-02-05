@@ -454,7 +454,7 @@ extension ChecklistViewController: ItemContentViewDelegate {
     DBManager.write {
       let item = itemContentView.item
       item?.toggleStatus()
-      itemContentView.item = item // Re-render after toggle.
+      itemContentView.updateCheckedStatus()
     }
   }
 
