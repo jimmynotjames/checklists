@@ -314,13 +314,13 @@ extension ChecklistViewController {
     // Conversion is unnecessary, as Cell's superview is actually tableView in iOS 12, but paranoid future-proofing.
     let cellFrame = tableView.convert(cell.frame, from: cell.superview)
 
-    if !visibleFrame.contains(cellFrame) { // If even partially covered, move it.
-      let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyboardHeight, right: 0.0)
-      // iOS 12: If user taps to edit, and then quickly starts typing, it halts the animation to scroll the cell above
-      // the keyboard if using the default scrollRectToVisible with animated=true, so need this animation block. Also, snappier.
-      UIView.animate(withDuration: 0.1) {
-        self.tableView.contentInset = contentInsets
-        self.tableView.scrollIndicatorInsets = contentInsets
+    let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyboardHeight, right: 0.0)
+    // iOS 12: If user taps to edit, and then quickly starts typing, it halts the animation to scroll the cell above
+    // the keyboard if using the default scrollRectToVisible with animated=true, so need this animation block. Also, snappier.
+    UIView.animate(withDuration: 0.1) {
+      self.tableView.contentInset = contentInsets
+      self.tableView.scrollIndicatorInsets = contentInsets
+      if !visibleFrame.contains(cellFrame) { // If even partially covered, move it.
         self.tableView.scrollRectToVisible(cellFrame, animated: false)
         // Known issue: As of iOS 12, when animated = false, on ONLY THE SIMULATOR, it scrolls just one cell too much. Weird.
         // Doesn't happen when animated = true, but then the animation is too slow and when user types quickly after tapping to edit,
