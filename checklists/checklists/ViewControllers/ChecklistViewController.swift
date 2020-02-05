@@ -303,6 +303,8 @@ extension ChecklistViewController {
 
     guard let cell = findEditingCell() else { return } // If keyboard arose for Checklist Name/Notes, which, if visible, shouldn't require scrolling (except for massive notes, but we're accepting that for now).
 
+    keyboardHeight = keyboardHeight + 20.0 // On iPhone 8-style resolutions, it doesn't scroll up quite enough, so adding this in, even though iPhone X-style goes up a tad more than I'd like.
+
     var visibleFrame = tableView.frame
     visibleFrame.size.height = visibleFrame.size.height - keyboardHeight
 
