@@ -301,11 +301,6 @@ extension ChecklistViewController {
       var keyboardHeight = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.size.height
       else { assertionFailure(); return }
 
-    // HACK: Reduced visibleFrame a bit extra because of an edge case where the user's list is just long enough where the last item
-    // is just covered by the keyboard, and in this case, the keyboard comes up and covers it, but user cannot scroll it up.
-    // Printing out frames, it appears that the inputAccessoryView's height is accounted for, so it's probably not that.
-    keyboardHeight = keyboardHeight + 44.0
-
     guard let cell = findEditingCell() else { return } // If keyboard arose for Checklist Name/Notes, which, if visible, shouldn't require scrolling (except for massive notes, but we're accepting that for now).
 
     var visibleFrame = tableView.frame
