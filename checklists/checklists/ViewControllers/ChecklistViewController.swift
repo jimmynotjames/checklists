@@ -174,17 +174,8 @@ class ChecklistViewController: UIViewController {
 
     let startEditingBlock: ((Bool) -> ()) = { success in
       if success {
-        /*
-         So, even though I do wait until completion of animation, when I don't have the async delay,
-         for very long lists, for some reason, it doesn't scroll up the table view when the keyboard comes up.
-         In shorter lists, it works fine, medium-ish lists are intermittent. So, by adding 5 ms and doing it async,
-         it's as if I'm giving the table view a chance to gather itself and get situated before I startEditing().
-         That's not a great explanation, but this is what it is as of iOS 13.
-         */
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.005, execute: {
-          guard let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: itemsSection)) as? ItemTableViewCell else { assertionFailure(); return }
-          cell.itemContentView.startEditing()
-        })
+        guard let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: itemsSection)) as? ItemTableViewCell else { assertionFailure(); return }
+        cell.itemContentView.startEditing()
       }
     }
     /*
