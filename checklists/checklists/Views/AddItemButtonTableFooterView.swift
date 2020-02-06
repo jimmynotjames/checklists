@@ -15,32 +15,38 @@ protocol AddItemButtonTableFooterViewDelegate: class {
 class AddItemButtonTableFooterView: UIView {
   weak var delegate: AddItemButtonTableFooterViewDelegate?
 
+  // This feels slightly hacky. Adding this so in landscape mode, I can still use VFL and adhere to layout margins while using custom inset.
+  let contentView = UIView()
+
   let addButton: CLButton = {
     let button = CLButton(frame: .zero)
     button.setTitle("Add", for: .normal)
     return button
   }()
 
-  let metrics = [ "spacing": 16.0,
+  let metrics = [ "spacing": 8.0,
                   "buttonHeight": 44.0 ]
 
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    addSubview(addButton)
+    addSubview(contentView)
+    contentView.addSubview(addButton)
     addButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
 
     let views: [ String: UIView ]  = [
+      "contentView": contentView,
       "addButton": addButton
     ]
 
-    addButton.translatesAutoresizingMaskIntoConstraints = false
+    views.forEach({ $0.value.translatesAutoresizingMaskIntoConstraints = false })
 
     NSLayoutConstraint.activate(
-      [NSLayoutConstraint.constraints(withVisualFormat: "V:|-spacing-[addButton(==buttonHeight)]-spacing-|", metrics: metrics, views: views),
+      [NSLayoutConstraint.constraints(withVisualFormat: "V:|[contentView]|", metrics: metrics, views: views),
+       NSLayoutConstraint.constraints(withVisualFormat: "H:|-[contentView]-|", metrics: metrics, views: views),
+       NSLayoutConstraint.constraints(withVisualFormat: "V:|-spacing-[addButton(==buttonHeight)]-spacing-|", metrics: metrics, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|-spacing-[addButton]-spacing-|", metrics: metrics, views: views),
         ].flatMap({ $0 }))
-
     adjustFrameHeight()
   }
 
