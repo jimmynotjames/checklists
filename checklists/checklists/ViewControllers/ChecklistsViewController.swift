@@ -18,6 +18,9 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   private var checklists: Results<Checklist>!
 
   private let addChecklistButton = CLCircleButton.addChecklistButton()
+  private var addChecklistButtonPortraitConstraints: [NSLayoutConstraint] = []
+  private var addChecklistButtonLandscapeConstraints: [NSLayoutConstraint] = []
+  private var addChecklistButtonActiveConstraints: [NSLayoutConstraint] = []
 
   // MARK: - UITableViewController overrides
   override func viewDidLoad() {
@@ -50,8 +53,30 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
 
     let baseOffset: CGFloat = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.safeAreaInsets.bottom ?? 0.0
     let bottomOffset: CGFloat = -20.0 + baseOffset
-    addChecklistButton.bottomAnchor.constraint(equalTo: tableView.safeAreaLayoutGuide.bottomAnchor, constant: bottomOffset).isActive = true
-    addChecklistButton.rightAnchor.constraint(equalTo: tableView.safeAreaLayoutGuide.rightAnchor, constant: -20.0).isActive = true
+
+    addChecklistButtonPortraitConstraints = [
+      addChecklistButton.bottomAnchor.constraint(equalTo: tableView.safeAreaLayoutGuide.bottomAnchor, constant: bottomOffset),
+      addChecklistButton.rightAnchor.constraint(equalTo: tableView.safeAreaLayoutGuide.rightAnchor, constant: -20.0)
+    ]
+    addChecklistButtonLandscapeConstraints = [
+      addChecklistButton.bottomAnchor.constraint(equalTo: tableView.safeAreaLayoutGuide.bottomAnchor, constant: -20.0),
+      addChecklistButton.rightAnchor.constraint(equalTo: tableView.safeAreaLayoutGuide.rightAnchor, constant: bottomOffset)
+    ]
+    updateAddChecklistButtonConstraints()
+  }
+
+  override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    updateAddChecklistButtonConstraints()
+  }
+
+  func updateAddChecklistButtonConstraints() {
+    NSLayoutConstraint.deactivate(addChecklistButtonActiveConstraints)
+    if UIDevice.current.orientation.isLandscape {
+      addChecklistButtonActiveConstraints = addChecklistButtonLandscapeConstraints
+    } else {
+      addChecklistButtonActiveConstraints = addChecklistButtonPortraitConstraints
+    }
+    NSLayoutConstraint.activate(addChecklistButtonActiveConstraints)
   }
 
   override func viewDidAppear(_ animated: Bool) {

@@ -178,7 +178,7 @@
                             <constraints>
                                 <constraint firstAttribute="trailing" secondItem="Sm3-AY-i4r" secondAttribute="trailing" constant="16" id="Kv4-h1-B5F"/>
                                 <constraint firstAttribute="bottom" secondItem="Sm3-AY-i4r" secondAttribute="bottom" constant="20" id="Rby-ii-zCp"/>
-                                <constraint firstItem="Sm3-AY-i4r" firstAttribute="leading" secondItem="o8V-aA-BfP" secondAttribute="leading" constant="16" id="UXE-Tc-PRT"/>
+                                <constraint firstItem="Sm3-AY-i4r" firstAttribute="leading" secondItem="o8V-aA-BfP" secondAttribute="leadingMargin" constant="8" id="UXE-Tc-PRT"/>
                                 <constraint firstItem="Sm3-AY-i4r" firstAttribute="top" secondItem="o8V-aA-BfP" secondAttribute="top" constant="14" id="WrJ-Hr-VgS"/>
                             </constraints>
                         </view>
@@ -364,7 +364,7 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstItem="Jhk-JE-A8C" firstAttribute="top" secondItem="6VW-RH-4Zy" secondAttribute="top" constant="14" id="6x5-au-WNF"/>
-                                <constraint firstItem="Jhk-JE-A8C" firstAttribute="leading" secondItem="6VW-RH-4Zy" secondAttribute="leading" constant="16" id="8vs-sa-PQD"/>
+                                <constraint firstItem="Jhk-JE-A8C" firstAttribute="leading" secondItem="6VW-RH-4Zy" secondAttribute="leadingMargin" constant="8" id="8vs-sa-PQD"/>
                                 <constraint firstAttribute="trailing" secondItem="Jhk-JE-A8C" secondAttribute="trailing" constant="16" id="QN3-pa-4nS"/>
                                 <constraint firstAttribute="bottom" secondItem="Jhk-JE-A8C" secondAttribute="bottom" constant="27" id="W5q-gu-lGE"/>
                             </constraints>
