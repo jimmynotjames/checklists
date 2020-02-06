@@ -101,8 +101,8 @@
                                 <constraint firstAttribute="trailing" secondItem="qFy-KA-xUU" secondAttribute="trailing" constant="16" id="MyU-me-mEU"/>
                                 <constraint firstAttribute="bottom" secondItem="qFy-KA-xUU" secondAttribute="bottom" constant="15" id="VwZ-uK-0ih"/>
                                 <constraint firstAttribute="trailing" secondItem="YSw-DD-TTd" secondAttribute="trailing" constant="16" id="cH9-ZK-EC3"/>
-                                <constraint firstItem="YSw-DD-TTd" firstAttribute="leading" secondItem="7Eq-WV-FuG" secondAttribute="leading" constant="16" id="joG-7M-2un"/>
-                                <constraint firstItem="qFy-KA-xUU" firstAttribute="leading" secondItem="7Eq-WV-FuG" secondAttribute="leading" constant="16" id="orS-2a-vKK"/>
+                                <constraint firstItem="YSw-DD-TTd" firstAttribute="leading" secondItem="7Eq-WV-FuG" secondAttribute="leadingMargin" constant="8" id="joG-7M-2un"/>
+                                <constraint firstItem="qFy-KA-xUU" firstAttribute="leading" secondItem="7Eq-WV-FuG" secondAttribute="leadingMargin" constant="8" id="orS-2a-vKK"/>
                             </constraints>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="boolean" keyPath="translatesAutoresizingMaskIntoConstraints" value="NO"/>
