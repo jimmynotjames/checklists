@@ -481,40 +481,34 @@ extension ChecklistViewController: ItemContentViewDelegate {
       let item = itemContentView.item,
       let index = checklist.items.index(of: item)
       else { assertionFailure(); return }
-    if index > 0 { // Nothing happens if backspaced on first item in list.
-      if let cell = tableView.cellForRow(at: IndexPath(row: index - 1, section: itemsSection)) as? ItemTableViewCell {
+
+    guard index > 0 else { return } // Nothing happens if backspaced on first item in list.
+
+    let nextCellActionBlock = {
+      if let cell = self.tableView.cellForRow(at: IndexPath(row: index - 1, section: itemsSection)) as? ItemTableViewCell {
         cell.itemContentView.startEditing()
-        deleteItem(at: index)
-
-        guard let visibleRows = tableView.indexPathsForVisibleRows else { assertionFailure(); return }
-        let nextNextIndexPath = IndexPath(row: max(index - 3, 0), section: itemsSection)
-        if !visibleRows.contains(nextNextIndexPath) {
-          print("SCROLLING")
-          self.tableView.scrollToRow(at: nextNextIndexPath, at: .top, animated: true)
-        }
-
-        // WHERE I LEFT OFF: If I backspace super fast, I can still cause it to crash, so perhaps a more elegant solution would be great. That said, for actual item names that are more than one letter, I doubt it will crash.
-
-      } else { // If user backspaces at the top of the screen, then the next cell above is non-existent as the tableview has not rendered it. We presume this is the case.
-        print("index = \(index), item name = \(checklist.items[index].name)")
-        assertionFailure()
-        /*
-        UIView.animate(withDuration: 0.1, animations: {
-          self.tableView.scrollToRow(at: IndexPath(row: index - 1, section: itemsSection), at: .top, animated: true)
-        }, completion: { success in
-          if success {
-            guard let cell = self.tableView.cellForRow(at: IndexPath(row: index - 1, section: itemsSection)) as? ItemTableViewCell else { assertionFailure(); return }
-            cell.itemContentView.startEditing()
-            self.deleteItem(at: index)
-          } else {
-            // WHERE I LEFT OFF: Sometimes animation isn't successful so we drop in here. Not sure why, or if it matters????
-            // We are still crashing on a RLM 'Object has been deleted or invalidated.' even when backspacing slowly.
-            // Need to add some print statements to understand narrative of what's going on here.
-            // IDEA: Maybe I could scroll down when I'm 2-3 rows away?
-          }
-        })
-         */
+        self.deleteItem(at: index)
       }
+    }
+
+    /*
+     If user backspaces on a cell that's at the top of the screen, then the next cell above is non-existent
+     as the tableview has not rendered it. Need to scroll that cell down into view before we do anything.
+     And do this 2 rows in advance whenever possible, as the UI looks smoother that way.
+     */
+    guard let visibleRows = tableView.indexPathsForVisibleRows else { assertionFailure(); return }
+    let nextNextIndexPath = IndexPath(row: max(index - 2, 0), section: itemsSection)
+    if !visibleRows.contains(nextNextIndexPath) {
+      UIView.animate(withDuration: 0.05, animations: {
+        self.tableView.scrollToRow(at: nextNextIndexPath, at: .top, animated: true)
+      }, completion: { success in
+        // Wait until animation completes, otherwise, when user taps backspace lots and fast, we get crashes from Realm due to double-deleting stuff.
+        if success {
+          nextCellActionBlock()
+        }
+      })
+    } else {
+      nextCellActionBlock()
     }
   }
 }
