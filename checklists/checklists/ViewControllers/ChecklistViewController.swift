@@ -10,7 +10,7 @@ import UIKit
 
 private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
-private let defaultChecklistName = "Checklist"
+private let defaultChecklistName = "untitled checklist"
 
 protocol ChecklistViewControllerDelegate: class {
   func didDismissChecklistViewController(_ ChecklistViewController: ChecklistViewController)
@@ -122,10 +122,16 @@ class ChecklistViewController: UIViewController {
 
   override func viewDidDisappear(_ animated: Bool) {
     DBManager.write {
-      checklist.items.forEach { item in
+      // If user left some 'dangling' empty items at end of list, remove them, but don't worry if there's one lone empty item.
+      var i = checklist.items.count - 1
+      while i > 0 {
+        let item = checklist.items[i]
         if item.name.count == 0 && (item.notes == nil || item.notes!.count == 0) {
           DBManager.realm.delete(item)
+        } else {
+          break
         }
+        i = i - 1
       }
     }
     delegate?.didDismissChecklistViewController(self)
