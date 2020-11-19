@@ -8,12 +8,12 @@
 
 import UIKit
 
-protocol MainMenuEnabledViewController: UIPopoverPresentationControllerDelegate {
-  func presentMenuMenuModal()
+protocol MainMenuEnabledViewController {
+  func presentMainMenuModal()
 }
 
 extension MainMenuEnabledViewController where Self: UIViewController, Self: MainMenuTableViewControllerDelegate {
-  func presentMenuMenuModal() {
+  func presentMainMenuModal() {
     guard let mainMenuViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainMenu") as? MainMenuTableViewController else { assertionFailure(); return }
     mainMenuViewController.delegate = self
 

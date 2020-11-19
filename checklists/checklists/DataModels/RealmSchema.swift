@@ -90,6 +90,14 @@ class Checklist: Object {
     }
   }
 
+  func uncheckAllItems() {
+    DBManager.write {
+      items.forEach { item in
+        item.status = .unchecked
+      }
+    }
+  }
+
   func dragItems() -> [UIDragItem] {
     let itemProvider = NSItemProvider()
     itemProvider.registerDataRepresentation(forTypeIdentifier: kUTTypePlainText as String, visibility: .ownProcess) { completion in
