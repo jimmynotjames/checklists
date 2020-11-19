@@ -37,9 +37,9 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
     menuButton.accessibilityLabel = "Miscellaneous Menu"
     navigationItem.setLeftBarButton(menuButton, animated: false)
 
-    // Currently not in use, but inserted during debugging to get the icon sizing right, relative to menuButton.
-    // let rightMenuButton = UIBarButtonItem(image: UIImage(named: "MoreMenuIcon32x32"), style: .plain, target: self, action: #selector(menuButtonTapped))
-    // navigationItem.setRightBarButton(rightMenuButton, animated: false)
+    let rightMenuButton = UIBarButtonItem(image: UIImage(named: "MoreMenuIcon32x32"), style: .plain, target: self, action: #selector(moreMenuButtonTapped))
+    menuButton.accessibilityLabel = "Checklists Menu"
+    navigationItem.setRightBarButton(rightMenuButton, animated: false)
 
     setUpAddChecklistButton()
   }
@@ -106,7 +106,18 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   }
 
   @objc func menuButtonTapped() {
-    presentMenuMenuModal()
+    presentMainMenuModal()
+  }
+
+  @objc func moreMenuButtonTapped() {
+    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    guard let menuViewController = storyboard.instantiateViewController(withIdentifier: "ChecklistsMoreMenu") as? ChecklistsMenuViewController else { assertionFailure(); return }
+
+    menuViewController.modalPresentationStyle = .popover
+    menuViewController.popoverPresentationController?.delegate = self
+    menuViewController.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+    menuViewController.delegate = self
+    present(menuViewController, animated: true)
   }
 
   // MARK: - Table view data source
@@ -261,5 +272,20 @@ extension ChecklistsViewController: MainMenuTableViewControllerDelegate {
     let storyBoard = UIStoryboard(name: "Main", bundle: nil)
     let donateViewController = storyBoard.instantiateViewController(withIdentifier: "Donate")
     present(donateViewController, animated: true)
+  }
+}
+
+// This is here to force iPhone devices to use the popover style instead of switching over to a form sheet or something.
+extension ChecklistsViewController: UIPopoverPresentationControllerDelegate {
+  func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+    return .none
+  }
+}
+
+extension ChecklistsViewController: ChecklistsMenuViewControllerDelegate {
+  func resetAllSelected() {
+    for checklist in checklists {
+      checklist.uncheckAllItems()
+    }
   }
 }

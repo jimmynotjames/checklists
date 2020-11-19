@@ -144,11 +144,9 @@ class ChecklistViewController: UIViewController {
 
   @objc func resetButtonTapped() {
     AnalyticsManager.logResetChecklist()
-    DBManager.write {
-      checklist.items.forEach { item in
-        item.status = .unchecked
-      }
-    }
+
+    checklist.uncheckAllItems()
+
     if tableView.contentOffset.y == 0.0 {
       self.tableView.reloadData()
     } else {
