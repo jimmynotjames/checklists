@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     SKPaymentQueue.default().add(StoreManager.shared)
 
     #if DEBUG
-    // SampleData.clearDatabase()
+    // SampleData.clearDatabase() // TODO: Comment out before prod release
     #endif
 
     let isFirstTimeLaunch = !UserDefaults.standard.bool(forKey: launchedAtLeastOnceKey)
@@ -39,7 +39,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     }
 
     #if DEBUG
-    // SampleData.insertTestData2()
+    // SampleData.insertFirstTimeLaunchData() // TODO: Comment out before prod release
+    // SampleData.insertTestData2() // TODO: Comment out before prod release
     #endif
 
     return true
