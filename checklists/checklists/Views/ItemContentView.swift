@@ -153,7 +153,7 @@ class ItemContentView: UIView {
     nameTextView.setContentHuggingPriority(.required, for: .vertical)
 
     NSLayoutConstraint.activate(
-      [NSLayoutConstraint.constraints(withVisualFormat: "H:|-2-[checkboxButton]-(-4)-[containerView]|", options: [], metrics: nil, views: views),
+      [NSLayoutConstraint.constraints(withVisualFormat: "H:|-2-[checkboxButton]-(-4)-[containerView]-16-|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[checkboxButton]", options: [], metrics: nil, views: views),
 
        NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[containerView]-8-|", options: [], metrics: nil, views: views),
