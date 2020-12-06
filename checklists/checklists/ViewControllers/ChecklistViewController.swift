@@ -31,6 +31,7 @@ class ChecklistViewController: UIViewController {
   weak var delegate: ChecklistViewControllerDelegate?
 
   @IBOutlet weak var checklistInfoHeaderView: UIView!
+  @IBOutlet weak var statusIcon: CircularPercentStatusIcon!
   @IBOutlet weak var checklistNameTextField: UITextField!
   @IBOutlet weak var checklistNotesTextView: CLTextView!
 
@@ -73,6 +74,9 @@ class ChecklistViewController: UIViewController {
     let tableFooterView = AddItemButtonTableFooterView(frame: .zero)
     tableFooterView.delegate = self
     tableView.tableFooterView = tableFooterView
+
+    statusIcon.iconType = .header
+    updateStatusIcon()
 
     //  Despite Apple docs saying the width is set, it is not (as of iOS 12), and StackOverflow seems to only show manual ways like this.
     checklistInfoHeaderView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
@@ -146,6 +150,7 @@ class ChecklistViewController: UIViewController {
     AnalyticsManager.logResetChecklist()
 
     checklist.uncheckAllItems()
+    updateStatusIcon()
 
     if tableView.contentOffset.y == 0.0 {
       self.tableView.reloadData()
@@ -189,6 +194,8 @@ class ChecklistViewController: UIViewController {
      back up super fast, which makes it feel jittery.
      */
     UIView.animate(withDuration: 0.01, animations: updates, completion: becomeFirstResponder ? startEditingBlock : nil)
+
+    updateStatusIcon()
   }
 
   private func collapseEditingCellIfNecessary() {
@@ -213,6 +220,11 @@ class ChecklistViewController: UIViewController {
   func deleteItem(at index: Int) {
     checklist.remove(at: index)
     tableView.deleteRows(at: [IndexPath(item: index, section: itemsSection)], with: .fade)
+    updateStatusIcon()
+  }
+
+  func updateStatusIcon() {
+    statusIcon.percentageComplete = checklist.percentageComplete
   }
 }
 
@@ -444,10 +456,10 @@ extension ChecklistViewController: ItemContentViewDelegate {
 
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView) {
     DBManager.write {
-      let item = itemContentView.item
-      item?.toggleStatus()
-      itemContentView.updateCheckedStatus()
+      itemContentView.item?.toggleStatus()
     }
+    itemContentView.updateCheckedStatus()
+    updateStatusIcon()
   }
 
   func itemContentViewNameFieldDidBeginEditing(_ itemContentView: ItemContentView) {

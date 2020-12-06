@@ -18,32 +18,16 @@
                         <color key="backgroundColor" name="defaultBackground"/>
                         <color key="sectionIndexBackgroundColor" name="defaultBackground"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChecklistCell" textLabel="f5L-fB-avC" detailTextLabel="5Dn-9z-HGO" style="IBUITableViewCellStyleSubtitle" id="dQd-ua-3vD">
-                                <rect key="frame" x="0.0" y="28" width="414" height="68"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChecklistCellWithStatus" rowHeight="107" id="6jq-B8-9ea" customClass="ChecklistTableViewCell" customModule="checklists" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="414" height="107"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="dQd-ua-3vD" id="DRb-bF-usT">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="68"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="6jq-B8-9ea" id="QhR-Ue-Xx9">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="107"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="f5L-fB-avC">
-                                            <rect key="frame" x="20" y="9.5" width="40.5" height="24"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="5Dn-9z-HGO">
-                                            <rect key="frame" x="20" y="37" width="56" height="19.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>
-                                    <segue destination="xTE-Wz-jT7" kind="show" identifier="showChecklist" id="vZ7-Hw-QNO"/>
+                                    <segue destination="xTE-Wz-jT7" kind="show" identifier="showChecklist" id="jpy-on-bzL"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -59,7 +43,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xbl-0g-rwx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-91" y="358"/>
+            <point key="canvasLocation" x="-91.304347826086968" y="357.58928571428572"/>
         </scene>
         <!--Checklist View Controller-->
         <scene sceneID="3ws-uo-0Ro">
@@ -73,8 +57,16 @@
                             <rect key="frame" x="0.0" y="0.0" width="414" height="118"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <subviews>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Grv-Fg-e9x" customClass="CircularPercentStatusIcon" customModule="checklists" customModuleProvider="target">
+                                    <rect key="frame" x="16" y="22" width="32" height="32"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="32" placeholder="YES" id="Mv4-08-6xu"/>
+                                        <constraint firstAttribute="height" constant="32" placeholder="YES" id="gdq-tj-eX0"/>
+                                    </constraints>
+                                </view>
                                 <textField opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Name" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="YSw-DD-TTd" customClass="CLTextField" customModule="checklists" customModuleProvider="target">
-                                    <rect key="frame" x="16" y="22" width="382" height="32"/>
+                                    <rect key="frame" x="58" y="22" width="340" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="32" id="IDg-Qt-wpj"/>
                                     </constraints>
@@ -99,9 +91,11 @@
                                 <constraint firstItem="YSw-DD-TTd" firstAttribute="top" secondItem="7Eq-WV-FuG" secondAttribute="top" constant="22" id="4W6-AH-dDm"/>
                                 <constraint firstItem="qFy-KA-xUU" firstAttribute="top" secondItem="YSw-DD-TTd" secondAttribute="bottom" constant="4" id="FRt-Ep-5hS"/>
                                 <constraint firstAttribute="trailing" secondItem="qFy-KA-xUU" secondAttribute="trailing" constant="16" id="MyU-me-mEU"/>
+                                <constraint firstItem="YSw-DD-TTd" firstAttribute="leading" secondItem="Grv-Fg-e9x" secondAttribute="trailing" constant="10" id="QZk-Th-Xkt"/>
                                 <constraint firstAttribute="bottom" secondItem="qFy-KA-xUU" secondAttribute="bottom" constant="15" id="VwZ-uK-0ih"/>
                                 <constraint firstAttribute="trailing" secondItem="YSw-DD-TTd" secondAttribute="trailing" constant="16" id="cH9-ZK-EC3"/>
-                                <constraint firstItem="YSw-DD-TTd" firstAttribute="leading" secondItem="7Eq-WV-FuG" secondAttribute="leadingMargin" constant="8" id="joG-7M-2un"/>
+                                <constraint firstItem="YSw-DD-TTd" firstAttribute="centerY" secondItem="Grv-Fg-e9x" secondAttribute="centerY" id="lde-HG-v1Y"/>
+                                <constraint firstItem="Grv-Fg-e9x" firstAttribute="leading" secondItem="7Eq-WV-FuG" secondAttribute="leading" constant="16" id="oKe-SI-DXe"/>
                                 <constraint firstItem="qFy-KA-xUU" firstAttribute="leading" secondItem="7Eq-WV-FuG" secondAttribute="leadingMargin" constant="8" id="orS-2a-vKK"/>
                             </constraints>
                             <userDefinedRuntimeAttributes>
@@ -124,16 +118,18 @@
                         </connections>
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <navigationItem key="navigationItem" id="rT1-5V-os4"/>
                     <connections>
                         <outlet property="checklistInfoHeaderView" destination="7Eq-WV-FuG" id="096-dL-yfj"/>
                         <outlet property="checklistNameTextField" destination="YSw-DD-TTd" id="AFN-uK-y4N"/>
                         <outlet property="checklistNotesTextView" destination="qFy-KA-xUU" id="55X-eP-yqm"/>
+                        <outlet property="statusIcon" destination="Grv-Fg-e9x" id="4ii-cq-xWk"/>
                         <outlet property="tableView" destination="JJz-SV-Ryp" id="HRG-1K-ajG"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U9f-Ko-PlG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1584" y="358"/>
+            <point key="canvasLocation" x="1136" y="358"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="3bu-EK-Jud">
@@ -531,7 +527,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lkc-7a-M0i" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="710" y="125"/>
+            <point key="canvasLocation" x="451" y="124"/>
         </scene>
     </scenes>
     <resources>

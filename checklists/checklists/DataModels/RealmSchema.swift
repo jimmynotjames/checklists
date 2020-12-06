@@ -20,6 +20,13 @@ class Checklist: Object {
 
   let items = List<Item>()
 
+  var percentageComplete: CGFloat {
+    get {
+      guard items.count > 0 else { return 0.0 }
+      return CGFloat(items.filter({ $0.status == .checked }).count) / CGFloat(items.count)
+    }
+  }
+
   convenience init(name: String, notes: String? = nil, sortNumber: Double? = nil, items: [Item]) {
     self.init()
     self.name = name

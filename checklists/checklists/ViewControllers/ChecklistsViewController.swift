@@ -132,9 +132,8 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if indexPath.section == checklistsSection {
-      let cell = tableView.dequeueReusableCell(withIdentifier: "ChecklistCell", for: indexPath)
-      cell.textLabel?.text = checklists[indexPath.row].name
-      cell.detailTextLabel?.text = checklists[indexPath.row].notes
+      guard let cell = tableView.dequeueReusableCell(withIdentifier: "ChecklistCellWithStatus", for: indexPath) as? ChecklistTableViewCell else { assertionFailure("ChecklistCellWithStatus"); return UITableViewCell() }
+      cell.checklist = checklists[indexPath.row]
       return cell
     } else {
       assertionFailure()
@@ -287,5 +286,6 @@ extension ChecklistsViewController: ChecklistsMenuViewControllerDelegate {
     for checklist in checklists {
       checklist.uncheckAllItems()
     }
+    tableView.reloadData() // To reset all the status icons.
   }
 }
