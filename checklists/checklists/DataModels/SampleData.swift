@@ -88,21 +88,44 @@ class SampleData {
 
     var checklists: [Checklist] = []
 
-    checklists.append(Checklist(name: "Weekend Getaway Essentials",
-                                sortNumber: 1.0,
-                                items: [Item(name: "Phone charger"),
-                                        Item(name: "Wallet/ID", notes: "Proper ID (ID for air travel, international, driver license for roadtrip, etc.)"),
-                                        Item(name: "Prescriptions, medicines, supplements"),
-                                        Item(name: "Toiletries bag", notes: "Small liquids only in separate bag if flying and in carry-on."),
-                                        Item(name: "Sun screen"),
-                                        Item(name: "Headphones"),
-                                        Item(name: "Book, iPad, Kindle..."),
-                                        Item(name: "Rain/wind items"),
-                                        Item(name: "Sunglasses"),
-                                        Item(name: "Sunhat"),
-                                        Item(name: "Swimsuit"),
-                                        Item(name: "Pool shoes")
-    ]))
+    let checklist1 = Checklist(name: "Morning Routine",
+                               sortNumber: 3.0,
+                               items: [Item(name: "START COFFEE MAKER"),
+                                       Item(name: "Yoga/meditation"),
+                                       Item(name: "Traffic and weather reports"),
+                                       Item(name: "Breakfast"),
+                                       Item(name: "Journaling"),
+                                       Item(name: "Argue politics on Facebook")
+                               ])
+    checklist1.items[0].status = .checked
+    checklist1.items[1].status = .checked
+    checklist1.items[2].status = .checked
+    checklist1.items[3].status = .checked
+    checklist1.items[5].status = .checked
+
+    checklists.append(checklist1)
+
+    let checklist2 = Checklist(name: "Weekend Getaway Essentials",
+                               sortNumber: 1.0,
+                               items: [Item(name: "Phone charger"),
+                                       Item(name: "Wallet/ID", notes: "Proper ID (ID for air travel, international, driver license for roadtrip, etc.)"),
+                                       Item(name: "Prescriptions, medicines, supplements"),
+                                       Item(name: "Toiletries bag", notes: "Small liquids only in separate bag if flying and in carry-on."),
+                                       Item(name: "Sun screen"),
+                                       Item(name: "Headphones"),
+                                       Item(name: "Book, iPad, Kindle..."),
+                                       Item(name: "Rain/wind items"),
+                                       Item(name: "Sunglasses"),
+                                       Item(name: "Sunhat"),
+                                       Item(name: "Swimsuit"),
+                                       Item(name: "Pool shoes")
+                               ])
+    checklist2.items[2].status = .checked
+    checklist2.items[3].status = .checked
+    checklist2.items[8].status = .checked
+    checklist2.items[9].status = .checked
+
+    checklists.append(checklist2)
 
     checklists.append(Checklist(name: "Pre-Trip Checklist",
                                 sortNumber: 2.0,
@@ -117,16 +140,6 @@ class SampleData {
                                         Item(name: "Turn off heater or A/C", notes: "Or set minimum temp to prevent freezing pipes."),
                                         Item(name: "Check stoves, oven are off"),
                                         Item(name: "Lock doors and windows")
-    ]))
-
-    checklists.append(Checklist(name: "Morning Routine",
-                                sortNumber: 3.0,
-                                items: [Item(name: "START COFFEE MAKER"),
-                                        Item(name: "Yoga/meditation"),
-                                        Item(name: "Traffic and weather reports"),
-                                        Item(name: "Breakfast"),
-                                        Item(name: "Journaling"),
-                                        Item(name: "Argue politics on Facebook")
     ]))
 
     DBManager.write {
