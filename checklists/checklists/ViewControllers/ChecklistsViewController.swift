@@ -120,6 +120,13 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
     present(menuViewController, animated: true)
   }
 
+  private func resetAllChecklists() {
+    for checklist in checklists {
+      checklist.uncheckAllItems()
+    }
+    tableView.reloadData() // To reset all the status icons.
+  }
+
   // MARK: - Table view data source
 
   override func numberOfSections(in tableView: UITableView) -> Int {
@@ -283,9 +290,12 @@ extension ChecklistsViewController: UIPopoverPresentationControllerDelegate {
 
 extension ChecklistsViewController: ChecklistsMenuViewControllerDelegate {
   func resetAllSelected() {
-    for checklist in checklists {
-      checklist.uncheckAllItems()
-    }
-    tableView.reloadData() // To reset all the status icons.
+    dismiss(animated: true, completion: nil) // Dismissing the menu, otherwise, can't present this one.
+    let alertController = UIAlertController(title: nil, message: "Are you sure? This cannot be undone.", preferredStyle: .alert)
+    alertController.addAction(UIAlertAction(title: "Reset All", style: .destructive, handler: { alertAction in
+      self.resetAllChecklists()
+    }))
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+    present(alertController, animated: true, completion: nil)
   }
 }
