@@ -97,12 +97,10 @@ class CircularPercentStatusIcon: UIView {
     let center = CGPoint(x: radius, y: radius)
     let startAngle: CGFloat = -0.5 * .pi
     let endAngle: CGFloat = percentageComplete * (2 * .pi) - 0.5 * .pi // Percent * 360º - 90º offset
-    if startAngle != endAngle {
-      let bezierPath = UIBezierPath()
-      bezierPath.move(to: center)
-      bezierPath.addArc(withCenter: center, radius: innerRadius, startAngle: startAngle, endAngle: endAngle, clockwise: true)
-      innerPercentCircleLayer.path = bezierPath.cgPath
-      innerPercentCircleLayer.fillColor = color
-    }
+    let bezierPath = UIBezierPath()
+    bezierPath.move(to: center)
+    bezierPath.addArc(withCenter: center, radius: innerRadius, startAngle: startAngle, endAngle: endAngle, clockwise: true)
+    innerPercentCircleLayer.path = bezierPath.cgPath
+    innerPercentCircleLayer.fillColor = color
   }
 }
