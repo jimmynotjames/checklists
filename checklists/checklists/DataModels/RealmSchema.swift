@@ -11,6 +11,29 @@ import UIKit
 import MobileCoreServices
 import RealmSwift
 
+/*
+ Current implementation is for this to be a singleton-style object,
+ using the List to preserve arbitrary ordering of the Checklists.
+ Perhaps in the future, some sort of tagging or folder structure
+ could be implemented, which would result in more Group objects.
+ */
+class Group: Object {
+  @objc dynamic var id = NSUUID().uuidString
+
+  let checklists = List<Checklist>()
+
+  func moveChecklist(from fromIndex: Int, to toIndex: Int) {
+    guard fromIndex >= 0 && fromIndex < checklists.count else { assertionFailure(); return }
+    guard toIndex >= 0 && toIndex < checklists.count else { assertionFailure(); return }
+    guard fromIndex != toIndex else { return }
+
+    DBManager.write {
+      checklists.move(from: fromIndex, to: toIndex)
+    }
+  }
+}
+
+
 class Checklist: Object {
   @objc dynamic var id = NSUUID().uuidString
   @objc dynamic var name: String = ""
@@ -35,37 +58,6 @@ class Checklist: Object {
       self.sortNumber = sortNumber
     }
     self.items.append(objectsIn: items)
-  }
-
-  static func calculateSortNumber(between checklist1: Checklist, and checklist2: Checklist) -> Double {
-    return (checklist1.sortNumber + checklist2.sortNumber) / 2.0
-  }
-
-  static func calculateSortNumber(before checklist: Checklist) -> Double {
-    return checklist.sortNumber - 1.0
-  }
-
-  static func calculateSortNumber(after checklist: Checklist) -> Double {
-    return checklist.sortNumber + 1.0
-  }
-
-  static func moveChecklist(from fromIndex: Int, to toIndex: Int, checklists: Results<Checklist>) {
-    let sortNumber: Double
-    switch toIndex {
-    case 0:
-      sortNumber = Checklist.calculateSortNumber(before: checklists[0])
-    case checklists.count:
-      sortNumber = Checklist.calculateSortNumber(after: checklists[toIndex - 1])
-    default: sortNumber = Checklist.calculateSortNumber(between: checklists[toIndex-1], and: checklists[toIndex])
-    }
-    DBManager.write {
-      checklists[fromIndex].sortNumber = sortNumber
-    }
-  }
-
-  // When list is empty
-  static func startingSortNumber() -> Double {
-    return 8.0
   }
 
   func remove(at index: Int) {

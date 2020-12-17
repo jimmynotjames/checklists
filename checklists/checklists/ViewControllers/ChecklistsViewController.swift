@@ -15,7 +15,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
 
   private var isFirstTimeLaunch: Bool = true
 
-  private var checklists: Results<Checklist>!
+  private var group: Group!
 
   private let addChecklistButton = CLCircleButton.addChecklistButton()
   private var addChecklistButtonPortraitConstraints: [NSLayoutConstraint] = []
@@ -27,7 +27,8 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
     super.viewDidLoad()
 
     let realm = DBManager.realm
-    checklists = realm.objects(Checklist.self).sorted(byKeyPath: "sortNumber")
+    guard let mainGroup = realm.objects(Group.self).first else { fatalError("Expected a Group object but none in database.") }
+    self.group = mainGroup
 
     tableView.dragInteractionEnabled = true
     tableView.dragDelegate = self
@@ -85,16 +86,16 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
       isFirstTimeLaunch = false
       Flurry.logAllPageViews(forTarget: navigationController)
     }
-    AnalyticsManager.logChecklistsViewed(numChecklists: checklists.count)
+    AnalyticsManager.logChecklistsViewed(numChecklists: group.checklists.count)
   }
 
   @objc func addChecklistButtonTapped() {
     AnalyticsManager.logNewChecklist()
     guard let checklistViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Checklist") as? ChecklistViewController else { assertionFailure(); return }
-    let sortNumber = checklists.isEmpty ? Checklist.startingSortNumber() : Checklist.calculateSortNumber(before: checklists.first!)
-    let checklist = Checklist(name: "", notes: nil, sortNumber: sortNumber, items: [])
+    let checklist = Checklist(name: "", notes: nil, items: [])
     DBManager.write {
       DBManager.realm.add(checklist)
+      group.checklists.insert(checklist, at: 0)
     }
     checklistViewController.checklist = checklist
     checklistViewController.delegate = self
@@ -121,7 +122,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   }
 
   private func resetAllChecklists() {
-    for checklist in checklists {
+    for checklist in group.checklists {
       checklist.uncheckAllItems()
     }
     tableView.reloadData() // To reset all the status icons.
@@ -134,13 +135,13 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return checklists.count
+    return group.checklists.count
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if indexPath.section == checklistsSection {
       guard let cell = tableView.dequeueReusableCell(withIdentifier: "ChecklistCellWithStatus", for: indexPath) as? ChecklistTableViewCell else { assertionFailure("ChecklistCellWithStatus"); return UITableViewCell() }
-      cell.checklist = checklists[indexPath.row]
+      cell.checklist = group.checklists[indexPath.row]
       return cell
     } else {
       assertionFailure()
@@ -157,12 +158,12 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
       guard
         indexPath.section == checklistsSection &&
         indexPath.row >= 0 &&
-        indexPath.row < checklists.count else { assertionFailure(); return }
+        indexPath.row < group.checklists.count else { assertionFailure(); return }
 
       let alertController = UIAlertController(title: nil, message: "Are you sure? This cannot be undone.", preferredStyle: .alert)
       alertController.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { alertAction in
         DBManager.write {
-          let checklist = self.checklists[indexPath.row]
+          let checklist = self.group.checklists[indexPath.row]
           DBManager.realm.delete(checklist.items)
           DBManager.realm.delete(checklist)
         }
@@ -177,25 +178,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
 
   override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
     guard fromIndexPath.section == checklistsSection && to.section == checklistsSection else { assertionFailure(); return }
-
-    let fromIndex = fromIndexPath.row
-    let toIndex = to.row
-
-    guard fromIndex != toIndex else { return }
-
-    let checklist = checklists[fromIndex]
-    let sortNumber: Double
-    switch toIndex {
-    case 0:
-      sortNumber = Checklist.calculateSortNumber(before: checklists[0])
-    case checklists.count - 1:
-      sortNumber = Checklist.calculateSortNumber(after: checklists[checklists.count - 1])
-    default:
-      sortNumber = Checklist.calculateSortNumber(between: checklists[toIndex], and: checklists[toIndex+1])
-    }
-    DBManager.write {
-      checklist.sortNumber = sortNumber
-    }
+    group.moveChecklist(from: fromIndexPath.row, to: to.row)
   }
 
   override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
@@ -211,7 +194,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
       let cell = sender as? UITableViewCell,
       let indexPath = tableView.indexPath(for: cell) {
 
-      checklistViewController.checklist = checklists[indexPath.row]
+      checklistViewController.checklist = group.checklists[indexPath.row]
       checklistViewController.delegate = self
     }
   }
@@ -228,7 +211,7 @@ extension ChecklistsViewController: ChecklistViewControllerDelegate {
 extension ChecklistsViewController: UITableViewDragDelegate  {
   func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
     guard indexPath.section == checklistsSection else { assertionFailure(); return [] }
-    return checklists[indexPath.row].dragItems()
+    return group.checklists[indexPath.row].dragItems()
   }
 }
 
@@ -250,14 +233,14 @@ extension ChecklistsViewController: UITableViewDropDelegate {
   }
 
   func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
-    let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(row: checklists.count, section: checklistsSection)
+    let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(row: group.checklists.count, section: checklistsSection)
     assert(coordinator.items.count == 1)
     guard let dropItem = coordinator.items.first else { assertionFailure(); return }
     let itemProvider = dropItem.dragItem.itemProvider
     itemProvider.loadObject(ofClass: NSString.self) { string, error in
       if let checklistId = string as? String {
-        if let sourceIndex = self.checklists.firstIndex(where: { checklist in return checklist.id == checklistId }) {
-          Checklist.moveChecklist(from: sourceIndex, to: destinationIndexPath.row, checklists: self.checklists)
+        if let sourceIndex = self.group.checklists.firstIndex(where: { checklist in return checklist.id == checklistId }) {
+          self.group.moveChecklist(from: sourceIndex, to: destinationIndexPath.row)
           DispatchQueue.main.async {
             tableView.moveRow(at: IndexPath(row: sourceIndex, section: destinationIndexPath.section), to: destinationIndexPath)
           }
