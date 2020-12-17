@@ -1,2 +1,2 @@
-github "realm/realm-cocoa" ~> 10.1.4
+github "realm/realm-cocoa" ~> 10.5.0
 github "scalessec/Toast-Swift" ~> 5.0.1
