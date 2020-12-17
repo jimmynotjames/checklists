@@ -44,10 +44,7 @@
 		32E767DC22EA4639003C8634 /* AddItemButtonTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DB22EA4639003C8634 /* AddItemButtonTableFooterView.swift */; };
 		32E767DE22EA4743003C8634 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32E767DD22EA4743003C8634 /* Colors.xcassets */; };
 		32E767E022EA6476003C8634 /* CLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DF22EA6476003C8634 /* CLButton.swift */; };
-		32F040412335BA51007CB244 /* Realm.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964732291ECA300CAB7C0 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		32F040442335BA68007CB244 /* RealmSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964722291ECA300CAB7C0 /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		32F040452335BC79007CB244 /* ToastSwiftFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */; };
-		32F040462335BC79007CB244 /* ToastSwiftFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		32F040472336DDBC007CB244 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A964792297AE6700CAB7C0 /* SampleData.swift */; };
 		32F363C7257D7D9D008482DA /* DataModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F363C6257D7D9D008482DA /* DataModelTests.swift */; };
 		32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4C84322875308000D63CF /* ItemTableViewCell.swift */; };
@@ -78,9 +75,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				32F040442335BA68007CB244 /* RealmSwift.framework in Embed Frameworks */,
-				32F040462335BC79007CB244 /* ToastSwiftFramework.framework in Embed Frameworks */,
-				32F040412335BA51007CB244 /* Realm.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -683,6 +677,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 25;
 				DEVELOPMENT_TEAM = EDMB3Z5KAY;
+				EXCLUDED_ARCHS = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -714,6 +709,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 25;
 				DEVELOPMENT_TEAM = EDMB3Z5KAY;
+				EXCLUDED_ARCHS = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
