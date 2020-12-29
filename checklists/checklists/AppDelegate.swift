@@ -11,6 +11,7 @@ import RealmSwift
 import StoreKit
 
 private let launchedAtLeastOnceKey = "launchedAtLeastOnce"
+private let appVersionKey = "appVersionKey"
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
@@ -34,13 +35,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
     let isFirstTimeLaunch = !UserDefaults.standard.bool(forKey: launchedAtLeastOnceKey)
     if isFirstTimeLaunch {
-      SampleData.insertFirstTimeLaunchData()
+      SampleData.insertFirstTimeLaunchDataV1_1()
       UserDefaults.standard.set(true, forKey: launchedAtLeastOnceKey)
+      UserDefaults.standard.set("1.1", forKey: appVersionKey)
+    } else {
+      // v1.0 didn't have a Group object, so if that's the case, then this is first-time launch of app upgrade to v1.1, and instantiate one.
+      if DBManager.realm.objects(Group.self).isEmpty {
+        UserDefaults.standard.set("1.1", forKey: appVersionKey) // We never set this key for v1.0 so make sure it's set for v1.1 onwards.
+        migrateDatabase1_1()
+      }
     }
 
     #if DEBUG
     // SampleData.insertFirstTimeLaunchData() // TODO: Comment out before prod release
     // SampleData.insertTestData2() // TODO: Comment out before prod release
+    // print("appVersion: \(UserDefaults.standard.string(forKey: appVersionKey) ?? "[Not Found]")")
     #endif
 
     return true
@@ -54,6 +63,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     navigationBarAppearance.isTranslucent = false
     navigationBarAppearance.barTintColor = Colors.defaultBackground
     navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: Colors.teal]
+  }
+
+  // For migrating from v1.0 to v1.1. Updating scheme from using sortNumber to using the Group object to hold a ordered list.
+  private func migrateDatabase1_1() {
+    let realm = DBManager.realm
+    let group = Group()
+    DBManager.write {
+      realm.add(group)
+      let checklists = realm.objects(Checklist.self).sorted(byKeyPath: "sortNumber")
+      for checklist in checklists {
+        group.checklists.append(checklist)
+      }
+    }
   }
 
   @objc func orientationChanged(notification: NSNotification!) {

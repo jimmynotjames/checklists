@@ -83,9 +83,26 @@ class SampleData {
 
   }
 
-  static func insertFirstTimeLaunchData() {
+  static func insertFirstTimeLaunchDataV1_0() {
     let realm = DBManager.realm
 
+    DBManager.write {
+      realm.add(generateFirstTimeLaunchChecklists())
+    }
+  }
+
+
+  static func insertFirstTimeLaunchDataV1_1() {
+    let realm = DBManager.realm
+
+    let group = Group()
+    group.checklists.append(objectsIn: generateFirstTimeLaunchChecklists())
+    DBManager.write {
+      realm.add(group)
+    }
+  }
+
+  static func generateFirstTimeLaunchChecklists() -> [Checklist] {
     var checklists: [Checklist] = []
 
     let checklist1 = Checklist(name: "Morning Routine",
@@ -142,8 +159,6 @@ class SampleData {
                                         Item(name: "Lock doors and windows")
     ]))
 
-    DBManager.write {
-      realm.add(checklists)
-    }
+    return checklists
   }
 }
