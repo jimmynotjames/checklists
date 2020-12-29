@@ -32,8 +32,6 @@
 		32A9647C2297AFF400CAB7C0 /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A9647B2297AFF400CAB7C0 /* DBManager.swift */; };
 		32AECAEB22ED118100747080 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32AECAEA22ED118100747080 /* Colors.swift */; };
 		32B4C177257AF608005721F5 /* ChecklistCellContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B4C176257AF608005721F5 /* ChecklistCellContentView.swift */; };
-		32BA48BD23D4F9DD00A0327F /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964732291ECA300CAB7C0 /* Realm.framework */; };
-		32BA48BE23D4F9FB00A0327F /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964722291ECA300CAB7C0 /* RealmSwift.framework */; };
 		32BA48BF23D4FA0B00A0327F /* ToastSwiftFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */; };
 		32BA5021235CE84C007E506D /* CLCircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BA5020235CE84C007E506D /* CLCircleButton.swift */; };
 		32C8D62625671FFD003E9569 /* CircularPercentStatusIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C8D62525671FFD003E9569 /* CircularPercentStatusIcon.swift */; };
@@ -44,7 +42,6 @@
 		32E767DC22EA4639003C8634 /* AddItemButtonTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DB22EA4639003C8634 /* AddItemButtonTableFooterView.swift */; };
 		32E767DE22EA4743003C8634 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32E767DD22EA4743003C8634 /* Colors.xcassets */; };
 		32E767E022EA6476003C8634 /* CLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DF22EA6476003C8634 /* CLButton.swift */; };
-		32F040452335BC79007CB244 /* ToastSwiftFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */; };
 		32F040472336DDBC007CB244 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A964792297AE6700CAB7C0 /* SampleData.swift */; };
 		32F363C7257D7D9D008482DA /* DataModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F363C6257D7D9D008482DA /* DataModelTests.swift */; };
 		32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4C84322875308000D63CF /* ItemTableViewCell.swift */; };
@@ -144,10 +141,7 @@
 				3220B11822E93C6A003180B9 /* Realm.framework in Frameworks */,
 				3220B11922E93C6A003180B9 /* RealmSwift.framework in Frameworks */,
 				32BA48BF23D4FA0B00A0327F /* ToastSwiftFramework.framework in Frameworks */,
-				32BA48BD23D4F9DD00A0327F /* Realm.framework in Frameworks */,
 				32A928992320A032005F9B34 /* libFlurry_9.3.1.a in Frameworks */,
-				32BA48BE23D4F9FB00A0327F /* RealmSwift.framework in Frameworks */,
-				32F040452335BC79007CB244 /* ToastSwiftFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,7 +363,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1020;
-				LastUpgradeCheck = 1110;
+				LastUpgradeCheck = 1230;
 				ORGANIZATIONNAME = "Jimmy Ho";
 				TargetAttributes = {
 					323ADC6622828C0900644931 = {
@@ -579,6 +573,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -640,6 +635,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
