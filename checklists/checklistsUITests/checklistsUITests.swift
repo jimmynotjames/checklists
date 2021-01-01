@@ -34,9 +34,6 @@ class checklistsUITests: XCTestCase {
     XCTAssert(staticText1.exists)
     XCTAssert(staticText2.exists == false)
     XCTAssert(staticText3.exists)
-
-    // Use recording to get started writing UI tests.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
   }
 
   func testChecklistReordering() {

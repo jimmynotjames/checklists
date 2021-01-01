@@ -56,35 +56,53 @@ class checklistUITest: XCTestCase {
     XCTAssert(app.staticTexts[newChecklistNotes].exists)
   }
 
-  /*
-   1. Go into Pre-Trip Checklist. 11 elements, none checked.
-   2. Check 2 of the items. Verify that they were checked. Verify status icon updated
-   3. Uncheck them. Verify again.
-   4. Check 2 items again, Verify again, and go Back. Verify circular status is updated on main Checklists page.
-   */
-  func testCheckboxes() {
+  func testCheckboxesAndReset() {
     let tablesQuery = app.tables
+
+    // Go into Pre-Trip Checklist. 11 elements, none checked.
     tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["Pre-Trip Checklist"]/*[[".cells.staticTexts[\"Pre-Trip Checklist\"]",".staticTexts[\"Pre-Trip Checklist\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
     tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].tap()
     tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["Checkbox"].tap()
 
+    // Check 2 of the items. Verify that they were checked. Verify status icon updated
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].isSelected == true)
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["Checkbox"].isSelected == true)
     XCTAssert(app.otherElements["18 percent"].exists) // Check that circular status icon updated. 2/11 -> 18%
 
+    // Reset checklist. Verify again.
     app.navigationBars["checklists.ChecklistView"].buttons["Reset"].tap()
 
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].isSelected == false)
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["Checkbox"].isSelected == false)
     XCTAssert(app.otherElements["0 percent"].exists) // Check that circular status icon updated. 0/11 -> 0%
 
+    // Check 2 different items, Verify again
     tablesQuery.children(matching: .cell).element(boundBy: 2).buttons["Checkbox"].tap()
     tablesQuery.children(matching: .cell).element(boundBy: 10).buttons["Checkbox"].tap()
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 2).buttons["Checkbox"].isSelected == true)
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 10).buttons["Checkbox"].isSelected == true)
 
+    // Go Back. Verify circular status is updated on main Checklists page.
     app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
-
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 2).otherElements["18 percent"].exists) // Check that circular status icon updated on Checklists main page. 2/11 -> 18%
+  }
+
+  func testItemDeletion() {
+    let tablesQuery = XCUIApplication().tables
+    tablesQuery.staticTexts["Morning Routine"].tap()
+
+    // Get name of current item about to be deleted
+    guard let itemName = tablesQuery.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String else { XCTFail(); return }
+
+    XCTAssert(app.otherElements["83 percent"].exists) // Check that circular status icon updated. 5/6
+
+    let cell = tablesQuery.children(matching: .cell).element(boundBy: 1)
+    cell.swipeLeft() // "Yoga/meditation"
+    tablesQuery/*@START_MENU_TOKEN@*/.buttons["Delete"]/*[[".cells.buttons[\"Delete\"]",".buttons[\"Delete\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+
+    // Check that item name is no longer there.
+    guard let newItemName = tablesQuery.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String else { XCTFail(); return }
+    XCTAssert(newItemName != itemName)
+    XCTAssert(app.otherElements["80 percent"].exists) // Check that circular status icon updated. 4/5
   }
 }
