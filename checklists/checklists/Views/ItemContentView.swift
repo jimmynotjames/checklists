@@ -77,6 +77,7 @@ class ItemContentView: UIView {
     }
     textView.returnKeyType = .default
     textView.delegate = self
+    textView.accessibilityIdentifier = "itemNotesTextView"
     textView.accessibilityLabel = "optional notes: "
     return textView
   }()
