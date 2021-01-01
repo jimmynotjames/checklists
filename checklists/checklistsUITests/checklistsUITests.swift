@@ -8,27 +8,49 @@
 
 import XCTest
 
+// IMPORTANT NOTE: Running these tests will clear/reset the persisted database on the app.
 class checklistsUITests: XCTestCase {
 
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+  var app: XCUIApplication!
 
-        // In UI tests it is usually best to stop immediately when a failure occurs.
-        continueAfterFailure = false
+  override func setUp() {
+    continueAfterFailure = false
 
-        // UI tests must launch the application that they test. Doing this in setup will make sure it happens for each test method.
-        XCUIApplication().launch()
+    // UI tests must launch the application that they test. Doing this in setup will make sure it happens for each test method.
+    app = XCUIApplication()
+    app.launchArguments = ["-UITests1"]
+    app.launch()
+  }
 
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
-    }
+  override func tearDown() {
+    
+  }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+  func testChecklistDeletion() {
 
-    func testExample() {
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
+    let tablesQuery = app.tables
+    tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["Weekend Getaway Essentials"]/*[[".cells.staticTexts[\"Weekend Getaway Essentials\"]",".staticTexts[\"Weekend Getaway Essentials\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeLeft()
+    tablesQuery/*@START_MENU_TOKEN@*/.buttons["Delete"]/*[[".cells.buttons[\"Delete\"]",".buttons[\"Delete\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+    app.alerts.scrollViews.otherElements.buttons["Delete"].tap()
 
+    let staticText1 = tablesQuery.staticTexts["Morning Routine"]
+    let staticText2 = tablesQuery.staticTexts["Weekend Getaway Essentials"]
+    let staticText3 = tablesQuery.staticTexts["Pre-Trip Checklist"]
+    XCTAssert(staticText1.exists)
+    XCTAssert(staticText2.exists == false)
+    XCTAssert(staticText3.exists)
+
+    // Use recording to get started writing UI tests.
+    // Use XCTAssert and related functions to verify your tests produce the correct results.
+  }
+
+  func testChecklistReordering() {
+    let text1 = app.staticTexts["Morning Routine"]
+    let text2 = app.staticTexts["Weekend Getaway Essentials"]
+    let text3 = app.staticTexts["Pre-Trip Checklist"]
+    text1.press(forDuration: 0.75, thenDragTo: text3) // Results in ordering: 2, 1, 3
+
+    XCTAssert(text1.frame.origin.y > text2.frame.origin.y)
+    XCTAssert(text3.frame.origin.y > text1.frame.origin.y)
+  }
 }
