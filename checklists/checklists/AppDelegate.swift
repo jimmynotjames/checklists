@@ -52,6 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     // print("appVersion: \(UserDefaults.standard.string(forKey: appVersionKey) ?? "[Not Found]")")
     #endif
 
+    // For UITests
     #if DEBUG
     if CommandLine.arguments.contains("-UITests1") {
       print("Injecting Test Data for UITests1")

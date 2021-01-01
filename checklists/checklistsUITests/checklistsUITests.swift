@@ -22,12 +22,7 @@ class checklistsUITests: XCTestCase {
     app.launch()
   }
 
-  override func tearDown() {
-    
-  }
-
   func testChecklistDeletion() {
-
     let tablesQuery = app.tables
     tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["Weekend Getaway Essentials"]/*[[".cells.staticTexts[\"Weekend Getaway Essentials\"]",".staticTexts[\"Weekend Getaway Essentials\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeLeft()
     tablesQuery/*@START_MENU_TOKEN@*/.buttons["Delete"]/*[[".cells.buttons[\"Delete\"]",".buttons[\"Delete\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
