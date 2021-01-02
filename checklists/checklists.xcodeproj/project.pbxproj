@@ -25,6 +25,7 @@
 		324A03222303A38700958D3E /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324A03212303A38700958D3E /* StoreManager.swift */; };
 		324A03242303AABB00958D3E /* DonateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324A03232303AABB00958D3E /* DonateViewController.swift */; };
 		327C659A259EB73D0012AABD /* checklistUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C6599259EB73D0012AABD /* checklistUITest.swift */; };
+		327C65A625A0DB780012AABD /* checklistCreateUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C65A525A0DB780012AABD /* checklistCreateUITest.swift */; };
 		32A928992320A032005F9B34 /* libFlurry_9.3.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A928982320A032005F9B34 /* libFlurry_9.3.1.a */; };
 		32A9289F2320A76D005F9B34 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A9289E2320A76D005F9B34 /* SystemConfiguration.framework */; };
 		32A928A42320CED0005F9B34 /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A928A32320CED0005F9B34 /* AnalyticsManager.swift */; };
@@ -105,6 +106,7 @@
 		324A03232303AABB00958D3E /* DonateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonateViewController.swift; sourceTree = "<group>"; };
 		3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ToastSwiftFramework.framework; path = Carthage/Build/iOS/ToastSwiftFramework.framework; sourceTree = "<group>"; };
 		327C6599259EB73D0012AABD /* checklistUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistUITest.swift; sourceTree = "<group>"; };
+		327C65A525A0DB780012AABD /* checklistCreateUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistCreateUITest.swift; sourceTree = "<group>"; };
 		32A928982320A032005F9B34 /* libFlurry_9.3.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_9.3.1.a; sourceTree = "<group>"; };
 		32A9289A2320A03B005F9B34 /* Flurry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
 		32A9289B2320A0A1005F9B34 /* checklists-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "checklists-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -220,6 +222,7 @@
 			children = (
 				323ADC8F22828C0C00644931 /* checklistsUITests.swift */,
 				327C6599259EB73D0012AABD /* checklistUITest.swift */,
+				327C65A525A0DB780012AABD /* checklistCreateUITest.swift */,
 				323ADC9122828C0C00644931 /* Info.plist */,
 			);
 			path = checklistsUITests;
@@ -511,6 +514,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				327C65A625A0DB780012AABD /* checklistCreateUITest.swift in Sources */,
 				327C659A259EB73D0012AABD /* checklistUITest.swift in Sources */,
 				323ADC9022828C0C00644931 /* checklistsUITests.swift in Sources */,
 			);

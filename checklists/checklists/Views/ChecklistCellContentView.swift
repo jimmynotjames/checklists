@@ -36,6 +36,7 @@ class ChecklistCellContentView: UIView {
     label.backgroundColor = .clear
     label.isUserInteractionEnabled = false
     label.numberOfLines = 3
+    label.accessibilityIdentifier = "checklistNotesLabel"
     return label
   }()
 
