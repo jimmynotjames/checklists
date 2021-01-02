@@ -164,11 +164,10 @@ class checklistUITest: XCTestCase {
   }
 
   func testLongChecklistNotesWithScrolling() {
-    let app = XCUIApplication()
     app.tables/*@START_MENU_TOKEN@*/.staticTexts["Weekend Getaway Essentials"]/*[[".cells.staticTexts[\"Weekend Getaway Essentials\"]",".staticTexts[\"Weekend Getaway Essentials\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
 
-    let checklisttableviewTable = app.tables["ChecklistTableView"]
-    let checklistnotestextviewTextView = checklisttableviewTable.textViews["checklistNotesTextView"]
+    let checklistTableView = app.tables["ChecklistTableView"]
+    let checklistnotestextviewTextView = checklistTableView.textViews["checklistNotesTextView"]
     checklistnotestextviewTextView.tap()
 
     let notes = loremIspum + "\n" + loremIspum
@@ -176,7 +175,7 @@ class checklistUITest: XCTestCase {
 
     app.toolbars["Toolbar"].buttons["Done"].tap()
 
-    checklisttableviewTable.swipeUp()
+    checklistTableView.swipeUp()
 
     app.navigationBars["Weekend Getaway Essentials"].buttons["Back"].tap()
 
@@ -184,4 +183,52 @@ class checklistUITest: XCTestCase {
     XCTAssert(weekendGetawayNotes.starts(with: notes.prefix(15)))
   }
 
+  func testChecklistReordering1() {
+    app.tables/*@START_MENU_TOKEN@*/.staticTexts["Weekend Getaway Essentials"]/*[[".cells.staticTexts[\"Weekend Getaway Essentials\"]",".staticTexts[\"Weekend Getaway Essentials\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+    let checklistTableView = app.tables["ChecklistTableView"]
+
+    // Go to last Item and move to index 8.
+    checklistTableView.swipeUp()
+    let item8NameTextView = checklistTableView.children(matching: .cell).element(boundBy: 7).textViews["itemNameTextView"]
+    let item12NameTextView = checklistTableView.children(matching: .cell).element(boundBy: 11).textViews["itemNameTextView"]
+
+    let item12Name = item12NameTextView.value as! String
+
+    item12NameTextView.press(forDuration: 0.75, thenDragTo: item8NameTextView)
+
+    // Now the original last item should now be at index 7.
+    XCTAssert(item12Name == checklistTableView.children(matching: .cell).element(boundBy: 7).textViews["itemNameTextView"].value as! String)
+
+    // For good measure, go Back to main page, then back into Checklist, and see if all elements are still ordered correctly.
+    app.navigationBars["Weekend Getaway Essentials"].buttons["Back"].tap()
+    app.tables/*@START_MENU_TOKEN@*/.staticTexts["Weekend Getaway Essentials"]/*[[".cells.staticTexts[\"Weekend Getaway Essentials\"]",".staticTexts[\"Weekend Getaway Essentials\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+    checklistTableView.swipeUp()
+    XCTAssert(item12Name == checklistTableView.children(matching: .cell).element(boundBy: 7).textViews["itemNameTextView"].value as! String)
+  }
+
+  func testChecklistReordering2() {
+    app.tables.staticTexts["Morning Routine"].tap()
+    let checklistTableView = app.tables["ChecklistTableView"]
+
+    // Go to last Item and move to index 0.
+    let fromNameTextView = checklistTableView.children(matching: .cell).element(boundBy: 5).textViews["itemNameTextView"]
+    let toNameTextView = checklistTableView.children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"]
+
+    let fromName = fromNameTextView.value as! String
+    let item1Name = checklistTableView.children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"].value as! String
+    let item2Name = checklistTableView.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as! String
+
+    fromNameTextView.press(forDuration: 0.75, thenDragTo: toNameTextView)
+
+    XCTAssert(fromName == checklistTableView.children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"].value as! String) // Now the original last item should now be at index 7.
+    XCTAssert(item1Name == checklistTableView.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as! String) // The original item 1 should now be shifted down to item 2.
+    XCTAssert(item2Name == checklistTableView.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].value as! String) // The original item 2 should now be shifted down to item 3.
+
+    // For good measure, go Back to main page, then back into Checklist, and see if all elements are still ordered correctly.
+    app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
+    app.tables.staticTexts["Morning Routine"].tap()
+    XCTAssert(fromName == checklistTableView.children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"].value as! String) // Now the original last item should now be at index 7.
+    XCTAssert(item1Name == checklistTableView.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as! String) // The original item 1 should now be shifted down to item 2.
+    XCTAssert(item2Name == checklistTableView.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].value as! String) // The original item 2 should now be shifted down to item 3.
+  }
 }

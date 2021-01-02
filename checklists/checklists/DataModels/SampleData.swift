@@ -102,6 +102,10 @@ class SampleData {
     }
   }
 
+  /*
+   REMINDER: This data set is also used for automated testing.
+   If we make adjustments to this, we should either update the tests or duplicate this test set.
+   */
   static func generateFirstTimeLaunchChecklists() -> [Checklist] {
     var checklists: [Checklist] = []
 
