@@ -231,4 +231,81 @@ class checklistUITest: XCTestCase {
     XCTAssert(item1Name == checklistTableView.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as! String) // The original item 1 should now be shifted down to item 2.
     XCTAssert(item2Name == checklistTableView.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].value as! String) // The original item 2 should now be shifted down to item 3.
   }
+
+  func testChecklistEditItemName() {
+    app.tables.staticTexts["Morning Routine"].tap()
+    let checklistTableView = app.tables["ChecklistTableView"]
+
+    let item2NameTextView = checklistTableView.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"]
+    let item2Name = item2NameTextView.value as! String
+    item2NameTextView.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.9)).tap()
+
+    let n = 11
+    let deleteKey = app/*@START_MENU_TOKEN@*/.keys["delete"]/*[[".keyboards.keys[\"delete\"]",".keys[\"delete\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+    for _ in 1...n {
+      deleteKey.tap()
+    }
+
+    XCTAssert(item2Name.prefix(item2Name.count - n) == item2NameTextView.value as! String)
+
+    // For good measure, back out, and go back in again, and check again.
+    app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
+    app.tables.staticTexts["Morning Routine"].tap()
+    XCTAssert(item2Name.prefix(item2Name.count - n) == checklistTableView.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as! String)
+  }
+
+  func testAddItemsAtEnd() {
+    let newItemName1 = "Walk the dog"
+    let newItemName2 = "Turn off coffee maker"
+
+    app.tables.staticTexts["Morning Routine"].tap()
+    let checklistTableView = app.tables["ChecklistTableView"]
+
+    checklistTableView.swipeUp()
+
+    let numItems = checklistTableView.children(matching: .cell).count
+    var numCheckedItems = 0
+    for i in 0..<numItems {
+      numCheckedItems = numCheckedItems + ((checklistTableView.children(matching: .cell).element(boundBy: i).buttons["Checkbox"].isSelected) ? 1 : 0)
+    }
+    XCTAssert(app.otherElements[String(format: "%.0f percent", 100.0 * Double(numCheckedItems) / Double(numItems))].exists) // Check that circular status icon updated.
+
+    // Add an Item using Add button.
+    checklistTableView.buttons["Add"].tap()
+    app.typeText(newItemName1)
+
+    // Count should have increased by one.
+    XCTAssert(checklistTableView.children(matching: .cell).count == numItems + 1)
+    XCTAssert(app.otherElements[String(format: "%.0f percent", 100.0 * Double(numCheckedItems) / Double(numItems + 1))].exists) // Check that circular status icon updated.
+
+    app.navigationBars["Morning Routine"].buttons["Back"].tap()
+    XCTAssert(app.tables.children(matching: .cell).element(boundBy: 0).otherElements[String(format: "%.0f percent", 100.0 * Double(numCheckedItems) / Double(numItems + 1))].exists) // Check that circular status icon updated on Checklists page.
+    app.tables.staticTexts["Morning Routine"].tap()
+
+    // Check that changes persisted.
+    XCTAssert(checklistTableView.children(matching: .cell).count == numItems + 1)
+    XCTAssert(checklistTableView.children(matching: .cell).element(boundBy: numItems).textViews["itemNameTextView"].value as! String == newItemName1)
+    XCTAssert(app.otherElements[String(format: "%.0f percent", 100.0 * Double(numCheckedItems) / Double(numItems + 1))].exists) // Check that circular status icon updated.
+
+    // Now add something at end using keyboard Return key ("Next") key.
+    let lastItemNameTextView = checklistTableView.children(matching: .cell).element(boundBy: numItems).textViews["itemNameTextView"]
+    lastItemNameTextView.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.9)).tap()
+
+    app/*@START_MENU_TOKEN@*/.buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.tap()
+    app.typeText(newItemName2)
+    app.toolbars["Toolbar"].buttons["Done"].tap()
+
+    XCTAssert(checklistTableView.children(matching: .cell).count == numItems + 2)
+    XCTAssert(app.otherElements[String(format: "%.0f percent", 100.0 * Double(numCheckedItems) / Double(numItems + 2))].exists) // Check that circular status icon updated.
+    XCTAssert(checklistTableView.children(matching: .cell).element(boundBy: numItems + 1).textViews["itemNameTextView"].value as! String == newItemName2)
+
+    // Go back to main page, back into Checklist, and check again.
+    app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
+    XCTAssert(app.tables.children(matching: .cell).element(boundBy: 0).otherElements[String(format: "%.0f percent", 100.0 * Double(numCheckedItems) / Double(numItems + 2))].exists) // Check that circular status icon updated on Checklists page.
+    app.tables.staticTexts["Morning Routine"].tap()
+
+    XCTAssert(checklistTableView.children(matching: .cell).count == numItems + 2)
+    XCTAssert(app.otherElements[String(format: "%.0f percent", 100 * Double(numCheckedItems) / Double(numItems + 2))].exists) // Check that circular status icon updated.
+    XCTAssert(checklistTableView.children(matching: .cell).element(boundBy: numItems + 1).textViews["itemNameTextView"].value as! String == newItemName2)
+  }
 }
