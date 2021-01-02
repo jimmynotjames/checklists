@@ -193,4 +193,59 @@ class checklistUITest: XCTestCase {
     // Go back to main page.
     app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
   }
+
+  /*
+   You can create an Item by tapping Next on keyboard and remove one by tapping Delete
+   on an empty Item.
+   */
+  func testAddDeleteItemsWithCursor() {
+    app.tables/*@START_MENU_TOKEN@*/.staticTexts["Pre-Trip Checklist"]/*[[".cells.staticTexts[\"Pre-Trip Checklist\"]",".staticTexts[\"Pre-Trip Checklist\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+
+    let checklisttableviewTable = app.tables["ChecklistTableView"]
+    let itemNameTextView1a = checklisttableviewTable.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"]
+    itemNameTextView1a.tap()
+    let itemNameTextView1aValue = itemNameTextView1a.value as! String
+
+    let itemNameTextView2aValue = checklisttableviewTable.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].value as! String
+
+    // Add some items with Next key
+    let nextButton = app/*@START_MENU_TOKEN@*/.buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
+    nextButton.tap()
+    app.typeText("X")
+
+    nextButton.tap()
+    app.typeText("Y")
+
+    nextButton.tap()
+    app.typeText("Z")
+
+    nextButton.tap()
+
+    // Remove those items with Delete key and nothing else.
+    let deleteKey = app/*@START_MENU_TOKEN@*/.keys["delete"]/*[[".keyboards.keys[\"delete\"]",".keys[\"delete\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+    for _ in 1...7 {
+      deleteKey.tap()
+    }
+    app.toolbars["Toolbar"].buttons["Done"].tap()
+
+    // Test that original state was restored.
+    let itemNameTextView1bValue = checklisttableviewTable.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as! String
+    XCTAssert(itemNameTextView1aValue == itemNameTextView1bValue)
+
+    var itemNameTextView2bValue = checklisttableviewTable.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].value as! String
+    XCTAssert(itemNameTextView2aValue == itemNameTextView2bValue)
+
+    // Add notes to an Item, then delete the notes and keep tapping Delete. Should not spill into Name field.
+    checklisttableviewTable.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].tap()
+    checklisttableviewTable.children(matching: .cell).element(boundBy: 2).textViews["itemNotesTextView"].tap()
+    app.typeText("Make sure key in planter.")
+    for _ in 1...30 {
+      deleteKey.tap()
+    }
+    app.toolbars["Toolbar"].buttons["Done"].tap()
+
+    // Check that Name field still preserved.
+    itemNameTextView2bValue = checklisttableviewTable.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].value as! String
+    XCTAssert(itemNameTextView2aValue == itemNameTextView2bValue)
+  }
 }
