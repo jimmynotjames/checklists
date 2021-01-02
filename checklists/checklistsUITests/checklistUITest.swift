@@ -69,14 +69,14 @@ class checklistUITest: XCTestCase {
     // Check 2 of the items. Verify that they were checked. Verify status icon updated
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].isSelected == true)
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["Checkbox"].isSelected == true)
-    XCTAssert(app.otherElements["18 percent"].exists) // Check that circular status icon updated. 2/11 -> 18%
+    XCTAssert(tablesQuery["ChecklistTableView"].otherElements["Percent Complete"].value as! String == "18 percent") // Check that circular status icon updated. 2/11 -> 18%
 
     // Reset checklist. Verify again.
     app.navigationBars["checklists.ChecklistView"].buttons["Reset"].tap()
 
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].isSelected == false)
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["Checkbox"].isSelected == false)
-    XCTAssert(app.otherElements["0 percent"].exists) // Check that circular status icon updated. 0/11 -> 0%
+    XCTAssert(tablesQuery["ChecklistTableView"].otherElements["Percent Complete"].value as! String == "0 percent") // Check that circular status icon updated. 0/11 -> 0%
 
     // Check 2 different items, Verify again
     tablesQuery.children(matching: .cell).element(boundBy: 2).buttons["Checkbox"].tap()
@@ -86,7 +86,7 @@ class checklistUITest: XCTestCase {
 
     // Go Back. Verify circular status is updated on main Checklists page.
     app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
-    XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 2).otherElements["18 percent"].exists) // Check that circular status icon updated on Checklists main page. 2/11 -> 18%
+    XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 2).otherElements["Percent Complete"].value as! String == "18 percent") // Check that circular status icon updated on Checklists main page. 2/11 -> 18%
   }
 
   func testItemDeletion() {
