@@ -49,6 +49,7 @@ class ChecklistViewController: UIViewController {
     NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardAppear(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardDisappear(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
 
+    tableView.accessibilityIdentifier = "ChecklistTableView"
     tableView.delegate = self
     tableView.dataSource = self
 

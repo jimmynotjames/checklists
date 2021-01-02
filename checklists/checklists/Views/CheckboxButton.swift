@@ -16,6 +16,8 @@ class CheckboxButton: UIButton {
   override init(frame: CGRect) {
     super.init(frame: .zero)
 
+    accessibilityLabel = "Checkbox"
+
     setImage(UIImage(named: "CheckboxUncheckedIcon"), for: .normal)
     setImage(UIImage(named: "CheckboxCheckedIcon"), for: .selected)
 
@@ -41,11 +43,11 @@ class CheckboxButton: UIButton {
     case .checked:
       isSelected = true
       tintColor = Colors.inactiveText
-      accessibilityLabel = "Checked off"
+      accessibilityValue = "Checked"
     case .unchecked:
       isSelected = false
       tintColor = Colors.teal
-      accessibilityLabel = "Unchecked"
+      accessibilityValue = "Unchecked"
     }
   }
 }

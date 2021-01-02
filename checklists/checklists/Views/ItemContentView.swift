@@ -64,6 +64,7 @@ class ItemContentView: UIView {
       textView.resignFirstResponder()
     }
     textView.returnKeyType = .next
+    textView.accessibilityIdentifier = "itemNameTextView"
     textView.accessibilityLabel = "checklist item: "
     return textView
   }()
@@ -76,6 +77,7 @@ class ItemContentView: UIView {
     }
     textView.returnKeyType = .default
     textView.delegate = self
+    textView.accessibilityIdentifier = "itemNotesTextView"
     textView.accessibilityLabel = "optional notes: "
     return textView
   }()
