@@ -26,7 +26,9 @@
 		324A03242303AABB00958D3E /* DonateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324A03232303AABB00958D3E /* DonateViewController.swift */; };
 		327C659A259EB73D0012AABD /* checklistUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C6599259EB73D0012AABD /* checklistUITest.swift */; };
 		327C65A625A0DB780012AABD /* checklistCreateUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C65A525A0DB780012AABD /* checklistCreateUITest.swift */; };
-		32A928992320A032005F9B34 /* libFlurry_9.3.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A928982320A032005F9B34 /* libFlurry_9.3.1.a */; };
+		327C65BC25A16BA90012AABD /* libFlurry_11.2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 327C65B025A16BA90012AABD /* libFlurry_11.2.0.a */; };
+		327C65BF25A16BA90012AABD /* FlurryEmpty.m in Sources */ = {isa = PBXBuildFile; fileRef = 327C65B725A16BA90012AABD /* FlurryEmpty.m */; };
+		327C65C825A16F860012AABD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 327C65C725A16F860012AABD /* Security.framework */; };
 		32A9289F2320A76D005F9B34 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A9289E2320A76D005F9B34 /* SystemConfiguration.framework */; };
 		32A928A42320CED0005F9B34 /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A928A32320CED0005F9B34 /* AnalyticsManager.swift */; };
 		32A964712291E14F00CAB7C0 /* ItemContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A964702291E14F00CAB7C0 /* ItemContentView.swift */; };
@@ -107,11 +109,16 @@
 		3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ToastSwiftFramework.framework; path = Carthage/Build/iOS/ToastSwiftFramework.framework; sourceTree = "<group>"; };
 		327C6599259EB73D0012AABD /* checklistUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistUITest.swift; sourceTree = "<group>"; };
 		327C65A525A0DB780012AABD /* checklistCreateUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistCreateUITest.swift; sourceTree = "<group>"; };
-		32A928982320A032005F9B34 /* libFlurry_9.3.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_9.3.1.a; sourceTree = "<group>"; };
-		32A9289A2320A03B005F9B34 /* Flurry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
+		327C65B025A16BA90012AABD /* libFlurry_11.2.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_11.2.0.a; sourceTree = "<group>"; };
+		327C65B125A16BA90012AABD /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
+		327C65B325A16BA90012AABD /* FlurryConsent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlurryConsent.h; sourceTree = "<group>"; };
+		327C65B525A16BA90012AABD /* FlurryUserProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlurryUserProperties.h; sourceTree = "<group>"; };
+		327C65B625A16BA90012AABD /* FlurryCCPA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlurryCCPA.h; sourceTree = "<group>"; };
+		327C65B725A16BA90012AABD /* FlurryEmpty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlurryEmpty.m; sourceTree = "<group>"; };
+		327C65B925A16BA90012AABD /* FlurrySKAdNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlurrySKAdNetwork.h; sourceTree = "<group>"; };
+		327C65BB25A16BA90012AABD /* FlurrySessionBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlurrySessionBuilder.h; sourceTree = "<group>"; };
+		327C65C725A16F860012AABD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		32A9289B2320A0A1005F9B34 /* checklists-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "checklists-Bridging-Header.h"; sourceTree = "<group>"; };
-		32A9289C2320A1D1005F9B34 /* FlurrySessionBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlurrySessionBuilder.h; sourceTree = "<group>"; };
-		32A9289D2320A1E0005F9B34 /* FlurryConsent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlurryConsent.h; sourceTree = "<group>"; };
 		32A9289E2320A76D005F9B34 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		32A928A32320CED0005F9B34 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
 		32A964702291E14F00CAB7C0 /* ItemContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemContentView.swift; sourceTree = "<group>"; };
@@ -140,12 +147,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				327C65C825A16F860012AABD /* Security.framework in Frameworks */,
 				32A9289F2320A76D005F9B34 /* SystemConfiguration.framework in Frameworks */,
 				32D721EA22AB486E00794F6D /* StoreKit.framework in Frameworks */,
 				3220B11822E93C6A003180B9 /* Realm.framework in Frameworks */,
 				3220B11922E93C6A003180B9 /* RealmSwift.framework in Frameworks */,
 				32BA48BF23D4FA0B00A0327F /* ToastSwiftFramework.framework in Frameworks */,
-				32A928992320A032005F9B34 /* libFlurry_9.3.1.a in Frameworks */,
+				327C65BC25A16BA90012AABD /* libFlurry_11.2.0.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -201,7 +209,7 @@
 				32E767DD22EA4743003C8634 /* Colors.xcassets */,
 				323ADC7822828C0C00644931 /* LaunchScreen.storyboard */,
 				323ADC7B22828C0C00644931 /* Info.plist */,
-				32A9289723209FD4005F9B34 /* Flurry */,
+				327C65AF25A16BA90012AABD /* Flurry */,
 				32A9289B2320A0A1005F9B34 /* checklists-Bridging-Header.h */,
 			);
 			path = checklists;
@@ -231,6 +239,7 @@
 		323ADC9E228292A400644931 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				327C65C725A16F860012AABD /* Security.framework */,
 				32A9289E2320A76D005F9B34 /* SystemConfiguration.framework */,
 				3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */,
 				32A964732291ECA300CAB7C0 /* Realm.framework */,
@@ -252,13 +261,17 @@
 			path = DataModels;
 			sourceTree = "<group>";
 		};
-		32A9289723209FD4005F9B34 /* Flurry */ = {
+		327C65AF25A16BA90012AABD /* Flurry */ = {
 			isa = PBXGroup;
 			children = (
-				32A9289A2320A03B005F9B34 /* Flurry.h */,
-				32A9289D2320A1E0005F9B34 /* FlurryConsent.h */,
-				32A9289C2320A1D1005F9B34 /* FlurrySessionBuilder.h */,
-				32A928982320A032005F9B34 /* libFlurry_9.3.1.a */,
+				327C65B025A16BA90012AABD /* libFlurry_11.2.0.a */,
+				327C65B125A16BA90012AABD /* Flurry.h */,
+				327C65B325A16BA90012AABD /* FlurryConsent.h */,
+				327C65B525A16BA90012AABD /* FlurryUserProperties.h */,
+				327C65B625A16BA90012AABD /* FlurryCCPA.h */,
+				327C65B725A16BA90012AABD /* FlurryEmpty.m */,
+				327C65B925A16BA90012AABD /* FlurrySKAdNetwork.h */,
+				327C65BB25A16BA90012AABD /* FlurrySessionBuilder.h */,
 			);
 			path = Flurry;
 			sourceTree = "<group>";
@@ -475,6 +488,7 @@
 				32F8F1AF2311E71900F12306 /* CLTextField.swift in Sources */,
 				32F040472336DDBC007CB244 /* SampleData.swift in Sources */,
 				32E767E022EA6476003C8634 /* CLButton.swift in Sources */,
+				327C65BF25A16BA90012AABD /* FlurryEmpty.m in Sources */,
 				324930B42566EEB100A5FC66 /* ChecklistsMenuViewController.swift in Sources */,
 				32D721F222AC56FB00794F6D /* ChecklistViewController.swift in Sources */,
 				32C8D62625671FFD003E9569 /* CircularPercentStatusIcon.swift in Sources */,
@@ -679,7 +693,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = checklists/checklists.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 26;
 				DEVELOPMENT_TEAM = EDMB3Z5KAY;
 				EXCLUDED_ARCHS = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -695,8 +709,9 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/checklists/Flurry",
+					"$(PROJECT_DIR)/checklists/Flurry/Flurry",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jimmyho.checklists;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = "checklists/checklists-Bridging-Header.h";
@@ -711,7 +726,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = checklists/checklists.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 26;
 				DEVELOPMENT_TEAM = EDMB3Z5KAY;
 				EXCLUDED_ARCHS = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -727,8 +742,9 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/checklists/Flurry",
+					"$(PROJECT_DIR)/checklists/Flurry/Flurry",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jimmyho.checklists;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = "checklists/checklists-Bridging-Header.h";

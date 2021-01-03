@@ -82,7 +82,6 @@ class DonateViewController: UITableViewController {
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    Flurry.logPageView()
     AnalyticsManager.logDonatePageViewed()
   }
 

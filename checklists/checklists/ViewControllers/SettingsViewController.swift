@@ -20,7 +20,6 @@ class SettingsViewController: UITableViewController {
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    Flurry.logPageView()
     AnalyticsManager.logSettingsViewed()
   }
 
