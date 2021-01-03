@@ -13,8 +13,6 @@ private let checklistsSection = 0
 
 class ChecklistsViewController: UITableViewController, MainMenuEnabledViewController {
 
-  private var isFirstTimeLaunch: Bool = true
-
   private var group: Group!
 
   private let addChecklistButton = CLCircleButton.addChecklistButton()
@@ -82,10 +80,6 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    if isFirstTimeLaunch {
-      isFirstTimeLaunch = false
-      Flurry.logAllPageViews(forTarget: navigationController)
-    }
     AnalyticsManager.logChecklistsViewed(numChecklists: group.checklists.count)
   }
 
