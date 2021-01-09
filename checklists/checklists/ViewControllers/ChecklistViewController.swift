@@ -13,7 +13,7 @@ private let itemCellReuseIdentifier = "ItemCell"
 private let defaultChecklistName = "untitled checklist"
 
 protocol ChecklistViewControllerDelegate: class {
-  func didDismissChecklistViewController(_ ChecklistViewController: ChecklistViewController)
+  func willDismissChecklistViewController(_ ChecklistViewController: ChecklistViewController)
 }
 
 /*
@@ -122,6 +122,7 @@ class ChecklistViewController: UIViewController {
 
   override func viewWillDisappear(_ animated: Bool) {
     navigationController?.navigationBar.shadowImage = UIImage() // Architecturally not sustainable if we have more pages like this.
+    delegate?.willDismissChecklistViewController(self)
     super.viewWillDisappear(animated)
   }
 
@@ -139,7 +140,6 @@ class ChecklistViewController: UIViewController {
         i = i - 1
       }
     }
-    delegate?.didDismissChecklistViewController(self)
     super.viewDidDisappear(animated)
   }
 

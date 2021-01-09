@@ -195,7 +195,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
 }
 
 extension ChecklistsViewController: ChecklistViewControllerDelegate {
-  func didDismissChecklistViewController(_ ChecklistViewController: ChecklistViewController) {
+  func willDismissChecklistViewController(_ ChecklistViewController: ChecklistViewController) {
     tableView.reloadData()
   }
 }
