@@ -14,6 +14,7 @@ class DBManager {
     do {
       return try Realm()
     } catch let error as NSError {
+      AnalyticsManager.logRealmFailure(errorMessage: error.description)
       fatalError(error.description)
       // TODO: Try to some more elegant error handling here? Also, log to Flurry
     }
@@ -25,6 +26,7 @@ class DBManager {
         block()
       }
     } catch let error as NSError {
+      AnalyticsManager.logRealmWriteFailure(errorMessage: error.description)
       fatalError(error.description)
       // TODO: Try to some more elegant error handling here? Also, log to Flurry
     }
