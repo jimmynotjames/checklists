@@ -709,7 +709,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/checklists/Flurry",
-					"$(PROJECT_DIR)/checklists/Flurry/Flurry",
 				);
 				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jimmyho.checklists;
@@ -742,7 +741,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/checklists/Flurry",
-					"$(PROJECT_DIR)/checklists/Flurry/Flurry",
 				);
 				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jimmyho.checklists;
