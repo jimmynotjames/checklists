@@ -16,7 +16,7 @@ class DBManager {
     } catch let error as NSError {
       AnalyticsManager.logRealmFailure(errorMessage: error.description)
       fatalError(error.description)
-      // TODO: Try to some more elegant error handling here? Also, log to Flurry
+      // TODO: Try to some more elegant error handling here.
     }
   }()
 
@@ -28,7 +28,7 @@ class DBManager {
     } catch let error as NSError {
       AnalyticsManager.logRealmWriteFailure(errorMessage: error.description)
       fatalError(error.description)
-      // TODO: Try to some more elegant error handling here? Also, log to Flurry
+      // TODO: Try to some more elegant error handling here.
     }
   }
 }

@@ -69,14 +69,14 @@ class checklistUITest: XCTestCase {
     // Check 2 of the items. Verify that they were checked. Verify status icon updated
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].isSelected == true)
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["Checkbox"].isSelected == true)
-    XCTAssert(tablesQuery["ChecklistTableView"].otherElements["Percent Complete"].value as! String == "18 percent") // Check that circular status icon updated. 2/11 -> 18%
+    XCTAssert(tablesQuery["ChecklistTableView"].otherElements["Checklist 18 percent complete"].value != nil) // Check that circular status icon updated. 2/11 -> 18%
 
     // Reset checklist. Verify again.
     app.navigationBars["checklists.ChecklistView"].buttons["Reset"].tap()
 
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].isSelected == false)
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["Checkbox"].isSelected == false)
-    XCTAssert(tablesQuery["ChecklistTableView"].otherElements["Percent Complete"].value as! String == "0 percent") // Check that circular status icon updated. 0/11 -> 0%
+    XCTAssert(tablesQuery["ChecklistTableView"].otherElements["Checklist 0 percent complete"].value != nil) // Check that circular status icon updated. 0/11 -> 0%
 
     // Check 2 different items, Verify again
     tablesQuery.children(matching: .cell).element(boundBy: 2).buttons["Checkbox"].tap()
@@ -86,7 +86,7 @@ class checklistUITest: XCTestCase {
 
     // Go Back. Verify circular status is updated on main Checklists page.
     app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
-    XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 2).otherElements["Percent Complete"].value as! String == "18 percent") // Check that circular status icon updated on Checklists main page. 2/11 -> 18%
+    XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 2).otherElements["Checklist 18 percent complete"].value != nil) // Check that circular status icon updated on Checklists main page. 2/11 -> 18%
   }
 
   func testItemDeletion() {
@@ -96,7 +96,7 @@ class checklistUITest: XCTestCase {
     // Get name of current item about to be deleted
     guard let itemName = tablesQuery.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String else { XCTFail(); return }
 
-    XCTAssert(tablesQuery["ChecklistTableView"].otherElements["Percent Complete"].value as! String == "83 percent") // Check circular status icon initial status. 5/6
+    XCTAssert(tablesQuery["ChecklistTableView"].otherElements["Checklist 83 percent complete"].value != nil) // Check circular status icon initial status. 5/6
 
     let cell = tablesQuery.children(matching: .cell).element(boundBy: 1)
     cell.swipeLeft() // "Yoga/meditation"
@@ -105,7 +105,7 @@ class checklistUITest: XCTestCase {
     // Check that item name is no longer there.
     guard let newItemName = tablesQuery.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String else { XCTFail(); return }
     XCTAssert(newItemName != itemName)
-    XCTAssert(tablesQuery["ChecklistTableView"].otherElements["Percent Complete"].value as! String == "80 percent") // Check that circular status icon updated. 4/5
+    XCTAssert(tablesQuery["ChecklistTableView"].otherElements["Checklist 80 percent complete"].value != nil) // Check that circular status icon updated. 4/5
   }
 
   /*
@@ -255,11 +255,11 @@ class checklistUITest: XCTestCase {
   }
 
   private func percentCompleteString(numCheckedItems: Int, numItems: Int) -> String {
-    return String(format: "%.0f percent", 100.0 * Double(numCheckedItems) / Double(numItems))
+    return String(format: "Checklist %.0f percent complete", 100.0 * Double(numCheckedItems) / Double(numItems))
   }
 
   private func isMatchingPercentComplete(parentElement: XCUIElement, numCheckedItems: Int, numItems: Int) -> Bool {
-    return (parentElement.otherElements["Percent Complete"].value as! String) == percentCompleteString(numCheckedItems: numCheckedItems, numItems: numItems)
+    return parentElement.otherElements[percentCompleteString(numCheckedItems: numCheckedItems, numItems: numItems)].value != nil
   }
 
   func testAddItemsAtEnd() {
