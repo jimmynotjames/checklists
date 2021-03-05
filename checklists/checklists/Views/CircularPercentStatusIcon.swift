@@ -25,7 +25,7 @@ class CircularPercentStatusIcon: UIView {
   var percentageComplete: CGFloat = 0.0 {
     didSet {
       setInnerCircle(percentageComplete: percentageComplete)
-      accessibilityValue = String(format: "%.0f percent", percentageComplete * 100)
+      accessibilityValue = String(format: "Checklist %.0f percent complete", percentageComplete * 100)
     }
   }
 
@@ -64,7 +64,7 @@ class CircularPercentStatusIcon: UIView {
 
   private func commonInit() {
     isAccessibilityElement = true
-    accessibilityLabel = "Percent Complete"
+    accessibilityLabel = nil
 
     backgroundColor = .clear
 
