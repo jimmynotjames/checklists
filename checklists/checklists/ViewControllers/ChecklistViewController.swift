@@ -184,7 +184,12 @@ class ChecklistViewController: UIViewController {
 
     let startEditingBlock: ((Bool) -> ()) = { success in
       if success {
-        guard let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: itemsSection)) as? ItemTableViewCell else { assertionFailure(); return }
+        let indexPath = IndexPath(row: index, section: itemsSection)
+        guard let cell = self.tableView.cellForRow(at: indexPath) as? ItemTableViewCell else { assertionFailure(); return }
+        // Added extra call below because of https://github.com/jimmynotjames/checklists/issues/97, where tapping Next,
+        // it didn't scroll up to make the editable view visible. Make first responder should have been, fine,
+        // but adding this explicit scroll makes it work much more reliably.
+        self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
         cell.itemContentView.startEditing()
       }
     }
