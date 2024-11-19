@@ -9,7 +9,7 @@
 import XCTest
 @testable import checklists
 import RealmSwift
-import ToastSwiftFramework
+import Toast
 
 private let checklistName = "Test Checklist 1"
 private let checklistNotes = "Some notes about Checklist1; blah blah blah...\nMore blah blah blah\nAnd more with emojis: 🤪🧐🤷🏼‍♀️"

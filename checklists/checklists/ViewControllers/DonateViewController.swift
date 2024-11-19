@@ -8,7 +8,7 @@
 
 import UIKit
 import StoreKit
-import ToastSwiftFramework
+import Toast
 
 class DonateViewController: UITableViewController {
   let purchaseItemsSection = 0

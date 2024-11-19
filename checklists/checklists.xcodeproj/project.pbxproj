@@ -3,12 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3220B11822E93C6A003180B9 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964732291ECA300CAB7C0 /* Realm.framework */; };
-		3220B11922E93C6A003180B9 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A964722291ECA300CAB7C0 /* RealmSwift.framework */; };
 		322CA9FB22EEA6A2009ACC4D /* MainMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322CA9FA22EEA6A2009ACC4D /* MainMenuTableViewController.swift */; };
 		322DE13B22FFE1F600C6E57A /* RoundCheckboxButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322DE13A22FFE1F600C6E57A /* RoundCheckboxButton.swift */; };
 		322DE13D22FFE4E500C6E57A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322DE13C22FFE4E500C6E57A /* SettingsViewController.swift */; };
@@ -24,6 +22,9 @@
 		324930B42566EEB100A5FC66 /* ChecklistsMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324930B32566EEB100A5FC66 /* ChecklistsMenuViewController.swift */; };
 		324A03222303A38700958D3E /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324A03212303A38700958D3E /* StoreManager.swift */; };
 		324A03242303AABB00958D3E /* DonateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324A03232303AABB00958D3E /* DonateViewController.swift */; };
+		3252E73C2CE71074009B6F7C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73B2CE71074009B6F7C /* RealmSwift */; };
+		3252E73D2CE71074009B6F7C /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73B2CE71074009B6F7C /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		3252E73F2CE71079009B6F7C /* Toast in Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73E2CE71079009B6F7C /* Toast */; };
 		327C659A259EB73D0012AABD /* checklistUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C6599259EB73D0012AABD /* checklistUITest.swift */; };
 		327C65A625A0DB780012AABD /* checklistCreateUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C65A525A0DB780012AABD /* checklistCreateUITest.swift */; };
 		327C65BC25A16BA90012AABD /* libFlurry_11.2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 327C65B025A16BA90012AABD /* libFlurry_11.2.0.a */; };
@@ -36,7 +37,6 @@
 		32A9647C2297AFF400CAB7C0 /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A9647B2297AFF400CAB7C0 /* DBManager.swift */; };
 		32AECAEB22ED118100747080 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32AECAEA22ED118100747080 /* Colors.swift */; };
 		32B4C177257AF608005721F5 /* ChecklistCellContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B4C176257AF608005721F5 /* ChecklistCellContentView.swift */; };
-		32BA48BF23D4FA0B00A0327F /* ToastSwiftFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */; };
 		32BA5021235CE84C007E506D /* CLCircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BA5020235CE84C007E506D /* CLCircleButton.swift */; };
 		32C8D62625671FFD003E9569 /* CircularPercentStatusIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C8D62525671FFD003E9569 /* CircularPercentStatusIcon.swift */; };
 		32C8D62A25673C0D003E9569 /* ChecklistTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C8D62925673C0D003E9569 /* ChecklistTableViewCell.swift */; };
@@ -76,6 +76,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				3252E73D2CE71074009B6F7C /* RealmSwift in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -106,7 +107,6 @@
 		324930B32566EEB100A5FC66 /* ChecklistsMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistsMenuViewController.swift; sourceTree = "<group>"; };
 		324A03212303A38700958D3E /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 		324A03232303AABB00958D3E /* DonateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonateViewController.swift; sourceTree = "<group>"; };
-		3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ToastSwiftFramework.framework; path = Carthage/Build/iOS/ToastSwiftFramework.framework; sourceTree = "<group>"; };
 		327C6599259EB73D0012AABD /* checklistUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistUITest.swift; sourceTree = "<group>"; };
 		327C65A525A0DB780012AABD /* checklistCreateUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistCreateUITest.swift; sourceTree = "<group>"; };
 		327C65B025A16BA90012AABD /* libFlurry_11.2.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_11.2.0.a; sourceTree = "<group>"; };
@@ -122,8 +122,6 @@
 		32A9289E2320A76D005F9B34 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		32A928A32320CED0005F9B34 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
 		32A964702291E14F00CAB7C0 /* ItemContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemContentView.swift; sourceTree = "<group>"; };
-		32A964722291ECA300CAB7C0 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
-		32A964732291ECA300CAB7C0 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/iOS/Realm.framework; sourceTree = "<group>"; };
 		32A964772297A0A300CAB7C0 /* RealmSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmSchema.swift; sourceTree = "<group>"; };
 		32A964792297AE6700CAB7C0 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
 		32A9647B2297AFF400CAB7C0 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
@@ -147,12 +145,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3252E73F2CE71079009B6F7C /* Toast in Frameworks */,
 				327C65C825A16F860012AABD /* Security.framework in Frameworks */,
 				32A9289F2320A76D005F9B34 /* SystemConfiguration.framework in Frameworks */,
 				32D721EA22AB486E00794F6D /* StoreKit.framework in Frameworks */,
-				3220B11822E93C6A003180B9 /* Realm.framework in Frameworks */,
-				3220B11922E93C6A003180B9 /* RealmSwift.framework in Frameworks */,
-				32BA48BF23D4FA0B00A0327F /* ToastSwiftFramework.framework in Frameworks */,
+				3252E73C2CE71074009B6F7C /* RealmSwift in Frameworks */,
 				327C65BC25A16BA90012AABD /* libFlurry_11.2.0.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -241,9 +238,6 @@
 			children = (
 				327C65C725A16F860012AABD /* Security.framework */,
 				32A9289E2320A76D005F9B34 /* SystemConfiguration.framework */,
-				3255F49B2305DC850018CB92 /* ToastSwiftFramework.framework */,
-				32A964732291ECA300CAB7C0 /* Realm.framework */,
-				32A964722291ECA300CAB7C0 /* RealmSwift.framework */,
 				323ADC9F228292A400644931 /* StoreKit.framework */,
 			);
 			name = Frameworks;
@@ -327,7 +321,6 @@
 				323ADC6322828C0900644931 /* Sources */,
 				323ADC6422828C0900644931 /* Frameworks */,
 				32F040422335BA51007CB244 /* Embed Frameworks */,
-				32F040482336E70B007CB244 /* ShellScript */,
 				323ADC6522828C0900644931 /* Resources */,
 			);
 			buildRules = (
@@ -381,8 +374,9 @@
 		323ADC5F22828C0900644931 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1020;
-				LastUpgradeCheck = 1230;
+				LastUpgradeCheck = 1600;
 				ORGANIZATIONNAME = "Jimmy Ho";
 				TargetAttributes = {
 					323ADC6622828C0900644931 = {
@@ -418,6 +412,10 @@
 				Base,
 			);
 			mainGroup = 323ADC5E22828C0900644931;
+			packageReferences = (
+				3252E7392CE70F79009B6F7C /* XCRemoteSwiftPackageReference "realm-swift" */,
+				3252E73A2CE70FAA009B6F7C /* XCRemoteSwiftPackageReference "Toast-Swift" */,
+			);
 			productRefGroup = 323ADC6822828C0900644931 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -456,29 +454,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		32F040482336E70B007CB244 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/ToastSwiftFramework.framework",
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n/usr/local/bin/carthage copy-frameworks\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		323ADC6322828C0900644931 /* Sources */ = {
@@ -607,6 +582,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -669,6 +645,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -696,10 +673,6 @@
 				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = EDMB3Z5KAY;
 				EXCLUDED_ARCHS = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
 				INFOPLIST_FILE = checklists/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -728,10 +701,6 @@
 				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = EDMB3Z5KAY;
 				EXCLUDED_ARCHS = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
 				INFOPLIST_FILE = checklists/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -754,7 +723,6 @@
 		323ADC9822828C0C00644931 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = EDMB3Z5KAY;
@@ -779,7 +747,6 @@
 		323ADC9922828C0C00644931 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = EDMB3Z5KAY;
@@ -804,7 +771,6 @@
 		323ADC9B22828C0C00644931 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = EDMB3Z5KAY;
 				INFOPLIST_FILE = checklistsUITests/Info.plist;
@@ -824,7 +790,6 @@
 		323ADC9C22828C0C00644931 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = EDMB3Z5KAY;
 				INFOPLIST_FILE = checklistsUITests/Info.plist;
@@ -881,6 +846,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3252E7392CE70F79009B6F7C /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.54.1;
+			};
+		};
+		3252E73A2CE70FAA009B6F7C /* XCRemoteSwiftPackageReference "Toast-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scalessec/Toast-Swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3252E73B2CE71074009B6F7C /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3252E7392CE70F79009B6F7C /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		3252E73E2CE71079009B6F7C /* Toast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3252E73A2CE70FAA009B6F7C /* XCRemoteSwiftPackageReference "Toast-Swift" */;
+			productName = Toast;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 323ADC5F22828C0900644931 /* Project object */;
 }
