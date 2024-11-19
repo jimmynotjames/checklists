@@ -142,9 +142,9 @@ class SettingsViewController: UITableViewController {
     let backgroundView = UIView()
     backgroundView.backgroundColor = .clear
     view.backgroundView = backgroundView
-    view.tintColor = Colors.defaultBackground // Not clear so if header sticks to top, things don't overlap while scrolling up.
+    view.tintColor = LegacyColors.defaultBackground // Not clear so if header sticks to top, things don't overlap while scrolling up.
     textLabel.font = .systemFont(ofSize: 14.0)
-    textLabel.textColor = Colors.inactiveText
+    textLabel.textColor = LegacyColors.inactiveText
   }
 
   override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

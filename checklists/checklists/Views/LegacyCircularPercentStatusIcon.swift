@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CircularPercentStatusIcon: UIView {
+class LegacyCircularPercentStatusIcon: UIView {
   enum IconType {
     case tableViewCell
     case header
@@ -29,7 +29,7 @@ class CircularPercentStatusIcon: UIView {
     }
   }
 
-  private let color: CGColor = Colors.teal.cgColor
+  private let color: CGColor = LegacyColors.teal.cgColor
   private var radius: CGFloat!
   private var innerRadius: CGFloat!
   private var outerRingLineWidth: CGFloat!

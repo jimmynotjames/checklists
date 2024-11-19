@@ -20,8 +20,6 @@ class SampleData {
 
   static func insertTestData() {
     print("DEBUG: Inserting test data...")
-    let realm = DBManager.realm
-
     var checklists: [Checklist] = []
 
     checklists.append(Checklist(name: "Day Drinking",
@@ -58,13 +56,11 @@ class SampleData {
                                        notes: $0 % 2 == 0 ? ($0 % 3 == 0 ? nil : "some for \($0)") : "some\nodd\nnotes for \($0)" ) })))
 
     DBManager.write {
-      realm.add(checklists)
+      DBManager.getGroup().checklists.append(objectsIn: checklists)
     }
   }
 
   static func insertTestData2() {
-    let realm = DBManager.realm
-
     var checklists: [Checklist] = []
 
     checklists.append(Checklist(name: "Test List - Long List",
@@ -78,7 +74,7 @@ class SampleData {
                                        notes: $0 % 2 == 0 ? ($0 % 3 == 0 ? nil : "some for \($0)") : "some\nodd\nnotes for \($0)" ) })))
 
     DBManager.write {
-      realm.add(checklists)
+      DBManager.getGroup().checklists.append(objectsIn: checklists)
     }
 
   }
@@ -110,6 +106,7 @@ class SampleData {
     var checklists: [Checklist] = []
 
     let checklist1 = Checklist(name: "Morning Routine",
+                               notes: "Sample checklist. Customize away!",
                                sortNumber: 3.0,
                                items: [Item(name: "START COFFEE MAKER"),
                                        Item(name: "Yoga/meditation"),
@@ -164,5 +161,14 @@ class SampleData {
     ]))
 
     return checklists
+  }
+
+  static func populateWithSampleData(realm: Realm) {
+    let checklists = generateFirstTimeLaunchChecklists()
+    let group = Group()
+    group.checklists.append(objectsIn: checklists)
+    try! realm.write {
+      realm.add(group)
+    }
   }
 }

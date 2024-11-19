@@ -1,12 +1,13 @@
 //
 //  AppDelegate.swift
 //  checklists
-//x
+//
 //  Created by Jimmy Ho on 5/7/19.
 //  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
 import UIKit
+import SwiftUI
 import RealmSwift
 import StoreKit
 
@@ -30,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     SKPaymentQueue.default().add(StoreManager.shared)
 
     #if DEBUG
-    // SampleData.clearDatabase() // TODO: Comment out before prod release
+    SampleData.clearDatabase() // TODO: Comment out before prod release
     #endif
 
     let isFirstTimeLaunch = !UserDefaults.standard.bool(forKey: launchedAtLeastOnceKey)
@@ -48,9 +49,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
     #if DEBUG
     // SampleData.insertFirstTimeLaunchData() // TODO: Comment out before prod release
-    // SampleData.insertTestData2() // TODO: Comment out before prod release
+    SampleData.insertTestData() // TODO: Comment out before prod release
     // print("appVersion: \(UserDefaults.standard.string(forKey: appVersionKey) ?? "[Not Found]")")
     #endif
+    
+    // Create a UIWindow and set the UIHostingController as its root
+    let window = UIWindow(frame: UIScreen.main.bounds)
+    window.rootViewController = UIHostingController(rootView: ChecklistsView(group: DBManager.getGroup()))
+    self.window = window
+    window.makeKeyAndVisible()
 
     // For UITests
     #if DEBUG
@@ -65,13 +72,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
   }
 
   private func updateNavigationBarAppearance() {
-    let navigationBarAppearance = UINavigationBar.appearance()
-    navigationBarAppearance.tintColor = Colors.teal
-    navigationBarAppearance.setBackgroundImage(UIImage(), for: .default)
-    navigationBarAppearance.shadowImage = UIImage()
-    navigationBarAppearance.isTranslucent = false
-    navigationBarAppearance.barTintColor = Colors.defaultBackground
-    navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: Colors.teal]
+    let navigationBarAppearance = UINavigationBarAppearance()
+    navigationBarAppearance.configureWithOpaqueBackground()
+    navigationBarAppearance.backgroundColor = LegacyColors.defaultBackground
+    navigationBarAppearance.shadowColor = .clear
+    navigationBarAppearance.titleTextAttributes = [
+        .foregroundColor: LegacyColors.teal,
+    ]
+    navigationBarAppearance.largeTitleTextAttributes = [
+        .foregroundColor: LegacyColors.teal,
+    ]
+  
+    let mainAppearance = UINavigationBar.appearance()
+    mainAppearance.standardAppearance = navigationBarAppearance
+    mainAppearance.scrollEdgeAppearance = navigationBarAppearance
+    mainAppearance.compactAppearance = navigationBarAppearance
+    mainAppearance.tintColor = LegacyColors.teal
+    mainAppearance.barTintColor = LegacyColors.teal
   }
 
   // For migrating from v1.0 to v1.1. Updating scheme from using sortNumber to using the Group object to hold a ordered list.

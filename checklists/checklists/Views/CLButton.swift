@@ -9,8 +9,8 @@
 import UIKit
 
 class CLButton: UIButton {
-  private let normalColor: UIColor = Colors.defaultBackground
-  private let highlightedColor: UIColor = Colors.teal
+  private let normalColor: UIColor = LegacyColors.defaultBackground
+  private let highlightedColor: UIColor = LegacyColors.teal
 
   override var isHighlighted: Bool {
     get {

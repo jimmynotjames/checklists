@@ -22,8 +22,8 @@ extension MainMenuEnabledViewController where Self: UIViewController, Self: Main
     navigationController.modalPresentationStyle = mainMenuViewController.modalPresentationStyle
     navigationController.transitioningDelegate = mainMenuViewController
 
-    navigationController.navigationBar.barTintColor = Colors.darkBlueGray
-    navigationController.navigationBar.tintColor = Colors.defaultBackground
+    navigationController.navigationBar.barTintColor = LegacyColors.darkBlueGray
+    navigationController.navigationBar.tintColor = LegacyColors.defaultBackground
 
     present(navigationController, animated: true)
   }

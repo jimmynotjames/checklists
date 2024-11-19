@@ -17,7 +17,7 @@ class ChecklistCellContentView: UIView {
     }
   }
 
-  private let statusIcon = CircularPercentStatusIcon(iconType: .tableViewCell)
+  private let statusIcon = LegacyCircularPercentStatusIcon(iconType: .tableViewCell)
 
   private let nameLabel: UILabel = {
     let label = UILabel()

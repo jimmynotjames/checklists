@@ -29,8 +29,8 @@ class CLCircleButton: UIButton {
 
     imageEdgeInsets = UIEdgeInsets(top: insetRadius, left: insetRadius, bottom: insetRadius, right: insetRadius)
 
-    backgroundColor = Colors.defaultBackground
-    layer.borderColor = Colors.defaultBackground.cgColor
+    backgroundColor = LegacyColors.defaultBackground
+    layer.borderColor = LegacyColors.defaultBackground.cgColor
 
     layer.shadowColor = UIColor.gray.cgColor
     layer.shadowOffset = CGSize(width: 0.0, height: 2.0)

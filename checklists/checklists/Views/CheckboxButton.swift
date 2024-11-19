@@ -42,11 +42,11 @@ class CheckboxButton: UIButton {
     switch itemStatus {
     case .checked:
       isSelected = true
-      tintColor = Colors.inactiveText
+      tintColor = LegacyColors.inactiveText
       accessibilityValue = "Checked"
     case .unchecked:
       isSelected = false
-      tintColor = Colors.teal
+      tintColor = LegacyColors.teal
       accessibilityValue = "Unchecked"
     }
   }

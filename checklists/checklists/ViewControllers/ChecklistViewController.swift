@@ -31,7 +31,7 @@ class ChecklistViewController: UIViewController {
   weak var delegate: ChecklistViewControllerDelegate?
 
   @IBOutlet weak var checklistInfoHeaderView: UIView!
-  @IBOutlet weak var statusIcon: CircularPercentStatusIcon!
+  @IBOutlet weak var statusIcon: LegacyCircularPercentStatusIcon!
   @IBOutlet weak var checklistNameTextField: UITextField!
   @IBOutlet weak var checklistNotesTextView: CLTextView!
 

@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import SwiftUI
 
-class Colors {
+class LegacyColors {
   static let defaultBackground = UIColor(named: "defaultBackground") ?? .white
   static let inactiveText = UIColor(named: "inactiveText") ?? .darkGray
 
@@ -16,4 +17,14 @@ class Colors {
   static let teal = UIColor(named: "teal") ?? .darkGray
   static let salmonRed = UIColor(named: "salmonRed") ?? .red
   static let darkPurple = UIColor(named: "darkPurple") ?? .purple
+}
+
+class Colors {
+  static let defaultBackground = Color("defaultBackground")
+  static let inactiveText = Color("inactiveText")
+
+  static let darkBlueGray = Color("darkBlueGray")
+  static let teal = Color("teal")
+  static let salmonRed = Color("salmonRed")
+  static let darkPurple = Color("darkPurple")
 }

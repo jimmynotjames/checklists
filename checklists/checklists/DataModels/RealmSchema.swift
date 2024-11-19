@@ -17,10 +17,10 @@ import RealmSwift
  Perhaps in the future, some sort of tagging or folder structure
  could be implemented, which would result in more Group objects.
  */
-class Group: Object {
-  @objc dynamic var id = NSUUID().uuidString
+class Group: Object, Identifiable {
+  @Persisted var id = NSUUID().uuidString
 
-  let checklists = List<Checklist>()
+  @Persisted var checklists = List<Checklist>()
 
   func moveChecklist(from fromIndex: Int, to toIndex: Int) {
     guard fromIndex >= 0 && fromIndex < checklists.count else { assertionFailure(); return }
@@ -31,17 +31,30 @@ class Group: Object {
       checklists.move(from: fromIndex, to: toIndex)
     }
   }
+  
+  func delete(checklist: Checklist) {
+    // After implementing with SwiftUI (iOS 18), we need to retrieve the checklist object again or else we get
+    // an error regarding using the wrong Realm instance. Possibly due to copying the item through itemToDelete.
+    let realm = DBManager.realm
+    if let checklist = realm.objects(Checklist.self).filter("id == %@", checklist.id).first {
+      DBManager.write {
+        realm.delete(checklist.items)
+        realm.delete(checklist)
+      }
+    }
+  }
+
 }
 
 
-class Checklist: Object {
-  @objc dynamic var id = NSUUID().uuidString
-  @objc dynamic var name: String = ""
-  @objc dynamic var notes: String?
-  @objc dynamic var sortNumber: Double = 0.0
-  @objc dynamic var lastModified: Date = Date()
+class Checklist: Object, Identifiable {
+  @Persisted var id = NSUUID().uuidString
+  @Persisted var name: String = ""
+  @Persisted var notes: String?
+  @Persisted var sortNumber: Double = 0.0
+  @Persisted var lastModified: Date = Date()
 
-  let items = List<Item>()
+  @Persisted var items = RealmSwift.List<Item>()
 
   var percentageComplete: CGFloat {
     get {
@@ -117,10 +130,10 @@ class Item: Object {
     static let defaultValue: Status = .unchecked
   }
 
-  @objc dynamic var id = NSUUID().uuidString
-  @objc dynamic var name: String = ""
-  @objc dynamic var notes: String?
-  @objc dynamic var statusRaw: Int = Status.defaultValue.rawValue
+  @Persisted var id = NSUUID().uuidString
+  @Persisted var name: String = ""
+  @Persisted var notes: String?
+  @Persisted var statusRaw: Int = Status.defaultValue.rawValue
 
   var status: Status {
     get {

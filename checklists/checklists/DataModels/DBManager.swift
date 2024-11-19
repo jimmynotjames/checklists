@@ -31,6 +31,15 @@ class DBManager {
       // TODO: Try to some more elegant error handling here.
     }
   }
+  
+  static func getGroup() -> Group {
+    if let group = realm.objects(Group.self).first {
+      return group
+    } else {
+      AnalyticsManager.logRealmFailure(errorMessage: "Group object not found in database.")
+      fatalError("Group object not found in database.")
+    }
+  }
 }
 
 // MARK: Debugging methods
@@ -46,5 +55,13 @@ extension DBManager {
       print("Items: \(checklist.items)")
     }
     print("-------------COMPLETED printing all checklists...")
+  }
+  
+  static func printRealmInstance(object: RealmSwift.Object) {
+    if let realm = object.realm {
+      print("\(object.objectSchema.className) belongs to Realm at: \(realm.configuration.fileURL?.absoluteString ?? "unknown")")
+    } else {
+      print("\(object.objectSchema.className) has a nil Realm instance.")
+    }
   }
 }
