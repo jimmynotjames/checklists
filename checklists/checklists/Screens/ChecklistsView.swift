@@ -23,8 +23,33 @@ struct ChecklistsView: View {
             .swipeActions(edge: .trailing) {
               swipeDeleteButton(checklist: checklist)
             }
+            .listRowSeparator(.hidden)
+            .listRowInsets(EdgeInsets(top: 0, leading: 8.0, bottom: 0, trailing: 0))
         }
         .onMove(perform: moveChecklist)
+      }
+      .listStyle(.plain)
+      .toolbar {
+        ToolbarItem(placement: .navigationBarLeading) {
+          Button(action: {
+            menuButtonTapped()
+          }) {
+            Image("MenuIcon25x25")
+              .renderingMode(.template)
+              .accessibilityLabel("Miscellaneous Menu")
+              .tint(Colors.teal)
+          }
+        }
+        ToolbarItem(placement: .navigationBarTrailing) {
+          Button(action: {
+            moreMenuButtonTapped()
+          }) {
+            Image("MoreMenuIcon32x32")
+              .renderingMode(.template)
+              .accessibilityLabel("Checklists Menu")
+              .tint(Colors.teal)
+          }
+        }
       }
       .alert("Are you sure? This cannot be undone.", isPresented: $showingDeleteAlert, presenting: itemToDelete) { checklist in
         Button("Delete", role: .destructive) {
@@ -35,29 +60,6 @@ struct ChecklistsView: View {
         }
         Button("Cancel", role: .cancel) {
           itemToDelete = nil
-        }
-      }
-      .listStyle(.plain)
-      .toolbar {
-        ToolbarItem(placement: .navigationBarLeading) {
-          Button(action: {
-            menuButtonTapped()
-          }) {
-            Image("MenuIcon25x25")
-              .renderingMode(.original)
-              .accessibilityLabel("Miscellaneous Menu")
-              
-          }
-          .tint(Colors.teal)
-        }
-        ToolbarItem(placement: .navigationBarTrailing) {
-          Button(action: {
-            moreMenuButtonTapped()
-          }) {
-            Image("MoreMenuIcon32x32")
-              .renderingMode(.original)
-              .accessibilityLabel("Checklists Menu")
-          }
         }
       }
     }

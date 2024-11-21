@@ -16,6 +16,9 @@ class SampleData {
     DBManager.write {
       realm.deleteAll()
     }
+    DBManager.write {
+      realm.add(Group())
+    }
   }
 
   static func insertTestData() {

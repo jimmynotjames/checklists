@@ -10,11 +10,11 @@ import UIKit
 import SwiftUI
 import RealmSwift
 import StoreKit
-
+/*
 private let launchedAtLeastOnceKey = "launchedAtLeastOnce"
 private let appVersionKey = "appVersionKey"
 
-@UIApplicationMain
+// @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
 
   var window: UIWindow?
@@ -74,21 +74,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
   private func updateNavigationBarAppearance() {
     let navigationBarAppearance = UINavigationBarAppearance()
     navigationBarAppearance.configureWithOpaqueBackground()
-    navigationBarAppearance.backgroundColor = LegacyColors.defaultBackground
+    navigationBarAppearance.backgroundColor = UIColors.defaultBackground
     navigationBarAppearance.shadowColor = .clear
     navigationBarAppearance.titleTextAttributes = [
-        .foregroundColor: LegacyColors.teal,
+        .foregroundColor: UIColors.teal,
     ]
     navigationBarAppearance.largeTitleTextAttributes = [
-        .foregroundColor: LegacyColors.teal,
+        .foregroundColor: UIColors.teal,
     ]
   
     let mainAppearance = UINavigationBar.appearance()
     mainAppearance.standardAppearance = navigationBarAppearance
     mainAppearance.scrollEdgeAppearance = navigationBarAppearance
     mainAppearance.compactAppearance = navigationBarAppearance
-    mainAppearance.tintColor = LegacyColors.teal
-    mainAppearance.barTintColor = LegacyColors.teal
+    mainAppearance.tintColor = UIColors.teal
+    mainAppearance.barTintColor = UIColors.teal
   }
 
   // For migrating from v1.0 to v1.1. Updating scheme from using sortNumber to using the Group object to hold a ordered list.
@@ -134,3 +134,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
   }
 }
 
+*/

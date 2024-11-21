@@ -29,7 +29,7 @@ class LegacyCircularPercentStatusIcon: UIView {
     }
   }
 
-  private let color: CGColor = LegacyColors.teal.cgColor
+  private let color: CGColor = UIColors.teal.cgColor
   private var radius: CGFloat!
   private var innerRadius: CGFloat!
   private var outerRingLineWidth: CGFloat!

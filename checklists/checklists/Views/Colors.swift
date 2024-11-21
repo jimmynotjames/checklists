@@ -9,7 +9,7 @@
 import UIKit
 import SwiftUI
 
-class LegacyColors {
+class UIColors {
   static let defaultBackground = UIColor(named: "defaultBackground") ?? .white
   static let inactiveText = UIColor(named: "inactiveText") ?? .darkGray
 

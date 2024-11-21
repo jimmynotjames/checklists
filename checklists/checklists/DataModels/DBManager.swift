@@ -40,6 +40,21 @@ class DBManager {
       fatalError("Group object not found in database.")
     }
   }
+
+  // For migrating from v1.0 to higher versions. Updating scheme from using sortNumber to using
+  // the Group object to hold a ordered list. Group object is used as of v1.1.
+  static func migrateDatabaseToUseGroupObjectIfNecessary() {
+    if realm.objects(Group.self).isEmpty {
+      let group = Group()
+      write {
+        realm.add(group)
+        let checklists = realm.objects(Checklist.self).sorted(byKeyPath: "sortNumber")
+        for checklist in checklists {
+          group.checklists.append(checklist)
+        }
+      }
+    }
+  }
 }
 
 // MARK: Debugging methods

@@ -23,13 +23,15 @@ class SettingsManager {
     // TODO: notifications
   }
 
+  static var appVersionString: String = {
+    Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0"
+  }()
+  
   static var versionBuildString: String = {
-    let versionNumberString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? "0.0.0"
-    let buildNumberString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") ?? "0"
+    var versionBuildString = "\(appVersionString) (\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") ?? "0"))"
     #if DEBUG
-    return "\(versionNumberString) (\(buildNumberString)) - DEBUG"
-    #else
-    return "\(versionNumberString) (\(buildNumberString))"
+    versionBuildString = versionBuildString + " - DEBUG"
     #endif
+    return versionBuildString
   }()
 }

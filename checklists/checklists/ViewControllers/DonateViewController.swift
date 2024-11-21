@@ -177,9 +177,9 @@ class DonateViewController: UITableViewController {
     let backgroundView = UIView()
     backgroundView.backgroundColor = .clear
     view.backgroundView = backgroundView
-    view.tintColor = LegacyColors.defaultBackground // Not clear so if header sticks to top, things don't overlap while scrolling up.
+    view.tintColor = UIColors.defaultBackground // Not clear so if header sticks to top, things don't overlap while scrolling up.
     textLabel.font = .systemFont(ofSize: 15.0)
-    textLabel.textColor = LegacyColors.inactiveText
+    textLabel.textColor = UIColors.inactiveText
   }
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
