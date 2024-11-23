@@ -41,6 +41,13 @@ class DBManager {
     }
   }
 
+  static func resetAllChecklists() {
+    let group = getGroup()
+    for checklist in group.checklists {
+      checklist.uncheckAllItems()
+    }
+  }
+
   // For migrating from v1.0 to higher versions. Updating scheme from using sortNumber to using
   // the Group object to hold a ordered list. Group object is used as of v1.1.
   static func migrateDatabaseToUseGroupObjectIfNecessary() {

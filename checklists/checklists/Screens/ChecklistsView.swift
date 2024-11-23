@@ -12,8 +12,13 @@ import RealmSwift
 struct ChecklistsView: View {
   @ObservedRealmObject var group: Group
 
+  // For deleting a Checklist.
   @State private var showingDeleteAlert = false
   @State private var itemToDelete: Checklist? = nil
+
+  // For resetting all Checklists.
+  @State private var showingMoreMenu = false
+  @State private var showingResetAlert = false
 
   var body: some View {
     NavigationView {
@@ -41,13 +46,18 @@ struct ChecklistsView: View {
           }
         }
         ToolbarItem(placement: .navigationBarTrailing) {
-          Button(action: {
-            moreMenuButtonTapped()
-          }) {
+          Button(action: { showingMoreMenu = true }) {
             Image("MoreMenuIcon32x32")
               .renderingMode(.template)
               .accessibilityLabel("Checklists Menu")
               .tint(Colors.teal)
+          }
+          .popover(isPresented: $showingMoreMenu, arrowEdge: .top) {
+            MoreMenuView {
+              showingMoreMenu = false
+              showingResetAlert = true
+            }
+            .presentationCompactAdaptation(.popover)
           }
         }
       }
@@ -62,6 +72,15 @@ struct ChecklistsView: View {
           itemToDelete = nil
         }
       }
+      .alert("Are you sure? This cannot be undone.", isPresented: $showingResetAlert) {
+        Button("Reset All", role: .destructive) {
+          DBManager.resetAllChecklists()
+          showingResetAlert = false
+        }
+        Button("Cancel", role: .cancel) {
+          showingResetAlert = false
+        }
+      }
     }
   }
   
@@ -69,10 +88,6 @@ struct ChecklistsView: View {
     // TODO
   }
   
-  private func moreMenuButtonTapped() {
-    // TODO
-  }
-
   private func moveChecklist(from sourceIndexSet: IndexSet, to destination: Int) {
     for sourceIndex in sourceIndexSet {
       group.moveChecklist(from: sourceIndex, to: destination)
@@ -118,9 +133,24 @@ struct ChecklistRowView: View {
   }
 }
 
+struct MoreMenuView: View {
+  let onResetAll: () -> Void
+
+  var body: some View {
+    VStack {
+      Button("Reset All", action: onResetAll)
+        .foregroundColor(Colors.teal)
+        .padding(.horizontal, 16.0)
+    }
+  }
+}
 
 #Preview {
   let realm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: "Preview"))
   SampleData.populateWithSampleData(realm: realm)
   return ChecklistsView(group: realm.objects(Group.self).first!)
+}
+
+#Preview {
+  MoreMenuView(onResetAll: {}).border(.black)
 }
