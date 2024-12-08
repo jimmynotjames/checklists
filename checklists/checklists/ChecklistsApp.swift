@@ -34,6 +34,7 @@ struct ChecklistsApp: SwiftUI.App {
       UserDefaults.standard.set(true, forKey: launchedAtLeastOnceKey)
     }
     UserDefaults.standard.set(SettingsManager.appVersionString, forKey: appVersionKey)
+    DBManager.migrateToAppVersion1_1_1()
     DBManager.migrateDatabaseToUseGroupObjectIfNecessary()
 
     // For dev manual testing/debugging

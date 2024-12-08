@@ -16,11 +16,17 @@ import RealmSwift
  using the List to preserve arbitrary ordering of the Checklists.
  Perhaps in the future, some sort of tagging or folder structure
  could be implemented, which would result in more Group objects.
+
+ Added in app version 1.1.
  */
 class Group: Object, Identifiable {
   @Persisted var id = NSUUID().uuidString
 
   @Persisted var checklists = List<Checklist>()
+
+  func displayedChecklists() -> [Checklist] {
+    return checklists.filter { !$0.isDeleted }
+  }
 
   func moveChecklist(from fromIndex: Int, to toIndex: Int) {
     guard fromIndex >= 0 && fromIndex < checklists.count else { assertionFailure(); return }
@@ -44,6 +50,17 @@ class Group: Object, Identifiable {
     }
   }
 
+  func shallowDelete(checklist: Checklist) {
+    DBManager.write {
+      checklist.thaw()?.isDeleted = true
+    }
+  }
+
+  func undoDeletion(checklist: Checklist) {
+    DBManager.write {
+      checklist.thaw()?.isDeleted = false
+    }
+  }
 }
 
 
@@ -51,8 +68,9 @@ class Checklist: Object, Identifiable {
   @Persisted var id = NSUUID().uuidString
   @Persisted var name: String = ""
   @Persisted var notes: String?
-  @Persisted var sortNumber: Double = 0.0
+  @Persisted var sortNumber: Double = 0.0 // Obsolete as of app version 1.1.0.
   @Persisted var lastModified: Date = Date()
+  @Persisted var isDeleted = false // Added in app version 1.1.1.
 
   @Persisted var items = RealmSwift.List<Item>()
 

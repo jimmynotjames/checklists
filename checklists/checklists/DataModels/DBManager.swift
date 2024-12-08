@@ -48,6 +48,16 @@ class DBManager {
     }
   }
 
+  static func cleanUpDeletedChecklists() {
+    let group = getGroup()
+    write {
+      group.checklists.filter { $0.isDeleted }.forEach { checklist in
+        realm.delete(checklist.items)
+        realm.delete(checklist)
+      }
+    }
+  }
+
   // For migrating from v1.0 to higher versions. Updating scheme from using sortNumber to using
   // the Group object to hold a ordered list. Group object is used as of v1.1.
   static func migrateDatabaseToUseGroupObjectIfNecessary() {
@@ -61,6 +71,13 @@ class DBManager {
         }
       }
     }
+  }
+
+  // For app versions 1 and 1.1, I never set a schema version, so it has
+  // been defaulting to 0. With version 1.1.1, let's set it to version 1.
+  static func migrateToAppVersion1_1_1() {
+    let config = Realm.Configuration(schemaVersion: 1, migrationBlock: nil)
+    Realm.Configuration.defaultConfiguration = config
   }
 }
 

@@ -27,6 +27,7 @@
 		3252E73C2CE71074009B6F7C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73B2CE71074009B6F7C /* RealmSwift */; };
 		3252E73D2CE71074009B6F7C /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73B2CE71074009B6F7C /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		3252E73F2CE71079009B6F7C /* Toast in Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73E2CE71079009B6F7C /* Toast */; };
+		325877722D052277006B3851 /* EasyToast in Frameworks */ = {isa = PBXBuildFile; productRef = 325877712D052277006B3851 /* EasyToast */; };
 		327C659A259EB73D0012AABD /* checklistUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C6599259EB73D0012AABD /* checklistUITest.swift */; };
 		327C65A625A0DB780012AABD /* checklistCreateUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C65A525A0DB780012AABD /* checklistCreateUITest.swift */; };
 		327C65BC25A16BA90012AABD /* libFlurry_11.2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 327C65B025A16BA90012AABD /* libFlurry_11.2.0.a */; };
@@ -151,6 +152,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				325877722D052277006B3851 /* EasyToast in Frameworks */,
 				3252E73F2CE71079009B6F7C /* Toast in Frameworks */,
 				327C65C825A16F860012AABD /* Security.framework in Frameworks */,
 				32A9289F2320A76D005F9B34 /* SystemConfiguration.framework in Frameworks */,
@@ -208,6 +210,7 @@
 				32F4C8412287525B000D63CF /* Views */,
 				323ADCA122867EAC00644931 /* DataModels */,
 				323ADC9D2282929A00644931 /* checklists.entitlements */,
+				324961872CEFC4820034AE3F /* ChecklistsApp.swift */,
 				323ADC6A22828C0900644931 /* AppDelegate.swift */,
 				323ADC7322828C0900644931 /* Main.storyboard */,
 				323ADC7622828C0C00644931 /* Assets.xcassets */,
@@ -216,7 +219,6 @@
 				323ADC7B22828C0C00644931 /* Info.plist */,
 				327C65AF25A16BA90012AABD /* Flurry */,
 				32A9289B2320A0A1005F9B34 /* checklists-Bridging-Header.h */,
-				324961872CEFC4820034AE3F /* ChecklistsApp.swift */,
 			);
 			path = checklists;
 			sourceTree = "<group>";
@@ -440,6 +442,7 @@
 			packageReferences = (
 				3252E7392CE70F79009B6F7C /* XCRemoteSwiftPackageReference "realm-swift" */,
 				3252E73A2CE70FAA009B6F7C /* XCRemoteSwiftPackageReference "Toast-Swift" */,
+				325877702D052128006B3851 /* XCRemoteSwiftPackageReference "EasyToast" */,
 			);
 			productRefGroup = 323ADC6822828C0900644931 /* Products */;
 			projectDirPath = "";
@@ -892,6 +895,14 @@
 				minimumVersion = 5.1.1;
 			};
 		};
+		325877702D052128006B3851 /* XCRemoteSwiftPackageReference "EasyToast" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/banghuazhao/EasyToast";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -904,6 +915,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3252E73A2CE70FAA009B6F7C /* XCRemoteSwiftPackageReference "Toast-Swift" */;
 			productName = Toast;
+		};
+		325877712D052277006B3851 /* EasyToast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 325877702D052128006B3851 /* XCRemoteSwiftPackageReference "EasyToast" */;
+			productName = EasyToast;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

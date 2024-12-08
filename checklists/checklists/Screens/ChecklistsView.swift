@@ -6,15 +6,17 @@
 //  Copyright © 2024 Jimmy Ho. All rights reserved.
 //
 
+import EasyToast
 import SwiftUI
 import RealmSwift
 
 struct ChecklistsView: View {
   @ObservedRealmObject var group: Group
+  @State private var checklists: [Checklist]
 
   // For deleting a Checklist.
-  @State private var showingDeleteAlert = false
-  @State private var itemToDelete: Checklist? = nil
+  @State private var showingDeletionUndoToast = false
+  @State private var deletedChecklist: Checklist? = nil
 
   // For resetting all Checklists.
   @State private var showingMoreMenu = false
@@ -23,7 +25,7 @@ struct ChecklistsView: View {
   var body: some View {
     NavigationView {
       List {
-        ForEach(group.checklists) { checklist in
+        ForEach(checklists) { checklist in
           ChecklistRowView(checklist: checklist)
             .swipeActions(edge: .trailing) {
               swipeDeleteButton(checklist: checklist)
@@ -61,16 +63,16 @@ struct ChecklistsView: View {
           }
         }
       }
-      .alert("Are you sure? This cannot be undone.", isPresented: $showingDeleteAlert, presenting: itemToDelete) { checklist in
-        Button("Delete", role: .destructive) {
-          withAnimation {
-            group.delete(checklist: checklist)
-          }
-          itemToDelete = nil
+      .easyToast(isPresented: $showingDeletionUndoToast, message: "Undo checklist deletion", duration: 3.0, position: .bottom, onTap: {
+        guard let deletedChecklist = deletedChecklist else { assertionFailure(); return }
+        group.undoDeletion(checklist: deletedChecklist)
+        showingDeletionUndoToast = false
+        withAnimation {
+          checklists = group.displayedChecklists()
         }
-        Button("Cancel", role: .cancel) {
-          itemToDelete = nil
-        }
+      })
+      .onDisappear {
+        DBManager.cleanUpDeletedChecklists()
       }
       .alert("Are you sure? This cannot be undone.", isPresented: $showingResetAlert) {
         Button("Reset All", role: .destructive) {
@@ -84,6 +86,11 @@ struct ChecklistsView: View {
     }
   }
   
+  init(group: Group) {
+    self.group = group
+    self.checklists = group.displayedChecklists()
+  }
+
   private func menuButtonTapped() {
     // TODO
   }
@@ -93,17 +100,18 @@ struct ChecklistsView: View {
       group.moveChecklist(from: sourceIndex, to: destination)
     }
   }
-  
+
   private func swipeDeleteButton(checklist: Checklist) -> some View {
-    // Setting to .destructive causes SwiftUI to auto-remove the row when button is tapped,
-    // causing a weird flicker, so setting to .none and manually tinting the color.
-    Button(role: .none) {
-      itemToDelete = checklist
-      showingDeleteAlert = true
+    Button(role: .destructive) {
+      group.shallowDelete(checklist: checklist)
+      deletedChecklist = checklist
+      withAnimation {
+        checklists = group.displayedChecklists()
+      }
+      showingDeletionUndoToast = true
     } label: {
       Label("Delete", systemImage: "trash")
     }
-    .tint(.red)
   }
 }
 

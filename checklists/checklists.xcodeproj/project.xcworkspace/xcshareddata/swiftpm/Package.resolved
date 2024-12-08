@@ -1,6 +1,15 @@
 {
-  "originHash" : "792da04b04968026b9a0ec3cd8b228cef5a0e21bbaa1241fc6f367d61484d1a0",
+  "originHash" : "192edb64ea237ca67c89ae59fc3820871e1b600166b68987b18b0856e8cd9c73",
   "pins" : [
+    {
+      "identity" : "easytoast",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/banghuazhao/EasyToast",
+      "state" : {
+        "revision" : "182e2c03f453e31e8fbff241a0e3372b5d378db1",
+        "version" : "0.4.0"
+      }
+    },
     {
       "identity" : "realm-core",
       "kind" : "remoteSourceControl",
