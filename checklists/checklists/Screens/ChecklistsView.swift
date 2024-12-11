@@ -12,7 +12,8 @@ import RealmSwift
 
 struct ChecklistsView: View {
   @ObservedRealmObject var group: Group
-  @State private var checklists: [Checklist]
+
+  @State private var refreshID = UUID()
 
   // For deleting a Checklist.
   @State private var showingDeletionUndoToast = false
@@ -22,20 +23,32 @@ struct ChecklistsView: View {
   @State private var showingMoreMenu = false
   @State private var showingResetAlert = false
 
+  // For managing navigation state.
+  @State private var navigationPath = NavigationPath()
+
   var body: some View {
-    NavigationView {
+    NavigationStack(path: $navigationPath) {
       List {
-        ForEach(checklists) { checklist in
-          ChecklistRowView(checklist: checklist)
-            .swipeActions(edge: .trailing) {
-              swipeDeleteButton(checklist: checklist)
-            }
-            .listRowSeparator(.hidden)
-            .listRowInsets(EdgeInsets(top: 0, leading: 8.0, bottom: 0, trailing: 0))
+        ForEach(group.displayedChecklists(), id: \.id) { checklist in
+          // Not using NavigationLink because it has a Disclosure Indicator that cannot be removed.
+          Button(action: {
+            navigationPath.append(checklist)
+          }) {
+            ChecklistRowView(checklist: checklist)
+          }
+          .swipeActions(edge: .trailing) {
+            swipeDeleteButton(checklist: checklist)
+          }
+          .listRowSeparator(.hidden)
+          .listRowInsets(EdgeInsets(top: 0, leading: 8.0, bottom: 0, trailing: 16.0))
         }
         .onMove(perform: moveChecklist)
       }
+      .id(refreshID)
       .listStyle(.plain)
+      .navigationDestination(for: Checklist.self) { checklist in
+        ChecklistView(checklist: checklist)
+      }
       .toolbar {
         ToolbarItem(placement: .navigationBarLeading) {
           Button(action: {
@@ -68,10 +81,14 @@ struct ChecklistsView: View {
         group.undoDeletion(checklist: deletedChecklist)
         showingDeletionUndoToast = false
         withAnimation {
-          checklists = group.displayedChecklists()
+          refreshID = UUID()
         }
       })
+      .onAppear() {
+        refreshID = UUID()
+      }
       .onDisappear {
+        showingDeletionUndoToast = false
         DBManager.cleanUpDeletedChecklists()
       }
       .alert("Are you sure? This cannot be undone.", isPresented: $showingResetAlert) {
@@ -86,11 +103,6 @@ struct ChecklistsView: View {
     }
   }
   
-  init(group: Group) {
-    self.group = group
-    self.checklists = group.displayedChecklists()
-  }
-
   private func menuButtonTapped() {
     // TODO
   }
@@ -105,9 +117,6 @@ struct ChecklistsView: View {
     Button(role: .destructive) {
       group.shallowDelete(checklist: checklist)
       deletedChecklist = checklist
-      withAnimation {
-        checklists = group.displayedChecklists()
-      }
       showingDeletionUndoToast = true
     } label: {
       Label("Delete", systemImage: "trash")

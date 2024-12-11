@@ -40,9 +40,9 @@ struct ChecklistsApp: SwiftUI.App {
     // For dev manual testing/debugging
     // TODO: Comment out below code before prod release.
     #if DEBUG
-    SampleData.clearDatabase()
+    // SampleData.clearDatabase()
     // SampleData.insertFirstTimeLaunchData()
-    SampleData.insertTestData()
+    // SampleData.insertTestData()
     print("appVersion: \(UserDefaults.standard.string(forKey: appVersionKey) ?? "[Not Found]")")
     #endif
 

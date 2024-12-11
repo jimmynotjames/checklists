@@ -24,8 +24,8 @@ class Group: Object, Identifiable {
 
   @Persisted var checklists = List<Checklist>()
 
-  func displayedChecklists() -> [Checklist] {
-    return checklists.filter { !$0.isDeleted }
+  func displayedChecklists() -> Results<Checklist> {
+    return checklists.where { !$0.isDeleted }
   }
 
   func moveChecklist(from fromIndex: Int, to toIndex: Int) {
