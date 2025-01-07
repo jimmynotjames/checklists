@@ -102,14 +102,16 @@ struct ChecklistsView: View {
       }
     }
   }
-  
+
   private func menuButtonTapped() {
     // TODO
   }
-  
+
   private func moveChecklist(from sourceIndexSet: IndexSet, to destination: Int) {
     for sourceIndex in sourceIndexSet {
-      group.moveChecklist(from: sourceIndex, to: destination)
+      // In SwiftUI, it appears that dragging a Checklist to end of list goes to `count`.
+      let destination = min(destination, group.checklists.count - 1)
+      group.thaw()?.moveChecklist(from: sourceIndex, to: destination)
     }
   }
 

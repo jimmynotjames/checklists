@@ -36,6 +36,9 @@ struct ChecklistHeaderView: View {
         Spacer()
       }
       TextEditor(text: Binding(
+        // The only reason this is so convoluted is because my original Realm schema had .notes
+        // as an Optional. If it were not-Optional, it would probably just be `text: $checklist.notes`.
+        // Decided against this, given the risks in migrating on app launch when updating app versions.
         get: { checklist.notes ?? "" },
         set: { text in
           guard let checklist = checklist.thaw() else { fatalError("checklist.thaw() failed") }
