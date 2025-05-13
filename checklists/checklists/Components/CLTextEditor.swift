@@ -15,23 +15,13 @@ Major features:
  */
 struct CLTextEditor: View {
   @Binding var text: String
-  @FocusState private var isFocused: Bool
   var font: Font = .footnote
 
   var body: some View {
     ZStack(alignment: .topLeading) {
       TextEditor(text: $text)
         .font(font)
-        .focused($isFocused)
         .padding(.leading, -5.0)
-        .toolbar {
-          ToolbarItemGroup(placement: .keyboard) {
-            Spacer()
-            Button("Done") {
-              isFocused = false
-            }
-          }
-        }
       if text.isEmpty {
         // Placeholder text when content is empty.
         Text("Notes")
