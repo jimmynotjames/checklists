@@ -9,7 +9,7 @@ Venv:
   python3 -m venv venv
 
 2. Make sure to activate venv
-  source source venv/bin/activate
+  source venv/bin/activate
 
 3. Xcode Build Params - Go to checklists Target
   a. Signing & Capabilities -> Make sure there's a Signing Certificate provisioned and working.
