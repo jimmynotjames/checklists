@@ -11,7 +11,7 @@
 		322DE13B22FFE1F600C6E57A /* RoundCheckboxButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322DE13A22FFE1F600C6E57A /* RoundCheckboxButton.swift */; };
 		322DE13D22FFE4E500C6E57A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322DE13C22FFE4E500C6E57A /* SettingsViewController.swift */; };
 		322DE13F23006FBD00C6E57A /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322DE13E23006FBD00C6E57A /* SettingsManager.swift */; };
-		3233C794228BAD3C002BF01D /* CheckboxButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3233C793228BAD3C002BF01D /* CheckboxButton.swift */; };
+		3233C794228BAD3C002BF01D /* CheckboxButtonLegacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3233C793228BAD3C002BF01D /* CheckboxButtonLegacy.swift */; };
 		323ADC6B22828C0900644931 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323ADC6A22828C0900644931 /* AppDelegate.swift */; };
 		323ADC7522828C0900644931 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 323ADC7322828C0900644931 /* Main.storyboard */; };
 		323ADC7722828C0C00644931 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 323ADC7622828C0C00644931 /* Assets.xcassets */; };
@@ -29,6 +29,8 @@
 		3252E73F2CE71079009B6F7C /* Toast in Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73E2CE71079009B6F7C /* Toast */; };
 		325877722D052277006B3851 /* EasyToast in Frameworks */ = {isa = PBXBuildFile; productRef = 325877712D052277006B3851 /* EasyToast */; };
 		326A97552DD397B500C73844 /* CLTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326A97542DD397B500C73844 /* CLTextEditor.swift */; };
+		326A97572DD3A99400C73844 /* ChecklistItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326A97562DD3A99400C73844 /* ChecklistItemView.swift */; };
+		326A97592DD3BBDD00C73844 /* CheckboxButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326A97582DD3BBDD00C73844 /* CheckboxButton.swift */; };
 		327C659A259EB73D0012AABD /* checklistUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C6599259EB73D0012AABD /* checklistUITest.swift */; };
 		327C65A625A0DB780012AABD /* checklistCreateUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C65A525A0DB780012AABD /* checklistCreateUITest.swift */; };
 		327C65BC25A16BA90012AABD /* libFlurry_11.2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 327C65B025A16BA90012AABD /* libFlurry_11.2.0.a */; };
@@ -95,7 +97,7 @@
 		322DE13A22FFE1F600C6E57A /* RoundCheckboxButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundCheckboxButton.swift; sourceTree = "<group>"; };
 		322DE13C22FFE4E500C6E57A /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		322DE13E23006FBD00C6E57A /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
-		3233C793228BAD3C002BF01D /* CheckboxButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckboxButton.swift; sourceTree = "<group>"; };
+		3233C793228BAD3C002BF01D /* CheckboxButtonLegacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckboxButtonLegacy.swift; sourceTree = "<group>"; };
 		323ADC6722828C0900644931 /* checklists.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = checklists.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		323ADC6A22828C0900644931 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		323ADC7422828C0900644931 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -117,6 +119,8 @@
 		324A03212303A38700958D3E /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 		324A03232303AABB00958D3E /* DonateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonateViewController.swift; sourceTree = "<group>"; };
 		326A97542DD397B500C73844 /* CLTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLTextEditor.swift; sourceTree = "<group>"; };
+		326A97562DD3A99400C73844 /* ChecklistItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistItemView.swift; sourceTree = "<group>"; };
+		326A97582DD3BBDD00C73844 /* CheckboxButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckboxButton.swift; sourceTree = "<group>"; };
 		327C6599259EB73D0012AABD /* checklistUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistUITest.swift; sourceTree = "<group>"; };
 		327C65A525A0DB780012AABD /* checklistCreateUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistCreateUITest.swift; sourceTree = "<group>"; };
 		327C65B025A16BA90012AABD /* libFlurry_11.2.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_11.2.0.a; sourceTree = "<group>"; };
@@ -276,7 +280,10 @@
 		324961842CEE3DF80034AE3F /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				326A97582DD3BBDD00C73844 /* CheckboxButton.swift */,
+				326A97562DD3A99400C73844 /* ChecklistItemView.swift */,
 				324961852CEE3E100034AE3F /* CircularPercentStatusIcon.swift */,
+				326A97542DD397B500C73844 /* CLTextEditor.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -316,9 +323,8 @@
 		32F4C8412287525B000D63CF /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				326A97542DD397B500C73844 /* CLTextEditor.swift */,
 				32E767DB22EA4639003C8634 /* AddItemButtonTableFooterView.swift */,
-				3233C793228BAD3C002BF01D /* CheckboxButton.swift */,
+				3233C793228BAD3C002BF01D /* CheckboxButtonLegacy.swift */,
 				32E767DF22EA6476003C8634 /* CLButton.swift */,
 				32BA5020235CE84C007E506D /* CLCircleButton.swift */,
 				323FCF2822F2A33E00F761BB /* CLTextView.swift */,
@@ -511,9 +517,11 @@
 				32BA5021235CE84C007E506D /* CLCircleButton.swift in Sources */,
 				32E767DC22EA4639003C8634 /* AddItemButtonTableFooterView.swift in Sources */,
 				324961882CEFC4820034AE3F /* ChecklistsApp.swift in Sources */,
+				326A97572DD3A99400C73844 /* ChecklistItemView.swift in Sources */,
+				326A97592DD3BBDD00C73844 /* CheckboxButton.swift in Sources */,
 				32A928A42320CED0005F9B34 /* AnalyticsManager.swift in Sources */,
 				32B4C177257AF608005721F5 /* ChecklistCellContentView.swift in Sources */,
-				3233C794228BAD3C002BF01D /* CheckboxButton.swift in Sources */,
+				3233C794228BAD3C002BF01D /* CheckboxButtonLegacy.swift in Sources */,
 				322DE13D22FFE4E500C6E57A /* SettingsViewController.swift in Sources */,
 				32A13A6E2CED1AED000595D0 /* ChecklistsView.swift in Sources */,
 				323ADC6B22828C0900644931 /* AppDelegate.swift in Sources */,

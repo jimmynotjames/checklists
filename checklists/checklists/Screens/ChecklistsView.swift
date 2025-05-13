@@ -130,7 +130,7 @@ struct ChecklistRowView: View {
 
   var body: some View {
     HStack(alignment: .top, spacing: 7.0) {
-      CircularPercentStatusIcon(iconType: .tableViewCell, percentageComplete: checklist.percentageComplete)
+      CircularPercentStatusIcon(iconType: .item, percentageComplete: checklist.percentageComplete)
       VStack(alignment: .leading, spacing: 4.0) {
         Text(checklist.name)
           .font(.system(size: 18.0, weight: .semibold))

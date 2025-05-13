@@ -19,6 +19,11 @@ class DBManager {
       // TODO: Try to some more elegant error handling here.
     }
   }()
+  
+  // For using in Previews and such.
+  static func initializeDebugRealm() {
+    realm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: "DebugRealm"))
+  }
 
   static func write(_ block: () -> Void) {
     do {

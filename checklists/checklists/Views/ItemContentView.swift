@@ -51,8 +51,8 @@ class ItemContentView: UIView {
     }
   }
 
-  private lazy var checkboxButton: CheckboxButton = {
-    let button = CheckboxButton()
+  private lazy var checkboxButton: CheckboxButtonLegacy = {
+    let button = CheckboxButtonLegacy()
     button.addTarget(self, action: #selector(checkboxButtonTapped(sender:)), for: .touchUpInside)
     return button
   }()

@@ -59,29 +59,6 @@ struct ChecklistHeaderView: View {
   }
 }
 
-// TODO: If this gets too large, move to a new file?
-// For each individual Checklist Item
-struct ChecklistItemView: View {
-  @ObservedRealmObject var item: Item
-
-  var body: some View {
-    VStack(alignment: .leading) {
-      HStack {
-        TextField("", text: Binding(
-          get: { item.name },
-          set: { newName in
-            DBManager.write {
-              item.thaw()?.name = newName
-            }
-          }
-        ))
-          .font(.subheadline)
-          .foregroundColor(Color.black)
-      }
-    }
-  }
-}
-
 #Preview {
   let realm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: "Preview"))
   SampleData.populateWithSampleData(realm: realm)

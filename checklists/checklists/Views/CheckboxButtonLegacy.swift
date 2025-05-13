@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CheckboxButton: UIButton {
+class CheckboxButtonLegacy: UIButton {
   convenience init() {
     self.init(frame: .zero)
   }

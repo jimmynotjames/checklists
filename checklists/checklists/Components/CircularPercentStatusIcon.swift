@@ -11,7 +11,7 @@ import SwiftUI
 
 struct CircularPercentStatusIcon: View {
   enum IconType {
-    case tableViewCell
+    case item
     case header
   }
   
@@ -21,21 +21,21 @@ struct CircularPercentStatusIcon: View {
   // Computed properties for dimensions
   private var radius: CGFloat {
     switch iconType {
-    case .tableViewCell: return 10.0
+    case .item: return 10.0
     case .header: return 12.0
     }
   }
   
   private var innerRadius: CGFloat {
     switch iconType {
-    case .tableViewCell: return 7.5
+    case .item: return 7.5
     case .header: return 9.5
     }
   }
   
   private var outerRingLineWidth: CGFloat {
     switch iconType {
-    case .tableViewCell: return 0.5
+    case .item: return 0.5
     case .header: return 1.0
     }
   }
@@ -85,9 +85,13 @@ struct CircleSegment: Shape {
 
 #Preview {
   VStack {
-    CircularPercentStatusIcon(iconType: .tableViewCell, percentageComplete: 1.0)
-    CircularPercentStatusIcon(iconType: .tableViewCell, percentageComplete: 0.75)
-    CircularPercentStatusIcon(iconType: .tableViewCell, percentageComplete: 0.33)
-    CircularPercentStatusIcon(iconType: .tableViewCell, percentageComplete: 0.0)
+    CircularPercentStatusIcon(iconType: .item, percentageComplete: 1.0)
+    CircularPercentStatusIcon(iconType: .item, percentageComplete: 0.75)
+    CircularPercentStatusIcon(iconType: .item, percentageComplete: 0.33)
+    CircularPercentStatusIcon(iconType: .item, percentageComplete: 0.0)
+    CircularPercentStatusIcon(iconType: .header, percentageComplete: 1.0)
+    CircularPercentStatusIcon(iconType: .header, percentageComplete: 0.75)
+    CircularPercentStatusIcon(iconType: .header, percentageComplete: 0.33)
+    CircularPercentStatusIcon(iconType: .header, percentageComplete: 0.0)
   }
 }
