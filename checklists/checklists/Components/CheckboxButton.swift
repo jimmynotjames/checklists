@@ -21,12 +21,11 @@ struct CheckboxButton: View {
       Image(item.status == .checked ? "CheckboxCheckedIcon" : "CheckboxUncheckedIcon")
         .resizable()
         .frame(width: 24, height: 24)
-        .padding(12)
+        .padding(EdgeInsets(top: 4.0, leading: 4.0, bottom: 4.0, trailing: 8.0))
         .accessibilityLabel("Checkbox")
         .accessibilityValue(item.status == .checked ? "Checked" : "Unchecked")
     }
     .foregroundColor(Color.teal)
-    .frame(width: 48, height: 48)
     .contentShape(Rectangle())
   }
 }

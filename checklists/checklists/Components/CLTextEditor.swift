@@ -23,24 +23,25 @@ struct CLTextEditor: View {
       TextEditor(text: $text)
         .font(font)
         .focused($isFocused)
-        .padding(.top, -8.0)
         .padding(.leading, -5.0)
+        .toolbar {
+          ToolbarItemGroup(placement: .keyboard) {
+            Spacer()
+            Button("Done") {
+              isFocused = false
+            }
+          }
+        }
       if text.isEmpty {
         // Placeholder text when content is empty.
         Text("Notes")
           .font(font)
           .foregroundColor(.gray)
+          .padding(.top, 8.0)
+          .accessibilityHidden(true)
       }
     }
     .padding(.top, 2.0)
     .padding(.bottom, 4.0)
-    .toolbar {
-      ToolbarItemGroup(placement: .keyboard) {
-        Spacer()
-        Button("Done") {
-          isFocused = false
-        }
-      }
-    }
   }
 }
