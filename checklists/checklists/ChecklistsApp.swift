@@ -18,7 +18,6 @@ struct ChecklistsApp: SwiftUI.App {
   init() {
     AnalyticsManager.appLaunched()
     initializeAppSettings()
-    configureNavigationBarAppearance()
   }
 
   var body: some Scene {
@@ -54,16 +53,5 @@ struct ChecklistsApp: SwiftUI.App {
       SampleData.insertFirstTimeLaunchDataV1_1()
     }
     #endif
-  }
-
-  private func configureNavigationBarAppearance() {
-    let appearance = UINavigationBarAppearance()
-    appearance.configureWithOpaqueBackground()
-    appearance.backgroundColor = .white
-    appearance.shadowColor = .clear // Removes line between nav bar and list.
-
-    UINavigationBar.appearance().standardAppearance = appearance
-    UINavigationBar.appearance().scrollEdgeAppearance = appearance
-    UINavigationBar.appearance().compactAppearance = appearance
   }
 }

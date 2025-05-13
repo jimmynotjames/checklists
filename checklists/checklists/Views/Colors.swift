@@ -24,7 +24,7 @@ class Colors {
   static let inactiveText = Color("inactiveText")
 
   static let darkBlueGray = Color("darkBlueGray")
-  static let teal = Color("teal")
+  static let teal = Color("teal") // Default for buttons, nav bar, and icons.
   static let salmonRed = Color("salmonRed")
   static let darkPurple = Color("darkPurple")
 }

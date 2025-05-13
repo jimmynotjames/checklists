@@ -57,7 +57,6 @@ struct ChecklistsView: View {
             Image("MenuIcon25x25")
               .renderingMode(.template)
               .accessibilityLabel("Miscellaneous Menu")
-              .tint(Colors.teal)
           }
         }
         ToolbarItem(placement: .navigationBarTrailing) {
@@ -65,7 +64,6 @@ struct ChecklistsView: View {
             Image("MoreMenuIcon32x32")
               .renderingMode(.template)
               .accessibilityLabel("Checklists Menu")
-              .tint(Colors.teal)
           }
           .popover(isPresented: $showingMoreMenu, arrowEdge: .top) {
             MoreMenuView {
@@ -100,7 +98,7 @@ struct ChecklistsView: View {
           showingResetAlert = false
         }
       }
-    }
+    }.tint(Colors.teal)
   }
 
   private func menuButtonTapped() {
