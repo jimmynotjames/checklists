@@ -139,7 +139,7 @@ class Checklist: Object, Identifiable {
   }
 }
 
-class Item: Object {
+class Item: Object, Identifiable {
 
   enum Status: Int {
     case unchecked

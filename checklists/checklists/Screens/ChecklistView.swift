@@ -13,8 +13,17 @@ struct ChecklistView: View {
   @ObservedRealmObject var checklist: Checklist
 
   var body: some View {
-    VStack {
+    VStack(spacing: 0.0) {
       ChecklistHeaderView(checklist: checklist)
+        .fixedSize(horizontal: false, vertical: true)
+      List {
+        ForEach(checklist.items, id: \.id) { item in
+          ChecklistItemView(item: item)
+        }
+        .listRowSeparator(.hidden)
+        .listRowInsets(EdgeInsets(top: 0, leading: 0.0, bottom: 0, trailing: 16.0))
+      }
+      .listStyle(.plain)
       Spacer()
     }
     .padding(.leading, 16.0)
@@ -41,17 +50,39 @@ struct ChecklistHeaderView: View {
         // Decided against this, given the risks in migrating on app launch when updating app versions.
         get: { checklist.notes ?? "" },
         set: { text in
-          guard let checklist = checklist.thaw() else { fatalError("checklist.thaw() failed") }
           DBManager.write {
-            checklist.notes = (text.trimmed() == "") ? nil : text
+            checklist.thaw()?.notes = (text.trimmed() == "") ? nil : text
           }
         }
       ))
-        .font(.headline)
-        .fontWeight(.regular)
-        .foregroundColor(Color.black)
-        .lineLimit(3, reservesSpace: true)
-        .multilineTextAlignment(.leading)
+      .font(.headline)
+      .fontWeight(.regular)
+      .foregroundColor(Color.black)
+      .lineLimit(3, reservesSpace: true)
+      .multilineTextAlignment(.leading)
+    }
+  }
+}
+
+// TODO: If this gets too large, move to a new file?
+// For each individual Checklist Item
+struct ChecklistItemView: View {
+  @ObservedRealmObject var item: Item
+
+  var body: some View {
+    VStack(alignment: .leading) {
+      HStack {
+        TextField("", text: Binding(
+          get: { item.name },
+          set: { newName in
+            DBManager.write {
+              item.thaw()?.name = newName
+            }
+          }
+        ))
+          .font(.subheadline)
+          .foregroundColor(Color.black)
+      }
     }
   }
 }
