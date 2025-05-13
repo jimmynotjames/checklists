@@ -44,7 +44,7 @@ struct ChecklistHeaderView: View {
           .foregroundColor(Color.black)
         Spacer()
       }
-      TextEditor(text: Binding(
+      CLTextEditor(text: Binding(
         // The only reason this is so convoluted is because my original Realm schema had .notes
         // as an Optional. If it were not-Optional, it would probably just be `text: $checklist.notes`.
         // Decided against this, given the risks in migrating on app launch when updating app versions.
@@ -55,11 +55,6 @@ struct ChecklistHeaderView: View {
           }
         }
       ))
-      .font(.headline)
-      .fontWeight(.regular)
-      .foregroundColor(Color.black)
-      .lineLimit(3, reservesSpace: true)
-      .multilineTextAlignment(.leading)
     }
   }
 }

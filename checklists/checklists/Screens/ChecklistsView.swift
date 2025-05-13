@@ -98,7 +98,8 @@ struct ChecklistsView: View {
           showingResetAlert = false
         }
       }
-    }.tint(Colors.teal)
+    }
+    .tint(Colors.teal)
   }
 
   private func menuButtonTapped() {

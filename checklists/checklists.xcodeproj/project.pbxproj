@@ -28,6 +28,7 @@
 		3252E73D2CE71074009B6F7C /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73B2CE71074009B6F7C /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		3252E73F2CE71079009B6F7C /* Toast in Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73E2CE71079009B6F7C /* Toast */; };
 		325877722D052277006B3851 /* EasyToast in Frameworks */ = {isa = PBXBuildFile; productRef = 325877712D052277006B3851 /* EasyToast */; };
+		326A97552DD397B500C73844 /* CLTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326A97542DD397B500C73844 /* CLTextEditor.swift */; };
 		327C659A259EB73D0012AABD /* checklistUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C6599259EB73D0012AABD /* checklistUITest.swift */; };
 		327C65A625A0DB780012AABD /* checklistCreateUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C65A525A0DB780012AABD /* checklistCreateUITest.swift */; };
 		327C65BC25A16BA90012AABD /* libFlurry_11.2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 327C65B025A16BA90012AABD /* libFlurry_11.2.0.a */; };
@@ -115,6 +116,7 @@
 		324961872CEFC4820034AE3F /* ChecklistsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistsApp.swift; sourceTree = "<group>"; };
 		324A03212303A38700958D3E /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 		324A03232303AABB00958D3E /* DonateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonateViewController.swift; sourceTree = "<group>"; };
+		326A97542DD397B500C73844 /* CLTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLTextEditor.swift; sourceTree = "<group>"; };
 		327C6599259EB73D0012AABD /* checklistUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistUITest.swift; sourceTree = "<group>"; };
 		327C65A525A0DB780012AABD /* checklistCreateUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistCreateUITest.swift; sourceTree = "<group>"; };
 		327C65B025A16BA90012AABD /* libFlurry_11.2.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_11.2.0.a; sourceTree = "<group>"; };
@@ -314,6 +316,7 @@
 		32F4C8412287525B000D63CF /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				326A97542DD397B500C73844 /* CLTextEditor.swift */,
 				32E767DB22EA4639003C8634 /* AddItemButtonTableFooterView.swift */,
 				3233C793228BAD3C002BF01D /* CheckboxButton.swift */,
 				32E767DF22EA6476003C8634 /* CLButton.swift */,
@@ -524,6 +527,7 @@
 				32D721EE22AB4BC000794F6D /* ChecklistsViewController.swift in Sources */,
 				32A9647C2297AFF400CAB7C0 /* DBManager.swift in Sources */,
 				322DE13B22FFE1F600C6E57A /* RoundCheckboxButton.swift in Sources */,
+				326A97552DD397B500C73844 /* CLTextEditor.swift in Sources */,
 				32A964712291E14F00CAB7C0 /* ItemContentView.swift in Sources */,
 				322CA9FB22EEA6A2009ACC4D /* MainMenuTableViewController.swift in Sources */,
 			);
@@ -643,6 +647,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -699,6 +704,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

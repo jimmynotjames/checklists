@@ -7,9 +7,10 @@
 //
 
 /*
- Two major features here:
+Major features here:
  - Adjusted UITextView so that it grows/shrinks height as user is typing.
  - Added placeholder text.
+ - Keyboard has a Done button to dismiss the keyboard and it has the appropriate color.
 
  To use, set a >= minimum height constraint and it will show with a minimum height and grow as it expands beyond that.
  */
