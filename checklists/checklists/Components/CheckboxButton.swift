@@ -25,7 +25,7 @@ struct CheckboxButton: View {
         .accessibilityLabel("Checkbox")
         .accessibilityValue(item.status == .checked ? "Checked" : "Unchecked")
     }
-    .foregroundColor(Color.teal)
+    .foregroundColor(Colors.teal)
     .contentShape(Rectangle())
   }
 }
