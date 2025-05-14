@@ -19,7 +19,7 @@ struct ChecklistItemView: View {
   var body: some View {
     HStack(alignment: .top, spacing: 0.0) {
       CheckboxButton(item: item)
-      VStack(alignment: .leading, spacing: 2.0) {
+      VStack(alignment: .leading, spacing: 0.0) {
         TextField("", text: Binding(
           get: { item.name },
           set: { newName in
