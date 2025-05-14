@@ -42,10 +42,15 @@ struct ChecklistView: View {
 struct ChecklistHeaderView: View {
   @ObservedRealmObject var checklist: Checklist
 
+  // To refresh the percentageComplete. Updates to Item.statusRaw don't seem trigger a refresh without this.
+  // Slightly hacky, as I'm observing all Items, not just this Checklist's Items.
+  @ObservedResults(Item.self) var allItems
+
   var body: some View {
     VStack(alignment: .leading) {
       HStack {
         CircularPercentStatusIcon(iconType: .header, percentageComplete: checklist.percentageComplete)
+          .onChange(of: allItems) { _, _ in } // Triggering refresh.
         TextField("Name", text: $checklist.name)
           .font(.title)
           .fontWeight(.bold)
