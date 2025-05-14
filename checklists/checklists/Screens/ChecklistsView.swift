@@ -99,7 +99,7 @@ struct ChecklistsView: View {
         }
       }
     }
-    .tint(Colors.teal)
+    .tint(CLColors.teal)
   }
 
   private func menuButtonTapped() {
@@ -157,7 +157,7 @@ struct MoreMenuView: View {
   var body: some View {
     VStack {
       Button("Reset All", action: onResetAll)
-        .foregroundColor(Colors.teal)
+        .foregroundColor(CLColors.teal)
         .padding(.horizontal, 16.0)
     }
   }

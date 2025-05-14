@@ -24,7 +24,7 @@ class RoundCheckboxButton: UIButton {
   }
 
   private func commonInit() {
-    tintColor = UIColors.teal
+    tintColor = CLUIColors.teal
     setImage(UIImage(named: "RoundCheckboxUnchecked25x25"), for: .normal)
     setImage(UIImage(named: "RoundCheckboxChecked25x25"), for: .selected)
 

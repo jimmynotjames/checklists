@@ -9,7 +9,7 @@
 import UIKit
 import SwiftUI
 
-class UIColors {
+class CLUIColors {
   static let defaultBackground = UIColor(named: "defaultBackground") ?? .white
   static let inactiveText = UIColor(named: "inactiveText") ?? .darkGray
 
@@ -19,7 +19,7 @@ class UIColors {
   static let darkPurple = UIColor(named: "darkPurple") ?? .purple
 }
 
-class Colors {
+class CLColors {
   static let defaultBackground = Color("defaultBackground")
   static let inactiveText = Color("inactiveText")
 

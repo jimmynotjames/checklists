@@ -42,7 +42,7 @@
 		32A964712291E14F00CAB7C0 /* ItemContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A964702291E14F00CAB7C0 /* ItemContentView.swift */; };
 		32A964782297A0A300CAB7C0 /* RealmSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A964772297A0A300CAB7C0 /* RealmSchema.swift */; };
 		32A9647C2297AFF400CAB7C0 /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A9647B2297AFF400CAB7C0 /* DBManager.swift */; };
-		32AECAEB22ED118100747080 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32AECAEA22ED118100747080 /* Colors.swift */; };
+		32AECAEB22ED118100747080 /* CLColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32AECAEA22ED118100747080 /* CLColors.swift */; };
 		32B4C177257AF608005721F5 /* ChecklistCellContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B4C176257AF608005721F5 /* ChecklistCellContentView.swift */; };
 		32BA5021235CE84C007E506D /* CLCircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BA5020235CE84C007E506D /* CLCircleButton.swift */; };
 		32C8D62625671FFD003E9569 /* LegacyCircularPercentStatusIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C8D62525671FFD003E9569 /* LegacyCircularPercentStatusIcon.swift */; };
@@ -140,7 +140,7 @@
 		32A964772297A0A300CAB7C0 /* RealmSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmSchema.swift; sourceTree = "<group>"; };
 		32A964792297AE6700CAB7C0 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
 		32A9647B2297AFF400CAB7C0 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
-		32AECAEA22ED118100747080 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		32AECAEA22ED118100747080 /* CLColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLColors.swift; sourceTree = "<group>"; };
 		32B4C176257AF608005721F5 /* ChecklistCellContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistCellContentView.swift; sourceTree = "<group>"; };
 		32BA5020235CE84C007E506D /* CLCircleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLCircleButton.swift; sourceTree = "<group>"; };
 		32C8D62525671FFD003E9569 /* LegacyCircularPercentStatusIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyCircularPercentStatusIcon.swift; sourceTree = "<group>"; };
@@ -328,7 +328,7 @@
 				32E767DF22EA6476003C8634 /* CLButton.swift */,
 				32BA5020235CE84C007E506D /* CLCircleButton.swift */,
 				323FCF2822F2A33E00F761BB /* CLTextView.swift */,
-				32AECAEA22ED118100747080 /* Colors.swift */,
+				32AECAEA22ED118100747080 /* CLColors.swift */,
 				32F4C84322875308000D63CF /* ItemTableViewCell.swift */,
 				32A964702291E14F00CAB7C0 /* ItemContentView.swift */,
 				322DE13A22FFE1F600C6E57A /* RoundCheckboxButton.swift */,
@@ -529,7 +529,7 @@
 				32D9F1442D07994600CCC973 /* ChecklistView.swift in Sources */,
 				322DE13F23006FBD00C6E57A /* SettingsManager.swift in Sources */,
 				324A03242303AABB00958D3E /* DonateViewController.swift in Sources */,
-				32AECAEB22ED118100747080 /* Colors.swift in Sources */,
+				32AECAEB22ED118100747080 /* CLColors.swift in Sources */,
 				32C8D62A25673C0D003E9569 /* ChecklistTableViewCell.swift in Sources */,
 				32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */,
 				32D721EE22AB4BC000794F6D /* ChecklistsViewController.swift in Sources */,
