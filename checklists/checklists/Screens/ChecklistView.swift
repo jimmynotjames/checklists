@@ -67,7 +67,7 @@ struct ChecklistHeaderView: View {
             checklist.thaw()?.notes = (text.trimmed() == "") ? nil : text
           }
         }
-      ))
+      ), minLines: 3)
     }
   }
 }

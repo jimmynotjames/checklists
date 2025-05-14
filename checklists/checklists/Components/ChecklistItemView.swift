@@ -12,6 +12,9 @@ import RealmSwift
 // For each individual Checklist Item
 struct ChecklistItemView: View {
   @ObservedRealmObject var item: Item
+  
+  // For revealing the notes field when editing.
+  @FocusState private var isEditing: Bool
 
   var body: some View {
     HStack(alignment: .top, spacing: 0.0) {
@@ -27,17 +30,18 @@ struct ChecklistItemView: View {
         ))
           .font(.body)
           .lineLimit(1)
-        CLTextEditor(text: Binding(
-          // The only reason this is so convoluted is because my original Realm schema had .notes
-          // as an Optional. If it were not-Optional, it would probably just be `text: $item.notes`.
-          // Decided against this, given the risks in migrating on app launch when updating app versions.
-          get: { item.notes ?? "" },
-          set: { text in
-            DBManager.write {
-              item.thaw()?.notes = (text.trimmed() == "") ? nil : text
+          .focused($isEditing)
+        if isEditing || (item.notes != nil && !item.notes!.isEmpty) {
+          CLTextEditor(text: Binding(
+            get: { item.notes ?? "" },
+            set: { text in
+              DBManager.write {
+                item.thaw()?.notes = (text.trimmed() == "") ? nil : text
+              }
             }
-          }
-        ))
+          ), minLines: 1)
+          .focused($isEditing)
+        }
       }
       .padding(EdgeInsets(top: 4.0, leading: 0.0, bottom: 0.0, trailing: 0.0))
       Spacer()

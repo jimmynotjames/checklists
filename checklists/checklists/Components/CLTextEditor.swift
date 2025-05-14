@@ -12,10 +12,11 @@ import SwiftUI
 Major features:
  - Added placeholder text.
  - Keyboard has a Done button to dismiss the keyboard and it has the appropriate color.
- - 3-line minimum height.
+ - Minimum line height measured in newlines.
  */
 struct CLTextEditor: View {
   @Binding var text: String
+  let minLines: Int
 
   var body: some View {
     ZStack(alignment: .topLeading) {
@@ -30,7 +31,7 @@ struct CLTextEditor: View {
           .accessibilityHidden(true)
       }
       // Mininum height using newlines. Allows for Dynamic Type more easily than measuring in points.
-      Text("\n\n\n")
+      Text(String(repeating: "\n", count: minLines))
         .foregroundColor(.clear)
         .accessibilityHidden(true)
         .background(Color.clear)
