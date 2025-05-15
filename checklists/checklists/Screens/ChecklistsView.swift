@@ -16,7 +16,7 @@
  - Tap on a Checklist to view its items
  - More Menu options:
    - Reset All - Resets all Checklists to 0% complete.
- - TODO: Main Menu button in upper left
+ - Main Menu button in upper left uses custom transition left-to-right to reveal MainMenuView.
  - TODO: Button in lower right to create new Checklist
  - TODO: Exact fonts and spacing need to be refined.
  - TODO: Add accessibility
@@ -44,85 +44,94 @@ struct ChecklistsView: View {
 
   // For managing navigation state.
   @State private var navigationPath = NavigationPath()
-
+  @State private var showingMainMenu = false
+  
   var body: some View {
-    NavigationStack(path: $navigationPath) {
-      List {
-        ForEach(group.displayedChecklists(), id: \.id) { checklist in
-          // Not using NavigationLink because it has a Disclosure Indicator that cannot be removed.
-          Button(action: {
-            navigationPath.append(checklist)
-          }) {
-            ChecklistRowView(checklist: checklist)
-          }
-          .swipeActions(edge: .trailing) {
-            swipeDeleteButton(checklist: checklist)
-          }
-          .listRowSeparator(.hidden)
-          .listRowInsets(EdgeInsets(top: 0, leading: 8.0, bottom: 0, trailing: 16.0))
-        }
-        .onMove(perform: moveChecklist)
-      }
-      .id(refreshID)
-      .listStyle(.plain)
-      .navigationDestination(for: Checklist.self) { checklist in
-        ChecklistView(checklist: checklist)
-      }
-      .toolbar {
-        ToolbarItem(placement: .navigationBarLeading) {
-          Button(action: {
-            menuButtonTapped()
-          }) {
-            Image("MenuIcon25x25")
-              .renderingMode(.template)
-              .accessibilityLabel("Miscellaneous Menu")
-          }
-        }
-        ToolbarItem(placement: .navigationBarTrailing) {
-          Button(action: { showingMoreMenu = true }) {
-            Image("MoreMenuIcon32x32")
-              .renderingMode(.template)
-              .accessibilityLabel("Checklists Menu")
-          }
-          .popover(isPresented: $showingMoreMenu, arrowEdge: .top) {
-            MoreMenuView {
-              showingMoreMenu = false
-              showingResetAlert = true
+    ZStack {
+      CLNavigationStack(path: $navigationPath) {
+        List {
+          ForEach(group.displayedChecklists(), id: \.id) { checklist in
+            // Not using NavigationLink because it has a Disclosure Indicator that cannot be removed.
+            Button(action: {
+              navigationPath.append(checklist)
+            }) {
+              ChecklistRowView(checklist: checklist)
             }
-            .presentationCompactAdaptation(.popover)
+            .swipeActions(edge: .trailing) {
+              swipeDeleteButton(checklist: checklist)
+            }
+            .listRowSeparator(.hidden)
+            .listRowInsets(EdgeInsets(top: 0, leading: 8.0, bottom: 0, trailing: 16.0))
           }
+          .onMove(perform: moveChecklist)
         }
-      }
-      .easyToast(isPresented: $showingDeletionUndoToast, message: "Undo checklist deletion", duration: 3.0, position: .bottom, onTap: {
-        guard let deletedChecklist = deletedChecklist else { assertionFailure(); return }
-        group.undoDeletion(checklist: deletedChecklist)
-        showingDeletionUndoToast = false
-        withAnimation {
+        .id(refreshID)
+        .listStyle(.plain)
+        .navigationDestination(for: Checklist.self) { checklist in
+          ChecklistView(checklist: checklist)
+        }
+        .easyToast(isPresented: $showingDeletionUndoToast, message: "Undo checklist deletion", duration: 3.0, position: .bottom, onTap: {
+          guard let deletedChecklist = deletedChecklist else { assertionFailure(); return }
+          group.undoDeletion(checklist: deletedChecklist)
+          showingDeletionUndoToast = false
+          withAnimation {
+            refreshID = UUID()
+          }
+        })
+        .onAppear() {
           refreshID = UUID()
         }
-      })
-      .onAppear() {
-        refreshID = UUID()
-      }
-      .onDisappear {
-        showingDeletionUndoToast = false
-        DBManager.cleanUpDeletedChecklists()
-      }
-      .alert("Are you sure? This cannot be undone.", isPresented: $showingResetAlert) {
-        Button("Reset All", role: .destructive) {
-          DBManager.resetAllChecklists()
-          showingResetAlert = false
+        .onDisappear {
+          showingDeletionUndoToast = false
+          DBManager.cleanUpDeletedChecklists()
         }
-        Button("Cancel", role: .cancel) {
-          showingResetAlert = false
+        .alert("Are you sure? This cannot be undone.", isPresented: $showingResetAlert) {
+          Button("Reset All", role: .destructive) {
+            DBManager.resetAllChecklists()
+            showingResetAlert = false
+          }
+          Button("Cancel", role: .cancel) {
+            showingResetAlert = false
+          }
         }
+        .toolbar {
+          ToolbarItem(placement: .navigationBarLeading) {
+            Button(action: {
+              menuButtonTapped()
+            }) {
+              Image("MenuIcon25x25")
+                .renderingMode(.template)
+                .accessibilityLabel("Miscellaneous Menu")
+            }
+          }
+          ToolbarItem(placement: .navigationBarTrailing) {
+            Button(action: { showingMoreMenu = true }) {
+              Image("MoreMenuIcon32x32")
+                .renderingMode(.template)
+                .accessibilityLabel("Checklists Menu")
+            }
+            .popover(isPresented: $showingMoreMenu, arrowEdge: .top) {
+              MoreMenuView {
+                showingMoreMenu = false
+                showingResetAlert = true
+              }
+              .presentationCompactAdaptation(.popover)
+            }
+          }
+        }
+      }
+      if showingMainMenu {
+        // Full-cover nav transition doesn't go from left to right, so using a ZStack instead.
+        MainMenuView(onDismiss: { showingMainMenu = false })
+          .transition(.move(edge: .leading))
+          .zIndex(1)
       }
     }
-    .tint(CLColors.teal)
+    .animation(.easeInOut(duration: 0.2), value: showingMainMenu)
   }
 
   private func menuButtonTapped() {
-    // TODO
+    showingMainMenu = true
   }
 
   private func moveChecklist(from sourceIndexSet: IndexSet, to destination: Int) {

@@ -8,9 +8,8 @@
 
 /*
  Features:
- - TODO: Feedback
- - TODO: Share (?)
- - TODO: Rate in App Store
+ - TODO: Feedback (confirm that email link works)
+ - TODO: Rate in App Store (confirm that link works)
  - TODO: Donate!
  - TODO: Settings
  - TODO: Refine formating/spacing/fonts
@@ -19,3 +18,93 @@
  - TODO: Update manual test plan to match code changes.
  - TODO: Write/update automated tests.
  */
+
+import SwiftUI
+import RealmSwift
+
+struct MainMenuView: View {
+  var onDismiss: (() -> Void)? = nil
+
+  // For managing navigation state.
+  @State private var navigationPath = NavigationPath()
+
+  var body: some View {
+    CLNavigationStack(path: $navigationPath) {
+      ZStack {
+        CLColors.darkBlueGray.ignoresSafeArea()
+        List {
+          MainMenuRowButton(action: openFeedback, imageName: "MainMenuFeedbackIcon", text: "Feedback")
+          MainMenuRowButton(action: openRateInAppStore, imageName: "MainMenuRateInAppStoreIcon", text: "Rate in App Store")
+          MainMenuRowButton(action: { navigationPath.append("donate") }, imageName: "MainMenuDonateIcon", text: "Donate!")
+          MainMenuRowButton(action: { navigationPath.append("settings") }, imageName: "MainMenuSettingsIcon", text: "Settings")
+        }
+        .listStyle(.plain)
+      }
+      .toolbar {
+        ToolbarItem(placement: .navigationBarLeading) {
+          Button(action: { onDismiss?() }) {
+            Image("StopIcon")
+              .imageScale(.large)
+              .accessibilityLabel("Close Menu")
+              .tint(.white)
+          }
+        }
+      }
+      .navigationDestination(for: String.self) { value in
+        switch value {
+        case "donate": DonationsView(onDismiss: { navigationPath.removeLast() })
+        case "settings": SettingsView(onDismiss: { navigationPath.removeLast() })
+        default:
+          EmptyView()
+        }
+      }
+    }
+  }
+
+  private func openFeedback() {
+    guard let url = URL(string: "mailto:jimmyho.appfeedback@gmail.com?subject=Feedback%20for%20reChecklist%20App") else { return }
+    UIApplication.shared.open(url)
+  }
+
+  private func openRateInAppStore() {
+    guard let url = URL(string: "https://itunes.apple.com/app/id1475724536?action=write-review") else { return }
+    UIApplication.shared.open(url)
+  }
+}
+
+struct MainMenuRowButton: View {
+  let action: () -> Void
+  let imageName: String
+  let text: String
+
+  var body: some View {
+    Button(action: action) {
+      MainMenuRowLabel(imageName: imageName, text: text)
+    }
+    .listRowBackground(Color.clear)
+    .listRowSeparator(.hidden)
+  }
+}
+
+// The icons were 195x195 pixels, and blew up the size of each row.
+// Label did not have a way to constrain the size of the image,
+// and I did not want to resize the icons myself.
+struct MainMenuRowLabel: View {
+  let imageName: String
+  let text: String
+
+  var body: some View {
+    HStack {
+      Image(imageName)
+        .resizable()
+        .frame(width: 48, height: 48)
+      Text(text)
+        .font(.title2)
+        .foregroundColor(.white)
+    }
+  }
+}
+
+#Preview {
+  MainMenuView()
+}
