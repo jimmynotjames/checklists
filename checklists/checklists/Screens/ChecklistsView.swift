@@ -6,6 +6,25 @@
 //  Copyright © 2024 Jimmy Ho. All rights reserved.
 //
 
+/*
+ Features:
+ - Shows list of Checklists
+ - Shows percentage complete for each Checklist
+ - Shows notes for each Checklist, first three lines with ellipsis
+ - Swipe-delete to remvoe a Checklist with Toast to undo
+ - Reorder Checklists via drag/drop.
+ - Tap on a Checklist to view its items
+ - More Menu options:
+   - Reset All - Resets all Checklists to 0% complete.
+ - TODO: Main Menu button in upper left
+ - TODO: Button in lower right to create new Checklist
+ - TODO: Exact fonts and spacing need to be refined.
+ - TODO: Add accessibility
+ - TODO: Add Dynamic Type capability.
+ - TODO: Update manual test plan to match code changes.
+ - TODO: Write/update automated tests.
+ */
+
 import EasyToast
 import SwiftUI
 import RealmSwift

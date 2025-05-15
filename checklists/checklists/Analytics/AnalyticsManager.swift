@@ -5,6 +5,12 @@
 //  Created by Jimmy Ho on 9/4/19.
 //  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
+/*
+ Features:
+ - TODO: Remove Flurry stuff.
+ - TODO: Investigate adding a different analytics provider.
+ */
+
 
 import Foundation
 

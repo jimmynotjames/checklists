@@ -9,6 +9,24 @@
 import SwiftUI
 import RealmSwift
 
+/*
+ Features:
+ - Displays a checklist with Checklist Name, Checklist Notes and list of Items.
+ - All keyboards on this page will have a Done button in their toolbars.
+ - TODO: Button to add new Item at end of list.
+ - TODO: Account for when this is a new Checklist being created via Add Checklist button.
+ - TODO: Reorder Items via drag/drop.
+ - TODO: Update manual test plan to match code changes.
+ - TODO: Write/update automated tests.
+ - TODO: Remove grey background on tap on each Item.
+ - TODO: Refine formating/spacing/fonts
+ - TODO: Add accessibility
+ - TODO: Add Dynamic Type capability.
+ - TODO: Update manual test plan to match code changes.
+ - TODO: Write/update automated tests.
+ - TODO: Make sure that drag/drop of Item onto the Notes or Name field of the Checklist does not try to paste the text in.
+ */
+
 struct ChecklistView: View {
   @ObservedRealmObject var checklist: Checklist
 
@@ -27,6 +45,8 @@ struct ChecklistView: View {
       Spacer()
     }
     .padding(.leading, 16.0)
+    // When I tried to add this to individual component views, a Done button appeared for every
+    // Component that had this declaration. Unable to encapsulate in individual components.
     .toolbar {
       ToolbarItemGroup(placement: .keyboard) {
         Spacer()

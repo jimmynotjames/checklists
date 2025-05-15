@@ -9,10 +9,15 @@
 import SwiftUI
 
 /*
-Major features:
- - Added placeholder text.
- - Keyboard has a Done button to dismiss the keyboard and it has the appropriate color.
+Features:
+ - Allows for placeholder text in gray.
+ - Keyboard has a Done button aboe keyboard to dismiss the keyboard with correct color.
  - Minimum line height measured in newlines.
+ - TODO: Create custom shade of gray for placeholder text.
+ - TODO: Add accessibility
+ - TODO: Add Dynamic Type capability. Can placeholder and text still align when font size changes?
+ - TODO: Refine font and spacing/padding
+ - TODO: Update manual test plan with any new features
  */
 struct CLTextEditor: View {
   @Binding var text: String
@@ -21,7 +26,7 @@ struct CLTextEditor: View {
   var body: some View {
     ZStack(alignment: .topLeading) {
       TextEditor(text: $text)
-        .padding(.leading, -5.0)
+        .padding(.leading, -5.0) // Left-align text to overcome internal padding of TextEditor.
         .accessibilityHidden(true)
       // Placeholder text
       if text.isEmpty {

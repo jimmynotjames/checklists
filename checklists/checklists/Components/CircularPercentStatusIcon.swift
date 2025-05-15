@@ -6,6 +6,13 @@
 //  Copyright © 2024 Jimmy Ho. All rights reserved.
 //
 
+/*
+ Features:
+ Given a percentage, this view draws a circular pie segment to represent the percentage.
+ The pie segement is drawn in a clockwise direction starting from the top of the circle.
+ See Preview for examples.
+ */
+
 import SwiftUI
 
 
@@ -40,7 +47,7 @@ struct CircularPercentStatusIcon: View {
     }
   }
   
-  private let color = Color("teal")
+  private let color = CLColors.teal
   
   var body: some View {
     ZStack {

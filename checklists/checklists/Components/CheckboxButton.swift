@@ -6,6 +6,11 @@
 //  Copyright © 2025 Jimmy Ho. All rights reserved.
 //
 
+/*
+ Features:
+ - Tappable button that toggles the checkbox status on Realm object.
+ */
+
 import SwiftUI
 import RealmSwift
 
@@ -26,7 +31,7 @@ struct CheckboxButton: View {
         .accessibilityValue(item.status == .checked ? "Checked" : "Unchecked")
     }
     .foregroundColor(CLColors.teal)
-    .contentShape(Rectangle())
+    .contentShape(Rectangle()) // Maximize tap target
   }
 }
 
