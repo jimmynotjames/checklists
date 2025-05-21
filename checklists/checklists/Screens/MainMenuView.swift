@@ -29,7 +29,7 @@ struct MainMenuView: View {
   @State private var navigationPath = NavigationPath()
 
   var body: some View {
-    CLNavigationStack(path: $navigationPath) {
+    NavigationStack(path: $navigationPath) {
       ZStack {
         CLColors.darkBlueGray.ignoresSafeArea()
         List {

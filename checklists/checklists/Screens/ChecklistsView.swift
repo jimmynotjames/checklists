@@ -38,17 +38,11 @@ struct ChecklistsView: View {
   @State private var showingDeletionUndoToast = false
   @State private var deletedChecklist: Checklist? = nil
 
-  // For resetting all Checklists.
-  @State private var showingMoreMenu = false
-  @State private var showingResetAlert = false
-
   // For managing navigation state.
   @State private var navigationPath = NavigationPath()
-  @State private var showingMainMenu = false
   
   var body: some View {
-    ZStack {
-      CLNavigationStack(path: $navigationPath) {
+      MainNavigationStack(path: $navigationPath) {
         List {
           ForEach(group.displayedChecklists(), id: \.id) { checklist in
             // Not using NavigationLink because it has a Disclosure Indicator that cannot be removed.
@@ -85,53 +79,7 @@ struct ChecklistsView: View {
           showingDeletionUndoToast = false
           DBManager.cleanUpDeletedChecklists()
         }
-        .alert("Are you sure? This cannot be undone.", isPresented: $showingResetAlert) {
-          Button("Reset All", role: .destructive) {
-            DBManager.resetAllChecklists()
-            showingResetAlert = false
-          }
-          Button("Cancel", role: .cancel) {
-            showingResetAlert = false
-          }
-        }
-        .toolbar {
-          ToolbarItem(placement: .navigationBarLeading) {
-            Button(action: {
-              menuButtonTapped()
-            }) {
-              Image("MenuIcon25x25")
-                .renderingMode(.template)
-                .accessibilityLabel("Miscellaneous Menu")
-            }
-          }
-          ToolbarItem(placement: .navigationBarTrailing) {
-            Button(action: { showingMoreMenu = true }) {
-              Image("MoreMenuIcon32x32")
-                .renderingMode(.template)
-                .accessibilityLabel("Checklists Menu")
-            }
-            .popover(isPresented: $showingMoreMenu, arrowEdge: .top) {
-              MoreMenuView {
-                showingMoreMenu = false
-                showingResetAlert = true
-              }
-              .presentationCompactAdaptation(.popover)
-            }
-          }
-        }
       }
-      if showingMainMenu {
-        // Full-cover nav transition doesn't go from left to right, so using a ZStack instead.
-        MainMenuView(onDismiss: { showingMainMenu = false })
-          .transition(.move(edge: .leading))
-          .zIndex(1)
-      }
-    }
-    .animation(.easeInOut(duration: 0.2), value: showingMainMenu)
-  }
-
-  private func menuButtonTapped() {
-    showingMainMenu = true
   }
 
   private func moveChecklist(from sourceIndexSet: IndexSet, to destination: Int) {
@@ -175,18 +123,6 @@ struct ChecklistRowView: View {
     }
     .padding(.vertical, 8.0)
     .padding(.horizontal, 8.0)
-  }
-}
-
-struct MoreMenuView: View {
-  let onResetAll: () -> Void
-
-  var body: some View {
-    VStack {
-      Button("Reset All", action: onResetAll)
-        .foregroundColor(CLColors.teal)
-        .padding(.horizontal, 16.0)
-    }
   }
 }
 
