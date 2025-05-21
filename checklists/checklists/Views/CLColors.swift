@@ -22,6 +22,7 @@ class CLUIColors {
 class CLColors {
   static let defaultBackground = Color("defaultBackground")
   static let inactiveText = Color("inactiveText")
+  static let placeholderText  = Color("placeholderText")
 
   static let darkBlueGray = Color("darkBlueGray")
   static let teal = Color("teal") // Default for buttons, nav bar, and icons.

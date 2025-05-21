@@ -31,7 +31,7 @@ struct CLTextEditor: View {
       // Placeholder text
       if text.isEmpty {
         Text("Notes")
-          .foregroundColor(.gray)
+          .foregroundColor(CLColors.placeholderText)
           .padding(.top, 8.0)
           .accessibilityHidden(true)
       }

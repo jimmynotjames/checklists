@@ -19,7 +19,7 @@ struct CLNavigationStack<Content: View>: View {
   @ViewBuilder var content: () -> Content
 
   var body: some View {
-    NavigationStack {
+    NavigationStack(path: $path) {
       content()
     }
     .tint(CLColors.teal)
