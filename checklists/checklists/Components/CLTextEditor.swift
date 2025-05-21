@@ -13,7 +13,6 @@ Features:
  - Allows for placeholder text in gray.
  - Keyboard has a Done button aboe keyboard to dismiss the keyboard with correct color.
  - Minimum line height measured in newlines.
- - TODO: Create custom shade of gray for placeholder text.
  - TODO: Add accessibility
  - TODO: Add Dynamic Type capability. Can placeholder and text still align when font size changes?
  - TODO: Refine font and spacing/padding
