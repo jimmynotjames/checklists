@@ -8,8 +8,8 @@
 
 /*
  Features:
- - TODO: Feedback (confirm that email link works)
- - TODO: Rate in App Store (confirm that link works)
+ - Tapping Feedback button opens mail client to send feedback email.
+ - Tapping Rate in App Store button opens App Store to write-a-review page.
  - TODO: Donate!
  - TODO: Settings
  - TODO: Refine formating/spacing/fonts
