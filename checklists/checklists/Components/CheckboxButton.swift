@@ -26,7 +26,8 @@ struct CheckboxButton: View {
       Image(item.status == .checked ? "CheckboxCheckedIcon" : "CheckboxUncheckedIcon")
         .resizable()
         .frame(width: 24, height: 24)
-        .padding(EdgeInsets(top: 4.0, leading: 4.0, bottom: 4.0, trailing: 8.0))
+        // Implicit assumption of 16.0 margin from leading edge, with no padding applied externally, to maximize tap target.
+        .padding(EdgeInsets(top: 4.0, leading: 16.0, bottom: 4.0, trailing: 8.0))
         .accessibilityLabel("Checkbox")
         .accessibilityValue(item.status == .checked ? "Checked" : "Unchecked")
     }

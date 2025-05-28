@@ -25,13 +25,14 @@ struct CLTextEditor: View {
   var body: some View {
     ZStack(alignment: .topLeading) {
       TextEditor(text: $text)
-        .padding(.leading, -5.0) // Left-align text to overcome internal padding of TextEditor.
+        .padding(.leading, -3.0) // Left-align text to overcome internal padding of TextEditor.
         .accessibilityHidden(true)
       // Placeholder text
       if text.isEmpty {
         Text("Notes")
           .foregroundColor(CLColors.placeholderText)
           .padding(.top, 8.0)
+          .padding(.leading, 2.0)
           .accessibilityHidden(true)
       }
       // Mininum height using newlines. Allows for Dynamic Type more easily than measuring in points.
@@ -41,7 +42,6 @@ struct CLTextEditor: View {
         .background(Color.clear)
     }
     .font(.footnote)
-    .padding(.top, 2.0)
-    .padding(.bottom, 4.0)
+    .padding(EdgeInsets(top: 2.0, leading: 0.0, bottom: 4.0, trailing: 0.0))
   }
 }

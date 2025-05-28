@@ -16,15 +16,13 @@ import RealmSwift
  - TODO: Button to add new Item at end of list.
  - TODO: Account for when this is a new Checklist being created via Add Checklist button.
  - TODO: Reorder Items via drag/drop.
+ - TODO: Make sure that drag/drop of Item onto the Notes or Name field of the Checklist does not try to paste the text in.
  - TODO: Update manual test plan to match code changes.
- - TODO: Write/update automated tests.
- - TODO: Remove grey background on tap on each Item.
  - TODO: Refine formating/spacing/fonts
  - TODO: Add accessibility
  - TODO: Add Dynamic Type capability.
  - TODO: Update manual test plan to match code changes.
  - TODO: Write/update automated tests.
- - TODO: Make sure that drag/drop of Item onto the Notes or Name field of the Checklist does not try to paste the text in.
  */
 
 struct ChecklistView: View {
@@ -34,17 +32,19 @@ struct ChecklistView: View {
     VStack(spacing: 0.0) {
       ChecklistHeaderView(checklist: checklist)
         .fixedSize(horizontal: false, vertical: true)
+        .padding(EdgeInsets(top: 0.0, leading: 16.0, bottom: 8.0, trailing: 16.0))
       List {
         ForEach(checklist.items, id: \.id) { item in
           ChecklistItemView(item: item)
         }
         .listRowSeparator(.hidden)
-        .listRowInsets(EdgeInsets(top: 0, leading: 0.0, bottom: 0, trailing: 16.0))
+        // No insets due to tap target stuff.
+        .listRowInsets(EdgeInsets(top: 0.0, leading: 0.0, bottom: 0.0, trailing: 0.0))
+        .listRowBackground(Color.clear) // To prevent highlighting when tapping on row.
       }
       .listStyle(.plain)
       Spacer()
     }
-    .padding(.leading, 16.0)
     // When I tried to add this to individual component views, a Done button appeared for every
     // Component that had this declaration. Unable to encapsulate in individual components.
     .toolbar {

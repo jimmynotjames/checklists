@@ -14,6 +14,12 @@
  - Tapping the name or notes field goes into edit mode, and reveals notes field if hidden.
  - Tapping outside of the fields dismisses the keyboard.
  - Tapping Done on the keyboard input accessory dismisses the keyboard.
+
+ Notes:
+ - This View presumes that there's zero leading edge padding. Because we want to maximize the
+   tap target of the checkbox button, which is always on the leading edge.
+
+ Remaining tasks:
  - TODO: Tapping Next on the keyboard in the name field creates new Item and focuses on name field in new Item.
  - TODO: Tapping backspace on empty notes field goes to name field.
  - TODO: Tapping backspace on empty name field (with empty notes field) removes current Item, unless it's the first Item.
@@ -60,11 +66,14 @@ struct ChecklistItemView: View {
           .focused($isEditing)
         }
       }
+      // Next three lines are to prevent tapping on the cell's non-editable areas causing the checkbox button to toggle.
+      // Apparently, it's a quirk of SwiftUI that tapping on the cell forwards the tap to the first tappable element, which is the CheckboxButton.
+      .contentShape(Rectangle())
+      .onTapGesture {}
+      .onLongPressGesture {}
+      // To align TextField with CheckboxButton properly.
       .padding(EdgeInsets(top: 4.0, leading: 0.0, bottom: 0.0, trailing: 0.0))
       Spacer()
     }
-    // We want a big tap target for the Checkbox button, so shift it left into
-    // the margin instead of trying to truncate the tappable area.
-    .padding(EdgeInsets(top: 0, leading: -6.0, bottom: 4.0, trailing: 0.0))
   }
 }

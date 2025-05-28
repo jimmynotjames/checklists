@@ -9,6 +9,19 @@
 import Foundation
 import RealmSwift
 
+/*
+ Thin wrapper around Realm database operations to
+
+ Features:
+ - Initializes Realm instance.
+ - Wraps realm write operations to handle errors.
+ - Conducts database migrations.
+
+ Remaining Tasks:
+ TODO: Implement better migration and remove certain fields, like sortNumber.
+ TODO: Add to migration to add lastModified and lastCompleted fields to Checklist.
+ */
+
 class DBManager {
   static var realm: Realm = {
     do {
