@@ -66,7 +66,7 @@ struct ChecklistsView: View {
         .navigationDestination(for: Checklist.self) { checklist in
           ChecklistView(checklist: checklist)
         }
-        .easyToast(isPresented: $showingDeletionUndoToast, message: "Undo checklist deletion", duration: 3.0, position: .bottom, onTap: {
+        .toast(isPresented: $showingDeletionUndoToast, message: "Undo checklist deletion", duration: 3.0, position: .bottom, onTap: {
           guard let deletedChecklist = deletedChecklist else { assertionFailure(); return }
           group.undoDeletion(checklist: deletedChecklist)
           showingDeletionUndoToast = false
