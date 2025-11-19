@@ -11,7 +11,7 @@ import UIKit
 private let themesSection = 999 // Change back when I add this back in.
 private let infoSection = 0
 
-class SettingsViewController: UITableViewController {
+@MainActor class SettingsViewController: UITableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
@@ -63,6 +63,7 @@ class SettingsViewController: UITableViewController {
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell: UITableViewCell
+    let currentAppTheme = SettingsManager.shared.currentAppTheme
 
     switch indexPath.section {
     case themesSection:
@@ -72,13 +73,13 @@ class SettingsViewController: UITableViewController {
       switch indexPath.row {
       case AppTheme.defaultBougie.rawValue:
         themeNameLabel.text = "Bougie (Default)"
-        roundCheckboxButton.isSelected = (AppTheme.defaultBougie == SettingsManager.currentAppTheme)
+        roundCheckboxButton.isSelected = (AppTheme.defaultBougie == currentAppTheme)
       case AppTheme.extraBougie.rawValue:
         themeNameLabel.text = "Even Cuter Bougie"
-        roundCheckboxButton.isSelected = (AppTheme.extraBougie == SettingsManager.currentAppTheme)
+        roundCheckboxButton.isSelected = (AppTheme.extraBougie == currentAppTheme)
       case AppTheme.unicorns.rawValue:
         themeNameLabel.text = "UNICORNS!!!"
-        roundCheckboxButton.isSelected = (AppTheme.unicorns == SettingsManager.currentAppTheme)
+        roundCheckboxButton.isSelected = (AppTheme.unicorns == currentAppTheme)
       default:
         assertionFailure()
       }
@@ -102,13 +103,13 @@ class SettingsViewController: UITableViewController {
     case themesSection:
       switch indexPath.row {
       case AppTheme.defaultBougie.rawValue:
-        SettingsManager.setCurrentAppTheme(appTheme: .defaultBougie)
+        SettingsManager.shared.setCurrentAppTheme(appTheme: .defaultBougie)
         print("DEFAULT")
       case AppTheme.extraBougie.rawValue:
-        SettingsManager.setCurrentAppTheme(appTheme: .extraBougie)
+        SettingsManager.shared.setCurrentAppTheme(appTheme: .extraBougie)
         print("BOUGIE")
       case AppTheme.unicorns.rawValue:
-        SettingsManager.setCurrentAppTheme(appTheme: .unicorns)
+        SettingsManager.shared.setCurrentAppTheme(appTheme: .unicorns)
         print("UNICORN")
       default:
         assertionFailure()
@@ -161,7 +162,8 @@ class SettingsViewController: UITableViewController {
     label.font = label.font.withSize(14.0)
     label.textColor = .lightGray
     label.textAlignment = .center
-    label.text = "Version \(SettingsManager.versionBuildString)"
+    label.text = "Version \(SettingsManager.shared.versionBuildString)"
     return label
   }
 }
+

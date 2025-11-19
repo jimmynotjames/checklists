@@ -19,7 +19,8 @@ import RealmSwift
 
  Added in app version 1.1.
  */
-class Group: Object, Identifiable {
+// TODO: Added @MainActor to the line below in two different places just to get it to compile
+@MainActor class Group: Object, @MainActor Identifiable {
   @Persisted var id = NSUUID().uuidString
 
   @Persisted var checklists = List<Checklist>()
@@ -63,8 +64,8 @@ class Group: Object, Identifiable {
   }
 }
 
-
-class Checklist: Object, Identifiable {
+// TODO: Added @MainActor to the line below in two different places just to get it to compile
+@MainActor class Checklist: Object, @MainActor Identifiable {
   @Persisted var id = NSUUID().uuidString
   @Persisted var name: String = ""
   @Persisted var notes: String?

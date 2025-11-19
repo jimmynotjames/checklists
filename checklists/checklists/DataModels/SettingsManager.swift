@@ -15,23 +15,26 @@ enum AppTheme: Int {
   case unicorns = 2
 }
 
-class SettingsManager {
-  static private(set) var currentAppTheme: AppTheme = .defaultBougie
+// Accessed for themes, which are on the MainActor thread. 
+@MainActor class SettingsManager {
+  static let shared = SettingsManager()
 
-  static func setCurrentAppTheme(appTheme: AppTheme) {
+  private(set) var currentAppTheme: AppTheme = .defaultBougie
+
+  func setCurrentAppTheme(appTheme: AppTheme) {
     currentAppTheme = appTheme
     // TODO: notifications
   }
 
-  static var appVersionString: String = {
+  nonisolated var appVersionString: String {
     Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0"
-  }()
+  }
   
-  static var versionBuildString: String = {
+  nonisolated var versionBuildString: String {
     var versionBuildString = "\(appVersionString) (\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") ?? "0"))"
     #if DEBUG
     versionBuildString = versionBuildString + " - DEBUG"
     #endif
     return versionBuildString
-  }()
+  }
 }

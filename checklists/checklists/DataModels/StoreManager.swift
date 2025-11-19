@@ -40,7 +40,8 @@ class StoreManager: NSObject {
     case errorRetrievingProducts = 103
   }
 
-  static let shared = StoreManager()
+  // TODO: Added @MainActor to get this to compile. Revisit and understand better.
+  @MainActor static let shared = StoreManager()
 
   weak var delegate: StoreManagerDelegate?
 

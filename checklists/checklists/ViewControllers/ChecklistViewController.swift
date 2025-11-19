@@ -398,7 +398,7 @@ extension ChecklistViewController: UITextViewDelegate {
   }
 }
 
-extension ChecklistViewController: AddItemButtonTableFooterViewDelegate {
+extension ChecklistViewController: @MainActor AddItemButtonTableFooterViewDelegate {
   func addItemTableViewCellTapped() {
     insertNewItem(becomeFirstResponder: true)
   }
@@ -455,7 +455,7 @@ extension ChecklistViewController: UITableViewDropDelegate {
  the database as opposed to looking it up, but it's convenient right now. In a true MVVM
  model this wouldn't be possible.
  */
-extension ChecklistViewController: ItemContentViewDelegate {
+extension ChecklistViewController: @MainActor ItemContentViewDelegate {
   func itemContentViewDidFinishEditing(_ itemContentView: ItemContentView) {
     cellHeightRequiresRefresh(animated: true)
   }

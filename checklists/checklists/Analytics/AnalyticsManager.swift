@@ -19,7 +19,7 @@ struct AnalyticsManager {
   static func appLaunched() {
     #if DEBUG
     #else
-    let sessionBuilder = FlurrySessionBuilder.init().withCrashReporting(true)?.withLogLevel(FlurryLogLevelCriticalOnly)?.withAppVersion(SettingsManager.versionBuildString)
+    let sessionBuilder = FlurrySessionBuilder.init().withCrashReporting(true)?.withLogLevel(FlurryLogLevelCriticalOnly)?.withAppVersion(SettingsManager.shared..versionBuildString)
     Flurry.startSession("BQTJY88YMP27MFMRRJTY", with: sessionBuilder)
     #endif
   }

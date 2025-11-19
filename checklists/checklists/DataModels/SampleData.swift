@@ -9,7 +9,7 @@
 import Foundation
 import RealmSwift
 
-class SampleData {
+@MainActor class SampleData {
   static func clearDatabase() {
     print("DEBUG: Clearing database...")
     let realm = DBManager.realm

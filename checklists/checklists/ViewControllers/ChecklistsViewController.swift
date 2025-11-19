@@ -194,7 +194,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   }
 }
 
-extension ChecklistsViewController: ChecklistViewControllerDelegate {
+extension ChecklistsViewController: @MainActor ChecklistViewControllerDelegate {
   func willDismissChecklistViewController(_ ChecklistViewController: ChecklistViewController) {
     tableView.reloadData()
   }
@@ -244,7 +244,7 @@ extension ChecklistsViewController: UITableViewDropDelegate {
   }
 }
 
-extension ChecklistsViewController: MainMenuTableViewControllerDelegate {
+extension ChecklistsViewController: @MainActor MainMenuTableViewControllerDelegate {
   func openSettingsPage() {
     let storyBoard = UIStoryboard(name: "Main", bundle: nil)
     let settingsViewController = storyBoard.instantiateViewController(withIdentifier: "Settings")
@@ -265,7 +265,7 @@ extension ChecklistsViewController: UIPopoverPresentationControllerDelegate {
   }
 }
 
-extension ChecklistsViewController: ChecklistsMenuViewControllerDelegate {
+extension ChecklistsViewController: @MainActor ChecklistsMenuViewControllerDelegate {
   func resetAllSelected() {
     dismiss(animated: true, completion: nil) // Dismissing the menu, otherwise, can't present this one.
     let alertController = UIAlertController(title: nil, message: "Are you sure? This cannot be undone.", preferredStyle: .alert)
