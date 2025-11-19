@@ -11,7 +11,7 @@
  - Shows list of Checklists
  - Shows percentage complete for each Checklist
  - Shows notes for each Checklist, first three lines with ellipsis
- - Swipe-delete to remvoe a Checklist with Toast to undo
+ - Swipe-delete to remove a Checklist with Toast to undo
  - Reorder Checklists via drag/drop.
  - Tap on a Checklist to view its items
  - More Menu options:
@@ -22,6 +22,8 @@
  - TODO: Add accessibility
  - TODO: Add Dynamic Type capability.
  - TODO: Update manual test plan to match code changes.
+ - TODO: BUG: Reset All button no longer works.
+ - TODO: BUG: 3 checklists. Delete last 2. Quickly try to open first one. -> crash.
  - TODO: Write/update automated tests.
  */
 
@@ -64,7 +66,7 @@ struct ChecklistsView: View {
         .navigationDestination(for: Checklist.self) { checklist in
           ChecklistView(checklist: checklist)
         }
-        .easyToast(isPresented: $showingDeletionUndoToast, message: "Undo checklist deletion", duration: 3.0, position: .bottom, onTap: {
+        .toast(isPresented: $showingDeletionUndoToast, message: "Undo checklist deletion", duration: 3.0, position: .bottom, onTap: {
           guard let deletedChecklist = deletedChecklist else { assertionFailure(); return }
           group.undoDeletion(checklist: deletedChecklist)
           showingDeletionUndoToast = false

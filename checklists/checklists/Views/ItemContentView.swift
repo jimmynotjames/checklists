@@ -8,8 +8,8 @@
 
 import UIKit
 
-private var minNameFieldHeight: CGFloat = 24.0
-private var minNotesTextViewHeight: CGFloat = 32.0
+private let minNameFieldHeight: CGFloat = 24.0
+private let minNotesTextViewHeight: CGFloat = 32.0
 
 protocol ItemContentViewDelegate: class {
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView)

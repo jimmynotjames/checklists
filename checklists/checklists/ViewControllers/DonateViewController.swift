@@ -194,7 +194,7 @@ class DonateViewController: UITableViewController {
 }
 
 // As of Xcode 11/iOS 13, events from StoreKit seems to happening off main thread, so need to wrap stuff.
-extension DonateViewController: StoreManagerDelegate {
+extension DonateViewController: @MainActor StoreManagerDelegate {
   func errorRetrievingProducts(errorCode: StoreManager.ErrorCode) {
     DispatchQueue.main.async {
       self.state = .errorLoadingProducts(errorCode: String(errorCode.rawValue))

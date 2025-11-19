@@ -22,7 +22,7 @@ import RealmSwift
  TODO: Add to migration to add lastModified and lastCompleted fields to Checklist.
  */
 
-class DBManager {
+@MainActor class DBManager {
   static var realm: Realm = {
     do {
       return try Realm()

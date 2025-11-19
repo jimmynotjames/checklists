@@ -32,7 +32,7 @@ struct ChecklistsApp: SwiftUI.App {
       SampleData.insertFirstTimeLaunchDataV1_1()
       UserDefaults.standard.set(true, forKey: launchedAtLeastOnceKey)
     }
-    UserDefaults.standard.set(SettingsManager.appVersionString, forKey: appVersionKey)
+    UserDefaults.standard.set(SettingsManager.shared.appVersionString, forKey: appVersionKey)
     DBManager.migrateToAppVersion1_1_1()
     DBManager.migrateDatabaseToUseGroupObjectIfNecessary()
 

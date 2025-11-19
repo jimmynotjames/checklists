@@ -1,13 +1,13 @@
 {
-  "originHash" : "192edb64ea237ca67c89ae59fc3820871e1b600166b68987b18b0856e8cd9c73",
+  "originHash" : "3be48e12c5a940853a7a832b52f24577cb1b58482850574e515edc36b3062105",
   "pins" : [
     {
       "identity" : "easytoast",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/banghuazhao/EasyToast",
       "state" : {
-        "revision" : "182e2c03f453e31e8fbff241a0e3372b5d378db1",
-        "version" : "0.4.0"
+        "revision" : "bfe8a8e7ab39b88a3e7f7f32878014f6b3caa78c",
+        "version" : "0.5.0"
       }
     },
     {
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/realm/realm-core.git",
       "state" : {
-        "revision" : "85eeca41654cc9070ad81a21a4b1d153ad467c33",
-        "version" : "14.13.1"
+        "revision" : "cccb3ca9e26ec452a29f2f0d4050d1e38b8a3d43",
+        "version" : "14.14.0"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/realm/realm-swift.git",
       "state" : {
-        "revision" : "5553cfd1c789efdb3d6daf7f0cc0733cfe601846",
-        "version" : "10.54.1"
+        "revision" : "1c105d34f25af7851c5a3ff146be006de247a6b4",
+        "version" : "10.54.6"
       }
     },
     {
