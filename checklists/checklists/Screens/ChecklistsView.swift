@@ -11,7 +11,7 @@
  - Shows list of Checklists
  - Shows percentage complete for each Checklist
  - Shows notes for each Checklist, first three lines with ellipsis
- - Swipe-delete to remvoe a Checklist with Toast to undo
+ - Swipe-delete to remove a Checklist with Toast to undo
  - Reorder Checklists via drag/drop.
  - Tap on a Checklist to view its items
  - More Menu options:
@@ -22,6 +22,8 @@
  - TODO: Add accessibility
  - TODO: Add Dynamic Type capability.
  - TODO: Update manual test plan to match code changes.
+ - TODO: BUG: Reset All button no longer works.
+ - TODO: BUG: 3 checklists. Delete last 2. Quickly try to open first one. -> crash.
  - TODO: Write/update automated tests.
  */
 
