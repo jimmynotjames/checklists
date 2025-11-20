@@ -35,6 +35,9 @@ import RealmSwift
 
 struct ChecklistItemView: View {
   @ObservedRealmObject var item: Item
+
+  // Passed from the parent for focusing on TextField when new Item is added.
+  var focusedItemID: FocusState<ObjectId?>.Binding
   
   // For revealing the notes field when editing.
   @FocusState private var isEditing: Bool
@@ -47,6 +50,7 @@ struct ChecklistItemView: View {
           .font(.body)
           .lineLimit(1)
           .focused($isEditing)
+          .focused(focusedItemID, equals: item._id)
         if isEditing || !item.notes.isEmpty {
           CLTextEditor(text: $item.notes, minLines: 1)
             .focused($isEditing)
