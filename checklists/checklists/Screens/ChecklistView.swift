@@ -10,6 +10,36 @@ import SwiftUI
 import RealmSwift
 
 /*
+ TODO: BUG: Done button has wrong background color.
+ */
+/// Wrapper View for new checklist modal.
+struct NewChecklistView: View {
+  @ObservedRealmObject var checklist: Checklist
+  @Environment(\.dismiss) private var dismiss
+  let onDismiss: () -> Void
+
+  var body: some View {
+    NavigationStack {
+      ChecklistView(checklist: checklist, shouldFocusChecklistNameOnAppear: true)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+          ToolbarItem(placement: .topBarTrailing) {
+            Button("Done") {
+              if checklist.name.trimmed().isEmpty {
+                DBManager.write { _ in
+                  checklist.thaw()?.name = "Untitled"
+                }
+              }
+              onDismiss()
+              dismiss()
+            }
+          }
+        }
+    }
+  }
+}
+
+/*
  Features:
  - Displays a checklist with Checklist Name, Checklist Notes and list of Items.
  - All keyboards on this page will have a Done button in their toolbars.
@@ -17,7 +47,7 @@ import RealmSwift
  - TODO: Reorder Items via drag/drop.
  - TODO: Make sure that drag/drop of Item onto the Notes or Name field of the Checklist does not try to paste the text in.
  - TODO: Update manual test plan to match code changes.
- - TODO: Refine formating/spacing/fonts
+ - TODO: Refine formatting/spacing/fonts
  - TODO: Add accessibility
  - TODO: Add Dynamic Type capability.
  - TODO: Update manual test plan to match code changes.
@@ -29,10 +59,12 @@ struct ChecklistView: View {
 
   // For shifting cursor/focus to newly created Item.
   @FocusState private var focusedItemID: ObjectId?
+  @FocusState private var isNameFocused: Bool
+  var shouldFocusChecklistNameOnAppear: Bool = false
 
   var body: some View {
     VStack(spacing: 0.0) {
-      ChecklistHeaderView(checklist: checklist)
+      ChecklistHeaderView(checklist: checklist, isNameFocused: $isNameFocused)
         .fixedSize(horizontal: false, vertical: true)
         .padding(EdgeInsets(top: 0.0, leading: 16.0, bottom: 8.0, trailing: 16.0))
       List {
@@ -84,6 +116,11 @@ struct ChecklistView: View {
         }
       }
     }
+    .onAppear {
+      if shouldFocusChecklistNameOnAppear {
+        isNameFocused = true
+      }
+    }
   }
 }
 
@@ -95,6 +132,8 @@ struct ChecklistHeaderView: View {
   // Slightly hacky, as I'm observing all Items, not just this Checklist's Items.
   @ObservedResults(Item.self) var allItems
 
+  @FocusState.Binding var isNameFocused: Bool
+
   var body: some View {
     VStack(alignment: .leading) {
       HStack {
@@ -104,6 +143,7 @@ struct ChecklistHeaderView: View {
           .font(.title)
           .fontWeight(.bold)
           .foregroundColor(Color.black)
+          .focused($isNameFocused)
         Spacer()
       }
       CLTextEditor(text: $checklist.notes, minLines: 3)

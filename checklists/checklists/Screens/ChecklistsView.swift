@@ -43,7 +43,10 @@ struct ChecklistsView: View {
   // For managing navigation state.
   @State private var navigationPath = NavigationPath()
   
+  @State private var newChecklistCreated: Checklist? = nil
+
   var body: some View {
+    ZStack(alignment: .bottomTrailing) {
       MainNavigationStack(path: $navigationPath) {
         List {
           ForEach(group.displayedChecklists(), id: \.id) { checklist in
@@ -81,7 +84,27 @@ struct ChecklistsView: View {
           showingDeletionUndoToast = false
           DBManager.cleanUpDeletedChecklists()
         }
+        .sheet(item: $newChecklistCreated) { checklist in
+          NewChecklistView(checklist: checklist, onDismiss: {
+            newChecklistCreated = nil // General clean-up, though code works fine regardless.
+            refreshID = UUID() // Otherwise, the name/notes of new Checklist won't show.
+          })
+          .presentationDetents([.large])
+          .presentationDragIndicator(.hidden)
+        }
       }
+      AddChecklistButton {
+        let checklist = Checklist()
+        checklist.items.append(Item())
+        DBManager.write { realm in
+          realm.add(checklist)
+          group.thaw()?.checklists.insert(checklist, at: 0)
+        }
+        newChecklistCreated = checklist
+      }
+      .padding(.trailing, 20)
+      .padding(.bottom, 20)
+    }
   }
 
   private func moveChecklist(from sourceIndexSet: IndexSet, to destination: Int) {
@@ -98,7 +121,7 @@ struct ChecklistsView: View {
       deletedChecklist = checklist
       showingDeletionUndoToast = true
     } label: {
-      Label("", systemImage: "trash")
+      Label("Delete", systemImage: "trash")
     }
     .tint(.red) // Override global tint.
   }
