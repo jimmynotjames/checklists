@@ -98,8 +98,8 @@ class ChecklistViewController: UIViewController {
       navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetButtonTapped))
     }
     if checklist.items.count == 0 {
-      let item = Item(name: "", notes: nil)
-      DBManager.write {
+      let item = Item()
+      DBManager.write { _ in
         checklist.items.append(item)
       }
     }
@@ -115,9 +115,9 @@ class ChecklistViewController: UIViewController {
       self.tableView.flashScrollIndicators()
     }
     AnalyticsManager.logChecklistViewed(checklistName: checklist.name,
-                                        checklistNotesLength: checklist.notes?.count ?? 0,
+                                        checklistNotesLength: checklist.notes.count,
                                         numItems: checklist.items.count,
-                                        numItemsWithNotes: checklist.items.filter({ $0.notes != nil && $0.notes!.count > 0 }).count)
+                                        numItemsWithNotes: checklist.items.filter({ !$0.notes.isEmpty }).count)
   }
 
   override func viewWillDisappear(_ animated: Bool) {
@@ -127,13 +127,13 @@ class ChecklistViewController: UIViewController {
   }
 
   override func viewDidDisappear(_ animated: Bool) {
-    DBManager.write {
+    DBManager.write { realm in
       // If user left some 'dangling' empty items at end of list, remove them, but don't worry if there's one lone empty item.
       var i = checklist.items.count - 1
       while i > 0 {
         let item = checklist.items[i]
-        if item.name.count == 0 && (item.notes == nil || item.notes!.count == 0) {
-          DBManager.realm.delete(item)
+        if item.name.count == 0 && item.notes.count == 0 {
+          realm.delete(item)
         } else {
           break
         }
@@ -170,8 +170,8 @@ class ChecklistViewController: UIViewController {
   }
 
   private func insertNewItem(at index: Int, becomeFirstResponder: Bool) {
-    let item = Item(name: "", notes: nil)
-    DBManager.write {
+    let item = Item()
+    DBManager.write { _ in
       self.checklist.items.insert(item, at: index)
     }
 
@@ -364,7 +364,7 @@ extension ChecklistViewController: UITextFieldDelegate {
     }
   }
   func textFieldDidEndEditing(_ textField: UITextField) {
-    DBManager.write {
+    DBManager.write { _ in
       checklist.name = checklistNameTextField.hasText ? checklistNameTextField.text ?? defaultChecklistName : defaultChecklistName // Accounts for both nil and empty string.
     }
   }
@@ -386,7 +386,7 @@ extension ChecklistViewController: UITextFieldDelegate {
 // For the Checklist Notes field.
 extension ChecklistViewController: UITextViewDelegate {
   func textViewDidEndEditing(_ textView: UITextView) {
-    DBManager.write {
+    DBManager.write { _ in
       checklist.notes = checklistNotesTextView.text
     }
   }
@@ -437,7 +437,9 @@ extension ChecklistViewController: UITableViewDropDelegate {
     let itemProvider = dropItem.dragItem.itemProvider
     itemProvider.loadObject(ofClass: NSString.self) { string, error in
       if let itemId = string as? String {
-        if let sourceIndex = self.checklist.items.firstIndex(where: { item in return item.id == itemId }) {
+        // Just get it to compile as we migrate to SwiftUI.
+        // if let sourceIndex = self.checklist.items.firstIndex(where: { item in return item.id == itemId }) {
+        if let sourceIndex = self.checklist.items.firstIndex(where: { item in return item.id == 0 }) {
           self.checklist.moveItem(from: sourceIndex, to: destinationIndexPath.row)
           DispatchQueue.main.async {
             tableView.moveRow(at: IndexPath(row: sourceIndex, section: destinationIndexPath.section), to: destinationIndexPath)
@@ -461,7 +463,7 @@ extension ChecklistViewController: @MainActor ItemContentViewDelegate {
   }
 
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView) {
-    DBManager.write {
+    DBManager.write { _ in
       itemContentView.item?.toggleStatus()
     }
     itemContentView.updateCheckedStatus()
@@ -479,13 +481,13 @@ extension ChecklistViewController: @MainActor ItemContentViewDelegate {
   }
 
   func itemContentView(_ itemContentView: ItemContentView, nameFieldUpdatedWith name: String) {
-    DBManager.write {
+    DBManager.write { _ in
       itemContentView.item?.name = name
     }
   }
 
   func itemContentView(_ itemContentView: ItemContentView, notesFieldUpdatedWith notes: String) {
-    DBManager.write {
+    DBManager.write { _ in
       itemContentView.item?.notes = notes
     }
   }

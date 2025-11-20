@@ -69,8 +69,7 @@ struct AnalyticsManager {
   static func logProductLoadingError(errorMessage: String) { logEvent("donate/error_loading_products", withParameters: [ "error": truncatedString(errorMessage) ]) }
 
   // MARK: - Error Logging
-  static func logRealmFailure(errorMessage: String) { logEvent("realm/fatal_error", withParameters: [ "error": truncatedString(errorMessage) ]) }
-  static func logRealmWriteFailure(errorMessage: String) { logEvent("realm/write_error", withParameters: [ "error": truncatedString(errorMessage) ]) }
+  static func logRealmFailure(errorMessage: String) { logEvent("realm/error", withParameters: [ "error": truncatedString(errorMessage) ]) }
 
   // MARK: - Device info analytics
   // Overall ratio of iPad versus iPhone can be found in App Store Connect Analytics, so leaving that out here.

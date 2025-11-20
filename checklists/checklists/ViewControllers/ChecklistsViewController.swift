@@ -24,7 +24,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    let realm = DBManager.realm
+    let realm = DBManager.getRealm()
     guard let mainGroup = realm.objects(Group.self).first else { fatalError("Expected a Group object but none in database.") }
     self.group = mainGroup
 
@@ -86,9 +86,9 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   @objc func addChecklistButtonTapped() {
     AnalyticsManager.logNewChecklist()
     guard let checklistViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Checklist") as? ChecklistViewController else { assertionFailure(); return }
-    let checklist = Checklist(name: "", notes: nil, items: [])
-    DBManager.write {
-      DBManager.realm.add(checklist)
+    let checklist = Checklist()
+    DBManager.write { realm in
+      realm.add(checklist)
       group.checklists.insert(checklist, at: 0)
     }
     checklistViewController.checklist = checklist
@@ -156,10 +156,10 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
 
       let alertController = UIAlertController(title: nil, message: "Are you sure? This cannot be undone.", preferredStyle: .alert)
       alertController.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { alertAction in
-        DBManager.write {
+        DBManager.write { realm in
           let checklist = self.group.checklists[indexPath.row]
-          DBManager.realm.delete(checklist.items)
-          DBManager.realm.delete(checklist)
+          realm.delete(checklist.items)
+          realm.delete(checklist)
         }
         self.tableView.deleteRows(at: [indexPath], with: .fade)
       }))
@@ -233,7 +233,9 @@ extension ChecklistsViewController: UITableViewDropDelegate {
     let itemProvider = dropItem.dragItem.itemProvider
     itemProvider.loadObject(ofClass: NSString.self) { string, error in
       if let checklistId = string as? String {
-        if let sourceIndex = self.group.checklists.firstIndex(where: { checklist in return checklist.id == checklistId }) {
+        // Just to get this to compile as we migrate over. Had changed the ID to be a UInt64.
+        // if let sourceIndex = self.group.checklists.firstIndex(where: { checklist in return checklist.id == checklistId }) {
+        if let sourceIndex = self.group.checklists.firstIndex(where: { checklist in return checklist.id == 0 }) {
           self.group.moveChecklist(from: sourceIndex, to: destinationIndexPath.row)
           DispatchQueue.main.async {
             tableView.moveRow(at: IndexPath(row: sourceIndex, section: destinationIndexPath.section), to: destinationIndexPath)

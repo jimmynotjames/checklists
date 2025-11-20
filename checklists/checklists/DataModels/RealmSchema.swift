@@ -19,9 +19,8 @@ import RealmSwift
 
  Added in app version 1.1.
  */
-// TODO: Added @MainActor to the line below in two different places just to get it to compile
-@MainActor class Group: Object, @MainActor Identifiable {
-  @Persisted var id = NSUUID().uuidString
+final class Group: Object, ObjectKeyIdentifiable {
+  @Persisted(primaryKey: true) var _id: ObjectId
 
   @Persisted var checklists = List<Checklist>()
 
@@ -34,7 +33,7 @@ import RealmSwift
     guard toIndex >= 0 && toIndex < checklists.count else { assertionFailure(); return }
     guard fromIndex != toIndex else { return }
 
-    DBManager.write {
+    DBManager.write { _ in
       checklists.move(from: fromIndex, to: toIndex)
     }
   }
@@ -42,9 +41,9 @@ import RealmSwift
   func delete(checklist: Checklist) {
     // After implementing with SwiftUI (iOS 18), we need to retrieve the checklist object again or else we get
     // an error regarding using the wrong Realm instance. Possibly due to copying the item through itemToDelete.
-    let realm = DBManager.realm
+    let realm = DBManager.getRealm()
     if let checklist = realm.objects(Checklist.self).filter("id == %@", checklist.id).first {
-      DBManager.write {
+      DBManager.write { realm in
         realm.delete(checklist.items)
         realm.delete(checklist)
       }
@@ -52,23 +51,22 @@ import RealmSwift
   }
 
   func shallowDelete(checklist: Checklist) {
-    DBManager.write {
+    DBManager.write { _ in
       checklist.thaw()?.isDeleted = true
     }
   }
 
   func undoDeletion(checklist: Checklist) {
-    DBManager.write {
+    DBManager.write { _ in
       checklist.thaw()?.isDeleted = false
     }
   }
 }
 
-// TODO: Added @MainActor to the line below in two different places just to get it to compile
-@MainActor class Checklist: Object, @MainActor Identifiable {
-  @Persisted var id = NSUUID().uuidString
+final class Checklist: Object, ObjectKeyIdentifiable {
+  @Persisted(primaryKey: true) var _id: ObjectId
   @Persisted var name: String = ""
-  @Persisted var notes: String?
+  @Persisted var notes: String = ""
   @Persisted var sortNumber: Double = 0.0 // Obsolete as of app version 1.1.0.
   @Persisted var lastModified: Date = Date()
   @Persisted var isDeleted = false // Added in app version 1.1.1.
@@ -78,11 +76,11 @@ import RealmSwift
   var percentageComplete: CGFloat {
     get {
       guard items.count > 0 else { return 0.0 }
-      return CGFloat(items.filter({ $0.status == .checked }).count) / CGFloat(items.count)
+      return CGFloat(items.filter({ $0.isChecked == true }).count) / CGFloat(items.count)
     }
   }
 
-  convenience init(name: String, notes: String? = nil, sortNumber: Double? = nil, items: [Item]) {
+  convenience init(name: String, notes: String = "", sortNumber: Double? = nil, items: [Item] = []) {
     self.init()
     self.name = name
     self.notes = notes
@@ -94,10 +92,10 @@ import RealmSwift
 
   func remove(at index: Int) {
     guard index >= 0 && index < items.count else { assertionFailure(); return }
-    DBManager.write {
+    DBManager.write { realm in
       let item = items[index]
       items.remove(at: index)
-      DBManager.realm.delete(item)
+      realm.delete(item)
     }
   }
 
@@ -106,7 +104,7 @@ import RealmSwift
     guard index2 >= 0 && index2 < items.count else { assertionFailure(); return }
     guard index1 != index2 else { return }
 
-    DBManager.write {
+    DBManager.write { _ in
       items.swapAt(index1, index2)
     }
   }
@@ -116,23 +114,25 @@ import RealmSwift
     guard toIndex >= 0 && toIndex < items.count else { assertionFailure(); return }
     guard fromIndex != toIndex else { return }
 
-    DBManager.write {
+    DBManager.write { _ in 
       items.move(from: fromIndex, to: toIndex)
     }
   }
 
   func uncheckAllItems() {
-    DBManager.write {
+    DBManager.write { _ in
       items.forEach { item in
-        item.status = .unchecked
+        item.isChecked = false
       }
     }
   }
 
+  // TODO: Remove this eventually, when we remove the UIKit view controllers.
   func dragItems() -> [UIDragItem] {
     let itemProvider = NSItemProvider()
     itemProvider.registerDataRepresentation(forTypeIdentifier: kUTTypePlainText as String, visibility: .ownProcess) { completion in
-      let data = self.id.data(using: .utf8)
+      let idString = self._id.stringValue
+      let data = idString.data(using: String.Encoding.utf8)
       completion(data, nil)
       return nil
     }
@@ -140,46 +140,29 @@ import RealmSwift
   }
 }
 
-class Item: Object, Identifiable {
+final class Item: Object, ObjectKeyIdentifiable {
 
-  enum Status: Int {
-    case unchecked
-    case checked
-
-    static let defaultValue: Status = .unchecked
-  }
-
-  @Persisted var id = NSUUID().uuidString
+  @Persisted(primaryKey: true) var _id: ObjectId
   @Persisted var name: String = ""
-  @Persisted var notes: String?
-  @Persisted var statusRaw: Int = Status.defaultValue.rawValue
+  @Persisted var notes: String = ""
 
-  var status: Status {
-    get {
-      return Status(rawValue: statusRaw) ?? Status.defaultValue
-    }
-    set {
-      statusRaw = newValue.rawValue
-    }
-  }
+  @Persisted var isChecked: Bool = false
 
-  convenience init(name: String, notes: String? = nil) {
+  convenience init(name: String = "", notes: String = "") {
     self.init()
     self.name = name
     self.notes = notes
   }
 
   func toggleStatus() {
-    switch status {
-    case .unchecked: status = .checked
-    case .checked: status = .unchecked
-    }
+    isChecked = !isChecked
   }
 
   func dragItems() -> [UIDragItem] {
     let itemProvider = NSItemProvider()
     itemProvider.registerDataRepresentation(forTypeIdentifier: kUTTypePlainText as String, visibility: .ownProcess) { completion in
-      let data = self.id.data(using: .utf8)
+      let idString = self._id.stringValue
+      let data = idString.data(using: String.Encoding.utf8)
       completion(data, nil)
       return nil
     }

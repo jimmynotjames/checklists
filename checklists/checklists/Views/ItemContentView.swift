@@ -28,15 +28,11 @@ class ItemContentView: UIView {
     didSet {
       if let item = item {
         nameTextView.text = item.name
-        if let notes = item.notes {
-          notesTextView.text = notes
-        } else {
-          notesTextView.text = ""
-        }
+        nameTextView.text = item.notes
         updateCheckedStatus()
         refreshHeight()
       } else {
-        checkboxButton.setCheckboxState(with: .unchecked)
+        checkboxButton.setCheckboxState(with: false)
         nameTextView.text = ""
         notesTextView.text = ""
       }
@@ -109,7 +105,7 @@ class ItemContentView: UIView {
   }
 
   func refreshHeight() {
-    updateTextViewHeight(isExpanded: item?.notes?.count ?? 0 > 0)
+    updateTextViewHeight(isExpanded: (item?.notes.count ?? 0) > 0)
   }
 
   func updateTextViewHeight(isExpanded: Bool) {
@@ -127,9 +123,9 @@ class ItemContentView: UIView {
   }
 
   func updateCheckedStatus() {
-    guard let status = item?.status else { return }
-    checkboxButton.setCheckboxState(with: status)
-    let textColor = status == .checked ? CLUIColors.inactiveText : .black
+    guard let isChecked = item?.isChecked else { return }
+    checkboxButton.setCheckboxState(with: isChecked)
+    let textColor = isChecked ? CLUIColors.inactiveText : .black
     nameTextView.textColor = textColor
     notesTextView.textColor = textColor
   }
