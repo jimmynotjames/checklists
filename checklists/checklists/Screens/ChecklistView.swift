@@ -28,6 +28,9 @@ import RealmSwift
 struct ChecklistView: View {
   @ObservedRealmObject var checklist: Checklist
 
+  // For shifting cursor/focus to newly created Item.
+  @FocusState private var focusedItemID: ObjectId?
+
   var body: some View {
     VStack(spacing: 0.0) {
       ChecklistHeaderView(checklist: checklist)
@@ -35,7 +38,7 @@ struct ChecklistView: View {
         .padding(EdgeInsets(top: 0.0, leading: 16.0, bottom: 8.0, trailing: 16.0))
       List {
         ForEach(checklist.items, id: \.id) { item in
-          ChecklistItemView(item: item)
+          ChecklistItemView(item: item, focusedItemID: $focusedItemID)
         }
         .listRowSeparator(.hidden)
         // No insets due to tap target stuff.
@@ -49,6 +52,7 @@ struct ChecklistView: View {
             DBManager.write { _ in
               checklist.thaw()?.items.append(item)
             }
+            focusedItemID = item._id // Set cursor to newly created item.
           } label: {
             HStack {
               Spacer()
