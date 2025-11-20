@@ -20,7 +20,7 @@ extension SKProduct {
   }
 }
 
-protocol StoreManagerDelegate: class {
+protocol StoreManagerDelegate: AnyObject {
   func errorRetrievingProducts(errorCode: StoreManager.ErrorCode)
   func didReceiveProducts(donationProducts: [DonationProduct])
   func transactionDidUpdate(with state: SKPaymentTransactionState, errorDescription: String?)

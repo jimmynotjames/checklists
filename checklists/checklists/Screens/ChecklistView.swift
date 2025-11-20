@@ -41,6 +41,24 @@ struct ChecklistView: View {
         // No insets due to tap target stuff.
         .listRowInsets(EdgeInsets(top: 0.0, leading: 0.0, bottom: 0.0, trailing: 0.0))
         .listRowBackground(Color.clear) // To prevent highlighting when tapping on row.
+
+        // Add button row at bottom
+        Section {
+          CLButton {
+            let item = Item()
+            DBManager.write { _ in
+              checklist.thaw()?.items.append(item)
+            }
+          } label: {
+            HStack {
+              Spacer()
+              Label("Add", systemImage: "plus.circle")
+                .font(.callout)
+              Spacer()
+            }
+          }
+        }
+        .listRowSeparator(.hidden)
       }
       .listStyle(.plain)
       Spacer()

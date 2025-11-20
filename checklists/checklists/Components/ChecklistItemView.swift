@@ -20,7 +20,6 @@
    tap target of the checkbox button, which is always on the leading edge.
 
  Remaining tasks:
- - TODO: Need to trim whitespace from notes field.
  - TODO: Tapping Next on the keyboard in the name field creates new Item and focuses on name field in new Item.
  - TODO: Tapping backspace on empty notes field goes to name field.
  - TODO: Tapping backspace on empty name field (with empty notes field) removes current Item, unless it's the first Item.

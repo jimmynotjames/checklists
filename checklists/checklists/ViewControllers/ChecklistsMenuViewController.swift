@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol ChecklistsMenuViewControllerDelegate: class {
+protocol ChecklistsMenuViewControllerDelegate: AnyObject {
   func resetAllSelected()
 }
 
