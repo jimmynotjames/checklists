@@ -104,7 +104,6 @@ class DBManager {
    - Property 'Group._id' has been added.
    - Primary Key for class 'Group' has been added.
    - Property 'Item.id' has been removed.
-   - Property 'Item.statusRaw' has been removed.
    - Property 'Item._id' has been added.
    - Property 'Item.isChecked'
    */
