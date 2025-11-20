@@ -18,8 +18,8 @@ class AddItemButtonTableFooterView: UIView {
   // This feels slightly hacky. Adding this so in landscape mode, I can still use VFL and adhere to layout margins while using custom inset.
   let contentView = UIView()
 
-  let addButton: CLButton = {
-    let button = CLButton(frame: .zero)
+  let addButton: CLButtonLegacy = {
+    let button = CLButtonLegacy(frame: .zero)
     button.setTitle("Add", for: .normal)
     return button
   }()

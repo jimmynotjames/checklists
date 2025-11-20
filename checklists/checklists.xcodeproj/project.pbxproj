@@ -58,11 +58,12 @@
 		32D9F1442D07994600CCC973 /* ChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D9F1432D07994600CCC973 /* ChecklistView.swift */; };
 		32E767DC22EA4639003C8634 /* AddItemButtonTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DB22EA4639003C8634 /* AddItemButtonTableFooterView.swift */; };
 		32E767DE22EA4743003C8634 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32E767DD22EA4743003C8634 /* Colors.xcassets */; };
-		32E767E022EA6476003C8634 /* CLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DF22EA6476003C8634 /* CLButton.swift */; };
+		32E767E022EA6476003C8634 /* CLButtonLegacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DF22EA6476003C8634 /* CLButtonLegacy.swift */; };
 		32F040472336DDBC007CB244 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A964792297AE6700CAB7C0 /* SampleData.swift */; };
 		32F363C7257D7D9D008482DA /* DataModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F363C6257D7D9D008482DA /* DataModelTests.swift */; };
 		32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4C84322875308000D63CF /* ItemTableViewCell.swift */; };
 		32F8F1AF2311E71900F12306 /* CLTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F8F1AE2311E71900F12306 /* CLTextField.swift */; };
+		A44EE3732ECFB4BE00B10497 /* CLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44EE3722ECFB4BB00B10497 /* CLButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -159,10 +160,11 @@
 		32D9F1432D07994600CCC973 /* ChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistView.swift; sourceTree = "<group>"; };
 		32E767DB22EA4639003C8634 /* AddItemButtonTableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemButtonTableFooterView.swift; sourceTree = "<group>"; };
 		32E767DD22EA4743003C8634 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
-		32E767DF22EA6476003C8634 /* CLButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLButton.swift; sourceTree = "<group>"; };
+		32E767DF22EA6476003C8634 /* CLButtonLegacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLButtonLegacy.swift; sourceTree = "<group>"; };
 		32F363C6257D7D9D008482DA /* DataModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModelTests.swift; sourceTree = "<group>"; };
 		32F4C84322875308000D63CF /* ItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableViewCell.swift; sourceTree = "<group>"; };
 		32F8F1AE2311E71900F12306 /* CLTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLTextField.swift; sourceTree = "<group>"; };
+		A44EE3722ECFB4BB00B10497 /* CLButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,6 +293,7 @@
 				326A97582DD3BBDD00C73844 /* CheckboxButton.swift */,
 				326A97562DD3A99400C73844 /* ChecklistItemView.swift */,
 				324961852CEE3E100034AE3F /* CircularPercentStatusIcon.swift */,
+				A44EE3722ECFB4BB00B10497 /* CLButton.swift */,
 				326A97542DD397B500C73844 /* CLTextEditor.swift */,
 			);
 			path = Components;
@@ -337,7 +340,7 @@
 			children = (
 				32E767DB22EA4639003C8634 /* AddItemButtonTableFooterView.swift */,
 				3233C793228BAD3C002BF01D /* CheckboxButtonLegacy.swift */,
-				32E767DF22EA6476003C8634 /* CLButton.swift */,
+				32E767DF22EA6476003C8634 /* CLButtonLegacy.swift */,
 				32BA5020235CE84C007E506D /* CLCircleButton.swift */,
 				323FCF2822F2A33E00F761BB /* CLTextView.swift */,
 				32AECAEA22ED118100747080 /* CLColors.swift */,
@@ -517,8 +520,9 @@
 			files = (
 				32F8F1AF2311E71900F12306 /* CLTextField.swift in Sources */,
 				32F040472336DDBC007CB244 /* SampleData.swift in Sources */,
-				32E767E022EA6476003C8634 /* CLButton.swift in Sources */,
+				32E767E022EA6476003C8634 /* CLButtonLegacy.swift in Sources */,
 				324961862CEE3E100034AE3F /* CircularPercentStatusIcon.swift in Sources */,
+				A44EE3732ECFB4BE00B10497 /* CLButton.swift in Sources */,
 				327C65BF25A16BA90012AABD /* FlurryEmpty.m in Sources */,
 				324930B42566EEB100A5FC66 /* ChecklistsMenuViewController.swift in Sources */,
 				32CA2A932D08E21400960F5B /* Utilities.swift in Sources */,

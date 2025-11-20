@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CLButton: UIButton {
+class CLButtonLegacy: UIButton {
   private let normalColor: UIColor = CLUIColors.defaultBackground
   private let highlightedColor: UIColor = CLUIColors.teal
 
