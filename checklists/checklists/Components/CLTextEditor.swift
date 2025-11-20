@@ -20,11 +20,14 @@ Features:
  */
 struct CLTextEditor: View {
   @Binding var text: String
+  @FocusState private var isFocused: Bool
+
   let minLines: Int
 
   var body: some View {
     ZStack(alignment: .topLeading) {
       TextEditor(text: $text)
+        .focused($isFocused)
         .padding(.leading, -3.0) // Left-align text to overcome internal padding of TextEditor.
         .accessibilityHidden(true)
       // Placeholder text
@@ -40,6 +43,12 @@ struct CLTextEditor: View {
         .foregroundColor(.clear)
         .accessibilityHidden(true)
         .background(Color.clear)
+    }
+    .onChange(of: isFocused, initial: false) { oldValue, newValue in
+      // Trim only when focus transitions from true -> false
+      if oldValue == true && newValue == false {
+        text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+      }
     }
     .font(.footnote)
     .padding(EdgeInsets(top: 2.0, leading: 0.0, bottom: 4.0, trailing: 0.0))
