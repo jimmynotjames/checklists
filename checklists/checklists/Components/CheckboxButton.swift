@@ -19,17 +19,17 @@ struct CheckboxButton: View {
 
   var body: some View {
     Button(action: {
-      DBManager.write {
+      DBManager.write { _ in
         item.thaw()?.toggleStatus()
       }
     }) {
-      Image(item.status == .checked ? "CheckboxCheckedIcon" : "CheckboxUncheckedIcon")
+      Image(item.isChecked == true ? "CheckboxCheckedIcon" : "CheckboxUncheckedIcon")
         .resizable()
         .frame(width: 24, height: 24)
         // Implicit assumption of 16.0 margin from leading edge, with no padding applied externally, to maximize tap target.
         .padding(EdgeInsets(top: 4.0, leading: 16.0, bottom: 4.0, trailing: 8.0))
         .accessibilityLabel("Checkbox")
-        .accessibilityValue(item.status == .checked ? "Checked" : "Unchecked")
+        .accessibilityValue(item.isChecked == true ? "Checked" : "Unchecked")
     }
     .foregroundColor(CLColors.teal)
     .contentShape(Rectangle()) // Maximize tap target
@@ -37,13 +37,11 @@ struct CheckboxButton: View {
 }
 
 #Preview("CheckboxButton using Realm)") {
-  DBManager.initializeDebugRealm()
   let checked = Item()
-  checked.status = .checked
+  checked.isChecked = true
   let unchecked = Item()
-  unchecked.status = .unchecked
-  DBManager.write {
-    let realm = DBManager.realm
+  unchecked.isChecked = false
+  DBManager.write { realm in
     realm.add(checked)
     realm.add(unchecked)
   }
@@ -51,5 +49,6 @@ struct CheckboxButton: View {
     CheckboxButton(item: checked)
     CheckboxButton(item: unchecked)
   }
+  .environment(\.realmConfiguration, Realm.Configuration(inMemoryIdentifier: "Preview"))
 }
 

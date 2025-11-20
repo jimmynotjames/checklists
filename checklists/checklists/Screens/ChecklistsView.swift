@@ -131,7 +131,9 @@ struct ChecklistRowView: View {
 #Preview {
   let realm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: "Preview"))
   SampleData.populateWithSampleData(realm: realm)
-  return ChecklistsView(group: realm.objects(Group.self).first!)
+  return
+    ChecklistsView(group: realm.objects(Group.self).first!)
+    .environment(\.realmConfiguration, Realm.Configuration(inMemoryIdentifier: "Preview"))
 }
 
 #Preview {

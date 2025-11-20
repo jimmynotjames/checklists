@@ -26,21 +26,21 @@ class DataModelTests: XCTestCase {
 
   override func setUpWithError() throws {
     // We're going to test with persisted store, not memory store, against recommendation, because I want to make sure the file stuff is okay.
-    DBManager.write {
-      DBManager.realm.deleteAll()
+    DBManager.write { realm in
+      realm.deleteAll()
     }
   }
 
   override func tearDownWithError() throws {
-    DBManager.write {
-      DBManager.realm.deleteAll()
+    DBManager.write { realm in
+      realm.deleteAll()
     }
   }
 
   func testCreateEmptyChecklist1() throws {
     let checklist = Checklist(name: "Test Checklist 1", items: [])
-    DBManager.write {
-      DBManager.realm.add(checklist)
+    DBManager.write { realm in
+      realm.add(checklist)
     }
     guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).filter({ $0.id == checklist.id }).first
     else { XCTFail(); return }
@@ -50,8 +50,8 @@ class DataModelTests: XCTestCase {
 
   func testCreateChecklist2() throws {
     let checklist = Checklist(name: checklistName, notes: checklistNotes, sortNumber: nil, items: [])
-    DBManager.write {
-      DBManager.realm.add(checklist)
+    DBManager.write { realm in
+      realm.add(checklist)
     }
     guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).filter({ $0.id == checklist.id }).first
     else { XCTFail(); return }
@@ -64,10 +64,10 @@ class DataModelTests: XCTestCase {
     items[1].toggleStatus()
     items[3].toggleStatus()
     let checklist = Checklist(name: checklistName, notes: checklistNotes, sortNumber: nil, items: items)
-    DBManager.write {
-      DBManager.realm.add(checklist)
+    DBManager.write { realm in
+      realm.add(checklist)
     }
-    guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).filter({ $0.id == checklist.id }).first
+    guard let retrievedChecklist = DBManager.getRealm().objects(Checklist.self).filter({ $0.id == checklist.id }).first
     else { XCTFail(); return }
 
     compareChecklists(checklist1: checklist, checklist2: retrievedChecklist)
@@ -105,6 +105,6 @@ class DataModelTests: XCTestCase {
     XCTAssertEqual(item1.id, item2.id)
     XCTAssertEqual(item1.name, item2.name)
     XCTAssertEqual(item1.notes, item2.notes)
-    XCTAssertEqual(item1.status, item2.status)
+    XCTAssertEqual(item1.isChecked, item2.isChecked)
   }
 }

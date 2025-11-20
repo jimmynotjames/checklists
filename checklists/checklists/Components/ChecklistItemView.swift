@@ -46,7 +46,7 @@ struct ChecklistItemView: View {
         TextField("", text: Binding(
           get: { item.name },
           set: { newName in
-            DBManager.write {
+            DBManager.write { _ in
               item.thaw()?.name = newName
             }
           }
@@ -58,7 +58,7 @@ struct ChecklistItemView: View {
           CLTextEditor(text: Binding(
             get: { item.notes ?? "" },
             set: { text in
-              DBManager.write {
+              DBManager.write { _ in
                 item.thaw()?.notes = (text.trimmed() == "") ? nil : text
               }
             }

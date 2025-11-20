@@ -38,13 +38,12 @@ class CheckboxButtonLegacy: UIButton {
   }
 
   // Note: Must be called within write transaction.
-  func setCheckboxState(with itemStatus: Item.Status) {
-    switch itemStatus {
-    case .checked:
+  func setCheckboxState(with checkedStatus: Bool) {
+    if checkedStatus {
       isSelected = true
       tintColor = CLUIColors.inactiveText
       accessibilityValue = "Checked"
-    case .unchecked:
+    } else {
       isSelected = false
       tintColor = CLUIColors.teal
       accessibilityValue = "Unchecked"

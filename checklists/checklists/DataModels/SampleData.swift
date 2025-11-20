@@ -12,11 +12,10 @@ import RealmSwift
 @MainActor class SampleData {
   static func clearDatabase() {
     print("DEBUG: Clearing database...")
-    let realm = DBManager.realm
-    DBManager.write {
+    DBManager.write { realm in
       realm.deleteAll()
     }
-    DBManager.write {
+    DBManager.write { realm in
       realm.add(Group())
     }
   }
@@ -58,7 +57,7 @@ import RealmSwift
                                   Item(name: "some item \($0)",
                                        notes: $0 % 2 == 0 ? ($0 % 3 == 0 ? nil : "some for \($0)") : "some\nodd\nnotes for \($0)" ) })))
 
-    DBManager.write {
+    DBManager.write { _ in
       DBManager.getGroup().checklists.append(objectsIn: checklists)
     }
   }
@@ -76,27 +75,23 @@ import RealmSwift
                                   Item(name: "some item \($0)",
                                        notes: $0 % 2 == 0 ? ($0 % 3 == 0 ? nil : "some for \($0)") : "some\nodd\nnotes for \($0)" ) })))
 
-    DBManager.write {
+    DBManager.write { _ in
       DBManager.getGroup().checklists.append(objectsIn: checklists)
     }
 
   }
 
   static func insertFirstTimeLaunchDataV1_0() {
-    let realm = DBManager.realm
-
-    DBManager.write {
+    DBManager.write { realm in
       realm.add(generateFirstTimeLaunchChecklists())
     }
   }
 
 
   static func insertFirstTimeLaunchDataV1_1() {
-    let realm = DBManager.realm
-
-    let group = Group()
-    group.checklists.append(objectsIn: generateFirstTimeLaunchChecklists())
-    DBManager.write {
+    DBManager.write { realm in
+      let group = Group()
+      group.checklists.append(objectsIn: generateFirstTimeLaunchChecklists())
       realm.add(group)
     }
   }
@@ -118,11 +113,11 @@ import RealmSwift
                                        Item(name: "Journaling"),
                                        Item(name: "Argue politics on Facebook")
                                ])
-    checklist1.items[0].status = .checked
-    checklist1.items[1].status = .checked
-    checklist1.items[2].status = .checked
-    checklist1.items[3].status = .checked
-    checklist1.items[5].status = .checked
+    checklist1.items[0].isChecked = true
+    checklist1.items[1].isChecked = true
+    checklist1.items[2].isChecked = true
+    checklist1.items[3].isChecked = true
+    checklist1.items[5].isChecked = true
 
     checklists.append(checklist1)
 
@@ -141,10 +136,10 @@ import RealmSwift
                                        Item(name: "Swimsuit"),
                                        Item(name: "Pool shoes")
                                ])
-    checklist2.items[2].status = .checked
-    checklist2.items[3].status = .checked
-    checklist2.items[8].status = .checked
-    checklist2.items[9].status = .checked
+    checklist2.items[2].isChecked = true
+    checklist2.items[3].isChecked = true
+    checklist2.items[8].isChecked = true
+    checklist2.items[9].isChecked = true
 
     checklists.append(checklist2)
 

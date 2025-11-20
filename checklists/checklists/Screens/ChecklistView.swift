@@ -62,7 +62,7 @@ struct ChecklistView: View {
 struct ChecklistHeaderView: View {
   @ObservedRealmObject var checklist: Checklist
 
-  // To refresh the percentageComplete. Updates to Item.statusRaw don't seem trigger a refresh without this.
+  // To refresh the percentageComplete. Updates to Item.isChecked don't seem trigger a refresh without this.
   // Slightly hacky, as I'm observing all Items, not just this Checklist's Items.
   @ObservedResults(Item.self) var allItems
 
@@ -83,7 +83,7 @@ struct ChecklistHeaderView: View {
         // Decided against this, given the risks in migrating on app launch when updating app versions.
         get: { checklist.notes ?? "" },
         set: { text in
-          DBManager.write {
+          DBManager.write { _ in
             checklist.thaw()?.notes = (text.trimmed() == "") ? nil : text
           }
         }

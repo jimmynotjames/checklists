@@ -36,7 +36,7 @@ class ItemContentView: UIView {
         updateCheckedStatus()
         refreshHeight()
       } else {
-        checkboxButton.setCheckboxState(with: .unchecked)
+        checkboxButton.setCheckboxState(with: false)
         nameTextView.text = ""
         notesTextView.text = ""
       }
@@ -127,9 +127,9 @@ class ItemContentView: UIView {
   }
 
   func updateCheckedStatus() {
-    guard let status = item?.status else { return }
-    checkboxButton.setCheckboxState(with: status)
-    let textColor = status == .checked ? CLUIColors.inactiveText : .black
+    guard let isChecked = item?.isChecked else { return }
+    checkboxButton.setCheckboxState(with: isChecked)
+    let textColor = isChecked ? CLUIColors.inactiveText : .black
     nameTextView.textColor = textColor
     notesTextView.textColor = textColor
   }

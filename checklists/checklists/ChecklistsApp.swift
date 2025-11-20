@@ -27,13 +27,16 @@ struct ChecklistsApp: SwiftUI.App {
   }
 
   private func initializeAppSettings() {
+    // Need to update Realm configs for migration before any Realm instances are created.
+    DBManager.migrateToAppVersion1_1_1()
+
     let isFirstTimeLaunch = !UserDefaults.standard.bool(forKey: launchedAtLeastOnceKey)
     if isFirstTimeLaunch {
       SampleData.insertFirstTimeLaunchDataV1_1()
       UserDefaults.standard.set(true, forKey: launchedAtLeastOnceKey)
     }
     UserDefaults.standard.set(SettingsManager.shared.appVersionString, forKey: appVersionKey)
-    DBManager.migrateToAppVersion1_1_1()
+
     DBManager.migrateDatabaseToUseGroupObjectIfNecessary()
 
     // For dev manual testing/debugging
