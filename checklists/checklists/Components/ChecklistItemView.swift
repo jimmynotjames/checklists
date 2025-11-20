@@ -44,14 +44,7 @@ struct ChecklistItemView: View {
     HStack(alignment: .top, spacing: 0.0) {
       CheckboxButton(item: item)
       VStack(alignment: .leading, spacing: 0.0) {
-        TextField("", text: Binding(
-          get: { item.name },
-          set: { newName in
-            DBManager.write { _ in
-              item.thaw()?.name = newName
-            }
-          }
-        ))
+        TextField("", text: $item.name)
           .font(.body)
           .lineLimit(1)
           .focused($isEditing)
