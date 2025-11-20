@@ -98,8 +98,9 @@ struct ChecklistsView: View {
       deletedChecklist = checklist
       showingDeletionUndoToast = true
     } label: {
-      Label("Delete", systemImage: "trash")
+      Label("", systemImage: "trash")
     }
+    .tint(.red) // Override global tint.
   }
 }
 
