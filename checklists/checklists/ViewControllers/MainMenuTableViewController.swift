@@ -29,7 +29,7 @@ extension MainMenuEnabledViewController where Self: UIViewController, Self: Main
   }
 }
 
-protocol MainMenuTableViewControllerDelegate: class {
+protocol MainMenuTableViewControllerDelegate: AnyObject {
   func openSettingsPage()
   func openDonatePage()
 }

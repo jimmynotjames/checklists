@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol AddItemButtonTableFooterViewDelegate: class {
+protocol AddItemButtonTableFooterViewDelegate: AnyObject {
   func addItemTableViewCellTapped()
 }
 

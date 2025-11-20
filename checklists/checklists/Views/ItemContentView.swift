@@ -11,7 +11,7 @@ import UIKit
 private let minNameFieldHeight: CGFloat = 24.0
 private let minNotesTextViewHeight: CGFloat = 32.0
 
-protocol ItemContentViewDelegate: class {
+protocol ItemContentViewDelegate: AnyObject {
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView)
   func itemContentViewNameFieldDidBeginEditing(_ itemContentView: ItemContentView)
   func itemContentViewDidFinishEditing(_ itemContentView: ItemContentView)

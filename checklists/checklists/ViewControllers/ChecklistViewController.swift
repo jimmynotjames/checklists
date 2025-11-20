@@ -12,7 +12,7 @@ private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
 private let defaultChecklistName = "untitled checklist"
 
-protocol ChecklistViewControllerDelegate: class {
+protocol ChecklistViewControllerDelegate: AnyObject {
   func willDismissChecklistViewController(_ ChecklistViewController: ChecklistViewController)
 }
 
