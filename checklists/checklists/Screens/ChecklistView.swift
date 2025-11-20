@@ -13,8 +13,8 @@ import RealmSwift
  Features:
  - Displays a checklist with Checklist Name, Checklist Notes and list of Items.
  - All keyboards on this page will have a Done button in their toolbars.
- - TODO: Button to add new Item at end of list.
  - TODO: Account for when this is a new Checklist being created via Add Checklist button.
+ - TODO: Delete Items via swipe
  - TODO: Reorder Items via drag/drop.
  - TODO: Make sure that drag/drop of Item onto the Notes or Name field of the Checklist does not try to paste the text in.
  - TODO: Update manual test plan to match code changes.
