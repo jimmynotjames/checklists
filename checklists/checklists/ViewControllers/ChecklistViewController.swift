@@ -98,7 +98,7 @@ class ChecklistViewController: UIViewController {
       navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetButtonTapped))
     }
     if checklist.items.count == 0 {
-      let item = Item(name: "", notes: nil)
+      let item = Item()
       DBManager.write { _ in
         checklist.items.append(item)
       }
@@ -117,7 +117,7 @@ class ChecklistViewController: UIViewController {
     AnalyticsManager.logChecklistViewed(checklistName: checklist.name,
                                         checklistNotesLength: checklist.notes.count,
                                         numItems: checklist.items.count,
-                                        numItemsWithNotes: checklist.items.filter({ $0.notes != nil && $0.notes!.count > 0 }).count)
+                                        numItemsWithNotes: checklist.items.filter({ !$0.notes.isEmpty }).count)
   }
 
   override func viewWillDisappear(_ animated: Bool) {
@@ -132,7 +132,7 @@ class ChecklistViewController: UIViewController {
       var i = checklist.items.count - 1
       while i > 0 {
         let item = checklist.items[i]
-        if item.name.count == 0 && (item.notes == nil || item.notes!.count == 0) {
+        if item.name.count == 0 && item.notes.count == 0 {
           realm.delete(item)
         } else {
           break
@@ -170,7 +170,7 @@ class ChecklistViewController: UIViewController {
   }
 
   private func insertNewItem(at index: Int, becomeFirstResponder: Bool) {
-    let item = Item(name: "", notes: nil)
+    let item = Item()
     DBManager.write { _ in
       self.checklist.items.insert(item, at: index)
     }

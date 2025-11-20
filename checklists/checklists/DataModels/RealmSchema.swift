@@ -144,13 +144,13 @@ final class Item: Object, ObjectKeyIdentifiable {
 
   @Persisted(primaryKey: true) var _id: ObjectId
   @Persisted var name: String = ""
-  @Persisted var notes: String?
+  @Persisted var notes: String = ""
 
   // TODO: Will need to consider migration block from old version to new version
   // @Persisted var statusRaw: Int = Status.defaultValue.rawValue
   @Persisted var isChecked: Bool = false
 
-  convenience init(name: String, notes: String? = nil) {
+  convenience init(name: String = "", notes: String = "") {
     self.init()
     self.name = name
     self.notes = notes

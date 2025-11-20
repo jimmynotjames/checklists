@@ -55,7 +55,7 @@ import RealmSwift
                                 sortNumber: 6.0,
                                 items: (1...30).map({
                                   Item(name: "some item \($0)",
-                                       notes: $0 % 2 == 0 ? ($0 % 3 == 0 ? nil : "some for \($0)") : "some\nodd\nnotes for \($0)" ) })))
+                                       notes: $0 % 2 == 0 ? ($0 % 3 == 0 ? "" : "some for \($0)") : "some\nodd\nnotes for \($0)" ) })))
 
     DBManager.write { _ in
       DBManager.getGroup().checklists.append(objectsIn: checklists)
@@ -73,7 +73,7 @@ import RealmSwift
                                 sortNumber: 6.0,
                                 items: (1...30).map({
                                   Item(name: "some item \($0)",
-                                       notes: $0 % 2 == 0 ? ($0 % 3 == 0 ? nil : "some for \($0)") : "some\nodd\nnotes for \($0)" ) })))
+                                       notes: $0 % 2 == 0 ? ($0 % 3 == 0 ? "" : "some for \($0)") : "some\nodd\nnotes for \($0)" ) })))
 
     DBManager.write { _ in
       DBManager.getGroup().checklists.append(objectsIn: checklists)

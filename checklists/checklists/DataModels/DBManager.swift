@@ -128,6 +128,13 @@ class DBManager {
               newObject?["notes"] = ""
             }
           }
+          // Migrate Item.notes from Optional to non-Optional with default empty string
+          migration.enumerateObjects(ofType: Item.className()) { oldObject, newObject in
+            let oldNotes = oldObject?["notes"] as? String
+            if oldNotes == nil {
+              newObject?["notes"] = ""
+            }
+          }
         }
       }
     )

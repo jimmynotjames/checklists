@@ -28,11 +28,7 @@ class ItemContentView: UIView {
     didSet {
       if let item = item {
         nameTextView.text = item.name
-        if let notes = item.notes {
-          notesTextView.text = notes
-        } else {
-          notesTextView.text = ""
-        }
+        nameTextView.text = item.notes
         updateCheckedStatus()
         refreshHeight()
       } else {
@@ -109,7 +105,7 @@ class ItemContentView: UIView {
   }
 
   func refreshHeight() {
-    updateTextViewHeight(isExpanded: item?.notes?.count ?? 0 > 0)
+    updateTextViewHeight(isExpanded: (item?.notes.count ?? 0) > 0)
   }
 
   func updateTextViewHeight(isExpanded: Bool) {

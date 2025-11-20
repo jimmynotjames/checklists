@@ -20,6 +20,7 @@
    tap target of the checkbox button, which is always on the leading edge.
 
  Remaining tasks:
+ - TODO: Need to trim whitespace from notes field.
  - TODO: Tapping Next on the keyboard in the name field creates new Item and focuses on name field in new Item.
  - TODO: Tapping backspace on empty notes field goes to name field.
  - TODO: Tapping backspace on empty name field (with empty notes field) removes current Item, unless it's the first Item.
@@ -54,16 +55,9 @@ struct ChecklistItemView: View {
           .font(.body)
           .lineLimit(1)
           .focused($isEditing)
-        if isEditing || (item.notes != nil && !item.notes!.isEmpty) {
-          CLTextEditor(text: Binding(
-            get: { item.notes ?? "" },
-            set: { text in
-              DBManager.write { _ in
-                item.thaw()?.notes = (text.trimmed() == "") ? nil : text
-              }
-            }
-          ), minLines: 1)
-          .focused($isEditing)
+        if isEditing || !item.notes.isEmpty {
+          CLTextEditor(text: $item.notes, minLines: 1)
+            .focused($isEditing)
         }
       }
       // Next three lines are to prevent tapping on the cell's non-editable areas causing the checkbox button to toggle.
