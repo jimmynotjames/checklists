@@ -14,7 +14,6 @@ import RealmSwift
  - Displays a checklist with Checklist Name, Checklist Notes and list of Items.
  - All keyboards on this page will have a Done button in their toolbars.
  - TODO: Account for when this is a new Checklist being created via Add Checklist button.
- - TODO: Delete Items via swipe
  - TODO: Reorder Items via drag/drop.
  - TODO: Make sure that drag/drop of Item onto the Notes or Name field of the Checklist does not try to paste the text in.
  - TODO: Update manual test plan to match code changes.
@@ -39,6 +38,14 @@ struct ChecklistView: View {
       List {
         ForEach(checklist.items, id: \.id) { item in
           ChecklistItemView(item: item, focusedItemID: $focusedItemID)
+            .swipeActions(edge: .trailing) {
+              Button(role: .destructive) {
+                checklist.remove(item)
+              } label: {
+                Label("", systemImage: "trash")
+              }
+              .tint(.red) // Override global tint.
+            }
         }
         .listRowSeparator(.hidden)
         // No insets due to tap target stuff.

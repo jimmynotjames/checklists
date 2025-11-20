@@ -99,6 +99,19 @@ final class Checklist: Object, ObjectKeyIdentifiable {
     }
   }
 
+  func remove(_ item: Item) {
+    // Can only delete item from same realm it came from.
+    guard let item = item.thaw(), let realm = item.realm else { return }
+    do {
+      try realm.write {
+        // This should automatically cascade to deleting it from the Checklist.
+        realm.delete(item)
+      }
+    } catch let error as NSError {
+      AnalyticsManager.logRealmFailure(errorMessage: error.description)
+    }
+  }
+
   func swapItemsAt(_ index1: Int, _  index2: Int) {
     guard index1 >= 0 && index1 < items.count else { assertionFailure(); return }
     guard index2 >= 0 && index2 < items.count else { assertionFailure(); return }
