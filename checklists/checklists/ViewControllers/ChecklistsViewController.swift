@@ -86,7 +86,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   @objc func addChecklistButtonTapped() {
     AnalyticsManager.logNewChecklist()
     guard let checklistViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Checklist") as? ChecklistViewController else { assertionFailure(); return }
-    let checklist = Checklist(name: "", notes: nil, items: [])
+    let checklist = Checklist()
     DBManager.write { realm in
       realm.add(checklist)
       group.checklists.insert(checklist, at: 0)

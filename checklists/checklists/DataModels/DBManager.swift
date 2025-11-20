@@ -109,8 +109,8 @@ class DBManager {
    - Property 'Item.isChecked'
    */
 
-  // For app versions 1 and 1.1, I never set a schema version, so it has
-  // been defaulting to 0. With version 1.1.1, let's set it to version 1.
+  // With version 1.1.1, setting schema version to version 1.
+  // For app versions 1 and 1.1, I never set a schema version, so it's been defaulting to 0.
   static func migrateToAppVersion1_1_1() {
     let config = Realm.Configuration(
       schemaVersion: 1,
@@ -120,6 +120,13 @@ class DBManager {
           migration.enumerateObjects(ofType: Item.className()) { oldObject, newObject in
             let rawStatus = oldObject?["statusRaw"] as? Int ?? 0
             newObject?["isChecked"] = (rawStatus == 1)
+          }
+          // Migrate Checklist.notes from Optional to non-Optional with default empty string
+          migration.enumerateObjects(ofType: Checklist.className()) { oldObject, newObject in
+            let oldNotes = oldObject?["notes"] as? String
+            if oldNotes == nil {
+              newObject?["notes"] = ""
+            }
           }
         }
       }

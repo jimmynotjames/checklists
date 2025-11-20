@@ -66,7 +66,7 @@ final class Group: Object, ObjectKeyIdentifiable {
 final class Checklist: Object, ObjectKeyIdentifiable {
   @Persisted(primaryKey: true) var _id: ObjectId
   @Persisted var name: String = ""
-  @Persisted var notes: String?
+  @Persisted var notes: String = ""
   @Persisted var sortNumber: Double = 0.0 // Obsolete as of app version 1.1.0.
   @Persisted var lastModified: Date = Date()
   @Persisted var isDeleted = false // Added in app version 1.1.1.
@@ -80,7 +80,7 @@ final class Checklist: Object, ObjectKeyIdentifiable {
     }
   }
 
-  convenience init(name: String, notes: String? = nil, sortNumber: Double? = nil, items: [Item]) {
+  convenience init(name: String, notes: String = "", sortNumber: Double? = nil, items: [Item] = []) {
     self.init()
     self.name = name
     self.notes = notes

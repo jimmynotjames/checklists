@@ -77,17 +77,7 @@ struct ChecklistHeaderView: View {
           .foregroundColor(Color.black)
         Spacer()
       }
-      CLTextEditor(text: Binding(
-        // The only reason this is so convoluted is because my original Realm schema had .notes
-        // as an Optional. If it were not-Optional, it would probably just be `text: $checklist.notes`.
-        // Decided against this, given the risks in migrating on app launch when updating app versions.
-        get: { checklist.notes ?? "" },
-        set: { text in
-          DBManager.write { _ in
-            checklist.thaw()?.notes = (text.trimmed() == "") ? nil : text
-          }
-        }
-      ), minLines: 3)
+      CLTextEditor(text: $checklist.notes, minLines: 3)
     }
   }
 }

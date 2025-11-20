@@ -115,7 +115,7 @@ class ChecklistViewController: UIViewController {
       self.tableView.flashScrollIndicators()
     }
     AnalyticsManager.logChecklistViewed(checklistName: checklist.name,
-                                        checklistNotesLength: checklist.notes?.count ?? 0,
+                                        checklistNotesLength: checklist.notes.count,
                                         numItems: checklist.items.count,
                                         numItemsWithNotes: checklist.items.filter({ $0.notes != nil && $0.notes!.count > 0 }).count)
   }

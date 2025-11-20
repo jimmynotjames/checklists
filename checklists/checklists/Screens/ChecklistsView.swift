@@ -113,7 +113,8 @@ struct ChecklistRowView: View {
         Text(checklist.name)
           .font(.system(size: 18.0, weight: .semibold))
           .foregroundColor(.black)
-        if let notes = checklist.notes, !notes.isEmpty {
+        let notes = checklist.notes
+        if !notes.isEmpty {
           Text(notes)
             .font(.system(size: 15.0))
             .foregroundColor(.black)
