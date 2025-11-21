@@ -15,7 +15,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
 
   private var group: Group!
 
-  private let addChecklistButton = CLCircleButton.addChecklistButton()
+  private let addChecklistButton = CLCircleButtonLegacy.addChecklistButton()
   private var addChecklistButtonPortraitConstraints: [NSLayoutConstraint] = []
   private var addChecklistButtonLandscapeConstraints: [NSLayoutConstraint] = []
   private var addChecklistButtonActiveConstraints: [NSLayoutConstraint] = []

@@ -11,10 +11,10 @@ import UIKit
 private let diameter: CGFloat = 60.0
 private let insetRadius: CGFloat = 10.0
 
-class CLCircleButton: UIButton {
+class CLCircleButtonLegacy: UIButton {
 
-  static func addChecklistButton() -> CLCircleButton {
-    let button = CLCircleButton(iconName: "AddChecklistIcon")
+  static func addChecklistButton() -> CLCircleButtonLegacy {
+    let button = CLCircleButtonLegacy(iconName: "AddChecklistIcon")
     button.accessibilityLabel = "Add new checklist."
     return button
   }
