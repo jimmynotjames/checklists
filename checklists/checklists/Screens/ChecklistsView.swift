@@ -17,7 +17,7 @@
  - More Menu options:
    - Reset All - Resets all Checklists to 0% complete.
  - Main Menu button in upper left uses custom transition left-to-right to reveal MainMenuView.
- - TODO: Button in lower right to create new Checklist
+
  - TODO: Exact fonts and spacing need to be refined.
  - TODO: Add accessibility
  - TODO: Add Dynamic Type capability.
