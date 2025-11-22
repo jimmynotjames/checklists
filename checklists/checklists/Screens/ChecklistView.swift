@@ -44,7 +44,6 @@ struct NewChecklistView: View {
  - Displays a checklist with Checklist Name, Checklist Notes and list of Items.
  - All keyboards on this page will have a Done button in their toolbars.
 
- - TODO: Reorder Items via drag/drop.
  - TODO: Make sure that drag/drop of Item onto the Notes or Name field of the Checklist does not try to paste the text in.
  - TODO: Update manual test plan to match code changes.
  - TODO: Refine formatting/spacing/fonts
