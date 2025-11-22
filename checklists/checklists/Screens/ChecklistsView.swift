@@ -23,7 +23,6 @@
  - TODO: Add Dynamic Type capability.
  - TODO: Update manual test plan to match code changes.
  - TODO: BUG: Reset All button no longer works.
- - TODO: BUG: 3 checklists. Delete last 2. Quickly try to open first one. -> crash.
  - TODO: Write/update automated tests.
  */
 
@@ -38,6 +37,7 @@ struct ChecklistsView: View {
 
   // For deleting a Checklist.
   @State private var showingDeletionUndoToast = false
+  @State private var toastDismissedByTap = false
   @State private var deletedChecklist: Checklist? = nil
 
   // For managing navigation state.
@@ -72,17 +72,23 @@ struct ChecklistsView: View {
         .toast(isPresented: $showingDeletionUndoToast, message: "Undo checklist deletion", duration: 3.0, position: .bottom, onTap: {
           guard let deletedChecklist = deletedChecklist else { assertionFailure(); return }
           group.undoDeletion(checklist: deletedChecklist)
+          toastDismissedByTap = true
           showingDeletionUndoToast = false
           withAnimation {
             refreshID = UUID()
           }
         })
+        .onChange(of: showingDeletionUndoToast) { _, isShowing in
+          // If toast dismisses due to timeout or leaving the screen, then clean up deleted Checklist.
+          if isShowing == false && !toastDismissedByTap {
+            group.thaw()?.cleanUpSoftDeletedChecklists()
+          }
+        }
         .onAppear() {
           refreshID = UUID()
         }
         .onDisappear {
           showingDeletionUndoToast = false
-          DBManager.cleanUpDeletedChecklists()
         }
         .sheet(item: $newChecklistCreated) { checklist in
           NewChecklistView(checklist: checklist, onDismiss: {
@@ -108,10 +114,23 @@ struct ChecklistsView: View {
   }
 
   private func moveChecklist(from sourceIndexSet: IndexSet, to destination: Int) {
+    guard let group = group.thaw() else { return }
+
+    // The indices from this move is on the filtered list, removing soft-deleted items.
+    // Whereas the underlying move is on the full list. Let's just remove the soft-deleted
+    // Checklists so the lists are consistent.
+    showingDeletionUndoToast = false
+    deletedChecklist = nil
+    group.cleanUpSoftDeletedChecklists()
+
     for sourceIndex in sourceIndexSet {
       // In SwiftUI, it appears that dragging a Checklist to end of list goes to `count`.
-      let destination = min(destination, group.checklists.count - 1)
-      group.thaw()?.moveChecklist(from: sourceIndex, to: destination)
+      // However, Realm calculates the indices as if the origin index was removed, so
+      // adding at the end is actually count-1. Realm will throw an exception if destination is `count`.
+      // More generally, if the item is moving further down the list, Realm's destination index
+      // will be -1 from SwiftUI's destination index because of this effect.
+      let adjustedDestination = sourceIndex < destination ? destination - 1 : destination
+      group.moveChecklist(from: sourceIndex, to: adjustedDestination)
     }
   }
 
@@ -119,6 +138,7 @@ struct ChecklistsView: View {
     Button(role: .destructive) {
       group.shallowDelete(checklist: checklist)
       deletedChecklist = checklist
+      toastDismissedByTap = false // General reset, in case lingering value from prior.
       showingDeletionUndoToast = true
     } label: {
       Label("Delete", systemImage: "trash")

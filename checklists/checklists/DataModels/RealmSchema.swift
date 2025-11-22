@@ -61,6 +61,17 @@ final class Group: Object, ObjectKeyIdentifiable {
       checklist.thaw()?.isDeleted = false
     }
   }
+
+  func cleanUpSoftDeletedChecklists() {
+    DBManager.write { realm in
+      checklists.filter { $0.isDeleted }.forEach { checklist in
+        realm.delete(checklist.items)
+        realm.delete(checklist)
+      }
+    }
+  }
+
+
 }
 
 final class Checklist: Object, ObjectKeyIdentifiable {
