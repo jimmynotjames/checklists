@@ -44,8 +44,6 @@ struct NewChecklistView: View {
  - Displays a checklist with Checklist Name, Checklist Notes and list of Items.
  - All keyboards on this page will have a Done button in their toolbars.
 
- - TODO: Make sure that drag/drop of Item onto the Notes or Name field of the Checklist does not try to paste the text in.
- - TODO: Update manual test plan to match code changes.
  - TODO: Refine formatting/spacing/fonts
  - TODO: Add accessibility
  - TODO: Add Dynamic Type capability.
@@ -67,7 +65,7 @@ struct ChecklistView: View {
         .fixedSize(horizontal: false, vertical: true)
         .padding(EdgeInsets(top: 0.0, leading: 16.0, bottom: 8.0, trailing: 16.0))
       List {
-        ForEach(checklist.items, id: \.id) { item in
+        ForEach(checklist.items, id: \._id) { item in
           ChecklistItemView(item: item, focusedItemID: $focusedItemID)
             .swipeActions(edge: .trailing) {
               Button(role: .destructive) {
@@ -77,6 +75,12 @@ struct ChecklistView: View {
               }
               .tint(.red) // Override global tint.
             }
+        }
+        .onMove { indexSet, destination in
+          for sourceIndex in indexSet {
+            let adjustedDestinationIndex = realmDestinationIndex(sourceIndex: sourceIndex, swiftUIDestinationIndex: destination)
+            checklist.thaw()?.moveItem(from: sourceIndex, to: adjustedDestinationIndex)
+          }
         }
         .listRowSeparator(.hidden)
         // No insets due to tap target stuff.
