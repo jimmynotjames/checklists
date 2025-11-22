@@ -20,10 +20,7 @@
    tap target of the checkbox button, which is always on the leading edge.
 
  Remaining tasks:
- - TODO: Tapping Next on the keyboard in the name field creates new Item and focuses on name field in new Item.
- - TODO: Tapping backspace on empty notes field goes to name field.
- - TODO: Tapping backspace on empty name field (with empty notes field) removes current Item, unless it's the first Item.
- - TODO: After Tapping backspace and focus shifts to previous Item, cursor needs to be placed at the end. Ideally notes field, but whatever works. Current app version only places in name field, which is a small bug, I guess.
+ - TODO: Done button keyboard should read Next when focus is on a Checklist Item Name.
  - TODO: Keyboard on notes field should have Return key as Newline, not Done.
  - TODO: Exact fonts and spacing need to be refined.
  - TODO: Add accessibility

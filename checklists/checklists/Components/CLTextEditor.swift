@@ -13,6 +13,10 @@ Features:
  - Allows for placeholder text in gray.
  - Keyboard has a Done button aboe keyboard to dismiss the keyboard with correct color.
  - Minimum line height measured in newlines.
+
+ To use, set a >= minimum height constraint and it will show with a minimum height and grow as it expands beyond that.
+
+ - TODO: Adjust so that it grows/shrinks height as user is typing. See CLTextView
  - TODO: Add accessibility
  - TODO: Add Dynamic Type capability. Can placeholder and text still align when font size changes?
  - TODO: Refine font and spacing/padding

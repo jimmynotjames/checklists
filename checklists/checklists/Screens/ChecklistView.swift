@@ -44,6 +44,10 @@ struct NewChecklistView: View {
  - Displays a checklist with Checklist Name, Checklist Notes and list of Items.
  - All keyboards on this page will have a Done button in their toolbars.
 
+ - TODO: Tapping Done/Next on Checklist Name moves cursor/focus to first Item if new Checklist.
+ - TODO: Tapping Next on Item Name inserts new Item below and moves focus to new Item.
+ - TODO: Tapping delete on empty Item Name will delete Item and move focus up to prior Item Name end of line. Unless it's the first Item, in which case, do nothing.
+ - TODO: Tapping delete on empty Item Notes will move focus to Item Name end of line.
  - TODO: Refine formatting/spacing/fonts
  - TODO: Add accessibility
  - TODO: Add Dynamic Type capability.
