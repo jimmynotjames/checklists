@@ -67,16 +67,6 @@ class DBManager {
     }
   }
 
-  static func cleanUpDeletedChecklists() {
-    let group = getGroup()
-    write { realm in
-      group.checklists.filter { $0.isDeleted }.forEach { checklist in
-        realm.delete(checklist.items)
-        realm.delete(checklist)
-      }
-    }
-  }
-
   // TODO: My migration will eventually remove sortNumbers. Soooo, by the time this runs, I may not have sortNumber. How would I make this work? Maybe I leave the sortNumbers in for now? But this is from v1.1 onwards. This bug will only affect those moving from v1 to v1.1.1. I feel like... it's been several years? Who hasn't updated their app?????
   // Only to be called during app launch.
   // For migrating from v1.0 to higher versions. Updating scheme from using sortNumber to using
