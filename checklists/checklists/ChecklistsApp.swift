@@ -9,6 +9,9 @@
 import SwiftUI
 import RealmSwift
 
+/*
+ TODO: Make sure upgrading from v1.1 doesn't break.
+ */
 private let launchedAtLeastOnceKey = "launchedAtLeastOnce"
 private let appVersionKey = "appVersionKey"
 
