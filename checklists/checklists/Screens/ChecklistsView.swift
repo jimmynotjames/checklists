@@ -46,8 +46,8 @@ struct ChecklistsView: View {
   @State private var newChecklistCreated: Checklist? = nil
 
   var body: some View {
-    ZStack(alignment: .bottomTrailing) {
-      MainNavigationStack(path: $navigationPath) {
+    MainNavigationStack(path: $navigationPath) {
+      ZStack(alignment: .bottomTrailing) {
         List {
           ForEach(group.displayedChecklists(), id: \.id) { checklist in
             // Not using NavigationLink because it has a Disclosure Indicator that cannot be removed.
@@ -98,18 +98,18 @@ struct ChecklistsView: View {
           .presentationDetents([.large])
           .presentationDragIndicator(.hidden)
         }
-      }
-      AddChecklistButton {
-        let checklist = Checklist()
-        checklist.items.append(Item())
-        DBManager.write { realm in
-          realm.add(checklist)
-          group.thaw()?.checklists.insert(checklist, at: 0)
+        AddChecklistButton {
+          let checklist = Checklist()
+          checklist.items.append(Item())
+          DBManager.write { realm in
+            realm.add(checklist)
+            group.thaw()?.checklists.insert(checklist, at: 0)
+          }
+          newChecklistCreated = checklist
         }
-        newChecklistCreated = checklist
+        .padding(.trailing, 20)
+        .padding(.bottom, 20)
       }
-      .padding(.trailing, 20)
-      .padding(.bottom, 20)
     }
   }
 
