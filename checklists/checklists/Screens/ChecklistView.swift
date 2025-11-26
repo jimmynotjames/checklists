@@ -46,10 +46,6 @@ struct NewChecklistView: View {
  - TODO: Tapping delete on empty Item Name will delete Item and move focus up to prior Item Name end of line. Unless it's the first Item, in which case, do nothing.
  - TODO: Tapping delete on empty Item Notes will move focus to Item Name end of line.
  - TODO: Refine formatting/spacing/fonts
- - TODO: Add accessibility
- - TODO: Add Dynamic Type capability.
- - TODO: Update manual test plan to match code changes.
- - TODO: Write/update automated tests.
  */
 
 struct ChecklistView: View {

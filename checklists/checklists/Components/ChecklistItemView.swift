@@ -23,9 +23,6 @@
  - TODO: Done button keyboard should read Next when focus is on a Checklist Item Name.
  - TODO: Keyboard on notes field should have Return key as Newline, not Done.
  - TODO: Exact fonts and spacing need to be refined.
- - TODO: Add accessibility
- - TODO: Add Dynamic Type capability.
- - TODO: Update manual test plan to match code changes.
  */
 import SwiftUI
 import RealmSwift

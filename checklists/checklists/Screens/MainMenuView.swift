@@ -11,12 +11,7 @@
  - Tapping Feedback button opens mail client to send feedback email.
  - Tapping Rate in App Store button opens App Store to write-a-review page.
  - TODO: Donate!
- - TODO: Settings
  - TODO: Refine formating/spacing/fonts
- - TODO: Add accessibility
- - TODO: Add Dynamic Type capability.
- - TODO: Update manual test plan to match code changes.
- - TODO: Write/update automated tests.
  */
 
 import SwiftUI

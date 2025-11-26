@@ -8,8 +8,6 @@
 
 /*
  Main navigation stack to try to separate out some things to keep things somewhat cleaner.
-
- TODO: Update toolbar buttons in nav bar to have same background as rest of screen.
  */
 
 import SwiftUI
