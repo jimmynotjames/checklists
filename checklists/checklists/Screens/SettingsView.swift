@@ -6,11 +6,6 @@
 //  Copyright © 2025 Jimmy Ho. All rights reserved.
 //
 
-/*
- Features:
- TODO: BUG - Done button has wrong background.
- */
-
 import SwiftUI
 
 struct SettingsView: View {
@@ -42,7 +37,7 @@ struct SettingsView: View {
       .navigationTitle("Settings")
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
-        ToolbarItem(placement: .topBarTrailing) {
+        CLToolbarItem(placement: .topBarTrailing) {
           Button("Done") { onDismiss?() }
             .foregroundStyle(CLColors.teal)
         }
