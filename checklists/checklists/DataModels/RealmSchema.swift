@@ -150,18 +150,6 @@ final class Checklist: Object, ObjectKeyIdentifiable {
       }
     }
   }
-
-  // TODO: Remove this eventually, when we remove the UIKit view controllers.
-  func dragItems() -> [UIDragItem] {
-    let itemProvider = NSItemProvider()
-    itemProvider.registerDataRepresentation(forTypeIdentifier: kUTTypePlainText as String, visibility: .ownProcess) { completion in
-      let idString = self._id.stringValue
-      let data = idString.data(using: String.Encoding.utf8)
-      completion(data, nil)
-      return nil
-    }
-    return [UIDragItem(itemProvider: itemProvider)]
-  }
 }
 
 final class Item: Object, ObjectKeyIdentifiable {
@@ -180,17 +168,6 @@ final class Item: Object, ObjectKeyIdentifiable {
 
   func toggleStatus() {
     isChecked = !isChecked
-  }
-
-  func dragItems() -> [UIDragItem] {
-    let itemProvider = NSItemProvider()
-    itemProvider.registerDataRepresentation(forTypeIdentifier: kUTTypePlainText as String, visibility: .ownProcess) { completion in
-      let idString = self._id.stringValue
-      let data = idString.data(using: String.Encoding.utf8)
-      completion(data, nil)
-      return nil
-    }
-    return [UIDragItem(itemProvider: itemProvider)]
   }
 }
 
