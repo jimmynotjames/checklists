@@ -9,6 +9,4 @@
 #ifndef checklists_Bridging_Header_h
 #define checklists_Bridging_Header_h
 
-#import "Flurry.h"
-
 #endif /* checklists_Bridging_Header_h */
