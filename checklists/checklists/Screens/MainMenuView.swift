@@ -10,6 +10,7 @@
  Features:
  - Tapping Feedback button opens mail client to send feedback email.
  - Tapping Rate in App Store button opens App Store to write-a-review page.
+ - TODO: BUG - X button to close menu is wrong color. Should just be an X.
  - TODO: Donate!
  - TODO: Settings
  - TODO: Refine formating/spacing/fonts
@@ -27,6 +28,7 @@ struct MainMenuView: View {
 
   // For managing navigation state.
   @State private var navigationPath = NavigationPath()
+  @State private var showingSettingsView = false
 
   var body: some View {
     NavigationStack(path: $navigationPath) {
@@ -36,7 +38,7 @@ struct MainMenuView: View {
           MainMenuRowButton(action: openFeedback, imageName: "MainMenuFeedbackIcon", text: "Feedback")
           MainMenuRowButton(action: openRateInAppStore, imageName: "MainMenuRateInAppStoreIcon", text: "Rate in App Store")
           MainMenuRowButton(action: { navigationPath.append("donate") }, imageName: "MainMenuDonateIcon", text: "Donate!")
-          MainMenuRowButton(action: { navigationPath.append("settings") }, imageName: "MainMenuSettingsIcon", text: "Settings")
+          MainMenuRowButton(action: openSettings, imageName: "MainMenuSettingsIcon", text: "Settings")
         }
         .listStyle(.plain)
       }
@@ -50,10 +52,13 @@ struct MainMenuView: View {
           }
         }
       }
+      .sheet(isPresented: $showingSettingsView) {
+        SettingsView(onDismiss: { showingSettingsView = false })
+          .presentationDetents([.large])
+      }
       .navigationDestination(for: String.self) { value in
         switch value {
         case "donate": DonationsView(onDismiss: { navigationPath.removeLast() })
-        case "settings": SettingsView(onDismiss: { navigationPath.removeLast() })
         default:
           EmptyView()
         }
@@ -69,6 +74,17 @@ struct MainMenuView: View {
   private func openRateInAppStore() {
     guard let url = URL(string: "https://itunes.apple.com/app/id1475724536?action=write-review") else { return }
     UIApplication.shared.open(url)
+  }
+
+  private func openSettings() {
+    showingSettingsView = true
+    /* TODO: BUG - This isn't working
+      DispatchQueue.main.async {
+        withAnimation(.none) {
+          onDismiss?()
+        }
+      }
+     */
   }
 }
 
