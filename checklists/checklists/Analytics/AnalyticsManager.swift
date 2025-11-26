@@ -7,20 +7,18 @@
 //
 /*
  Features:
- - TODO: Remove Flurry stuff.
  - TODO: Investigate adding a different analytics provider.
  */
 
 
 import Foundation
+import UIKit
 
 struct AnalyticsManager {
   // MARK: - Session
   static func appLaunched() {
     #if DEBUG
     #else
-    let sessionBuilder = FlurrySessionBuilder.init().withCrashReporting(true)?.withLogLevel(FlurryLogLevelCriticalOnly)?.withAppVersion(SettingsManager.shared..versionBuildString)
-    Flurry.startSession("BQTJY88YMP27MFMRRJTY", with: sessionBuilder)
     #endif
   }
 
@@ -28,12 +26,12 @@ struct AnalyticsManager {
   static func logEvent(_ eventName: String, withParameters params: [AnyHashable: Any]? = nil) {
     #if DEBUG
     #else
-    Flurry.logEvent(eventName, withParameters: params)
     #endif
   }
 
+  // TODO: Understand if there's a limit in Mixpanel on param values and truncate as appropriate.
   static func truncatedString(_ s: String) -> String {
-    return String(s.prefix(127)) // Limit by Flurry on param values is 255, but not sure if they're doing UTF-8, so being cautious.
+    return String(s.prefix(127))
   }
 
   // MARK: - Page View Analytics
@@ -73,6 +71,7 @@ struct AnalyticsManager {
 
   // MARK: - Device info analytics
   // Overall ratio of iPad versus iPhone can be found in App Store Connect Analytics, so leaving that out here.
+  @MainActor
   static func logDeviceOrientationChange() {
     let orientation = UIDevice.current.orientation
     guard orientation.isPortrait || orientation.isLandscape else { return } // When it's laid flat, it will also fire, and we're filtering it out here.
