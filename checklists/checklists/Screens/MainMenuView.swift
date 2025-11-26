@@ -10,7 +10,6 @@
  Features:
  - Tapping Feedback button opens mail client to send feedback email.
  - Tapping Rate in App Store button opens App Store to write-a-review page.
- - TODO: BUG - X button to close menu is wrong color. Should just be an X.
  - TODO: Donate!
  - TODO: Settings
  - TODO: Refine formating/spacing/fonts
@@ -43,7 +42,7 @@ struct MainMenuView: View {
         .listStyle(.plain)
       }
       .toolbar {
-        ToolbarItem(placement: .navigationBarLeading) {
+        CLToolbarItem(placement: .navigationBarLeading) {
           Button(action: { onDismiss?() }) {
             Image("StopIcon")
               .imageScale(.large)

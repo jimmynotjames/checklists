@@ -9,9 +9,6 @@
 import SwiftUI
 import RealmSwift
 
-/*
- TODO: BUG: Done button has wrong background color.
- */
 /// Wrapper View for new checklist modal.
 struct NewChecklistView: View {
   @ObservedRealmObject var checklist: Checklist
@@ -23,7 +20,7 @@ struct NewChecklistView: View {
       ChecklistView(checklist: checklist, shouldFocusChecklistNameOnAppear: true)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-          ToolbarItem(placement: .topBarTrailing) {
+          CLToolbarItem(placement: .topBarTrailing) {
             Button("Done") {
               if checklist.name.trimmed().isEmpty {
                 DBManager.write { _ in
@@ -58,6 +55,8 @@ struct NewChecklistView: View {
 struct ChecklistView: View {
   @ObservedRealmObject var checklist: Checklist
 
+  @Environment(\.dismiss) private var dismiss
+
   // For shifting cursor/focus to newly created Item.
   @FocusState private var focusedItemID: ObjectId?
   @FocusState private var isNameFocused: Bool
@@ -90,7 +89,6 @@ struct ChecklistView: View {
         // No insets due to tap target stuff.
         .listRowInsets(EdgeInsets(top: 0.0, leading: 0.0, bottom: 0.0, trailing: 0.0))
         .listRowBackground(Color.clear) // To prevent highlighting when tapping on row.
-
         // Add button row at bottom
         Section {
           CLButton {
@@ -112,6 +110,17 @@ struct ChecklistView: View {
       }
       .listStyle(.plain)
       Spacer()
+    }
+    .navigationBarBackButtonHidden()
+    .toolbar {
+      CLToolbarItem(placement: .topBarLeading) {
+        Button {
+          dismiss()
+        } label: {
+          Label("", systemImage: "chevron.backward")
+        }
+        //        .tint(CLColors.teal)
+      }
     }
     // When I tried to add this to individual component views, a Done button appeared for every
     // Component that had this declaration. Unable to encapsulate in individual components.

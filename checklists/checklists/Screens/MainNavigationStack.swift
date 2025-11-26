@@ -29,7 +29,7 @@ struct MainNavigationStack<Content: View>: View {
       NavigationStack(path: $path) {
         content()
           .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            CLToolbarItem(placement: .navigationBarLeading) {
               Button(action: {
                 menuButtonTapped()
               }) {
@@ -38,7 +38,7 @@ struct MainNavigationStack<Content: View>: View {
                   .accessibilityLabel("Miscellaneous Menu")
               }
             }
-            ToolbarItem(placement: .navigationBarTrailing) {
+            CLToolbarItem(placement: .navigationBarTrailing) {
               Button(action: { showingMoreMenu = true }) {
                 Image("MoreMenuIcon32x32")
                   .renderingMode(.template)

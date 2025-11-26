@@ -8,6 +8,8 @@
 
 import SwiftUI
 
+// TODO: Do a better shadow effect on the button.
+
 struct AddChecklistButton: View {
   let action: () -> Void
 
@@ -42,13 +44,13 @@ struct CLCircleButton: View {
         .scaledToFit()
         .padding(insetRadius)
         .frame(width: diameter, height: diameter)
-        .background(Color(UIColor(CLColors.defaultBackground)))
+        .background(Color(UIColor(.clear)))
         .clipShape(Circle())
         .overlay(
           Circle()
             .stroke(Color(UIColor(CLColors.defaultBackground)), lineWidth: 1)
+            .shadow(color: .gray.opacity(0.6), radius: 1.0, x: 0.0, y: 1.0)
         )
-        .shadow(color: .gray.opacity(0.4), radius: 3.0, x: 0.0, y: 2.0)
         .accessibilityLabel(accessibilityLabel)
     }
     .buttonStyle(.plain)
