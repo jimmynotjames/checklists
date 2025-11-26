@@ -31,7 +31,6 @@ class ChecklistViewController: UIViewController {
   weak var delegate: ChecklistViewControllerDelegate?
 
   @IBOutlet weak var checklistInfoHeaderView: UIView!
-  @IBOutlet weak var statusIcon: LegacyCircularPercentStatusIcon!
   @IBOutlet weak var checklistNameTextField: UITextField!
   @IBOutlet weak var checklistNotesTextView: CLTextView!
 
@@ -76,7 +75,6 @@ class ChecklistViewController: UIViewController {
     tableFooterView.delegate = self
     tableView.tableFooterView = tableFooterView
 
-    statusIcon.iconType = .header
     updateStatusIcon()
 
     //  Despite Apple docs saying the width is set, it is not (as of iOS 12), and StackOverflow seems to only show manual ways like this.
@@ -230,7 +228,7 @@ class ChecklistViewController: UIViewController {
   }
 
   func updateStatusIcon() {
-    statusIcon.percentageComplete = checklist.percentageComplete
+    // No op, deprecated
   }
 }
 
