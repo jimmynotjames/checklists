@@ -27,7 +27,7 @@
 import SwiftUI
 import RealmSwift
 
-struct ChecklistItemView: View {
+struct ChecklistItemViewNotInUse: View {
   @ObservedRealmObject var item: Item
 
   // Passed from the parent for focusing on TextField when new Item is added.

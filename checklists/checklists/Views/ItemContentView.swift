@@ -8,8 +8,12 @@
 
 import UIKit
 
+
+// TODO: Update these heights to use the line heights for whatever font is in use.
 private let minNameFieldHeight: CGFloat = 24.0
 private let minNotesTextViewHeight: CGFloat = 32.0
+
+
 
 protocol ItemContentViewDelegate: AnyObject {
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView)

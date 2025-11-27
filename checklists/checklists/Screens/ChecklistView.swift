@@ -46,6 +46,7 @@ struct NewChecklistView: View {
  - TODO: Tapping delete on empty Item Name will delete Item and move focus up to prior Item Name end of line. Unless it's the first Item, in which case, do nothing.
  - TODO: Tapping delete on empty Item Notes will move focus to Item Name end of line.
  - TODO: Refine formatting/spacing/fonts
+ - TODO: Check if this is still a problem: If user backspaces on a cell that's at the top of the screen, then the next cell above is non-existent as the tableview has not rendered it. Need to scroll that cell down into view before we do anything.
  */
 
 struct ChecklistView: View {
@@ -65,7 +66,7 @@ struct ChecklistView: View {
         .padding(EdgeInsets(top: 0.0, leading: 16.0, bottom: 8.0, trailing: 16.0))
       List {
         ForEach(checklist.items, id: \._id) { item in
-          ChecklistItemView(item: item, focusedItemID: $focusedItemID)
+          ChecklistItemViewNotInUse(item: item, focusedItemID: $focusedItemID)
             .swipeActions(edge: .trailing) {
               Button(role: .destructive) {
                 checklist.remove(item)
