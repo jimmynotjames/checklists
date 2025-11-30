@@ -69,6 +69,18 @@ class CLTextView: UITextView {
     }
   }
 
+  // Hacky. Need to fold in the Height constraint stuff into this class.
+  // But this is also used in the Name field, not just Notes, and things got weird. 
+  var isCollapsed: Bool = false {
+    didSet {
+      updatePlaceholderLabel()
+    }
+  }
+
+  var lineHeight: CGFloat {
+    font?.lineHeight ?? 12.0
+  }
+
   private lazy var inputAccessoryToolbar: UIToolbar = {
     let toolbar = UIToolbar()
     let button = UIBarButtonItem(title: inputAccessoryButtonName, style: .plain, target: self, action: #selector(inputAccessoryButtonTapped))
@@ -113,8 +125,6 @@ class CLTextView: UITextView {
 
     updatePlaceholderLabel()
 
-    textDropDelegate = self
-
     NotificationCenter.default.addObserver(self, selector: #selector(textDidChange), name: UITextView.textDidChangeNotification, object: self)
   }
 
@@ -141,18 +151,12 @@ class CLTextView: UITextView {
   }
 
   private func updatePlaceholderLabel() {
-    if hasText == false && placeholderText != nil && placeholderText!.count > 0 {
+    let hasPlaceholderText = placeholderText != nil && placeholderText!.count > 0
+    let hasText = text?.count ?? 0 > 0
+    if !hasText && hasPlaceholderText && !isCollapsed {
       placeholderLabel.isHidden = false
     } else {
       placeholderLabel.isHidden = true
     }
-  }
-}
-
-// Need this because the reordering of rows using Drag/Drop is causing it to accidentally drop into the textView instead of inserting in between rows.
-extension CLTextView: UITextDropDelegate {
-  // TECH DEBT: This may have long-term consequences in iPad and Mac App, if we move there. Maybe people will want to drop text in there??
-  func textDroppableView(_ textDroppableView: UIView & UITextDroppable, proposalForDrop drop: UITextDropRequest) -> UITextDropProposal {
-    return UITextDropProposal(operation: .forbidden)
   }
 }

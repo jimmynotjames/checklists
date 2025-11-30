@@ -41,6 +41,7 @@ struct NewChecklistView: View {
  - Displays a checklist with Checklist Name, Checklist Notes and list of Items.
  - All keyboards on this page will have a Done button in their toolbars.
 
+ - TODO: Creating a new Item, focus should shift to new item.
  - TODO: Tapping Done/Next on Checklist Name moves cursor/focus to first Item if new Checklist.
  - TODO: Tapping Next on Item Name inserts new Item below and moves focus to new Item.
  - TODO: Tapping delete on empty Item Name will delete Item and move focus up to prior Item Name end of line. Unless it's the first Item, in which case, do nothing.
@@ -66,7 +67,9 @@ struct ChecklistView: View {
         .padding(EdgeInsets(top: 0.0, leading: 16.0, bottom: 8.0, trailing: 16.0))
       List {
         ForEach(checklist.items, id: \._id) { item in
-          ChecklistItemViewNotInUse(item: item, focusedItemID: $focusedItemID)
+          ChecklistItemView(
+            item: item
+          )
             .swipeActions(edge: .trailing) {
               Button(role: .destructive) {
                 checklist.remove(item)
@@ -116,11 +119,11 @@ struct ChecklistView: View {
         } label: {
           Label("", systemImage: "chevron.backward")
         }
-        //        .tint(CLColors.teal)
       }
     }
     // When I tried to add this to individual component views, a Done button appeared for every
     // Component that had this declaration. Unable to encapsulate in individual components.
+    /* TODO: but I still need it for the header editing, yes?
     .toolbar {
       ToolbarItemGroup(placement: .keyboard) {
         Spacer()
@@ -129,6 +132,7 @@ struct ChecklistView: View {
         }
       }
     }
+     */
     .onAppear {
       if shouldFocusChecklistNameOnAppear {
         isNameFocused = true

@@ -6,15 +6,115 @@
 //  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
+import RealmSwift
+import SwiftUI
 import UIKit
 
+/*
+ TODO: Update font sizes in this with SwiftUI ones?
+ TODO: BUG - Update notes field on Item, then tap Back to exit ChecklistView. -> notes not updated in DB.
+ */
 
 // TODO: Update these heights to use the line heights for whatever font is in use.
 private let minNameFieldHeight: CGFloat = 24.0
-private let minNotesTextViewHeight: CGFloat = 32.0
+private let minNotesNumLines: CGFloat = 2.0
 
+// SwiftUI wrapper around the UIKit ItemContentView
+struct ChecklistItemView: UIViewRepresentable {
+  @ObservedRealmObject var item: Item
+  
+  @State private var isEditing: Bool = false
 
+  var onReturnOnName: (() -> Void)? = nil
+  var onBackspaceEmpty: (() -> Void)? = nil
 
+  func makeUIView(context: Context) -> ItemContentView {
+    let view = ItemContentView()
+    view.delegate = context.coordinator
+    view.item = item
+    return view
+  }
+
+  func updateUIView(_ uiView: ItemContentView, context: Context) {
+    uiView.item = item
+  }
+  
+  // Provide explicit sizing so SwiftUI List can measure dynamic heights correctly (iOS 26)
+  func sizeThatFits(_ proposal: ProposedViewSize, uiView: ItemContentView, context: Context) -> CGSize? {
+    // Ensure the UIKit view has applied its constraints before measuring
+    uiView.setNeedsLayout()
+    uiView.layoutIfNeeded()
+
+    // Determine a target width from the proposal (fallback to screen width if unspecified)
+    let contextScreenWidth = uiView.window?.windowScene?.screen.bounds.width
+    let targetWidth = proposal.width ?? contextScreenWidth ?? uiView.bounds.width
+    let targetSize = CGSize(width: targetWidth, height: UIView.layoutFittingCompressedSize.height)
+
+    // Ask Auto Layout for an appropriate fitting size
+    let size = uiView.systemLayoutSizeFitting(
+      targetSize,
+      withHorizontalFittingPriority: .required,
+      verticalFittingPriority: .fittingSizeLevel
+    )
+    return size
+  }
+  
+  func makeCoordinator() -> DelegateCoordinator {
+    DelegateCoordinator(checklistItemView: self)
+  }
+
+  // Necessary because CheclistItemView must be a struct so can't implement
+  // a delegate, and delegates have to have a weak var to hold them so...
+  class DelegateCoordinator: ItemContentViewDelegate {
+    var checklistItemView: ChecklistItemView
+
+    init(checklistItemView: ChecklistItemView) {
+      self.checklistItemView = checklistItemView
+    }
+
+    func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView) {
+      DBManager.write { _ in
+        checklistItemView.item.thaw()?.toggleStatus()
+      }
+    }
+
+    func itemContentViewNameFieldDidBeginEditing(_ itemContentView: ItemContentView) {
+      itemContentView.updateTextViewHeight(isExpanded: true)
+      checklistItemView.isEditing = true
+    }
+
+    func itemContentViewDidFinishEditing(_ itemContentView: ItemContentView) {
+      itemContentView.refreshHeight()
+      checklistItemView.isEditing = false
+    }
+
+    func itemContentViewHeightUpdated(_ itemContentView: ItemContentView) {
+      itemContentView.refreshHeight()
+    }
+
+    func itemContentView(_ itemContentView: ItemContentView, nameFieldUpdatedWith name: String) {
+      DBManager.write { _ in
+        checklistItemView.item.thaw()?.name = name.trimmed()
+      }
+    }
+
+    func itemContentView(_ itemContentView: ItemContentView, notesFieldUpdatedWith notes: String) {
+      DBManager.write { _ in
+        checklistItemView.item.thaw()?.notes = notes.trimmed()
+      }
+    }
+
+    func itemContentViewDidReturnOnNameField(_ itemContentView: ItemContentView) {
+      checklistItemView.onReturnOnName?()
+    }
+
+    func itemContentViewDidBackspaceEmpty(_ itemContentView: ItemContentView) {
+      checklistItemView.onBackspaceEmpty?()
+    }
+  }
+}
+
+@MainActor
 protocol ItemContentViewDelegate: AnyObject {
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView)
   func itemContentViewNameFieldDidBeginEditing(_ itemContentView: ItemContentView)
@@ -32,7 +132,7 @@ class ItemContentView: UIView {
     didSet {
       if let item = item {
         nameTextView.text = item.name
-        nameTextView.text = item.notes
+        notesTextView.text = item.notes
         updateCheckedStatus()
         refreshHeight()
       } else {
@@ -109,17 +209,28 @@ class ItemContentView: UIView {
   }
 
   func refreshHeight() {
-    updateTextViewHeight(isExpanded: (item?.notes.count ?? 0) > 0)
+    // Only update if it's changed. Otherwise, it jitters when changing focus between name and notes.
+    let shouldExpand = (item?.notes.count ?? 0) > 0 || isEditing
+    let isNotesViewExpanded  = !notesTextView.isCollapsed
+    
+    if shouldExpand != isNotesViewExpanded {
+      updateTextViewHeight(isExpanded: shouldExpand)
+    }
   }
 
   func updateTextViewHeight(isExpanded: Bool) {
     notesTextViewHeightConstraint.isActive = false
     if isExpanded {
-      notesTextViewHeightConstraint = notesTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: minNotesTextViewHeight)
+      notesTextViewHeightConstraint = notesTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: notesTextView.lineHeight * minNotesNumLines)
     } else {
       notesTextViewHeightConstraint = notesTextView.heightAnchor.constraint(equalToConstant: 0.0)
     }
     notesTextViewHeightConstraint.isActive = true
+    
+    notesTextView.isCollapsed = !isExpanded
+    
+    layoutIfNeeded()
+    invalidateIntrinsicContentSize()
   }
 
   func startEditing() {
@@ -216,3 +327,4 @@ extension ItemContentView: UITextViewDelegate {
     return true
   }
 }
+
