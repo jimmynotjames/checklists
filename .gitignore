@@ -70,3 +70,7 @@ fastlane/test_output
 
 # Emacs
 *~
+
+# Agent/tooling scratch — project-local working dir (see AGENTS.md "Bash command hygiene").
+# Kept in-repo rather than /tmp so it is allowlisted and never leaks across clones.
+tmp/

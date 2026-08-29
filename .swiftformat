@@ -1,0 +1,29 @@
+# https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md
+#
+# Ported from the budgets1 repo. Deviations from that config are called out inline —
+# this project is Swift 5.0 / UIKit / iOS 13.2, not Swift 6 / SwiftUI.
+#
+# Pre-commit runs this on STAGED FILES ONLY (see lefthook.yml), so the 2020-era tree
+# is reformatted incrementally as files are touched, never in one big-bang rewrite.
+--swiftversion 5.0
+--indent 2
+--importgrouping alpha
+--wraparguments before-first
+--wrapparameters before-first
+# budgets1 uses `--header strip`. Every file here carries a
+# `//  Created by Jimmy Ho ... Copyright © 2020` block that `strip` would delete on
+# first format — a large, pointless, authorship-destroying diff. Leave headers alone.
+--header ignore
+--linebreaks lf
+--maxwidth 200
+# SwiftLint owns modifier ordering (modifier_order rule). Disabling here prevents the
+# swiftformat→swiftlint conflict on modifier reordering.
+--disable modifierOrder
+# SwiftLint owns brace placement (opening_brace rule, K&R same-line style). SwiftFormat's
+# wrapMultilineStatementBraces wants the opposite (brace on its own line) for multiline
+# statements, so the two oscillate and swiftlint-fix (run last in pre-commit) wins — leaving
+# code that `swiftformat --lint` then rejects. Disable here so swiftformat defers.
+--disable wrapMultilineStatementBraces
+# `build/` and `DerivedData/` are gitignored scratch. The Flurry directory is vendored
+# third-party source (headers + a static archive) — never reformat it.
+--exclude build,DerivedData,.build,checklists/checklists/Flurry

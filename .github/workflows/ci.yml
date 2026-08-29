@@ -1,0 +1,172 @@
+# CI — ported from the budgets1 repo and currently DISABLED.
+#
+# ============================ HOW TO ENABLE ============================
+# 1. Uncomment the `pull_request:` and `push:` triggers below.
+# 2. Add the jobs as REQUIRED status checks in branch protection
+#    (Settings → Branches → main). `main` already requires a PR, but has zero
+#    required checks — without step 2 this workflow is advisory only.
+# =======================================================================
+#
+# Why it ships disabled: unlike budgets1 (a public repo with free, unbounded
+# macOS runner minutes), THIS REPO IS PRIVATE — macOS minutes bill at 10× the
+# ubuntu rate. The three ubuntu jobs are cheap; the `build` job is not. The local
+# lefthook hooks already run the same gates on every commit and push, so CI here
+# is defense-in-depth against `--no-verify`, a hookless clone, or a web-UI merge —
+# valuable, but a deliberate spend rather than a default.
+#
+# Deliberately NOT ported from budgets1: the `i18n-gates` job (no localization
+# pipeline here), the `test` job (the 2020-era XCTest suites are not yet proven
+# green — see AGENTS.md), and the `pr-summary` aggregation comment.
+name: CI
+
+on:
+  workflow_dispatch:
+  # pull_request:
+  # push:
+  #   branches: [main]
+
+# Cancel superseded runs on the same ref (a new push to a PR voids the old run).
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # --- Tier 1: lint/format parity with pre-commit (ubuntu) -------------------
+  # Pinned to the EXACT versions installed locally via Homebrew. A version skew
+  # would make CI fail on rules your machine doesn't enforce (or vice-versa) —
+  # keep these in lockstep with scripts/system-setup.sh / your brew installs.
+  #
+  # NOTE: these run REPO-WIDE, unlike the local hooks which are staged-files-only.
+  # On today's tree that means ~96 SwiftLint violations and 30/31 files failing
+  # the format check. Expect this job to be RED until the legacy tree is cleaned
+  # up — that is the honest signal, and one more reason the workflow ships off.
+  lint:
+    runs-on: ubuntu-latest
+    env:
+      SWIFTLINT_VERSION: "0.63.2"
+      SWIFTFORMAT_VERSION: "0.61.1"
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Cache pinned SwiftFormat/SwiftLint binaries
+        uses: actions/cache@v4
+        id: cache-lint-tools
+        with:
+          path: |
+            swiftformat_linux
+            swiftlint_bin
+          key: lint-tools-${{ env.SWIFTFORMAT_VERSION }}-${{ env.SWIFTLINT_VERSION }}
+
+      - name: Install pinned SwiftFormat (Linux release binary)
+        if: steps.cache-lint-tools.outputs.cache-hit != 'true'
+        run: |
+          curl -sSL -o swiftformat_linux.zip \
+            "https://github.com/nicklockwood/SwiftFormat/releases/download/${SWIFTFORMAT_VERSION}/swiftformat_linux.zip"
+          unzip -o -q swiftformat_linux.zip
+          chmod +x swiftformat_linux
+
+      - name: SwiftFormat (check only, no rewrite)
+        run: |
+          ./swiftformat_linux --version
+          ./swiftformat_linux --lint .
+
+      - name: Install pinned SwiftLint (Linux release binary)
+        if: steps.cache-lint-tools.outputs.cache-hit != 'true'
+        run: |
+          curl -sSL -o swiftlint_linux.zip \
+            "https://github.com/realm/SwiftLint/releases/download/${SWIFTLINT_VERSION}/swiftlint_linux_amd64.zip"
+          unzip -o -q swiftlint_linux.zip -d swiftlint_bin
+          chmod +x swiftlint_bin/swiftlint
+
+      - name: SwiftLint (strict)
+        run: |
+          swiftlint_bin/swiftlint version
+          swiftlint_bin/swiftlint lint --strict
+
+  # --- Tier 1: secret scan over full history (ubuntu) -------------------------
+  # Complements pre-commit `gitleaks protect --staged`. Pinned binary instead of
+  # gitleaks-action to avoid that action's org-license requirement.
+  #
+  # NOTE: this is currently green, and that is NOT the same as "no secrets". The
+  # hardcoded Flurry API key in AnalyticsManager.swift is not matched by any
+  # gitleaks rule. See AGENTS.md §"Known issues".
+  secrets:
+    runs-on: ubuntu-latest
+    env:
+      GITLEAKS_VERSION: "8.30.1"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history so `detect` can scan the whole tree
+      - name: Cache pinned gitleaks binary
+        uses: actions/cache@v4
+        id: cache-gitleaks
+        with:
+          path: gitleaks
+          key: gitleaks-${{ env.GITLEAKS_VERSION }}
+      - name: Install pinned gitleaks
+        if: steps.cache-gitleaks.outputs.cache-hit != 'true'
+        run: |
+          curl -sSL -o gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          tar -xzf gitleaks.tar.gz gitleaks
+          chmod +x gitleaks
+      - name: gitleaks detect
+        run: |
+          ./gitleaks version
+          ./gitleaks detect --no-banner --redact
+
+  # --- check-large-files: reject oversized files added/changed in the PR -----
+  # Mirrors the pre-commit hook (scripts/check-large-files.sh), which only ever
+  # sees staged files locally — here we diff against the PR base (or the prior
+  # push, on a push-to-main event) since there's no "staged files" concept in CI.
+  check-large-files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Diff files vs base
+        id: diff
+        run: |
+          base="${{ github.event.pull_request.base.sha || github.event.before }}"
+          files=$(git diff --name-only --diff-filter=d "$base"...HEAD | tr '\n' ' ')
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+      - name: check-large-files
+        if: steps.diff.outputs.files != ''
+        run: bash scripts/check-large-files.sh ${{ steps.diff.outputs.files }}
+
+  # --- Tier 2: compile check (macOS — 10× minute cost on a private repo) ------
+  # Direct xcodebuild rather than the make/sandbox path, for ephemeral runners.
+  # Mirrors scripts/build.sh — keep the scheme/project/ARCHS in sync with that file.
+  build:
+    runs-on: macos-26
+    needs: [lint, secrets, check-large-files]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Select Xcode 26.6
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "26.6"
+      - name: Cache SwiftPM packages
+        uses: actions/cache@v4
+        with:
+          path: .build/DerivedData/SourcePackages
+          key: spm-${{ runner.os }}-xcode26.6-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          restore-keys: |
+            spm-${{ runner.os }}-xcode26.6-
+      # ARCHS=arm64 is REQUIRED: the vendored Flurry static library's x86_64 slice
+      # is malformed and fails the linker. See AGENTS.md §"The arm64 pin is load-bearing".
+      - name: xcodebuild build
+        run: |
+          xcodebuild build \
+            -project checklists/checklists.xcodeproj \
+            -scheme checklists \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath .build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            ARCHS=arm64 \
+            ONLY_ACTIVE_ARCH=NO
