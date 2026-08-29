@@ -33,11 +33,16 @@ The PR #$1 has been reviewed and approved to land.
 
 3. **Squash-merge:** `gh pr merge $1 --squash`. One PR = one commit on `main`.
 
-4. **Clean up both branches** — deleting only the remote leaves a stale local branch:
-   - Remote: `gh api repos/jimmynotjames/checklists/git/refs/heads/<branch> -X DELETE`
-   - Local: `git checkout main && git pull --ff-only && git branch -D <branch>` (`-D`, since a
+4. **Clean up branches.** The merge does not clean up after itself locally, and may or may not have
+   cleaned up the remote:
+   - **Remote — usually already gone.** This repo has `delete_branch_on_merge` enabled, so GitHub
+     deletes the head branch as part of the merge. Check first:
+     `gh api repos/jimmynotjames/checklists/git/refs/heads/<branch>`. A **404 means it is already
+     deleted — that is the expected result, not a failure.** Only if the ref still exists, delete it:
+     `gh api repos/jimmynotjames/checklists/git/refs/heads/<branch> -X DELETE`.
+   - **Local:** `git checkout main && git pull --ff-only && git branch -D <branch>` (`-D`, since a
      squash-merge leaves the local tip un-ancestored)
-   - Stale tracking ref: `git fetch --prune` (clears the `origin/<branch>` ref that
+   - **Stale tracking ref:** `git fetch --prune` (clears the `origin/<branch>` ref that
      `git pull --ff-only` leaves behind)
 
 5. **Resolve the linked issue** (skip if step 2 found no issue):
