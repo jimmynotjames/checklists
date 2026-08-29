@@ -99,8 +99,8 @@ device and skips sandbox management entirely.
   scan of all 294 commits reports zero findings, because the key is a bare 20-char
   alphanumeric with no adjacent keyword and gitleaks ships no Flurry-specific rule. No
   `.gitleaksignore` baseline was needed for that reason; do not mistake a green secrets gate
-  for this being handled. It still needs rotating and moving to a gitignored xcconfig. See
-  the tracking issue.
+  for this being handled. It still needs rotating and moving to a gitignored xcconfig — tracked in
+  [issue #115](https://github.com/jimmynotjames/checklists/issues/115).
 - **Flurry SDK is unbuildable for x86_64** — see the arm64 pin section above.
 
 ## CI
