@@ -19,9 +19,14 @@ make test-ui     # OPT-IN — requires a prior `make test-unit` (simulator warm-
 `make system` installs the toolchain (lefthook, swiftlint, swiftformat, gitleaks) and the
 git hooks. Run it once per clone.
 
-**Tests are not in the gate.** These are 2020-era XCTest suites whose current pass/fail
-state has not been established. Promoting them into the gate is a deliberate decision to
-take once they are proven green — not a default.
+**Tests are not in the gate — and `make test-unit` currently FAILS TO LINK.** `RealmSwift`
+and `Toast` are linked into the app target only, never into `checklistsTests`, so the test
+bundle's direct Realm references have nothing to link against (`Undefined symbols for
+architecture arm64`). This predates the tooling migration and is unrelated to the arm64 pin.
+Tracked in [issue #116](https://github.com/jimmynotjames/checklists/issues/116); the fix is
+adding both products to the test target's "Frameworks and Libraries" in Xcode. Whether the
+2020-era assertions still pass is unknown — linking is only the first hurdle. `make test-ui`
+has not been run and has the same missing-linkage shape.
 
 **`make test-unit` wipes the simulator's app database.** `DataModelTests` tests against the
 *persisted* Realm store (its own header says so) and calls `deleteAll()` in `setUp`. The
@@ -102,6 +107,8 @@ device and skips sandbox management entirely.
   for this being handled. It still needs rotating and moving to a gitignored xcconfig — tracked in
   [issue #115](https://github.com/jimmynotjames/checklists/issues/115).
 - **Flurry SDK is unbuildable for x86_64** — see the arm64 pin section above.
+- **Test targets don't link their SPM dependencies** — `make test-unit` fails at link time.
+  [issue #116](https://github.com/jimmynotjames/checklists/issues/116).
 
 ## CI
 
