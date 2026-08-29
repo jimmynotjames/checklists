@@ -64,6 +64,52 @@ The tree carries **~96 pre-existing SwiftLint violations** (28 `force_cast`, 11 
 Code is brought up to standard as it is touched. Vendored `Flurry/` sources are never
 formatted or linted.
 
+## Commit and PR style
+
+**Route branch → commit → PR → merge through the skills — don't hand-roll the pipeline.** The
+skills are the canonical step-by-step spec (review, cross-cutting audit, gate, PR body, branch
+cleanup, issue linkage); this section holds the conventions they cite:
+
+- **Code already written, no issue:** `/create-pr`, then `/merge-pr <PR>`.
+- **Issue → PR:** `/create-pr-for-issue <N>`, then `/merge-pr <PR>`.
+
+**Never merge on the same turn the PR is opened.** The PR exists to be read.
+
+### Conventions
+
+These govern *every* commit, including ad-hoc ones not run through a skill:
+
+- **Never push to `main`.** Branch first: `git checkout -b u/jimmyho/<tool>/<kebab-description>`
+  **before the first `git add`** — moving a commit off `main` afterwards needs a destructive
+  force-push. `<tool>` documents authorship (`claude-code`, `cursor`, `cursor+claude`; omit for
+  manual branches). Description is lowercase kebab-case, no underscores. Enforced by the `pre-push`
+  lefthook, the bash-hygiene guard (rule 4), and server-side branch protection.
+- **Commit/PR subject:** `<Past-tense verb> <description>.` — sentence case, ends with a period,
+  **≤72 chars**, no conventional-commit prefix (`feat:`/`fix:`/`chore:`). Match the verb's weight to
+  the change (`Implemented` a feature, not `Updated`). The PR number `(#N)` goes at the end of the
+  commit subject on merge.
+- **Commit body:** optional for one-liners; required when a change spans more than one area. Use
+  `*` bullets naming **areas of change** (feature/refactor, not files), a one-sentence `Why:` the
+  diff can't show, and the `Co-Authored-By:` footer on Claude commits.
+- **Write commit messages and PR bodies to a file with the Write tool**, then reference the file:
+  `tmp/commit-msg.txt` → `git commit -F tmp/commit-msg.txt`, and `tmp/pr-body.md` →
+  `gh pr create --body-file tmp/pr-body.md`. **Never** `printf '...' > tmp/msg && git commit -F ...`
+  or an inline `--body`. *Why:* a compound Bash command is matched against the allowlist by its
+  leading token, so `printf`/`echo` prompts even though the `git`/`gh` half is allowed — and heredocs
+  are unreliable when the text contains quotes, backticks, or `$`. Writing the file separately keeps
+  the git/gh call a standalone, already-allowed string.
+- **PR body structure** follows `.github/pull_request_template.md`. Linkage: `Closes #N` (complete
+  fix, auto-closes on squash-merge), `Refs #N` plus a pending note (partial), or omit entirely.
+- **Squash-merge only** — one PR = one commit on `main`.
+
+### What gates a merge
+
+`main` has branch protection (PRs required, force-push blocked) but **zero required status checks
+and zero required approvals**, and `.github/workflows/ci.yml` is disabled — so nothing server-side
+stops a broken merge. `/merge-pr` compensates by running `make gate` on the PR branch and refusing
+to merge unless it passes. **If CI is ever enabled, `/merge-pr` should wait on `gh pr checks`
+instead, keeping the local gate as a fallback.**
+
 ## Bash command hygiene
 
 Enforced deterministically by `scripts/hooks/guard_bash_hygiene.sh`

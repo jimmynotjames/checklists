@@ -17,6 +17,10 @@
     "allow": [
       "Read(./**)",
       "Edit(./**)",
+      "Skill(create-pr)",
+      "Skill(create-pr-for-issue)",
+      "Skill(merge-pr)",
+      "Agent(general-purpose)",
       "Bash(make build)",
       "Bash(make build *)",
       "Bash(make gate)",
