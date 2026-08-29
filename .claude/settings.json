@@ -1,0 +1,73 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "scripts/hooks/guard_bash_hygiene.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Read(./**)",
+      "Edit(./**)",
+      "Bash(make build)",
+      "Bash(make build *)",
+      "Bash(make gate)",
+      "Bash(make gate *)",
+      "Bash(make format)",
+      "Bash(make format-check)",
+      "Bash(make format-changed)",
+      "Bash(make lint)",
+      "Bash(make lint-changed)",
+      "Bash(make test-unit)",
+      "Bash(make test-unit *)",
+      "Bash(make test-ui)",
+      "Bash(make test-ui *)",
+      "Bash(make system)",
+      "Bash(make hooks-install)",
+      "Bash(make initialize-sims)",
+      "Bash(make sim-status)",
+      "Bash(make sim-shutdown)",
+      "Bash(make sim-clean)",
+      "Bash(bash scripts/*)",
+      "Bash(bash -n scripts/*)",
+      "Bash(python3 -m py_compile scripts/*)",
+      "Bash(python3 scripts/resolve_sim_spec.py:*)",
+      "Bash(python3 scripts/resolve_booted_sim_udid.py:*)",
+      "Bash(python3 scripts/sim_clean.py:*)",
+      "Bash(xcodebuild build *)",
+      "Bash(xcodebuild test *)",
+      "Bash(xcodebuild build-for-testing *)",
+      "Bash(xcodebuild -version)",
+      "Bash(xcodebuild -list *)",
+      "Bash(xcodebuild -project checklists/checklists.xcodeproj -list)",
+      "Bash(xcrun simctl *)",
+      "Bash(xcrun xcresulttool *)",
+      "Bash(swiftlint lint *)",
+      "Bash(swiftlint --fix *)",
+      "Bash(swiftlint --strict)",
+      "Bash(swiftlint version *)",
+      "Bash(swiftformat --lint *)",
+      "Bash(swiftformat --version)",
+      "Bash(gitleaks protect *)",
+      "Bash(gitleaks detect *)",
+      "Bash(gitleaks version *)",
+      "Bash(lefthook install)",
+      "Bash(lefthook run *)",
+      "Bash(lipo -info *)",
+      "Bash(tee tmp/*)",
+      "Bash(rm -f tmp/*)",
+      "Bash(rm -rf tmp/*)",
+      "Bash(mkdir -p tmp)",
+      "Read(./tmp/**)",
+      "Edit(./tmp/**)"
+    ]
+  }
+}

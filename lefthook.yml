@@ -1,0 +1,51 @@
+# https://lefthook.dev/configuration/
+#
+# Ported from the budgets1 repo. Install with `make hooks-install` (or `make system`).
+#
+# Everything in pre-commit runs on {staged_files} ONLY. That is deliberate: this is a
+# 2020-era tree with ~96 pre-existing SwiftLint violations, so a repo-wide gate would
+# block every commit. Files are brought up to standard as they are touched.
+pre-commit:
+  parallel: false
+  commands:
+    swiftformat:
+      glob: "**/*.swift"
+      exclude: "checklists/checklists/Flurry/*"
+      run: swiftformat {staged_files}
+      stage_fixed: true
+
+    swiftlint-fix:
+      glob: "**/*.swift"
+      exclude: "checklists/checklists/Flurry/*"
+      run: swiftlint --fix --quiet {staged_files}
+      stage_fixed: true
+
+    swiftlint:
+      glob: "**/*.swift"
+      exclude: "checklists/checklists/Flurry/*"
+      run: swiftlint lint --strict {staged_files}
+
+    check-merge-conflicts:
+      run: bash -c 'set -f; files=(); for f in {staged_files}; do [ "$f" = lefthook.yml ] || files+=("$f"); done; [ "${#files[@]}" -eq 0 ] || ! grep -q "<<<""<<<<" -- "${files[@]}"'
+
+    check-large-files:
+      run: bash scripts/check-large-files.sh {staged_files}
+
+    gitleaks:
+      run: gitleaks protect --staged --no-banner
+
+pre-push:
+  commands:
+    # Belt-and-braces: `main` also has server-side branch protection. This just fails
+    # faster and more legibly than a rejected push.
+    no-direct-main-push:
+      run: |
+        if [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ]; then
+          echo "error: direct push to main is not allowed - open a PR instead" >&2
+          exit 1
+        fi
+
+    # Compile check only. budgets1 also runs its i18n gates here; this repo has no
+    # localization pipeline. Tests are deliberately not run on push — see AGENTS.md.
+    build:
+      run: bash scripts/build.sh
