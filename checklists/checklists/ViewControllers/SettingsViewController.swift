@@ -110,7 +110,8 @@ class SettingsViewController: UITableViewController {
     case themesSection:
       48.0
     default:
-      44.0
+      // Info rows self-size (nameLabel wraps to 2 lines), matching the storyboard's automatic row height.
+      UITableView.automaticDimension
     }
   }
 

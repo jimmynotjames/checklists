@@ -39,10 +39,16 @@ class InfoRowTableViewCell: UITableViewCell {
       iconImageView.heightAnchor.constraint(equalToConstant: 24.0),
       iconImageView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
       iconImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+      // The icon's vertical pins keep the row at least 44pt; the label's let a 2-line title grow the
+      // row instead of clipping (the storyboard had no height-defining pins, so it clipped).
+      iconImageView.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: 10.0),
+      contentView.bottomAnchor.constraint(greaterThanOrEqualTo: iconImageView.bottomAnchor, constant: 10.0),
 
       nameLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 8.0),
       nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16.0),
       nameLabel.centerYAnchor.constraint(equalTo: iconImageView.centerYAnchor),
+      nameLabel.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: 10.0),
+      contentView.bottomAnchor.constraint(greaterThanOrEqualTo: nameLabel.bottomAnchor, constant: 10.0),
     ])
   }
 
