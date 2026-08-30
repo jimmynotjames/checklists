@@ -3,7 +3,6 @@
 //  checklists
 //
 //  Created by Jimmy Ho on 11/19/20.
-//  Copyright © 2020 Jimmy Ho. All rights reserved.
 //
 
 import UIKit
@@ -34,7 +33,7 @@ class CircularPercentStatusIcon: UIView {
   private var innerRadius: CGFloat!
   private var outerRingLineWidth: CGFloat!
 
-  private var innerPercentCircleLayer: CAShapeLayer = CAShapeLayer()
+  private var innerPercentCircleLayer: CAShapeLayer = .init()
 
   private var heightWidthAnchorConstraints: [NSLayoutConstraint] = []
 
@@ -51,12 +50,12 @@ class CircularPercentStatusIcon: UIView {
     super.updateConstraints()
   }
 
-  override init(frame: CGRect) {
+  override init(frame _: CGRect) {
     fatalError()
   }
 
   required init?(coder aDecoder: NSCoder) {
-    self.iconType = .header
+    iconType = .header
     super.init(coder: aDecoder)
     configureDimensions(iconType: iconType)
     commonInit()
@@ -84,7 +83,7 @@ class CircularPercentStatusIcon: UIView {
   }
 
   private func configureDimensions(iconType: IconType) {
-    switch (iconType) {
+    switch iconType {
     case .tableViewCell:
       radius = 10.0
       innerRadius = 7.5

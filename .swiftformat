@@ -1,11 +1,11 @@
 # https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md
 #
 # Ported from the budgets1 repo. Deviations from that config are called out inline —
-# this project is Swift 5.0 / UIKit / iOS 13.2, not Swift 6 / SwiftUI.
+# this project is Swift 6 / UIKit / iOS 26, not SwiftUI.
 #
 # Pre-commit runs this on STAGED FILES ONLY (see lefthook.yml), so the 2020-era tree
 # is reformatted incrementally as files are touched, never in one big-bang rewrite.
---swiftversion 5.0
+--swiftversion 6.0
 --indent 2
 --importgrouping alpha
 --wraparguments before-first

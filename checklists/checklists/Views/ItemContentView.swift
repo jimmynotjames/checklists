@@ -3,7 +3,6 @@
 //  checklists
 //
 //  Created by Jimmy Ho on 5/19/19.
-//  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
 import UIKit
@@ -11,7 +10,7 @@ import UIKit
 private var minNameFieldHeight: CGFloat = 24.0
 private var minNotesTextViewHeight: CGFloat = 32.0
 
-protocol ItemContentViewDelegate: class {
+protocol ItemContentViewDelegate: AnyObject {
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView)
   func itemContentViewNameFieldDidBeginEditing(_ itemContentView: ItemContentView)
   func itemContentViewDidFinishEditing(_ itemContentView: ItemContentView)
@@ -26,7 +25,7 @@ protocol ItemContentViewDelegate: class {
 class ItemContentView: UIView {
   var item: Item? {
     didSet {
-      if let item = item {
+      if let item {
         nameTextView.text = item.name
         if let notes = item.notes {
           notesTextView.text = notes
@@ -46,9 +45,7 @@ class ItemContentView: UIView {
   weak var delegate: ItemContentViewDelegate?
 
   var isEditing: Bool {
-    get {
-      return nameTextView.isFirstResponder || notesTextView.isFirstResponder
-    }
+    nameTextView.isFirstResponder || notesTextView.isFirstResponder
   }
 
   private lazy var checkboxButton: CheckboxButton = {
@@ -56,6 +53,7 @@ class ItemContentView: UIView {
     button.addTarget(self, action: #selector(checkboxButtonTapped(sender:)), for: .touchUpInside)
     return button
   }()
+
   private lazy var nameTextView: CLTextView = {
     let textView = CLTextView()
     textView.delegate = self
@@ -68,6 +66,7 @@ class ItemContentView: UIView {
     textView.accessibilityLabel = "checklist item: "
     return textView
   }()
+
   private lazy var notesTextView: CLTextView = {
     let textView = CLTextView()
     textView.placeholderText = "Notes"
@@ -81,11 +80,10 @@ class ItemContentView: UIView {
     textView.accessibilityLabel = "optional notes: "
     return textView
   }()
+
   private let containerView = UIView()
 
-  private lazy var notesTextViewHeightConstraint: NSLayoutConstraint = {
-    return notesTextView.heightAnchor.constraint(equalToConstant: 0.0)
-  }()
+  private lazy var notesTextViewHeightConstraint: NSLayoutConstraint = notesTextView.heightAnchor.constraint(equalToConstant: 0.0)
 
   private var wasInputFieldTapped: Bool = false
 
@@ -104,7 +102,8 @@ class ItemContentView: UIView {
     installConstraints()
   }
 
-  required init?(coder aDecoder: NSCoder) {
+  @available(*, unavailable)
+  required init?(coder _: NSCoder) {
     fatalError("This init() not supported.")
   }
 
@@ -133,7 +132,8 @@ class ItemContentView: UIView {
     nameTextView.textColor = textColor
     notesTextView.textColor = textColor
   }
-  /*
+
+  /**
    I need to detect when to collapse the view (if notes are empty), but if user taps from one input
    field to another, I can't tell properly with just endEditing...().
    */
@@ -144,12 +144,12 @@ class ItemContentView: UIView {
   }
 
   private func installConstraints() {
-    let views = [ "itemContentView": self, // No actual effect, except to suppress intermediate unsatisfiable constraint warnings.
-                  "checkboxButton": checkboxButton,
-                  "containerView": containerView,
-                  "nameTextView": nameTextView,
-                  "notesTextView": notesTextView ]
-    views.forEach({ $0.value.translatesAutoresizingMaskIntoConstraints = false })
+    let views = ["itemContentView": self, // No actual effect, except to suppress intermediate unsatisfiable constraint warnings.
+                 "checkboxButton": checkboxButton,
+                 "containerView": containerView,
+                 "nameTextView": nameTextView,
+                 "notesTextView": notesTextView]
+    views.forEach { $0.value.translatesAutoresizingMaskIntoConstraints = false }
 
     nameTextView.setContentCompressionResistancePriority(.required, for: .vertical)
     nameTextView.setContentHuggingPriority(.required, for: .vertical)
@@ -162,11 +162,11 @@ class ItemContentView: UIView {
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameTextView]-(4)-[notesTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[nameTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[notesTextView]|", options: [], metrics: nil, views: views),
-       [nameTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: minNameFieldHeight), notesTextViewHeightConstraint]
-        ].flatMap({ $0 }))
+       [nameTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: minNameFieldHeight), notesTextViewHeightConstraint]].flatMap(\.self)
+    )
   }
 
-  @objc func checkboxButtonTapped(sender: UIButton) {
+  @objc func checkboxButtonTapped(sender _: UIButton) {
     delegate?.itemContentViewCheckboxButtonTapped(self)
   }
 
@@ -185,6 +185,7 @@ extension ItemContentView: UITextViewDelegate {
     }
     wasInputFieldTapped = false
   }
+
   func textViewDidEndEditing(_ textView: UITextView) {
     switch textView {
     case nameTextView:
@@ -196,16 +197,18 @@ extension ItemContentView: UITextViewDelegate {
     }
     finishEditingViewIfNecessary()
   }
-  func textViewDidChange(_ textView: UITextView) {
+
+  func textViewDidChange(_: UITextView) {
     delegate?.itemContentViewHeightUpdated(self)
   }
-  func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-    if text == "\n" && textView == nameTextView {
+
+  func textView(_ textView: UITextView, shouldChangeTextIn _: NSRange, replacementText text: String) -> Bool {
+    if text == "\n", textView == nameTextView {
       delegate?.itemContentViewDidReturnOnNameField(self)
       return false
     }
-    if text.count == 0 && textView.text.count == 0 { // Assume someone backspaced on empty field
-      if textView == nameTextView && !notesTextView.hasText { // Both fields should be empty to call.
+    if text.isEmpty, textView.text.isEmpty { // Assume someone backspaced on empty field
+      if textView == nameTextView, !notesTextView.hasText { // Both fields should be empty to call.
         delegate?.itemContentViewDidBackspaceEmpty(self)
         return false
       } else if textView == notesTextView {

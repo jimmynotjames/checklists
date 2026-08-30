@@ -1,0 +1,20 @@
+//
+//  SceneDelegate.swift
+//  checklists
+//
+//  Created by Jimmy Ho on 8/30/26.
+//
+
+import UIKit
+
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+  var window: UIWindow?
+
+  func scene(_ scene: UIScene, willConnectTo _: UISceneSession, options _: UIScene.ConnectionOptions) {
+    guard let windowScene = scene as? UIWindowScene else { return }
+    let window = UIWindow(windowScene: windowScene)
+    window.rootViewController = UINavigationController(rootViewController: ChecklistsViewController(style: .plain))
+    window.makeKeyAndVisible()
+    self.window = window
+  }
+}

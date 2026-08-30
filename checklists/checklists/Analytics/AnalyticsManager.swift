@@ -3,7 +3,6 @@
 //  checklists
 //
 //  Created by Jimmy Ho on 9/4/19.
-//  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
 // MARK: - Status: analytics are STUBBED. There is no backend.
@@ -112,7 +111,7 @@ enum AnalyticsManager {
   /// error. Everything currently passed is a `String` or an `Int`, both of which conform.
   static func logEvent(_ eventName: String, withParameters params: [String: Any]? = nil) {
     #if DEBUG
-      if let params = params, !params.isEmpty {
+      if let params, !params.isEmpty {
         print("[analytics] \(eventName) \(params)")
       } else {
         print("[analytics] \(eventName)")
@@ -126,7 +125,7 @@ enum AnalyticsManager {
   /// limit was counted in UTF-8 bytes rather than characters. Mixpanel's own limit is also 255
   /// characters, so the value carries over unchanged.
   static func truncatedString(_ s: String) -> String {
-    return String(s.prefix(127))
+    String(s.prefix(127))
   }
 
   // MARK: - Page View Analytics

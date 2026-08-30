@@ -3,7 +3,6 @@
 //  checklists
 //
 //  Created by Jimmy Ho on 12/4/20.
-//  Copyright © 2020 Jimmy Ho. All rights reserved.
 //
 
 import UIKit
@@ -54,25 +53,25 @@ class ChecklistCellContentView: UIView {
     installConstraints()
   }
 
-  required init?(coder aDecoder: NSCoder) {
+  @available(*, unavailable)
+  required init?(coder _: NSCoder) {
     fatalError("This init() not supported.")
   }
 
-
   private func installConstraints() {
-    let views = [ "itemContentView": self, // No actual effect, except to suppress intermediate unsatisfiable constraint warnings.
-                  "statusIcon": statusIcon,
-                  "nameLabel": nameLabel,
-                  "notesLabel": notesLabel ]
-    views.forEach({ $0.value.translatesAutoresizingMaskIntoConstraints = false })
+    let views = ["itemContentView": self, // No actual effect, except to suppress intermediate unsatisfiable constraint warnings.
+                 "statusIcon": statusIcon,
+                 "nameLabel": nameLabel,
+                 "notesLabel": notesLabel]
+    views.forEach { $0.value.translatesAutoresizingMaskIntoConstraints = false }
 
-    let metrics = [ "margin": 16.0 ]
+    let metrics = ["margin": 16.0]
 
     NSLayoutConstraint.activate(
       [NSLayoutConstraint.constraints(withVisualFormat: "H:|-(margin)-[statusIcon]-7-[nameLabel]-(margin)-|", options: [], metrics: metrics, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|-(margin)-[notesLabel]-(margin)-|", options: [], metrics: metrics, views: views),
        [statusIcon.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor)],
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|-[nameLabel]-[notesLabel]-|", options: [], metrics: metrics, views: views),
-        ].flatMap({ $0 }))
+       NSLayoutConstraint.constraints(withVisualFormat: "V:|-[nameLabel]-[notesLabel]-|", options: [], metrics: metrics, views: views)].flatMap(\.self)
+    )
   }
 }

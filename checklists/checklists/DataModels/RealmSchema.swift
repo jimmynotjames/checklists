@@ -1,17 +1,16 @@
 //
-//  ChecklistsRealmObjects.swift
+//  RealmSchema.swift
 //  checklists
 //
 //  Created by Jimmy Ho on 5/23/19.
-//  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
 import Foundation
-import UIKit
-import MobileCoreServices
 import RealmSwift
+import UIKit
+import UniformTypeIdentifiers
 
-/*
+/**
  Current implementation is for this to be a singleton-style object,
  using the List to preserve arbitrary ordering of the Checklists.
  Perhaps in the future, some sort of tagging or folder structure
@@ -22,9 +21,13 @@ class Group: Object {
 
   let checklists = List<Checklist>()
 
+  override nonisolated init() {
+    super.init()
+  }
+
   func moveChecklist(from fromIndex: Int, to toIndex: Int) {
-    guard fromIndex >= 0 && fromIndex < checklists.count else { assertionFailure(); return }
-    guard toIndex >= 0 && toIndex < checklists.count else { assertionFailure(); return }
+    guard fromIndex >= 0, fromIndex < checklists.count else { assertionFailure(); return }
+    guard toIndex >= 0, toIndex < checklists.count else { assertionFailure(); return }
     guard fromIndex != toIndex else { return }
 
     DBManager.write {
@@ -33,35 +36,36 @@ class Group: Object {
   }
 }
 
-
 class Checklist: Object {
   @objc dynamic var id = NSUUID().uuidString
   @objc dynamic var name: String = ""
   @objc dynamic var notes: String?
   @objc dynamic var sortNumber: Double = 0.0
-  @objc dynamic var lastModified: Date = Date()
+  @objc dynamic var lastModified: Date = .init()
 
   let items = List<Item>()
 
   var percentageComplete: CGFloat {
-    get {
-      guard items.count > 0 else { return 0.0 }
-      return CGFloat(items.filter({ $0.status == .checked }).count) / CGFloat(items.count)
-    }
+    guard !items.isEmpty else { return 0.0 }
+    return CGFloat(items.count(where: { $0.status == .checked })) / CGFloat(items.count)
+  }
+
+  override nonisolated init() {
+    super.init()
   }
 
   convenience init(name: String, notes: String? = nil, sortNumber: Double? = nil, items: [Item]) {
     self.init()
     self.name = name
     self.notes = notes
-    if let sortNumber = sortNumber {
+    if let sortNumber {
       self.sortNumber = sortNumber
     }
     self.items.append(objectsIn: items)
   }
 
   func remove(at index: Int) {
-    guard index >= 0 && index < items.count else { assertionFailure(); return }
+    guard index >= 0, index < items.count else { assertionFailure(); return }
     DBManager.write {
       let item = items[index]
       items.remove(at: index)
@@ -69,9 +73,9 @@ class Checklist: Object {
     }
   }
 
-  func swapItemsAt(_ index1: Int, _  index2: Int) {
-    guard index1 >= 0 && index1 < items.count else { assertionFailure(); return }
-    guard index2 >= 0 && index2 < items.count else { assertionFailure(); return }
+  func swapItemsAt(_ index1: Int, _ index2: Int) {
+    guard index1 >= 0, index1 < items.count else { assertionFailure(); return }
+    guard index2 >= 0, index2 < items.count else { assertionFailure(); return }
     guard index1 != index2 else { return }
 
     DBManager.write {
@@ -80,8 +84,8 @@ class Checklist: Object {
   }
 
   func moveItem(from fromIndex: Int, to toIndex: Int) {
-    guard fromIndex >= 0 && fromIndex < items.count else { assertionFailure(); return }
-    guard toIndex >= 0 && toIndex < items.count else { assertionFailure(); return }
+    guard fromIndex >= 0, fromIndex < items.count else { assertionFailure(); return }
+    guard toIndex >= 0, toIndex < items.count else { assertionFailure(); return }
     guard fromIndex != toIndex else { return }
 
     DBManager.write {
@@ -91,7 +95,7 @@ class Checklist: Object {
 
   func uncheckAllItems() {
     DBManager.write {
-      items.forEach { item in
+      for item in items {
         item.status = .unchecked
       }
     }
@@ -99,8 +103,9 @@ class Checklist: Object {
 
   func dragItems() -> [UIDragItem] {
     let itemProvider = NSItemProvider()
-    itemProvider.registerDataRepresentation(forTypeIdentifier: kUTTypePlainText as String, visibility: .ownProcess) { completion in
-      let data = self.id.data(using: .utf8)
+    let id = id
+    itemProvider.registerDataRepresentation(forTypeIdentifier: UTType.plainText.identifier, visibility: .ownProcess) { completion in
+      let data = id.data(using: .utf8)
       completion(data, nil)
       return nil
     }
@@ -109,12 +114,11 @@ class Checklist: Object {
 }
 
 class Item: Object {
-
   enum Status: Int {
     case unchecked
     case checked
 
-    static let defaultValue: Status = .unchecked
+    nonisolated static let defaultValue: Status = .unchecked
   }
 
   @objc dynamic var id = NSUUID().uuidString
@@ -124,11 +128,15 @@ class Item: Object {
 
   var status: Status {
     get {
-      return Status(rawValue: statusRaw) ?? Status.defaultValue
+      Status(rawValue: statusRaw) ?? Status.defaultValue
     }
     set {
       statusRaw = newValue.rawValue
     }
+  }
+
+  override nonisolated init() {
+    super.init()
   }
 
   convenience init(name: String, notes: String? = nil) {
@@ -146,12 +154,12 @@ class Item: Object {
 
   func dragItems() -> [UIDragItem] {
     let itemProvider = NSItemProvider()
-    itemProvider.registerDataRepresentation(forTypeIdentifier: kUTTypePlainText as String, visibility: .ownProcess) { completion in
-      let data = self.id.data(using: .utf8)
+    let id = id
+    itemProvider.registerDataRepresentation(forTypeIdentifier: UTType.plainText.identifier, visibility: .ownProcess) { completion in
+      let data = id.data(using: .utf8)
       completion(data, nil)
       return nil
     }
     return [UIDragItem(itemProvider: itemProvider)]
   }
 }
-

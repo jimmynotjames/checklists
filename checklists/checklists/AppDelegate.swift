@@ -1,9 +1,8 @@
 //
 //  AppDelegate.swift
 //  checklists
-// x
+//
 //  Created by Jimmy Ho on 5/7/19.
-//  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
 import RealmSwift
@@ -12,10 +11,8 @@ import UIKit
 private let launchedAtLeastOnceKey = "launchedAtLeastOnce"
 private let appVersionKey = "appVersionKey"
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
-  var window: UIWindow?
-
+@main
+class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     AnalyticsManager.appLaunched()
 
@@ -24,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     UIDevice.current.beginGeneratingDeviceOrientationNotifications()
     NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged), name: UIDevice.orientationDidChangeNotification, object: nil)
 
-    updateNavigationBarAppearance()
+    UINavigationBar.appearance().tintColor = Colors.teal
 
     #if DEBUG
       // SampleData.clearDatabase() // TODO: Comment out before prod release
@@ -61,14 +58,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     return true
   }
 
-  private func updateNavigationBarAppearance() {
-    let navigationBarAppearance = UINavigationBar.appearance()
-    navigationBarAppearance.tintColor = Colors.teal
-    navigationBarAppearance.setBackgroundImage(UIImage(), for: .default)
-    navigationBarAppearance.shadowImage = UIImage()
-    navigationBarAppearance.isTranslucent = false
-    navigationBarAppearance.barTintColor = Colors.defaultBackground
-    navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: Colors.teal]
+  func application(_: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options _: UIScene.ConnectionOptions) -> UISceneConfiguration {
+    UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
   }
 
   /// For migrating from v1.0 to v1.1. Updating scheme from using sortNumber to using the Group object to hold a ordered list.

@@ -3,7 +3,6 @@
 //  checklists
 //
 //  Created by Jimmy Ho on 7/31/19.
-//  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
 /*
@@ -21,7 +20,6 @@ protocol CLTextViewDelegate: UITextViewDelegate {
 }
 
 class CLTextView: UITextView {
-
   var inputAccessoryButtonName: String = "Done"
   var inputAccessoryButtonTappedAction: (() -> Void)? {
     didSet {
@@ -32,6 +30,7 @@ class CLTextView: UITextView {
       }
     }
   }
+
   @objc func inputAccessoryButtonTapped() {
     inputAccessoryButtonTappedAction?()
   }
@@ -42,6 +41,7 @@ class CLTextView: UITextView {
       updatePlaceholderLabel()
     }
   }
+
   var placeholderTextColor: UIColor = .lightGray {
     didSet {
       placeholderLabel.textColor = placeholderTextColor
@@ -50,7 +50,7 @@ class CLTextView: UITextView {
 
   override var text: String! {
     get {
-      return super.text
+      super.text
     }
     set {
       super.text = newValue
@@ -60,7 +60,7 @@ class CLTextView: UITextView {
 
   override var font: UIFont? {
     get {
-      return super.font
+      super.font
     }
     set {
       super.font = newValue
@@ -120,13 +120,13 @@ class CLTextView: UITextView {
   private func setUpSubviews() {
     addSubview(placeholderLabel)
 
-    let views = [ "placeholderLabel": placeholderLabel ]
-    views.forEach({ $0.value.translatesAutoresizingMaskIntoConstraints = false })
+    let views = ["placeholderLabel": placeholderLabel]
+    views.forEach { $0.value.translatesAutoresizingMaskIntoConstraints = false }
 
     NSLayoutConstraint.activate(
       [NSLayoutConstraint.constraints(withVisualFormat: "H:|[placeholderLabel]|", options: [], metrics: nil, views: views),
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|[placeholderLabel]|", options: [], metrics: nil, views: views),
-        ].flatMap({ $0 }))
+       NSLayoutConstraint.constraints(withVisualFormat: "V:|[placeholderLabel]|", options: [], metrics: nil, views: views)].flatMap(\.self)
+    )
   }
 
   deinit {
@@ -140,7 +140,7 @@ class CLTextView: UITextView {
   }
 
   private func updatePlaceholderLabel() {
-    if hasText == false && placeholderText != nil && placeholderText!.count > 0 {
+    if hasText == false, placeholderText != nil, !placeholderText!.isEmpty {
       placeholderLabel.isHidden = false
     } else {
       placeholderLabel.isHidden = true
@@ -148,10 +148,10 @@ class CLTextView: UITextView {
   }
 }
 
-// Need this because the reordering of rows using Drag/Drop is causing it to accidentally drop into the textView instead of inserting in between rows.
+/// Need this because the reordering of rows using Drag/Drop is causing it to accidentally drop into the textView instead of inserting in between rows.
 extension CLTextView: UITextDropDelegate {
-  // TECH DEBT: This may have long-term consequences in iPad and Mac App, if we move there. Maybe people will want to drop text in there??
-  func textDroppableView(_ textDroppableView: UIView & UITextDroppable, proposalForDrop drop: UITextDropRequest) -> UITextDropProposal {
-    return UITextDropProposal(operation: .forbidden)
+  /// TECH DEBT: This may have long-term consequences in iPad and Mac App, if we move there. Maybe people will want to drop text in there??
+  func textDroppableView(_: UIView & UITextDroppable, proposalForDrop _: UITextDropRequest) -> UITextDropProposal {
+    UITextDropProposal(operation: .forbidden)
   }
 }

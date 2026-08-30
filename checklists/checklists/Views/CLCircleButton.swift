@@ -3,7 +3,6 @@
 //  checklists
 //
 //  Created by Jimmy Ho on 10/20/19.
-//  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
 import UIKit
@@ -12,7 +11,6 @@ private let diameter: CGFloat = 60.0
 private let insetRadius: CGFloat = 10.0
 
 class CLCircleButton: UIButton {
-
   static func addChecklistButton() -> CLCircleButton {
     let button = CLCircleButton(iconName: "AddChecklistIcon")
     button.accessibilityLabel = "Add new checklist."
@@ -45,7 +43,8 @@ class CLCircleButton: UIButton {
     widthAnchor.constraint(equalToConstant: diameter).isActive = true
   }
 
-  required init?(coder aDecoder: NSCoder) {
+  @available(*, unavailable)
+  required init?(coder _: NSCoder) {
     fatalError()
   }
 }
