@@ -50,7 +50,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
     let views = ["button": addChecklistButton]
     views.forEach { $0.value.translatesAutoresizingMaskIntoConstraints = false }
 
-    let baseOffset: CGFloat = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.safeAreaInsets.bottom ?? 0.0
+    let baseOffset: CGFloat = view.window?.safeAreaInsets.bottom ?? 0.0
     let bottomOffset: CGFloat = -20.0 + baseOffset
 
     addChecklistButtonPortraitConstraints = [
@@ -125,11 +125,11 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   // MARK: - Table view data source
 
   override func numberOfSections(in _: UITableView) -> Int {
-    return 1
+    1
   }
 
   override func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
-    return group.checklists.count
+    group.checklists.count
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -145,7 +145,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   }
 
   override func tableView(_: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-    return indexPath.section == checklistsSection
+    indexPath.section == checklistsSection
   }
 
   override func tableView(_: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -177,7 +177,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   }
 
   override func tableView(_: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-    return indexPath.section == checklistsSection
+    indexPath.section == checklistsSection
   }
 
   // MARK: - Navigation
@@ -211,18 +211,18 @@ extension ChecklistsViewController: UITableViewDragDelegate {
 
 extension ChecklistsViewController: UITableViewDropDelegate {
   func tableView(_: UITableView, canHandle session: UIDropSession) -> Bool {
-    return session.canLoadObjects(ofClass: NSString.self)
+    session.canLoadObjects(ofClass: NSString.self)
   }
 
   func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath _: IndexPath?) -> UITableViewDropProposal {
     if tableView.hasActiveDrag {
       if session.items.count > 1 {
-        return UITableViewDropProposal(operation: .cancel)
+        UITableViewDropProposal(operation: .cancel)
       } else {
-        return UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+        UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
       }
     } else { // dropped from external to app
-      return UITableViewDropProposal(operation: .cancel)
+      UITableViewDropProposal(operation: .cancel)
     }
   }
 
@@ -232,13 +232,11 @@ extension ChecklistsViewController: UITableViewDropDelegate {
     guard let dropItem = coordinator.items.first else { assertionFailure(); return }
     let itemProvider = dropItem.dragItem.itemProvider
     itemProvider.loadObject(ofClass: NSString.self) { string, _ in
-      if let checklistId = string as? String {
-        if let sourceIndex = self.group.checklists.firstIndex(where: { checklist in checklist.id == checklistId }) {
-          self.group.moveChecklist(from: sourceIndex, to: destinationIndexPath.row)
-          DispatchQueue.main.async {
-            tableView.moveRow(at: IndexPath(row: sourceIndex, section: destinationIndexPath.section), to: destinationIndexPath)
-          }
-        }
+      guard let checklistId = string as? String else { return }
+      Task { @MainActor in
+        guard let sourceIndex = self.group.checklists.firstIndex(where: { $0.id == checklistId }) else { return }
+        self.group.moveChecklist(from: sourceIndex, to: destinationIndexPath.row)
+        tableView.moveRow(at: IndexPath(row: sourceIndex, section: destinationIndexPath.section), to: destinationIndexPath)
       }
     }
   }
@@ -255,7 +253,7 @@ extension ChecklistsViewController: MainMenuTableViewControllerDelegate {
 /// This is here to force iPhone devices to use the popover style instead of switching over to a form sheet or something.
 extension ChecklistsViewController: UIPopoverPresentationControllerDelegate {
   func adaptivePresentationStyle(for _: UIPresentationController, traitCollection _: UITraitCollection) -> UIModalPresentationStyle {
-    return .none
+    .none
   }
 }
 

@@ -1,5 +1,5 @@
 //
-//  ChecklistsMoreMenuViewController.swift
+//  ChecklistsMenuViewController.swift
 //  checklists
 //
 //  Created by Jimmy Ho on 11/19/20.
@@ -8,12 +8,11 @@
 
 import UIKit
 
-protocol ChecklistsMenuViewControllerDelegate: class {
+protocol ChecklistsMenuViewControllerDelegate: AnyObject {
   func resetAllSelected()
 }
 
 class ChecklistsMenuViewController: UITableViewController {
-
   weak var delegate: ChecklistsMenuViewControllerDelegate?
 
   override func viewDidLoad() {
@@ -24,12 +23,12 @@ class ChecklistsMenuViewController: UITableViewController {
 
   // MARK: - Table view data source
 
-  override func numberOfSections(in tableView: UITableView) -> Int {
-    return 1
+  override func numberOfSections(in _: UITableView) -> Int {
+    1
   }
 
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 1
+  override func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
+    1
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

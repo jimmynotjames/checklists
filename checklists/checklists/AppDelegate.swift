@@ -12,7 +12,7 @@ import UIKit
 private let launchedAtLeastOnceKey = "launchedAtLeastOnce"
 private let appVersionKey = "appVersionKey"
 
-@UIApplicationMain
+@main
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
   var window: UIWindow?
 

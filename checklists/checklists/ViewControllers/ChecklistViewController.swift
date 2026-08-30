@@ -12,11 +12,11 @@ private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
 private let defaultChecklistName = "untitled checklist"
 
-protocol ChecklistViewControllerDelegate: class {
-  func willDismissChecklistViewController(_ ChecklistViewController: ChecklistViewController)
+protocol ChecklistViewControllerDelegate: AnyObject {
+  func willDismissChecklistViewController(_ checklistViewController: ChecklistViewController)
 }
 
-/*
+/**
  Discussion about UITableViewController:
  Had to ditch it because the keyboard dynamics weren't working. The two main issues:
  1. When the user tapped to edit a field and quickly started typing, it would halt the animation to move the cell above the keyboard.
@@ -30,18 +30,18 @@ class ChecklistViewController: UIViewController {
 
   weak var delegate: ChecklistViewControllerDelegate?
 
-  @IBOutlet weak var checklistInfoHeaderView: UIView!
-  @IBOutlet weak var statusIcon: CircularPercentStatusIcon!
-  @IBOutlet weak var checklistNameTextField: UITextField!
-  @IBOutlet weak var checklistNotesTextView: CLTextView!
+  @IBOutlet var checklistInfoHeaderView: UIView!
+  @IBOutlet var statusIcon: CircularPercentStatusIcon!
+  @IBOutlet var checklistNameTextField: UITextField!
+  @IBOutlet var checklistNotesTextView: CLTextView!
 
   var isNewChecklist: Bool = false
   var isJumpingToFirstItem: Bool = false
   var isResetting: Bool = false
 
   // For drag/reorder of cells.
-  private var snapshotView: UIView = UIView()
-  private var sourceIndexPath: IndexPath = IndexPath(row: 0, section: 0)
+  private var snapshotView: UIView = .init()
+  private var sourceIndexPath: IndexPath = .init(row: 0, section: 0)
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -97,7 +97,7 @@ class ChecklistViewController: UIViewController {
     } else {
       navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetButtonTapped))
     }
-    if checklist.items.count == 0 {
+    if checklist.items.isEmpty {
       let item = Item(name: "", notes: nil)
       DBManager.write {
         checklist.items.append(item)
@@ -112,12 +112,14 @@ class ChecklistViewController: UIViewController {
       isJumpingToFirstItem = true
       checklistNameTextField.becomeFirstResponder()
     } else {
-      self.tableView.flashScrollIndicators()
+      tableView.flashScrollIndicators()
     }
-    AnalyticsManager.logChecklistViewed(checklistName: checklist.name,
-                                        checklistNotesLength: checklist.notes?.count ?? 0,
-                                        numItems: checklist.items.count,
-                                        numItemsWithNotes: checklist.items.filter({ $0.notes != nil && $0.notes!.count > 0 }).count)
+    AnalyticsManager.logChecklistViewed(
+      checklistName: checklist.name,
+      checklistNotesLength: checklist.notes?.count ?? 0,
+      numItems: checklist.items.count,
+      numItemsWithNotes: checklist.items.count(where: { $0.notes != nil && !$0.notes!.isEmpty })
+    )
   }
 
   override func viewWillDisappear(_ animated: Bool) {
@@ -132,12 +134,12 @@ class ChecklistViewController: UIViewController {
       var i = checklist.items.count - 1
       while i > 0 {
         let item = checklist.items[i]
-        if item.name.count == 0 && (item.notes == nil || item.notes!.count == 0) {
+        if item.name.isEmpty, item.notes == nil || item.notes!.isEmpty {
           DBManager.realm.delete(item)
         } else {
           break
         }
-        i = i - 1
+        i -= 1
       }
     }
     super.viewDidDisappear(animated)
@@ -154,10 +156,10 @@ class ChecklistViewController: UIViewController {
     updateStatusIcon()
 
     if tableView.contentOffset.y == 0.0 {
-      self.tableView.reloadData()
+      tableView.reloadData()
     } else {
       isResetting = true
-      self.scrollToTop()
+      scrollToTop()
     }
   }
 
@@ -182,7 +184,7 @@ class ChecklistViewController: UIViewController {
       }, completion: nil)
     }
 
-    let startEditingBlock: ((Bool) -> ()) = { success in
+    let startEditingBlock: ((Bool) -> Void) = { success in
       if success {
         let indexPath = IndexPath(row: index, section: itemsSection)
         guard let cell = self.tableView.cellForRow(at: indexPath) as? ItemTableViewCell else { assertionFailure(); return }
@@ -205,7 +207,7 @@ class ChecklistViewController: UIViewController {
   }
 
   private func collapseEditingCellIfNecessary() {
-    tableView.visibleCells.forEach { cell in
+    for cell in tableView.visibleCells {
       if let cell = cell as? ItemTableViewCell, cell.itemContentView.isEditing {
         cell.itemContentView.refreshHeight()
       }
@@ -235,12 +237,12 @@ class ChecklistViewController: UIViewController {
 }
 
 extension ChecklistViewController: UITableViewDataSource {
-  func numberOfSections(in tableView: UITableView) -> Int {
-    return 1
+  func numberOfSections(in _: UITableView) -> Int {
+    1
   }
 
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return checklist.items.count
+  func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
+    checklist.items.count
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -251,18 +253,18 @@ extension ChecklistViewController: UITableViewDataSource {
     return cell
   }
 
-  func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+  func tableView(_: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
     guard indexPath.section == itemsSection else { assertionFailure(); return false }
     return true
   }
 
-  func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+  func tableView(_: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
     checklist.moveItem(from: sourceIndexPath.row, to: destinationIndexPath.row)
   }
 }
 
 extension ChecklistViewController: UITableViewDelegate {
-  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+  func tableView(_: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
     guard indexPath.section == itemsSection else { assertionFailure(); return }
     if editingStyle == .delete {
       deleteItem(at: indexPath.row)
@@ -271,11 +273,11 @@ extension ChecklistViewController: UITableViewDelegate {
     }
   }
 
-  func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-    return false
+  func tableView(_: UITableView, shouldHighlightRowAt _: IndexPath) -> Bool {
+    false
   }
 
-  func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+  func tableView(_: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
     guard indexPath.section == itemsSection else { assertionFailure(); return .none }
     return .delete
   }
@@ -286,17 +288,17 @@ extension ChecklistViewController: UIScrollViewDelegate {
     let currentY: CGFloat = scrollView.contentOffset.y
     let thresholdY: CGFloat = 52.0
 
-    if isResetting == true && currentY == 0.0 {
+    if isResetting == true, currentY == 0.0 {
       isResetting = false
-      self.tableView.reloadData()
+      tableView.reloadData()
     }
-    if currentY <= thresholdY && navigationItem.title != nil {
+    if currentY <= thresholdY, navigationItem.title != nil {
       UIView.animate(withDuration: 0.4, animations: {
         self.navigationItem.title = nil
         self.navigationController?.navigationBar.shadowImage = UIImage()
       })
     }
-    if currentY > thresholdY && navigationItem.title == nil {
+    if currentY > thresholdY, navigationItem.title == nil {
       UIView.animate(withDuration: 0.4, animations: {
         self.navigationItem.title = self.checklist.name
         self.navigationController?.navigationBar.shadowImage = nil
@@ -306,20 +308,22 @@ extension ChecklistViewController: UIScrollViewDelegate {
 }
 
 // MARK: - Keyboard dynamics.
-// https://developer.apple.com/library/archive/documentation/StringsTextFonts/Conceptual/TextAndWebiPhoneOS/KeyboardManagement/KeyboardManagement.html
+
+/// https://developer.apple.com/library/archive/documentation/StringsTextFonts/Conceptual/TextAndWebiPhoneOS/KeyboardManagement/KeyboardManagement.html
 extension ChecklistViewController {
   @objc func onKeyboardAppear(_ notification: NSNotification) {
     guard
       let userInfo = notification.userInfo,
       var keyboardHeight = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.size.height
-      else { assertionFailure(); return }
+    else { assertionFailure(); return }
 
-    guard let cell = findEditingCell() else { return } // If keyboard arose for Checklist Name/Notes, which, if visible, shouldn't require scrolling (except for massive notes, but we're accepting that for now).
+    guard let cell = findEditingCell()
+    else { return } // If keyboard arose for Checklist Name/Notes, which, if visible, shouldn't require scrolling (except for massive notes, but we're accepting that for now).
 
-    keyboardHeight = keyboardHeight + 20.0 // On iPhone 8-style resolutions, it doesn't scroll up quite enough, so adding this in, even though iPhone X-style goes up a tad more than I'd like.
+    keyboardHeight += 20.0 // On iPhone 8-style resolutions, it doesn't scroll up quite enough, so adding this in, even though iPhone X-style goes up a tad more than I'd like.
 
     var visibleFrame = tableView.frame
-    visibleFrame.size.height = visibleFrame.size.height - keyboardHeight
+    visibleFrame.size.height -= keyboardHeight
 
     // Conversion is unnecessary, as Cell's superview is actually tableView in iOS 12, but paranoid future-proofing.
     let cellFrame = tableView.convert(cell.frame, from: cell.superview)
@@ -339,7 +343,7 @@ extension ChecklistViewController {
     }
   }
 
-  @objc func onKeyboardDisappear(_ notification: NSNotification) {
+  @objc func onKeyboardDisappear(_: NSNotification) {
     UIView.animate(withDuration: 0.1) { // At bottom of list, it will animate back down more smoothly.
       self.tableView.contentInset = .zero
       self.tableView.scrollIndicatorInsets = .zero
@@ -356,18 +360,20 @@ extension ChecklistViewController {
   }
 }
 
-// For the Checklist Name field.
+/// For the Checklist Name field.
 extension ChecklistViewController: UITextFieldDelegate {
   func textFieldDidBeginEditing(_ textField: UITextField) {
     if textField.hasText {
       isJumpingToFirstItem = false // Handling odd use case.
     }
   }
-  func textFieldDidEndEditing(_ textField: UITextField) {
+
+  func textFieldDidEndEditing(_: UITextField) {
     DBManager.write {
       checklist.name = checklistNameTextField.hasText ? checklistNameTextField.text ?? defaultChecklistName : defaultChecklistName // Accounts for both nil and empty string.
     }
   }
+
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
     textField.resignFirstResponder()
     if isJumpingToFirstItem {
@@ -375,7 +381,7 @@ extension ChecklistViewController: UITextFieldDelegate {
       guard
         checklist.items.count == 1,
         let cell = tableView.cellForRow(at: IndexPath(row: 0, section: itemsSection)) as? ItemTableViewCell
-        else { assertionFailure(); return false }
+      else { assertionFailure(); return false }
 
       cell.itemContentView.startEditing()
     }
@@ -383,18 +389,19 @@ extension ChecklistViewController: UITextFieldDelegate {
   }
 }
 
-// For the Checklist Notes field.
+/// For the Checklist Notes field.
 extension ChecklistViewController: UITextViewDelegate {
-  func textViewDidEndEditing(_ textView: UITextView) {
+  func textViewDidEndEditing(_: UITextView) {
     DBManager.write {
       checklist.notes = checklistNotesTextView.text
     }
   }
-  func textViewDidChange(_ textView: UITextView) {
+
+  func textViewDidChange(_: UITextView) {
     // According to StackOverflow, this seems to be the accepted-yet-janky way of pushing the cells down as the header expands.
     tableView.setNeedsLayout()
     tableView.layoutIfNeeded()
-    tableView.tableHeaderView = self.checklistInfoHeaderView
+    tableView.tableHeaderView = checklistInfoHeaderView
   }
 }
 
@@ -406,27 +413,27 @@ extension ChecklistViewController: AddItemButtonTableFooterViewDelegate {
 
 // MARK: - Drag/Drop Reorder
 
-extension ChecklistViewController: UITableViewDragDelegate  {
-  func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+extension ChecklistViewController: UITableViewDragDelegate {
+  func tableView(_: UITableView, itemsForBeginning _: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
     guard indexPath.section == itemsSection, indexPath.row < checklist.items.count else { assertionFailure(); return [] }
     return checklist.items[indexPath.row].dragItems()
   }
 }
 
 extension ChecklistViewController: UITableViewDropDelegate {
-  func tableView(_ tableView: UITableView, canHandle session: UIDropSession) -> Bool {
-    return session.canLoadObjects(ofClass: NSString.self)
+  func tableView(_: UITableView, canHandle session: UIDropSession) -> Bool {
+    session.canLoadObjects(ofClass: NSString.self)
   }
 
-  func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
+  func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath _: IndexPath?) -> UITableViewDropProposal {
     if tableView.hasActiveDrag {
       if session.items.count > 1 {
-        return UITableViewDropProposal(operation: .cancel)
+        UITableViewDropProposal(operation: .cancel)
       } else {
-        return UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+        UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
       }
     } else { // dropped from external to app
-      return UITableViewDropProposal(operation: .cancel)
+      UITableViewDropProposal(operation: .cancel)
     }
   }
 
@@ -435,14 +442,12 @@ extension ChecklistViewController: UITableViewDropDelegate {
     assert(coordinator.items.count == 1)
     guard let dropItem = coordinator.items.first else { assertionFailure(); return }
     let itemProvider = dropItem.dragItem.itemProvider
-    itemProvider.loadObject(ofClass: NSString.self) { string, error in
-      if let itemId = string as? String {
-        if let sourceIndex = self.checklist.items.firstIndex(where: { item in return item.id == itemId }) {
-          self.checklist.moveItem(from: sourceIndex, to: destinationIndexPath.row)
-          DispatchQueue.main.async {
-            tableView.moveRow(at: IndexPath(row: sourceIndex, section: destinationIndexPath.section), to: destinationIndexPath)
-          }
-        }
+    itemProvider.loadObject(ofClass: NSString.self) { string, _ in
+      guard let itemId = string as? String else { return }
+      Task { @MainActor in
+        guard let sourceIndex = self.checklist.items.firstIndex(where: { $0.id == itemId }) else { return }
+        self.checklist.moveItem(from: sourceIndex, to: destinationIndexPath.row)
+        tableView.moveRow(at: IndexPath(row: sourceIndex, section: destinationIndexPath.section), to: destinationIndexPath)
       }
     }
   }
@@ -450,13 +455,13 @@ extension ChecklistViewController: UITableViewDropDelegate {
 
 // MARK: - ItemContentViewDelegate - responding to cell events.
 
-/*
+/**
  This is architecturally questionable, as I'm passing the Item back from the ItemContentView to update
  the database as opposed to looking it up, but it's convenient right now. In a true MVVM
  model this wouldn't be possible.
  */
 extension ChecklistViewController: ItemContentViewDelegate {
-  func itemContentViewDidFinishEditing(_ itemContentView: ItemContentView) {
+  func itemContentViewDidFinishEditing(_: ItemContentView) {
     cellHeightRequiresRefresh(animated: true)
   }
 
@@ -473,7 +478,7 @@ extension ChecklistViewController: ItemContentViewDelegate {
     cellHeightRequiresRefresh(animated: true)
   }
 
-  func itemContentViewHeightUpdated(_ itemContentView: ItemContentView) {
+  func itemContentViewHeightUpdated(_: ItemContentView) {
     // Don't animate, or stuff gets jittery when table view is scrolled up and user is typing in text view.
     cellHeightRequiresRefresh(animated: false)
   }
@@ -494,7 +499,7 @@ extension ChecklistViewController: ItemContentViewDelegate {
     guard
       let item = itemContentView.item,
       let index = checklist.items.index(of: item)
-      else { assertionFailure(); return }
+    else { assertionFailure(); return }
     insertNewItem(at: index + 1, becomeFirstResponder: true)
   }
 
@@ -502,7 +507,7 @@ extension ChecklistViewController: ItemContentViewDelegate {
     guard
       let item = itemContentView.item,
       let index = checklist.items.index(of: item)
-      else { assertionFailure(); return }
+    else { assertionFailure(); return }
 
     guard index > 0 else { return } // Nothing happens if backspaced on first item in list.
 
