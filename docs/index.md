@@ -21,7 +21,7 @@ Send issues or feedback to [jimmyho.appfeedback@gmail.com](mailto:jimmyho.appfee
 
 ## Feature List
 
-* **Free app** (can donate inside the app if you like it!)
+* **Free app**
 * Create checklists that can be checked off and reset to be used again.
 * Can record notes for each checklist or checklist item.
 * Can reorder checklists and checklist items arbitrarily (drag and drop style).

@@ -99,7 +99,6 @@ was free: the Flurry data is not migrating to Mixpanel, so there was no continui
 | `app_opened` | *(none — Flurry auto-tracked sessions)* | App launch. **Should also fire on foreground.** | *(none yet — super properties carry the context)* |
 | `checklists_viewed` | `checklists_viewed` | Checklists list appears | `checklists_count` |
 | `checklist_viewed` | `checklist_viewed` | A checklist is opened | `checklist_name`, `notes_length`, `items_count`, `items_with_notes_count` |
-| `donate_viewed` | `donate_page_viewed` | Donate screen appears | — |
 | `settings_viewed` | `settings_viewed` | Settings appears | — |
 | `main_menu_viewed` | `main_menu_viewed` | Main menu appears | — |
 | `checklist_created` | `create_new_checklist` | User creates a checklist | — |
@@ -107,15 +106,12 @@ was free: the Flurry data is not migrating to Mixpanel, so there was no continui
 | `rate_app_tapped` | `rate_in_app_store` | "Rate in App Store" tapped | — |
 | `feedback_tapped` | `send_feedback` | "Send feedback" tapped | — |
 | `privacy_policy_tapped` | `view_privacy_policy` | Privacy policy opened | — |
-| `donation_completed` | `donate/purchase` | Donation IAP succeeds | `product_id` |
-| `donation_failed` | `donate/purchase_error` | Donation IAP fails | `error` |
-| `donation_products_load_failed` | `donate/error_loading_products` | StoreKit product list fails to load | `error` |
 | `persistence_fatal_error` | `realm/fatal_error` | Realm cannot be opened — app `fatalError`s immediately after | `error` |
 | `persistence_write_failed` | `realm/write_error` | A Realm write transaction throws | `error` |
 | `orientation_changed` | `orientation_changed` | Device rotates portrait↔landscape | `orientation` |
 
-Slashes were dropped from the donation and Realm event names — Mixpanel accepts them, but the flat
-convention matches `budgets1` and reads better in the Mixpanel UI. The `realm/*` events became
+Slashes were dropped from the Realm event names — Mixpanel accepts them, but the flat convention
+matches `budgets1` and reads better in the Mixpanel UI. The `realm/*` events became
 `persistence_*` so they survive a future persistence-layer swap.
 
 **Note the error events are diagnostics, not product signals.** `persistence_fatal_error` fires
@@ -131,7 +127,6 @@ reports as a floor, not a total.
 | `notes_length` | `notesLength` | Int | The only camelCase key in the old catalog |
 | `items_count` | `num_items` | Int | |
 | `items_with_notes_count` | `num_items_with_notes` | Int | |
-| `product_id` | `product_id` | String | StoreKit product identifier |
 | `error` | `error` | String | Truncated to 127 chars by `truncatedString` |
 | `orientation` | `orientation` | String | `portrait` / `landscape` |
 
