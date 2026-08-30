@@ -20,9 +20,12 @@
 // network — it writes to the unified log, which is readable in Console.app on an attached device
 // and is captured in a sysdiagnose.
 //
-// It is also durable in a way an analytics call is not: `os_log` hands the message to the logging
-// daemon synchronously, so it survives the `fatalError` that follows it in `DBManager`. A
-// buffered network event would not.
+// It is also more durable than an analytics call would be: `os_log` writes synchronously into the
+// shared log buffer, and only the flush to `logd`'s on-disk store is asynchronous. That is not a
+// hard guarantee of persistence across the `fatalError` in `DBManager` — but a `.fault` logged
+// immediately before a trap does survive in practice, which is more than can be said for a
+// buffered network event. This was verified by corrupting the Realm file on a simulator and
+// reading the fault back out of the unified log after the crash.
 //
 // **Note this uses `os_log` rather than the nicer `Logger` API.** `Logger` requires iOS 14 and
 // this app deploys to iOS 13.2. If the deployment target is ever raised, this file and the two

@@ -179,6 +179,22 @@ Registered once per session and attached to every event. Stubbed in
 `- DEBUG` in debug builds). Do **not** send that — send `app_version` and `app_build` separately so
 they can be filtered on.
 
+## Published privacy disclosures are now out of date
+
+**Action needed outside this repo.** The app's public disclosures were written while Flurry was
+collecting, and the app now collects nothing:
+
+- The **privacy policy** linked from `docs/index.md` is externally hosted (termsfeed). If it names
+  Flurry or third-party analytics collection, it is now inaccurate.
+- The **App Store Connect privacy nutrition label** was filled in for Flurry-era collection and
+  likely still declares data types the app no longer gathers.
+
+Neither lives in this repo, so neither could be fixed by the change that removed Flurry. Both will
+need revising **twice**: once now to reflect "collects nothing", and again when Mixpanel ships. If
+that is more churn than it is worth, the alternative is to leave them as-is only if they are
+already generic enough to remain true — that is a judgement call requiring someone to actually read
+the current policy text.
+
 ## Open decisions, deliberately deferred
 
 None of these are built. Each is a real decision, not an oversight:

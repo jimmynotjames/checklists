@@ -29,7 +29,9 @@ cd "$ROOT"
 # So the pin saves ~37 s (~40%) — real, but well short of halving, because the two slices
 # share driver startup, SPM resolution, and asset-catalog work.
 #
-# If you ever need genuine x86_64 coverage, just delete the two ARCHS lines below.
+# If you ever need genuine x86_64 coverage: delete ARCHS=arm64 below but KEEP
+# ONLY_ACTIVE_ARCH=NO — that is the flag that forces both slices to be built. Deleting both
+# would fall back to the active arch only and give you the same single slice you have now.
 exec xcodebuild build \
     -project checklists/checklists.xcodeproj \
     -scheme checklists \

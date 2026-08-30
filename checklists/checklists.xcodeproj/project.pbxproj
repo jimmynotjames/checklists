@@ -27,8 +27,6 @@
 		3252E73F2CE71079009B6F7C /* Toast in Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73E2CE71079009B6F7C /* Toast */; };
 		327C659A259EB73D0012AABD /* checklistUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C6599259EB73D0012AABD /* checklistUITest.swift */; };
 		327C65A625A0DB780012AABD /* checklistCreateUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C65A525A0DB780012AABD /* checklistCreateUITest.swift */; };
-		327C65C825A16F860012AABD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 327C65C725A16F860012AABD /* Security.framework */; };
-		32A9289F2320A76D005F9B34 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A9289E2320A76D005F9B34 /* SystemConfiguration.framework */; };
 		32A928A42320CED0005F9B34 /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A928A32320CED0005F9B34 /* AnalyticsManager.swift */; };
 		AA01000000000000000000A3 /* AppLoggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01000000000000000000A2 /* AppLoggers.swift */; };
 		32A964712291E14F00CAB7C0 /* ItemContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A964702291E14F00CAB7C0 /* ItemContentView.swift */; };
@@ -108,8 +106,6 @@
 		324A03232303AABB00958D3E /* DonateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonateViewController.swift; sourceTree = "<group>"; };
 		327C6599259EB73D0012AABD /* checklistUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistUITest.swift; sourceTree = "<group>"; };
 		327C65A525A0DB780012AABD /* checklistCreateUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistCreateUITest.swift; sourceTree = "<group>"; };
-		327C65C725A16F860012AABD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		32A9289E2320A76D005F9B34 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		32A928A32320CED0005F9B34 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
 		AA01000000000000000000A2 /* AppLoggers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoggers.swift; sourceTree = "<group>"; };
 		32A964702291E14F00CAB7C0 /* ItemContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemContentView.swift; sourceTree = "<group>"; };
@@ -137,8 +133,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3252E73F2CE71079009B6F7C /* Toast in Frameworks */,
-				327C65C825A16F860012AABD /* Security.framework in Frameworks */,
-				32A9289F2320A76D005F9B34 /* SystemConfiguration.framework in Frameworks */,
 				32D721EA22AB486E00794F6D /* StoreKit.framework in Frameworks */,
 				3252E73C2CE71074009B6F7C /* RealmSwift in Frameworks */,
 			);
@@ -225,8 +219,6 @@
 		323ADC9E228292A400644931 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				327C65C725A16F860012AABD /* Security.framework */,
-				32A9289E2320A76D005F9B34 /* SystemConfiguration.framework */,
 				323ADC9F228292A400644931 /* StoreKit.framework */,
 			);
 			name = Frameworks;

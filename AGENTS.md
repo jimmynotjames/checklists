@@ -52,10 +52,19 @@ for no benefit on hardware that is always Apple Silicon. Measured on an M4 with 
 DerivedData: **56 s pinned vs 93 s unpinned** — a ~37 s saving, not a halving, since the two
 slices share driver startup, SPM resolution, and asset-catalog work.
 
-The test scripts no longer pass it at all: they build against a concrete simulator UDID, where
-xcodebuild resolves a single arch anyway and the flag was a no-op.
+The test scripts no longer pass it at all. The net result is unchanged — they still build a single
+arm64 slice — but the mechanism is worth stating precisely, because it is not the destination:
+`ONLY_ACTIVE_ARCH = YES` is set in the **project-level Debug configuration** (the only place that
+setting appears anywhere; Release has none and so defaults to `NO`), and test actions run Debug.
+The removed pair was therefore not inert — `ONLY_ACTIVE_ARCH=NO` was widening the build and
+`ARCHS=arm64` was cancelling it straight back out.
 
-**This project can be built for an x86_64 simulator again** — just drop the two `ARCHS` lines.
+**Consequence to know about:** if anyone ever adds `-configuration Release` to `scripts/test-unit.sh`
+or `scripts/test-ui.sh`, that build starts compiling both slices and gets noticeably slower, with
+nothing in either script left to explain why.
+
+**This project can be built for an x86_64 simulator again** — drop `ARCHS=arm64` from
+`scripts/build.sh` and keep `ONLY_ACTIVE_ARCH=NO`, which is what forces both slices to build.
 
 ## Lint policy: changed files only
 
