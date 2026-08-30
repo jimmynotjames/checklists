@@ -27,9 +27,8 @@
 // buffered network event. This was verified by corrupting the Realm file on a simulator and
 // reading the fault back out of the unified log after the crash.
 //
-// **Note this uses `os_log` rather than the nicer `Logger` API.** `Logger` requires iOS 14 and
-// this app deploys to iOS 13.2. If the deployment target is ever raised, this file and the two
-// call sites in `DBManager` are the only places to migrate — tracked in issue #119.
+// Migrated from `os_log` to the nicer `Logger` API now that the deployment target is iOS 26
+// (Logger requires iOS 14+). Closes #119.
 
 import Foundation
 import os
@@ -38,5 +37,5 @@ enum AppLog {
   private static let subsystem = Bundle.main.bundleIdentifier ?? "com.jimmyho.checklists"
 
   /// Realm failures — opening the store, and write transactions. Success paths log nothing.
-  static let persistence = OSLog(subsystem: subsystem, category: "persistence")
+  static let persistence = Logger(subsystem: subsystem, category: "persistence")
 }
