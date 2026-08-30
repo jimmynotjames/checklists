@@ -1,9 +1,8 @@
 //
 //  AppDelegate.swift
 //  checklists
-// x
+//
 //  Created by Jimmy Ho on 5/7/19.
-//  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
 import RealmSwift

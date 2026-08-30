@@ -2,8 +2,7 @@
 //  InfoRowTableViewCell.swift
 //  checklists
 //
-//  Created by Jimmy Ho on 11/19/20.
-//  Copyright © 2020 Jimmy Ho. All rights reserved.
+//  Created by Jimmy Ho on 8/30/26.
 //
 
 import UIKit

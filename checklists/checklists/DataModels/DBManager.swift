@@ -3,7 +3,6 @@
 //  checklists
 //
 //  Created by Jimmy Ho on 5/23/19.
-//  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
 import Foundation

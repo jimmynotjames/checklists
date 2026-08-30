@@ -2,8 +2,6 @@
 //  AppLoggers.swift
 //  checklists
 //
-//  Copyright © 2026 Jimmy Ho. All rights reserved.
-//
 
 // MARK: - Diagnostic logging, deliberately separate from analytics
 

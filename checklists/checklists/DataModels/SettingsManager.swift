@@ -3,7 +3,6 @@
 //  checklists
 //
 //  Created by Jimmy Ho on 8/11/19.
-//  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
 import Foundation
@@ -16,7 +15,7 @@ enum AppTheme: Int {
 }
 
 class SettingsManager {
-  static private(set) var currentAppTheme: AppTheme = .defaultBougie
+  private(set) static var currentAppTheme: AppTheme = .defaultBougie
 
   static func setCurrentAppTheme(appTheme: AppTheme) {
     currentAppTheme = appTheme
@@ -27,9 +26,9 @@ class SettingsManager {
     let versionNumberString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? "0.0.0"
     let buildNumberString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") ?? "0"
     #if DEBUG
-    return "\(versionNumberString) (\(buildNumberString)) - DEBUG"
+      return "\(versionNumberString) (\(buildNumberString)) - DEBUG"
     #else
-    return "\(versionNumberString) (\(buildNumberString))"
+      return "\(versionNumberString) (\(buildNumberString))"
     #endif
   }()
 }

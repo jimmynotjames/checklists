@@ -2,8 +2,7 @@
 //  MainMenuItemTableViewCell.swift
 //  checklists
 //
-//  Created by Jimmy Ho on 7/28/19.
-//  Copyright © 2019 Jimmy Ho. All rights reserved.
+//  Created by Jimmy Ho on 8/30/26.
 //
 
 import UIKit

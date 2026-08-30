@@ -3,7 +3,6 @@
 //  checklists
 //
 //  Created by Jimmy Ho on 5/14/19.
-//  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
 import UIKit
@@ -13,7 +12,7 @@ class CheckboxButton: UIButton {
     self.init(frame: .zero)
   }
 
-  override init(frame: CGRect) {
+  override init(frame _: CGRect) {
     super.init(frame: .zero)
 
     accessibilityLabel = "Checkbox"
@@ -29,15 +28,15 @@ class CheckboxButton: UIButton {
     setContentCompressionResistancePriority(.required, for: .vertical)
 
     [heightAnchor.constraint(equalToConstant: 48.0),
-     widthAnchor.constraint(equalToConstant: 48.0)
-     ].forEach { $0.isActive = true  }
+     widthAnchor.constraint(equalToConstant: 48.0)].forEach { $0.isActive = true }
   }
 
-  required init?(coder aDecoder: NSCoder) {
+  @available(*, unavailable)
+  required init?(coder _: NSCoder) {
     fatalError("This init() not supported.")
   }
 
-  // Note: Must be called within write transaction.
+  /// Note: Must be called within write transaction.
   func setCheckboxState(with itemStatus: Item.Status) {
     switch itemStatus {
     case .checked:

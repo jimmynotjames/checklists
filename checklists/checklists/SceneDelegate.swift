@@ -1,3 +1,10 @@
+//
+//  SceneDelegate.swift
+//  checklists
+//
+//  Created by Jimmy Ho on 8/30/26.
+//
+
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {

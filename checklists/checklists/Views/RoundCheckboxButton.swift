@@ -3,7 +3,6 @@
 //  checklists
 //
 //  Created by Jimmy Ho on 8/10/19.
-//  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
 import UIKit
@@ -13,7 +12,7 @@ class RoundCheckboxButton: UIButton {
     self.init(frame: .zero)
   }
 
-  override init(frame: CGRect) {
+  override init(frame _: CGRect) {
     super.init(frame: .zero)
     commonInit()
   }
@@ -32,6 +31,5 @@ class RoundCheckboxButton: UIButton {
     setContentCompressionResistancePriority(.required, for: .horizontal)
     setContentHuggingPriority(.required, for: .vertical)
     setContentCompressionResistancePriority(.required, for: .vertical)
-
   }
 }

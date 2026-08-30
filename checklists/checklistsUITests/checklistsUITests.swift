@@ -3,14 +3,12 @@
 //  checklistsUITests
 //
 //  Created by Jimmy Ho on 5/7/19.
-//  Copyright © 2019 Jimmy Ho. All rights reserved.
 //
 
 import XCTest
 
-// IMPORTANT NOTE: Running these tests will clear/reset the persisted database on the app.
+/// IMPORTANT NOTE: Running these tests will clear/reset the persisted database on the app.
 class checklistsUITests: XCTestCase {
-
   var app: XCUIApplication!
 
   override func setUp() {
@@ -24,8 +22,10 @@ class checklistsUITests: XCTestCase {
 
   func testChecklistDeletion() {
     let tablesQuery = app.tables
-    tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["Weekend Getaway Essentials"]/*[[".cells.staticTexts[\"Weekend Getaway Essentials\"]",".staticTexts[\"Weekend Getaway Essentials\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeLeft()
-    tablesQuery/*@START_MENU_TOKEN@*/.buttons["Delete"]/*[[".cells.buttons[\"Delete\"]",".buttons[\"Delete\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+    tablesQuery/*@START_MENU_TOKEN@*/
+      .staticTexts["Weekend Getaway Essentials"]/*[[".cells.staticTexts[\"Weekend Getaway Essentials\"]",".staticTexts[\"Weekend Getaway Essentials\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+      .swipeLeft()
+    tablesQuery/*@START_MENU_TOKEN@*/ .buttons["Delete"]/*[[".cells.buttons[\"Delete\"]",".buttons[\"Delete\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/ .tap()
     app.alerts.scrollViews.otherElements.buttons["Delete"].tap()
 
     let staticText1 = tablesQuery.staticTexts["Morning Routine"]

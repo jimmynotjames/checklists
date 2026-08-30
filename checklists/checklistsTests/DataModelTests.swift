@@ -3,13 +3,12 @@
 //  checklistsTests
 //
 //  Created by Jimmy Ho on 12/6/20.
-//  Copyright © 2020 Jimmy Ho. All rights reserved.
 //
 
-import XCTest
 @testable import checklists
 import RealmSwift
 import Toast
+import XCTest
 
 private let checklistName = "Test Checklist 1"
 private let checklistNotes = "Some notes about Checklist1; blah blah blah...\nMore blah blah blah\nAnd more with emojis: 🤪🧐🤷🏼‍♀️"
@@ -19,11 +18,13 @@ private let itemNotes1 = "Match to final choice of shoes"
 private let itemName2 = "Contact lenses"
 private let itemName3 = "flip flops"
 private let itemName4 = "tiara"
-private let itemNotes4 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+private let itemNotes4 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+  + "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+  + "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
+  + "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 
-// WARNING: Running these tests will reset the app's database on whatever simulator this is run on.
+/// WARNING: Running these tests will reset the app's database on whatever simulator this is run on.
 class DataModelTests: XCTestCase {
-
   override func setUpWithError() throws {
     // We're going to test with persisted store, not memory store, against recommendation, because I want to make sure the file stuff is okay.
     DBManager.write {
@@ -37,29 +38,29 @@ class DataModelTests: XCTestCase {
     }
   }
 
-  func testCreateEmptyChecklist1() throws {
+  func testCreateEmptyChecklist1() {
     let checklist = Checklist(name: "Test Checklist 1", items: [])
     DBManager.write {
       DBManager.realm.add(checklist)
     }
-    guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).filter({ $0.id == checklist.id }).first
-    else { XCTFail(); return }
+    guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).first(where: { $0.id == checklist.id })
+    else { XCTFail("Checklist was not persisted"); return }
 
     compareChecklists(checklist1: checklist, checklist2: retrievedChecklist)
   }
 
-  func testCreateChecklist2() throws {
+  func testCreateChecklist2() {
     let checklist = Checklist(name: checklistName, notes: checklistNotes, sortNumber: nil, items: [])
     DBManager.write {
       DBManager.realm.add(checklist)
     }
-    guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).filter({ $0.id == checklist.id }).first
-    else { XCTFail(); return }
+    guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).first(where: { $0.id == checklist.id })
+    else { XCTFail("Checklist was not persisted"); return }
 
     compareChecklists(checklist1: checklist, checklist2: retrievedChecklist)
   }
 
-  func testCreateChecklistWithItems() throws {
+  func testCreateChecklistWithItems() {
     let items: [Item] = [Item(name: itemName1, notes: itemNotes1), Item(name: itemName2), Item(name: itemName3), Item(name: itemName4, notes: itemNotes4)]
     items[1].toggleStatus()
     items[3].toggleStatus()
@@ -67,13 +68,13 @@ class DataModelTests: XCTestCase {
     DBManager.write {
       DBManager.realm.add(checklist)
     }
-    guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).filter({ $0.id == checklist.id }).first
-    else { XCTFail(); return }
+    guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).first(where: { $0.id == checklist.id })
+    else { XCTFail("Checklist was not persisted"); return }
 
     compareChecklists(checklist1: checklist, checklist2: retrievedChecklist)
   }
 
-  func testChecklistPercentComplete() throws {
+  func testChecklistPercentComplete() {
     let items: [Item] = [Item(name: itemName1, notes: itemNotes1), Item(name: itemName2), Item(name: itemName3), Item(name: itemName4, notes: itemNotes4)]
     items[1].toggleStatus()
     items[3].toggleStatus()

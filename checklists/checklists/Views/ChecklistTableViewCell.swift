@@ -3,17 +3,16 @@
 //  checklists
 //
 //  Created by Jimmy Ho on 11/19/20.
-//  Copyright © 2020 Jimmy Ho. All rights reserved.
 //
 
 import UIKit
 
 class ChecklistTableViewCell: UITableViewCell {
-  private var checklistContentView: ChecklistCellContentView = ChecklistCellContentView(frame: .zero)
+  private var checklistContentView: ChecklistCellContentView = .init(frame: .zero)
 
   var checklist: Checklist? {
     get {
-      return checklistContentView.checklist
+      checklistContentView.checklist
     }
     set {
       checklistContentView.checklist = newValue
@@ -42,13 +41,11 @@ class ChecklistTableViewCell: UITableViewCell {
     [contentView.topAnchor.constraint(equalTo: checklistContentView.topAnchor),
      contentView.bottomAnchor.constraint(equalTo: checklistContentView.bottomAnchor),
      contentView.leftAnchor.constraint(equalTo: checklistContentView.leftAnchor),
-     contentView.rightAnchor.constraint(equalTo: checklistContentView.rightAnchor)
-      ].forEach { $0.isActive = true  }
+     contentView.rightAnchor.constraint(equalTo: checklistContentView.rightAnchor)].forEach { $0.isActive = true }
   }
 
   override func prepareForReuse() {
     super.prepareForReuse()
     checklist = nil
   }
-
 }
