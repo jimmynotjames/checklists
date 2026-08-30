@@ -25,15 +25,15 @@ protocol ChecklistViewControllerDelegate: AnyObject {
  For some reason, when I implement manually with a couple slightly different coding things, this is all fixed. Urgghh...
  */
 class ChecklistViewController: UIViewController {
-  @IBOutlet var tableView: UITableView!
+  private var tableView: UITableView!
   var checklist: Checklist! // Expected to be set on seque or right after init(). Behavior undefined if this is set/reset after viewDidLoad().
 
   weak var delegate: ChecklistViewControllerDelegate?
 
-  @IBOutlet var checklistInfoHeaderView: UIView!
-  @IBOutlet var statusIcon: CircularPercentStatusIcon!
-  @IBOutlet var checklistNameTextField: UITextField!
-  @IBOutlet var checklistNotesTextView: CLTextView!
+  private let checklistInfoHeaderView = UIView()
+  private let statusIcon = CircularPercentStatusIcon(iconType: .header)
+  private let checklistNameTextField = CLTextField()
+  private let checklistNotesTextView = CLTextView()
 
   var isNewChecklist: Bool = false
   var isJumpingToFirstItem: Bool = false
@@ -42,6 +42,61 @@ class ChecklistViewController: UIViewController {
   // For drag/reorder of cells.
   private var snapshotView: UIView = .init()
   private var sourceIndexPath: IndexPath = .init(row: 0, section: 0)
+
+  override func loadView() {
+    let tableView = UITableView(frame: .zero, style: .plain)
+    self.tableView = tableView
+    view = tableView
+  }
+
+  /// Reproduces the "Checklist" storyboard scene's tableHeaderView: a status icon, a name field, and a notes view.
+  private func setUpHeaderView() {
+    // Required for the width-anchor + layoutIfNeeded() sizing dance below to compute this view's natural
+    // height from its subviews' constraints (mirrors a runtime attribute the old storyboard scene set explicitly).
+    checklistInfoHeaderView.translatesAutoresizingMaskIntoConstraints = false
+    checklistInfoHeaderView.backgroundColor = Colors.defaultBackground
+
+    checklistNameTextField.delegate = self
+    checklistNameTextField.placeholder = "Name"
+    checklistNameTextField.font = .systemFont(ofSize: 24.0, weight: .semibold)
+    checklistNameTextField.returnKeyType = .done
+    checklistNameTextField.enablesReturnKeyAutomatically = true
+    checklistNameTextField.clearButtonMode = .whileEditing
+    checklistNameTextField.accessibilityIdentifier = "checklistNameField"
+    checklistNameTextField.accessibilityLabel = "Checklist Name: "
+    checklistNameTextField.text = checklist.name
+
+    checklistNotesTextView.delegate = self
+    checklistNotesTextView.font = .systemFont(ofSize: 16.0)
+    checklistNotesTextView.backgroundColor = .clear
+    checklistNotesTextView.placeholderText = "Notes"
+    checklistNotesTextView.accessibilityIdentifier = "checklistNotesTextView"
+    checklistNotesTextView.accessibilityLabel = "Checklist Notes: "
+    checklistNotesTextView.text = checklist.notes
+
+    checklistInfoHeaderView.addSubview(statusIcon)
+    checklistInfoHeaderView.addSubview(checklistNameTextField)
+    checklistInfoHeaderView.addSubview(checklistNotesTextView)
+    statusIcon.translatesAutoresizingMaskIntoConstraints = false
+    checklistNameTextField.translatesAutoresizingMaskIntoConstraints = false
+    checklistNotesTextView.translatesAutoresizingMaskIntoConstraints = false
+
+    NSLayoutConstraint.activate([
+      statusIcon.leadingAnchor.constraint(equalTo: checklistInfoHeaderView.leadingAnchor, constant: 16.0),
+
+      checklistNameTextField.topAnchor.constraint(equalTo: checklistInfoHeaderView.topAnchor, constant: 22.0),
+      checklistNameTextField.leadingAnchor.constraint(equalTo: statusIcon.trailingAnchor, constant: 10.0),
+      checklistNameTextField.trailingAnchor.constraint(equalTo: checklistInfoHeaderView.trailingAnchor, constant: -16.0),
+      checklistNameTextField.centerYAnchor.constraint(equalTo: statusIcon.centerYAnchor),
+      checklistNameTextField.heightAnchor.constraint(equalToConstant: 32.0),
+
+      checklistNotesTextView.topAnchor.constraint(equalTo: checklistNameTextField.bottomAnchor, constant: 4.0),
+      checklistNotesTextView.leadingAnchor.constraint(equalTo: checklistInfoHeaderView.layoutMarginsGuide.leadingAnchor, constant: 8.0),
+      checklistNotesTextView.trailingAnchor.constraint(equalTo: checklistInfoHeaderView.trailingAnchor, constant: -16.0),
+      checklistNotesTextView.bottomAnchor.constraint(equalTo: checklistInfoHeaderView.bottomAnchor, constant: -15.0),
+      checklistNotesTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 32.0),
+    ])
+  }
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -59,14 +114,15 @@ class ChecklistViewController: UIViewController {
 
     tableView.register(ItemTableViewCell.self, forCellReuseIdentifier: itemCellReuseIdentifier)
 
-    checklistNameTextField.delegate = self
-    checklistNotesTextView.delegate = self
+    tableView.separatorStyle = .none
+    tableView.sectionHeaderHeight = 28
+    tableView.sectionFooterHeight = 28
+    tableView.backgroundColor = Colors.defaultBackground
 
-    checklistNameTextField.text = checklist.name
-    checklistNotesTextView.text = checklist.notes
-
-    checklistNameTextField.accessibilityLabel = "Checklist Name: "
-    checklistNotesTextView.accessibilityLabel = "Checklist Notes: "
+    setUpHeaderView()
+    // Assign this early (before the width-anchor constraint below) so checklistInfoHeaderView shares an
+    // ancestor with tableView — it's reassigned again after layout, once its frame height is known.
+    tableView.tableHeaderView = checklistInfoHeaderView
 
     checklistNotesTextView.inputAccessoryButtonTappedAction = { [weak self] in
       self?.checklistNotesTextView.resignFirstResponder()
@@ -76,7 +132,6 @@ class ChecklistViewController: UIViewController {
     tableFooterView.delegate = self
     tableView.tableFooterView = tableFooterView
 
-    statusIcon.iconType = .header
     updateStatusIcon()
 
     //  Despite Apple docs saying the width is set, it is not (as of iOS 12), and StackOverflow seems to only show manual ways like this.
@@ -123,7 +178,6 @@ class ChecklistViewController: UIViewController {
   }
 
   override func viewWillDisappear(_ animated: Bool) {
-    navigationController?.navigationBar.shadowImage = UIImage() // Architecturally not sustainable if we have more pages like this.
     delegate?.willDismissChecklistViewController(self)
     super.viewWillDisappear(animated)
   }
@@ -295,13 +349,11 @@ extension ChecklistViewController: UIScrollViewDelegate {
     if currentY <= thresholdY, navigationItem.title != nil {
       UIView.animate(withDuration: 0.4, animations: {
         self.navigationItem.title = nil
-        self.navigationController?.navigationBar.shadowImage = UIImage()
       })
     }
     if currentY > thresholdY, navigationItem.title == nil {
       UIView.animate(withDuration: 0.4, animations: {
         self.navigationItem.title = self.checklist.name
-        self.navigationController?.navigationBar.shadowImage = nil
       })
     }
   }

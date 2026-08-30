@@ -19,6 +19,12 @@ class ChecklistsMenuViewController: UITableViewController {
     super.viewDidLoad()
     preferredContentSize = CGSize(width: 100.0, height: 40.0)
     tableView.contentInset = UIEdgeInsets(top: 10.0, left: 0.0, bottom: 0.0, right: 0.0)
+
+    tableView.register(UITableViewCell.self, forCellReuseIdentifier: "MenuItem")
+    tableView.separatorStyle = .singleLine
+    tableView.isScrollEnabled = false
+    tableView.showsVerticalScrollIndicator = false
+    tableView.showsHorizontalScrollIndicator = false
   }
 
   // MARK: - Table view data source
@@ -34,6 +40,8 @@ class ChecklistsMenuViewController: UITableViewController {
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "MenuItem", for: indexPath)
     cell.textLabel?.text = "Reset All"
+    cell.textLabel?.font = .systemFont(ofSize: 17.0)
+    cell.textLabel?.textColor = Colors.teal
     return cell
   }
 

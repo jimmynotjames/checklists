@@ -28,6 +28,14 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
     guard let mainGroup = realm.objects(Group.self).first else { fatalError("Expected a Group object but none in database.") }
     group = mainGroup
 
+    tableView.register(ChecklistTableViewCell.self, forCellReuseIdentifier: "ChecklistCellWithStatus")
+    tableView.rowHeight = 107
+    tableView.separatorStyle = .none
+    tableView.sectionHeaderHeight = 28
+    tableView.sectionFooterHeight = 28
+    tableView.backgroundColor = Colors.defaultBackground
+    navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+
     tableView.dragInteractionEnabled = true
     tableView.dragDelegate = self
     tableView.dropDelegate = self
@@ -85,7 +93,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
 
   @objc func addChecklistButtonTapped() {
     AnalyticsManager.logNewChecklist()
-    guard let checklistViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Checklist") as? ChecklistViewController else { assertionFailure(); return }
+    let checklistViewController = ChecklistViewController()
     let checklist = Checklist(name: "", notes: nil, items: [])
     DBManager.write {
       DBManager.realm.add(checklist)
@@ -105,8 +113,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   }
 
   @objc func moreMenuButtonTapped() {
-    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-    guard let menuViewController = storyboard.instantiateViewController(withIdentifier: "ChecklistsMoreMenu") as? ChecklistsMenuViewController else { assertionFailure(); return }
+    let menuViewController = ChecklistsMenuViewController(style: .plain)
 
     menuViewController.modalPresentationStyle = .popover
     menuViewController.popoverPresentationController?.delegate = self
@@ -144,6 +151,15 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
     }
   }
 
+  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    tableView.deselectRow(at: indexPath, animated: true)
+    guard indexPath.section == checklistsSection else { assertionFailure(); return }
+    let checklistViewController = ChecklistViewController()
+    checklistViewController.checklist = group.checklists[indexPath.row]
+    checklistViewController.delegate = self
+    navigationController?.pushViewController(checklistViewController, animated: true)
+  }
+
   override func tableView(_: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
     indexPath.section == checklistsSection
   }
@@ -178,19 +194,6 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
 
   override func tableView(_: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
     indexPath.section == checklistsSection
-  }
-
-  // MARK: - Navigation
-
-  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    if let identifier = segue.identifier,
-       identifier == "showChecklist",
-       let checklistViewController = segue.destination as? ChecklistViewController,
-       let cell = sender as? UITableViewCell,
-       let indexPath = tableView.indexPath(for: cell) {
-      checklistViewController.checklist = group.checklists[indexPath.row]
-      checklistViewController.delegate = self
-    }
   }
 }
 
@@ -244,9 +247,9 @@ extension ChecklistsViewController: UITableViewDropDelegate {
 
 extension ChecklistsViewController: MainMenuTableViewControllerDelegate {
   func openSettingsPage() {
-    let storyBoard = UIStoryboard(name: "Main", bundle: nil)
-    let settingsViewController = storyBoard.instantiateViewController(withIdentifier: "Settings")
-    present(settingsViewController, animated: true)
+    let settingsViewController = SettingsViewController(style: .grouped)
+    let navigationController = UINavigationController(rootViewController: settingsViewController)
+    present(navigationController, animated: true)
   }
 }
 

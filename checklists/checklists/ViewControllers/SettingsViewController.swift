@@ -15,7 +15,35 @@ class SettingsViewController: UITableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+
+    tableView.backgroundColor = Colors.defaultBackground
+    tableView.sectionIndexColor = Colors.inactiveText
+    tableView.separatorStyle = .none
+    tableView.sectionHeaderHeight = 18
+    tableView.sectionFooterHeight = 18
+    tableView.register(ThemeItemTableViewCell.self, forCellReuseIdentifier: "ThemeItemRow")
+    tableView.register(InfoRowTableViewCell.self, forCellReuseIdentifier: "InfoRow")
+
+    tableView.tableHeaderView = settingsHeaderView(tableWidth: tableView.frame.size.width)
     tableView.tableFooterView = tableFooterView(tableWidth: tableView.frame.size.width)
+  }
+
+  private func settingsHeaderView(tableWidth: CGFloat) -> UIView {
+    let headerView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: tableWidth, height: 66.0))
+
+    let titleLabel = UILabel()
+    titleLabel.text = "Settings"
+    titleLabel.font = .systemFont(ofSize: 24.0, weight: .semibold)
+
+    headerView.addSubview(titleLabel)
+    titleLabel.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      titleLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 14.0),
+      titleLabel.leadingAnchor.constraint(equalTo: headerView.layoutMarginsGuide.leadingAnchor, constant: 8.0),
+      titleLabel.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -16.0),
+      titleLabel.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -20.0),
+    ])
+    return headerView
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -29,11 +57,11 @@ class SettingsViewController: UITableViewController {
 
   // MARK: - Table view data source
 
-  override func numberOfSections(in tableView: UITableView) -> Int {
-    return 1
+  override func numberOfSections(in _: UITableView) -> Int {
+    1
   }
 
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  override func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
     switch section {
     case themesSection:
       return 3
@@ -45,53 +73,45 @@ class SettingsViewController: UITableViewController {
     }
   }
 
-  func retrieveThemeViews(from cell: UITableViewCell) -> (UILabel, RoundCheckboxButton) {
-    guard
-      let themeNameLabel = cell.viewWithTag(1) as? UILabel,
-      let roundCheckButton = cell.viewWithTag(2) as? RoundCheckboxButton
-      else { assertionFailure(); return (UILabel(), RoundCheckboxButton()) }
-    return (themeNameLabel, roundCheckButton)
-  }
-
-  func retrieveInfoViews(from cell: UITableViewCell) -> (UIImageView, UILabel) {
-    guard
-      let imageView = cell.viewWithTag(1) as? UIImageView,
-      let label = cell.viewWithTag(2) as? UILabel
-      else { assertionFailure(); return (UIImageView(), UILabel()) }
-    return (imageView, label)
-  }
-
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell: UITableViewCell
-
     switch indexPath.section {
     case themesSection:
-      cell = tableView.dequeueReusableCell(withIdentifier: "ThemeItemRow", for: indexPath)
-      let (themeNameLabel, roundCheckboxButton) = retrieveThemeViews(from: cell)
-      roundCheckboxButton.isUserInteractionEnabled = false // use the cell selection mechanism.
+      guard let cell = tableView.dequeueReusableCell(withIdentifier: "ThemeItemRow", for: indexPath) as? ThemeItemTableViewCell
+      else { assertionFailure(); return UITableViewCell() }
+      cell.checkboxButton.isUserInteractionEnabled = false // use the cell selection mechanism.
       switch indexPath.row {
       case AppTheme.defaultBougie.rawValue:
-        themeNameLabel.text = "Bougie (Default)"
-        roundCheckboxButton.isSelected = (AppTheme.defaultBougie == SettingsManager.currentAppTheme)
+        cell.nameLabel.text = "Bougie (Default)"
+        cell.checkboxButton.isSelected = (AppTheme.defaultBougie == SettingsManager.currentAppTheme)
       case AppTheme.extraBougie.rawValue:
-        themeNameLabel.text = "Even Cuter Bougie"
-        roundCheckboxButton.isSelected = (AppTheme.extraBougie == SettingsManager.currentAppTheme)
+        cell.nameLabel.text = "Even Cuter Bougie"
+        cell.checkboxButton.isSelected = (AppTheme.extraBougie == SettingsManager.currentAppTheme)
       case AppTheme.unicorns.rawValue:
-        themeNameLabel.text = "UNICORNS!!!"
-        roundCheckboxButton.isSelected = (AppTheme.unicorns == SettingsManager.currentAppTheme)
+        cell.nameLabel.text = "UNICORNS!!!"
+        cell.checkboxButton.isSelected = (AppTheme.unicorns == SettingsManager.currentAppTheme)
       default:
         assertionFailure()
       }
+      return cell
     case infoSection:
-      cell = tableView.dequeueReusableCell(withIdentifier: "InfoRow", for: indexPath)
-      let (imageView, label) = retrieveInfoViews(from: cell)
-      imageView.image = UIImage(named: "PrivacyPolicyIcon25x25")
-      label.text = "Privacy Policy"
+      guard let cell = tableView.dequeueReusableCell(withIdentifier: "InfoRow", for: indexPath) as? InfoRowTableViewCell
+      else { assertionFailure(); return UITableViewCell() }
+      cell.iconImageView.image = UIImage(named: "PrivacyPolicyIcon25x25")
+      cell.nameLabel.text = "Privacy Policy"
+      return cell
     default:
       assertionFailure()
-      cell = UITableViewCell()
+      return UITableViewCell()
     }
-    return cell
+  }
+
+  override func tableView(_: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    switch indexPath.section {
+    case themesSection:
+      48.0
+    default:
+      44.0
+    }
   }
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -123,22 +143,22 @@ class SettingsViewController: UITableViewController {
     }
   }
 
-  override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+  override func tableView(_: UITableView, titleForHeaderInSection section: Int) -> String? {
     switch section {
     case themesSection:
-      return "THEMES"
+      "THEMES"
     case infoSection:
-      return "INFO"
+      "INFO"
     default:
-      return nil
+      nil
     }
   }
 
-  override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+  override func tableView(_: UITableView, willDisplayHeaderView view: UIView, forSection _: Int) {
     guard
       let view = view as? UITableViewHeaderFooterView,
       let textLabel = view.textLabel
-      else { assertionFailure(); return }
+    else { assertionFailure(); return }
     let backgroundView = UIView()
     backgroundView.backgroundColor = .clear
     view.backgroundView = backgroundView
@@ -147,12 +167,12 @@ class SettingsViewController: UITableViewController {
     textLabel.textColor = Colors.inactiveText
   }
 
-  override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-    return false
+  override func tableView(_: UITableView, canEditRowAt _: IndexPath) -> Bool {
+    false
   }
 
-  override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-    return false
+  override func tableView(_: UITableView, canMoveRowAt _: IndexPath) -> Bool {
+    false
   }
 
   private func tableFooterView(tableWidth: CGFloat) -> UILabel {

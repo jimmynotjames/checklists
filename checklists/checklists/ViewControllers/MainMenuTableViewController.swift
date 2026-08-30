@@ -14,7 +14,8 @@ protocol MainMenuEnabledViewController {
 
 extension MainMenuEnabledViewController where Self: UIViewController, Self: MainMenuTableViewControllerDelegate {
   func presentMainMenuModal() {
-    guard let mainMenuViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MainMenu") as? MainMenuTableViewController else { assertionFailure(); return }
+    let mainMenuViewController = MainMenuTableViewController(style: .plain)
+    mainMenuViewController.modalPresentationStyle = .fullScreen
     mainMenuViewController.delegate = self
 
     let navigationController = UINavigationController(rootViewController: mainMenuViewController)
@@ -44,6 +45,12 @@ class MainMenuTableViewController: UITableViewController {
     super.viewDidLoad()
     tableView.contentInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 0.0, right: 0.0)
 
+    tableView.backgroundColor = Colors.darkBlueGray
+    tableView.separatorStyle = .none
+    tableView.sectionHeaderHeight = 28
+    tableView.sectionFooterHeight = 28
+    tableView.register(MainMenuItemTableViewCell.self, forCellReuseIdentifier: "navigationMenuItem")
+
     navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "StopIcon"), style: .plain, target: self, action: #selector(dismissButtonTapped))
     navigationItem.leftBarButtonItem?.accessibilityLabel = "Close menu"
   }
@@ -60,34 +67,31 @@ class MainMenuTableViewController: UITableViewController {
   // MARK: - Table view data source
 
   override func numberOfSections(in _: UITableView) -> Int {
-    return 1
+    1
   }
 
   override func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
-    return MainMenuTableViewController.numberOfRows
+    MainMenuTableViewController.numberOfRows
   }
 
   override func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
-    return 60.0
+    60.0
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "navigationMenuItem", for: indexPath)
+    guard let cell = tableView.dequeueReusableCell(withIdentifier: "navigationMenuItem", for: indexPath) as? MainMenuItemTableViewCell
+    else { assertionFailure(); return UITableViewCell() }
 
-    guard
-      let imageView: UIImageView = cell.viewWithTag(101) as? UIImageView,
-      let label: UILabel = cell.viewWithTag(102) as? UILabel
-    else { assertionFailure(); return cell }
     switch indexPath.row {
     case 0:
-      label.text = "Feedback"
-      imageView.image = UIImage(named: "MainMenuFeedbackIcon")
+      cell.titleLabel.text = "Feedback"
+      cell.iconImageView.image = UIImage(named: "MainMenuFeedbackIcon")
     case 1:
-      label.text = "Rate in App Store"
-      imageView.image = UIImage(named: "MainMenuRateInAppStoreIcon")
+      cell.titleLabel.text = "Rate in App Store"
+      cell.iconImageView.image = UIImage(named: "MainMenuRateInAppStoreIcon")
     case 2:
-      label.text = "Settings"
-      imageView.image = UIImage(named: "MainMenuSettingsIcon")
+      cell.titleLabel.text = "Settings"
+      cell.iconImageView.image = UIImage(named: "MainMenuSettingsIcon")
     default:
       assertionFailure()
     }
@@ -118,11 +122,11 @@ class MainMenuTableViewController: UITableViewController {
 
 extension MainMenuTableViewController: UIViewControllerTransitioningDelegate {
   func animationController(forPresented _: UIViewController, presenting _: UIViewController, source _: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    return MainMenuTransitionAnimator(type: .presenting)
+    MainMenuTransitionAnimator(type: .presenting)
   }
 
   func animationController(forDismissed _: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    return MainMenuTransitionAnimator(type: .dismissing)
+    MainMenuTransitionAnimator(type: .dismissing)
   }
 }
 
@@ -140,7 +144,7 @@ class MainMenuTransitionAnimator: NSObject, UIViewControllerAnimatedTransitionin
   }
 
   func transitionDuration(using _: UIViewControllerContextTransitioning?) -> TimeInterval {
-    return 0.2
+    0.2
   }
 
   func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
