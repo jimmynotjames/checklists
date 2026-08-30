@@ -151,6 +151,10 @@ with an explanation, so following these avoids both prompts and denials:
 - Don't hardcode an analytics token in source when wiring up Mixpanel. See
   [`core-docs/analytics-design.md`](core-docs/analytics-design.md) — the Flurry key sat in `AnalyticsManager.swift` for six years
   and gitleaks never caught it.
+- **Ignore the local `swiftui_2024` branch entirely** — don't investigate it, diff against it, or
+  flag it as context for unrelated work, even in passing. It's an unmerged, in-progress
+  UIKit→SwiftUI migration; spending tokens exploring it is wasted unless the user explicitly asks
+  about it by name.
 
 ## Simulator sandbox
 
