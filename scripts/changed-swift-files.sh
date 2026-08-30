@@ -17,7 +17,6 @@
 #
 # --diff-filter=d excludes deletions (a deleted file cannot be linted). Files that no
 # longer exist on disk are filtered out again at the end for safety (e.g. renames).
-# Vendored Flurry sources are never linted or formatted.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
@@ -35,8 +34,5 @@ BASE_BRANCH="${BASE_BRANCH:-main}"
 } | sort -u | while IFS= read -r f; do
   [ -n "$f" ] || continue
   [ -f "$f" ] || continue
-  case "$f" in
-    checklists/checklists/Flurry/*) continue ;;
-  esac
   printf '%s\n' "$f"
 done

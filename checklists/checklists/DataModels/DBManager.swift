@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import os
 import RealmSwift
 
 class DBManager {
@@ -14,6 +15,11 @@ class DBManager {
     do {
       return try Realm()
     } catch let error as NSError {
+      // Diagnostics first: this is the only record that survives into Release, and it reaches the
+      // unified log synchronously, so it outlives the fatalError below. `%{public}@` is
+      // deliberate — a Realm error description is a file path and an error code, not user
+      // content, and it is useless in a sysdiagnose if redacted to <private>.
+      os_log("Realm could not be opened: %{public}@", log: AppLog.persistence, type: .fault, error.description)
       AnalyticsManager.logRealmFailure(errorMessage: error.description)
       fatalError(error.description)
       // TODO: Try to some more elegant error handling here.
@@ -26,6 +32,9 @@ class DBManager {
         block()
       }
     } catch let error as NSError {
+      // See the note in `realm` above on why this logs before the analytics call and why the
+      // error description is logged as public.
+      os_log("Realm write transaction failed: %{public}@", log: AppLog.persistence, type: .fault, error.description)
       AnalyticsManager.logRealmWriteFailure(errorMessage: error.description)
       fatalError(error.description)
       // TODO: Try to some more elegant error handling here.
@@ -34,6 +43,7 @@ class DBManager {
 }
 
 // MARK: Debugging methods
+
 extension DBManager {
   static func printChecklists() {
     print("-------------DEBUG: Printing all checklists...")

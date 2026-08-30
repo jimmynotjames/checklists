@@ -30,8 +30,6 @@ excluded:
   - build
   - DerivedData
   - checklists/checklists.xcodeproj
-  # Vendored Flurry SDK (third-party headers + static archive).
-  - checklists/checklists/Flurry
 
 line_length:
   warning: 225

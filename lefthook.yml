@@ -10,19 +10,16 @@ pre-commit:
   commands:
     swiftformat:
       glob: "**/*.swift"
-      exclude: "checklists/checklists/Flurry/*"
       run: swiftformat {staged_files}
       stage_fixed: true
 
     swiftlint-fix:
       glob: "**/*.swift"
-      exclude: "checklists/checklists/Flurry/*"
       run: swiftlint --fix --quiet {staged_files}
       stage_fixed: true
 
     swiftlint:
       glob: "**/*.swift"
-      exclude: "checklists/checklists/Flurry/*"
       run: swiftlint lint --strict {staged_files}
 
     check-merge-conflicts:

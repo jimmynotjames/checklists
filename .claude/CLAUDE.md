@@ -4,11 +4,17 @@ Project-wide agent instructions live in [`AGENTS.md`](../AGENTS.md). Treat that 
 canonical for:
 
 - Build and test procedure (`make gate`; tests are opt-in and not gated)
-- The **`ARCHS=arm64` pin** — load-bearing, because the vendored Flurry static library's
-  x86_64 slice is malformed and breaks the linker
+- The **`ARCHS=arm64` pin** in `build.sh`/CI — a build-speed choice, no longer a correctness
+  constraint (it was one until the Flurry SDK was removed)
 - **Lint policy**: changed files only; repo-wide `make format` / `make lint` are manual
   escape hatches, never hooks or gates
 - **Bash command hygiene** (`/tmp/`, `sed`, pushing to main, `nohup`) — enforced by
   `scripts/hooks/guard_bash_hygiene.sh`, registered in `.claude/settings.json`
 - **What NOT to do**, especially machine-wide simulator destruction
-- Known issues (hardcoded Flurry API key; Flurry x86_64 unbuildable)
+- Known issues (the old Flurry API key still in git history; test targets don't link)
+
+Analytics are **stubbed** — Flurry was removed, Mixpanel is not implemented, and
+`AnalyticsManager.log*` calls are no-ops.
+[`core-docs/analytics-design.md`](../core-docs/analytics-design.md) is canonical for the event
+catalog and the Mixpanel migration plan. `core-docs/` holds design docs that outlive a single
+change; `docs/` is the published GitHub Pages site, not a place for internal docs.

@@ -31,6 +31,4 @@ xcodebuild test \
     -derivedDataPath "${SIM_DERIVED}" \
     -resultBundlePath "${RESULT_BUNDLE}" \
     -parallel-testing-enabled NO \
-    -only-testing:checklistsUITests \
-    ARCHS=arm64 \
-    ONLY_ACTIVE_ARCH=NO
+    -only-testing:checklistsUITests

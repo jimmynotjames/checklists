@@ -24,6 +24,6 @@
 # statements, so the two oscillate and swiftlint-fix (run last in pre-commit) wins — leaving
 # code that `swiftformat --lint` then rejects. Disable here so swiftformat defers.
 --disable wrapMultilineStatementBraces
-# `build/` and `DerivedData/` are gitignored scratch. The Flurry directory is vendored
-# third-party source (headers + a static archive) — never reformat it.
---exclude build,DerivedData,.build,checklists/checklists/Flurry
+# `build/` and `DerivedData/` are gitignored scratch. There is no vendored third-party
+# source in this tree any more (the Flurry SDK was the only one, and it is gone).
+--exclude build,DerivedData,.build
