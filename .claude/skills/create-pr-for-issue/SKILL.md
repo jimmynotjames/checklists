@@ -1,6 +1,6 @@
 ---
 name: create-pr-for-issue
-description: Turn a GitHub issue into an open, review-ready PR. Implements the fix, runs a fresh-eye review, audits the cross-cutting checklist (Realm schema migration, Flurry analytics, accessibility), runs `make gate`, pushes, and opens the PR with Closes #N linkage. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr-for-issue <N>.
+description: Turn a GitHub issue into an open, review-ready PR. Implements the fix, runs a fresh-eye review, audits the cross-cutting checklist (Realm schema migration, analytics, accessibility), runs `make gate`, pushes, and opens the PR with Closes #N linkage. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr-for-issue <N>.
 ---
 
 # Create PR for issue
@@ -57,8 +57,11 @@ full descriptions live in the `create-pr` skill (step 4) and `.github/pull_reque
 - **Realm schema migration** — if you touch `RealmSchema.swift`, remember there is currently **no
   migration configuration in the app at all**; an unmigrated schema change crashes every existing
   user's app on launch. Raise it rather than shipping it.
-- **Flurry analytics** — new user-initiated state changes get an `AnalyticsManager.log*` event,
-  following the existing house pattern. No PII.
+- **Analytics** (placeholder — no backend right now) — Flurry was removed and Mixpanel is not
+  wired up, so `AnalyticsManager.log*` calls are no-ops. Instrument anyway: new user-initiated
+  state changes get an `AnalyticsManager.log*` event following the existing house pattern, with
+  its names added to the `AnalyticsEvent`/`AnalyticsProperty` enums and a row in
+  `core-docs/analytics-design.md`. No PII.
 - **Accessibility** — new controls get `accessibilityLabel` and appropriate traits; nothing clips at
   large Dynamic Type.
 

@@ -90,9 +90,10 @@ jobs:
   # Complements pre-commit `gitleaks protect --staged`. Pinned binary instead of
   # gitleaks-action to avoid that action's org-license requirement.
   #
-  # NOTE: this is currently green, and that is NOT the same as "no secrets". The
-  # hardcoded Flurry API key in AnalyticsManager.swift is not matched by any
-  # gitleaks rule. See AGENTS.md §"Known issues".
+  # NOTE: green here is NOT the same as "no secrets". This scans full history, and the
+  # hardcoded Flurry API key that lived in AnalyticsManager.swift until Flurry was removed
+  # is STILL in that history and is still not matched by any gitleaks rule (a bare 20-char
+  # alphanumeric with no adjacent keyword). See AGENTS.md §"Known issues" and issue #115.
   secrets:
     runs-on: ubuntu-latest
     env:
@@ -158,8 +159,9 @@ jobs:
           key: spm-${{ runner.os }}-xcode26.6-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: |
             spm-${{ runner.os }}-xcode26.6-
-      # ARCHS=arm64 is REQUIRED: the vendored Flurry static library's x86_64 slice
-      # is malformed and fails the linker. See AGENTS.md §"The arm64 pin is load-bearing".
+      # ARCHS=arm64 is a build-speed choice, not a correctness constraint (it was one, while
+      # Flurry's malformed x86_64 slice was vendored). The destination is generic, so dropping
+      # it would build both slices and compile Realm's C++ tree twice. See scripts/build.sh.
       - name: xcodebuild build
         run: |
           xcodebuild build \

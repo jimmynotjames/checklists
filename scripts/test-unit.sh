@@ -28,9 +28,7 @@ xcodebuild test \
     -derivedDataPath "${SIM_DERIVED}" \
     -resultBundlePath "${RESULT_BUNDLE}" \
     -parallel-testing-enabled NO \
-    -skip-testing:checklistsUITests \
-    ARCHS=arm64 \
-    ONLY_ACTIVE_ARCH=NO
+    -skip-testing:checklistsUITests
 
 # Signal to test-ui.sh that the sim has hosted an app lifecycle.
 # Cleared automatically by make sim-clean (which wipes .build/sim/).

@@ -1,0 +1,42 @@
+//
+//  AppLoggers.swift
+//  checklists
+//
+//  Copyright © 2026 Jimmy Ho. All rights reserved.
+//
+
+// MARK: - Diagnostic logging, deliberately separate from analytics
+
+//
+// This is the *diagnostics* channel: operational failures that a developer needs to see when
+// something goes wrong on a real device. It is architecturally independent of
+// `AnalyticsManager`, which is the *product* channel (what users do). The two never feed each
+// other. The same split is used in the sibling `budgets1` repo (`AppLoggers.swift` +
+// `docs/analytics-spec.md` §17).
+//
+// Why this exists: analytics are currently stubbed (Flurry removed, Mixpanel not wired up), so
+// `AnalyticsManager.log*` calls go nowhere in Release. Without this channel, a Realm failure
+// would crash the app having left no record anywhere. `os_log` needs no backend, no SDK, and no
+// network — it writes to the unified log, which is readable in Console.app on an attached device
+// and is captured in a sysdiagnose.
+//
+// It is also more durable than an analytics call would be: `os_log` writes synchronously into the
+// shared log buffer, and only the flush to `logd`'s on-disk store is asynchronous. That is not a
+// hard guarantee of persistence across the `fatalError` in `DBManager` — but a `.fault` logged
+// immediately before a trap does survive in practice, which is more than can be said for a
+// buffered network event. This was verified by corrupting the Realm file on a simulator and
+// reading the fault back out of the unified log after the crash.
+//
+// **Note this uses `os_log` rather than the nicer `Logger` API.** `Logger` requires iOS 14 and
+// this app deploys to iOS 13.2. If the deployment target is ever raised, this file and the two
+// call sites in `DBManager` are the only places to migrate — tracked in issue #119.
+
+import Foundation
+import os
+
+enum AppLog {
+  private static let subsystem = Bundle.main.bundleIdentifier ?? "com.jimmyho.checklists"
+
+  /// Realm failures — opening the store, and write transactions. Success paths log nothing.
+  static let persistence = OSLog(subsystem: subsystem, category: "persistence")
+}

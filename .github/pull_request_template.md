@@ -18,8 +18,10 @@ For any change that touches the data model, user actions, or UI — confirm each
 
 - [ ] **Realm schema migration** — if `RealmSchema.swift` changed, a bumped `schemaVersion` and
       migration block exist. Without one the app `fatalError`s on launch for every existing user.
-- [ ] **Flurry analytics** — new user-initiated state changes fire a matching
-      `AnalyticsManager.log*` event. No PII.
+- [ ] **Analytics** *(no backend right now — Flurry removed, Mixpanel not wired up, so these
+      calls are no-ops)* — new user-initiated state changes still fire a matching
+      `AnalyticsManager.log*` event, with names in the `AnalyticsEvent`/`AnalyticsProperty` enums
+      and a row added to `core-docs/analytics-design.md`. No PII.
 - [ ] **Accessibility** — new controls have `accessibilityLabel` and appropriate traits; nothing
       clips at large Dynamic Type.
 

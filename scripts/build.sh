@@ -13,19 +13,25 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-# ARCHS=arm64 is REQUIRED, not an optimization. The vendored Flurry 11.2.0 static
-# library (checklists/checklists/Flurry/libFlurry_11.2.0.a) is a 2020-era fat archive
-# containing i386/armv7/x86_64/arm64 slices, and its x86_64 slice is malformed in a way
-# the modern linker rejects outright:
+# ARCHS=arm64 is a BUILD-SPEED choice, not a correctness constraint.
 #
-#   ld: LINKEDIT overlap of start of LINKEDIT and symbol table strings in
-#       'libFlurry_11.2.0.a(CrashReporter-x86_64-master.o)'
+# It used to be load-bearing: the vendored Flurry static library's x86_64 slice was
+# malformed and the linker rejected it outright, so an unpinned build simply failed.
+# Flurry has been removed and that constraint is gone — an unpinned build of this
+# project now links clean for both slices (verified: `lipo -info` on the built binary
+# reports "x86_64 arm64").
 #
-# A generic simulator destination builds every slice, so it hits the bad x86_64 object
-# and fails. Xcode's own builds succeed because they build only the active arch. Pinning
-# arm64 keeps the command-line build honest on Apple Silicon. Consequence: this project
-# cannot currently be built for an x86_64 simulator (Intel Macs / Rosetta) at all —
-# fixing that means upgrading or dropping the Flurry SDK. See AGENTS.md.
+# The pin stays because the destination below is generic, so dropping it builds BOTH
+# slices — which means compiling Realm's large C++ tree (realm-core, s2geometry) twice
+# for no benefit. Every machine and CI runner that builds this project is Apple Silicon.
+#
+# Measured on an M4, clean DerivedData, warm SPM checkout: 56 s pinned vs 93 s unpinned.
+# So the pin saves ~37 s (~40%) — real, but well short of halving, because the two slices
+# share driver startup, SPM resolution, and asset-catalog work.
+#
+# If you ever need genuine x86_64 coverage: delete ARCHS=arm64 below but KEEP
+# ONLY_ACTIVE_ARCH=NO — that is the flag that forces both slices to be built. Deleting both
+# would fall back to the active arch only and give you the same single slice you have now.
 exec xcodebuild build \
     -project checklists/checklists.xcodeproj \
     -scheme checklists \

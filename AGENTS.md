@@ -1,8 +1,14 @@
 # Agent instructions — checklists
 
-A UIKit + storyboards iOS app (Swift 5.0, iOS 13.2+), persisted with **Realm** (SPM) and
-instrumented with **Flurry**. The Xcode project lives one level down at
-`checklists/checklists.xcodeproj`; the repo root holds tooling only.
+A UIKit + storyboards iOS app (Swift 5.0, iOS 13.2+), persisted with **Realm** (SPM). Analytics
+are **stubbed** — Flurry was removed and Mixpanel is not wired up yet, so `AnalyticsManager.log*`
+calls are no-ops. See
+[`core-docs/analytics-design.md`](core-docs/analytics-design.md).
+
+The Xcode project lives one level down at `checklists/checklists.xcodeproj`. The repo root holds
+tooling, plus **`core-docs/`** — design docs that outlive any single change and are canonical for
+their subject. (`docs/` is something else entirely: the published Jekyll/GitHub Pages site for the
+privacy policy and landing page. Never put internal docs there.)
 
 Tooling here was ported from the `budgets1` repo and deliberately trimmed — see
 "Deviations from budgets1" at the bottom for what was changed and why.
@@ -32,23 +38,33 @@ has not been run and has the same missing-linkage shape.
 *persisted* Realm store (its own header says so) and calls `deleteAll()` in `setUp`. The
 per-repo simulator sandbox keeps that blast radius on this repo's own device.
 
-### The arm64 pin is load-bearing
+### The arm64 pin is now just a speed choice
 
-Every build/test script passes `ARCHS=arm64 ONLY_ACTIVE_ARCH=NO`. This is **required, not an
-optimization**. The vendored `checklists/checklists/Flurry/libFlurry_11.2.0.a` is a fat
-archive (`i386 armv7 x86_64 arm64`) whose **x86_64 slice is malformed** and rejected by the
-modern linker:
+`scripts/build.sh` and `.github/workflows/ci.yml` pass `ARCHS=arm64 ONLY_ACTIVE_ARCH=NO`. This
+**used to be load-bearing** — the vendored Flurry static archive's x86_64 slice was malformed and
+the linker rejected it outright, so an unpinned build simply failed. Flurry is gone and that
+constraint is gone with it: an unpinned build now links clean for both slices (verified with
+`lipo -info` on the built binary → `x86_64 arm64`).
 
-```
-ld: LINKEDIT overlap of start of LINKEDIT and symbol table strings in
-    'libFlurry_11.2.0.a(CrashReporter-x86_64-master.o)'
-```
+The pin remains only because both of those call sites use a *generic* simulator destination, so
+dropping it builds both slices — compiling Realm's large C++ tree (realm-core, s2geometry) twice
+for no benefit on hardware that is always Apple Silicon. Measured on an M4 with clean
+DerivedData: **56 s pinned vs 93 s unpinned** — a ~37 s saving, not a halving, since the two
+slices share driver startup, SPM resolution, and asset-catalog work.
 
-A generic simulator destination builds every slice and therefore fails. Xcode's own builds
-succeed because they build only the active arch, which is why this never surfaced
-interactively. **Consequence: this project cannot currently be built for an x86_64
-simulator (Intel Mac / Rosetta) at all.** Fixing that properly means upgrading or dropping
-the Flurry SDK.
+The test scripts no longer pass it at all. The net result is unchanged — they still build a single
+arm64 slice — but the mechanism is worth stating precisely, because it is not the destination:
+`ONLY_ACTIVE_ARCH = YES` is set in the **project-level Debug configuration** (the only place that
+setting appears anywhere; Release has none and so defaults to `NO`), and test actions run Debug.
+The removed pair was therefore not inert — `ONLY_ACTIVE_ARCH=NO` was widening the build and
+`ARCHS=arm64` was cancelling it straight back out.
+
+**Consequence to know about:** if anyone ever adds `-configuration Release` to `scripts/test-unit.sh`
+or `scripts/test-ui.sh`, that build starts compiling both slices and gets noticeably slower, with
+nothing in either script left to explain why.
+
+**This project can be built for an x86_64 simulator again** — drop `ARCHS=arm64` from
+`scripts/build.sh` and keep `ONLY_ACTIVE_ARCH=NO`, which is what forces both slices to build.
 
 ## Lint policy: changed files only
 
@@ -61,8 +77,9 @@ The tree carries **~96 pre-existing SwiftLint violations** (28 `force_cast`, 11 
 - **`make format` / `make lint`** are repo-wide and are *manual escape hatches only*. Do not
   wire them into a gate or a hook without a plan for the resulting 30-file diff.
 
-Code is brought up to standard as it is touched. Vendored `Flurry/` sources are never
-formatted or linted.
+Code is brought up to standard as it is touched. There is no vendored third-party source in
+the tree any more — the Flurry SDK was the only one, so the lint and format configs carry no
+exclusions beyond build scratch.
 
 ## Commit and PR style
 
@@ -130,8 +147,10 @@ with an explanation, so following these avoids both prompts and denials:
   `simctl delete unavailable`. These hit *every* simulator on the machine, including other
   repos' and Xcode's own. Use `make sim-shutdown` / `make sim-clean`, which act only on the
   UDID in `.build/sim/device.udid`.
-- Don't reformat or lint `checklists/checklists/Flurry/` — it is vendored third-party code.
 - Don't add `make format`/`make lint` (repo-wide) to any hook or gate. See the lint policy.
+- Don't hardcode an analytics token in source when wiring up Mixpanel. See
+  [`core-docs/analytics-design.md`](core-docs/analytics-design.md) — the Flurry key sat in `AnalyticsManager.swift` for six years
+  and gitleaks never caught it.
 
 ## Simulator sandbox
 
@@ -145,14 +164,16 @@ device and skips sandbox management entirely.
 
 ## Known issues
 
-- **Hardcoded Flurry API key** at `checklists/checklists/Analytics/AnalyticsManager.swift:17`,
-  present throughout git history. **The gitleaks gate does NOT catch this** — a full-history
-  scan of all 294 commits reports zero findings, because the key is a bare 20-char
-  alphanumeric with no adjacent keyword and gitleaks ships no Flurry-specific rule. No
-  `.gitleaksignore` baseline was needed for that reason; do not mistake a green secrets gate
-  for this being handled. It still needs rotating and moving to a gitignored xcconfig — tracked in
+- **Analytics send nowhere.** Flurry was removed; Mixpanel is not implemented. Every
+  `AnalyticsManager.log*` call still fires but hits a no-op (it prints in DEBUG). The full
+  tracking plan, the event/property catalog, and the decisions still open are in
+  [`core-docs/analytics-design.md`](core-docs/analytics-design.md) — read it before touching analytics.
+- **The old Flurry API key is still in git history.** It left the working tree with the Flurry
+  removal, but it is present in ~294 commits of history and **the gitleaks gate does NOT catch
+  it** — the key is a bare 20-char alphanumeric with no adjacent keyword and gitleaks ships no
+  Flurry-specific rule. Do not mistake a green secrets gate for this being handled. The Flurry
+  account should be shut down; tracked in
   [issue #115](https://github.com/jimmynotjames/checklists/issues/115).
-- **Flurry SDK is unbuildable for x86_64** — see the arm64 pin section above.
 - **Test targets don't link their SPM dependencies** — `make test-unit` fails at link time.
   [issue #116](https://github.com/jimmynotjames/checklists/issues/116).
 
@@ -174,4 +195,5 @@ adding the jobs as required status checks in the existing branch protection.
 | `SRB_SIM_MAX` sim-clone concurrency | not ported | UI suite is small and not gated |
 | `--header strip` | `--header ignore` | would delete every file's authorship header |
 | CI on by default (public repo, free macOS minutes) | ported but disabled | private repo, macOS bills at 10× |
-| i18n gates, fastlane, OpenSpec, Mixpanel | not ported | no counterpart stack here |
+| i18n gates, fastlane, OpenSpec | not ported | no counterpart stack here |
+| Mixpanel analytics | not ported *yet* | Flurry removed; budgets1's `docs/analytics-spec.md` and `Logging/` are the reference for the eventual port. See [`core-docs/analytics-design.md`](core-docs/analytics-design.md) |

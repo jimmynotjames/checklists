@@ -1,6 +1,6 @@
 ---
 name: create-pr
-description: Turn already-written code changes into a reviewed, gated, open PR. Spawns a fresh-context code-reviewer subagent for a correctness-first look at the diff, audits the AGENTS.md cross-cutting checklist (Realm schema migration, Flurry analytics, accessibility), fills in any gaps autonomously, runs `make gate`, commits residual fixes, pushes the branch, and opens the PR. Use when the solution is mostly done and you want to review, gate, and ship it to a PR — without involving a GitHub issue. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr.
+description: Turn already-written code changes into a reviewed, gated, open PR. Spawns a fresh-context code-reviewer subagent for a correctness-first look at the diff, audits the AGENTS.md cross-cutting checklist (Realm schema migration, analytics, accessibility), fills in any gaps autonomously, runs `make gate`, commits residual fixes, pushes the branch, and opens the PR. Use when the solution is mostly done and you want to review, gate, and ship it to a PR — without involving a GitHub issue. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr.
 ---
 
 # Create a PR
@@ -88,7 +88,7 @@ Spawn a **`general-purpose` Agent** with the diff in the prompt — a fresh cont
 prior conversation history coloring the review. Brief it as:
 
 > "You are reviewing a code diff for a **UIKit + storyboards iOS app written in Swift 5, persisted
-> with Realm (RealmSwift 20.x) and instrumented with Flurry**. Deployment target is iOS 13.2.
+> with Realm (RealmSwift 20.x)**. Deployment target is iOS 13.2.
 > Review for:
 >
 > - **Realm thread confinement** — `Realm` instances and `Object` subclasses are not thread-safe
@@ -135,14 +135,25 @@ change. **The app currently has no migration configuration at all** — `DBManag
 schema changed, a `Realm.Configuration` with a bumped `schemaVersion` and a migration block must be
 in place. If it isn't, stop and raise it — this is not something to paper over.
 
-**Flurry analytics events**
+**Analytics events** — *placeholder: there is currently no analytics backend.*
+Flurry was removed and Mixpanel is not wired up, so every `AnalyticsManager.log*` call is a no-op
+(it prints in DEBUG, does nothing in Release). **Keep instrumenting anyway** — the point is that the
+event catalog is complete and correct on the day Mixpanel lands, not that anything is being
+collected today.
+
 Applies if: the diff introduces a new user-initiated action that materially changes app state (a new
 button, a new destructive action, a new setting).
 Check: a matching `AnalyticsManager.log*` call is present. Follow the existing house pattern in
 `checklists/checklists/Analytics/AnalyticsManager.swift` — a named `static func` wrapping
 `logEvent(_:withParameters:)`, e.g. `logNewChecklist()`, `logResetChecklist()`,
-`logDonation(productId:)`. Route any user-supplied string through `truncatedString`. No PII —
-checklist and item names are user content and must not be sent as raw event parameters.
+`logDonation(productId:)`. Add the event and property names to the `AnalyticsEvent` /
+`AnalyticsProperty` enums in that file (never inline string literals), and **add a row to the
+catalog in `core-docs/analytics-design.md` in the same change**. Names are flat `snake_case`,
+`noun_pastTenseVerb`. Route any user-supplied string through `truncatedString`.
+
+No PII: item names, item notes, and checklist notes must never be sent as raw event parameters.
+The one exception is `checklist_name` on `checklist_viewed`, which is a pre-existing accepted risk
+documented in `core-docs/analytics-design.md` — it is not a precedent for adding more user content.
 
 **Accessibility**
 Applies if: the diff adds or modifies a `UIView` or `UIViewController`.
