@@ -151,10 +151,6 @@ enum AnalyticsManager {
     logEvent(AnalyticsEvent.checklistViewed, withParameters: params)
   }
 
-  static func logDonatePageViewed() {
-    logEvent(AnalyticsEvent.donateViewed)
-  }
-
   static func logSettingsViewed() {
     logEvent(AnalyticsEvent.settingsViewed)
   }
@@ -185,20 +181,6 @@ enum AnalyticsManager {
 
   static func logResetChecklist() {
     logEvent(AnalyticsEvent.checklistReset)
-  }
-
-  // MARK: - Donation Analytics
-
-  static func logDonation(productId: String) {
-    logEvent(AnalyticsEvent.donationCompleted, withParameters: [AnalyticsProperty.productId: productId])
-  }
-
-  static func logPurchaseError(errorMessage: String) {
-    logEvent(AnalyticsEvent.donationFailed, withParameters: [AnalyticsProperty.error: truncatedString(errorMessage)])
-  }
-
-  static func logProductLoadingError(errorMessage: String) {
-    logEvent(AnalyticsEvent.donationProductsLoadFailed, withParameters: [AnalyticsProperty.error: truncatedString(errorMessage)])
   }
 
   // MARK: - Error Logging
@@ -248,8 +230,6 @@ enum AnalyticsEvent {
   static let checklistsViewed = "checklists_viewed"
   /// A single checklist opened. Flurry: `checklist_viewed` (unchanged).
   static let checklistViewed = "checklist_viewed"
-  /// Donate screen shown. Flurry: `donate_page_viewed`.
-  static let donateViewed = "donate_viewed"
   /// Settings screen shown. Flurry: `settings_viewed` (unchanged).
   static let settingsViewed = "settings_viewed"
   /// Main menu shown. Flurry: `main_menu_viewed` (unchanged).
@@ -270,15 +250,6 @@ enum AnalyticsEvent {
   static let checklistCreated = "checklist_created"
   /// A checklist's items were all unchecked. Flurry: `reset_checklist`.
   static let checklistReset = "checklist_reset"
-
-  // MARK: Donations (in-app purchase)
-
-  /// A donation IAP completed successfully. Flurry: `donate/purchase`.
-  static let donationCompleted = "donation_completed"
-  /// A donation IAP failed. Flurry: `donate/purchase_error`.
-  static let donationFailed = "donation_failed"
-  /// The StoreKit product list failed to load. Flurry: `donate/error_loading_products`.
-  static let donationProductsLoadFailed = "donation_products_load_failed"
 
   // MARK: Errors
 
@@ -320,11 +291,6 @@ enum AnalyticsProperty {
   static let itemsCount = "items_count"
   /// Number of items that have notes. Flurry: `num_items_with_notes`.
   static let itemsWithNotesCount = "items_with_notes_count"
-
-  // MARK: donation_*
-
-  /// StoreKit product identifier of the donation tier. Flurry: `product_id` (unchanged).
-  static let productId = "product_id"
 
   // MARK: Errors and failures
 

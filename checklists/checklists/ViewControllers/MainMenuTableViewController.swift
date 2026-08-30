@@ -29,20 +29,16 @@ extension MainMenuEnabledViewController where Self: UIViewController, Self: Main
   }
 }
 
-protocol MainMenuTableViewControllerDelegate: class {
+protocol MainMenuTableViewControllerDelegate: AnyObject {
   func openSettingsPage()
-  func openDonatePage()
 }
 
 class MainMenuTableViewController: UITableViewController {
-
-  static private let numberOfRows = 4
+  private static let numberOfRows = 3
 
   weak var delegate: MainMenuTableViewControllerDelegate?
 
-  var preferredHeight: CGFloat = {
-    return CGFloat(numberOfRows) * 44.0 + 18.0
-  }()
+  var preferredHeight: CGFloat = .init(numberOfRows) * 44.0 + 18.0
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -63,15 +59,15 @@ class MainMenuTableViewController: UITableViewController {
 
   // MARK: - Table view data source
 
-  override func numberOfSections(in tableView: UITableView) -> Int {
+  override func numberOfSections(in _: UITableView) -> Int {
     return 1
   }
 
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  override func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
     return MainMenuTableViewController.numberOfRows
   }
 
-  override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+  override func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
     return 60.0
   }
 
@@ -81,7 +77,7 @@ class MainMenuTableViewController: UITableViewController {
     guard
       let imageView: UIImageView = cell.viewWithTag(101) as? UIImageView,
       let label: UILabel = cell.viewWithTag(102) as? UILabel
-      else { assertionFailure(); return cell }
+    else { assertionFailure(); return cell }
     switch indexPath.row {
     case 0:
       label.text = "Feedback"
@@ -90,9 +86,6 @@ class MainMenuTableViewController: UITableViewController {
       label.text = "Rate in App Store"
       imageView.image = UIImage(named: "MainMenuRateInAppStoreIcon")
     case 2:
-      label.text = "Donate!"
-      imageView.image = UIImage(named: "MainMenuDonateIcon")
-    case 3:
       label.text = "Settings"
       imageView.image = UIImage(named: "MainMenuSettingsIcon")
     default:
@@ -114,10 +107,6 @@ class MainMenuTableViewController: UITableViewController {
       UIApplication.shared.open(url, options: [:], completionHandler: nil)
     case 2:
       dismiss(animated: false) {
-        self.delegate?.openDonatePage()
-      }
-    case 3:
-      dismiss(animated: false) {
         self.delegate?.openSettingsPage()
       }
     default:
@@ -128,11 +117,11 @@ class MainMenuTableViewController: UITableViewController {
 }
 
 extension MainMenuTableViewController: UIViewControllerTransitioningDelegate {
-  func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+  func animationController(forPresented _: UIViewController, presenting _: UIViewController, source _: UIViewController) -> UIViewControllerAnimatedTransitioning? {
     return MainMenuTransitionAnimator(type: .presenting)
   }
 
-  func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+  func animationController(forDismissed _: UIViewController) -> UIViewControllerAnimatedTransitioning? {
     return MainMenuTransitionAnimator(type: .dismissing)
   }
 }
@@ -142,6 +131,7 @@ class MainMenuTransitionAnimator: NSObject, UIViewControllerAnimatedTransitionin
     case presenting
     case dismissing
   }
+
   let type: TransitionType
 
   required init(type: TransitionType) {
@@ -149,7 +139,7 @@ class MainMenuTransitionAnimator: NSObject, UIViewControllerAnimatedTransitionin
     super.init()
   }
 
-  func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+  func transitionDuration(using _: UIViewControllerContextTransitioning?) -> TimeInterval {
     return 0.2
   }
 

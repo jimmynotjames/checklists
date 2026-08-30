@@ -146,7 +146,7 @@ button, a new destructive action, a new setting).
 Check: a matching `AnalyticsManager.log*` call is present. Follow the existing house pattern in
 `checklists/checklists/Analytics/AnalyticsManager.swift` — a named `static func` wrapping
 `logEvent(_:withParameters:)`, e.g. `logNewChecklist()`, `logResetChecklist()`,
-`logDonation(productId:)`. Add the event and property names to the `AnalyticsEvent` /
+`logRateInAppStore()`. Add the event and property names to the `AnalyticsEvent` /
 `AnalyticsProperty` enums in that file (never inline string literals), and **add a row to the
 catalog in `core-docs/analytics-design.md` in the same change**. Names are flat `snake_case`,
 `noun_pastTenseVerb`. Route any user-supplied string through `truncatedString`.
