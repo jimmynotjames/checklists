@@ -9,29 +9,14 @@
 import UIKit
 
 class CLButton: UIButton {
-  private let normalColor: UIColor = Colors.defaultBackground
-  private let highlightedColor: UIColor = Colors.teal
-
-  override var isHighlighted: Bool {
-    get {
-      return super.isHighlighted
-    }
-    set {
-      super.isHighlighted = newValue
-      backgroundColor = newValue ? highlightedColor : normalColor
-    }
-  }
-
   override init(frame: CGRect) {
     super.init(frame: frame)
-    layer.borderWidth = 1.0
-    layer.cornerRadius = 4.0
-    layer.borderColor = highlightedColor.cgColor
-    setTitleColor(highlightedColor, for: .normal)
-    setTitleColor(normalColor, for: .highlighted)
+    configuration = .glass()
+    configuration?.baseForegroundColor = Colors.teal
   }
 
-  required init?(coder aDecoder: NSCoder) {
+  @available(*, unavailable)
+  required init?(coder _: NSCoder) {
     fatalError()
   }
 }

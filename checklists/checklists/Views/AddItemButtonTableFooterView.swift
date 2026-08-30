@@ -20,7 +20,7 @@ class AddItemButtonTableFooterView: UIView {
 
   let addButton: CLButton = {
     let button = CLButton(frame: .zero)
-    button.setTitle("Add", for: .normal)
+    button.configuration?.title = "Add"
     return button
   }()
 
