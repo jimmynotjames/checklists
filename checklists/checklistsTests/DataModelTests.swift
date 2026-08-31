@@ -7,7 +7,6 @@
 
 @testable import checklists
 import RealmSwift
-import Toast
 import XCTest
 
 private let checklistName = "Test Checklist 1"
