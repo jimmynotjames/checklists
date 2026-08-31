@@ -27,6 +27,24 @@ class DBManager {
     }
   }()
 
+  /**
+   Runs `block` in a write transaction and stamps `checklist.lastModified` in that same
+   transaction, so a checklist's timestamp can never drift out of sync with the edit that caused it.
+
+   Pass `nil` to skip the stamp. That is not a convenience — it is how callers express
+   "this write touches placeholder scaffolding, not user content", which is the distinction
+   `lastModified` is meant to capture. See `Item.isEmpty`.
+
+   Not for deleting the checklist itself: the stamp runs *after* `block`, so a block that deletes
+   `checklist` would leave this writing to an invalidated object.
+   */
+  static func write(touching checklist: Checklist?, _ block: () -> Void) {
+    write {
+      block()
+      checklist?.lastModified = Date()
+    }
+  }
+
   static func write(_ block: () -> Void) {
     do {
       try realm.write {
@@ -55,6 +73,7 @@ extension DBManager {
       print("Checklist Name: \(checklist.name)")
       print("notes: \(String(describing: checklist.notes))")
       print("sortNumber: \(checklist.sortNumber)")
+      print("lastModified: \(checklist.lastModified)")
       print("Items: \(checklist.items)")
     }
     print("-------------COMPLETED printing all checklists...")

@@ -66,8 +66,10 @@ class Checklist: Object {
 
   func remove(at index: Int) {
     guard index >= 0, index < items.count else { assertionFailure(); return }
-    DBManager.write {
-      let item = items[index]
+    let item = items[index]
+    // Dropping an empty placeholder row (e.g. backspacing on it) removes no user content,
+    // so it must not count as modifying the checklist.
+    DBManager.write(touching: item.isEmpty ? nil : self) {
       items.remove(at: index)
       DBManager.realm.delete(item)
     }
@@ -78,7 +80,7 @@ class Checklist: Object {
     guard index2 >= 0, index2 < items.count else { assertionFailure(); return }
     guard index1 != index2 else { return }
 
-    DBManager.write {
+    DBManager.write(touching: self) {
       items.swapAt(index1, index2)
     }
   }
@@ -88,13 +90,16 @@ class Checklist: Object {
     guard toIndex >= 0, toIndex < items.count else { assertionFailure(); return }
     guard fromIndex != toIndex else { return }
 
-    DBManager.write {
+    DBManager.write(touching: self) {
       items.move(from: fromIndex, to: toIndex)
     }
   }
 
   func uncheckAllItems() {
-    DBManager.write {
+    // Resetting a checklist that has nothing checked changes no stored value, so it isn't a
+    // modification. Matters because "Reset all" sweeps every checklist, touched or not.
+    let hasCheckedItems = items.contains { $0.status == .checked }
+    DBManager.write(touching: hasCheckedItems ? self : nil) {
       for item in items {
         item.status = .unchecked
       }
@@ -133,6 +138,13 @@ class Item: Object {
     set {
       statusRaw = newValue.rawValue
     }
+  }
+
+  /// True when the item holds no user content — a placeholder row, not something worth
+  /// timestamping the parent Checklist for. Deliberately not `@objc dynamic`: it is a computed
+  /// Swift property and must stay out of the Realm schema so this needs no migration.
+  var isEmpty: Bool {
+    name.isEmpty && (notes?.isEmpty ?? true)
   }
 
   override nonisolated init() {
