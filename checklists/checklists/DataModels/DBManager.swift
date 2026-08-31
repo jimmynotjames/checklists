@@ -46,6 +46,17 @@ class DBManager {
   }
 
   static func write(_ block: () -> Void) {
+    // Join an enclosing transaction rather than opening a nested one. Realm rejects nesting from
+    // `begin_transaction`, and that surfaces as an ObjC NSException (`RLMException`) which the
+    // `catch` below cannot catch — it would be an uncaught exception and SIGABRT, not our
+    // `fatalError`. Joining is what makes the self-writing model methods safe to compose.
+    // Consequence: a joined block is not independently atomic — cancelling the outer transaction
+    // discards it too.
+    guard !realm.isInWriteTransaction else {
+      block()
+      return
+    }
+
     do {
       try realm.write {
         block()

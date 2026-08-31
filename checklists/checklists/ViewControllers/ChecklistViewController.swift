@@ -151,14 +151,7 @@ class ChecklistViewController: UIViewController {
     } else {
       navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetButtonTapped))
     }
-    if checklist.items.isEmpty {
-      let item = Item(name: "", notes: nil)
-      // Plain write, not write(touching:) — this blank row is UI scaffolding the user never asked
-      // for, so merely opening an empty checklist must not modify it.
-      DBManager.write {
-        checklist.items.append(item)
-      }
-    }
+    checklist.appendPlaceholderItemIfEmpty()
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -184,21 +177,7 @@ class ChecklistViewController: UIViewController {
   }
 
   override func viewDidDisappear(_ animated: Bool) {
-    // Plain write, not write(touching:) — pruning rows that hold no content removes nothing the
-    // user typed, and pairs with the scaffolding appended in viewDidLoad.
-    DBManager.write {
-      // If user left some 'dangling' empty items at end of list, remove them, but don't worry if there's one lone empty item.
-      var i = checklist.items.count - 1
-      while i > 0 {
-        let item = checklist.items[i]
-        if item.isEmpty {
-          DBManager.realm.delete(item)
-        } else {
-          break
-        }
-        i -= 1
-      }
-    }
+    checklist.pruneTrailingEmptyItems()
     super.viewDidDisappear(animated)
   }
 
@@ -229,12 +208,7 @@ class ChecklistViewController: UIViewController {
   }
 
   private func insertNewItem(at index: Int, becomeFirstResponder: Bool) {
-    let item = Item(name: "", notes: nil)
-    // Plain write, not write(touching:) — the new row is empty and may well be pruned again on
-    // exit. The modification is recorded when the user actually types into it.
-    DBManager.write {
-      self.checklist.items.insert(item, at: index)
-    }
+    checklist.insertPlaceholderItem(at: index)
 
     let updates = {
       self.tableView.performBatchUpdates({
@@ -427,12 +401,7 @@ extension ChecklistViewController: UITextFieldDelegate {
 
   func textFieldDidEndEditing(_: UITextField) {
     let name = checklistNameTextField.hasText ? checklistNameTextField.text ?? defaultChecklistName : defaultChecklistName // Accounts for both nil and empty string.
-    // This fires on every focus loss, not just real edits, so compare before writing —
-    // otherwise merely tapping into the field and back out would bump lastModified.
-    guard checklist.name != name else { return }
-    DBManager.write(touching: checklist) {
-      checklist.name = name
-    }
+    checklist.setName(name) // No-op when unchanged — this fires on every focus loss, not just real edits.
   }
 
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -453,13 +422,7 @@ extension ChecklistViewController: UITextFieldDelegate {
 /// For the Checklist Notes field.
 extension ChecklistViewController: UITextViewDelegate {
   func textViewDidEndEditing(_: UITextView) {
-    let notes = checklistNotesTextView.text
-    // Compare through `?? ""`, not against the optional: notes start out nil but the text view
-    // reports "", so a plain `!=` would call focusing-and-blurring an untouched field an edit.
-    guard (checklist.notes ?? "") != notes else { return } // See the note in textFieldDidEndEditing.
-    DBManager.write(touching: checklist) {
-      checklist.notes = notes
-    }
+    checklist.setNotes(checklistNotesTextView.text) // No-op when unchanged, nil and "" treated alike.
   }
 
   func textViewDidChange(_: UITextView) {
@@ -531,10 +494,7 @@ extension ChecklistViewController: ItemContentViewDelegate {
   }
 
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView) {
-    guard let item = itemContentView.item else { assertionFailure(); return }
-    DBManager.write(touching: checklist) { // A toggle always changes the stored status, so no comparison needed.
-      item.toggleStatus()
-    }
+    itemContentView.item?.toggleStatus()
     itemContentView.updateCheckedStatus()
     updateStatusIcon()
   }
@@ -550,17 +510,11 @@ extension ChecklistViewController: ItemContentViewDelegate {
   }
 
   func itemContentView(_ itemContentView: ItemContentView, nameFieldUpdatedWith name: String) {
-    guard let item = itemContentView.item, item.name != name else { return } // See the note in textFieldDidEndEditing.
-    DBManager.write(touching: checklist) {
-      item.name = name
-    }
+    itemContentView.item?.setName(name)
   }
 
   func itemContentView(_ itemContentView: ItemContentView, notesFieldUpdatedWith notes: String) {
-    guard let item = itemContentView.item, (item.notes ?? "") != notes else { return } // See the note in textViewDidEndEditing.
-    DBManager.write(touching: checklist) {
-      item.notes = notes
-    }
+    itemContentView.item?.setNotes(notes)
   }
 
   func itemContentViewDidReturnOnNameField(_ itemContentView: ItemContentView) {
