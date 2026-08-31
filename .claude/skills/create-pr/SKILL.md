@@ -87,8 +87,8 @@ git diff main..HEAD
 Spawn a **`general-purpose` Agent** with the diff in the prompt — a fresh context, so it has no
 prior conversation history coloring the review. Brief it as:
 
-> "You are reviewing a code diff for a **UIKit + storyboards iOS app written in Swift 5, persisted
-> with Realm (RealmSwift 20.x)**. Deployment target is iOS 13.2.
+> "You are reviewing a code diff for a **UIKit iOS app (no storyboards) written in Swift 6.0,
+> persisted with Realm (RealmSwift 20.x)**. Deployment target is iOS 26.0.
 > Review for:
 >
 > - **Realm thread confinement** — `Realm` instances and `Object` subclasses are not thread-safe
@@ -237,7 +237,9 @@ Gate commands, git operations, and `gh pr create` are all allowlisted.
 
 - **Does not merge.** Use `/merge-pr <PR>` after you're satisfied with the review.
 - **Does not run tests.** They are not part of the gate, and `make test-unit` currently **fails to
-  link** — RealmSwift and Toast are not wired into the test targets
+  link** — RealmSwift is not wired into the test targets, and even after fixing that, the test
+  target will hit actor-isolation compile errors because it lacks the app target's
+  `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` setting
   ([#116](https://github.com/jimmynotjames/checklists/issues/116)). Do not claim test coverage you
   did not obtain.
 - **Does not involve a GitHub issue.** For issue-linked work, use `/create-pr-for-issue <N>` instead.

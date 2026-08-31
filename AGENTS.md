@@ -1,6 +1,6 @@
 # Agent instructions — checklists
 
-A UIKit + storyboards iOS app (Swift 5.0, iOS 13.2+), persisted with **Realm** (SPM). Analytics
+A UIKit iOS app (Swift 6.0, iOS 26.0+), persisted with **Realm** (SPM). Analytics
 are **stubbed** — Flurry was removed and Mixpanel is not wired up yet, so `AnalyticsManager.log*`
 calls are no-ops. See
 [`core-docs/analytics-design.md`](core-docs/analytics-design.md).
@@ -26,13 +26,16 @@ make test-ui     # OPT-IN — requires a prior `make test-unit` (simulator warm-
 git hooks. Run it once per clone.
 
 **Tests are not in the gate — and `make test-unit` currently FAILS TO LINK.** `RealmSwift`
-and `Toast` are linked into the app target only, never into `checklistsTests`, so the test
-bundle's direct Realm references have nothing to link against (`Undefined symbols for
-architecture arm64`). This predates the tooling migration and is unrelated to the arm64 pin.
-Tracked in [issue #116](https://github.com/jimmynotjames/checklists/issues/116); the fix is
-adding both products to the test target's "Frameworks and Libraries" in Xcode. Whether the
-2020-era assertions still pass is unknown — linking is only the first hurdle. `make test-ui`
-has not been run and has the same missing-linkage shape.
+is linked into the app target only, never into `checklistsTests`, so the test bundle's direct
+Realm references have nothing to link against (`Undefined symbols for architecture arm64`).
+This predates the tooling migration and is unrelated to the arm64 pin. Tracked in
+[issue #116](https://github.com/jimmynotjames/checklists/issues/116); adding RealmSwift to the
+test target's "Frameworks and Libraries" in Xcode is necessary but no longer sufficient on its
+own — the app target now sets `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` while the test target
+doesn't, so `checklistsTests` will hit actor-isolation errors on Realm-touching code before it
+ever reaches the linker. Whether the 2020-era assertions still pass is unknown — that's now the
+second hurdle after linking and isolation. `make test-ui` has not been run and has the same
+missing-linkage shape.
 
 **`make test-unit` wipes the simulator's app database.** `DataModelTests` tests against the
 *persisted* Realm store (its own header says so) and calls `deleteAll()` in `setUp`. The
@@ -178,7 +181,9 @@ device and skips sandbox management entirely.
   Flurry-specific rule. Do not mistake a green secrets gate for this being handled. The Flurry
   account should be shut down; tracked in
   [issue #115](https://github.com/jimmynotjames/checklists/issues/115).
-- **Test targets don't link their SPM dependencies** — `make test-unit` fails at link time.
+- **Test targets don't link RealmSwift, and even fixing that isn't enough** — `make test-unit`
+  fails at link time today, and once linked it will hit actor-isolation errors because the test
+  target lacks the app target's `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` setting.
   [issue #116](https://github.com/jimmynotjames/checklists/issues/116).
 
 ## CI

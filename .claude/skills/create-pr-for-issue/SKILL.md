@@ -74,7 +74,7 @@ git diff main..HEAD
 ```
 
 Spawn a **`general-purpose` Agent** with the same brief as the `create-pr` skill (step 3) — the
-UIKit/Realm/Swift 5 review criteria: Realm thread confinement, write-transaction correctness, retain
+UIKit/Realm/Swift 6 review criteria: Realm thread confinement, write-transaction correctness, retain
 cycles, newly-introduced force-unwraps/casts, `UITableView` data-source consistency, and
 main-thread UI. Fresh context, no prior conversation history.
 
