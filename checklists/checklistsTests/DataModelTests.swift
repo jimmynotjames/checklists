@@ -23,57 +23,78 @@ private let itemNotes4 = "Lorem ipsum dolor sit amet, consectetur adipiscing eli
   + "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 
 /// WARNING: Running these tests will reset the app's database on whatever simulator this is run on.
-class DataModelTests: XCTestCase {
+///
+/// This class (and every `XCTestCase` subclass added under Phase 4/5) is deliberately left
+/// `nonisolated` at the type level, matching `XCTestCase` itself. `SWIFT_DEFAULT_ACTOR_ISOLATION
+/// = MainActor` on this target would otherwise make the class MainActor-isolated by default,
+/// which conflicts with `XCTestCase`'s own nonisolated designated initializers — including
+/// `init(invocation:)`, whose `NSInvocation` parameter type is unavailable in Swift on this
+/// platform, so that particular conflict cannot be resolved with an explicit override. Individual
+/// test methods are marked `@MainActor` instead, since they (transitively, via `DBManager` and the
+/// Realm model types) need it; `setUpWithError`/`tearDownWithError` stay nonisolated to match the
+/// superclass and hop onto the main actor internally with `MainActor.assumeIsolated`, which is
+/// sound because XCTest always invokes them on the main thread.
+nonisolated final class DataModelTests: XCTestCase {
   override func setUpWithError() throws {
     // We're going to test with persisted store, not memory store, against recommendation, because I want to make sure the file stuff is okay.
-    DBManager.write {
-      DBManager.realm.deleteAll()
+    MainActor.assumeIsolated {
+      DBManager.write {
+        DBManager.realm.deleteAll()
+      }
     }
   }
 
   override func tearDownWithError() throws {
-    DBManager.write {
-      DBManager.realm.deleteAll()
+    MainActor.assumeIsolated {
+      DBManager.write {
+        DBManager.realm.deleteAll()
+      }
     }
   }
 
-  func testCreateEmptyChecklist1() {
+  @MainActor func testCreateEmptyChecklist1() {
     let checklist = Checklist(name: "Test Checklist 1", items: [])
+    let expected = snapshot(of: checklist)
+
     DBManager.write {
       DBManager.realm.add(checklist)
     }
-    guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).first(where: { $0.id == checklist.id })
+    guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).first(where: { $0.id == expected.id })
     else { XCTFail("Checklist was not persisted"); return }
 
-    compareChecklists(checklist1: checklist, checklist2: retrievedChecklist)
+    assertChecklist(retrievedChecklist, matches: expected)
   }
 
-  func testCreateChecklist2() {
+  @MainActor func testCreateChecklist2() {
     let checklist = Checklist(name: checklistName, notes: checklistNotes, sortNumber: nil, items: [])
+    let expected = snapshot(of: checklist)
+
     DBManager.write {
       DBManager.realm.add(checklist)
     }
-    guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).first(where: { $0.id == checklist.id })
+    guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).first(where: { $0.id == expected.id })
     else { XCTFail("Checklist was not persisted"); return }
 
-    compareChecklists(checklist1: checklist, checklist2: retrievedChecklist)
+    assertChecklist(retrievedChecklist, matches: expected)
   }
 
-  func testCreateChecklistWithItems() {
+  @MainActor func testCreateChecklistWithItems() {
     let items: [Item] = [Item(name: itemName1, notes: itemNotes1), Item(name: itemName2), Item(name: itemName3), Item(name: itemName4, notes: itemNotes4)]
     items[1].toggleStatus()
     items[3].toggleStatus()
     let checklist = Checklist(name: checklistName, notes: checklistNotes, sortNumber: nil, items: items)
+    let expected = snapshot(of: checklist)
+
     DBManager.write {
       DBManager.realm.add(checklist)
     }
-    guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).first(where: { $0.id == checklist.id })
+    guard let retrievedChecklist = DBManager.realm.objects(Checklist.self).first(where: { $0.id == expected.id })
     else { XCTFail("Checklist was not persisted"); return }
 
-    compareChecklists(checklist1: checklist, checklist2: retrievedChecklist)
+    assertChecklist(retrievedChecklist, matches: expected)
   }
 
-  func testChecklistPercentComplete() {
+  @MainActor func testChecklistPercentComplete() {
     let items: [Item] = [Item(name: itemName1, notes: itemNotes1), Item(name: itemName2), Item(name: itemName3), Item(name: itemName4, notes: itemNotes4)]
     items[1].toggleStatus()
     items[3].toggleStatus()
@@ -88,23 +109,51 @@ class DataModelTests: XCTestCase {
     XCTAssertEqual(checklist.percentageComplete, 0.0)
   }
 
-  private func compareChecklists(checklist1: Checklist, checklist2: Checklist) {
-    XCTAssertEqual(checklist1.id, checklist2.id)
-    XCTAssertEqual(checklist1.name, checklist2.name)
-    XCTAssertEqual(checklist1.notes, checklist2.notes)
-    XCTAssertEqual(checklist1.sortNumber, checklist2.sortNumber)
-    XCTAssertEqual(checklist1.lastModified, checklist2.lastModified)
-    XCTAssertEqual(checklist1.items.count, checklist2.items.count)
-
-    for (item1, item2) in zip(checklist1.items, checklist2.items) {
-      compareItems(item1: item1, item2: item2)
-    }
+  /// Plain-value snapshot of an `Item`, taken while it's still unmanaged, so later assertions
+  /// compare the persisted-and-refetched object against independent data rather than against
+  /// itself (Realm's `add()` promotes the passed-in object to managed in place, so comparing a
+  /// refetched object back against the same instance you just added is tautological).
+  private struct ExpectedItem {
+    let id: String
+    let name: String
+    let notes: String?
+    let status: Item.Status
   }
 
-  private func compareItems(item1: Item, item2: Item) {
-    XCTAssertEqual(item1.id, item2.id)
-    XCTAssertEqual(item1.name, item2.name)
-    XCTAssertEqual(item1.notes, item2.notes)
-    XCTAssertEqual(item1.status, item2.status)
+  /// Plain-value snapshot of a `Checklist`; see `ExpectedItem`.
+  private struct ExpectedChecklist {
+    let id: String
+    let name: String
+    let notes: String?
+    let sortNumber: Double
+    let lastModified: Date
+    let items: [ExpectedItem]
+  }
+
+  @MainActor private func snapshot(of checklist: Checklist) -> ExpectedChecklist {
+    ExpectedChecklist(
+      id: checklist.id,
+      name: checklist.name,
+      notes: checklist.notes,
+      sortNumber: checklist.sortNumber,
+      lastModified: checklist.lastModified,
+      items: checklist.items.map { ExpectedItem(id: $0.id, name: $0.name, notes: $0.notes, status: $0.status) }
+    )
+  }
+
+  @MainActor private func assertChecklist(_ checklist: Checklist, matches expected: ExpectedChecklist) {
+    XCTAssertEqual(checklist.id, expected.id)
+    XCTAssertEqual(checklist.name, expected.name)
+    XCTAssertEqual(checklist.notes, expected.notes)
+    XCTAssertEqual(checklist.sortNumber, expected.sortNumber)
+    XCTAssertEqual(checklist.lastModified, expected.lastModified)
+    XCTAssertEqual(checklist.items.count, expected.items.count)
+
+    for (item, expectedItem) in zip(checklist.items, expected.items) {
+      XCTAssertEqual(item.id, expectedItem.id)
+      XCTAssertEqual(item.name, expectedItem.name)
+      XCTAssertEqual(item.notes, expectedItem.notes)
+      XCTAssertEqual(item.status, expectedItem.status)
+    }
   }
 }

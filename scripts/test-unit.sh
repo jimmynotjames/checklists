@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 # Unit tests only (checklistsTests) — skips the UI test target.
 #
-# OPT-IN: not part of `make gate`. This is a 2020-era XCTest suite whose current
-# pass/fail state has not been established; promoting it into the blocking gate is
-# a separate decision. Run it explicitly with `make test-unit`.
+# OPT-IN: not part of `make gate`. This suite compiles and passes (46 tests across
+# DataModelTests, RealmSchemaTests, SampleDataTests, AnalyticsManagerTests,
+# SettingsManagerTests, CircularPercentStatusIconTests, CLTextViewTests, and
+# ItemContentViewTests); promoting it into the blocking gate is a separate decision.
+# Run it explicitly with `make test-unit`.
 #
 # WARNING: DataModelTests deliberately tests against the PERSISTED Realm store, not
 # an in-memory one, and calls `DBManager.realm.deleteAll()` in setUp. Running it
 # WIPES THE APP'S DATABASE on whatever simulator it targets. The per-repo simulator
 # sandbox contains that blast radius to this repo's own device — one more reason the
-# sandbox is worth having here.
+# sandbox is worth having here. Every other test class in the suite uses an
+# in-memory Realm swapped into `DBManager.realm` for its duration instead — see the
+# doc comment on RealmSchemaTests for the save/restore pattern.
 #
 # DESTINATION, SIM_DERIVED, and SIM_RESULTS_DIR are set by _destination.sh.
 set -euo pipefail

@@ -14,8 +14,15 @@
 		3233C794228BAD3C002BF01D /* CheckboxButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3233C793228BAD3C002BF01D /* CheckboxButton.swift */; };
 		323ADC6B22828C0900644931 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323ADC6A22828C0900644931 /* AppDelegate.swift */; };
 		323ADC7722828C0C00644931 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 323ADC7622828C0C00644931 /* Assets.xcassets */; };
-		323ADC8522828C0C00644931 /* checklistsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323ADC8422828C0C00644931 /* checklistsTests.swift */; };
 		323ADC9022828C0C00644931 /* checklistsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323ADC8F22828C0C00644931 /* checklistsUITests.swift */; };
+		AA06000000000000000000A2 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AA06000000000000000000A1 /* RealmSwift */; };
+		AA07000000000000000000A2 /* RealmSchemaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA07000000000000000000A1 /* RealmSchemaTests.swift */; };
+		AA07000000000000000000B2 /* SampleDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA07000000000000000000B1 /* SampleDataTests.swift */; };
+		AA07000000000000000000C2 /* AnalyticsManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA07000000000000000000C1 /* AnalyticsManagerTests.swift */; };
+		AA07000000000000000000D2 /* SettingsManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA07000000000000000000D1 /* SettingsManagerTests.swift */; };
+		AA08000000000000000000A2 /* CircularPercentStatusIconTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08000000000000000000A1 /* CircularPercentStatusIconTests.swift */; };
+		AA08000000000000000000B2 /* CLTextViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08000000000000000000B1 /* CLTextViewTests.swift */; };
+		AA08000000000000000000C2 /* ItemContentViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08000000000000000000C1 /* ItemContentViewTests.swift */; };
 		323FCF2922F2A33E00F761BB /* CLTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FCF2822F2A33E00F761BB /* CLTextView.swift */; };
 		324930B42566EEB100A5FC66 /* ChecklistsMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324930B32566EEB100A5FC66 /* ChecklistsMenuViewController.swift */; };
 		3252E73C2CE71074009B6F7C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73B2CE71074009B6F7C /* RealmSwift */; };
@@ -89,7 +96,6 @@
 		323ADC7622828C0C00644931 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		323ADC7B22828C0C00644931 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		323ADC8022828C0C00644931 /* checklistsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = checklistsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		323ADC8422828C0C00644931 /* checklistsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistsTests.swift; sourceTree = "<group>"; };
 		323ADC8622828C0C00644931 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		323ADC8B22828C0C00644931 /* checklistsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = checklistsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		323ADC8F22828C0C00644931 /* checklistsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistsUITests.swift; sourceTree = "<group>"; };
@@ -122,6 +128,13 @@
 		AA03000000000000000000C1 /* ThemeItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeItemTableViewCell.swift; sourceTree = "<group>"; };
 		AA04000000000000000000D1 /* InfoRowTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoRowTableViewCell.swift; sourceTree = "<group>"; };
 		AA05000000000000000000E1 /* MainMenuItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuItemTableViewCell.swift; sourceTree = "<group>"; };
+		AA07000000000000000000A1 /* RealmSchemaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmSchemaTests.swift; sourceTree = "<group>"; };
+		AA07000000000000000000B1 /* SampleDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDataTests.swift; sourceTree = "<group>"; };
+		AA07000000000000000000C1 /* AnalyticsManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManagerTests.swift; sourceTree = "<group>"; };
+		AA07000000000000000000D1 /* SettingsManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManagerTests.swift; sourceTree = "<group>"; };
+		AA08000000000000000000A1 /* CircularPercentStatusIconTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularPercentStatusIconTests.swift; sourceTree = "<group>"; };
+		AA08000000000000000000B1 /* CLTextViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLTextViewTests.swift; sourceTree = "<group>"; };
+		AA08000000000000000000C1 /* ItemContentViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemContentViewTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +150,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA06000000000000000000A2 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,7 +207,13 @@
 			isa = PBXGroup;
 			children = (
 				32F363C6257D7D9D008482DA /* DataModelTests.swift */,
-				323ADC8422828C0C00644931 /* checklistsTests.swift */,
+				AA07000000000000000000A1 /* RealmSchemaTests.swift */,
+				AA07000000000000000000B1 /* SampleDataTests.swift */,
+				AA07000000000000000000C1 /* AnalyticsManagerTests.swift */,
+				AA07000000000000000000D1 /* SettingsManagerTests.swift */,
+				AA08000000000000000000A1 /* CircularPercentStatusIconTests.swift */,
+				AA08000000000000000000B1 /* CLTextViewTests.swift */,
+				AA08000000000000000000C1 /* ItemContentViewTests.swift */,
 				323ADC8622828C0C00644931 /* Info.plist */,
 			);
 			path = checklistsTests;
@@ -314,6 +334,9 @@
 				323ADC8222828C0C00644931 /* PBXTargetDependency */,
 			);
 			name = checklistsTests;
+			packageProductDependencies = (
+				AA06000000000000000000A1 /* RealmSwift */,
+			);
 			productName = checklistsTests;
 			productReference = 323ADC8022828C0C00644931 /* checklistsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -458,8 +481,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				323ADC8522828C0C00644931 /* checklistsTests.swift in Sources */,
 				32F363C7257D7D9D008482DA /* DataModelTests.swift in Sources */,
+				AA07000000000000000000A2 /* RealmSchemaTests.swift in Sources */,
+				AA07000000000000000000B2 /* SampleDataTests.swift in Sources */,
+				AA07000000000000000000C2 /* AnalyticsManagerTests.swift in Sources */,
+				AA07000000000000000000D2 /* SettingsManagerTests.swift in Sources */,
+				AA08000000000000000000A2 /* CircularPercentStatusIconTests.swift in Sources */,
+				AA08000000000000000000B2 /* CLTextViewTests.swift in Sources */,
+				AA08000000000000000000C2 /* ItemContentViewTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -677,6 +706,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jimmyho.checklistsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/checklists.app/checklists";
@@ -701,6 +731,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jimmyho.checklistsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/checklists.app/checklists";
@@ -799,6 +830,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		3252E73B2CE71074009B6F7C /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3252E7392CE70F79009B6F7C /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		AA06000000000000000000A1 /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3252E7392CE70F79009B6F7C /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;

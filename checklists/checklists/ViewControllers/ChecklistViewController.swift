@@ -177,6 +177,23 @@ class ChecklistViewController: UIViewController {
   }
 
   override func viewWillDisappear(_ animated: Bool) {
+    // If any field is still focused when the user backs out (e.g. tapped Back right after typing,
+    // without tapping elsewhere first), its `resignFirstResponder`-triggered commit would otherwise
+    // land late: resignation normally only happens once the view is actually removed from the window,
+    // near the end of the pop transition. `endEditing(true)` forces it here instead, synchronously,
+    // and covers the whole view — both the header fields and the item cells' text views — because
+    // each of the two has its own ordering hazard:
+    //
+    //   - Header (checklistNameTextField/checklistNotesTextView): its commit
+    //     (textFieldDidEndEditing/textViewDidEndEditing, below) has to land before the delegate's
+    //     `reloadData()` on the next line, or the checklists list's cached cell preview keeps showing
+    //     the pre-edit value until some unrelated reload happens to occur.
+    //   - Item cells: their commit (ItemContentView's textViewDidEndEditing →
+    //     `itemContentView(_:nameFieldUpdatedWith:)`) has to land before `viewDidDisappear`'s
+    //     dangling-empty-item trim loop, which deletes trailing items whose name and notes are both
+    //     empty. A name typed into the last item but not yet committed reads as empty to that loop, so
+    //     the item gets deleted and the pending write then targets an invalidated Realm object.
+    view.endEditing(true)
     delegate?.willDismissChecklistViewController(self)
     super.viewWillDisappear(animated)
   }
@@ -489,7 +506,13 @@ extension ChecklistViewController: UITableViewDropDelegate {
   }
 
   func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
-    let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(row: checklist.items.count, section: itemsSection)
+    // `coordinator.destinationIndexPath` is nil when the drop lands past the last row (e.g. the user
+    // drags below the bottom of the list). Falling back to `checklist.items.count` (one past the end)
+    // used to desync the model from the table view: `Checklist.moveItem` guards `toIndex < count` and
+    // silently no-ops (an `assertionFailure` trap in Debug) while `tableView.moveRow` below runs
+    // unconditionally, moving the row visually without the underlying data changing. Clamping to
+    // `count - 1` (the last valid index) makes both agree: the drop simply becomes "move to the end."
+    let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(row: checklist.items.count - 1, section: itemsSection)
     assert(coordinator.items.count == 1)
     guard let dropItem = coordinator.items.first else { assertionFailure(); return }
     let itemProvider = dropItem.dragItem.itemProvider
