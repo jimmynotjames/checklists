@@ -48,7 +48,12 @@ nonisolated final class SampleDataTests: XCTestCase, @unchecked Sendable {
     let checklists = group.checklists
     XCTAssertEqual(checklists.count, 3)
 
-    let itemCountsByName = Dictionary(uniqueKeysWithValues: checklists.map { ($0.name, $0.items.count) })
+    // `uniquingKeysWith:` rather than `uniqueKeysWithValues:`: the latter traps on a duplicate key,
+    // which would abort the whole test process instead of failing this assertion. A duplicate
+    // checklist name is exactly the kind of fixture edit this test exists to catch, so it needs to
+    // fail cleanly and say so.
+    let itemCountsByName = Dictionary(checklists.map { ($0.name, $0.items.count) }, uniquingKeysWith: { first, _ in first })
+    XCTAssertEqual(itemCountsByName.count, 3, "Expected three distinctly-named checklists; a duplicate name means the fixture contract changed.")
     XCTAssertEqual(itemCountsByName["Morning Routine"], 6)
     XCTAssertEqual(itemCountsByName["Weekend Getaway Essentials"], 12)
     XCTAssertEqual(itemCountsByName["Pre-Trip Checklist"], 11)

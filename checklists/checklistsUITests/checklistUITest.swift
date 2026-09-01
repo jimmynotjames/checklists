@@ -295,8 +295,13 @@ class checklistUITest: XCTestCase {
 
   /// Asserts that `parentElement` contains the circular status icon's accessibility element with the
   /// expected percent-complete value. Tightened from a bare `.value != nil` check (which silently
-  /// passes even when no matching element exists) to an explicit `.exists` check plus an equality
+  /// passes even when no matching element exists) to a real existence check plus an equality
   /// assertion, so a wrong or missing value actually fails the test with a useful message.
+  ///
+  /// Waits rather than checking `.exists` outright: several call sites assert immediately after a
+  /// Back tap, and the destination cell's status icon isn't necessarily laid out the instant the pop
+  /// transition starts. The old `.value != nil` form could never fail, so the timing didn't matter;
+  /// now that the assertion is real, an unwaited check would flake under load.
   private func assertPercentComplete(
     _ parentElement: XCUIElement,
     numCheckedItems: Int,
@@ -306,7 +311,12 @@ class checklistUITest: XCTestCase {
   ) {
     let expected = percentCompleteString(numCheckedItems: numCheckedItems, numItems: numItems)
     let element = parentElement.otherElements[expected]
-    XCTAssertTrue(element.exists, "No percent-complete element found with accessibility value \"\(expected)\"", file: file, line: line)
+    XCTAssertTrue(
+      element.waitForExistence(timeout: 5),
+      "No percent-complete element found with accessibility value \"\(expected)\"",
+      file: file,
+      line: line
+    )
     XCTAssertEqual(element.value as? String, expected, file: file, line: line)
   }
 

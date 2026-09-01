@@ -177,16 +177,23 @@ class ChecklistViewController: UIViewController {
   }
 
   override func viewWillDisappear(_ animated: Bool) {
-    // If the checklist name/notes field is still focused when the user backs out (e.g. tapped Back
-    // right after typing, without tapping elsewhere first), its `resignFirstResponder`-triggered
-    // commit (textFieldDidEndEditing/textViewDidEndEditing, below) would otherwise land after — not
-    // before — the delegate's `reloadData()`, since that resignation normally only happens once the
-    // view is actually removed from the window near the end of the pop transition. That left the
-    // checklists list's cached cell preview showing the pre-edit value until some unrelated reload
-    // happened to occur, even though the edit itself was safely persisted. Forcing resignation here,
-    // before notifying the delegate, makes the two happen in the right order.
-    checklistNameTextField.resignFirstResponder()
-    checklistNotesTextView.resignFirstResponder()
+    // If any field is still focused when the user backs out (e.g. tapped Back right after typing,
+    // without tapping elsewhere first), its `resignFirstResponder`-triggered commit would otherwise
+    // land late: resignation normally only happens once the view is actually removed from the window,
+    // near the end of the pop transition. `endEditing(true)` forces it here instead, synchronously,
+    // and covers the whole view — both the header fields and the item cells' text views — because
+    // each of the two has its own ordering hazard:
+    //
+    //   - Header (checklistNameTextField/checklistNotesTextView): its commit
+    //     (textFieldDidEndEditing/textViewDidEndEditing, below) has to land before the delegate's
+    //     `reloadData()` on the next line, or the checklists list's cached cell preview keeps showing
+    //     the pre-edit value until some unrelated reload happens to occur.
+    //   - Item cells: their commit (ItemContentView's textViewDidEndEditing →
+    //     `itemContentView(_:nameFieldUpdatedWith:)`) has to land before `viewDidDisappear`'s
+    //     dangling-empty-item trim loop, which deletes trailing items whose name and notes are both
+    //     empty. A name typed into the last item but not yet committed reads as empty to that loop, so
+    //     the item gets deleted and the pending write then targets an invalidated Realm object.
+    view.endEditing(true)
     delegate?.willDismissChecklistViewController(self)
     super.viewWillDisappear(animated)
   }
