@@ -21,6 +21,7 @@ class checklistUITest: XCTestCase {
     app = XCUIApplication()
     app.launchArguments = ["-UITests1"]
     app.launch()
+    XCTAssertTrue(app.tables.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
   }
 
   override func tearDownWithError() throws {}
@@ -49,12 +50,23 @@ class checklistUITest: XCTestCase {
     checklistNotesTextView.typeText(newChecklistNotes)
 
     app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
+    // The main list's notes preview label has an explicit accessibilityIdentifier
+    // ("checklistNotesLabel", set on every row), so it no longer matches by its rendered text via the
+    // bare `staticTexts[...]` subscript the way an unlabeled element would — look it up by identifier
+    // and assert on its `.label` instead.
+    let morningRoutineNotesLabel = app.tables.children(matching: .cell).element(boundBy: 0).staticTexts["checklistNotesLabel"]
     XCTAssert(app.staticTexts[newChecklistName].exists)
-    XCTAssert(app.staticTexts[newChecklistNotes].exists)
+    XCTAssertTrue(morningRoutineNotesLabel.waitForExistence(timeout: 5), "Notes label didn't appear on the main list after the pop-back animation.")
+    XCTAssertEqual(morningRoutineNotesLabel.label, newChecklistNotes)
 
     app.staticTexts[newChecklistName].tap()
-    XCTAssert(app.staticTexts[newChecklistName].exists)
-    XCTAssert(app.staticTexts[newChecklistNotes].exists)
+    // Back on the detail screen, the name is rendered in a text field, not a static text (the
+    // static-text check above only made sense on the main list) — check the field's value instead.
+    let checklistNameFieldAfterReentry = app.tables["ChecklistTableView"].textFields["checklistNameField"]
+    let checklistNotesTextViewAfterReentry = app.tables["ChecklistTableView"].textViews["checklistNotesTextView"]
+    XCTAssertTrue(checklistNameFieldAfterReentry.waitForExistence(timeout: 5))
+    XCTAssertEqual(checklistNameFieldAfterReentry.value as? String, newChecklistName)
+    XCTAssertEqual(checklistNotesTextViewAfterReentry.value as? String, newChecklistNotes)
   }
 
   func testCheckboxesAndReset() {
@@ -69,14 +81,14 @@ class checklistUITest: XCTestCase {
     // Check 2 of the items. Verify that they were checked. Verify status icon updated
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].isSelected == true)
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["Checkbox"].isSelected == true)
-    XCTAssert(tablesQuery["ChecklistTableView"].otherElements["Checklist 18 percent complete"].value != nil) // Check that circular status icon updated. 2/11 -> 18%
+    assertPercentComplete(tablesQuery["ChecklistTableView"], numCheckedItems: 2, numItems: 11) // Check that circular status icon updated. 2/11 -> 18%
 
     // Reset checklist. Verify again.
     app.navigationBars["checklists.ChecklistView"].buttons["Reset"].tap()
 
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].isSelected == false)
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["Checkbox"].isSelected == false)
-    XCTAssert(tablesQuery["ChecklistTableView"].otherElements["Checklist 0 percent complete"].value != nil) // Check that circular status icon updated. 0/11 -> 0%
+    assertPercentComplete(tablesQuery["ChecklistTableView"], numCheckedItems: 0, numItems: 11) // Check that circular status icon updated. 0/11 -> 0%
 
     // Check 2 different items, Verify again
     tablesQuery.children(matching: .cell).element(boundBy: 2).buttons["Checkbox"].tap()
@@ -86,12 +98,12 @@ class checklistUITest: XCTestCase {
 
     // Go Back. Verify circular status is updated on main Checklists page.
     app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
-    XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 2).otherElements["Checklist 18 percent complete"]
-      .value != nil) // Check that circular status icon updated on Checklists main page. 2/11 -> 18%
+    // Check that circular status icon updated on Checklists main page. 2/11 -> 18%
+    assertPercentComplete(tablesQuery.children(matching: .cell).element(boundBy: 2), numCheckedItems: 2, numItems: 11)
   }
 
   func testItemDeletion() {
-    let tablesQuery = XCUIApplication().tables
+    let tablesQuery = app.tables
     tablesQuery.staticTexts["Morning Routine"].tap()
 
     // Get name of current item about to be deleted
@@ -99,7 +111,7 @@ class checklistUITest: XCTestCase {
       XCTFail("Item name text view value was not a String"); return
     }
 
-    XCTAssert(tablesQuery["ChecklistTableView"].otherElements["Checklist 83 percent complete"].value != nil) // Check circular status icon initial status. 5/6
+    assertPercentComplete(tablesQuery["ChecklistTableView"], numCheckedItems: 5, numItems: 6) // Check circular status icon initial status. 5/6
 
     let cell = tablesQuery.children(matching: .cell).element(boundBy: 1)
     cell.swipeLeft() // "Yoga/meditation"
@@ -110,7 +122,7 @@ class checklistUITest: XCTestCase {
       XCTFail("Item name text view value was not a String"); return
     }
     XCTAssert(newItemName != itemName)
-    XCTAssert(tablesQuery["ChecklistTableView"].otherElements["Checklist 80 percent complete"].value != nil) // Check that circular status icon updated. 4/5
+    assertPercentComplete(tablesQuery["ChecklistTableView"], numCheckedItems: 4, numItems: 5) // Check that circular status icon updated. 4/5
   }
 
   /**
@@ -209,7 +221,11 @@ class checklistUITest: XCTestCase {
     XCTAssert(item12Name == item7Value)
 
     // For good measure, go Back to main page, then back into Checklist, and see if all elements are still ordered correctly.
-    app.navigationBars["Weekend Getaway Essentials"].buttons["Back"].tap()
+    // NOTE: the nav bar title only shows the checklist name once the table view is scrolled past a
+    // threshold (ChecklistViewController.scrollViewDidScroll); the drag-and-drop reorder above leaves
+    // the table scrolled back near the top, so the title (and thus the nav bar's matched identifier)
+    // is nil here — look the bar up by the view controller's default identifier instead.
+    app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
     app.tables/*@START_MENU_TOKEN@*/
       .staticTexts["Weekend Getaway Essentials"]/*[[".cells.staticTexts[\"Weekend Getaway Essentials\"]",".staticTexts[\"Weekend Getaway Essentials\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/ .tap()
     checklistTableView.swipeUp()
@@ -277,8 +293,21 @@ class checklistUITest: XCTestCase {
     String(format: "Checklist %.0f percent complete", 100.0 * Double(numCheckedItems) / Double(numItems))
   }
 
-  private func isMatchingPercentComplete(parentElement: XCUIElement, numCheckedItems: Int, numItems: Int) -> Bool {
-    parentElement.otherElements[percentCompleteString(numCheckedItems: numCheckedItems, numItems: numItems)].value != nil
+  /// Asserts that `parentElement` contains the circular status icon's accessibility element with the
+  /// expected percent-complete value. Tightened from a bare `.value != nil` check (which silently
+  /// passes even when no matching element exists) to an explicit `.exists` check plus an equality
+  /// assertion, so a wrong or missing value actually fails the test with a useful message.
+  private func assertPercentComplete(
+    _ parentElement: XCUIElement,
+    numCheckedItems: Int,
+    numItems: Int,
+    file: StaticString = #filePath,
+    line: UInt = #line
+  ) {
+    let expected = percentCompleteString(numCheckedItems: numCheckedItems, numItems: numItems)
+    let element = parentElement.otherElements[expected]
+    XCTAssertTrue(element.exists, "No percent-complete element found with accessibility value \"\(expected)\"", file: file, line: line)
+    XCTAssertEqual(element.value as? String, expected, file: file, line: line)
   }
 
   func testAddItemsAtEnd() throws {
@@ -295,7 +324,7 @@ class checklistUITest: XCTestCase {
     for i in 0 ..< numItems {
       numCheckedItems += (checklistTableView.children(matching: .cell).element(boundBy: i).buttons["Checkbox"].isSelected) ? 1 : 0
     }
-    XCTAssert(isMatchingPercentComplete(parentElement: checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems))
+    assertPercentComplete(checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems)
 
     // Add an Item using Add button.
     checklistTableView.buttons["Add"].tap()
@@ -303,21 +332,21 @@ class checklistUITest: XCTestCase {
 
     // Count should have increased by one.
     XCTAssert(checklistTableView.children(matching: .cell).count == numItems + 1)
-    XCTAssert(isMatchingPercentComplete(parentElement: checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems + 1)) // Check that circular status icon updated.
+    assertPercentComplete(checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems + 1) // Check that circular status icon updated.
 
-    app.navigationBars["Morning Routine"].buttons["Back"].tap()
-    // XCTAssert(app.tables.children(matching: .cell).element(boundBy: 0).otherElements[String(format: "%.0f percent", 100.0 * Double(numCheckedItems) / Double(numItems + 1))].exists)
-    XCTAssert(isMatchingPercentComplete(
-      parentElement: app.tables.children(matching: .cell).element(boundBy: 0),
-      numCheckedItems: numCheckedItems,
-      numItems: numItems + 1
-    )) // Check that circular status icon updated on Checklists page.
+    // Inserting the new item scrolls the table back near the top (see `insertNewItem`), which clears
+    // the nav bar title (and thus the identifier this bar matches by) — see the note in
+    // testChecklistReordering1 for the same reason the identifier below is "checklists.ChecklistView"
+    // rather than the checklist's name.
+    app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
+    // Check that circular status icon updated on Checklists page.
+    assertPercentComplete(app.tables.children(matching: .cell).element(boundBy: 0), numCheckedItems: numCheckedItems, numItems: numItems + 1)
     app.tables.staticTexts["Morning Routine"].tap()
 
     // Check that changes persisted.
     XCTAssert(checklistTableView.children(matching: .cell).count == numItems + 1)
     XCTAssert(checklistTableView.children(matching: .cell).element(boundBy: numItems).textViews["itemNameTextView"].value as? String == newItemName1)
-    XCTAssert(isMatchingPercentComplete(parentElement: checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems + 1)) // Check that circular status icon updated.
+    assertPercentComplete(checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems + 1) // Check that circular status icon updated.
 
     // Now add something at end using keyboard Return key ("Next") key.
     let lastItemNameTextView = checklistTableView.children(matching: .cell).element(boundBy: numItems).textViews["itemNameTextView"]
@@ -328,21 +357,18 @@ class checklistUITest: XCTestCase {
     app.toolbars["Toolbar"].buttons["Done"].tap()
 
     XCTAssert(checklistTableView.children(matching: .cell).count == numItems + 2)
-    XCTAssert(isMatchingPercentComplete(parentElement: checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems + 2)) // Check that circular status icon updated.
+    assertPercentComplete(checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems + 2) // Check that circular status icon updated.
     var lastItemName = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: numItems + 1).textViews["itemNameTextView"].value as? String)
     XCTAssert(lastItemName == newItemName2)
 
     // Go back to main page, back into Checklist, and check again.
     app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
-    XCTAssert(isMatchingPercentComplete(
-      parentElement: app.tables.children(matching: .cell).element(boundBy: 0),
-      numCheckedItems: numCheckedItems,
-      numItems: numItems + 2
-    )) // Check that circular status icon updated on Checklists page.
+    // Check that circular status icon updated on Checklists page.
+    assertPercentComplete(app.tables.children(matching: .cell).element(boundBy: 0), numCheckedItems: numCheckedItems, numItems: numItems + 2)
     app.tables.staticTexts["Morning Routine"].tap()
 
     XCTAssert(checklistTableView.children(matching: .cell).count == numItems + 2)
-    XCTAssert(isMatchingPercentComplete(parentElement: checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems + 2)) // Check that circular status icon updated.
+    assertPercentComplete(checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems + 2) // Check that circular status icon updated.
     lastItemName = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: numItems + 1).textViews["itemNameTextView"].value as? String)
     XCTAssert(lastItemName == newItemName2)
   }

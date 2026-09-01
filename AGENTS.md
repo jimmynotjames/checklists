@@ -25,17 +25,20 @@ make test-ui     # OPT-IN — requires a prior `make test-unit` (simulator warm-
 `make system` installs the toolchain (lefthook, swiftlint, swiftformat, gitleaks) and the
 git hooks. Run it once per clone.
 
-**Tests are not in the gate — and `make test-unit` currently FAILS TO LINK.** `RealmSwift`
-is linked into the app target only, never into `checklistsTests`, so the test bundle's direct
-Realm references have nothing to link against (`Undefined symbols for architecture arm64`).
-This predates the tooling migration and is unrelated to the arm64 pin. Tracked in
-[issue #116](https://github.com/jimmynotjames/checklists/issues/116); adding RealmSwift to the
-test target's "Frameworks and Libraries" in Xcode is necessary but no longer sufficient on its
-own — the app target now sets `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` while the test target
-doesn't, so `checklistsTests` will hit actor-isolation errors on Realm-touching code before it
-ever reaches the linker. Whether the 2020-era assertions still pass is unknown — that's now the
-second hurdle after linking and isolation. `make test-ui` has not been run and has the same
-missing-linkage shape.
+**Tests are not in the gate, but both suites now compile and pass.** `checklistsTests` links
+`RealmSwift` and sets `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` (mirroring the app target); its
+`XCTestCase` subclasses stay `nonisolated` at the type level with individual `@MainActor` test
+methods, since an isolated subclass conflicts with `XCTestCase`'s own nonisolated designated
+initializers (see the doc comment on `DataModelTests` for the full explanation, including the one
+initializer — `init(invocation:)` — that can't be overridden to fix because `NSInvocation` is
+unavailable in Swift on this platform). `checklistsUITests` needed no linkage changes; it was
+blocked only on the shared scheme's unit target failing to build, and on `test-ui`'s `warmed`
+sentinel (see `scripts/test-ui.sh`), both now resolved. Formerly tracked in
+[issue #116](https://github.com/jimmynotjames/checklists/issues/116) — closeable once this lands.
+`checklistsTests` has 46 tests across `DataModelTests`, `RealmSchemaTests`, `SampleDataTests`,
+`AnalyticsManagerTests`, `SettingsManagerTests`, `CircularPercentStatusIconTests`,
+`CLTextViewTests`, and `ItemContentViewTests`; `checklistsUITests` has 17. Both are green,
+verified twice in a row for flakes — but still opt-in, not part of `make gate`.
 
 **`make test-unit` wipes the simulator's app database.** `DataModelTests` tests against the
 *persisted* Realm store (its own header says so) and calls `deleteAll()` in `setUp`. The
@@ -181,10 +184,6 @@ device and skips sandbox management entirely.
   Flurry-specific rule. Do not mistake a green secrets gate for this being handled. The Flurry
   account should be shut down; tracked in
   [issue #115](https://github.com/jimmynotjames/checklists/issues/115).
-- **Test targets don't link RealmSwift, and even fixing that isn't enough** — `make test-unit`
-  fails at link time today, and once linked it will hit actor-isolation errors because the test
-  target lacks the app target's `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` setting.
-  [issue #116](https://github.com/jimmynotjames/checklists/issues/116).
 
 ## CI
 

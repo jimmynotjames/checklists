@@ -229,7 +229,10 @@ extension ChecklistsViewController: UITableViewDropDelegate {
   }
 
   func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
-    let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(row: group.checklists.count, section: checklistsSection)
+    // See the matching comment in ChecklistViewController.performDropWith: falling back to one past
+    // the end desyncs the model (Group.moveChecklist guards `toIndex < count`) from the table view
+    // (tableView.moveRow runs unconditionally). Clamp to the last valid index instead.
+    let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(row: group.checklists.count - 1, section: checklistsSection)
     assert(coordinator.items.count == 1)
     guard let dropItem = coordinator.items.first else { assertionFailure(); return }
     let itemProvider = dropItem.dragItem.itemProvider

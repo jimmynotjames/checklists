@@ -18,6 +18,7 @@ class checklistsUITests: XCTestCase {
     app = XCUIApplication()
     app.launchArguments = ["-UITests1"]
     app.launch()
+    XCTAssertTrue(app.tables.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
   }
 
   func testChecklistDeletion() {
