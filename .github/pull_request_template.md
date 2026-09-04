@@ -30,8 +30,14 @@ For any change that touches the data model, user actions, or UI — confirm each
 ### 🧪 Running tests
 
 Tests are **opt-in and not part of the gate** — `make gate` is format → lint → build only.
-`make test-unit` currently **fails to link** (RealmSwift/Toast are not wired into the test
-targets, [#116](https://github.com/jimmynotjames/checklists/issues/116)), so neither suite can run
-until that is fixed. State explicitly in the Test plan above how the change was verified.
+Both suites do run and pass (46 unit tests, 17 UI tests) since #128, so run whichever the change
+warrants and state explicitly in the Test plan above how it was verified — including "not run,
+verified manually in the simulator" when that's the honest answer.
+
+- `make test-unit` — **wipes the simulator's Realm database** (`DataModelTests` tests against the
+  persisted store). The per-repo simulator sandbox keeps that blast radius on this clone's device.
+- `make test-ui` — requires a prior `make test-unit` for the warm-up sentinel. If tests fail on
+  `kAXErrorCannotComplete` against keyboard keys, that's the simulator's software keyboard being
+  off, not your change — see AGENTS.md §"Known issues".
 
 CI (`.github/workflows/ci.yml`) is present but **disabled** — no checks run on this PR.

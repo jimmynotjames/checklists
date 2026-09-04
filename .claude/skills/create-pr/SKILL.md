@@ -236,10 +236,8 @@ Gate commands, git operations, and `gh pr create` are all allowlisted.
 ## What this skill does NOT do
 
 - **Does not merge.** Use `/merge-pr <PR>` after you're satisfied with the review.
-- **Does not run tests.** They are not part of the gate, and `make test-unit` currently **fails to
-  link** — RealmSwift is not wired into the test targets, and even after fixing that, the test
-  target will hit actor-isolation compile errors because it lacks the app target's
-  `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` setting
-  ([#116](https://github.com/jimmynotjames/checklists/issues/116)). Do not claim test coverage you
-  did not obtain.
+- **Does not run tests.** They are not part of the gate, and the UI suite costs ~5 minutes on a
+  simulator. Both suites *do* run and pass since #128 (46 unit, 17 UI), so run them yourself when
+  the change warrants it — layout, data-model, or persistence work especially — and report the real
+  result in the Test plan. Do not claim test coverage you did not obtain.
 - **Does not involve a GitHub issue.** For issue-linked work, use `/create-pr-for-issue <N>` instead.
