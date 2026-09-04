@@ -6,186 +6,167 @@
 //
 
 import Foundation
-import RealmSwift
+import SwiftData
 
-class SampleData {
-  static func clearDatabase() {
-    print("DEBUG: Clearing database...")
-    let realm = DBManager.realm
-    DBManager.write {
-      realm.deleteAll()
-    }
+/**
+ The three checklists a brand-new install starts with.
+
+ **This data set is also the UI test fixture.** `SampleDataTests` asserts its exact shape and
+ `checklistsUITests` navigates by these names, so changing the content means updating both.
+
+ The checklist identifiers are fixed constants rather than fresh UUIDs. Two devices signed into the
+ same iCloud account each seed themselves on first launch, before either has synced; with random
+ identifiers that produces two of everything and no way to tell the copies apart. Fixed identifiers
+ turn it into an ordinary duplicate-record problem that can be resolved deterministically once
+ sync arrives.
+ */
+enum SampleData {
+  // Stable for the life of the app. Never regenerate these.
+  static let morningRoutineId = "C4EC1157-0000-4000-A000-000000000001"
+  static let weekendGetawayId = "C4EC1157-0000-4000-A000-000000000002"
+  static let preTripId = "C4EC1157-0000-4000-A000-000000000003"
+
+  /// Set once the fixture has been seeded and saved.
+  static let seededFlagKey = "sampleDataSeededV1"
+
+  /// The pre-SwiftData first-launch flag. Still read, never used for anything new: an install that
+  /// has this set has launched before, so it already owns its data and must not be re-seeded.
+  static let legacyLaunchedAtLeastOnceKey = "launchedAtLeastOnce"
+
+  // MARK: - Fixture description
+
+  //
+  // Plain values rather than models, so the fixture can be declared without a context and
+  // materialized the same way the importer materializes Realm data.
+
+  struct ChecklistFixture: Equatable {
+    let id: String
+    let name: String
+    var notes: String?
+    let items: [ItemFixture]
   }
 
-  static func insertTestData() {
-    print("DEBUG: Inserting test data...")
-    let realm = DBManager.realm
+  struct ItemFixture: Equatable {
+    let name: String
+    var notes: String?
+    var isChecked: Bool = false
+  }
 
-    var checklists: [Checklist] = []
+  // MARK: - Seeding
 
-    checklists.append(Checklist(
-      name: "Day Drinking",
-      sortNumber: 1.0,
-      items: [Item(name: "task 1"),
-              Item(name: "item a"),
-              Item(name: "item b")]
-    ))
+  static func insertFirstTimeLaunchDataIfNeeded(
+    into context: ModelContext,
+    userDefaults: UserDefaults = .standard
+  ) throws {
+    guard !userDefaults.bool(forKey: seededFlagKey) else { return }
 
-    checklists.append(Checklist(
-      name: "Dinner Volunteer Packing List",
-      notes: "For dinner volunteering\nline 2\nline 3",
-      sortNumber: 2.0,
-      items: [Item(name: "task 1"),
-              Item(name: "task 2", notes: "some notes for\ntask 2\nFOOBAR")]
-    ))
+    // An upgrading install: its data came from the Realm store, or will arrive from iCloud.
+    guard !userDefaults.bool(forKey: legacyLaunchedAtLeastOnceKey) else {
+      userDefaults.set(true, forKey: seededFlagKey)
+      return
+    }
 
-    checklists.append(Checklist(
-      name: "Nightlife",
-      sortNumber: 3.0,
-      items: [Item(name: "item 1"),
-              Item(name: "item 2"),
-              Item(name: "item 3")]
-    ))
+    // Belt and braces for the sync case: if anything is already here, this is not a first launch
+    // in any meaningful sense, whatever the flags say.
+    guard try context.fetchCount(FetchDescriptor<Checklist>()) == 0 else {
+      userDefaults.set(true, forKey: seededFlagKey)
+      return
+    }
 
-    checklists.append(Checklist(
-      name: "Purse Transfer Essentials",
-      sortNumber: 4.0,
-      items: [Item(name: "item a"),
-              Item(name: "item b")]
-    ))
+    try seed(into: context)
 
-    checklists.append(Checklist(
-      name: "Testing Cell Reuse",
-      sortNumber: 5.0,
-      items: (1 ... 30).map { Item(name: "some item \($0)") }
-    ))
+    userDefaults.set(true, forKey: seededFlagKey)
+    userDefaults.set(true, forKey: legacyLaunchedAtLeastOnceKey)
+    AppLog.bootstrap.info("bootstrap.seededFirstLaunchData")
+  }
 
-    checklists.append(Checklist(
-      name: "Long List 1",
-      sortNumber: 6.0,
-      items: (1 ... 30).map {
-        Item(
-          name: "some item \($0)",
-          notes: $0 % 2 == 0 ? ($0 % 3 == 0 ? nil : "some for \($0)") : "some\nodd\nnotes for \($0)"
-        )
+  /// Materializes the fixture into `context` unconditionally. Callers decide whether it should run.
+  static func seed(into context: ModelContext) throws {
+    var checklistSortKey = SortKeyReorder.step
+    for fixture in generateFirstTimeLaunchChecklists() {
+      let checklist = Checklist(
+        id: fixture.id,
+        name: fixture.name,
+        notes: fixture.notes,
+        sortKey: checklistSortKey
+      )
+      context.insert(checklist)
+
+      var itemSortKey = SortKeyReorder.step
+      for itemFixture in fixture.items {
+        let item = Item(name: itemFixture.name, notes: itemFixture.notes, sortKey: itemSortKey)
+        item.status = itemFixture.isChecked ? .checked : .unchecked
+        context.insert(item)
+        item.checklist = checklist
+        itemSortKey += SortKeyReorder.step
       }
-    ))
 
-    DBManager.write {
-      realm.add(checklists)
+      checklistSortKey += SortKeyReorder.step
     }
+    try context.saveChanges(operation: .sampleSeed)
   }
 
-  static func insertTestData2() {
-    let realm = DBManager.realm
-
-    var checklists: [Checklist] = []
-
-    checklists.append(Checklist(
-      name: "Test List - Long List",
-      sortNumber: 5.0,
-      items: (1 ... 30).map { Item(name: "some item \($0)") }
-    ))
-
-    checklists.append(Checklist(
-      name: "Test List - Long List with notes",
-      notes: "Notes\nnotes\nnotes",
-      sortNumber: 6.0,
-      items: (1 ... 30).map {
-        Item(
-          name: "some item \($0)",
-          notes: $0 % 2 == 0 ? ($0 % 3 == 0 ? nil : "some for \($0)") : "some\nodd\nnotes for \($0)"
-        )
-      }
-    ))
-
-    DBManager.write {
-      realm.add(checklists)
-    }
+  static func clearDatabase(in context: ModelContext) throws {
+    try context.delete(model: Checklist.self)
+    try context.delete(model: Item.self)
+    try context.saveChanges(operation: .delete)
   }
 
-  static func insertFirstTimeLaunchDataV1_0() {
-    let realm = DBManager.realm
-
-    DBManager.write {
-      realm.add(generateFirstTimeLaunchChecklists())
-    }
-  }
-
-  static func insertFirstTimeLaunchDataV1_1() {
-    let realm = DBManager.realm
-
-    let group = Group()
-    group.checklists.append(objectsIn: generateFirstTimeLaunchChecklists())
-    DBManager.write {
-      realm.add(group)
-    }
-  }
+  // MARK: - The fixture itself
 
   /**
    REMINDER: This data set is also used for automated testing.
    If we make adjustments to this, we should either update the tests or duplicate this test set.
    */
-  static func generateFirstTimeLaunchChecklists() -> [Checklist] {
-    var checklists: [Checklist] = []
-
-    let checklist1 = Checklist(
-      name: "Morning Routine",
-      sortNumber: 3.0,
-      items: [Item(name: "START COFFEE MAKER"),
-              Item(name: "Yoga/meditation"),
-              Item(name: "Traffic and weather reports"),
-              Item(name: "Breakfast"),
-              Item(name: "Journaling"),
-              Item(name: "Argue politics on Facebook")]
-    )
-    checklist1.items[0].status = .checked
-    checklist1.items[1].status = .checked
-    checklist1.items[2].status = .checked
-    checklist1.items[3].status = .checked
-    checklist1.items[5].status = .checked
-
-    checklists.append(checklist1)
-
-    let checklist2 = Checklist(
-      name: "Weekend Getaway Essentials",
-      sortNumber: 1.0,
-      items: [Item(name: "Phone charger"),
-              Item(name: "Wallet/ID", notes: "Proper ID (ID for air travel, international, driver license for roadtrip, etc.)"),
-              Item(name: "Prescriptions, medicines, supplements"),
-              Item(name: "Toiletries bag", notes: "Small liquids only in separate bag if flying and in carry-on."),
-              Item(name: "Sun screen"),
-              Item(name: "Headphones"),
-              Item(name: "Book, iPad, Kindle..."),
-              Item(name: "Rain/wind items"),
-              Item(name: "Sunglasses"),
-              Item(name: "Sunhat"),
-              Item(name: "Swimsuit"),
-              Item(name: "Pool shoes")]
-    )
-    checklist2.items[2].status = .checked
-    checklist2.items[3].status = .checked
-    checklist2.items[8].status = .checked
-    checklist2.items[9].status = .checked
-
-    checklists.append(checklist2)
-
-    checklists.append(Checklist(
-      name: "Pre-Trip Checklist",
-      sortNumber: 2.0,
-      items: [Item(name: "Set up auto-reply on email accounts"),
-              Item(name: "Post office: hold mail"),
-              Item(name: "Pet care arrangements"),
-              Item(name: "Plant care, housesitting arrangements"),
-              Item(name: "School absence arrangements"),
-              Item(name: "Send travel itineraries to trusted friend/relative"),
-              Item(name: "Unplug appliances"),
-              Item(name: "Stow away valuables"),
-              Item(name: "Turn off heater or A/C", notes: "Or set minimum temp to prevent freezing pipes."),
-              Item(name: "Check stoves, oven are off"),
-              Item(name: "Lock doors and windows")]
-    ))
-
-    return checklists
+  static func generateFirstTimeLaunchChecklists() -> [ChecklistFixture] {
+    [
+      ChecklistFixture(
+        id: morningRoutineId,
+        name: "Morning Routine",
+        items: [
+          ItemFixture(name: "START COFFEE MAKER", isChecked: true),
+          ItemFixture(name: "Yoga/meditation", isChecked: true),
+          ItemFixture(name: "Traffic and weather reports", isChecked: true),
+          ItemFixture(name: "Breakfast", isChecked: true),
+          ItemFixture(name: "Journaling"),
+          ItemFixture(name: "Argue politics on Facebook", isChecked: true),
+        ]
+      ),
+      ChecklistFixture(
+        id: weekendGetawayId,
+        name: "Weekend Getaway Essentials",
+        items: [
+          ItemFixture(name: "Phone charger"),
+          ItemFixture(name: "Wallet/ID", notes: "Proper ID (ID for air travel, international, driver license for roadtrip, etc.)"),
+          ItemFixture(name: "Prescriptions, medicines, supplements", isChecked: true),
+          ItemFixture(name: "Toiletries bag", notes: "Small liquids only in separate bag if flying and in carry-on.", isChecked: true),
+          ItemFixture(name: "Sun screen"),
+          ItemFixture(name: "Headphones"),
+          ItemFixture(name: "Book, iPad, Kindle..."),
+          ItemFixture(name: "Rain/wind items"),
+          ItemFixture(name: "Sunglasses", isChecked: true),
+          ItemFixture(name: "Sunhat", isChecked: true),
+          ItemFixture(name: "Swimsuit"),
+          ItemFixture(name: "Pool shoes"),
+        ]
+      ),
+      ChecklistFixture(
+        id: preTripId,
+        name: "Pre-Trip Checklist",
+        items: [
+          ItemFixture(name: "Set up auto-reply on email accounts"),
+          ItemFixture(name: "Post office: hold mail"),
+          ItemFixture(name: "Pet care arrangements"),
+          ItemFixture(name: "Plant care, housesitting arrangements"),
+          ItemFixture(name: "School absence arrangements"),
+          ItemFixture(name: "Send travel itineraries to trusted friend/relative"),
+          ItemFixture(name: "Unplug appliances"),
+          ItemFixture(name: "Stow away valuables"),
+          ItemFixture(name: "Turn off heater or A/C", notes: "Or set minimum temp to prevent freezing pipes."),
+          ItemFixture(name: "Check stoves, oven are off"),
+          ItemFixture(name: "Lock doors and windows"),
+        ]
+      ),
+    ]
   }
 }

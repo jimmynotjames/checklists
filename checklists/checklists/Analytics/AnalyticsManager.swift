@@ -184,11 +184,14 @@ enum AnalyticsManager {
 
   // MARK: - Error Logging
 
-  static func logRealmFailure(errorMessage: String) {
+  /// The store could not be opened at all. Renamed off "Realm" along with the persistence-layer
+  /// swap; the underlying event names were already storage-agnostic and are unchanged, so the
+  /// event history stays continuous across the migration.
+  static func logPersistenceFailure(errorMessage: String) {
     logEvent(AnalyticsEvent.persistenceFatalError, withParameters: [AnalyticsProperty.error: truncatedString(errorMessage)])
   }
 
-  static func logRealmWriteFailure(errorMessage: String) {
+  static func logPersistenceWriteFailure(errorMessage: String) {
     logEvent(AnalyticsEvent.persistenceWriteFailed, withParameters: [AnalyticsProperty.error: truncatedString(errorMessage)])
   }
 

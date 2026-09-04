@@ -5,6 +5,7 @@
 //  Created by Jimmy Ho on 6/8/19.
 //
 
+import SwiftData
 import UIKit
 
 private let itemsSection = 0
@@ -33,6 +34,12 @@ class ChecklistViewController: UIViewController {
   private let statusIcon = CircularPercentStatusIcon(iconType: .header)
   private let checklistNameTextField = CLTextField()
   private let checklistNotesTextView = CLTextView()
+
+  private var remoteChangeObserver: RemoteChangeObserver?
+
+  private var context: ModelContext {
+    PersistenceController.shared.mainContext
+  }
 
   var isNewChecklist: Bool = false
   var isJumpingToFirstItem: Bool = false
@@ -152,11 +159,39 @@ class ChecklistViewController: UIViewController {
       navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetButtonTapped))
     }
     if checklist.items.isEmpty {
-      let item = Item(name: "", notes: nil)
-      DBManager.write {
-        checklist.items.append(item)
-      }
+      try? context.insert(item: Item(), at: 0, in: checklist)
     }
+
+    // Refreshes when another device's changes are merged in. Inert until CloudKit is switched on.
+    remoteChangeObserver = RemoteChangeObserver { [weak self] in
+      self?.handleRemoteChange()
+    }
+  }
+
+  /// Reacts to this checklist being changed, or deleted, somewhere other than this screen.
+  private func handleRemoteChange() {
+    guard !checklist.isDeleted, context.checklist(id: checklist.id) != nil else {
+      // Deleted on another device while open here. Leaving the screen up would let the user keep
+      // editing a record that no longer exists.
+      if let navigationController, navigationController.viewControllers.count > 1 {
+        navigationController.popViewController(animated: true)
+      } else {
+        dismiss(animated: true)
+      }
+      return
+    }
+
+    // Never yank the table out from under an active edit; the merged values are already in the
+    // model and will show on the next natural reload.
+    guard findEditingCell() == nil,
+          !checklistNameTextField.isFirstResponder,
+          !checklistNotesTextView.isFirstResponder
+    else { return }
+
+    checklistNameTextField.text = checklist.name
+    checklistNotesTextView.text = checklist.notes
+    updateStatusIcon()
+    tableView.reloadData()
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -199,18 +234,24 @@ class ChecklistViewController: UIViewController {
   }
 
   override func viewDidDisappear(_ animated: Bool) {
-    DBManager.write {
-      // If user left some 'dangling' empty items at end of list, remove them, but don't worry if there's one lone empty item.
-      var i = checklist.items.count - 1
-      while i > 0 {
-        let item = checklist.items[i]
-        if item.name.isEmpty, item.notes == nil || item.notes!.isEmpty {
-          DBManager.realm.delete(item)
-        } else {
-          break
-        }
-        i -= 1
+    // If user left some 'dangling' empty items at end of list, remove them, but don't worry if there's one lone empty item.
+    // Snapshotted up front: deleting from the context does not re-sort this array, so walking a
+    // stale copy backwards is both correct and cheaper than recomputing the sorted items each step.
+    let items = checklist.items
+    var didDelete = false
+    var i = items.count - 1
+    while i > 0 {
+      let item = items[i]
+      if item.name.isEmpty, item.notes == nil || item.notes!.isEmpty {
+        context.delete(item)
+        didDelete = true
+      } else {
+        break
       }
+      i -= 1
+    }
+    if didDelete {
+      context.saveChangesIgnoringFailure(operation: .delete)
     }
     super.viewDidDisappear(animated)
   }
@@ -223,6 +264,7 @@ class ChecklistViewController: UIViewController {
     AnalyticsManager.logResetChecklist()
 
     checklist.uncheckAllItems()
+    context.saveChangesIgnoringFailure(operation: .checklistEdit)
     updateStatusIcon()
 
     if tableView.contentOffset.y == 0.0 {
@@ -242,9 +284,10 @@ class ChecklistViewController: UIViewController {
   }
 
   private func insertNewItem(at index: Int, becomeFirstResponder: Bool) {
-    let item = Item(name: "", notes: nil)
-    DBManager.write {
-      self.checklist.items.insert(item, at: index)
+    do {
+      try context.insert(item: Item(), at: index, in: checklist)
+    } catch {
+      return // Already logged and reported by `saveChanges`; nothing was inserted.
     }
 
     let updates = {
@@ -296,7 +339,10 @@ class ChecklistViewController: UIViewController {
   }
 
   func deleteItem(at index: Int) {
-    checklist.remove(at: index)
+    let items = checklist.items
+    guard index >= 0, index < items.count else { assertionFailure(); return }
+    context.delete(items[index])
+    context.saveChangesIgnoringFailure(operation: .delete)
     tableView.deleteRows(at: [IndexPath(item: index, section: itemsSection)], with: .fade)
     updateStatusIcon()
   }
@@ -329,7 +375,9 @@ extension ChecklistViewController: UITableViewDataSource {
   }
 
   func tableView(_: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-    checklist.moveItem(from: sourceIndexPath.row, to: destinationIndexPath.row)
+    let items = checklist.items
+    guard sourceIndexPath.row < items.count else { assertionFailure(); return }
+    try? context.move(item: items[sourceIndexPath.row], among: items, to: destinationIndexPath.row)
   }
 }
 
@@ -437,9 +485,8 @@ extension ChecklistViewController: UITextFieldDelegate {
   }
 
   func textFieldDidEndEditing(_: UITextField) {
-    DBManager.write {
-      checklist.name = checklistNameTextField.hasText ? checklistNameTextField.text ?? defaultChecklistName : defaultChecklistName // Accounts for both nil and empty string.
-    }
+    checklist.name = checklistNameTextField.hasText ? checklistNameTextField.text ?? defaultChecklistName : defaultChecklistName // Accounts for both nil and empty string.
+    context.saveChangesIgnoringFailure(operation: .checklistEdit)
   }
 
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -460,9 +507,8 @@ extension ChecklistViewController: UITextFieldDelegate {
 /// For the Checklist Notes field.
 extension ChecklistViewController: UITextViewDelegate {
   func textViewDidEndEditing(_: UITextView) {
-    DBManager.write {
-      checklist.notes = checklistNotesTextView.text
-    }
+    checklist.notes = checklistNotesTextView.text
+    context.saveChangesIgnoringFailure(operation: .checklistEdit)
   }
 
   func textViewDidChange(_: UITextView) {
@@ -507,11 +553,10 @@ extension ChecklistViewController: UITableViewDropDelegate {
 
   func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
     // `coordinator.destinationIndexPath` is nil when the drop lands past the last row (e.g. the user
-    // drags below the bottom of the list). Falling back to `checklist.items.count` (one past the end)
-    // used to desync the model from the table view: `Checklist.moveItem` guards `toIndex < count` and
-    // silently no-ops (an `assertionFailure` trap in Debug) while `tableView.moveRow` below runs
-    // unconditionally, moving the row visually without the underlying data changing. Clamping to
-    // `count - 1` (the last valid index) makes both agree: the drop simply becomes "move to the end."
+    // drags below the bottom of the list). The clamp to `count - 1` (the last valid index) is still
+    // required, but the reason has moved: the sort-key reorder below handles one-past-the-end fine
+    // — it just appends — whereas `tableView.moveRow` would be given an out-of-range index path.
+    // Clamping keeps both agreeing that the drop means "move to the end."
     let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(row: checklist.items.count - 1, section: itemsSection)
     assert(coordinator.items.count == 1)
     guard let dropItem = coordinator.items.first else { assertionFailure(); return }
@@ -519,8 +564,9 @@ extension ChecklistViewController: UITableViewDropDelegate {
     itemProvider.loadObject(ofClass: NSString.self) { string, _ in
       guard let itemId = string as? String else { return }
       Task { @MainActor in
-        guard let sourceIndex = self.checklist.items.firstIndex(where: { $0.id == itemId }) else { return }
-        self.checklist.moveItem(from: sourceIndex, to: destinationIndexPath.row)
+        let items = self.checklist.items
+        guard let sourceIndex = items.firstIndex(where: { $0.id == itemId }) else { return }
+        try? self.context.move(item: items[sourceIndex], among: items, to: destinationIndexPath.row)
         tableView.moveRow(at: IndexPath(row: sourceIndex, section: destinationIndexPath.section), to: destinationIndexPath)
       }
     }
@@ -540,9 +586,8 @@ extension ChecklistViewController: ItemContentViewDelegate {
   }
 
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView) {
-    DBManager.write {
-      itemContentView.item?.toggleStatus()
-    }
+    itemContentView.item?.toggleStatus()
+    context.saveChangesIgnoringFailure(operation: .itemEdit)
     itemContentView.updateCheckedStatus()
     updateStatusIcon()
   }
@@ -558,21 +603,19 @@ extension ChecklistViewController: ItemContentViewDelegate {
   }
 
   func itemContentView(_ itemContentView: ItemContentView, nameFieldUpdatedWith name: String) {
-    DBManager.write {
-      itemContentView.item?.name = name
-    }
+    itemContentView.item?.name = name
+    context.saveChangesIgnoringFailure(operation: .itemEdit)
   }
 
   func itemContentView(_ itemContentView: ItemContentView, notesFieldUpdatedWith notes: String) {
-    DBManager.write {
-      itemContentView.item?.notes = notes
-    }
+    itemContentView.item?.notes = notes
+    context.saveChangesIgnoringFailure(operation: .itemEdit)
   }
 
   func itemContentViewDidReturnOnNameField(_ itemContentView: ItemContentView) {
     guard
       let item = itemContentView.item,
-      let index = checklist.items.index(of: item)
+      let index = checklist.items.firstIndex(where: { $0.id == item.id })
     else { assertionFailure(); return }
     insertNewItem(at: index + 1, becomeFirstResponder: true)
   }
@@ -580,7 +623,7 @@ extension ChecklistViewController: ItemContentViewDelegate {
   func itemContentViewDidBackspaceEmpty(_ itemContentView: ItemContentView) {
     guard
       let item = itemContentView.item,
-      let index = checklist.items.index(of: item)
+      let index = checklist.items.firstIndex(where: { $0.id == item.id })
     else { assertionFailure(); return }
 
     guard index > 0 else { return } // Nothing happens if backspaced on first item in list.

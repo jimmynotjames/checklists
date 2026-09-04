@@ -191,6 +191,18 @@ device and skips sandbox management entirely.
   sandbox" — can hit this the first time it runs `make test-ui`. Symptom to recognize: the failures
   are exactly the typing-dependent tests while everything else passes.
 
+  The menu item needs a human in front of Simulator.app, which an agent session does not have. The
+  equivalent from a shell, scoped to this repo's own device (**verified**: took `make test-ui` from
+  6 failures to 17/17):
+
+  ```bash
+  UDID=$(cat .build/sim/device.udid); defaults write com.apple.iphonesimulator DevicePreferences -dict-add "$UDID" '{ ConnectHardwareKeyboard = 0; }'; xcrun simctl shutdown "$UDID"; xcrun simctl boot "$UDID"
+  ```
+
+  The reboot is required — the preference is read when the device boots. Note the failure count is
+  not a reliable signal on its own: some typing tests pass anyway because they never reach for the
+  `Next:` or `delete` keys, so a partial pass does **not** rule this out.
+
 - **Analytics send nowhere.** Flurry was removed; Mixpanel is not implemented. Every
   `AnalyticsManager.log*` call still fires but hits a no-op (it prints in DEBUG). The full
   tracking plan, the event/property catalog, and the decisions still open are in
