@@ -34,7 +34,7 @@ initializer — `init(invocation:)` — that can't be overridden to fix because 
 unavailable in Swift on this platform). `checklistsUITests` needed no linkage changes; it was
 blocked only on the shared scheme's unit target failing to build, and on `test-ui`'s `warmed`
 sentinel (see `scripts/test-ui.sh`), both now resolved. Formerly tracked in
-[issue #116](https://github.com/jimmynotjames/checklists/issues/116) — closeable once this lands.
+[issue #116](https://github.com/jimmynotjames/checklists/issues/116), now closed.
 `checklistsTests` has 46 tests across `DataModelTests`, `RealmSchemaTests`, `SampleDataTests`,
 `AnalyticsManagerTests`, `SettingsManagerTests`, `CircularPercentStatusIconTests`,
 `CLTextViewTests`, and `ItemContentViewTests`; `checklistsUITests` has 17. Both are green,
@@ -174,6 +174,23 @@ device and skips sandbox management entirely.
 
 ## Known issues
 
+- **UI tests fail en masse when the simulator's software keyboard is off.** Every test that types
+  through the on-screen keyboard fails with the same signature — XCUITest cannot reach a keyboard
+  key (`Next:`, `delete`), at coordinates down in the keyboard region:
+
+  ```
+  Failed to failed to scroll to visible (by AX action) Button, {{300.7, 1121.0}, {99.0, 54.0}},
+  identifier: 'Next:', label: 'next', error: Error kAXErrorCannotComplete
+  performing AXAction kAXScrollToVisibleAction
+  ```
+
+  This is the simulator's "Connect Hardware Keyboard" setting suppressing the software keyboard —
+  **not a code defect, and not a flake that retrying fixes.** Toggle the software keyboard on the
+  device (Simulator ▸ I/O ▸ Keyboard ▸ Connect Hardware Keyboard, ⇧⌘K) and re-run. It is a
+  per-device setting, so a fresh clone — which gets its own sandbox simulator, see §"Simulator
+  sandbox" — can hit this the first time it runs `make test-ui`. Symptom to recognize: the failures
+  are exactly the typing-dependent tests while everything else passes.
+
 - **Analytics send nowhere.** Flurry was removed; Mixpanel is not implemented. Every
   `AnalyticsManager.log*` call still fires but hits a no-op (it prints in DEBUG). The full
   tracking plan, the event/property catalog, and the decisions still open are in
@@ -198,7 +215,7 @@ adding the jobs as required status checks in the existing branch protection.
 | budgets1 | here | why |
 |---|---|---|
 | repo-wide `swiftformat .` + `swiftlint --strict .` in gate | changed-files-only | ~96 pre-existing violations in a legacy tree |
-| gate = format → lint-fix → build → **test** | build only, tests opt-in | legacy suites not yet proven green |
+| gate = format → lint-fix → build → **test** | build only, tests opt-in | suites are green, but the UI run costs ~5 min on a simulator |
 | `build.sh` boots the per-repo simulator | generic destination, no boot | saves 30–90 s; only tests need a device |
 | `SRB_SIM_MAX` sim-clone concurrency | not ported | UI suite is small and not gated |
 | `--header strip` | `--header ignore` | would delete every file's authorship header |

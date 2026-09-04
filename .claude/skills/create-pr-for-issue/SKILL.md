@@ -110,9 +110,10 @@ AGENTS.md §"Commit and PR style"), following `.github/pull_request_template.md`
 - **`Closes #<N>`** — complete fix (auto-closes on squash-merge)
 - **`Refs #<N>`** — partial fix; note what's still pending
 
-In **Test plan**, state how the fix was actually verified. The automated suites cannot run
-([#116](https://github.com/jimmynotjames/checklists/issues/116)), so manual simulator verification
-steps are the honest answer — write those, don't imply coverage that doesn't exist.
+In **Test plan**, state how the fix was actually verified. The automated suites do run and pass
+since #128 (`make test-unit`, then `make test-ui`), so run whichever the fix warrants and report the
+real result; where a change is only verifiable by hand, manual simulator steps are the honest
+answer. Either way, write what you actually did — don't imply coverage that doesn't exist.
 
 Create the PR:
 
