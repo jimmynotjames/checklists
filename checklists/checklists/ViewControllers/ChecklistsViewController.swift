@@ -28,7 +28,6 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
     group = mainGroup
 
     tableView.register(ChecklistTableViewCell.self, forCellReuseIdentifier: "ChecklistCellWithStatus")
-    tableView.rowHeight = 107
     tableView.separatorStyle = .none
     tableView.sectionHeaderHeight = 28
     tableView.sectionFooterHeight = 28
