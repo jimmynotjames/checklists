@@ -126,14 +126,18 @@ Apply all fixes at once with the Edit or Write tool. Do not re-spawn the reviewe
 For each concern, read the diff to determine whether it applies. This is a code-reading check — no
 user input needed unless something is genuinely ambiguous.
 
-**Realm schema migration** — the one that can destroy user data.
-Applies if: the diff touches `checklists/checklists/DataModels/RealmSchema.swift`.
-Check: adding, removing, or renaming any property on `Group`, `Checklist`, or `Item` is a schema
-change. **The app currently has no migration configuration at all** — `DBManager.realm` calls a bare
-`try Realm()` (default config, `schemaVersion` 0, no `migrationBlock`) and its `catch` calls
-`fatalError`. So an unmigrated schema change ships a **launch crash to every existing user**. If the
-schema changed, a `Realm.Configuration` with a bumped `schemaVersion` and a migration block must be
-in place. If it isn't, stop and raise it — this is not something to paper over.
+**SwiftData schema migration** — the one that can destroy user data or crash on launch.
+Applies if: the diff touches `checklists/checklists/DataModels/Checklist.swift`,
+`checklists/checklists/DataModels/Item.swift`, or `checklists/checklists/DataModels/SchemaV1.swift`.
+Check: adding, removing, or renaming any property on `Checklist` or `Item` is a schema change. A
+model change requires a **new `VersionedSchema`** (`SchemaV2`, alongside `SchemaV1`), a
+**`MigrationStage`** added to `ChecklistsMigrationPlan.stages` (empty today because `SchemaV1` is
+the first schema — see its doc comment), and a **migration test** exercising the stage. Once the
+CloudKit production schema is deployed, `SchemaV1` is additionally frozen in a stronger sense:
+CloudKit record types are additive-only, so a field can be added but never removed or renamed —
+"remove a field" becomes "stop reading it," not a schema edit. See
+`core-docs/persistence-design.md`. If a model change ships without its schema/migration/test triad,
+stop and raise it — this is not something to paper over.
 
 **Analytics events** — *placeholder: there is currently no analytics backend.*
 Flurry was removed and Mixpanel is not wired up, so every `AnalyticsManager.log*` call is a no-op

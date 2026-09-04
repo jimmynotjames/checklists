@@ -54,9 +54,11 @@ Branch name format: `u/jimmyho/<tool>/<short-kebab-description>`, all lowercase,
 Satisfy the cross-cutting checklist **as you implement**, rather than retrofitting it later. The
 full descriptions live in the `create-pr` skill (step 4) and `.github/pull_request_template.md`:
 
-- **Realm schema migration** — if you touch `RealmSchema.swift`, remember there is currently **no
-  migration configuration in the app at all**; an unmigrated schema change crashes every existing
-  user's app on launch. Raise it rather than shipping it.
+- **SwiftData schema migration** — if you touch `Checklist.swift`, `Item.swift`, or `SchemaV1.swift`,
+  remember a model change needs a new `VersionedSchema`, a `MigrationStage` in
+  `ChecklistsMigrationPlan`, and a migration test — never an edit in place. Once the CloudKit
+  production schema is deployed, model changes are additive only: a field can be added but never
+  removed or renamed. Raise it rather than shipping it unmigrated.
 - **Analytics** (placeholder — no backend right now) — Flurry was removed and Mixpanel is not
   wired up, so `AnalyticsManager.log*` calls are no-ops. Instrument anyway: new user-initiated
   state changes get an `AnalyticsManager.log*` event following the existing house pattern, with

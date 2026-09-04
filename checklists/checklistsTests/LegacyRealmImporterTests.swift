@@ -17,13 +17,9 @@ import XCTest
  through `LegacyGroup`/`LegacyChecklist`/`LegacyItem`, so these tests would also catch those
  declarations drifting away from the shipped schema.
 
- The class is `nonisolated` at the type level with individual `@MainActor` test methods. The app
- target sets `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`, so without the explicit `nonisolated` this
- subclass would be main-actor isolated and clash with `XCTestCase`'s own nonisolated designated
- initializers (`init()`, `init(selector:)`, `init(invocation:)`) and its nonisolated
- `setUpWithError()`/`tearDownWithError()`. `init(invocation:)` in particular cannot be overridden to
- fix, because `NSInvocation` is unavailable in Swift on this platform. The persistence code under
- test is main-actor isolated, hence the annotation on every test and helper below.
+ See the doc comment on `DataModelTests` for why this class — and every other `XCTestCase`
+ subclass in this target — is `nonisolated` at the type level with individual `@MainActor` test
+ methods and helpers.
  */
 private struct FixtureItem {
   let name: String

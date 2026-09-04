@@ -69,6 +69,13 @@
 		AA11002000000000000000A2 /* ContainerFailureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11002000000000000000A1 /* ContainerFailureViewController.swift */; };
 		AA12000100000000000000A2 /* LegacyRealmImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000100000000000000A1 /* LegacyRealmImporterTests.swift */; };
 		AA12000200000000000000A2 /* TestModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000200000000000000A1 /* TestModelContainer.swift */; };
+		AA12000300000000000000A2 /* DataModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000300000000000000A1 /* DataModelTests.swift */; };
+		AA12000400000000000000A2 /* ModelBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000400000000000000A1 /* ModelBehaviorTests.swift */; };
+		AA12000500000000000000A2 /* SampleDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000500000000000000A1 /* SampleDataTests.swift */; };
+		AA12000600000000000000A2 /* SortKeyReorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000600000000000000A1 /* SortKeyReorderTests.swift */; };
+		AA12000700000000000000A2 /* ProductionContainerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000700000000000000A1 /* ProductionContainerFactoryTests.swift */; };
+		AA12000800000000000000A2 /* PersistentStoreURLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000800000000000000A1 /* PersistentStoreURLTests.swift */; };
+		AA12000900000000000000A2 /* RemoteChangeObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000900000000000000A1 /* RemoteChangeObserverTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -169,6 +176,13 @@
 		AA11002000000000000000A1 /* ContainerFailureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContainerFailureViewController.swift"; sourceTree = "<group>"; };
 		AA12000100000000000000A1 /* LegacyRealmImporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LegacyRealmImporterTests.swift"; sourceTree = "<group>"; };
 		AA12000200000000000000A1 /* TestModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TestModelContainer.swift"; sourceTree = "<group>"; };
+		AA12000300000000000000A1 /* DataModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataModelTests.swift"; sourceTree = "<group>"; };
+		AA12000400000000000000A1 /* ModelBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelBehaviorTests.swift"; sourceTree = "<group>"; };
+		AA12000500000000000000A1 /* SampleDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SampleDataTests.swift"; sourceTree = "<group>"; };
+		AA12000600000000000000A1 /* SortKeyReorderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SortKeyReorderTests.swift"; sourceTree = "<group>"; };
+		AA12000700000000000000A1 /* ProductionContainerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductionContainerFactoryTests.swift"; sourceTree = "<group>"; };
+		AA12000800000000000000A1 /* PersistentStoreURLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PersistentStoreURLTests.swift"; sourceTree = "<group>"; };
+		AA12000900000000000000A1 /* RemoteChangeObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RemoteChangeObserverTests.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -242,6 +256,13 @@
 			isa = PBXGroup;
 			children = (
 				AA12000100000000000000A1 /* LegacyRealmImporterTests.swift */,
+				AA12000300000000000000A1 /* DataModelTests.swift */,
+				AA12000400000000000000A1 /* ModelBehaviorTests.swift */,
+				AA12000500000000000000A1 /* SampleDataTests.swift */,
+				AA12000600000000000000A1 /* SortKeyReorderTests.swift */,
+				AA12000700000000000000A1 /* ProductionContainerFactoryTests.swift */,
+				AA12000800000000000000A1 /* PersistentStoreURLTests.swift */,
+				AA12000900000000000000A1 /* RemoteChangeObserverTests.swift */,
 				AA120000000000000000G1 /* Helpers */,
 				AA07000000000000000000C1 /* AnalyticsManagerTests.swift */,
 				AA07000000000000000000D1 /* SettingsManagerTests.swift */,
@@ -568,6 +589,13 @@
 			files = (
 				AA12000100000000000000A2 /* LegacyRealmImporterTests.swift in Sources */,
 				AA12000200000000000000A2 /* TestModelContainer.swift in Sources */,
+				AA12000300000000000000A2 /* DataModelTests.swift in Sources */,
+				AA12000400000000000000A2 /* ModelBehaviorTests.swift in Sources */,
+				AA12000500000000000000A2 /* SampleDataTests.swift in Sources */,
+				AA12000600000000000000A2 /* SortKeyReorderTests.swift in Sources */,
+				AA12000700000000000000A2 /* ProductionContainerFactoryTests.swift in Sources */,
+				AA12000800000000000000A2 /* PersistentStoreURLTests.swift in Sources */,
+				AA12000900000000000000A2 /* RemoteChangeObserverTests.swift in Sources */,
 				AA07000000000000000000C2 /* AnalyticsManagerTests.swift in Sources */,
 				AA07000000000000000000D2 /* SettingsManagerTests.swift in Sources */,
 				AA08000000000000000000A2 /* CircularPercentStatusIconTests.swift in Sources */,
