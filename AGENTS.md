@@ -40,7 +40,7 @@ Swift on this platform). `checklistsUITests` needed no linkage changes; it was b
 shared scheme's unit target failing to build, and on `test-ui`'s `warmed` sentinel (see
 `scripts/test-ui.sh`), both now resolved. Formerly tracked in
 [issue #116](https://github.com/jimmynotjames/checklists/issues/116), now closed.
-`checklistsTests` has 67 tests across `DataModelTests`, `ModelBehaviorTests`, `SampleDataTests`,
+`checklistsTests` has 68 tests across `DataModelTests`, `ModelBehaviorTests`, `SampleDataTests`,
 `SortKeyReorderTests`, `LegacyRealmImporterTests`, `ProductionContainerFactoryTests`,
 `PersistentStoreURLTests`, `RemoteChangeObserverTests`, `AnalyticsManagerTests`,
 `SettingsManagerTests`, `CircularPercentStatusIconTests`, `CLTextViewTests`, and

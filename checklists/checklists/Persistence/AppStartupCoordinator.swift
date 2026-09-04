@@ -61,6 +61,7 @@ final class AppStartupCoordinator {
       // Retry. Nothing has been deleted in any of these cases; the Realm file is still on disk.
       let failure = ContainerCreationFailure(underlying: error)
       AppLog.bootstrap.error("bootstrap.failed: \(failure.diagnosticDescription, privacy: .public)")
+      AnalyticsManager.logStartupFailure(errorMessage: failure.diagnosticDescription)
       return .failed(failure)
     }
   }

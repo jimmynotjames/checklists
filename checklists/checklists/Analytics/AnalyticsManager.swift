@@ -195,6 +195,15 @@ enum AnalyticsManager {
     logEvent(AnalyticsEvent.persistenceWriteFailed, withParameters: [AnalyticsProperty.error: truncatedString(errorMessage)])
   }
 
+  /// The launch sequence failed and the user was shown the retry screen rather than their data.
+  static func logStartupFailure(errorMessage: String) {
+    logEvent(AnalyticsEvent.startupFailed, withParameters: [AnalyticsProperty.error: truncatedString(errorMessage)])
+  }
+
+  static func logStartupRetry() {
+    logEvent(AnalyticsEvent.startupRetried)
+  }
+
   // MARK: - Device info analytics
 
   /// Overall ratio of iPad versus iPhone can be found in App Store Connect Analytics, so leaving that out here.
@@ -259,8 +268,16 @@ enum AnalyticsEvent {
   /// Flurry: `realm/fatal_error`. Renamed off "realm" so the event survives a future
   /// persistence-layer swap; `budgets1` uses the same `persistence_*` prefix.
   static let persistenceFatalError = "persistence_fatal_error"
-  /// A Realm write transaction threw. Flurry: `realm/write_error`.
+  /// A SwiftData save threw. Flurry: `realm/write_error`.
   static let persistenceWriteFailed = "persistence_write_failed"
+  /// Launch could not produce a usable store, so the retry screen was shown instead of the app.
+  /// Covers all three causes — the container would not open, the one-time Realm import did not
+  /// complete, or first-launch seeding would not save. New with the SwiftData migration; no
+  /// Flurry predecessor, because the Realm build crashed here rather than recovering.
+  static let startupFailed = "startup_failed"
+  /// The user tapped Retry on that screen. Paired with `startup_failed`, the ratio says whether
+  /// the failure is transient (retry succeeds) or the install is genuinely stuck.
+  static let startupRetried = "startup_retried"
 
   // MARK: Device
 

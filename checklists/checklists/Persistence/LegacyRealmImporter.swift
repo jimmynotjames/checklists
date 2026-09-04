@@ -91,10 +91,20 @@ enum LegacyRealmImporter {
     let realm = try Realm(configuration: configuration)
 
     guard let group = realm.objects(LegacyGroup.self).first else {
-      // Only reachable from a pre-v1.1.0 install, which predates the Group object entirely.
-      // v1.1.0 shipped in 2021, so this is out of scope by decision, not by oversight.
-      AppLog.persistence.warning("legacyImport: store has no Group object; nothing to import.")
-      return []
+      // No Group means a store written before v1.1.0, which predates that object entirely and
+      // ordered checklists by `sortNumber` instead. Upgrading straight from that release is out of
+      // scope as a *feature* — but reading nothing here would set the completion flag, and the
+      // store is never read again, so "out of scope" would silently mean "deleted forever". Falling
+      // back to the field that release actually ordered by costs nothing and cannot lose data.
+      let unlinked = Array(realm.objects(LegacyChecklist.self).sorted(byKeyPath: "sortNumber"))
+      if unlinked.isEmpty {
+        AppLog.persistence.warning("legacyImport: store has no Group and no checklists; nothing to import.")
+      } else {
+        AppLog.persistence.warning(
+          "legacyImport: store has no Group; recovering \(unlinked.count, privacy: .public) checklist(s) by sortNumber."
+        )
+      }
+      return unlinked.map(snapshot(of:))
     }
 
     var ordered = Array(group.checklists)
@@ -105,16 +115,18 @@ enum LegacyRealmImporter {
       ordered.append(contentsOf: orphans)
     }
 
-    return ordered.map { checklist in
-      ChecklistSnapshot(
-        id: checklist.id,
-        name: checklist.name,
-        notes: checklist.notes,
-        items: Array(checklist.items).map { item in
-          ItemSnapshot(id: item.id, name: item.name, notes: item.notes, statusRaw: item.statusRaw)
-        }
-      )
-    }
+    return ordered.map(snapshot(of:))
+  }
+
+  private static func snapshot(of checklist: LegacyChecklist) -> ChecklistSnapshot {
+    ChecklistSnapshot(
+      id: checklist.id,
+      name: checklist.name,
+      notes: checklist.notes,
+      items: Array(checklist.items).map { item in
+        ItemSnapshot(id: item.id, name: item.name, notes: item.notes, statusRaw: item.statusRaw)
+      }
+    )
   }
 
   // MARK: - Writing

@@ -105,6 +105,7 @@ final class ContainerFailureViewController: UIViewController {
   }
 
   @objc private func retryTapped() {
+    AnalyticsManager.logStartupRetry()
     delegate?.containerFailureViewControllerDidTapRetry(self)
   }
 

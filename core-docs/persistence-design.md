@@ -85,9 +85,13 @@ Three properties hold, in priority order (see the type's own doc comment for the
 Checklist order comes from the old `LegacyGroup.checklists` `List`, since that was the only record of
 display order in the Realm schema; any checklist reachable in the store but not linked from the
 `Group` (which should not happen, but would be invisible and unrecoverable if dropped) is appended
-at the end rather than discarded. A store with no `Group` object at all — predating v1.1.0, which
-shipped the `Group` object in 2021 — imports nothing but still completes normally; upgrading from
-that old a build is out of scope by decision.
+at the end rather than discarded. A store with no `Group` object at all predates v1.1.0, which
+shipped `Group` in 2021; those builds ordered checklists by `Checklist.sortNumber` instead, so the
+importer falls back to reading that field. Upgrading straight from a pre-v1.1.0 build is not a
+supported path and is not tested beyond that one case — but the import runs once and never reads the
+Realm file again, so anything it declines to read is lost permanently. Reading the older ordering
+field costs nothing and is the difference between "unsupported" and "silently destroys their data",
+which is why `sortNumber` is still carried on `LegacyChecklist` even though nothing else uses it.
 
 **The Realm file is retained this release and deleted in v1.3.** Because it's a plain file, deleting
 it needs no Realm API at all — a future change removes it with `FileManager.default.removeItem(at:)`

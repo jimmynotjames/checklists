@@ -106,13 +106,21 @@ was free: the Flurry data is not migrating to Mixpanel, so there was no continui
 | `rate_app_tapped` | `rate_in_app_store` | "Rate in App Store" tapped | — |
 | `feedback_tapped` | `send_feedback` | "Send feedback" tapped | — |
 | `privacy_policy_tapped` | `view_privacy_policy` | Privacy policy opened | — |
-| `persistence_fatal_error` | `realm/fatal_error` | Realm cannot be opened — app `fatalError`s immediately after | `error` |
-| `persistence_write_failed` | `realm/write_error` | A Realm write transaction throws | `error` |
+| `persistence_fatal_error` | `realm/fatal_error` | The persistent store cannot be opened at all | `error` |
+| `persistence_write_failed` | `realm/write_error` | A SwiftData save throws | `error` |
+| `startup_failed` | *(none — the Realm build crashed instead)* | Launch could not produce a usable store, so the retry screen was shown: container creation, the one-time Realm import, or first-launch seeding failed | `error` |
+| `startup_retried` | *(none)* | User taps Retry on that screen | — |
 | `orientation_changed` | `orientation_changed` | Device rotates portrait↔landscape | `orientation` |
 
 Slashes were dropped from the Realm event names — Mixpanel accepts them, but the flat convention
 matches `budgets1` and reads better in the Mixpanel UI. The `realm/*` events became
 `persistence_*` so they survive a future persistence-layer swap.
+
+**`startup_failed` is the one to watch after the SwiftData migration.** It is the only signal that
+an upgrading user was shown a retry screen instead of their checklists, and paired with
+`startup_retried` it distinguishes a transient failure from a permanently stuck install. Note that
+no data has been lost when it fires — the old Realm file is still on disk and the import is retried
+on the next launch (see [`persistence-design.md`](persistence-design.md)).
 
 **Note the error events are diagnostics, not product signals.** `persistence_fatal_error` fires
 immediately before a `fatalError`, so in practice Mixpanel may never flush it — treat any count it

@@ -207,15 +207,23 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
         indexPath.row >= 0,
         indexPath.row < checklists.count else { assertionFailure(); return }
 
+      // Captured by id, not by row. The alert is answered asynchronously, and once sync is on a
+      // merge can reorder the list while it is up — at which point the captured index would name a
+      // different checklist and this would silently delete the wrong one.
+      let checklistId = checklists[indexPath.row].id
+
       let alertController = UIAlertController(title: nil, message: "Are you sure? This cannot be undone.", preferredStyle: .alert)
       alertController.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in
-        guard indexPath.row < self.checklists.count else { assertionFailure(); return }
+        guard
+          let checklist = self.context.checklist(id: checklistId),
+          let row = self.checklists.firstIndex(where: { $0.id == checklistId })
+        else { return } // Already gone — deleted on another device while the alert was up.
         // The items go with it: the relationship's cascade delete rule replaces the explicit
         // two-step delete Realm needed, which had no cascade of its own.
-        self.context.delete(self.checklists[indexPath.row])
+        self.context.delete(checklist)
         self.context.saveChangesIgnoringFailure(operation: .delete)
         self.refetchChecklists()
-        self.tableView.deleteRows(at: [indexPath], with: .fade)
+        self.tableView.deleteRows(at: [IndexPath(row: row, section: checklistsSection)], with: .fade)
       }))
       alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
       present(alertController, animated: true, completion: nil)

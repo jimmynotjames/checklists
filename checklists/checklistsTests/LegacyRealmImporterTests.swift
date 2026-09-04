@@ -31,6 +31,8 @@ private struct FixtureChecklist {
   let name: String
   var notes: String?
   var items: [FixtureItem] = []
+  /// Only meaningful for the pre-v1.1.0 (no-`Group`) fixtures, where it is the ordering field.
+  var sortNumber: Double = 0.0
 }
 
 nonisolated final class LegacyRealmImporterTests: XCTestCase {
@@ -81,6 +83,7 @@ nonisolated final class LegacyRealmImporterTests: XCTestCase {
         let legacyChecklist = LegacyChecklist()
         legacyChecklist.name = checklist.name
         legacyChecklist.notes = checklist.notes
+        legacyChecklist.sortNumber = checklist.sortNumber
         for item in checklist.items {
           let legacyItem = LegacyItem()
           legacyItem.name = item.name
@@ -252,17 +255,35 @@ nonisolated final class LegacyRealmImporterTests: XCTestCase {
     XCTAssertTrue(LegacyRealmImporter.isNeeded(userDefaults: userDefaults, fileURL: fixtureURL))
   }
 
-  @MainActor func testStoreWithNoGroupImportsNothingButStillCompletes() throws {
+  /// A store with no `Group` was written before v1.1.0, which ordered checklists by `sortNumber`.
+  /// Upgrading straight from that release is not a supported path, but the import still has to
+  /// carry the data across: it runs once and then never reads the Realm file again, so anything it
+  /// skips here is gone permanently.
+  @MainActor func testStoreWithNoGroupRecoversChecklistsBySortNumber() throws {
     try writeFixture(
-      checklists: [FixtureChecklist(name: "Pre-v1.1 checklist")],
+      checklists: [
+        FixtureChecklist(name: "Third", sortNumber: 3.0),
+        FixtureChecklist(name: "First", items: [FixtureItem(name: "a")], sortNumber: 1.0),
+        FixtureChecklist(name: "Second", sortNumber: 2.0),
+      ],
       includeGroup: false
     )
     let context = try makeContext()
 
     try runImport(into: context)
 
-    // Upgrading from the pre-Group schema is out of scope by decision; the contract is that the
-    // app starts cleanly rather than crashing or looping on the import.
+    let imported = try context.fetchChecklistsSorted()
+    XCTAssertEqual(imported.map(\.name), ["First", "Second", "Third"])
+    XCTAssertEqual(imported.first?.items.map(\.name), ["a"])
+    XCTAssertTrue(userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
+  }
+
+  @MainActor func testEmptyStoreImportsNothingButStillCompletes() throws {
+    try writeFixture(checklists: [])
+    let context = try makeContext()
+
+    try runImport(into: context)
+
     XCTAssertEqual(try context.fetchChecklistsSorted().count, 0)
     XCTAssertTrue(userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
   }

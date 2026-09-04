@@ -1,6 +1,6 @@
 ---
 name: create-pr
-description: Turn already-written code changes into a reviewed, gated, open PR. Spawns a fresh-context code-reviewer subagent for a correctness-first look at the diff, audits the AGENTS.md cross-cutting checklist (Realm schema migration, analytics, accessibility), fills in any gaps autonomously, runs `make gate`, commits residual fixes, pushes the branch, and opens the PR. Use when the solution is mostly done and you want to review, gate, and ship it to a PR — without involving a GitHub issue. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr.
+description: Turn already-written code changes into a reviewed, gated, open PR. Spawns a fresh-context code-reviewer subagent for a correctness-first look at the diff, audits the AGENTS.md cross-cutting checklist (SwiftData schema migration, analytics, accessibility), fills in any gaps autonomously, runs `make gate`, commits residual fixes, pushes the branch, and opens the PR. Use when the solution is mostly done and you want to review, gate, and ship it to a PR — without involving a GitHub issue. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr.
 ---
 
 # Create a PR
@@ -87,16 +87,20 @@ git diff main..HEAD
 Spawn a **`general-purpose` Agent** with the diff in the prompt — a fresh context, so it has no
 prior conversation history coloring the review. Brief it as:
 
-> "You are reviewing a code diff for a **UIKit iOS app (no storyboards) written in Swift 6.0,
-> persisted with Realm (RealmSwift 20.x)**. Deployment target is iOS 26.0.
+> "You are reviewing a code diff for a **UIKit iOS app (no storyboards) written in Swift 6.0 with
+> `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`, persisted with SwiftData**. Deployment target is
+> iOS 26.0.
 > Review for:
 >
-> - **Realm thread confinement** — `Realm` instances and `Object` subclasses are not thread-safe
->   across threads. Flag any access from a thread other than the one that created them, any
->   `Object` captured in an escaping closure that may run elsewhere, and any live object used after
->   its write transaction ends.
-> - **Realm write-transaction correctness** — model mutations outside a `DBManager.write { }` block,
->   nested write transactions, or objects added to the realm without one.
+> - **SwiftData save correctness** — model mutations that never reach a `saveChanges(operation:)`,
+>   saves that swallow failure via `saveChangesIgnoringFailure` where the user would silently lose
+>   an edit, and use of a model after it has been deleted (`isDeleted`).
+> - **Relationship wiring** — `Checklist.itemsStorage` and `Item.checklist` are two sides of one
+>   relationship. Setting both sides can double-add; setting neither orphans the record. App code
+>   must read the `items` computed property, never `itemsStorage` directly.
+> - **Ordering via `sortKey`** — SwiftData relationships are unordered, so order is data. Check
+>   midpoint-insertion boundaries and that callers pass the sibling array each function's doc
+>   comment asks for (with or without the element being moved).
 > - **Retain cycles** — missing `[weak self]` in escaping closures; delegate properties declared
 >   `strong` instead of `weak`. This codebase is delegate-heavy.
 > - **New force-unwraps and force-casts introduced by this diff.** The existing tree already has
@@ -234,7 +238,8 @@ Report the PR URL to the user.
 ## Autonomy
 
 Run all steps without prompting, except when a review finding is genuinely ambiguous about product
-intent, or when a Realm schema change lacks a migration (step 4) — that one always gets raised.
+intent, or when a SwiftData model change lacks its schema/migration/test triad (step 4) — that one
+always gets raised.
 Gate commands, git operations, and `gh pr create` are all allowlisted.
 
 ## What this skill does NOT do

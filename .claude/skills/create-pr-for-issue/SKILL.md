@@ -1,6 +1,6 @@
 ---
 name: create-pr-for-issue
-description: Turn a GitHub issue into an open, review-ready PR. Implements the fix, runs a fresh-eye review, audits the cross-cutting checklist (Realm schema migration, analytics, accessibility), runs `make gate`, pushes, and opens the PR with Closes #N linkage. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr-for-issue <N>.
+description: Turn a GitHub issue into an open, review-ready PR. Implements the fix, runs a fresh-eye review, audits the cross-cutting checklist (SwiftData schema migration, analytics, accessibility), runs `make gate`, pushes, and opens the PR with Closes #N linkage. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr-for-issue <N>.
 ---
 
 # Create PR for issue
@@ -76,7 +76,7 @@ git diff main..HEAD
 ```
 
 Spawn a **`general-purpose` Agent** with the same brief as the `create-pr` skill (step 3) — the
-UIKit/Realm/Swift 6 review criteria: Realm thread confinement, write-transaction correctness, retain
+UIKit/SwiftData/Swift 6 review criteria: save correctness, relationship wiring, sort-key ordering, retain
 cycles, newly-introduced force-unwraps/casts, `UITableView` data-source consistency, and
 main-thread UI. Fresh context, no prior conversation history.
 
@@ -131,7 +131,7 @@ Report the PR URL and a one-line summary. **Stop — do not merge.**
 ## Autonomy
 
 Run all steps without prompting, except when: the issue is ambiguous; a review finding needs the
-user's call; or a Realm schema change lacks a migration.
+user's call; or a SwiftData model change lacks its schema/migration/test triad.
 
 ## What this skill does NOT do
 
