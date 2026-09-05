@@ -1,7 +1,11 @@
 # Agent instructions — checklists
 
-A UIKit iOS app (Swift 6.0, iOS 26.0+), persisted with **Realm** (SPM). Analytics
-are **stubbed** — Flurry was removed and Mixpanel is not wired up yet, so `AnalyticsManager.log*`
+A UIKit iOS app (Swift 6.0, iOS 26.0+), persisted with **SwiftData**. Realm 20.0.5 (SPM) stays
+linked for one purpose only: `LegacyRealmImporter` reads a pre-migration install's old Realm file
+once, on the single launch that needs it, and never writes to it. See
+[`core-docs/persistence-design.md`](core-docs/persistence-design.md) for the model, the CloudKit
+constraints it was designed against, the legacy import, and sort-key ordering. Analytics are
+**stubbed** — Flurry was removed and Mixpanel is not wired up yet, so `AnalyticsManager.log*`
 calls are no-ops. See
 [`core-docs/analytics-design.md`](core-docs/analytics-design.md).
 
@@ -25,24 +29,30 @@ make test-ui     # OPT-IN — requires a prior `make test-unit` (simulator warm-
 `make system` installs the toolchain (lefthook, swiftlint, swiftformat, gitleaks) and the
 git hooks. Run it once per clone.
 
-**Tests are not in the gate, but both suites now compile and pass.** `checklistsTests` links
-`RealmSwift` and sets `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` (mirroring the app target); its
-`XCTestCase` subclasses stay `nonisolated` at the type level with individual `@MainActor` test
-methods, since an isolated subclass conflicts with `XCTestCase`'s own nonisolated designated
-initializers (see the doc comment on `DataModelTests` for the full explanation, including the one
-initializer — `init(invocation:)` — that can't be overridden to fix because `NSInvocation` is
-unavailable in Swift on this platform). `checklistsUITests` needed no linkage changes; it was
-blocked only on the shared scheme's unit target failing to build, and on `test-ui`'s `warmed`
-sentinel (see `scripts/test-ui.sh`), both now resolved. Formerly tracked in
+**Tests are not in the gate, but both suites compile and pass.** `checklistsTests` links
+`RealmSwift` (for `LegacyRealmImporterTests`'s fixtures) and `SwiftData`, and sets
+`SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` (mirroring the app target); its `XCTestCase` subclasses
+stay `nonisolated` at the type level with individual `@MainActor` test methods, since an isolated
+subclass conflicts with `XCTestCase`'s own nonisolated designated initializers (see the doc comment
+on `DataModelTests` for the full explanation, including the one initializer —
+`init(invocation:)` — that can't be overridden to fix because `NSInvocation` is unavailable in
+Swift on this platform). `checklistsUITests` needed no linkage changes; it was blocked only on the
+shared scheme's unit target failing to build, and on `test-ui`'s `warmed` sentinel (see
+`scripts/test-ui.sh`), both now resolved. Formerly tracked in
 [issue #116](https://github.com/jimmynotjames/checklists/issues/116), now closed.
-`checklistsTests` has 46 tests across `DataModelTests`, `RealmSchemaTests`, `SampleDataTests`,
-`AnalyticsManagerTests`, `SettingsManagerTests`, `CircularPercentStatusIconTests`,
-`CLTextViewTests`, and `ItemContentViewTests`; `checklistsUITests` has 17. Both are green,
-verified twice in a row for flakes — but still opt-in, not part of `make gate`.
+`checklistsTests` has 68 tests across `DataModelTests`, `ModelBehaviorTests`, `SampleDataTests`,
+`SortKeyReorderTests`, `LegacyRealmImporterTests`, `ProductionContainerFactoryTests`,
+`PersistentStoreURLTests`, `RemoteChangeObserverTests`, `AnalyticsManagerTests`,
+`SettingsManagerTests`, `CircularPercentStatusIconTests`, `CLTextViewTests`, and
+`ItemContentViewTests`; `checklistsUITests` has 17. Both are green, verified twice in a row for
+flakes — but still opt-in, not part of `make gate`.
 
-**`make test-unit` wipes the simulator's app database.** `DataModelTests` tests against the
-*persisted* Realm store (its own header says so) and calls `deleteAll()` in `setUp`. The
-per-repo simulator sandbox keeps that blast radius on this repo's own device.
+All of `checklistsTests` runs against disposable in-memory `ModelContainer`s (see
+`checklistsTests/Helpers/TestModelContainer.swift`), except `LegacyRealmImporterTests`, which
+writes real Realm fixture files to the test process's own temporary directory and cleans them up in
+`tearDown`. Neither touches the simulator's real on-disk store, so running the suite has no lasting
+effect on the app's data — a deliberate break from the Realm-era `DataModelTests`, which asserted
+against the persisted store and wiped it in `setUp`.
 
 ### The arm64 pin is now just a speed choice
 
@@ -190,6 +200,18 @@ device and skips sandbox management entirely.
   per-device setting, so a fresh clone — which gets its own sandbox simulator, see §"Simulator
   sandbox" — can hit this the first time it runs `make test-ui`. Symptom to recognize: the failures
   are exactly the typing-dependent tests while everything else passes.
+
+  The menu item needs a human in front of Simulator.app, which an agent session does not have. The
+  equivalent from a shell, scoped to this repo's own device (**verified**: took `make test-ui` from
+  6 failures to 17/17):
+
+  ```bash
+  UDID=$(cat .build/sim/device.udid); defaults write com.apple.iphonesimulator DevicePreferences -dict-add "$UDID" '{ ConnectHardwareKeyboard = 0; }'; xcrun simctl shutdown "$UDID"; xcrun simctl boot "$UDID"
+  ```
+
+  The reboot is required — the preference is read when the device boots. Note the failure count is
+  not a reliable signal on its own: some typing tests pass anyway because they never reach for the
+  `Next:` or `delete` keys, so a partial pass does **not** rule this out.
 
 - **Analytics send nowhere.** Flurry was removed; Mixpanel is not implemented. Every
   `AnalyticsManager.log*` call still fires but hits a no-op (it prints in DEBUG). The full

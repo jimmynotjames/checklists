@@ -40,9 +40,9 @@ lint-changed:
 build:
 	bash scripts/build.sh
 
-# Tests are OPT-IN and not part of the gate — the 2020-era XCTest suites have not
-# been proven green yet. NOTE: test-unit wipes the simulator's Realm database
-# (DataModelTests tests against the persisted store). See scripts/test-unit.sh.
+# Tests are OPT-IN and not part of the gate. Runs against disposable in-memory
+# ModelContainers (see checklistsTests/Helpers/TestModelContainer.swift); nothing here
+# touches the simulator's real on-disk store. See scripts/test-unit.sh.
 test-unit:
 	bash scripts/test-unit.sh
 

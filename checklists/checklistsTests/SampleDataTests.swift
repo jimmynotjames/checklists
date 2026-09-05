@@ -2,73 +2,98 @@
 //  SampleDataTests.swift
 //  checklistsTests
 //
-//  Created by Claude on 8/31/26.
-//
 
 @testable import checklists
-import RealmSwift
+import SwiftData
 import XCTest
 
-/// Guards the fixture contract that `checklistsUITests` hardcodes: the seeded group, checklist
-/// names, and item counts produced by `SampleData.insertFirstTimeLaunchDataV1_1()`. If this file
-/// ever needs to change to make these tests pass, the UI test suite needs the matching update —
-/// see `SampleData.generateFirstTimeLaunchChecklists()`'s own "also used for automated testing"
-/// reminder.
+/// Covers the first-time-launch fixture in `SampleData.swift`: its exact shape (also the
+/// `checklistsUITests` navigation contract), the stability of its fixed ids (the cross-device
+/// dedupe contract), idempotent seeding, and `clearDatabase(in:)`.
 ///
-/// See the note on `DataModelTests` for why this class is `nonisolated` at the type level with
-/// individual `@MainActor` test methods.
-/// `@unchecked Sendable`: `MainActor.assumeIsolated` (used in setUp/tearDown below) captures `self`
-/// to reach `previousRealm`, and the compiler can't verify that crossing is safe on its own since
-/// this class isn't Sendable by default. It genuinely is safe here — XCTest always invokes setUp,
-/// every test method, and tearDown on the main thread, serially, for a given instance — so this is
-/// the same kind of test-only escape hatch as the class-level `nonisolated` above.
-nonisolated final class SampleDataTests: XCTestCase, @unchecked Sendable {
-  private var previousRealm: Realm!
+/// See the doc comment on `DataModelTests` for why this class is `nonisolated` at the type level
+/// with individual `@MainActor` test methods.
+///
+/// `UserDefaults` is isolated per test via a unique suite name, removed in `tearDown` — `.standard`
+/// is never touched.
+nonisolated final class SampleDataTests: XCTestCase {
+  private var suiteName: String!
+  private var userDefaults: UserDefaults!
 
   override func setUpWithError() throws {
-    try MainActor.assumeIsolated {
-      previousRealm = DBManager.realm
-      DBManager.realm = try Realm(configuration: Realm.Configuration(inMemoryIdentifier: "SampleDataTests-\(UUID().uuidString)"))
-    }
+    try super.setUpWithError()
+    suiteName = "SampleDataTests-\(UUID().uuidString)"
+    userDefaults = UserDefaults(suiteName: suiteName)
   }
 
   override func tearDownWithError() throws {
-    MainActor.assumeIsolated {
-      DBManager.realm = previousRealm
-    }
+    userDefaults.removePersistentDomain(forName: suiteName)
+    userDefaults = nil
+    suiteName = nil
+    try super.tearDownWithError()
   }
 
-  @MainActor func testFirstTimeLaunchDataMatchesUITestFixtureContract() {
-    SampleData.insertFirstTimeLaunchDataV1_1()
+  @MainActor private func makeContext() throws -> ModelContext {
+    try ModelContext(TestModelContainer.make())
+  }
 
-    let groups = DBManager.realm.objects(Group.self)
-    XCTAssertEqual(groups.count, 1)
-    guard let group = groups.first else { return }
+  // MARK: - Fixture contract
 
-    let checklists = group.checklists
+  @MainActor func testFirstTimeLaunchDataMatchesUITestFixtureContract() throws {
+    let context = try makeContext()
+    try SampleData.seed(into: context)
+
+    let checklists = try context.fetchChecklistsSorted()
     XCTAssertEqual(checklists.count, 3)
 
-    // `uniquingKeysWith:` rather than `uniqueKeysWithValues:`: the latter traps on a duplicate key,
-    // which would abort the whole test process instead of failing this assertion. A duplicate
-    // checklist name is exactly the kind of fixture edit this test exists to catch, so it needs to
-    // fail cleanly and say so.
-    let itemCountsByName = Dictionary(checklists.map { ($0.name, $0.items.count) }, uniquingKeysWith: { first, _ in first })
-    XCTAssertEqual(itemCountsByName.count, 3, "Expected three distinctly-named checklists; a duplicate name means the fixture contract changed.")
-    XCTAssertEqual(itemCountsByName["Morning Routine"], 6)
-    XCTAssertEqual(itemCountsByName["Weekend Getaway Essentials"], 12)
-    XCTAssertEqual(itemCountsByName["Pre-Trip Checklist"], 11)
+    XCTAssertEqual(checklists.map(\.name), [
+      "Morning Routine",
+      "Weekend Getaway Essentials",
+      "Pre-Trip Checklist",
+    ])
+    XCTAssertEqual(checklists.map(\.sortKey), [1.0, 2.0, 3.0])
+    XCTAssertEqual(checklists.map(\.items.count), [6, 12, 11])
+
+    let checkedCounts = checklists.map { checklist in
+      checklist.items.count(where: { $0.status == .checked })
+    }
+    XCTAssertEqual(checkedCounts, [5, 4, 0])
   }
 
-  @MainActor func testClearDatabaseEmptiesEverything() {
-    SampleData.insertFirstTimeLaunchDataV1_1()
-    XCTAssertGreaterThan(DBManager.realm.objects(Group.self).count, 0)
-    XCTAssertGreaterThan(DBManager.realm.objects(Checklist.self).count, 0)
-    XCTAssertGreaterThan(DBManager.realm.objects(Item.self).count, 0)
+  // MARK: - Stable ids
 
-    SampleData.clearDatabase()
+  /// These constants are what makes cross-device dedupe possible: two devices signed into the same
+  /// iCloud account that each seed themselves before ever syncing must land on the *same* three
+  /// record ids, or CloudKit merges four checklists into six instead of three into three. Changing
+  /// any of these literals breaks that contract for every install that already seeded itself with
+  /// the old value.
+  @MainActor func testSampleIdsAreStable() {
+    XCTAssertEqual(SampleData.morningRoutineId, "C4EC1157-0000-4000-A000-000000000001")
+    XCTAssertEqual(SampleData.weekendGetawayId, "C4EC1157-0000-4000-A000-000000000002")
+    XCTAssertEqual(SampleData.preTripId, "C4EC1157-0000-4000-A000-000000000003")
+  }
 
-    XCTAssertEqual(DBManager.realm.objects(Group.self).count, 0)
-    XCTAssertEqual(DBManager.realm.objects(Checklist.self).count, 0)
-    XCTAssertEqual(DBManager.realm.objects(Item.self).count, 0)
+  // MARK: - Seeding
+
+  @MainActor func testSeedIsIdempotent() throws {
+    let context = try makeContext()
+
+    try SampleData.insertFirstTimeLaunchDataIfNeeded(into: context, userDefaults: userDefaults)
+    try SampleData.insertFirstTimeLaunchDataIfNeeded(into: context, userDefaults: userDefaults)
+
+    XCTAssertEqual(try context.fetchChecklistsSorted().count, 3)
+  }
+
+  // MARK: - Clearing
+
+  @MainActor func testClearDatabaseEmptiesEverything() throws {
+    let context = try makeContext()
+    try SampleData.seed(into: context)
+    XCTAssertFalse(try context.fetchChecklistsSorted().isEmpty)
+
+    try SampleData.clearDatabase(in: context)
+
+    XCTAssertTrue(try context.fetch(FetchDescriptor<Checklist>()).isEmpty)
+    XCTAssertTrue(try context.fetch(FetchDescriptor<Item>()).isEmpty)
   }
 }

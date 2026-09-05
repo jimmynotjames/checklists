@@ -16,8 +16,6 @@
 		323ADC7722828C0C00644931 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 323ADC7622828C0C00644931 /* Assets.xcassets */; };
 		323ADC9022828C0C00644931 /* checklistsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323ADC8F22828C0C00644931 /* checklistsUITests.swift */; };
 		AA06000000000000000000A2 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AA06000000000000000000A1 /* RealmSwift */; };
-		AA07000000000000000000A2 /* RealmSchemaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA07000000000000000000A1 /* RealmSchemaTests.swift */; };
-		AA07000000000000000000B2 /* SampleDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA07000000000000000000B1 /* SampleDataTests.swift */; };
 		AA07000000000000000000C2 /* AnalyticsManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA07000000000000000000C1 /* AnalyticsManagerTests.swift */; };
 		AA07000000000000000000D2 /* SettingsManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA07000000000000000000D1 /* SettingsManagerTests.swift */; };
 		AA08000000000000000000A2 /* CircularPercentStatusIconTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08000000000000000000A1 /* CircularPercentStatusIconTests.swift */; };
@@ -31,8 +29,6 @@
 		327C65A625A0DB780012AABD /* checklistCreateUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C65A525A0DB780012AABD /* checklistCreateUITest.swift */; };
 		32A928A42320CED0005F9B34 /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A928A32320CED0005F9B34 /* AnalyticsManager.swift */; };
 		32A964712291E14F00CAB7C0 /* ItemContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A964702291E14F00CAB7C0 /* ItemContentView.swift */; };
-		32A964782297A0A300CAB7C0 /* RealmSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A964772297A0A300CAB7C0 /* RealmSchema.swift */; };
-		32A9647C2297AFF400CAB7C0 /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A9647B2297AFF400CAB7C0 /* DBManager.swift */; };
 		32AECAEB22ED118100747080 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32AECAEA22ED118100747080 /* Colors.swift */; };
 		32B4C177257AF608005721F5 /* ChecklistCellContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B4C176257AF608005721F5 /* ChecklistCellContentView.swift */; };
 		32BA5021235CE84C007E506D /* CLCircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BA5020235CE84C007E506D /* CLCircleButton.swift */; };
@@ -44,7 +40,6 @@
 		32E767DE22EA4743003C8634 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32E767DD22EA4743003C8634 /* Colors.xcassets */; };
 		32E767E022EA6476003C8634 /* CLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DF22EA6476003C8634 /* CLButton.swift */; };
 		32F040472336DDBC007CB244 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A964792297AE6700CAB7C0 /* SampleData.swift */; };
-		32F363C7257D7D9D008482DA /* DataModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F363C6257D7D9D008482DA /* DataModelTests.swift */; };
 		32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4C84322875308000D63CF /* ItemTableViewCell.swift */; };
 		32F8F1AF2311E71900F12306 /* CLTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F8F1AE2311E71900F12306 /* CLTextField.swift */; };
 		AA01000000000000000000A3 /* AppLoggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01000000000000000000A2 /* AppLoggers.swift */; };
@@ -52,6 +47,35 @@
 		AA03000000000000000000C2 /* ThemeItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA03000000000000000000C1 /* ThemeItemTableViewCell.swift */; };
 		AA04000000000000000000D2 /* InfoRowTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA04000000000000000000D1 /* InfoRowTableViewCell.swift */; };
 		AA05000000000000000000E2 /* MainMenuItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA05000000000000000000E1 /* MainMenuItemTableViewCell.swift */; };
+		AA11000100000000000000A2 /* SchemaV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000100000000000000A1 /* SchemaV1.swift */; };
+		AA11000200000000000000A2 /* Checklist.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000200000000000000A1 /* Checklist.swift */; };
+		AA11000300000000000000A2 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000300000000000000A1 /* Item.swift */; };
+		AA11000400000000000000A2 /* ChecklistsMigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000400000000000000A1 /* ChecklistsMigrationPlan.swift */; };
+		AA11000500000000000000A2 /* LegacyRealmSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000500000000000000A1 /* LegacyRealmSchema.swift */; };
+		AA11000600000000000000A2 /* ContainerBacking.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000600000000000000A1 /* ContainerBacking.swift */; };
+		AA11000700000000000000A2 /* ContainerCreationFailure.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000700000000000000A1 /* ContainerCreationFailure.swift */; };
+		AA11000800000000000000A2 /* SortKeyReorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000800000000000000A1 /* SortKeyReorder.swift */; };
+		AA11000900000000000000A2 /* ModelContext+SaveChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000900000000000000A1 /* ModelContext+SaveChanges.swift */; };
+		AA11001000000000000000A2 /* ModelContext+Lookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11001000000000000000A1 /* ModelContext+Lookup.swift */; };
+		AA11001100000000000000A2 /* Reordering.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11001100000000000000A1 /* Reordering.swift */; };
+		AA11001200000000000000A2 /* ProductionContainerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11001200000000000000A1 /* ProductionContainerFactory.swift */; };
+		AA11001300000000000000A2 /* InMemoryModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11001300000000000000A1 /* InMemoryModelContainer.swift */; };
+		AA11001400000000000000A2 /* LaunchModeContainerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11001400000000000000A1 /* LaunchModeContainerFactory.swift */; };
+		AA11001500000000000000A2 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11001500000000000000A1 /* PersistenceController.swift */; };
+		AA11001600000000000000A2 /* LegacyRealmImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11001600000000000000A1 /* LegacyRealmImporter.swift */; };
+		AA11001700000000000000A2 /* RemoteChangeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11001700000000000000A1 /* RemoteChangeObserver.swift */; };
+		AA11001800000000000000A2 /* AppStartupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11001800000000000000A1 /* AppStartupCoordinator.swift */; };
+		AA11001900000000000000A2 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11001900000000000000A1 /* LoadingViewController.swift */; };
+		AA11002000000000000000A2 /* ContainerFailureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11002000000000000000A1 /* ContainerFailureViewController.swift */; };
+		AA12000100000000000000A2 /* LegacyRealmImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000100000000000000A1 /* LegacyRealmImporterTests.swift */; };
+		AA12000200000000000000A2 /* TestModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000200000000000000A1 /* TestModelContainer.swift */; };
+		AA12000300000000000000A2 /* DataModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000300000000000000A1 /* DataModelTests.swift */; };
+		AA12000400000000000000A2 /* ModelBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000400000000000000A1 /* ModelBehaviorTests.swift */; };
+		AA12000500000000000000A2 /* SampleDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000500000000000000A1 /* SampleDataTests.swift */; };
+		AA12000600000000000000A2 /* SortKeyReorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000600000000000000A1 /* SortKeyReorderTests.swift */; };
+		AA12000700000000000000A2 /* ProductionContainerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000700000000000000A1 /* ProductionContainerFactoryTests.swift */; };
+		AA12000800000000000000A2 /* PersistentStoreURLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000800000000000000A1 /* PersistentStoreURLTests.swift */; };
+		AA12000900000000000000A2 /* RemoteChangeObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000900000000000000A1 /* RemoteChangeObserverTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,9 +131,7 @@
 		327C65A525A0DB780012AABD /* checklistCreateUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistCreateUITest.swift; sourceTree = "<group>"; };
 		32A928A32320CED0005F9B34 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
 		32A964702291E14F00CAB7C0 /* ItemContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemContentView.swift; sourceTree = "<group>"; };
-		32A964772297A0A300CAB7C0 /* RealmSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmSchema.swift; sourceTree = "<group>"; };
 		32A964792297AE6700CAB7C0 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
-		32A9647B2297AFF400CAB7C0 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
 		32AECAEA22ED118100747080 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		32B4C176257AF608005721F5 /* ChecklistCellContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistCellContentView.swift; sourceTree = "<group>"; };
 		32BA5020235CE84C007E506D /* CLCircleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLCircleButton.swift; sourceTree = "<group>"; };
@@ -120,7 +142,6 @@
 		32E767DB22EA4639003C8634 /* AddItemButtonTableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemButtonTableFooterView.swift; sourceTree = "<group>"; };
 		32E767DD22EA4743003C8634 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		32E767DF22EA6476003C8634 /* CLButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLButton.swift; sourceTree = "<group>"; };
-		32F363C6257D7D9D008482DA /* DataModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModelTests.swift; sourceTree = "<group>"; };
 		32F4C84322875308000D63CF /* ItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableViewCell.swift; sourceTree = "<group>"; };
 		32F8F1AE2311E71900F12306 /* CLTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLTextField.swift; sourceTree = "<group>"; };
 		AA01000000000000000000A2 /* AppLoggers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoggers.swift; sourceTree = "<group>"; };
@@ -128,13 +149,40 @@
 		AA03000000000000000000C1 /* ThemeItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeItemTableViewCell.swift; sourceTree = "<group>"; };
 		AA04000000000000000000D1 /* InfoRowTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoRowTableViewCell.swift; sourceTree = "<group>"; };
 		AA05000000000000000000E1 /* MainMenuItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuItemTableViewCell.swift; sourceTree = "<group>"; };
-		AA07000000000000000000A1 /* RealmSchemaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmSchemaTests.swift; sourceTree = "<group>"; };
-		AA07000000000000000000B1 /* SampleDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDataTests.swift; sourceTree = "<group>"; };
 		AA07000000000000000000C1 /* AnalyticsManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManagerTests.swift; sourceTree = "<group>"; };
 		AA07000000000000000000D1 /* SettingsManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManagerTests.swift; sourceTree = "<group>"; };
 		AA08000000000000000000A1 /* CircularPercentStatusIconTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularPercentStatusIconTests.swift; sourceTree = "<group>"; };
 		AA08000000000000000000B1 /* CLTextViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLTextViewTests.swift; sourceTree = "<group>"; };
 		AA08000000000000000000C1 /* ItemContentViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemContentViewTests.swift; sourceTree = "<group>"; };
+		AA11000100000000000000A1 /* SchemaV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SchemaV1.swift"; sourceTree = "<group>"; };
+		AA11000200000000000000A1 /* Checklist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Checklist.swift"; sourceTree = "<group>"; };
+		AA11000300000000000000A1 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Item.swift"; sourceTree = "<group>"; };
+		AA11000400000000000000A1 /* ChecklistsMigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChecklistsMigrationPlan.swift"; sourceTree = "<group>"; };
+		AA11000500000000000000A1 /* LegacyRealmSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LegacyRealmSchema.swift"; sourceTree = "<group>"; };
+		AA11000600000000000000A1 /* ContainerBacking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContainerBacking.swift"; sourceTree = "<group>"; };
+		AA11000700000000000000A1 /* ContainerCreationFailure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContainerCreationFailure.swift"; sourceTree = "<group>"; };
+		AA11000800000000000000A1 /* SortKeyReorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SortKeyReorder.swift"; sourceTree = "<group>"; };
+		AA11000900000000000000A1 /* ModelContext+SaveChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelContext+SaveChanges.swift"; sourceTree = "<group>"; };
+		AA11001000000000000000A1 /* ModelContext+Lookup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelContext+Lookup.swift"; sourceTree = "<group>"; };
+		AA11001100000000000000A1 /* Reordering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reordering.swift"; sourceTree = "<group>"; };
+		AA11001200000000000000A1 /* ProductionContainerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductionContainerFactory.swift"; sourceTree = "<group>"; };
+		AA11001300000000000000A1 /* InMemoryModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InMemoryModelContainer.swift"; sourceTree = "<group>"; };
+		AA11001400000000000000A1 /* LaunchModeContainerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LaunchModeContainerFactory.swift"; sourceTree = "<group>"; };
+		AA11001500000000000000A1 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PersistenceController.swift"; sourceTree = "<group>"; };
+		AA11001600000000000000A1 /* LegacyRealmImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LegacyRealmImporter.swift"; sourceTree = "<group>"; };
+		AA11001700000000000000A1 /* RemoteChangeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RemoteChangeObserver.swift"; sourceTree = "<group>"; };
+		AA11001800000000000000A1 /* AppStartupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppStartupCoordinator.swift"; sourceTree = "<group>"; };
+		AA11001900000000000000A1 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadingViewController.swift"; sourceTree = "<group>"; };
+		AA11002000000000000000A1 /* ContainerFailureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContainerFailureViewController.swift"; sourceTree = "<group>"; };
+		AA12000100000000000000A1 /* LegacyRealmImporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LegacyRealmImporterTests.swift"; sourceTree = "<group>"; };
+		AA12000200000000000000A1 /* TestModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TestModelContainer.swift"; sourceTree = "<group>"; };
+		AA12000300000000000000A1 /* DataModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataModelTests.swift"; sourceTree = "<group>"; };
+		AA12000400000000000000A1 /* ModelBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelBehaviorTests.swift"; sourceTree = "<group>"; };
+		AA12000500000000000000A1 /* SampleDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SampleDataTests.swift"; sourceTree = "<group>"; };
+		AA12000600000000000000A1 /* SortKeyReorderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SortKeyReorderTests.swift"; sourceTree = "<group>"; };
+		AA12000700000000000000A1 /* ProductionContainerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductionContainerFactoryTests.swift"; sourceTree = "<group>"; };
+		AA12000800000000000000A1 /* PersistentStoreURLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PersistentStoreURLTests.swift"; sourceTree = "<group>"; };
+		AA12000900000000000000A1 /* RemoteChangeObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RemoteChangeObserverTests.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,6 +236,7 @@
 		323ADC6922828C0900644931 /* checklists */ = {
 			isa = PBXGroup;
 			children = (
+				AA110000000000000000G1 /* Persistence */,
 				32A928A02320C765005F9B34 /* Analytics */,
 				AA01000000000000000000A1 /* Logging */,
 				32F4C84222875289000D63CF /* ViewControllers */,
@@ -206,9 +255,15 @@
 		323ADC8322828C0C00644931 /* checklistsTests */ = {
 			isa = PBXGroup;
 			children = (
-				32F363C6257D7D9D008482DA /* DataModelTests.swift */,
-				AA07000000000000000000A1 /* RealmSchemaTests.swift */,
-				AA07000000000000000000B1 /* SampleDataTests.swift */,
+				AA12000100000000000000A1 /* LegacyRealmImporterTests.swift */,
+				AA12000300000000000000A1 /* DataModelTests.swift */,
+				AA12000400000000000000A1 /* ModelBehaviorTests.swift */,
+				AA12000500000000000000A1 /* SampleDataTests.swift */,
+				AA12000600000000000000A1 /* SortKeyReorderTests.swift */,
+				AA12000700000000000000A1 /* ProductionContainerFactoryTests.swift */,
+				AA12000800000000000000A1 /* PersistentStoreURLTests.swift */,
+				AA12000900000000000000A1 /* RemoteChangeObserverTests.swift */,
+				AA120000000000000000G1 /* Helpers */,
 				AA07000000000000000000C1 /* AnalyticsManagerTests.swift */,
 				AA07000000000000000000D1 /* SettingsManagerTests.swift */,
 				AA08000000000000000000A1 /* CircularPercentStatusIconTests.swift */,
@@ -240,9 +295,12 @@
 		323ADCA122867EAC00644931 /* DataModels */ = {
 			isa = PBXGroup;
 			children = (
-				32A964772297A0A300CAB7C0 /* RealmSchema.swift */,
+				AA11000100000000000000A1 /* SchemaV1.swift */,
+				AA11000200000000000000A1 /* Checklist.swift */,
+				AA11000300000000000000A1 /* Item.swift */,
+				AA11000400000000000000A1 /* ChecklistsMigrationPlan.swift */,
+				AA11000500000000000000A1 /* LegacyRealmSchema.swift */,
 				32A964792297AE6700CAB7C0 /* SampleData.swift */,
-				32A9647B2297AFF400CAB7C0 /* DBManager.swift */,
 				322DE13E23006FBD00C6E57A /* SettingsManager.swift */,
 			);
 			path = DataModels;
@@ -282,6 +340,8 @@
 		32F4C84222875289000D63CF /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				AA11001900000000000000A1 /* LoadingViewController.swift */,
+				AA11002000000000000000A1 /* ContainerFailureViewController.swift */,
 				32D721ED22AB4BC000794F6D /* ChecklistsViewController.swift */,
 				32D721F122AC56FB00794F6D /* ChecklistViewController.swift */,
 				322CA9FA22EEA6A2009ACC4D /* MainMenuTableViewController.swift */,
@@ -297,6 +357,34 @@
 				AA01000000000000000000A2 /* AppLoggers.swift */,
 			);
 			path = Logging;
+			sourceTree = "<group>";
+		};
+		AA110000000000000000G1 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				AA11000600000000000000A1 /* ContainerBacking.swift */,
+				AA11000700000000000000A1 /* ContainerCreationFailure.swift */,
+				AA11000800000000000000A1 /* SortKeyReorder.swift */,
+				AA11000900000000000000A1 /* ModelContext+SaveChanges.swift */,
+				AA11001000000000000000A1 /* ModelContext+Lookup.swift */,
+				AA11001100000000000000A1 /* Reordering.swift */,
+				AA11001200000000000000A1 /* ProductionContainerFactory.swift */,
+				AA11001300000000000000A1 /* InMemoryModelContainer.swift */,
+				AA11001400000000000000A1 /* LaunchModeContainerFactory.swift */,
+				AA11001500000000000000A1 /* PersistenceController.swift */,
+				AA11001600000000000000A1 /* LegacyRealmImporter.swift */,
+				AA11001700000000000000A1 /* RemoteChangeObserver.swift */,
+				AA11001800000000000000A1 /* AppStartupCoordinator.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		AA120000000000000000G1 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				AA12000200000000000000A1 /* TestModelContainer.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -373,9 +461,6 @@
 					323ADC6622828C0900644931 = {
 						CreatedOnToolsVersion = 10.2.1;
 						SystemCapabilities = {
-							com.apple.DataProtection = {
-								enabled = 1;
-							};
 							com.apple.iCloud = {
 								enabled = 0;
 							};
@@ -445,6 +530,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA11000100000000000000A2 /* SchemaV1.swift in Sources */,
+				AA11000200000000000000A2 /* Checklist.swift in Sources */,
+				AA11000300000000000000A2 /* Item.swift in Sources */,
+				AA11000400000000000000A2 /* ChecklistsMigrationPlan.swift in Sources */,
+				AA11000500000000000000A2 /* LegacyRealmSchema.swift in Sources */,
+				AA11000600000000000000A2 /* ContainerBacking.swift in Sources */,
+				AA11000700000000000000A2 /* ContainerCreationFailure.swift in Sources */,
+				AA11000800000000000000A2 /* SortKeyReorder.swift in Sources */,
+				AA11000900000000000000A2 /* ModelContext+SaveChanges.swift in Sources */,
+				AA11001000000000000000A2 /* ModelContext+Lookup.swift in Sources */,
+				AA11001100000000000000A2 /* Reordering.swift in Sources */,
+				AA11001200000000000000A2 /* ProductionContainerFactory.swift in Sources */,
+				AA11001300000000000000A2 /* InMemoryModelContainer.swift in Sources */,
+				AA11001400000000000000A2 /* LaunchModeContainerFactory.swift in Sources */,
+				AA11001500000000000000A2 /* PersistenceController.swift in Sources */,
+				AA11001600000000000000A2 /* LegacyRealmImporter.swift in Sources */,
+				AA11001700000000000000A2 /* RemoteChangeObserver.swift in Sources */,
+				AA11001800000000000000A2 /* AppStartupCoordinator.swift in Sources */,
+				AA11001900000000000000A2 /* LoadingViewController.swift in Sources */,
+				AA11002000000000000000A2 /* ContainerFailureViewController.swift in Sources */,
 				32F8F1AF2311E71900F12306 /* CLTextField.swift in Sources */,
 				32F040472336DDBC007CB244 /* SampleData.swift in Sources */,
 				32E767E022EA6476003C8634 /* CLButton.swift in Sources */,
@@ -452,7 +557,6 @@
 				32D721F222AC56FB00794F6D /* ChecklistViewController.swift in Sources */,
 				32C8D62625671FFD003E9569 /* CircularPercentStatusIcon.swift in Sources */,
 				323FCF2922F2A33E00F761BB /* CLTextView.swift in Sources */,
-				32A964782297A0A300CAB7C0 /* RealmSchema.swift in Sources */,
 				32BA5021235CE84C007E506D /* CLCircleButton.swift in Sources */,
 				32E767DC22EA4639003C8634 /* AddItemButtonTableFooterView.swift in Sources */,
 				32A928A42320CED0005F9B34 /* AnalyticsManager.swift in Sources */,
@@ -466,7 +570,6 @@
 				32C8D62A25673C0D003E9569 /* ChecklistTableViewCell.swift in Sources */,
 				32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */,
 				32D721EE22AB4BC000794F6D /* ChecklistsViewController.swift in Sources */,
-				32A9647C2297AFF400CAB7C0 /* DBManager.swift in Sources */,
 				322DE13B22FFE1F600C6E57A /* RoundCheckboxButton.swift in Sources */,
 				32A964712291E14F00CAB7C0 /* ItemContentView.swift in Sources */,
 				322CA9FB22EEA6A2009ACC4D /* MainMenuTableViewController.swift in Sources */,
@@ -481,9 +584,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				32F363C7257D7D9D008482DA /* DataModelTests.swift in Sources */,
-				AA07000000000000000000A2 /* RealmSchemaTests.swift in Sources */,
-				AA07000000000000000000B2 /* SampleDataTests.swift in Sources */,
+				AA12000100000000000000A2 /* LegacyRealmImporterTests.swift in Sources */,
+				AA12000200000000000000A2 /* TestModelContainer.swift in Sources */,
+				AA12000300000000000000A2 /* DataModelTests.swift in Sources */,
+				AA12000400000000000000A2 /* ModelBehaviorTests.swift in Sources */,
+				AA12000500000000000000A2 /* SampleDataTests.swift in Sources */,
+				AA12000600000000000000A2 /* SortKeyReorderTests.swift in Sources */,
+				AA12000700000000000000A2 /* ProductionContainerFactoryTests.swift in Sources */,
+				AA12000800000000000000A2 /* PersistentStoreURLTests.swift in Sources */,
+				AA12000900000000000000A2 /* RemoteChangeObserverTests.swift in Sources */,
 				AA07000000000000000000C2 /* AnalyticsManagerTests.swift in Sources */,
 				AA07000000000000000000D2 /* SettingsManagerTests.swift in Sources */,
 				AA08000000000000000000A2 /* CircularPercentStatusIconTests.swift in Sources */,

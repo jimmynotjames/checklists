@@ -1,6 +1,6 @@
 ---
 name: create-pr-for-issue
-description: Turn a GitHub issue into an open, review-ready PR. Implements the fix, runs a fresh-eye review, audits the cross-cutting checklist (Realm schema migration, analytics, accessibility), runs `make gate`, pushes, and opens the PR with Closes #N linkage. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr-for-issue <N>.
+description: Turn a GitHub issue into an open, review-ready PR. Implements the fix, runs a fresh-eye review, audits the cross-cutting checklist (SwiftData schema migration, analytics, accessibility), runs `make gate`, pushes, and opens the PR with Closes #N linkage. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr-for-issue <N>.
 ---
 
 # Create PR for issue
@@ -54,9 +54,11 @@ Branch name format: `u/jimmyho/<tool>/<short-kebab-description>`, all lowercase,
 Satisfy the cross-cutting checklist **as you implement**, rather than retrofitting it later. The
 full descriptions live in the `create-pr` skill (step 4) and `.github/pull_request_template.md`:
 
-- **Realm schema migration** — if you touch `RealmSchema.swift`, remember there is currently **no
-  migration configuration in the app at all**; an unmigrated schema change crashes every existing
-  user's app on launch. Raise it rather than shipping it.
+- **SwiftData schema migration** — if you touch `Checklist.swift`, `Item.swift`, or `SchemaV1.swift`,
+  remember a model change needs a new `VersionedSchema`, a `MigrationStage` in
+  `ChecklistsMigrationPlan`, and a migration test — never an edit in place. Once the CloudKit
+  production schema is deployed, model changes are additive only: a field can be added but never
+  removed or renamed. Raise it rather than shipping it unmigrated.
 - **Analytics** (placeholder — no backend right now) — Flurry was removed and Mixpanel is not
   wired up, so `AnalyticsManager.log*` calls are no-ops. Instrument anyway: new user-initiated
   state changes get an `AnalyticsManager.log*` event following the existing house pattern, with
@@ -74,7 +76,7 @@ git diff main..HEAD
 ```
 
 Spawn a **`general-purpose` Agent** with the same brief as the `create-pr` skill (step 3) — the
-UIKit/Realm/Swift 6 review criteria: Realm thread confinement, write-transaction correctness, retain
+UIKit/SwiftData/Swift 6 review criteria: save correctness, relationship wiring, sort-key ordering, retain
 cycles, newly-introduced force-unwraps/casts, `UITableView` data-source consistency, and
 main-thread UI. Fresh context, no prior conversation history.
 
@@ -129,7 +131,7 @@ Report the PR URL and a one-line summary. **Stop — do not merge.**
 ## Autonomy
 
 Run all steps without prompting, except when: the issue is ambiguous; a review finding needs the
-user's call; or a Realm schema change lacks a migration.
+user's call; or a SwiftData model change lacks its schema/migration/test triad.
 
 ## What this skill does NOT do
 

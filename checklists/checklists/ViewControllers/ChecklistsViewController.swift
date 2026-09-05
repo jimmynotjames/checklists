@@ -5,13 +5,25 @@
 //  Created by Jimmy Ho on 6/7/19.
 //
 
-import RealmSwift
+import SwiftData
 import UIKit
 
 private let checklistsSection = 0
 
 class ChecklistsViewController: UITableViewController, MainMenuEnabledViewController {
-  private var group: Group!
+  /// The checklists in display order, refetched rather than observed.
+  ///
+  /// SwiftData relationships are unordered, so display order has to come from a sorted fetch (see
+  /// `ModelContext.fetchChecklistsSorted`). Caching the result keeps the table view's data source
+  /// answering from one consistent snapshot for the duration of a run loop turn, instead of
+  /// re-sorting on every row callback.
+  private var checklists: [Checklist] = []
+
+  private var remoteChangeObserver: RemoteChangeObserver?
+
+  private var context: ModelContext {
+    PersistenceController.shared.mainContext
+  }
 
   private let addChecklistButton = CLCircleButton.addChecklistButton()
   private var addChecklistButtonPortraitConstraints: [NSLayoutConstraint] = []
@@ -23,9 +35,12 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    let realm = DBManager.realm
-    guard let mainGroup = realm.objects(Group.self).first else { fatalError("Expected a Group object but none in database.") }
-    group = mainGroup
+    refetchChecklists()
+
+    // Refreshes when another device's changes are merged in. Inert until CloudKit is switched on.
+    remoteChangeObserver = RemoteChangeObserver { [weak self] in
+      self?.reloadChecklists()
+    }
 
     tableView.register(ChecklistTableViewCell.self, forCellReuseIdentifier: "ChecklistCellWithStatus")
     tableView.separatorStyle = .none
@@ -86,17 +101,19 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    AnalyticsManager.logChecklistsViewed(numChecklists: group.checklists.count)
+    AnalyticsManager.logChecklistsViewed(numChecklists: checklists.count)
   }
 
   @objc func addChecklistButtonTapped() {
     AnalyticsManager.logNewChecklist()
     let checklistViewController = ChecklistViewController()
-    let checklist = Checklist(name: "", notes: nil, items: [])
-    DBManager.write {
-      DBManager.realm.add(checklist)
-      group.checklists.insert(checklist, at: 0)
+    let checklist = Checklist()
+    do {
+      try context.insert(checklist: checklist, at: 0, among: checklists)
+    } catch {
+      return // Already logged and reported by `saveChanges`; nothing was added.
     }
+    refetchChecklists()
     checklistViewController.checklist = checklist
     checklistViewController.delegate = self
     checklistViewController.isNewChecklist = true
@@ -121,10 +138,31 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   }
 
   private func resetAllChecklists() {
-    for checklist in group.checklists {
+    for checklist in checklists {
       checklist.uncheckAllItems()
     }
+    context.saveChangesIgnoringFailure(operation: .checklistEdit)
     tableView.reloadData() // To reset all the status icons.
+  }
+
+  // MARK: - Fetching
+
+  /// Refreshes the cache without touching the table view, for paths that animate their own change.
+  private func refetchChecklists() {
+    do {
+      checklists = try context.fetchChecklistsSorted()
+    } catch let error as NSError {
+      AppLog.persistence.error(
+        "Fetching checklists failed: \(error.domain, privacy: .public) \(error.code, privacy: .public)"
+      )
+      checklists = []
+    }
+  }
+
+  /// Refreshes the cache and reloads the whole table. For changes this screen did not make.
+  func reloadChecklists() {
+    refetchChecklists()
+    tableView.reloadData()
   }
 
   // MARK: - Table view data source
@@ -134,14 +172,14 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
   }
 
   override func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
-    group.checklists.count
+    checklists.count
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if indexPath.section == checklistsSection {
       guard let cell = tableView.dequeueReusableCell(withIdentifier: "ChecklistCellWithStatus", for: indexPath) as? ChecklistTableViewCell
       else { assertionFailure("ChecklistCellWithStatus"); return UITableViewCell() }
-      cell.checklist = group.checklists[indexPath.row]
+      cell.checklist = checklists[indexPath.row]
       return cell
     } else {
       assertionFailure()
@@ -153,7 +191,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
     tableView.deselectRow(at: indexPath, animated: true)
     guard indexPath.section == checklistsSection else { assertionFailure(); return }
     let checklistViewController = ChecklistViewController()
-    checklistViewController.checklist = group.checklists[indexPath.row]
+    checklistViewController.checklist = checklists[indexPath.row]
     checklistViewController.delegate = self
     navigationController?.pushViewController(checklistViewController, animated: true)
   }
@@ -167,16 +205,25 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
       guard
         indexPath.section == checklistsSection,
         indexPath.row >= 0,
-        indexPath.row < group.checklists.count else { assertionFailure(); return }
+        indexPath.row < checklists.count else { assertionFailure(); return }
+
+      // Captured by id, not by row. The alert is answered asynchronously, and once sync is on a
+      // merge can reorder the list while it is up — at which point the captured index would name a
+      // different checklist and this would silently delete the wrong one.
+      let checklistId = checklists[indexPath.row].id
 
       let alertController = UIAlertController(title: nil, message: "Are you sure? This cannot be undone.", preferredStyle: .alert)
       alertController.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in
-        DBManager.write {
-          let checklist = self.group.checklists[indexPath.row]
-          DBManager.realm.delete(checklist.items)
-          DBManager.realm.delete(checklist)
-        }
-        self.tableView.deleteRows(at: [indexPath], with: .fade)
+        guard
+          let checklist = self.context.checklist(id: checklistId),
+          let row = self.checklists.firstIndex(where: { $0.id == checklistId })
+        else { return } // Already gone — deleted on another device while the alert was up.
+        // The items go with it: the relationship's cascade delete rule replaces the explicit
+        // two-step delete Realm needed, which had no cascade of its own.
+        self.context.delete(checklist)
+        self.context.saveChangesIgnoringFailure(operation: .delete)
+        self.refetchChecklists()
+        self.tableView.deleteRows(at: [IndexPath(row: row, section: checklistsSection)], with: .fade)
       }))
       alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
       present(alertController, animated: true, completion: nil)
@@ -187,7 +234,9 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
 
   override func tableView(_: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
     guard fromIndexPath.section == checklistsSection, to.section == checklistsSection else { assertionFailure(); return }
-    group.moveChecklist(from: fromIndexPath.row, to: to.row)
+    guard fromIndexPath.row < checklists.count else { assertionFailure(); return }
+    try? context.move(checklist: checklists[fromIndexPath.row], among: checklists, to: to.row)
+    refetchChecklists()
   }
 
   override func tableView(_: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
@@ -197,7 +246,7 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
 
 extension ChecklistsViewController: ChecklistViewControllerDelegate {
   func willDismissChecklistViewController(_: ChecklistViewController) {
-    tableView.reloadData()
+    reloadChecklists()
   }
 }
 
@@ -206,7 +255,8 @@ extension ChecklistsViewController: ChecklistViewControllerDelegate {
 extension ChecklistsViewController: UITableViewDragDelegate {
   func tableView(_: UITableView, itemsForBeginning _: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
     guard indexPath.section == checklistsSection else { assertionFailure(); return [] }
-    return group.checklists[indexPath.row].dragItems()
+    guard indexPath.row < checklists.count else { assertionFailure(); return [] }
+    return checklists[indexPath.row].dragItems()
   }
 }
 
@@ -228,18 +278,18 @@ extension ChecklistsViewController: UITableViewDropDelegate {
   }
 
   func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
-    // See the matching comment in ChecklistViewController.performDropWith: falling back to one past
-    // the end desyncs the model (Group.moveChecklist guards `toIndex < count`) from the table view
-    // (tableView.moveRow runs unconditionally). Clamp to the last valid index instead.
-    let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(row: group.checklists.count - 1, section: checklistsSection)
+    // See the matching comment in ChecklistViewController.performDropWith: the reorder below copes
+    // with one past the end, but `tableView.moveRow` would not. Clamp to the last valid index.
+    let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(row: checklists.count - 1, section: checklistsSection)
     assert(coordinator.items.count == 1)
     guard let dropItem = coordinator.items.first else { assertionFailure(); return }
     let itemProvider = dropItem.dragItem.itemProvider
     itemProvider.loadObject(ofClass: NSString.self) { string, _ in
       guard let checklistId = string as? String else { return }
       Task { @MainActor in
-        guard let sourceIndex = self.group.checklists.firstIndex(where: { $0.id == checklistId }) else { return }
-        self.group.moveChecklist(from: sourceIndex, to: destinationIndexPath.row)
+        guard let sourceIndex = self.checklists.firstIndex(where: { $0.id == checklistId }) else { return }
+        try? self.context.move(checklist: self.checklists[sourceIndex], among: self.checklists, to: destinationIndexPath.row)
+        self.refetchChecklists()
         tableView.moveRow(at: IndexPath(row: sourceIndex, section: destinationIndexPath.section), to: destinationIndexPath)
       }
     }

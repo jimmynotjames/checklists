@@ -1,0 +1,32 @@
+//
+//  SchemaV1.swift
+//  checklists
+//
+
+import Foundation
+import SwiftData
+
+/**
+ The app's SwiftData schema, version 1 — the first schema to ship on SwiftData, replacing the
+ Realm object graph that shipped through v1.1.0.
+
+ **This becomes frozen the moment the CloudKit production schema is deployed.** CloudKit
+ schemas are additive only: once a record type or field reaches production it can never be
+ removed or renamed. From that point on, a model change means a *new* `VersionedSchema` plus a
+ `MigrationStage` in `ChecklistsMigrationPlan` plus a migration test — never an edit in place.
+ See `core-docs/persistence-design.md`.
+ */
+enum SchemaV1: VersionedSchema {
+  static let versionIdentifier = Schema.Version(1, 0, 0)
+
+  static let models: [any PersistentModel.Type] = [
+    Checklist.self,
+    Item.self,
+  ]
+
+  /// The single source of truth for the model list, shared by the production container factory,
+  /// the in-memory containers, and the tests.
+  static var swiftDataSchema: Schema {
+    Schema(versionedSchema: Self.self)
+  }
+}

@@ -5,11 +5,7 @@
 //  Created by Jimmy Ho on 5/7/19.
 //
 
-import RealmSwift
 import UIKit
-
-private let launchedAtLeastOnceKey = "launchedAtLeastOnce"
-private let appVersionKey = "appVersionKey"
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -23,56 +19,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     UINavigationBar.appearance().tintColor = Colors.teal
 
-    #if DEBUG
-      // SampleData.clearDatabase() // TODO: Comment out before prod release
-    #endif
-
-    let isFirstTimeLaunch = !UserDefaults.standard.bool(forKey: launchedAtLeastOnceKey)
-    if isFirstTimeLaunch {
-      SampleData.insertFirstTimeLaunchDataV1_1()
-      UserDefaults.standard.set(true, forKey: launchedAtLeastOnceKey)
-      UserDefaults.standard.set("1.1", forKey: appVersionKey)
-    } else {
-      // v1.0 didn't have a Group object, so if that's the case, then this is first-time launch of app upgrade to v1.1, and instantiate one.
-      if DBManager.realm.objects(Group.self).isEmpty {
-        UserDefaults.standard.set("1.1", forKey: appVersionKey) // We never set this key for v1.0 so make sure it's set for v1.1 onwards.
-        migrateDatabase1_1()
-      }
-    }
-
-    #if DEBUG
-      // SampleData.insertFirstTimeLaunchData() // TODO: Comment out before prod release
-      // SampleData.insertTestData2() // TODO: Comment out before prod release
-      // print("appVersion: \(UserDefaults.standard.string(forKey: appVersionKey) ?? "[Not Found]")")
-    #endif
-
-    // For UITests
-    #if DEBUG
-      if CommandLine.arguments.contains("-UITests1") {
-        print("Injecting Test Data for UITests1")
-        SampleData.clearDatabase()
-        SampleData.insertFirstTimeLaunchDataV1_1()
-      }
-    #endif
+    // Opening the store, the one-time copy out of the old Realm store, and first-launch seeding all
+    // live in `AppStartupCoordinator`, driven from `SceneDelegate`. They need a window to report
+    // failure into, and this method has none.
 
     return true
   }
 
   func application(_: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options _: UIScene.ConnectionOptions) -> UISceneConfiguration {
     UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-  }
-
-  /// For migrating from v1.0 to v1.1. Updating scheme from using sortNumber to using the Group object to hold a ordered list.
-  private func migrateDatabase1_1() {
-    let realm = DBManager.realm
-    let group = Group()
-    DBManager.write {
-      realm.add(group)
-      let checklists = realm.objects(Checklist.self).sorted(byKeyPath: "sortNumber")
-      for checklist in checklists {
-        group.checklists.append(checklist)
-      }
-    }
   }
 
   @objc func orientationChanged(notification _: NSNotification!) {
