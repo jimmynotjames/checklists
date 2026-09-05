@@ -162,6 +162,34 @@ in particular the Realm file, per "Legacy import" above — so retrying is a rea
 unlike the Realm-era `DBManager`, which called `fatalError` on any open failure and turned a
 transient disk problem into a crash report with no recovery path.
 
+## File protection
+
+The app sets **no** `com.apple.developer.default-data-protection` entitlement, and the Xcode
+project carries no Data Protection capability. That is deliberate, not an oversight: with no
+entitlement, iOS applies `NSFileProtectionCompleteUntilFirstUserAuthentication` to the app's files
+by default, which is the level the store needs.
+
+It matters for sync. Under `NSFileProtectionComplete` — which is what shipped from 2019 until the
+SwiftData migration — the store's files are unreadable whenever the device is locked, so a CloudKit
+push arriving in the background cannot be merged and has to wait for the next unlock. The default
+class keeps the store readable after the first unlock following a boot, which is what lets
+background sync make progress.
+
+The entitlement was briefly changed to state that level explicitly, which broke automatic signing:
+the value is encoded in the provisioning profile, and the App ID has carried "Complete Protection"
+since 2019. Removing the key reaches the same level without touching a live App ID. The sibling
+`budgets1` app, which already ships SwiftData with CloudKit, sets no data-protection entitlement
+either.
+
+**The trade-off is real and was taken knowingly:** files are readable after first unlock rather than
+only while unlocked. That is a small reduction in at-rest protection against an attacker with
+physical possession of a locked, powered-on device. Restoring `NSFileProtectionComplete` means
+changing the App ID's Data Protection level in the developer portal *and* accepting that background
+sync only progresses while the device is unlocked.
+
+Existing files keep the protection class they were created with, so an upgrading user's Realm file
+stays at Complete. It is only ever read at launch, in the foreground, so that costs nothing.
+
 ## Sync status
 
 Placeholder — filled in when CloudKit is enabled. `ContainerBacking` (`Persistence/ContainerBacking.swift`)
