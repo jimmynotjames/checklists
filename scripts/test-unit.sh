@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Unit tests only (checklistsTests) — skips the UI test target.
 #
-# OPT-IN: not part of `make gate`. This suite compiles and passes (99 tests across
+# OPT-IN: not part of `make gate`. This suite compiles and passes (100 tests across
 # DataModelTests, ModelBehaviorTests, SampleDataTests, SortKeyReorderTests,
 # LegacyRealmImporterTests, ProductionContainerFactoryTests, PersistentStoreURLTests,
 # RemoteChangeObserverTests, TwoDeviceUnionTests, SampleDataDedupeTests,

@@ -46,7 +46,11 @@ nonisolated final class TwoDeviceUnionTests: XCTestCase {
 
   /// Writes a v1.1.0-shaped store — a `Group` holding checklists in display order, every record
   /// carrying a fresh random id, exactly as that release minted them.
-  @MainActor private func writeDeviceStore(named deviceName: String, checklists: [(String, [String])]) throws -> Realm.Configuration {
+  @MainActor private func writeDeviceStore(
+    named deviceName: String,
+    checklists: [(String, [String])],
+    checkedItemNames: Set<String> = []
+  ) throws -> Realm.Configuration {
     let url = fixtureDirectory.appendingPathComponent("\(deviceName).realm")
     let configuration = LegacyRealmImporter.legacyConfiguration(fileURL: url)
     let realm = try Realm(configuration: configuration)
@@ -58,6 +62,7 @@ nonisolated final class TwoDeviceUnionTests: XCTestCase {
         for itemName in itemNames {
           let item = LegacyItem()
           item.name = itemName
+          item.statusRaw = checkedItemNames.contains(itemName) ? 1 : 0
           checklist.items.append(item)
         }
         group.checklists.append(checklist)
@@ -123,6 +128,45 @@ nonisolated final class TwoDeviceUnionTests: XCTestCase {
     let groceries = try context.fetchChecklistsSorted().filter { $0.name == "Groceries" }
     XCTAssertEqual(groceries.count, 2, "Same-named checklists from two devices are distinct records.")
     XCTAssertEqual(Set(groceries.flatMap { $0.items.map(\.name) }), ["Milk", "Bread"])
+  }
+
+  /// The built-in samples are seeded per device, so two v1.1.0 devices hold *different* records
+  /// that merely look alike. If one device's copy has been reset and the other's still has boxes
+  /// checked, both are real state and both must survive — merging them would have to pick a device
+  /// and silently discard the other's checked boxes.
+  ///
+  /// Dedupe cannot reach these: it only ever considers records carrying the *fixed* sample ids this
+  /// version seeds with, and anything imported from v1.1.0 carries that release's per-device random
+  /// id instead.
+  @MainActor func testPreSeededSamplesSurviveOnBothDevicesWhenOnlyCheckedStatesDiffer() throws {
+    let itemNames = ["START COFFEE MAKER", "Yoga/meditation", "Journaling"]
+    // The user reset this list on the iPad, so nothing is checked.
+    let deviceA = try writeDeviceStore(named: "iPad", checklists: [("Morning Routine", itemNames)])
+    // Same list on the iPhone, still partly checked.
+    let deviceB = try writeDeviceStore(
+      named: "iPhone",
+      checklists: [("Morning Routine", itemNames)],
+      checkedItemNames: ["START COFFEE MAKER", "Yoga/meditation"]
+    )
+
+    let context = try ModelContext(TestModelContainer.make())
+    try LegacyRealmImporter.importIfNeeded(
+      into: context, userDefaults: freshDefaults(), configuration: deviceA,
+      sortKeyBase: 1 * LegacyRealmImporter.sortKeyBlockSize
+    )
+    try LegacyRealmImporter.importIfNeeded(
+      into: context, userDefaults: freshDefaults(), configuration: deviceB,
+      sortKeyBase: 5 * LegacyRealmImporter.sortKeyBlockSize
+    )
+    try SampleData.dedupeChecklists(in: context)
+
+    let morningRoutines = try context.fetchChecklistsSorted().filter { $0.name == "Morning Routine" }
+    XCTAssertEqual(morningRoutines.count, 2, "Both devices' copies are real state and must both survive.")
+    XCTAssertEqual(
+      morningRoutines.map { checklist in checklist.items.count(where: { $0.status == .checked }) },
+      [0, 2],
+      "Each copy keeps its own checked states; neither is overwritten by the other."
+    )
   }
 
   // MARK: - Ordering
