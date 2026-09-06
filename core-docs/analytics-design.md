@@ -81,7 +81,7 @@ different questions and have different durability.
 
 ### `app_opened` is currently under-fired
 
-`appLaunched()` is called only from `AppDelegate.application(_:didFinishLaunchingWithOptions:)`, so
+`appLaunched()` is called only from `ChecklistsApp.init()`, so
 it fires on cold launch only. Under Flurry that was fine — the SDK handled foregrounding itself.
 For Mixpanel it is wrong: a return from background is a session too. Wire it to
 `applicationWillEnterForeground` / `sceneWillEnterForeground` as part of the Mixpanel change.

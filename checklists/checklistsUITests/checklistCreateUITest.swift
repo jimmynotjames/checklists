@@ -16,10 +16,23 @@ class checklistCreateUITest: XCTestCase {
     app = XCUIApplication()
     app.launchArguments = ["-UITests1"]
     app.launch()
-    XCTAssertTrue(app.tables.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
+    XCTAssertTrue(app.collectionViews.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
   }
 
   override func tearDownWithError() throws {}
+
+  /// The main checklists list is a SwiftUI `List`, which XCUITest exposes as a collection view.
+  /// The checklist *detail* screen behind it is still a UIKit table view (`ChecklistTableView`),
+  /// so `app.tables` still addresses that screen and only that screen.
+  private var checklistsList: XCUIElementQuery {
+    app.collectionViews
+  }
+
+  /// The add button is a `.overlay` on the list, not a row inside it, so it hangs off the screen
+  /// rather than off the collection view — look it up from the application.
+  private var addChecklistButton: XCUIElement {
+    app.buttons["Add new checklist."]
+  }
 
   /**
    1a. Create a checklist with 3 Checklist Name, Notes, and 3 items, one item with Item Notes.
@@ -36,9 +49,9 @@ class checklistCreateUITest: XCTestCase {
     let item3Name = "Expand love and presence as far as possible."
     let item4Name = "3 deep breaths. Complete!"
 
-    let tablesQuery = app.tables
-    var checklistTable = tablesQuery["ChecklistTableView"]
-    tablesQuery.buttons["Add new checklist."].tap()
+    var checklistTable = app.tables["ChecklistTableView"]
+    addChecklistButton.tap()
+    XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))
 
     // Should auto-focus on Checklist Name field
     app.typeText(checklistName)
@@ -77,10 +90,12 @@ class checklistCreateUITest: XCTestCase {
     app.navigationBars["checklists.ChecklistView"].buttons["Done"].tap()
 
     // Go back in to Checklist to check stuff.
-    tablesQuery/*@START_MENU_TOKEN@*/
-      .staticTexts["Mindfulness Checklist"]/*[[".cells.staticTexts[\"Mindfulness Checklist\"]",".staticTexts[\"Mindfulness Checklist\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    let mindfulnessRow = checklistsList.staticTexts["Mindfulness Checklist"]
+    XCTAssertTrue(mindfulnessRow.waitForExistence(timeout: 5))
+    mindfulnessRow.tap()
 
-    checklistTable = tablesQuery["ChecklistTableView"]
+    checklistTable = app.tables["ChecklistTableView"]
+    XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))
     XCTAssert((checklistTable.textFields["checklistNameField"].value as? String ?? "") == checklistName)
     XCTAssert((checklistTable.textViews["checklistNotesTextView"].value as? String ?? "") == checklistNotes)
 
@@ -112,8 +127,9 @@ class checklistCreateUITest: XCTestCase {
   }
 
   func testCreateChecklist2() {
-    app.tables.buttons["Add new checklist."].tap()
+    addChecklistButton.tap()
     let checklistTable = app.tables["ChecklistTableView"]
+    XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))
 
     let checklistName = "Mindfulness Checklist"
     let item1Name = "Gratitude - 1 min"
@@ -166,8 +182,9 @@ class checklistCreateUITest: XCTestCase {
     let checklistName = "Mindfulness Checklist"
     let item1Name = "Gratitude - 1 min"
 
-    app.tables.buttons["Add new checklist."].tap()
+    addChecklistButton.tap()
     let checklistTable = app.tables["ChecklistTableView"]
+    XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))
 
     // Should auto-focus on Checklist Name field
     app.typeText(checklistName)
@@ -186,8 +203,9 @@ class checklistCreateUITest: XCTestCase {
 
     // Finish and dismiss modal, go back to check stuff
     app.navigationBars["checklists.ChecklistView"].buttons["Done"].tap()
-    app.tables/*@START_MENU_TOKEN@*/
-      .staticTexts["Mindfulness Checklist"]/*[[".cells.staticTexts[\"Mindfulness Checklist\"]",".staticTexts[\"Mindfulness Checklist\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    let mindfulnessRow = checklistsList.staticTexts["Mindfulness Checklist"]
+    XCTAssertTrue(mindfulnessRow.waitForExistence(timeout: 5))
+    mindfulnessRow.tap()
 
     // Trailing empty Items should have been removed { empty, item1 }
     XCTAssert(checklistTable.children(matching: .cell).count == 2)
@@ -205,22 +223,24 @@ class checklistCreateUITest: XCTestCase {
 
     // Finish and dismiss modal, go back to check stuff
     app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
-    app.tables/*@START_MENU_TOKEN@*/
-      .staticTexts["Mindfulness Checklist"]/*[[".cells.staticTexts[\"Mindfulness Checklist\"]",".staticTexts[\"Mindfulness Checklist\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    let mindfulnessRowAgain = checklistsList.staticTexts["Mindfulness Checklist"]
+    XCTAssertTrue(mindfulnessRowAgain.waitForExistence(timeout: 5))
+    mindfulnessRowAgain.tap()
 
     XCTAssert(checklistTable.children(matching: .cell).count == 1) // Second item should have been stripped automatically.
   }
 
   func testCreateBlankChecklist() {
-    app.tables.buttons["Add new checklist."].tap()
+    addChecklistButton.tap()
     app.navigationBars["checklists.ChecklistView"].buttons["Done"].tap()
 
-    XCTAssert(app.tables.children(matching: .cell).element(boundBy: 0).staticTexts["untitled checklist"].exists)
+    let untitled = checklistsList.cells.element(boundBy: 0).staticTexts["untitled checklist"]
+    XCTAssertTrue(untitled.waitForExistence(timeout: 5))
   }
 
   func testCreateChecklistAndRemoveAllItems() {
     let checklistName = "XYZ"
-    app.tables.buttons["Add new checklist."].tap() // Should pull up modal and auto-focus on name. Leave Checklist Name blank.
+    addChecklistButton.tap() // Should pull up modal and auto-focus on name. Leave Checklist Name blank.
 
     app.typeText(checklistName) // Arbitrary Checklist Name
     app/*@START_MENU_TOKEN@*/ .buttons["done"]/*[[".keyboards",".buttons[\"done\"]",".buttons[\"Done\"]"],[[[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
@@ -236,7 +256,9 @@ class checklistCreateUITest: XCTestCase {
     }
     app.navigationBars["checklists.ChecklistView"].buttons["Done"].tap()
 
+    XCTAssertTrue(app.staticTexts[checklistName].waitForExistence(timeout: 5))
     app.staticTexts[checklistName].tap()
+    XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
     XCTAssert(app.tables["ChecklistTableView"].children(matching: .cell).count == 1)
     XCTAssert(app.tables["ChecklistTableView"].children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"].value as? String == "")
   }
@@ -247,7 +269,7 @@ class checklistCreateUITest: XCTestCase {
     let itemName2 = "Express gratitude to universe."
     let itemName3 = "🍳"
 
-    app.tables.buttons["Add new checklist."].tap() // Should pull up modal and auto-focus on name. Leave Checklist Name blank.
+    addChecklistButton.tap() // Should pull up modal and auto-focus on name. Leave Checklist Name blank.
 
     app.typeText(checklistName) // Arbitrary Checklist Name
     app/*@START_MENU_TOKEN@*/ .buttons["done"]/*[[".keyboards",".buttons[\"done\"]",".buttons[\"Done\"]"],[[[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
@@ -259,8 +281,10 @@ class checklistCreateUITest: XCTestCase {
     app.typeText(itemName3)
 
     app.navigationBars["checklists.ChecklistView"].buttons["Done"].tap()
+    XCTAssertTrue(app.staticTexts[checklistName].waitForExistence(timeout: 5))
     app.staticTexts[checklistName].tap()
 
+    XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
     XCTAssert(app.tables["ChecklistTableView"].children(matching: .cell).count == 3)
     XCTAssert(app.tables["ChecklistTableView"].children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"].value as? String == itemName1)
     XCTAssert(app.tables["ChecklistTableView"].children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String == itemName2)

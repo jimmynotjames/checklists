@@ -21,10 +21,30 @@ class checklistUITest: XCTestCase {
     app = XCUIApplication()
     app.launchArguments = ["-UITests1"]
     app.launch()
-    XCTAssertTrue(app.tables.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
+    XCTAssertTrue(app.collectionViews.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
   }
 
   override func tearDownWithError() throws {}
+
+  /// The main checklists list is a SwiftUI `List`, which XCUITest exposes as a collection view.
+  /// The checklist *detail* screen behind it is still a UIKit table view (`ChecklistTableView`),
+  /// so `app.tables` still addresses that screen and only that screen.
+  private var checklistsList: XCUIElementQuery {
+    app.collectionViews
+  }
+
+  /// The detail screen's Back button, found without naming its navigation bar.
+  ///
+  /// The bar's identifier is whichever of the checklist name / the view controller's default
+  /// ("checklists.ChecklistView") happens to apply: `ChecklistViewController.scrollViewDidScroll`
+  /// only shows the title once the table is scrolled past a threshold, so the identifier flips
+  /// between the two depending on scroll position — and under the SwiftUI `NavigationStack` the
+  /// title now survives a reorder drag / row insertion where it used to be cleared. Only one
+  /// navigation bar is in the tree while the detail screen is up, so matching on the button alone
+  /// is both simpler and immune to that.
+  private var detailBackButton: XCUIElement {
+    app.navigationBars.buttons["Back"]
+  }
 
   /**
    1. Go to the "Morning Routine" Checklist.
@@ -37,10 +57,11 @@ class checklistUITest: XCTestCase {
     let newChecklistName = "Morning Ritual"
     let newChecklistNotes = "Do this mindfully!!!"
 
-    let tablesQuery = app.tables
-    tablesQuery/*@START_MENU_TOKEN@*/ .staticTexts["Morning Routine"]/*[[".cells.staticTexts[\"Morning Routine\"]",".staticTexts[\"Morning Routine\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    checklistsList.staticTexts["Morning Routine"].tap()
 
+    let tablesQuery = app.tables
     let checklistNameField = tablesQuery.textFields["Checklist Name: "]
+    XCTAssertTrue(checklistNameField.waitForExistence(timeout: 5))
     checklistNameField.tap()
     checklistNameField.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 7))
     checklistNameField.typeText("Ritual")
@@ -49,12 +70,12 @@ class checklistUITest: XCTestCase {
     checklistNotesTextView.tap()
     checklistNotesTextView.typeText(newChecklistNotes)
 
-    app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
+    detailBackButton.tap()
     // The main list's notes preview label has an explicit accessibilityIdentifier
     // ("checklistNotesLabel", set on every row), so it no longer matches by its rendered text via the
     // bare `staticTexts[...]` subscript the way an unlabeled element would — look it up by identifier
     // and assert on its `.label` instead.
-    let morningRoutineNotesLabel = app.tables.children(matching: .cell).element(boundBy: 0).staticTexts["checklistNotesLabel"]
+    let morningRoutineNotesLabel = checklistsList.cells.element(boundBy: 0).staticTexts["checklistNotesLabel"]
     XCTAssert(app.staticTexts[newChecklistName].exists)
     XCTAssertTrue(morningRoutineNotesLabel.waitForExistence(timeout: 5), "Notes label didn't appear on the main list after the pop-back animation.")
     XCTAssertEqual(morningRoutineNotesLabel.label, newChecklistNotes)
@@ -70,11 +91,11 @@ class checklistUITest: XCTestCase {
   }
 
   func testCheckboxesAndReset() {
-    let tablesQuery = app.tables
-
     // Go into Pre-Trip Checklist. 11 elements, none checked.
-    tablesQuery/*@START_MENU_TOKEN@*/
-      .staticTexts["Pre-Trip Checklist"]/*[[".cells.staticTexts[\"Pre-Trip Checklist\"]",".staticTexts[\"Pre-Trip Checklist\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    checklistsList.staticTexts["Pre-Trip Checklist"].tap()
+
+    let tablesQuery = app.tables
+    XCTAssertTrue(tablesQuery["ChecklistTableView"].waitForExistence(timeout: 5))
     tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].tap()
     tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["Checkbox"].tap()
 
@@ -97,14 +118,16 @@ class checklistUITest: XCTestCase {
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 10).buttons["Checkbox"].isSelected == true)
 
     // Go Back. Verify circular status is updated on main Checklists page.
-    app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
+    detailBackButton.tap()
     // Check that circular status icon updated on Checklists main page. 2/11 -> 18%
-    assertPercentComplete(tablesQuery.children(matching: .cell).element(boundBy: 2), numCheckedItems: 2, numItems: 11)
+    assertPercentComplete(checklistsList.cells.element(boundBy: 2), numCheckedItems: 2, numItems: 11)
   }
 
   func testItemDeletion() {
+    checklistsList.staticTexts["Morning Routine"].tap()
+
     let tablesQuery = app.tables
-    tablesQuery.staticTexts["Morning Routine"].tap()
+    XCTAssertTrue(tablesQuery["ChecklistTableView"].waitForExistence(timeout: 5))
 
     // Get name of current item about to be deleted
     guard let itemName = tablesQuery.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String else {
@@ -130,10 +153,10 @@ class checklistUITest: XCTestCase {
    on an empty Item.
    */
   func testAddDeleteItemsWithCursor() throws {
-    app.tables/*@START_MENU_TOKEN@*/
-      .staticTexts["Pre-Trip Checklist"]/*[[".cells.staticTexts[\"Pre-Trip Checklist\"]",".staticTexts[\"Pre-Trip Checklist\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    checklistsList.staticTexts["Pre-Trip Checklist"].tap()
 
     let checklisttableviewTable = app.tables["ChecklistTableView"]
+    XCTAssertTrue(checklisttableviewTable.waitForExistence(timeout: 5))
     let itemNameTextView1a = checklisttableviewTable.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"]
     itemNameTextView1a.tap()
     let itemNameTextView1aValue = try XCTUnwrap(itemNameTextView1a.value as? String)
@@ -182,10 +205,10 @@ class checklistUITest: XCTestCase {
   }
 
   func testLongChecklistNotesWithScrolling() {
-    app.tables/*@START_MENU_TOKEN@*/
-      .staticTexts["Weekend Getaway Essentials"]/*[[".cells.staticTexts[\"Weekend Getaway Essentials\"]",".staticTexts[\"Weekend Getaway Essentials\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    checklistsList.staticTexts["Weekend Getaway Essentials"].tap()
 
     let checklistTableView = app.tables["ChecklistTableView"]
+    XCTAssertTrue(checklistTableView.waitForExistence(timeout: 5))
     let checklistnotestextviewTextView = checklistTableView.textViews["checklistNotesTextView"]
     checklistnotestextviewTextView.tap()
 
@@ -196,16 +219,17 @@ class checklistUITest: XCTestCase {
 
     checklistTableView.swipeUp()
 
-    app.navigationBars["Weekend Getaway Essentials"].buttons["Back"].tap()
+    detailBackButton.tap()
 
-    let weekendGetawayNotes = app.tables.children(matching: .cell).element(boundBy: 1).staticTexts["checklistNotesLabel"].label
-    XCTAssert(weekendGetawayNotes.starts(with: notes.prefix(15)))
+    let weekendGetawayNotesLabel = checklistsList.cells.element(boundBy: 1).staticTexts["checklistNotesLabel"]
+    XCTAssertTrue(weekendGetawayNotesLabel.waitForExistence(timeout: 5), "Notes label didn't appear on the main list after the pop-back animation.")
+    XCTAssert(weekendGetawayNotesLabel.label.starts(with: notes.prefix(15)))
   }
 
   func testChecklistReordering1() throws {
-    app.tables/*@START_MENU_TOKEN@*/
-      .staticTexts["Weekend Getaway Essentials"]/*[[".cells.staticTexts[\"Weekend Getaway Essentials\"]",".staticTexts[\"Weekend Getaway Essentials\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    checklistsList.staticTexts["Weekend Getaway Essentials"].tap()
     let checklistTableView = app.tables["ChecklistTableView"]
+    XCTAssertTrue(checklistTableView.waitForExistence(timeout: 5))
 
     // Go to last Item and move to index 8.
     checklistTableView.swipeUp()
@@ -222,20 +246,20 @@ class checklistUITest: XCTestCase {
 
     // For good measure, go Back to main page, then back into Checklist, and see if all elements are still ordered correctly.
     // NOTE: the nav bar title only shows the checklist name once the table view is scrolled past a
-    // threshold (ChecklistViewController.scrollViewDidScroll); the drag-and-drop reorder above leaves
-    // the table scrolled back near the top, so the title (and thus the nav bar's matched identifier)
-    // is nil here — look the bar up by the view controller's default identifier instead.
-    app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
-    app.tables/*@START_MENU_TOKEN@*/
-      .staticTexts["Weekend Getaway Essentials"]/*[[".cells.staticTexts[\"Weekend Getaway Essentials\"]",".staticTexts[\"Weekend Getaway Essentials\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    // threshold (ChecklistViewController.scrollViewDidScroll), so the bar's identifier is sometimes
+    // the checklist's name and sometimes the view controller's default — see `detailBackButton`,
+    // which sidesteps the question.
+    detailBackButton.tap()
+    checklistsList.staticTexts["Weekend Getaway Essentials"].tap()
     checklistTableView.swipeUp()
     item7Value = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: 7).textViews["itemNameTextView"].value as? String)
     XCTAssert(item12Name == item7Value)
   }
 
   func testChecklistReordering2() throws {
-    app.tables.staticTexts["Morning Routine"].tap()
+    checklistsList.staticTexts["Morning Routine"].tap()
     let checklistTableView = app.tables["ChecklistTableView"]
+    XCTAssertTrue(checklistTableView.waitForExistence(timeout: 5))
 
     // Go to last Item and move to index 0.
     let fromNameTextView = checklistTableView.children(matching: .cell).element(boundBy: 5).textViews["itemNameTextView"]
@@ -255,8 +279,8 @@ class checklistUITest: XCTestCase {
     XCTAssert(item2Name == atIndex2) // The original item 2 should now be shifted down to item 3.
 
     // For good measure, go Back to main page, then back into Checklist, and see if all elements are still ordered correctly.
-    app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
-    app.tables.staticTexts["Morning Routine"].tap()
+    detailBackButton.tap()
+    checklistsList.staticTexts["Morning Routine"].tap()
     atIndex0 = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"].value as? String)
     atIndex1 = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String)
     atIndex2 = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].value as? String)
@@ -266,8 +290,9 @@ class checklistUITest: XCTestCase {
   }
 
   func testChecklistEditItemName() throws {
-    app.tables.staticTexts["Morning Routine"].tap()
+    checklistsList.staticTexts["Morning Routine"].tap()
     let checklistTableView = app.tables["ChecklistTableView"]
+    XCTAssertTrue(checklistTableView.waitForExistence(timeout: 5))
 
     let item2NameTextView = checklistTableView.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"]
     let item2Name = try XCTUnwrap(item2NameTextView.value as? String)
@@ -283,8 +308,8 @@ class checklistUITest: XCTestCase {
     XCTAssert(item2Name.prefix(item2Name.count - n) == trimmedName)
 
     // For good measure, back out, and go back in again, and check again.
-    app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
-    app.tables.staticTexts["Morning Routine"].tap()
+    detailBackButton.tap()
+    checklistsList.staticTexts["Morning Routine"].tap()
     trimmedName = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String)
     XCTAssert(item2Name.prefix(item2Name.count - n) == trimmedName)
   }
@@ -324,8 +349,9 @@ class checklistUITest: XCTestCase {
     let newItemName1 = "Walk the dog"
     let newItemName2 = "Turn off coffee maker"
 
-    app.tables.staticTexts["Morning Routine"].tap()
+    checklistsList.staticTexts["Morning Routine"].tap()
     let checklistTableView = app.tables["ChecklistTableView"]
+    XCTAssertTrue(checklistTableView.waitForExistence(timeout: 5))
 
     checklistTableView.swipeUp()
 
@@ -344,14 +370,12 @@ class checklistUITest: XCTestCase {
     XCTAssert(checklistTableView.children(matching: .cell).count == numItems + 1)
     assertPercentComplete(checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems + 1) // Check that circular status icon updated.
 
-    // Inserting the new item scrolls the table back near the top (see `insertNewItem`), which clears
-    // the nav bar title (and thus the identifier this bar matches by) — see the note in
-    // testChecklistReordering1 for the same reason the identifier below is "checklists.ChecklistView"
-    // rather than the checklist's name.
-    app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
+    // Whether the nav bar is titled here depends on where `insertNewItem` leaves the table scrolled;
+    // `detailBackButton` finds the button without naming the bar. See the note on that property.
+    detailBackButton.tap()
     // Check that circular status icon updated on Checklists page.
-    assertPercentComplete(app.tables.children(matching: .cell).element(boundBy: 0), numCheckedItems: numCheckedItems, numItems: numItems + 1)
-    app.tables.staticTexts["Morning Routine"].tap()
+    assertPercentComplete(checklistsList.cells.element(boundBy: 0), numCheckedItems: numCheckedItems, numItems: numItems + 1)
+    checklistsList.staticTexts["Morning Routine"].tap()
 
     // Check that changes persisted.
     XCTAssert(checklistTableView.children(matching: .cell).count == numItems + 1)
@@ -372,10 +396,10 @@ class checklistUITest: XCTestCase {
     XCTAssert(lastItemName == newItemName2)
 
     // Go back to main page, back into Checklist, and check again.
-    app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
+    detailBackButton.tap()
     // Check that circular status icon updated on Checklists page.
-    assertPercentComplete(app.tables.children(matching: .cell).element(boundBy: 0), numCheckedItems: numCheckedItems, numItems: numItems + 2)
-    app.tables.staticTexts["Morning Routine"].tap()
+    assertPercentComplete(checklistsList.cells.element(boundBy: 0), numCheckedItems: numCheckedItems, numItems: numItems + 2)
+    checklistsList.staticTexts["Morning Routine"].tap()
 
     XCTAssert(checklistTableView.children(matching: .cell).count == numItems + 2)
     assertPercentComplete(checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems + 2) // Check that circular status icon updated.

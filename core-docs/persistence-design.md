@@ -152,8 +152,8 @@ is the best available outcome.
 
 `Persistence/AppStartupCoordinator.swift` owns everything between process start and the first
 screen having data: opening the store, running the legacy import, seeding a brand-new install. It's
-kept out of `SceneDelegate` so the whole sequence is one testable, retryable unit rather than
-scattered init-time side effects.
+kept out of the app's entry point (`AppStartupModel`, which the SwiftUI `ChecklistsApp` observes)
+so the whole sequence is one testable, retryable unit rather than scattered init-time side effects.
 
 **Coordinator order**, inside `AppStartupCoordinator.run()`:
 
@@ -168,13 +168,13 @@ Steps 2–3 are skipped entirely under `LaunchModeContainerFactory.isRunningTest
 get an already-seeded in-memory container (`InMemoryModelContainer.makeSeeded()`), where running the
 Realm importer would be both wrong (there is no Realm file) and slow.
 
-**The migration screen appears only on the launch that actually imports.** `SceneDelegate.scene(_:willConnectTo:options:)`
-checks `AppStartupCoordinator.willImportLegacyData` *before* running startup, and only then puts
-`LoadingViewController` up as the root view controller while `AppStartupCoordinator` runs on a
+**The migration screen appears only on the launch that actually imports.** `AppStartupModel.init()`
+checks `AppStartupCoordinator.willImportLegacyData` *before* running startup, and only then enters
+the `.loading` phase (rendering `LoadingView`) while `AppStartupCoordinator` runs on a
 background `Task`. Every other launch — which is almost all of them, since the import runs at most
 once per device — goes straight to the checklist list exactly as before.
 
-**The screen has a 1.5-second floor** (`SceneDelegate.minimumMigrationScreenDuration`). The copy
+**The screen has a 1.5-second floor** (`AppStartupModel.minimumMigrationScreenDuration`). The copy
 itself takes a small fraction of that for any realistic amount of data, so without a floor the
 screen would flash by unread; the floor exists purely so a user who is about to see the app's
 launch experience change (and, once Stage 2 ships, learn that iCloud sync is now in play) actually
@@ -182,8 +182,8 @@ gets to read the message.
 
 **A retryable failure screen, never `fatalError`.** If container creation, the legacy import, or the
 first-launch seed throws, `AppStartupCoordinator.run()` returns `.failed(ContainerCreationFailure)`
-instead of propagating the error, and `SceneDelegate` shows `ContainerFailureViewController` with a
-Retry button wired back to `AppStartupCoordinator().run()`. Nothing has been deleted at that point —
+instead of propagating the error, and `ChecklistsApp` shows `ContainerFailureView`, whose
+"Start over fresh" path re-runs `AppStartupCoordinator().run()`. Nothing has been deleted at that point —
 in particular the Realm file, per "Legacy import" above — so retrying is a real chance of recovery,
 unlike the Realm-era `DBManager`, which called `fatalError` on any open failure and turned a
 transient disk problem into a crash report with no recovery path.
