@@ -68,12 +68,18 @@ final class ContainerFailureViewController: UIViewController {
     messageStackView.isAccessibilityElement = true
     messageStackView.accessibilityLabel = "\(titleLabel.text ?? ""). \(bodyLabel.text ?? "")"
 
-    let retryButton = CLButton(frame: .zero)
-    retryButton.setTitle("Retry", for: .normal)
-    // The only "primary"/"secondary" distinction CLButton's shared `.glass()` styling leaves room
-    // for without touching the class itself: a filled background marks Retry as the default action.
-    retryButton.configuration?.baseBackgroundColor = Colors.teal
-    retryButton.configuration?.baseForegroundColor = Colors.defaultBackground
+    // A genuinely filled configuration rather than `CLButton`'s `.glass()` with overridden colours.
+    // Setting `baseBackgroundColor` on a glass configuration does not fill it, so the earlier
+    // version rendered near-white text on a near-white background and the primary action on the
+    // error screen was invisible. Found by actually looking at the screen; no test would have.
+    let retryButton = UIButton(frame: .zero)
+    var retryConfiguration = UIButton.Configuration.filled()
+    retryConfiguration.title = "Retry"
+    retryConfiguration.baseBackgroundColor = Colors.teal
+    retryConfiguration.baseForegroundColor = .white
+    retryConfiguration.cornerStyle = .capsule
+    retryConfiguration.contentInsets = NSDirectionalEdgeInsets(top: 14.0, leading: 20.0, bottom: 14.0, trailing: 20.0)
+    retryButton.configuration = retryConfiguration
     retryButton.addTarget(self, action: #selector(retryTapped), for: .touchUpInside)
     retryButton.accessibilityLabel = "Retry"
     retryButton.accessibilityHint = "Tries to open your checklists again."
