@@ -44,6 +44,7 @@ class SettingsViewController: UITableViewController {
     iCloudStatusTask = Task { @MainActor [weak self] in
       guard let self else { return }
       await ICloudStatusLoader().load(into: PersistenceController.shared.syncStatus)
+      guard !Task.isCancelled else { return }
       reloadICloudSection()
       await observeAccountChanges()
     }
@@ -70,6 +71,7 @@ class SettingsViewController: UITableViewController {
     let notifications = NotificationCenter.default.notifications(named: name)
     for await _ in notifications {
       await ICloudStatusLoader().load(into: PersistenceController.shared.syncStatus)
+      guard !Task.isCancelled else { return }
       reloadICloudSection()
     }
   }

@@ -72,6 +72,29 @@ nonisolated final class ICloudStatusLoaderTests: XCTestCase {
     XCTAssertEqual(syncStatus.accountStatus, .available)
     XCTAssertEqual(syncStatus.rowState, .available)
   }
+
+  /// A query whose task has been superseded must not publish its answer.
+  ///
+  /// Settings cancels the in-flight status task and starts a new one whenever it reappears, and
+  /// cancellation is cooperative — the old `CKContainer` query keeps running and resolves later. If
+  /// it were allowed to write, a stale verdict would overwrite the fresher one and leave the row
+  /// showing the wrong iCloud state until the next account-change notification.
+  @MainActor func testCancelledLoadDoesNotOverwriteAFresherStatus() async {
+    let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .available)
+    let loader = ICloudStatusLoader(accountStatus: { .noAccount })
+
+    let task = Task { @MainActor in
+      await loader.load(into: syncStatus)
+    }
+    // Cancelled before the body can run: the task is already cancelled when it starts.
+    task.cancel()
+    await task.value
+
+    XCTAssertEqual(
+      syncStatus.accountStatus, .available,
+      "A cancelled query must leave the status alone rather than publishing a superseded answer."
+    )
+  }
 }
 
 /// Mutable flag the provider closure can capture (a closure can't capture an `inout`/`var` test

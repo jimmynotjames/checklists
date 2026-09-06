@@ -33,12 +33,24 @@ struct ICloudStatusLoader {
   /// logs state transitions.
   func load(into syncStatus: SyncStatus) async {
     let old = syncStatus.accountStatus
+
+    let resolved: SyncStatus.AccountStatus
     do {
       let status = try await accountStatus()
-      syncStatus.accountStatus = status == .available ? .available : .unavailable
+      resolved = status == .available ? .available : .unavailable
     } catch {
-      syncStatus.accountStatus = .unavailable
+      resolved = .unavailable
     }
+
+    // A superseded query must not publish its answer. Cancellation in Swift is cooperative, so a
+    // slow `CKContainer.accountStatus()` keeps running after its task is cancelled and resolves
+    // later — potentially long after a newer query has already written a fresher, correct status.
+    // Without this guard that stale answer wins, and a signed-in user can be left looking at
+    // "iCloud Not Available" until the next account-change notification, which may never come in
+    // that session.
+    guard !Task.isCancelled else { return }
+
+    syncStatus.accountStatus = resolved
     let new = syncStatus.accountStatus
     if old != new {
       AppLog.cloudKit.notice("cloudkit.account.transition: \(String(describing: old), privacy: .public) → \(String(describing: new), privacy: .public)")
