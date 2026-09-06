@@ -83,6 +83,8 @@
 		AA140003000000000000A2 /* SyncStatusTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140003000000000000A1 /* SyncStatusTableViewCell.swift */; };
 		AA140004000000000000A2 /* SyncStatusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140004000000000000A1 /* SyncStatusTests.swift */; };
 		AA140005000000000000A2 /* ICloudStatusLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140005000000000000A1 /* ICloudStatusLoaderTests.swift */; };
+		AA15000100000000000000A2 /* StoreReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA15000100000000000000A1 /* StoreReset.swift */; };
+		AA15000200000000000000A2 /* StoreResetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA15000200000000000000A1 /* StoreResetTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -197,6 +199,8 @@
 		AA140003000000000000A1 /* SyncStatusTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncStatusTableViewCell.swift"; sourceTree = "<group>"; };
 		AA140004000000000000A1 /* SyncStatusTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncStatusTests.swift"; sourceTree = "<group>"; };
 		AA140005000000000000A1 /* ICloudStatusLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudStatusLoaderTests.swift"; sourceTree = "<group>"; };
+		AA15000100000000000000A1 /* StoreReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoreReset.swift"; sourceTree = "<group>"; };
+		AA15000200000000000000A1 /* StoreResetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoreResetTests.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -269,6 +273,7 @@
 		323ADC8322828C0C00644931 /* checklistsTests */ = {
 			isa = PBXGroup;
 			children = (
+				AA15000200000000000000A1 /* StoreResetTests.swift */,
 				AA13000100000000000000A1 /* TwoDeviceUnionTests.swift */,
 				AA13000200000000000000A1 /* SampleDataDedupeTests.swift */,
 				AA12000100000000000000A1 /* LegacyRealmImporterTests.swift */,
@@ -381,6 +386,7 @@
 		AA110000000000000000G1 /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
+				AA15000100000000000000A1 /* StoreReset.swift */,
 				AA11000600000000000000A1 /* ContainerBacking.swift */,
 				AA11000700000000000000A1 /* ContainerCreationFailure.swift */,
 				AA11000800000000000000A1 /* SortKeyReorder.swift */,
@@ -551,6 +557,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA15000100000000000000A2 /* StoreReset.swift in Sources */,
 				AA11000100000000000000A2 /* SchemaV1.swift in Sources */,
 				AA11000200000000000000A2 /* Checklist.swift in Sources */,
 				AA11000300000000000000A2 /* Item.swift in Sources */,
@@ -608,6 +615,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA15000200000000000000A2 /* StoreResetTests.swift in Sources */,
 				AA13000100000000000000A2 /* TwoDeviceUnionTests.swift in Sources */,
 				AA13000200000000000000A2 /* SampleDataDedupeTests.swift in Sources */,
 				AA12000100000000000000A2 /* LegacyRealmImporterTests.swift in Sources */,

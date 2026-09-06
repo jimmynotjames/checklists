@@ -21,7 +21,15 @@ import UIKit
  body instead, where it is useful. Only the error's domain and code go in, never its description,
  which can carry the user's own content.
  */
+protocol ContainerFailureViewControllerDelegate: AnyObject {
+  /// The user confirmed "Start over fresh". Every local store has already been deleted; the
+  /// delegate is responsible for re-running startup.
+  func containerFailureViewControllerDidResetStore(_ controller: ContainerFailureViewController)
+}
+
 final class ContainerFailureViewController: UIViewController {
+  weak var delegate: ContainerFailureViewControllerDelegate?
+
   private let failure: ContainerCreationFailure
 
   init(failure: ContainerCreationFailure) {
@@ -53,7 +61,7 @@ final class ContainerFailureViewController: UIViewController {
     titleLabel.numberOfLines = 0
 
     let bodyLabel = UILabel()
-    bodyLabel.text = "Something went wrong. Try restarting the app?"
+    bodyLabel.text = "Something went wrong. Try restarting the app? Also check if your storage is full?"
     bodyLabel.font = .preferredFont(forTextStyle: .body)
     bodyLabel.adjustsFontForContentSizeCategory = true
     bodyLabel.textAlignment = .center
@@ -72,7 +80,14 @@ final class ContainerFailureViewController: UIViewController {
     feedbackButton.accessibilityLabel = "Send Feedback"
     feedbackButton.accessibilityHint = "Opens an email with the error details. No personal data is included."
 
-    let buttonStackView = UIStackView(arrangedSubviews: [feedbackButton])
+    let startOverButton = CLButton(frame: .zero)
+    startOverButton.setTitle("Start over fresh", for: .normal)
+    startOverButton.configuration?.baseForegroundColor = Colors.salmonRed
+    startOverButton.addTarget(self, action: #selector(startOverTapped), for: .touchUpInside)
+    startOverButton.accessibilityLabel = "Start over fresh"
+    startOverButton.accessibilityHint = "Deletes the checklists stored on this device and starts the app as if it were newly installed."
+
+    let buttonStackView = UIStackView(arrangedSubviews: [feedbackButton, startOverButton])
     buttonStackView.axis = .vertical
     buttonStackView.alignment = .fill
     buttonStackView.spacing = 12.0
@@ -90,6 +105,24 @@ final class ContainerFailureViewController: UIViewController {
       stackView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
       stackView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
     ])
+  }
+
+  @objc private func startOverTapped() {
+    // Destructive and irreversible, on a screen the user reaches while already alarmed — so it
+    // confirms first, and the confirmation says plainly what is lost rather than "are you sure?".
+    let alert = UIAlertController(
+      title: "Start over fresh?",
+      message: "This deletes the checklists stored on this device and starts the app as if it were newly installed. This cannot be undone.",
+      preferredStyle: .alert
+    )
+    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+    alert.addAction(UIAlertAction(title: "Delete and Start Over", style: .destructive) { [weak self] _ in
+      guard let self else { return }
+      AnalyticsManager.logStartupStoreReset()
+      StoreReset.startOverFresh()
+      delegate?.containerFailureViewControllerDidResetStore(self)
+    })
+    present(alert, animated: true)
   }
 
   @objc private func sendFeedbackTapped() {

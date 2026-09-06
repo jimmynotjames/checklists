@@ -195,7 +195,12 @@ enum AnalyticsManager {
     logEvent(AnalyticsEvent.persistenceWriteFailed, withParameters: [AnalyticsProperty.error: truncatedString(errorMessage)])
   }
 
-  /// The launch sequence failed and the user was shown the retry screen rather than their data.
+  /// The user chose to delete this device's stores from the failure screen and start over.
+  static func logStartupStoreReset() {
+    logEvent(AnalyticsEvent.startupStoreReset)
+  }
+
+  /// The launch sequence failed and the user was shown the failure screen rather than their data.
   static func logStartupFailure(errorMessage: String) {
     logEvent(AnalyticsEvent.startupFailed, withParameters: [AnalyticsProperty.error: truncatedString(errorMessage)])
   }
@@ -271,6 +276,10 @@ enum AnalyticsEvent {
   /// complete, or first-launch seeding would not save. New with the SwiftData migration; no
   /// Flurry predecessor, because the Realm build crashed here rather than recovering.
   static let startupFailed = "startup_failed"
+  /// The user gave up on that screen and wiped this device's stores to get a working app back.
+  /// Paired with `startup_failed`, the ratio says how often the failure is unrecoverable in
+  /// practice rather than a one-off.
+  static let startupStoreReset = "startup_store_reset"
 
   // MARK: Device
 

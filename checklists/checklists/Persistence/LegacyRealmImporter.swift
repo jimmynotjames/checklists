@@ -70,6 +70,11 @@ enum LegacyRealmImporter {
     return configuration
   }
 
+  /// Where the legacy store lives, for callers that only need the path and not Realm itself.
+  static var legacyStoreURL: URL? {
+    legacyConfiguration().fileURL
+  }
+
   static func isNeeded(
     userDefaults: UserDefaults = .standard,
     fileManager: FileManager = .default,

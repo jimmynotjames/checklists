@@ -63,7 +63,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     case .ready:
       window.rootViewController = UINavigationController(rootViewController: ChecklistsViewController(style: .plain))
     case let .failed(failure):
-      window.rootViewController = ContainerFailureViewController(failure: failure)
+      let failureViewController = ContainerFailureViewController(failure: failure)
+      failureViewController.delegate = self
+      window.rootViewController = failureViewController
     }
+  }
+}
+
+extension SceneDelegate: ContainerFailureViewControllerDelegate {
+  func containerFailureViewControllerDidResetStore(_: ContainerFailureViewController) {
+    guard let window else { assertionFailure(); return }
+    // The stores are already gone, so this run starts from nothing: a fresh container, no import,
+    // and first-launch seeding. If it fails again — a full disk, say — the same screen returns,
+    // which is the honest outcome.
+    install(AppStartupCoordinator().run(), in: window)
   }
 }

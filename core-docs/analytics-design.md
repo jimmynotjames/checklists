@@ -109,6 +109,7 @@ was free: the Flurry data is not migrating to Mixpanel, so there was no continui
 | `persistence_fatal_error` | `realm/fatal_error` | The persistent store cannot be opened at all | `error` |
 | `persistence_write_failed` | `realm/write_error` | A SwiftData save throws | `error` |
 | `startup_failed` | *(none — the Realm build crashed instead)* | Launch could not produce a usable store, so the retry screen was shown: container creation, the one-time Realm import, or first-launch seeding failed | `error` |
+| `startup_store_reset` | *(none)* | User chose "Start over fresh" on that screen, deleting this device's stores | — |
 | `orientation_changed` | `orientation_changed` | Device rotates portrait↔landscape | `orientation` |
 
 Slashes were dropped from the Realm event names — Mixpanel accepts them, but the flat convention
