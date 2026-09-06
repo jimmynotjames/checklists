@@ -124,6 +124,32 @@ the way an implicit array position cannot.
 
 ## Startup and failure UX
 
+### The failure screen
+
+Reproducing this screen means injecting a container failure into a debug build, so it is captured
+here rather than left to imagination — nobody should have to break the app on purpose to find out
+what a user in trouble is looking at.
+
+| Failure screen | Start-over confirmation |
+|---|---|
+| ![The container failure screen](images/container-failure-screen.png) | ![The start-over confirmation](images/container-failure-confirmation.png) |
+
+It appears only when the **local** store fails: the container could not be created, the one-time
+Realm import did not complete, or first-launch seeding could not save. iCloud is never a cause —
+`ProductionContainerFactory` attempts the CloudKit-backed store with `try?` and falls through to the
+local one, so an unavailable account degrades sync, never startup. In practice the realistic causes
+are a full disk and a corrupt store.
+
+There is deliberately no Retry button. It re-ran the same startup sequence in the same process,
+which is what relaunching does anyway and more thoroughly, so it offered a second route to the same
+outcome while the copy already told the user to restart.
+
+"Start over fresh" is the escape hatch of last resort — see `StoreReset` — because a corrupt store
+cannot be repaired in place, and without it the app is permanently unusable. It deletes only local
+stores, so a CloudKit-backed account repopulates on the next launch; for a corrupt local store that
+is the best available outcome.
+
+
 `Persistence/AppStartupCoordinator.swift` owns everything between process start and the first
 screen having data: opening the store, running the legacy import, seeding a brand-new install. It's
 kept out of `SceneDelegate` so the whole sequence is one testable, retryable unit rather than
