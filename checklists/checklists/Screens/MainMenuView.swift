@@ -79,7 +79,9 @@ private struct MainMenuRow: View {
         Spacer()
       }
       .padding(.leading, 16)
-      .frame(height: 60)
+      // Minimum, not fixed (the UIKit row was a fixed 60): text at large Dynamic Type
+      // sizes can now grow the row instead of clipping.
+      .frame(minHeight: 60)
       .contentShape(Rectangle())
     }
     .buttonStyle(.plain)

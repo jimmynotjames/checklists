@@ -23,7 +23,11 @@ struct ChecklistScreen: UIViewControllerRepresentable {
   /// router so navigation state can't desync from what's on screen.
   let onRequestDismiss: () -> Void
 
-  func makeUIViewController(context _: Context) -> UINavigationController {
+  func makeCoordinator() -> Coordinator {
+    Coordinator(onRequestDismiss: onRequestDismiss)
+  }
+
+  func makeUIViewController(context: Context) -> UINavigationController {
     let viewController = ChecklistViewController()
     viewController.checklist = checklist
     viewController.isNewChecklist = isNewChecklist
@@ -39,7 +43,35 @@ struct ChecklistScreen: UIViewControllerRepresentable {
       backButton.accessibilityLabel = "Back"
       viewController.navigationItem.leftBarButtonItem = backButton
     }
-    return UINavigationController(rootViewController: viewController)
+    let navigationController = UINavigationController(rootViewController: viewController)
+    if !isNewChecklist {
+      // Swipe-back: the embedded navigation controller swallows edge pans before they reach
+      // SwiftUI's NavigationStack, and its own interactive-pop recognizer is inert with a
+      // single view controller on its stack — so without this, the pop gesture is silently
+      // dead. The pop itself still animates, driven by the router; only the finger-tracking
+      // phase of the stock gesture is lost.
+      let edgeSwipe = UIScreenEdgePanGestureRecognizer(
+        target: context.coordinator,
+        action: #selector(Coordinator.edgeSwipeBegan(_:))
+      )
+      edgeSwipe.edges = .left
+      navigationController.view.addGestureRecognizer(edgeSwipe)
+    }
+    return navigationController
+  }
+
+  @MainActor
+  final class Coordinator: NSObject {
+    private let onRequestDismiss: () -> Void
+
+    init(onRequestDismiss: @escaping () -> Void) {
+      self.onRequestDismiss = onRequestDismiss
+    }
+
+    @objc func edgeSwipeBegan(_ gesture: UIScreenEdgePanGestureRecognizer) {
+      guard gesture.state == .began else { return }
+      onRequestDismiss()
+    }
   }
 
   /// Deliberately empty: ChecklistViewController documents that resetting `checklist` after

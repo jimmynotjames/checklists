@@ -53,13 +53,14 @@ struct ChecklistsView: View {
         .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         .listRowSeparator(.hidden) // Was `tableView.separatorStyle = .none`.
         .swipeActions(edge: .trailing) {
-          Button("Delete", role: .destructive) {
-            // Records the intent only. The delete itself waits for the confirmation alert,
-            // exactly as the `commit editingStyle:` path did.
+          // Deliberately NOT `role: .destructive`: a full swipe on a destructive action
+          // optimistically animates the row away before any model change, but this action only
+          // records intent — the delete itself waits for the confirmation alert, exactly as the
+          // `commit editingStyle:` path did. A cancelled confirmation must leave the row visible,
+          // so the red comes from an explicit tint instead of the role.
+          Button("Delete") {
             pendingDeleteID = checklist.id
           }
-          // RootView's stack-wide teal tint would otherwise paint the swipe action's
-          // background too; the destructive role alone doesn't win against an explicit tint.
           .tint(.red)
         }
       }
