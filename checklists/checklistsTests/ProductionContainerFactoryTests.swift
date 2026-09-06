@@ -13,46 +13,53 @@ import XCTest
 /// See the doc comment on `DataModelTests` for why this class is `nonisolated` at the type level
 /// with individual `@MainActor` test methods.
 nonisolated final class ProductionContainerFactoryTests: XCTestCase {
-  /// With CloudKit off for this release, `make` must not attempt the CloudKit path at all, and must
-  /// report the store it actually opened.
+  /// CloudKit is the preferred store, so it must be attempted before the local fallback is even
+  /// considered.
   ///
-  /// **This test is expected to need updating when CloudKit is switched on** — deliberately, so
-  /// that flipping `cloudKitEnabled` cannot pass unnoticed. At that point it should assert the
-  /// opposite: that `cloud` is tried first, and that a throwing `cloud` closure falls back to
-  /// `local` and reports `.localFallback`. That fallback cannot be exercised while the flag is off,
-  /// because the cloud closure is never reached.
-  ///
-  /// `ModelConfiguration.CloudKitDatabase` is not `Equatable`, so the configuration's setting cannot
-  /// be asserted directly. Asserting on the branch taken is the better test anyway: it pins
-  /// behaviour rather than a field, and it does so through injected closures, so no container is
-  /// ever built at the real `storeURL()`.
-  @MainActor func testCloudKitDisabledSkipsTheCloudPathEntirely() throws {
-    XCTAssertFalse(
-      ProductionContainerFactory.cloudKitEnabled,
-      "CloudKit is expected to be off in this release; see this test's doc comment."
-    )
+  /// (This replaces the tripwire that asserted the opposite while CloudKit was switched off. It was
+  /// written to fail deliberately on the day the flag flipped, and it did.)
+  @MainActor func testCloudKitPathIsTriedFirst() throws {
+    XCTAssertTrue(ProductionContainerFactory.cloudKitEnabled)
 
     let stubContainer = try TestModelContainer.make()
-    var cloudAttempted = false
+    var configurationOfferedToCloud: ModelConfiguration?
+    var localAttempted = false
+
+    let result = try ProductionContainerFactory.make(
+      cloud: { configuration in
+        configurationOfferedToCloud = configuration
+        return stubContainer
+      },
+      local: { _ in
+        localAttempted = true
+        return stubContainer
+      }
+    )
+
+    XCTAssertEqual(result.backing, .cloudKit)
+    XCTAssertFalse(localAttempted, "The local fallback must not run when CloudKit succeeds.")
+    XCTAssertEqual(configurationOfferedToCloud?.url, ProductionContainerFactory.storeURL())
+  }
+
+  /// iCloud being unavailable is an ordinary state — no account, no network on a first launch, a
+  /// simulator that has never signed in — and must degrade to the local store rather than failing.
+  @MainActor func testFallsBackToLocalWhenCloudKitIsUnavailable() throws {
+    let stubContainer = try TestModelContainer.make()
     var configurationOfferedToLocal: ModelConfiguration?
 
     let result = try ProductionContainerFactory.make(
-      cloud: { _ in
-        cloudAttempted = true
-        return stubContainer
-      },
+      cloud: { _ in throw NSError(domain: "CKErrorDomain", code: 9) },
       local: { configuration in
         configurationOfferedToLocal = configuration
         return stubContainer
       }
     )
 
-    XCTAssertFalse(cloudAttempted, "The CloudKit path must not be attempted while it is disabled.")
     XCTAssertEqual(result.backing, .localFallback)
     XCTAssertEqual(
       configurationOfferedToLocal?.url,
       ProductionContainerFactory.storeURL(),
-      "The local store must be opened at the shared, pinned URL."
+      "The fallback must open the same file, so a local-only session is promoted in place once iCloud returns."
     )
   }
 

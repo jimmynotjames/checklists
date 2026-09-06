@@ -40,9 +40,11 @@ Swift on this platform). `checklistsUITests` needed no linkage changes; it was b
 shared scheme's unit target failing to build, and on `test-ui`'s `warmed` sentinel (see
 `scripts/test-ui.sh`), both now resolved. Formerly tracked in
 [issue #116](https://github.com/jimmynotjames/checklists/issues/116), now closed.
-`checklistsTests` has 68 tests across `DataModelTests`, `ModelBehaviorTests`, `SampleDataTests`,
+`checklistsTests` has 106 tests across `DataModelTests`, `ModelBehaviorTests`, `SampleDataTests`,
 `SortKeyReorderTests`, `LegacyRealmImporterTests`, `ProductionContainerFactoryTests`,
-`PersistentStoreURLTests`, `RemoteChangeObserverTests`, `AnalyticsManagerTests`,
+`PersistentStoreURLTests`, `RemoteChangeObserverTests`, `TwoDeviceUnionTests`,
+`SampleDataDedupeTests`, `SyncStatusTests`, `ICloudStatusLoaderTests`, `StoreResetTests`,
+`AnalyticsManagerTests`,
 `SettingsManagerTests`, `CircularPercentStatusIconTests`, `CLTextViewTests`, and
 `ItemContentViewTests`; `checklistsUITests` has 17. Both are green, verified twice in a row for
 flakes — but still opt-in, not part of `make gate`.
@@ -206,12 +208,18 @@ device and skips sandbox management entirely.
   6 failures to 17/17):
 
   ```bash
-  UDID=$(cat .build/sim/device.udid); defaults write com.apple.iphonesimulator DevicePreferences -dict-add "$UDID" '{ ConnectHardwareKeyboard = 0; }'; xcrun simctl shutdown "$UDID"; xcrun simctl boot "$UDID"
+  UDID=$(cat .build/sim/device.udid); defaults write com.apple.iphonesimulator DevicePreferences -dict-add "$UDID" '{ ConnectHardwareKeyboard = 0; }'; xcrun simctl shutdown "$UDID"; xcrun simctl boot "$UDID"; open -a Simulator
   ```
 
-  The reboot is required — the preference is read when the device boots. Note the failure count is
-  not a reliable signal on its own: some typing tests pass anyway because they never reach for the
-  `Next:` or `delete` keys, so a partial pass does **not** rule this out.
+  **`open -a Simulator` is not optional, and this is the part that catches people.**
+  `ConnectHardwareKeyboard` is a preference belonging to *Simulator.app*, not to the device, so with
+  the app closed it has no effect at all and the software keyboard never appears — the setting reads
+  back correctly from `defaults`, the device is booted, and the tests still fail. Verified the hard
+  way twice: identical failures with the preference set and Simulator.app closed, 17/17 with it open.
+  The reboot matters too, since the preference is read at boot.
+
+  Note the failure count is not a reliable signal on its own: some typing tests pass anyway because
+  they never reach for the `Next:` or `delete` keys, so a partial pass does **not** rule this out.
 
 - **Analytics send nowhere.** Flurry was removed; Mixpanel is not implemented. Every
   `AnalyticsManager.log*` call still fires but hits a no-op (it prints in DEBUG). The full

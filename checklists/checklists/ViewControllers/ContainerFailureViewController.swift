@@ -5,22 +5,28 @@
 
 import UIKit
 
-protocol ContainerFailureViewControllerDelegate: AnyObject {
-  func containerFailureViewControllerDidTapRetry(_ controller: ContainerFailureViewController)
-}
-
 /**
  Shown when the store cannot be opened, or the one-time Realm copy cannot be completed.
 
- Deliberately offers Retry rather than continuing into an empty checklist list: for an upgrading
- user, an empty list is indistinguishable from having lost everything. Nothing has been deleted at
- this point — the Realm file is still on disk — so a retry on the next launch is a real chance of
- recovery.
+ Shown rather than continuing into an empty checklist list, because to an upgrading user an empty
+ list is indistinguishable from having lost everything. Nothing has been deleted at this point —
+ the store simply would not open, and on the one launch that migrates, the old Realm file is still
+ untouched on disk — so relaunching is a real chance of recovery.
+
+ There is deliberately no Retry button. It re-ran the same startup sequence in the same process,
+ which is what relaunching does anyway and more thoroughly, so it offered a second path to the same
+ outcome while the copy was already telling the user to restart.
 
  The error code is not shown on screen (nobody acts on "134060"); it travels in the feedback mail
  body instead, where it is useful. Only the error's domain and code go in, never its description,
  which can carry the user's own content.
  */
+protocol ContainerFailureViewControllerDelegate: AnyObject {
+  /// The user confirmed "Start over fresh". Every local store has already been deleted; the
+  /// delegate is responsible for re-running startup.
+  func containerFailureViewControllerDidResetStore(_ controller: ContainerFailureViewController)
+}
+
 final class ContainerFailureViewController: UIViewController {
   weak var delegate: ContainerFailureViewControllerDelegate?
 
@@ -55,7 +61,7 @@ final class ContainerFailureViewController: UIViewController {
     titleLabel.numberOfLines = 0
 
     let bodyLabel = UILabel()
-    bodyLabel.text = "Something went wrong opening the app's data. Restarting usually fixes it."
+    bodyLabel.text = "Something went wrong. Try restarting the app? Also check if your storage is full?"
     bodyLabel.font = .preferredFont(forTextStyle: .body)
     bodyLabel.adjustsFontForContentSizeCategory = true
     bodyLabel.textAlignment = .center
@@ -68,23 +74,20 @@ final class ContainerFailureViewController: UIViewController {
     messageStackView.isAccessibilityElement = true
     messageStackView.accessibilityLabel = "\(titleLabel.text ?? ""). \(bodyLabel.text ?? "")"
 
-    let retryButton = CLButton(frame: .zero)
-    retryButton.setTitle("Retry", for: .normal)
-    // The only "primary"/"secondary" distinction CLButton's shared `.glass()` styling leaves room
-    // for without touching the class itself: a filled background marks Retry as the default action.
-    retryButton.configuration?.baseBackgroundColor = Colors.teal
-    retryButton.configuration?.baseForegroundColor = Colors.defaultBackground
-    retryButton.addTarget(self, action: #selector(retryTapped), for: .touchUpInside)
-    retryButton.accessibilityLabel = "Retry"
-    retryButton.accessibilityHint = "Tries to open your checklists again."
-
     let feedbackButton = CLButton(frame: .zero)
     feedbackButton.setTitle("Send Feedback", for: .normal)
     feedbackButton.addTarget(self, action: #selector(sendFeedbackTapped), for: .touchUpInside)
     feedbackButton.accessibilityLabel = "Send Feedback"
     feedbackButton.accessibilityHint = "Opens an email with the error details. No personal data is included."
 
-    let buttonStackView = UIStackView(arrangedSubviews: [retryButton, feedbackButton])
+    let startOverButton = CLButton(frame: .zero)
+    startOverButton.setTitle("Start over fresh", for: .normal)
+    startOverButton.configuration?.baseForegroundColor = Colors.salmonRed
+    startOverButton.addTarget(self, action: #selector(startOverTapped), for: .touchUpInside)
+    startOverButton.accessibilityLabel = "Start over fresh"
+    startOverButton.accessibilityHint = "Starts the app as if it were newly installed. Any data on this device will be lost."
+
+    let buttonStackView = UIStackView(arrangedSubviews: [feedbackButton, startOverButton])
     buttonStackView.axis = .vertical
     buttonStackView.alignment = .fill
     buttonStackView.spacing = 12.0
@@ -104,9 +107,22 @@ final class ContainerFailureViewController: UIViewController {
     ])
   }
 
-  @objc private func retryTapped() {
-    AnalyticsManager.logStartupRetry()
-    delegate?.containerFailureViewControllerDidTapRetry(self)
+  @objc private func startOverTapped() {
+    // Destructive and irreversible, on a screen the user reaches while already alarmed — so it
+    // confirms first, and the confirmation says plainly what is lost rather than "are you sure?".
+    let alert = UIAlertController(
+      title: "Start over fresh?",
+      message: "This starts the app as if it were newly installed. Any data on this device will be lost. This cannot be undone.",
+      preferredStyle: .alert
+    )
+    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+    alert.addAction(UIAlertAction(title: "Start Over", style: .destructive) { [weak self] _ in
+      guard let self else { return }
+      AnalyticsManager.logStartupStoreReset()
+      StoreReset.startOverFresh()
+      delegate?.containerFailureViewControllerDidResetStore(self)
+    })
+    present(alert, animated: true)
   }
 
   @objc private func sendFeedbackTapped() {

@@ -71,8 +71,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 }
 
 extension SceneDelegate: ContainerFailureViewControllerDelegate {
-  func containerFailureViewControllerDidTapRetry(_: ContainerFailureViewController) {
+  func containerFailureViewControllerDidResetStore(_: ContainerFailureViewController) {
     guard let window else { assertionFailure(); return }
+    // The stores are already gone, so this run starts from nothing: a fresh container, no import,
+    // and first-launch seeding. If it fails again — a full disk, say — the same screen returns,
+    // which is the honest outcome.
     install(AppStartupCoordinator().run(), in: window)
   }
 }

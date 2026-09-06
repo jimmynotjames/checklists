@@ -124,6 +124,32 @@ the way an implicit array position cannot.
 
 ## Startup and failure UX
 
+### The failure screen
+
+Reproducing this screen means injecting a container failure into a debug build, so it is captured
+here rather than left to imagination — nobody should have to break the app on purpose to find out
+what a user in trouble is looking at.
+
+| Failure screen | Start-over confirmation |
+|---|---|
+| ![The container failure screen](images/container-failure-screen.png) | ![The start-over confirmation](images/container-failure-confirmation.png) |
+
+It appears only when the **local** store fails: the container could not be created, the one-time
+Realm import did not complete, or first-launch seeding could not save. iCloud is never a cause —
+`ProductionContainerFactory` attempts the CloudKit-backed store with `try?` and falls through to the
+local one, so an unavailable account degrades sync, never startup. In practice the realistic causes
+are a full disk and a corrupt store.
+
+There is deliberately no Retry button. It re-ran the same startup sequence in the same process,
+which is what relaunching does anyway and more thoroughly, so it offered a second route to the same
+outcome while the copy already told the user to restart.
+
+"Start over fresh" is the escape hatch of last resort — see `StoreReset` — because a corrupt store
+cannot be repaired in place, and without it the app is permanently unusable. It deletes only local
+stores, so a CloudKit-backed account repopulates on the next launch; for a corrupt local store that
+is the best available outcome.
+
+
 `Persistence/AppStartupCoordinator.swift` owns everything between process start and the first
 screen having data: opening the store, running the legacy import, seeding a brand-new install. It's
 kept out of `SceneDelegate` so the whole sequence is one testable, retryable unit rather than
@@ -192,17 +218,97 @@ stays at Complete. It is only ever read at launch, in the foreground, so that co
 
 ## Sync status
 
-Placeholder — filled in when CloudKit is enabled. `ContainerBacking` (`Persistence/ContainerBacking.swift`)
-already distinguishes `.cloudKit` from `.localFallback` as the backing a launch ended up on, and
-`Persistence/RemoteChangeObserver.swift` already coalesces `NSPersistentStoreRemoteChange`
-notifications into a single callback — both wired up now, inert until `ProductionContainerFactory.cloudKitEnabled`
-flips to `true`, so that the screens that need to refresh from a remote change already have a single,
-tested place to do it from.
+`Persistence/SyncStatus.swift` is the user-facing half of "is my data syncing?" — it turns two
+independent signals into the single four-state row Settings shows. Ported from the sibling
+`budgets1` repo's `Sync/SyncStatus.swift`, trimmed of the App Store screenshot override (no
+marketing screenshot pipeline here yet) and using this project's existing `ContainerBacking`
+enum rather than redeclaring one.
+
+**Two signals, because they answer different questions and can disagree:**
+
+- `containerBacking` (`ContainerBacking`, `.cloudKit` / `.localFallback`) — which store *this
+  launch* ended up on, decided once by `ProductionContainerFactory` and never mutated afterwards.
+- `accountStatus` (`SyncStatus.AccountStatus`, `.checking` / `.available` / `.unavailable`) — whether
+  the user is *currently* signed in to iCloud, a live signal that can change while the app is
+  running (sign-in, sign-out, account switch) independently of which store this launch picked.
+
+Collapsing them into one flag would lose exactly the case that matters most: a signed-in user whose
+launch nonetheless fell back to the local store. `SyncStatus.rowState` keeps them apart and maps
+the pair to four states:
+
+| containerBacking | accountStatus  | rowState       | What it tells the user |
+|------------------|----------------|----------------|-------------------------|
+| any              | `.checking`    | `.checking`    | Still finding out — show a spinner, not a verdict. |
+| `.cloudKit`      | `.available`   | `.available`   | Signed in, this launch is on CloudKit — sync is active. |
+| `.cloudKit`      | `.unavailable` | `.unavailable` | Not signed in — nothing to sync to; sign in to enable it. |
+| `.localFallback` | `.available`   | `.paused`      | Signed in, but *this launch* is on the local store — edits are safe, just not syncing. |
+| `.localFallback` | `.unavailable` | `.unavailable` | Neither signed in nor on CloudKit — same message as the CloudKit/unavailable row. |
+
+**`.paused` is the state worth dwelling on.** It exists only because `containerBacking` and
+`accountStatus` can disagree — CloudKit container construction can fail at launch (transient
+network trouble, a `CKContainer` hiccup) even though the user's iCloud account is fine, which
+falls back to the local store for that launch (see "Startup and failure UX" above). Reporting that
+as plain "unavailable" would wrongly send a signed-in user off to check their Apple ID; reporting
+it as plain "available" would hide that this launch isn't syncing at all. `.paused` says the true
+thing: your data is safe on this device, it just isn't syncing this launch, and relaunching may
+fix it — which is exactly the copy the Settings row's footer gives for that state.
+
+**Where it's loaded and observed.** `PersistenceController` owns one `SyncStatus` per launch,
+constructed in its `init` from the `containerBacking` it was already given, so `containerBacking`
+is fixed for the controller's lifetime — a retry that resolves differently installs a whole new
+`PersistenceController` (and thus a fresh `SyncStatus`) rather than mutating one in place.
+`accountStatus` starts at `.checking` and is written by `SettingsViewController`: `viewWillAppear`
+starts a task that awaits `ICloudStatusLoader().load(into:)` once, reloads the iCloud section, and
+then observes `.CKAccountChanged` and `.NSUbiquityIdentityDidChange` notifications for as long as
+Settings stays open, re-loading and reloading the row on each. The task is cancelled in
+`viewDidDisappear` so nothing keeps running once the screen is dismissed.
+
+**Why `ICloudStatusLoader` takes its query as a closure.** `Persistence/ICloudStatusLoader.swift`
+wraps the actual `CKContainer.default().accountStatus()` call behind an injectable
+`accountStatus: () async throws -> CKAccountStatus` property because `CKContainer` cannot be
+stubbed — there is no other seam to drive `.available` / `.noAccount` / a thrown error through in
+a unit test. Production uses the live CloudKit call; `ICloudStatusLoaderTests` injects the three
+outcomes (plus a two-phase sign-in transition) directly. The loader also short-circuits to
+`.noAccount` under `#if DEBUG` when `IS_TESTING` is set or `-UITests1` is passed on the command
+line, because `CKContainer.accountStatus()` hangs on an account-less Simulator and would otherwise
+pin the row to a spinner and block UI tests from ever reaching Settings.
 
 ## CloudKit ops record
 
-Placeholder — the CloudKit container id, environment (development/production) promotion process,
-and dashboard/schema-deploy runbook belong here once Stage 2 sets them up.
+**Container:** `iCloud.com.jimmyho.checklists`, private database, assigned to the
+`com.jimmyho.checklists` App ID with the iCloud (CloudKit) and Push Notifications capabilities. The
+app declares `com.apple.developer.icloud-container-identifiers`,
+`com.apple.developer.icloud-services`, `aps-environment`, and the `remote-notification` background
+mode — CloudKit delivers change notifications as silent pushes, so without that mode remote edits
+only arrive when the app is next opened.
+
+**Two environments, two schemas.** A development-signed build talks to CloudKit's **Development**
+environment; TestFlight and App Store builds talk to **Production**. They hold separate schemas, so
+sync working perfectly from Xcode proves nothing about TestFlight until the schema is promoted. The
+Development schema is created automatically the first time real records are uploaded; Production
+requires a manual **Deploy Schema Changes** click in CloudKit Console. There is no `cktool`
+equivalent — `import-schema --environment production` is accepted as a flag and rejected by the
+server.
+
+**Promotion is one-way.** Once a record type or field reaches Production it can never be removed or
+renamed, only added to. "Remove a field" becomes "stop reading it". This is what freezes `SchemaV1`
+in the stronger sense described under "CloudKit rules"; before the first promotion the schema is
+still free to change.
+
+### Before the first TestFlight build
+
+- [ ] Confirm `CD_Checklist` and `CD_Item` exist in the **Development** environment, generated by a
+      real signed run rather than hand-authored.
+- [ ] Audit the exported schema against the models in both directions — every stored property has a
+      `CD_` field, and every field traces to a current property. A to-many relationship appears as
+      the inverse foreign key (`CD_checklist`) on the **child** record type, not on the parent.
+- [ ] Deploy to Production in CloudKit Console; verify by re-exporting.
+- [ ] **Check `aps-environment` in the archived build.** The checked-in entitlements say
+      `development`; Xcode normally rewrites it to `production` at export. If it does not, silent
+      pushes fail against production APNs and sync silently degrades to arriving only on next
+      launch, with nothing visibly broken. Verify on the actual archive rather than assuming.
+- [ ] Two-device tests: union across devices that never synced, edits propagating both ways, and a
+      pair of fresh installs collapsing to three samples rather than six.
 
 ## Realm removal plan
 
