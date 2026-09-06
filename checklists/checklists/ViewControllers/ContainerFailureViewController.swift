@@ -85,7 +85,7 @@ final class ContainerFailureViewController: UIViewController {
     startOverButton.configuration?.baseForegroundColor = Colors.salmonRed
     startOverButton.addTarget(self, action: #selector(startOverTapped), for: .touchUpInside)
     startOverButton.accessibilityLabel = "Start over fresh"
-    startOverButton.accessibilityHint = "Deletes the checklists stored on this device and starts the app as if it were newly installed."
+    startOverButton.accessibilityHint = "Starts the app as if it were newly installed. Any data on this device will be lost."
 
     let buttonStackView = UIStackView(arrangedSubviews: [feedbackButton, startOverButton])
     buttonStackView.axis = .vertical
@@ -112,11 +112,11 @@ final class ContainerFailureViewController: UIViewController {
     // confirms first, and the confirmation says plainly what is lost rather than "are you sure?".
     let alert = UIAlertController(
       title: "Start over fresh?",
-      message: "This deletes the checklists stored on this device and starts the app as if it were newly installed. This cannot be undone.",
+      message: "This starts the app as if it were newly installed. Any data on this device will be lost. This cannot be undone.",
       preferredStyle: .alert
     )
     alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-    alert.addAction(UIAlertAction(title: "Delete and Start Over", style: .destructive) { [weak self] _ in
+    alert.addAction(UIAlertAction(title: "Start Over", style: .destructive) { [weak self] _ in
       guard let self else { return }
       AnalyticsManager.logStartupStoreReset()
       StoreReset.startOverFresh()
