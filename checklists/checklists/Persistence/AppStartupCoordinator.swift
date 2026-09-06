@@ -61,8 +61,8 @@ final class AppStartupCoordinator {
     } catch {
       // Covers three different problems on purpose — the store would not open, the Realm copy did
       // not complete, the fixture would not save — because the user-facing answer to all three is
-      // the same: do not continue into a screen that would look like their data is gone, and offer
-      // Retry. Nothing has been deleted in any of these cases; the Realm file is still on disk.
+      // the same: do not continue into a screen that would look like their data is gone. Nothing
+      // has been deleted in any of these cases; the Realm file is still on disk.
       let failure = ContainerCreationFailure(underlying: error)
       AppLog.bootstrap.error("bootstrap.failed: \(failure.diagnosticDescription, privacy: .public)")
       AnalyticsManager.logStartupFailure(errorMessage: failure.diagnosticDescription)

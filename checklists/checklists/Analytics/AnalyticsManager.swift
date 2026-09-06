@@ -200,10 +200,6 @@ enum AnalyticsManager {
     logEvent(AnalyticsEvent.startupFailed, withParameters: [AnalyticsProperty.error: truncatedString(errorMessage)])
   }
 
-  static func logStartupRetry() {
-    logEvent(AnalyticsEvent.startupRetried)
-  }
-
   // MARK: - Device info analytics
 
   /// Overall ratio of iPad versus iPhone can be found in App Store Connect Analytics, so leaving that out here.
@@ -275,9 +271,6 @@ enum AnalyticsEvent {
   /// complete, or first-launch seeding would not save. New with the SwiftData migration; no
   /// Flurry predecessor, because the Realm build crashed here rather than recovering.
   static let startupFailed = "startup_failed"
-  /// The user tapped Retry on that screen. Paired with `startup_failed`, the ratio says whether
-  /// the failure is transient (retry succeeds) or the install is genuinely stuck.
-  static let startupRetried = "startup_retried"
 
   // MARK: Device
 

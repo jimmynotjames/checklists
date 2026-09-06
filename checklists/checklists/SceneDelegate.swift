@@ -63,16 +63,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     case .ready:
       window.rootViewController = UINavigationController(rootViewController: ChecklistsViewController(style: .plain))
     case let .failed(failure):
-      let failureViewController = ContainerFailureViewController(failure: failure)
-      failureViewController.delegate = self
-      window.rootViewController = failureViewController
+      window.rootViewController = ContainerFailureViewController(failure: failure)
     }
-  }
-}
-
-extension SceneDelegate: ContainerFailureViewControllerDelegate {
-  func containerFailureViewControllerDidTapRetry(_: ContainerFailureViewController) {
-    guard let window else { assertionFailure(); return }
-    install(AppStartupCoordinator().run(), in: window)
   }
 }
