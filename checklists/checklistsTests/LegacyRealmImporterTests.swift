@@ -182,7 +182,12 @@ nonisolated final class LegacyRealmImporterTests: XCTestCase {
     try runImport(into: context)
 
     let imported = try context.fetchChecklistsSorted()
-    XCTAssertEqual(imported.map(\.sortKey), [1.0, 2.0])
+    // Checklist keys are relative to a random per-import block (see `randomImportSortKeyBase`), so
+    // assert the spacing rather than absolute values.
+    XCTAssertEqual(imported.count, 2)
+    XCTAssertEqual(imported[1].sortKey - imported[0].sortKey, SortKeyReorder.step)
+    XCTAssertGreaterThanOrEqual(imported[0].sortKey, SortKeyReorder.step)
+    // Items are scoped to one checklist from one device, so they always start at 1.0.
     XCTAssertEqual(imported[0].items.map(\.sortKey), [1.0, 2.0])
   }
 

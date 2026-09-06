@@ -161,6 +161,10 @@ class ChecklistsViewController: UITableViewController, MainMenuEnabledViewContro
 
   /// Refreshes the cache and reloads the whole table. For changes this screen did not make.
   func reloadChecklists() {
+    // Before refetching, not after: a duplicate untouched sample arriving from another device is
+    // exactly the change that triggers this, and tidying it first means the reload below shows the
+    // settled list rather than briefly showing two copies.
+    try? SampleData.dedupeChecklists(in: context)
     refetchChecklists()
     tableView.reloadData()
   }

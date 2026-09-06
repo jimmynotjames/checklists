@@ -47,6 +47,10 @@ final class AppStartupCoordinator {
       if !LaunchModeContainerFactory.isRunningTests {
         try LegacyRealmImporter.importIfNeeded(into: container.mainContext)
         try SampleData.insertFirstTimeLaunchDataIfNeeded(into: container.mainContext)
+        // Deliberately not `try`: duplicate untouched samples are cosmetic, and failing to tidy
+        // them is no reason to show the failure screen instead of the user's checklists.
+        // `saveChanges` has already logged anything that went wrong.
+        try? SampleData.dedupeChecklists(in: container.mainContext)
       }
 
       PersistenceController.install(

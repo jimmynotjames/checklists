@@ -76,6 +76,8 @@
 		AA12000700000000000000A2 /* ProductionContainerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000700000000000000A1 /* ProductionContainerFactoryTests.swift */; };
 		AA12000800000000000000A2 /* PersistentStoreURLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000800000000000000A1 /* PersistentStoreURLTests.swift */; };
 		AA12000900000000000000A2 /* RemoteChangeObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000900000000000000A1 /* RemoteChangeObserverTests.swift */; };
+		AA13000100000000000000A2 /* TwoDeviceUnionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA13000100000000000000A1 /* TwoDeviceUnionTests.swift */; };
+		AA13000200000000000000A2 /* SampleDataDedupeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA13000200000000000000A1 /* SampleDataDedupeTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -183,6 +185,8 @@
 		AA12000700000000000000A1 /* ProductionContainerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductionContainerFactoryTests.swift"; sourceTree = "<group>"; };
 		AA12000800000000000000A1 /* PersistentStoreURLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PersistentStoreURLTests.swift"; sourceTree = "<group>"; };
 		AA12000900000000000000A1 /* RemoteChangeObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RemoteChangeObserverTests.swift"; sourceTree = "<group>"; };
+		AA13000100000000000000A1 /* TwoDeviceUnionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TwoDeviceUnionTests.swift"; sourceTree = "<group>"; };
+		AA13000200000000000000A1 /* SampleDataDedupeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SampleDataDedupeTests.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -255,6 +259,8 @@
 		323ADC8322828C0C00644931 /* checklistsTests */ = {
 			isa = PBXGroup;
 			children = (
+				AA13000100000000000000A1 /* TwoDeviceUnionTests.swift */,
+				AA13000200000000000000A1 /* SampleDataDedupeTests.swift */,
 				AA12000100000000000000A1 /* LegacyRealmImporterTests.swift */,
 				AA12000300000000000000A1 /* DataModelTests.swift */,
 				AA12000400000000000000A1 /* ModelBehaviorTests.swift */,
@@ -462,7 +468,7 @@
 						CreatedOnToolsVersion = 10.2.1;
 						SystemCapabilities = {
 							com.apple.iCloud = {
-								enabled = 0;
+								enabled = 1;
 							};
 						};
 					};
@@ -584,6 +590,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA13000100000000000000A2 /* TwoDeviceUnionTests.swift in Sources */,
+				AA13000200000000000000A2 /* SampleDataDedupeTests.swift in Sources */,
 				AA12000100000000000000A2 /* LegacyRealmImporterTests.swift in Sources */,
 				AA12000200000000000000A2 /* TestModelContainer.swift in Sources */,
 				AA12000300000000000000A2 /* DataModelTests.swift in Sources */,

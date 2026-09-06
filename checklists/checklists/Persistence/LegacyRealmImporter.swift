@@ -129,16 +129,61 @@ enum LegacyRealmImporter {
     )
   }
 
+  // MARK: - Ordering
+
+  /// How far apart two devices' import blocks are placed.
+  ///
+  /// Must comfortably exceed the number of checklists anyone will import, since a block occupies
+  /// one unit per checklist. A thousand against a realistic ceiling of a couple of hundred.
+  static let sortKeyBlockSize: Double = 1000.0
+
+  /// How many distinct blocks exist. Sets both the collision odds (1 in this many) and the largest
+  /// sort key the scheme can produce.
+  static let sortKeyBlockCount = 10000
+
+  /**
+   The base a device's imported checklists are numbered from, picked at random per import.
+
+   Solves a problem that only appears once sync is on: a user with two devices that never synced has
+   a *different* set of checklists on each. Both stores import independently, and if both numbered
+   from 1.0 the two lists would interleave — A's first checklist, B's first, A's second, B's second —
+   scrambling an order the user arranged by hand on each device. Giving each import its own block
+   keeps each device's list contiguous and in its original order.
+
+   **Random rather than clock-based.** The obvious approach — number from the import timestamp — was
+   tried first and is wrong: two devices updated in the same sitting import within the same second,
+   which is the *common* case, not a rare one. Making the clock granular enough to separate them
+   pushes sort keys to a magnitude where `Double` can no longer subdivide gaps for midpoint
+   insertion. A random block sidesteps both problems. The cost is that which device's list sorts
+   first is arbitrary rather than chronological, which is cosmetic.
+
+   A collision (1 in `sortKeyBlockCount`) degrades to the old interleaved behaviour. Nothing is lost
+   either way — ids are per-device random UUIDs, so both sets always survive regardless of order.
+
+   The largest key this produces is under 1e7, where a `Double`'s ULP is around 1.9e-9 — far below
+   `SortKeyReorder.epsilon`, so midpoint insertion keeps working afterwards.
+
+   Item sort keys deliberately still start at 1.0: items belong to a single checklist, which came
+   from a single device, so they can never interleave with another device's.
+   */
+  static func randomImportSortKeyBase() -> Double {
+    Double(Int.random(in: 0 ..< sortKeyBlockCount)) * sortKeyBlockSize
+  }
+
   // MARK: - Writing
 
   /// Inserts anything not already present, preserving order as evenly spaced sort keys.
   ///
   /// Matching on `id` is what makes a re-run a no-op. It also means a partially completed earlier
   /// attempt resumes rather than duplicating.
-  static func upsert(_ snapshots: [ChecklistSnapshot], into context: ModelContext) throws {
+  static func upsert(
+    _ snapshots: [ChecklistSnapshot],
+    into context: ModelContext,
+    sortKeyBase: Double = randomImportSortKeyBase()
+  ) throws {
     guard !snapshots.isEmpty else { return }
 
-    var checklistSortKey = SortKeyReorder.step
+    var checklistSortKey = sortKeyBase + SortKeyReorder.step
     for snapshot in snapshots {
       defer { checklistSortKey += SortKeyReorder.step }
       guard context.checklist(id: snapshot.id) == nil else { continue }
@@ -177,13 +222,14 @@ enum LegacyRealmImporter {
     into context: ModelContext,
     userDefaults: UserDefaults = .standard,
     fileManager: FileManager = .default,
-    configuration: Realm.Configuration = legacyConfiguration()
+    configuration: Realm.Configuration = legacyConfiguration(),
+    sortKeyBase: Double = randomImportSortKeyBase()
   ) throws {
     guard isNeeded(userDefaults: userDefaults, fileManager: fileManager, fileURL: configuration.fileURL) else { return }
 
     let startedAt = Date()
     let snapshots = try readLegacyChecklists(from: configuration)
-    try upsert(snapshots, into: context)
+    try upsert(snapshots, into: context, sortKeyBase: sortKeyBase)
     try verify(snapshots, in: context)
 
     // Written last, and only on the success path: an unset flag costs one harmless repeat run,

@@ -20,11 +20,13 @@ import SwiftData
 enum ProductionContainerFactory {
   typealias MakeContainer = @MainActor (ModelConfiguration) throws -> ModelContainer
 
-  /// Whether to attempt a CloudKit-backed store. Off until the iCloud capability, the CloudKit
-  /// container and the remote-notification background mode are in place; turning it on is the
-  /// substance of the follow-up change. Until then the app is deliberately local-only, so the
-  /// store layout can be proven before sync is added on top of it.
-  static let cloudKitEnabled = false
+  /// Whether to attempt a CloudKit-backed store.
+  ///
+  /// On: the iCloud capability, the `iCloud.com.jimmyho.checklists` container and the
+  /// remote-notification background mode are all in place. The local-only path below is still the
+  /// fallback, not dead code — it runs whenever iCloud is unavailable, which is a normal state
+  /// (no account, a simulator that has never signed in, a first launch with no network).
+  static let cloudKitEnabled = true
 
   /// The one on-disk location both configurations use.
   ///

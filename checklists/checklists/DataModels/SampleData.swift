@@ -112,6 +112,82 @@ enum SampleData {
     try context.saveChanges(operation: .delete)
   }
 
+  // MARK: - Duplicate sample cleanup
+
+  /**
+   Collapses duplicate copies of the built-in samples that two devices can each create before their
+   first sync, and deletes nothing else.
+
+   **The case it exists for.** Two devices both install fresh and race: A seeds the three fixed-id
+   samples and uploads; B launches before A's records arrive, finds an empty store, and seeds the
+   same three ids. The account then holds two of each. (If B launches after A's data lands, the
+   emptiness check in `insertFirstTimeLaunchDataIfNeeded` means B never seeds and none of this
+   applies.)
+
+   **Why it is safe.** A copy is removed only when it is identical to the fixture this app ships —
+   name, notes, item names, item notes, checked states, order — *and* another identical copy shares
+   its `id`. Two such records were written seconds apart by this code and never seen by anyone, so
+   they are indistinguishable and dropping one loses nothing by definition. Any edit at all makes a
+   copy stop matching, and then both are kept.
+
+   It cannot reach a user's own checklists: those carry random per-device ids that never collide.
+   In particular this does **not** touch the two-device *upgrade* case, where each device's imported
+   checklists keep the random ids Realm gave them — that data must union, and it does.
+
+   **Why the survivor is elected rather than just "the first one".** Both devices run this, possibly
+   before either's deletion has synced. If they disagreed about which copy to keep they would delete
+   one each and the user would end up with none. The two checklists are identical, but their *items*
+   carry random ids, so the sorted item-id fingerprint is a value that differs between the copies and
+   reads the same on every device. Both devices therefore elect the same survivor and converge on
+   exactly one, whether they run seconds or days apart.
+   */
+  @MainActor
+  static func dedupeChecklists(in context: ModelContext) throws {
+    let fixtures = generateFirstTimeLaunchChecklists()
+    guard !fixtures.isEmpty else { return }
+
+    let stored = try context.fetchChecklistsSorted()
+    var didDelete = false
+
+    for fixture in fixtures {
+      let identicalCopies = stored.filter { $0.id == fixture.id && matchesPristineFixture($0, fixture) }
+      guard identicalCopies.count > 1 else { continue }
+
+      let survivor = identicalCopies.min { itemFingerprint(of: $0) < itemFingerprint(of: $1) }
+      for duplicate in identicalCopies where duplicate !== survivor {
+        context.delete(duplicate)
+        didDelete = true
+      }
+    }
+
+    // Never save when nothing changed: a no-op save on a synced store is a pointless write that
+    // every other device has to merge.
+    guard didDelete else { return }
+    AppLog.persistence.notice("dedupe: collapsed duplicate untouched sample checklists.")
+    try context.saveChanges(operation: .dedupe)
+  }
+
+  /// True when `checklist` is exactly as this app seeded it — nothing added, removed, renamed,
+  /// re-ordered, re-noted, checked or unchecked.
+  static func matchesPristineFixture(_ checklist: Checklist, _ fixture: ChecklistFixture) -> Bool {
+    guard checklist.name == fixture.name, checklist.notes == fixture.notes else { return false }
+
+    let items = checklist.items
+    guard items.count == fixture.items.count else { return false }
+
+    return zip(items, fixture.items).allSatisfy { item, expected in
+      item.name == expected.name
+        && item.notes == expected.notes
+        && (item.status == .checked) == expected.isChecked
+    }
+  }
+
+  /// A value that distinguishes two otherwise-identical sample copies and reads the same on every
+  /// device. The checklists match field for field; their items' random ids do not.
+  private static func itemFingerprint(of checklist: Checklist) -> String {
+    checklist.items.map(\.id).sorted().joined(separator: ",")
+  }
+
   // MARK: - The fixture itself
 
   /**
