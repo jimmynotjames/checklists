@@ -192,12 +192,60 @@ stays at Complete. It is only ever read at launch, in the foreground, so that co
 
 ## Sync status
 
-Placeholder — filled in when CloudKit is enabled. `ContainerBacking` (`Persistence/ContainerBacking.swift`)
-already distinguishes `.cloudKit` from `.localFallback` as the backing a launch ended up on, and
-`Persistence/RemoteChangeObserver.swift` already coalesces `NSPersistentStoreRemoteChange`
-notifications into a single callback — both wired up now, inert until `ProductionContainerFactory.cloudKitEnabled`
-flips to `true`, so that the screens that need to refresh from a remote change already have a single,
-tested place to do it from.
+`Persistence/SyncStatus.swift` is the user-facing half of "is my data syncing?" — it turns two
+independent signals into the single four-state row Settings shows. Ported from the sibling
+`budgets1` repo's `Sync/SyncStatus.swift`, trimmed of the App Store screenshot override (no
+marketing screenshot pipeline here yet) and using this project's existing `ContainerBacking`
+enum rather than redeclaring one.
+
+**Two signals, because they answer different questions and can disagree:**
+
+- `containerBacking` (`ContainerBacking`, `.cloudKit` / `.localFallback`) — which store *this
+  launch* ended up on, decided once by `ProductionContainerFactory` and never mutated afterwards.
+- `accountStatus` (`SyncStatus.AccountStatus`, `.checking` / `.available` / `.unavailable`) — whether
+  the user is *currently* signed in to iCloud, a live signal that can change while the app is
+  running (sign-in, sign-out, account switch) independently of which store this launch picked.
+
+Collapsing them into one flag would lose exactly the case that matters most: a signed-in user whose
+launch nonetheless fell back to the local store. `SyncStatus.rowState` keeps them apart and maps
+the pair to four states:
+
+| containerBacking | accountStatus  | rowState       | What it tells the user |
+|------------------|----------------|----------------|-------------------------|
+| any              | `.checking`    | `.checking`    | Still finding out — show a spinner, not a verdict. |
+| `.cloudKit`      | `.available`   | `.available`   | Signed in, this launch is on CloudKit — sync is active. |
+| `.cloudKit`      | `.unavailable` | `.unavailable` | Not signed in — nothing to sync to; sign in to enable it. |
+| `.localFallback` | `.available`   | `.paused`      | Signed in, but *this launch* is on the local store — edits are safe, just not syncing. |
+| `.localFallback` | `.unavailable` | `.unavailable` | Neither signed in nor on CloudKit — same message as the CloudKit/unavailable row. |
+
+**`.paused` is the state worth dwelling on.** It exists only because `containerBacking` and
+`accountStatus` can disagree — CloudKit container construction can fail at launch (transient
+network trouble, a `CKContainer` hiccup) even though the user's iCloud account is fine, which
+falls back to the local store for that launch (see "Startup and failure UX" above). Reporting that
+as plain "unavailable" would wrongly send a signed-in user off to check their Apple ID; reporting
+it as plain "available" would hide that this launch isn't syncing at all. `.paused` says the true
+thing: your data is safe on this device, it just isn't syncing this launch, and relaunching may
+fix it — which is exactly the copy the Settings row's footer gives for that state.
+
+**Where it's loaded and observed.** `PersistenceController` owns one `SyncStatus` per launch,
+constructed in its `init` from the `containerBacking` it was already given, so `containerBacking`
+is fixed for the controller's lifetime — a retry that resolves differently installs a whole new
+`PersistenceController` (and thus a fresh `SyncStatus`) rather than mutating one in place.
+`accountStatus` starts at `.checking` and is written by `SettingsViewController`: `viewWillAppear`
+starts a task that awaits `ICloudStatusLoader().load(into:)` once, reloads the iCloud section, and
+then observes `.CKAccountChanged` and `.NSUbiquityIdentityDidChange` notifications for as long as
+Settings stays open, re-loading and reloading the row on each. The task is cancelled in
+`viewDidDisappear` so nothing keeps running once the screen is dismissed.
+
+**Why `ICloudStatusLoader` takes its query as a closure.** `Persistence/ICloudStatusLoader.swift`
+wraps the actual `CKContainer.default().accountStatus()` call behind an injectable
+`accountStatus: () async throws -> CKAccountStatus` property because `CKContainer` cannot be
+stubbed — there is no other seam to drive `.available` / `.noAccount` / a thrown error through in
+a unit test. Production uses the live CloudKit call; `ICloudStatusLoaderTests` injects the three
+outcomes (plus a two-phase sign-in transition) directly. The loader also short-circuits to
+`.noAccount` under `#if DEBUG` when `IS_TESTING` is set or `-UITests1` is passed on the command
+line, because `CKContainer.accountStatus()` hangs on an account-less Simulator and would otherwise
+pin the row to a spinner and block UI tests from ever reaching Settings.
 
 ## CloudKit ops record
 

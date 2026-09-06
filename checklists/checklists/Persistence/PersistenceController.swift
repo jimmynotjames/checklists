@@ -30,6 +30,7 @@ final class PersistenceController {
 
   let modelContainer: ModelContainer
   let containerBacking: ContainerBacking
+  let syncStatus: SyncStatus
 
   var mainContext: ModelContext {
     modelContainer.mainContext
@@ -38,6 +39,7 @@ final class PersistenceController {
   init(modelContainer: ModelContainer, containerBacking: ContainerBacking) {
     self.modelContainer = modelContainer
     self.containerBacking = containerBacking
+    syncStatus = SyncStatus(containerBacking: containerBacking)
   }
 
   static func install(_ controller: PersistenceController) {

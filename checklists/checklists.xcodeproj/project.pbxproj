@@ -78,6 +78,11 @@
 		AA12000900000000000000A2 /* RemoteChangeObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000900000000000000A1 /* RemoteChangeObserverTests.swift */; };
 		AA13000100000000000000A2 /* TwoDeviceUnionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA13000100000000000000A1 /* TwoDeviceUnionTests.swift */; };
 		AA13000200000000000000A2 /* SampleDataDedupeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA13000200000000000000A1 /* SampleDataDedupeTests.swift */; };
+		AA140001000000000000A2 /* SyncStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140001000000000000A1 /* SyncStatus.swift */; };
+		AA140002000000000000A2 /* ICloudStatusLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140002000000000000A1 /* ICloudStatusLoader.swift */; };
+		AA140003000000000000A2 /* SyncStatusTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140003000000000000A1 /* SyncStatusTableViewCell.swift */; };
+		AA140004000000000000A2 /* SyncStatusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140004000000000000A1 /* SyncStatusTests.swift */; };
+		AA140005000000000000A2 /* ICloudStatusLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140005000000000000A1 /* ICloudStatusLoaderTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -187,6 +192,11 @@
 		AA12000900000000000000A1 /* RemoteChangeObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RemoteChangeObserverTests.swift"; sourceTree = "<group>"; };
 		AA13000100000000000000A1 /* TwoDeviceUnionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TwoDeviceUnionTests.swift"; sourceTree = "<group>"; };
 		AA13000200000000000000A1 /* SampleDataDedupeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SampleDataDedupeTests.swift"; sourceTree = "<group>"; };
+		AA140001000000000000A1 /* SyncStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncStatus.swift"; sourceTree = "<group>"; };
+		AA140002000000000000A1 /* ICloudStatusLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudStatusLoader.swift"; sourceTree = "<group>"; };
+		AA140003000000000000A1 /* SyncStatusTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncStatusTableViewCell.swift"; sourceTree = "<group>"; };
+		AA140004000000000000A1 /* SyncStatusTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncStatusTests.swift"; sourceTree = "<group>"; };
+		AA140005000000000000A1 /* ICloudStatusLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudStatusLoaderTests.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -269,6 +279,8 @@
 				AA12000700000000000000A1 /* ProductionContainerFactoryTests.swift */,
 				AA12000800000000000000A1 /* PersistentStoreURLTests.swift */,
 				AA12000900000000000000A1 /* RemoteChangeObserverTests.swift */,
+				AA140004000000000000A1 /* SyncStatusTests.swift */,
+				AA140005000000000000A1 /* ICloudStatusLoaderTests.swift */,
 				AA120000000000000000G1 /* Helpers */,
 				AA07000000000000000000C1 /* AnalyticsManagerTests.swift */,
 				AA07000000000000000000D1 /* SettingsManagerTests.swift */,
@@ -339,6 +351,7 @@
 				AA03000000000000000000C1 /* ThemeItemTableViewCell.swift */,
 				AA04000000000000000000D1 /* InfoRowTableViewCell.swift */,
 				AA05000000000000000000E1 /* MainMenuItemTableViewCell.swift */,
+				AA140003000000000000A1 /* SyncStatusTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -381,6 +394,8 @@
 				AA11001600000000000000A1 /* LegacyRealmImporter.swift */,
 				AA11001700000000000000A1 /* RemoteChangeObserver.swift */,
 				AA11001800000000000000A1 /* AppStartupCoordinator.swift */,
+				AA140001000000000000A1 /* SyncStatus.swift */,
+				AA140002000000000000A1 /* ICloudStatusLoader.swift */,
 			);
 			path = Persistence;
 			sourceTree = "<group>";
@@ -556,6 +571,9 @@
 				AA11001800000000000000A2 /* AppStartupCoordinator.swift in Sources */,
 				AA11001900000000000000A2 /* LoadingViewController.swift in Sources */,
 				AA11002000000000000000A2 /* ContainerFailureViewController.swift in Sources */,
+				AA140001000000000000A2 /* SyncStatus.swift in Sources */,
+				AA140002000000000000A2 /* ICloudStatusLoader.swift in Sources */,
+				AA140003000000000000A2 /* SyncStatusTableViewCell.swift in Sources */,
 				32F8F1AF2311E71900F12306 /* CLTextField.swift in Sources */,
 				32F040472336DDBC007CB244 /* SampleData.swift in Sources */,
 				32E767E022EA6476003C8634 /* CLButton.swift in Sources */,
@@ -601,6 +619,8 @@
 				AA12000700000000000000A2 /* ProductionContainerFactoryTests.swift in Sources */,
 				AA12000800000000000000A2 /* PersistentStoreURLTests.swift in Sources */,
 				AA12000900000000000000A2 /* RemoteChangeObserverTests.swift in Sources */,
+				AA140004000000000000A2 /* SyncStatusTests.swift in Sources */,
+				AA140005000000000000A2 /* ICloudStatusLoaderTests.swift in Sources */,
 				AA07000000000000000000C2 /* AnalyticsManagerTests.swift in Sources */,
 				AA07000000000000000000D2 /* SettingsManagerTests.swift in Sources */,
 				AA08000000000000000000A2 /* CircularPercentStatusIconTests.swift in Sources */,
