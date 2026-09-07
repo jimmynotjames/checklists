@@ -39,8 +39,9 @@ extension ModelContext {
   ///   `UITableViewDataSource.tableView(_:moveRowAt:to:)`.
   func move(checklist: Checklist, among siblings: [Checklist], to index: Int) throws {
     guard let remaining = siblingsRemoving(checklist, from: siblings) else { return }
-    place(checklist, at: index, among: remaining)
-    try saveChanges(operation: .reorder)
+    try placeAndSave(checklist, at: index, among: remaining, restoringSortKeysOf: siblings) {
+      try saveChanges(operation: .reorder)
+    }
   }
 
   /// Inserts a brand-new item at `index` within `checklist` and saves.
@@ -56,8 +57,42 @@ extension ModelContext {
   /// Moves an existing item within its checklist to `index` and saves.
   func move(item: Item, among siblings: [Item], to index: Int) throws {
     guard let remaining = siblingsRemoving(item, from: siblings) else { return }
-    place(item, at: index, among: remaining)
-    try saveChanges(operation: .reorder)
+    try placeAndSave(item, at: index, among: remaining, restoringSortKeysOf: siblings) {
+      try saveChanges(operation: .reorder)
+    }
+  }
+
+  /// Places `element` and saves, putting every sort key back as it was found if the save fails.
+  ///
+  /// A move assigns sort keys before it saves, and `place` may renormalize every sibling on the
+  /// way, so without this a failed save leaves the context holding an order that was never
+  /// written. That matters because the screens render from the context rather than from disk —
+  /// `Checklist.items` sorts by the in-memory `sortKey`, and SwiftUI's `@Query` re-reads the same
+  /// context — so the new order would look saved right up until the next launch quietly restored
+  /// it. Restoring here makes a move all-or-nothing: either it is on disk, or it never happened.
+  ///
+  /// - Parameters:
+  ///   - snapshotSource: every record whose key may change, which is the moved element together
+  ///     with all of its siblings.
+  ///   - save: how to persist the change. A parameter so a test can supply one that throws: a real
+  ///     SwiftData save only fails on a full or damaged disk, which a test cannot arrange.
+  func placeAndSave<T: SortKeyed>(
+    _ element: T,
+    at index: Int,
+    among others: [T],
+    restoringSortKeysOf snapshotSource: [T],
+    save: () throws -> Void
+  ) throws {
+    let snapshot = snapshotSource.map { ($0, $0.sortKey) }
+    place(element, at: index, among: others)
+    do {
+      try save()
+    } catch {
+      for (record, sortKey) in snapshot {
+        record.sortKey = sortKey
+      }
+      throw error
+    }
   }
 
   // MARK: - Private

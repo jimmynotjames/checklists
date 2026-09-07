@@ -82,6 +82,7 @@
 		AA140002000000000000A2 /* ICloudStatusLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140002000000000000A1 /* ICloudStatusLoader.swift */; };
 		AA140004000000000000A2 /* SyncStatusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140004000000000000A1 /* SyncStatusTests.swift */; };
 		AA140005000000000000A2 /* ICloudStatusLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140005000000000000A1 /* ICloudStatusLoaderTests.swift */; };
+		AA21000100000000000000A2 /* ChecklistReorderFailureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA21000100000000000000A1 /* ChecklistReorderFailureTests.swift */; };
 		AA15000100000000000000A2 /* StoreReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA15000100000000000000A1 /* StoreReset.swift */; };
 		AA15000200000000000000A2 /* StoreResetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA15000200000000000000A1 /* StoreResetTests.swift */; };
 /* End PBXBuildFile section */
@@ -197,6 +198,7 @@
 		AA140002000000000000A1 /* ICloudStatusLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudStatusLoader.swift"; sourceTree = "<group>"; };
 		AA140004000000000000A1 /* SyncStatusTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncStatusTests.swift"; sourceTree = "<group>"; };
 		AA140005000000000000A1 /* ICloudStatusLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudStatusLoaderTests.swift"; sourceTree = "<group>"; };
+		AA21000100000000000000A1 /* ChecklistReorderFailureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChecklistReorderFailureTests.swift"; sourceTree = "<group>"; };
 		AA15000100000000000000A1 /* StoreReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoreReset.swift"; sourceTree = "<group>"; };
 		AA15000200000000000000A1 /* StoreResetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoreResetTests.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -284,6 +286,7 @@
 				AA12000900000000000000A1 /* RemoteChangeObserverTests.swift */,
 				AA140004000000000000A1 /* SyncStatusTests.swift */,
 				AA140005000000000000A1 /* ICloudStatusLoaderTests.swift */,
+				AA21000100000000000000A1 /* ChecklistReorderFailureTests.swift */,
 				AA120000000000000000G1 /* Helpers */,
 				AA07000000000000000000C1 /* AnalyticsManagerTests.swift */,
 				AA07000000000000000000D1 /* SettingsManagerTests.swift */,
@@ -641,6 +644,7 @@
 				AA12000900000000000000A2 /* RemoteChangeObserverTests.swift in Sources */,
 				AA140004000000000000A2 /* SyncStatusTests.swift in Sources */,
 				AA140005000000000000A2 /* ICloudStatusLoaderTests.swift in Sources */,
+				AA21000100000000000000A2 /* ChecklistReorderFailureTests.swift in Sources */,
 				AA07000000000000000000C2 /* AnalyticsManagerTests.swift in Sources */,
 				AA07000000000000000000D2 /* SettingsManagerTests.swift in Sources */,
 				AA08000000000000000000A2 /* CircularPercentStatusIconTests.swift in Sources */,
