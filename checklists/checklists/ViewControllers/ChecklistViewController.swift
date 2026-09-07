@@ -49,6 +49,14 @@ class ChecklistViewController: UIViewController {
   private var snapshotView: UIView = .init()
   private var sourceIndexPath: IndexPath = .init(row: 0, section: 0)
 
+  /// Writes an item's new position to the store.
+  ///
+  /// A closure rather than a direct call so tests can drive the failure path: a real SwiftData save
+  /// only fails on a full or damaged disk, which a test has no way to arrange.
+  var saveItemMove: (Item, [Item], Int) throws -> Void = { item, siblings, index in
+    try PersistenceController.shared.mainContext.move(item: item, among: siblings, to: index)
+  }
+
   override func loadView() {
     let tableView = UITableView(frame: .zero, style: .plain)
     self.tableView = tableView
@@ -356,6 +364,33 @@ class ChecklistViewController: UIViewController {
   func updateStatusIcon() {
     statusIcon.percentageComplete = checklist.percentageComplete
   }
+
+  /// Saves an item's new position, reporting whether it stuck.
+  ///
+  /// A failure is already logged and reported by `saveChanges`, and the move itself is undone in
+  /// the model, so what is left for the caller is the screen: the two reorder paths differ in what
+  /// they have already drawn, so each decides for itself what to do about it.
+  func saveMove(of item: Item, among siblings: [Item], to index: Int) -> Bool {
+    do {
+      try saveItemMove(item, siblings, index)
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  /// Puts the table back in step with the model after a move that could not be saved.
+  ///
+  /// Deferred to a later turn of the run loop deliberately: reloading from inside
+  /// `tableView(_:moveRowAt:to:)` fights the move animation that is still in flight, which can
+  /// assert or leave the table in a broken state.
+  ///
+  /// Overridden in tests to observe that a failure asked for a resync.
+  func resyncAfterFailedMove() {
+    Task { @MainActor [weak self] in
+      self?.tableView.reloadData()
+    }
+  }
 }
 
 extension ChecklistViewController: UITableViewDataSource {
@@ -383,7 +418,11 @@ extension ChecklistViewController: UITableViewDataSource {
   func tableView(_: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
     let items = checklist.items
     guard sourceIndexPath.row < items.count else { assertionFailure(); return }
-    try? context.move(item: items[sourceIndexPath.row], among: items, to: destinationIndexPath.row)
+    // UIKit has already drawn the row in its new position, so a failed save leaves the table
+    // showing an order the model no longer holds and it has to be put back.
+    if !saveMove(of: items[sourceIndexPath.row], among: items, to: destinationIndexPath.row) {
+      resyncAfterFailedMove()
+    }
   }
 }
 
@@ -572,7 +611,9 @@ extension ChecklistViewController: UITableViewDropDelegate {
       Task { @MainActor in
         let items = self.checklist.items
         guard let sourceIndex = items.firstIndex(where: { $0.id == itemId }) else { return }
-        try? self.context.move(item: items[sourceIndex], among: items, to: destinationIndexPath.row)
+        // Unlike the reorder-control path above, nothing has moved on screen yet, so the row is
+        // only moved once the new order is actually saved.
+        guard self.saveMove(of: items[sourceIndex], among: items, to: destinationIndexPath.row) else { return }
         tableView.moveRow(at: IndexPath(row: sourceIndex, section: destinationIndexPath.section), to: destinationIndexPath)
       }
     }
