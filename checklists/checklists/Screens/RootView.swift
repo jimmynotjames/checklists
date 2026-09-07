@@ -43,7 +43,6 @@ struct RootView: View {
           .transition(.move(edge: .leading))
       }
     }
-    // Matches the old MainMenuTransitionAnimator's 0.2s horizontal slide.
     .animation(.easeInOut(duration: 0.2), value: router.isMainMenuVisible)
     .tint(Colors.tealColor)
     .sheet(item: $router.sheet) { route in

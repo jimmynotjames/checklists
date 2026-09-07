@@ -21,9 +21,8 @@ import SwiftUI
  body instead, where it is useful. Only the error's domain and code go in, never its description,
  which can carry the user's own content.
 
- Replaces `ContainerFailureViewController`. `onStoreReset` takes the place of the delegate callback:
- every local store has already been deleted by the time it runs, and the caller is responsible for
- re-running startup.
+ By the time `onStoreReset` runs, every local store has already been deleted; the caller is
+ responsible for re-running startup from there.
  */
 struct ContainerFailureView: View {
   let failure: ContainerCreationFailure

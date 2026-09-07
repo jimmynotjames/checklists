@@ -9,11 +9,8 @@ import SwiftData
 /**
  The startup sequence, as a phase the SwiftUI app body can switch on.
 
- This is the SwiftUI replacement for `SceneDelegate`'s window-swapping: instead of installing a
- different root view controller at each step, the same root view renders whichever `Phase` this
- model is currently in. The branching, the ordering, and the timing are ported from
- `SceneDelegate` unchanged — see the comments on each step, which explain *why* the sequence is
- shaped this way.
+ The same root view renders whichever `Phase` this model is currently in; see the comments on
+ each step below for *why* the sequence is shaped this way.
 
  `AppStartupCoordinator` still owns the actual work. This type owns only when it runs and what
  the screen shows while it does.

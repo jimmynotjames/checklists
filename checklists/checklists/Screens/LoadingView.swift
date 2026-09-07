@@ -10,8 +10,6 @@ import UIKit
 ///
 /// Only ever appears on the single launch after an upgrade from a Realm build. Every other launch
 /// installs the checklist list directly, exactly as before.
-///
-/// Replaces `LoadingViewController`.
 struct LoadingView: View {
   private let showsCloudSyncNote: Bool
 

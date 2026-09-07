@@ -34,8 +34,7 @@ struct ChecklistScreen: UIViewControllerRepresentable {
     viewController.onRequestDismiss = onRequestDismiss
     if !isNewChecklist {
       // The embedded navigation controller's root has no system back button, so recreate one.
-      // Chevron-only matches the old look: the pushing screen used to blank the back title
-      // by setting `backBarButtonItem` to " ".
+      // Chevron-only, with no back title, is the intended look.
       let backButton = UIBarButtonItem(
         image: UIImage(systemName: "chevron.backward"),
         primaryAction: UIAction { _ in onRequestDismiss() }

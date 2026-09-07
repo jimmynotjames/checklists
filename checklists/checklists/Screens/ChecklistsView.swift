@@ -8,8 +8,7 @@ import SwiftUI
 
 /// The app's top-level screen: every checklist, in the user's own order.
 ///
-/// Replaces `ChecklistsViewController`, and absorbs `ChecklistsMenuViewController` — a
-/// one-row table view presented as a popover, which is a `Button` in a `.popover` here.
+/// The reset-all menu is a popover on the toolbar button rather than a separate screen.
 ///
 /// The `navigationDestination` for `AppRoute` is attached once at the root of the
 /// `NavigationStack`, not here, so this screen only produces routes (`NavigationLink(value:)`)
@@ -49,15 +48,14 @@ struct ChecklistsView: View {
         NavigationLink(value: AppRoute.checklist(id: checklist.id)) {
           ChecklistRowView(checklist: checklist)
         }
-        // The 16pt side margin the cell's visual-format string used for both labels.
         .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-        .listRowSeparator(.hidden) // Was `tableView.separatorStyle = .none`.
+        .listRowSeparator(.hidden)
         .swipeActions(edge: .trailing) {
           // Deliberately NOT `role: .destructive`: a full swipe on a destructive action
           // optimistically animates the row away before any model change, but this action only
-          // records intent — the delete itself waits for the confirmation alert, exactly as the
-          // `commit editingStyle:` path did. A cancelled confirmation must leave the row visible,
-          // so the red comes from an explicit tint instead of the role.
+          // records intent — the delete itself waits for the confirmation alert. A cancelled
+          // confirmation must leave the row visible, so the red comes from an explicit tint
+          // instead of the role.
           Button("Delete") {
             pendingDeleteID = checklist.id
           }
@@ -68,8 +66,6 @@ struct ChecklistsView: View {
     }
     .listStyle(.plain)
     .appBackground()
-    // The list has no title of its own: `ChecklistsViewController` never set one, and its
-    // navigation controller did not use large titles.
     .navigationTitle("")
     .navigationBarTitleDisplayMode(.inline)
     .overlay(alignment: .bottomTrailing) {
@@ -100,9 +96,7 @@ struct ChecklistsView: View {
           .font(.body)
           .tint(Colors.tealColor)
           .padding()
-          // Replaces the `UIPopoverPresentationControllerDelegate` returning `.none` from
-          // `adaptivePresentationStyle(for:traitCollection:)`, which existed purely to stop
-          // iPhone adapting this popover into a sheet.
+          // Stops iPhone adapting this popover into a sheet.
           .presentationCompactAdaptation(.popover)
           // The confirmation alert can't be raised in the same turn that dismisses the
           // popover — SwiftUI drops a presentation started while another is tearing down —
@@ -139,9 +133,7 @@ struct ChecklistsView: View {
       //
       // `@Query` already re-runs itself when the store changes, so this observer no longer
       // has a list to reload — it exists only for the tidy-up below. The dedupe's own save
-      // is what nudges `@Query` a second time, once the duplicates are gone. Together they
-      // replace `refetchChecklists`, `reloadChecklists`, and the
-      // `ChecklistViewControllerDelegate` callback that used to drive them.
+      // is what nudges `@Query` a second time, once the duplicates are gone.
       remoteChangeObserver = RemoteChangeObserver {
         // A duplicate untouched sample arriving from another device is exactly the change
         // that triggers this, and tidying it up here means the list settles to one copy
@@ -160,8 +152,8 @@ struct ChecklistsView: View {
     Button {
       addChecklist()
     } label: {
-      // Geometry and shadow mirror `CLCircleButton`: 60pt across, a 10pt inset around the
-      // icon, and a gray shadow at 40% opacity, radius 3, offset 2pt down.
+      // Deliberately 60pt across, with a 10pt inset around the icon and a gray shadow at 40%
+      // opacity, radius 3, offset 2pt down: matches the pre-SwiftUI design (see PR #136).
       Image("AddChecklistIcon")
         .resizable()
         .scaledToFit()
@@ -217,8 +209,7 @@ struct ChecklistsView: View {
   private func confirmDelete(id checklistId: String) {
     // `nil` means it is already gone — deleted on another device while the alert was up.
     guard let checklist = context.checklist(id: checklistId) else { return }
-    // The items go with it: the relationship's cascade delete rule replaces the explicit
-    // two-step delete Realm needed, which had no cascade of its own.
+    // The items go with it: the relationship's cascade delete rule handles that automatically.
     context.delete(checklist)
     context.saveChangesIgnoringFailure(operation: .delete)
   }
@@ -231,6 +222,6 @@ struct ChecklistsView: View {
     }
     context.saveChangesIgnoringFailure(operation: .checklistEdit)
     // No reload to follow: each row's status icon reads `percentageComplete` in its own body,
-    // so Observation redraws the rings. This is where the UIKit version called `reloadData`.
+    // so Observation redraws the rings.
   }
 }

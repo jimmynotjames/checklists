@@ -6,10 +6,10 @@
 import CloudKit
 import SwiftUI
 
-/// SwiftUI replacement for `SettingsViewController`, presented as a sheet from the app's
-/// `Router`. Mirrors budgets1's `SettingsView` structure (Form + sections, `.task` loaders,
-/// `observeAccountChanges` withTaskGroup pattern), but drops the VC's dormant Themes section
-/// and the currency/week-start/analytics-consent machinery budgets1 has and this app doesn't.
+/// Settings screen presented as a sheet from the app's `Router`. Mirrors budgets1's
+/// `SettingsView` structure (Form + sections, `.task` loaders, `observeAccountChanges`
+/// withTaskGroup pattern), but has no Themes section and none of the currency/week-start/
+/// analytics-consent machinery budgets1 has.
 struct SettingsView: View {
   @Environment(SyncStatus.self) private var syncStatus
   @Environment(\.dismiss) private var dismiss
@@ -33,9 +33,8 @@ struct SettingsView: View {
           .tint(Colors.tealColor) // iOS 26 Liquid Glass renders bar buttons monochrome without an explicit tint.
         }
       }
-      // Two independent `.task`s, each auto-cancelled by SwiftUI when the sheet is dismissed —
-      // that cancellation is what replaces the VC's manual `iCloudStatusTask` lifecycle
-      // (cancel-then-restart in `viewWillAppear`, cancel in `viewDidDisappear`).
+      // Two independent `.task`s, each auto-cancelled by SwiftUI when the sheet is dismissed,
+      // so there's no manual task lifecycle to start and stop here.
       .task {
         await ICloudStatusLoader().load(into: syncStatus)
       }
@@ -158,8 +157,7 @@ struct SettingsView: View {
         }
       }
     } header: {
-      // Was the literal "INFO" in the UIKit grouped table, which uppercased headers anyway;
-      // title case matches how the other Form headers here are written.
+      // Title case, matching how the other Form headers here are written.
       Text("Info")
     }
   }

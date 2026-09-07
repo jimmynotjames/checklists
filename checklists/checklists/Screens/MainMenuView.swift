@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// Full-screen menu panel presented over the checklists list. Replaces
-/// `MainMenuTableViewController` and `MainMenuItemTableViewCell`.
+/// Full-screen menu panel presented over the checklists list, offering feedback, App Store
+/// rating, and settings actions.
 struct MainMenuView: View {
   @Environment(Router.self) private var router
   @Environment(\.openURL) private var openURL
@@ -39,7 +39,8 @@ struct MainMenuView: View {
       }
 
       MainMenuRow(title: "Settings", iconName: "MainMenuSettingsIcon") {
-        // Matches the UIKit `dismiss(animated: false)` before handing off to Settings.
+        // The menu must vanish instantly here so it isn't still animating out behind the
+        // Settings sheet coming up.
         var transaction = Transaction()
         transaction.disablesAnimations = true
         withTransaction(transaction) {
@@ -79,8 +80,8 @@ private struct MainMenuRow: View {
         Spacer()
       }
       .padding(.leading, 16)
-      // Minimum, not fixed (the UIKit row was a fixed 60): text at large Dynamic Type
-      // sizes can now grow the row instead of clipping.
+      // Minimum, not fixed: text at large Dynamic Type sizes can grow the row instead of
+      // clipping.
       .frame(minHeight: 60)
       .contentShape(Rectangle())
     }

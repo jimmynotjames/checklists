@@ -257,11 +257,11 @@ fix it — which is exactly the copy the Settings row's footer gives for that st
 constructed in its `init` from the `containerBacking` it was already given, so `containerBacking`
 is fixed for the controller's lifetime — a retry that resolves differently installs a whole new
 `PersistenceController` (and thus a fresh `SyncStatus`) rather than mutating one in place.
-`accountStatus` starts at `.checking` and is written by `SettingsViewController`: `viewWillAppear`
-starts a task that awaits `ICloudStatusLoader().load(into:)` once, reloads the iCloud section, and
-then observes `.CKAccountChanged` and `.NSUbiquityIdentityDidChange` notifications for as long as
-Settings stays open, re-loading and reloading the row on each. The task is cancelled in
-`viewDidDisappear` so nothing keeps running once the screen is dismissed.
+`accountStatus` starts at `.checking` and is written by `SettingsView`, which runs two `.task`s
+while it is on screen: one awaits `ICloudStatusLoader().load(into:)` once, the other observes
+`.CKAccountChanged` and `.NSUbiquityIdentityDidChange` and re-loads on each, so the row tracks an
+account change without a dismiss and re-open. SwiftUI cancels both when the sheet goes away, so
+nothing keeps running once the screen is dismissed.
 
 **Why `ICloudStatusLoader` takes its query as a closure.** `Persistence/ICloudStatusLoader.swift`
 wraps the actual `CKContainer.default().accountStatus()` call behind an injectable
