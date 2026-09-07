@@ -19,8 +19,8 @@ privacy policy and landing page. Never put internal docs there.)
 
 All three targets use **file-system-synchronized folders**
 (`PBXFileSystemSynchronizedRootGroup`), so `project.pbxproj` holds no per-file references. A new
-`.swift` anywhere under `checklists/`, `checklistsTests/`, or `checklistsUITests/` is compiled into
-that target as soon as it exists — just create the file; there is nothing to register, and adding
+`.swift` anywhere under `checklists/checklists/`, `checklists/checklistsTests/`, or
+`checklists/checklistsUITests/` is compiled into that target as soon as it exists — just create the file; there is nothing to register, and adding
 one produces no project-file diff. Each folder carries one membership exception, its `Info.plist`,
 which is consumed via `INFOPLIST_FILE` rather than copied as a resource. To exclude some other file
 from a target, uncheck it in Xcode's File inspector, which extends that exception set. The project
@@ -58,8 +58,8 @@ shared scheme's unit target failing to build, and on `test-ui`'s `warmed` sentin
 `SampleDataDedupeTests`, `SyncStatusTests`, `ICloudStatusLoaderTests`, `StoreResetTests`,
 `AnalyticsManagerTests`,
 `SettingsManagerTests`, `CircularPercentStatusIconTests`, `CLTextViewTests`,
-`ItemContentViewTests`, and `ChecklistReorderFailureTests`; `checklistsUITests` has 17. Both are green, verified twice in a row for
-flakes — but still opt-in, not part of `make gate`.
+`ItemContentViewTests`, and `ChecklistReorderFailureTests`; `checklistsUITests` has 17. Both are
+green, verified twice in a row for flakes — but still opt-in, not part of `make gate`.
 
 All of `checklistsTests` runs against disposable in-memory `ModelContainer`s (see
 `checklistsTests/Helpers/TestModelContainer.swift`), except `LegacyRealmImporterTests`, which
