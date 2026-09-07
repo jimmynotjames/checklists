@@ -14,7 +14,7 @@ import UIKit
 /// accessibility value ("Checklist X percent complete") can drift out of sync.
 struct StatusIconView: UIViewRepresentable {
   var percentageComplete: CGFloat
-  var iconType: CircularPercentStatusIcon.IconType = .tableViewCell
+  var iconType: CircularPercentStatusIcon.IconType = .row
 
   func makeUIView(context _: Context) -> CircularPercentStatusIcon {
     let icon = CircularPercentStatusIcon(iconType: iconType)
@@ -31,7 +31,7 @@ struct StatusIconView: UIViewRepresentable {
     // The radii themselves (10.0 / 12.0) are private to that class, so they're hardcoded
     // here rather than referenced — keep these in sync if configureDimensions changes.
     switch iconType {
-    case .tableViewCell:
+    case .row:
       CGSize(width: 20, height: 20)
     case .header:
       CGSize(width: 24, height: 24)

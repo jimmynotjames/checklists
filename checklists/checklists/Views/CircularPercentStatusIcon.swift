@@ -9,7 +9,9 @@ import UIKit
 
 class CircularPercentStatusIcon: UIView {
   enum IconType {
-    case tableViewCell
+    /// The smaller icon shown beside a checklist's name in a list row.
+    case row
+    /// The larger icon shown in the checklist-detail screen's header.
     case header
   }
 
@@ -84,7 +86,7 @@ class CircularPercentStatusIcon: UIView {
 
   private func configureDimensions(iconType: IconType) {
     switch iconType {
-    case .tableViewCell:
+    case .row:
       radius = 10.0
       innerRadius = 7.5
       outerRingLineWidth = 0.5
