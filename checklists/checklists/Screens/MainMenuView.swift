@@ -12,7 +12,8 @@ struct MainMenuView: View {
   @Environment(\.openURL) private var openURL
 
   var body: some View {
-    VStack(alignment: .leading, spacing: 0) {
+    // The gap between menu rows lives here rather than in the rows themselves.
+    VStack(alignment: .leading, spacing: 16) {
       Button {
         // The presenting view animates the dismissal.
         router.isMainMenuVisible = false
@@ -23,6 +24,9 @@ struct MainMenuView: View {
       .accessibilityLabel("Close menu")
       .padding(.top, 8)
       .padding(.leading, 16)
+      // On top of the stack's own 16, so the close button reads as separate from the menu
+      // rows rather than as a fourth item.
+      .padding(.bottom, 8)
 
       MainMenuRow(title: "Feedback", iconName: "MainMenuFeedbackIcon") {
         AnalyticsManager.logSendFeedback()
@@ -80,9 +84,8 @@ private struct MainMenuRow: View {
         Spacer()
       }
       .padding(.leading, 16)
-      // Minimum, not fixed: text at large Dynamic Type sizes can grow the row instead of
-      // clipping.
-      .frame(minHeight: 60)
+      // The row is exactly as tall as its content: the 44pt icon, or the title once large
+      // Dynamic Type sizes make it taller. 44 is also the minimum comfortable tap target.
       .contentShape(Rectangle())
     }
     .buttonStyle(.plain)
