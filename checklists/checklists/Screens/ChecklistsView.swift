@@ -45,9 +45,9 @@ struct ChecklistsView: View {
   var body: some View {
     List {
       ForEach(checklists) { checklist in
-        // A `Button` pushing the route by hand rather than a `NavigationLink`: the link draws a
-        // disclosure chevron in a `List` and offers no way to suppress it, and these rows never
-        // had one.
+        // A `Button` pushing the route by hand rather than a `NavigationLink`: inside a `List` the
+        // link draws a disclosure chevron that this screen deliberately does without, and SwiftUI
+        // offers no way to suppress it.
         Button {
           router.path.append(.checklist(id: checklist.id))
         } label: {
