@@ -164,11 +164,11 @@ The one exception is `checklist_name` on `checklist_viewed`, which is a pre-exis
 documented in `core-docs/analytics-design.md` — it is not a precedent for adding more user content.
 
 **Accessibility**
-Applies if: the diff adds or modifies a `UIView` or `UIViewController`.
+Applies if: the diff adds or modifies a SwiftUI `View`, a `UIView`, or a `UIViewController`.
 Check: new interactive controls have an `accessibilityLabel`; custom controls (`CheckboxButton`,
-`RoundCheckboxButton`, `CLButton`, `CLCircleButton`, `CircularPercentStatusIcon`) set appropriate
-`accessibilityTraits` and reflect state (a checkbox should expose selected/unselected); no fixed
-frame heights that clip text at large Dynamic Type.
+`CLButton`, `CircularPercentStatusIcon`) set appropriate `accessibilityTraits` and reflect state
+(a checkbox should expose selected/unselected); no fixed frame heights that clip text at large
+Dynamic Type — prefer `minHeight` over a fixed `height` on rows that contain text.
 
 Fix any gaps you find.
 

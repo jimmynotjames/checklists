@@ -13,7 +13,7 @@ import Observation
 ///
 /// `containerBacking` is determined at app launch from the outcome of
 /// `ProductionContainerFactory.make` and is not expected to change afterwards.
-/// `accountStatus` is updated asynchronously by `SettingsViewController` via
+/// `accountStatus` is updated asynchronously by `SettingsView` via
 /// `ICloudStatusLoader` and `CKAccountChangedNotification`/`NSUbiquityIdentityDidChange`
 /// observers.
 ///
@@ -23,7 +23,7 @@ final class SyncStatus {
   // MARK: - Nested types
 
   /// The last-known iCloud account status.
-  /// Initialized to `.checking`; updated by `SettingsViewController`.
+  /// Initialized to `.checking`; updated by `SettingsView`.
   enum AccountStatus {
     case checking
     case available
@@ -54,10 +54,10 @@ final class SyncStatus {
 
   // MARK: - State
 
-  /// Launch-time backing, read from `SettingsViewController`.
+  /// Launch-time backing, read from `SettingsView`.
   let containerBacking: ContainerBacking
 
-  /// Mutable account status. Updated by `SettingsViewController` asynchronously.
+  /// Mutable account status. Updated by `SettingsView` asynchronously.
   var accountStatus: AccountStatus
 
   // MARK: - Init

@@ -18,21 +18,27 @@ class checklistsUITests: XCTestCase {
     app = XCUIApplication()
     app.launchArguments = ["-UITests1"]
     app.launch()
-    XCTAssertTrue(app.tables.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
+    XCTAssertTrue(app.collectionViews.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
   }
 
   func testChecklistDeletion() {
-    let tablesQuery = app.tables
-    tablesQuery/*@START_MENU_TOKEN@*/
-      .staticTexts["Weekend Getaway Essentials"]/*[[".cells.staticTexts[\"Weekend Getaway Essentials\"]",".staticTexts[\"Weekend Getaway Essentials\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
-      .swipeLeft()
-    tablesQuery/*@START_MENU_TOKEN@*/ .buttons["Delete"]/*[[".cells.buttons[\"Delete\"]",".buttons[\"Delete\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/ .tap()
-    app.alerts.scrollViews.otherElements.buttons["Delete"].tap()
+    // The main checklists list is a SwiftUI `List`, which XCUITest exposes as a collection view
+    // (the detail screen is still a real UIKit table view — see `checklistUITest`).
+    let listQuery = app.collectionViews
+    listQuery.staticTexts["Weekend Getaway Essentials"].swipeLeft()
+    // The swipe action lives in the row, but scoping to `app` keeps this working regardless of
+    // where the collection view hangs the revealed action button.
+    let deleteAction = app.buttons["Delete"]
+    XCTAssertTrue(deleteAction.waitForExistence(timeout: 5), "Swipe-to-delete action didn't appear.")
+    deleteAction.tap()
+    let confirmDelete = app.alerts.buttons["Delete"]
+    XCTAssertTrue(confirmDelete.waitForExistence(timeout: 5), "Delete confirmation alert didn't appear.")
+    confirmDelete.tap()
 
-    let staticText1 = tablesQuery.staticTexts["Morning Routine"]
-    let staticText2 = tablesQuery.staticTexts["Weekend Getaway Essentials"]
-    let staticText3 = tablesQuery.staticTexts["Pre-Trip Checklist"]
-    XCTAssert(staticText1.exists)
+    let staticText1 = listQuery.staticTexts["Morning Routine"]
+    let staticText2 = listQuery.staticTexts["Weekend Getaway Essentials"]
+    let staticText3 = listQuery.staticTexts["Pre-Trip Checklist"]
+    XCTAssert(staticText1.waitForExistence(timeout: 5))
     XCTAssert(staticText2.exists == false)
     XCTAssert(staticText3.exists)
   }
@@ -41,9 +47,17 @@ class checklistsUITests: XCTestCase {
     let text1 = app.staticTexts["Morning Routine"]
     let text2 = app.staticTexts["Weekend Getaway Essentials"]
     let text3 = app.staticTexts["Pre-Trip Checklist"]
-    text1.press(forDuration: 0.75, thenDragTo: text3) // Results in ordering: 2, 1, 3
+    // Drag row 1 onto row 2, for the ordering 2, 1, 3.
+    //
+    // Two changes from the UIKit gesture this replaces. SwiftUI's `.onMove` needs a longer press to
+    // lift the row than the table view's reorder control did, plus a slow drag and a hold at the end
+    // so the list settles on the drop target before the touch lifts. And the drop target is row 2
+    // rather than row 3: the old gesture nominally dragged onto row 3 but only ever moved the row one
+    // slot, whereas SwiftUI honours the full drag and lands it at the end (2, 3, 1) — so the target
+    // now says what the assertions below have always meant.
+    text1.press(forDuration: 1.0, thenDragTo: text2, withVelocity: .slow, thenHoldForDuration: 1.0)
 
-    XCTAssert(text1.frame.origin.y > text2.frame.origin.y)
-    XCTAssert(text3.frame.origin.y > text1.frame.origin.y)
+    XCTAssertGreaterThan(text1.frame.origin.y, text2.frame.origin.y, "Row 1 should have moved below row 2.")
+    XCTAssertGreaterThan(text3.frame.origin.y, text1.frame.origin.y, "Row 3 should still be below row 1.")
   }
 }

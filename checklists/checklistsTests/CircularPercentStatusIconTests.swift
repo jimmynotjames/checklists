@@ -50,7 +50,7 @@ nonisolated final class CircularPercentStatusIconTests: XCTestCase {
   /// `systemLayoutSizeFitting` can compute from the view's self-contained height/width constraints
   /// without needing a superview or window.
   @MainActor func testTableViewCellIconTypeDimensions() {
-    let icon = CircularPercentStatusIcon(iconType: .tableViewCell)
+    let icon = CircularPercentStatusIcon(iconType: .row)
     icon.updateConstraintsIfNeeded()
     let size = icon.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
     XCTAssertEqual(size, CGSize(width: 20.0, height: 20.0)) // radius 10.0

@@ -1,6 +1,9 @@
 # Agent instructions — checklists
 
-A UIKit iOS app (Swift 6.0, iOS 26.0+), persisted with **SwiftData**. Realm 20.0.5 (SPM) stays
+A hybrid SwiftUI/UIKit iOS app (Swift 6.0, iOS 26.0+), persisted with **SwiftData**. The app
+root, navigation (`NavigationStack` + `Router`), and every screen except the checklist-detail
+screen are SwiftUI (`App/`, `Screens/`); `ChecklistViewController` remains UIKit, hosted via
+`ChecklistScreen` (a `UIViewControllerRepresentable` with its own embedded navigation bar). Realm 20.0.5 (SPM) stays
 linked for one purpose only: `LegacyRealmImporter` reads a pre-migration install's old Realm file
 once, on the single launch that needs it, and never writes to it. See
 [`core-docs/persistence-design.md`](core-docs/persistence-design.md) for the model, the CloudKit
@@ -216,10 +219,18 @@ device and skips sandbox management entirely.
   the app closed it has no effect at all and the software keyboard never appears — the setting reads
   back correctly from `defaults`, the device is booted, and the tests still fail. Verified the hard
   way twice: identical failures with the preference set and Simulator.app closed, 17/17 with it open.
-  The reboot matters too, since the preference is read at boot.
+  The reboot matters too, since the preference is read at boot — the preference can read back as `0`
+  with Simulator.app already running and *still* be wrong until a fresh shutdown → boot →
+  `open -a Simulator` cycle.
 
-  Note the failure count is not a reliable signal on its own: some typing tests pass anyway because
-  they never reach for the `Next:` or `delete` keys, so a partial pass does **not** rule this out.
+  Note the failure count is not a reliable signal on its own: a partial pass does **not** rule this
+  out. The actual rule: `typeText` forces the software keyboard up, so a test survives if it *types*
+  before it *taps* a keyboard key (`Next:`, `delete`) — only tests that tap a key first fail.
+
+  Expect to re-apply the remedy in later sessions. The preference persists, but anything that
+  shuts down and re-boots the device — including the simulator tooling's own build/launch cycle —
+  brings the failures back, so a run that was 17/17 yesterday can be 11/17 today with the
+  preference still reading `0`. Re-run the one-liner rather than re-diagnosing it.
 
 - **Analytics send nowhere.** Flurry was removed; Mixpanel is not implemented. Every
   `AnalyticsManager.log*` call still fires but hits a no-op (it prints in DEBUG). The full

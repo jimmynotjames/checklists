@@ -152,8 +152,8 @@ is the best available outcome.
 
 `Persistence/AppStartupCoordinator.swift` owns everything between process start and the first
 screen having data: opening the store, running the legacy import, seeding a brand-new install. It's
-kept out of `SceneDelegate` so the whole sequence is one testable, retryable unit rather than
-scattered init-time side effects.
+kept out of the app's entry point (`AppStartupModel`, which the SwiftUI `ChecklistsApp` observes)
+so the whole sequence is one testable, retryable unit rather than scattered init-time side effects.
 
 **Coordinator order**, inside `AppStartupCoordinator.run()`:
 
@@ -168,13 +168,13 @@ Steps 2–3 are skipped entirely under `LaunchModeContainerFactory.isRunningTest
 get an already-seeded in-memory container (`InMemoryModelContainer.makeSeeded()`), where running the
 Realm importer would be both wrong (there is no Realm file) and slow.
 
-**The migration screen appears only on the launch that actually imports.** `SceneDelegate.scene(_:willConnectTo:options:)`
-checks `AppStartupCoordinator.willImportLegacyData` *before* running startup, and only then puts
-`LoadingViewController` up as the root view controller while `AppStartupCoordinator` runs on a
+**The migration screen appears only on the launch that actually imports.** `AppStartupModel.init()`
+checks `AppStartupCoordinator.willImportLegacyData` *before* running startup, and only then enters
+the `.loading` phase (rendering `LoadingView`) while `AppStartupCoordinator` runs on a
 background `Task`. Every other launch — which is almost all of them, since the import runs at most
 once per device — goes straight to the checklist list exactly as before.
 
-**The screen has a 1.5-second floor** (`SceneDelegate.minimumMigrationScreenDuration`). The copy
+**The screen has a 1.5-second floor** (`AppStartupModel.minimumMigrationScreenDuration`). The copy
 itself takes a small fraction of that for any realistic amount of data, so without a floor the
 screen would flash by unread; the floor exists purely so a user who is about to see the app's
 launch experience change (and, once Stage 2 ships, learn that iCloud sync is now in play) actually
@@ -182,8 +182,8 @@ gets to read the message.
 
 **A retryable failure screen, never `fatalError`.** If container creation, the legacy import, or the
 first-launch seed throws, `AppStartupCoordinator.run()` returns `.failed(ContainerCreationFailure)`
-instead of propagating the error, and `SceneDelegate` shows `ContainerFailureViewController` with a
-Retry button wired back to `AppStartupCoordinator().run()`. Nothing has been deleted at that point —
+instead of propagating the error, and `ChecklistsApp` shows `ContainerFailureView`, whose
+"Start over fresh" path re-runs `AppStartupCoordinator().run()`. Nothing has been deleted at that point —
 in particular the Realm file, per "Legacy import" above — so retrying is a real chance of recovery,
 unlike the Realm-era `DBManager`, which called `fatalError` on any open failure and turned a
 transient disk problem into a crash report with no recovery path.
@@ -257,11 +257,11 @@ fix it — which is exactly the copy the Settings row's footer gives for that st
 constructed in its `init` from the `containerBacking` it was already given, so `containerBacking`
 is fixed for the controller's lifetime — a retry that resolves differently installs a whole new
 `PersistenceController` (and thus a fresh `SyncStatus`) rather than mutating one in place.
-`accountStatus` starts at `.checking` and is written by `SettingsViewController`: `viewWillAppear`
-starts a task that awaits `ICloudStatusLoader().load(into:)` once, reloads the iCloud section, and
-then observes `.CKAccountChanged` and `.NSUbiquityIdentityDidChange` notifications for as long as
-Settings stays open, re-loading and reloading the row on each. The task is cancelled in
-`viewDidDisappear` so nothing keeps running once the screen is dismissed.
+`accountStatus` starts at `.checking` and is written by `SettingsView`, which runs two `.task`s
+while it is on screen: one awaits `ICloudStatusLoader().load(into:)` once, the other observes
+`.CKAccountChanged` and `.NSUbiquityIdentityDidChange` and re-loads on each, so the row tracks an
+account change without a dismiss and re-open. SwiftUI cancels both when the sheet goes away, so
+nothing keeps running once the screen is dismissed.
 
 **Why `ICloudStatusLoader` takes its query as a closure.** `Persistence/ICloudStatusLoader.swift`
 wraps the actual `CKContainer.default().accountStatus()` call behind an injectable

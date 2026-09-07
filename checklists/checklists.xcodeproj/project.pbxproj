@@ -7,12 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		322CA9FB22EEA6A2009ACC4D /* MainMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322CA9FA22EEA6A2009ACC4D /* MainMenuTableViewController.swift */; };
-		322DE13B22FFE1F600C6E57A /* RoundCheckboxButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322DE13A22FFE1F600C6E57A /* RoundCheckboxButton.swift */; };
-		322DE13D22FFE4E500C6E57A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322DE13C22FFE4E500C6E57A /* SettingsViewController.swift */; };
 		322DE13F23006FBD00C6E57A /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322DE13E23006FBD00C6E57A /* SettingsManager.swift */; };
 		3233C794228BAD3C002BF01D /* CheckboxButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3233C793228BAD3C002BF01D /* CheckboxButton.swift */; };
-		323ADC6B22828C0900644931 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323ADC6A22828C0900644931 /* AppDelegate.swift */; };
 		323ADC7722828C0C00644931 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 323ADC7622828C0C00644931 /* Assets.xcassets */; };
 		323ADC9022828C0C00644931 /* checklistsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323ADC8F22828C0C00644931 /* checklistsUITests.swift */; };
 		AA06000000000000000000A2 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AA06000000000000000000A1 /* RealmSwift */; };
@@ -22,7 +18,6 @@
 		AA08000000000000000000B2 /* CLTextViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08000000000000000000B1 /* CLTextViewTests.swift */; };
 		AA08000000000000000000C2 /* ItemContentViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08000000000000000000C1 /* ItemContentViewTests.swift */; };
 		323FCF2922F2A33E00F761BB /* CLTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323FCF2822F2A33E00F761BB /* CLTextView.swift */; };
-		324930B42566EEB100A5FC66 /* ChecklistsMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324930B32566EEB100A5FC66 /* ChecklistsMenuViewController.swift */; };
 		3252E73C2CE71074009B6F7C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73B2CE71074009B6F7C /* RealmSwift */; };
 		3252E73D2CE71074009B6F7C /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73B2CE71074009B6F7C /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		327C659A259EB73D0012AABD /* checklistUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327C6599259EB73D0012AABD /* checklistUITest.swift */; };
@@ -30,11 +25,7 @@
 		32A928A42320CED0005F9B34 /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A928A32320CED0005F9B34 /* AnalyticsManager.swift */; };
 		32A964712291E14F00CAB7C0 /* ItemContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A964702291E14F00CAB7C0 /* ItemContentView.swift */; };
 		32AECAEB22ED118100747080 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32AECAEA22ED118100747080 /* Colors.swift */; };
-		32B4C177257AF608005721F5 /* ChecklistCellContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B4C176257AF608005721F5 /* ChecklistCellContentView.swift */; };
-		32BA5021235CE84C007E506D /* CLCircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BA5020235CE84C007E506D /* CLCircleButton.swift */; };
 		32C8D62625671FFD003E9569 /* CircularPercentStatusIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C8D62525671FFD003E9569 /* CircularPercentStatusIcon.swift */; };
-		32C8D62A25673C0D003E9569 /* ChecklistTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C8D62925673C0D003E9569 /* ChecklistTableViewCell.swift */; };
-		32D721EE22AB4BC000794F6D /* ChecklistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D721ED22AB4BC000794F6D /* ChecklistsViewController.swift */; };
 		32D721F222AC56FB00794F6D /* ChecklistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D721F122AC56FB00794F6D /* ChecklistViewController.swift */; };
 		32E767DC22EA4639003C8634 /* AddItemButtonTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E767DB22EA4639003C8634 /* AddItemButtonTableFooterView.swift */; };
 		32E767DE22EA4743003C8634 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32E767DD22EA4743003C8634 /* Colors.xcassets */; };
@@ -43,10 +34,6 @@
 		32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4C84322875308000D63CF /* ItemTableViewCell.swift */; };
 		32F8F1AF2311E71900F12306 /* CLTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F8F1AE2311E71900F12306 /* CLTextField.swift */; };
 		AA01000000000000000000A3 /* AppLoggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA01000000000000000000A2 /* AppLoggers.swift */; };
-		AA02000000000000000000B2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA02000000000000000000B1 /* SceneDelegate.swift */; };
-		AA03000000000000000000C2 /* ThemeItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA03000000000000000000C1 /* ThemeItemTableViewCell.swift */; };
-		AA04000000000000000000D2 /* InfoRowTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA04000000000000000000D1 /* InfoRowTableViewCell.swift */; };
-		AA05000000000000000000E2 /* MainMenuItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA05000000000000000000E1 /* MainMenuItemTableViewCell.swift */; };
 		AA11000100000000000000A2 /* SchemaV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000100000000000000A1 /* SchemaV1.swift */; };
 		AA11000200000000000000A2 /* Checklist.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000200000000000000A1 /* Checklist.swift */; };
 		AA11000300000000000000A2 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11000300000000000000A1 /* Item.swift */; };
@@ -65,8 +52,6 @@
 		AA11001600000000000000A2 /* LegacyRealmImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11001600000000000000A1 /* LegacyRealmImporter.swift */; };
 		AA11001700000000000000A2 /* RemoteChangeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11001700000000000000A1 /* RemoteChangeObserver.swift */; };
 		AA11001800000000000000A2 /* AppStartupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11001800000000000000A1 /* AppStartupCoordinator.swift */; };
-		AA11001900000000000000A2 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11001900000000000000A1 /* LoadingViewController.swift */; };
-		AA11002000000000000000A2 /* ContainerFailureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11002000000000000000A1 /* ContainerFailureViewController.swift */; };
 		AA12000100000000000000A2 /* LegacyRealmImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000100000000000000A1 /* LegacyRealmImporterTests.swift */; };
 		AA12000200000000000000A2 /* TestModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000200000000000000A1 /* TestModelContainer.swift */; };
 		AA12000300000000000000A2 /* DataModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA12000300000000000000A1 /* DataModelTests.swift */; };
@@ -79,8 +64,22 @@
 		AA13000100000000000000A2 /* TwoDeviceUnionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA13000100000000000000A1 /* TwoDeviceUnionTests.swift */; };
 		AA13000200000000000000A2 /* SampleDataDedupeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA13000200000000000000A1 /* SampleDataDedupeTests.swift */; };
 		AA140001000000000000A2 /* SyncStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140001000000000000A1 /* SyncStatus.swift */; };
+		AA20000100000000000000A2 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20000100000000000000A1 /* Router.swift */; };
+		AA20000200000000000000A2 /* AppRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20000200000000000000A1 /* AppRoute.swift */; };
+		AA20000300000000000000A2 /* SheetRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20000300000000000000A1 /* SheetRoute.swift */; };
+		AA20000400000000000000A2 /* AppStartupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20000400000000000000A1 /* AppStartupModel.swift */; };
+		AA20000500000000000000A2 /* ChecklistsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20000500000000000000A1 /* ChecklistsApp.swift */; };
+		AA20000600000000000000A2 /* StatusIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20000600000000000000A1 /* StatusIconView.swift */; };
+		AA20000700000000000000A2 /* Colors+SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20000700000000000000A1 /* Colors+SwiftUI.swift */; };
+		AA20001100000000000000A2 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20001100000000000000A1 /* LoadingView.swift */; };
+		AA20001200000000000000A2 /* ContainerFailureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20001200000000000000A1 /* ContainerFailureView.swift */; };
+		AA20001300000000000000A2 /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20001300000000000000A1 /* MainMenuView.swift */; };
+		AA20001400000000000000A2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20001400000000000000A1 /* SettingsView.swift */; };
+		AA20001500000000000000A2 /* ChecklistRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20001500000000000000A1 /* ChecklistRowView.swift */; };
+		AA20001600000000000000A2 /* ChecklistsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20001600000000000000A1 /* ChecklistsView.swift */; };
+		AA20001700000000000000A2 /* ChecklistScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20001700000000000000A1 /* ChecklistScreen.swift */; };
+		AA20001800000000000000A2 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20001800000000000000A1 /* RootView.swift */; };
 		AA140002000000000000A2 /* ICloudStatusLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140002000000000000A1 /* ICloudStatusLoader.swift */; };
-		AA140003000000000000A2 /* SyncStatusTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140003000000000000A1 /* SyncStatusTableViewCell.swift */; };
 		AA140004000000000000A2 /* SyncStatusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140004000000000000A1 /* SyncStatusTests.swift */; };
 		AA140005000000000000A2 /* ICloudStatusLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA140005000000000000A1 /* ICloudStatusLoaderTests.swift */; };
 		AA15000100000000000000A2 /* StoreReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA15000100000000000000A1 /* StoreReset.swift */; };
@@ -119,13 +118,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		322CA9FA22EEA6A2009ACC4D /* MainMenuTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuTableViewController.swift; sourceTree = "<group>"; };
-		322DE13A22FFE1F600C6E57A /* RoundCheckboxButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundCheckboxButton.swift; sourceTree = "<group>"; };
-		322DE13C22FFE4E500C6E57A /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		322DE13E23006FBD00C6E57A /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		3233C793228BAD3C002BF01D /* CheckboxButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckboxButton.swift; sourceTree = "<group>"; };
 		323ADC6722828C0900644931 /* checklists.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = checklists.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		323ADC6A22828C0900644931 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		323ADC7622828C0C00644931 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		323ADC7B22828C0C00644931 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		323ADC8022828C0C00644931 /* checklistsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = checklistsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -135,18 +130,13 @@
 		323ADC9122828C0C00644931 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		323ADC9D2282929A00644931 /* checklists.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = checklists.entitlements; sourceTree = "<group>"; };
 		323FCF2822F2A33E00F761BB /* CLTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLTextView.swift; sourceTree = "<group>"; };
-		324930B32566EEB100A5FC66 /* ChecklistsMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistsMenuViewController.swift; sourceTree = "<group>"; };
 		327C6599259EB73D0012AABD /* checklistUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistUITest.swift; sourceTree = "<group>"; };
 		327C65A525A0DB780012AABD /* checklistCreateUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checklistCreateUITest.swift; sourceTree = "<group>"; };
 		32A928A32320CED0005F9B34 /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
 		32A964702291E14F00CAB7C0 /* ItemContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemContentView.swift; sourceTree = "<group>"; };
 		32A964792297AE6700CAB7C0 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
 		32AECAEA22ED118100747080 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
-		32B4C176257AF608005721F5 /* ChecklistCellContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistCellContentView.swift; sourceTree = "<group>"; };
-		32BA5020235CE84C007E506D /* CLCircleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLCircleButton.swift; sourceTree = "<group>"; };
 		32C8D62525671FFD003E9569 /* CircularPercentStatusIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularPercentStatusIcon.swift; sourceTree = "<group>"; };
-		32C8D62925673C0D003E9569 /* ChecklistTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistTableViewCell.swift; sourceTree = "<group>"; };
-		32D721ED22AB4BC000794F6D /* ChecklistsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistsViewController.swift; sourceTree = "<group>"; };
 		32D721F122AC56FB00794F6D /* ChecklistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistViewController.swift; sourceTree = "<group>"; };
 		32E767DB22EA4639003C8634 /* AddItemButtonTableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemButtonTableFooterView.swift; sourceTree = "<group>"; };
 		32E767DD22EA4743003C8634 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
@@ -154,10 +144,6 @@
 		32F4C84322875308000D63CF /* ItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableViewCell.swift; sourceTree = "<group>"; };
 		32F8F1AE2311E71900F12306 /* CLTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLTextField.swift; sourceTree = "<group>"; };
 		AA01000000000000000000A2 /* AppLoggers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoggers.swift; sourceTree = "<group>"; };
-		AA02000000000000000000B1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		AA03000000000000000000C1 /* ThemeItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeItemTableViewCell.swift; sourceTree = "<group>"; };
-		AA04000000000000000000D1 /* InfoRowTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoRowTableViewCell.swift; sourceTree = "<group>"; };
-		AA05000000000000000000E1 /* MainMenuItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuItemTableViewCell.swift; sourceTree = "<group>"; };
 		AA07000000000000000000C1 /* AnalyticsManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManagerTests.swift; sourceTree = "<group>"; };
 		AA07000000000000000000D1 /* SettingsManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManagerTests.swift; sourceTree = "<group>"; };
 		AA08000000000000000000A1 /* CircularPercentStatusIconTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularPercentStatusIconTests.swift; sourceTree = "<group>"; };
@@ -181,8 +167,6 @@
 		AA11001600000000000000A1 /* LegacyRealmImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LegacyRealmImporter.swift"; sourceTree = "<group>"; };
 		AA11001700000000000000A1 /* RemoteChangeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RemoteChangeObserver.swift"; sourceTree = "<group>"; };
 		AA11001800000000000000A1 /* AppStartupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppStartupCoordinator.swift"; sourceTree = "<group>"; };
-		AA11001900000000000000A1 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadingViewController.swift"; sourceTree = "<group>"; };
-		AA11002000000000000000A1 /* ContainerFailureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContainerFailureViewController.swift"; sourceTree = "<group>"; };
 		AA12000100000000000000A1 /* LegacyRealmImporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LegacyRealmImporterTests.swift"; sourceTree = "<group>"; };
 		AA12000200000000000000A1 /* TestModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TestModelContainer.swift"; sourceTree = "<group>"; };
 		AA12000300000000000000A1 /* DataModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataModelTests.swift"; sourceTree = "<group>"; };
@@ -195,8 +179,22 @@
 		AA13000100000000000000A1 /* TwoDeviceUnionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TwoDeviceUnionTests.swift"; sourceTree = "<group>"; };
 		AA13000200000000000000A1 /* SampleDataDedupeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SampleDataDedupeTests.swift"; sourceTree = "<group>"; };
 		AA140001000000000000A1 /* SyncStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncStatus.swift"; sourceTree = "<group>"; };
+		AA20000100000000000000A1 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Router.swift"; sourceTree = "<group>"; };
+		AA20000200000000000000A1 /* AppRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppRoute.swift"; sourceTree = "<group>"; };
+		AA20000300000000000000A1 /* SheetRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SheetRoute.swift"; sourceTree = "<group>"; };
+		AA20000400000000000000A1 /* AppStartupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppStartupModel.swift"; sourceTree = "<group>"; };
+		AA20000500000000000000A1 /* ChecklistsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChecklistsApp.swift"; sourceTree = "<group>"; };
+		AA20000600000000000000A1 /* StatusIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatusIconView.swift"; sourceTree = "<group>"; };
+		AA20000700000000000000A1 /* Colors+SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Colors+SwiftUI.swift"; sourceTree = "<group>"; };
+		AA20001100000000000000A1 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadingView.swift"; sourceTree = "<group>"; };
+		AA20001200000000000000A1 /* ContainerFailureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContainerFailureView.swift"; sourceTree = "<group>"; };
+		AA20001300000000000000A1 /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainMenuView.swift"; sourceTree = "<group>"; };
+		AA20001400000000000000A1 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsView.swift"; sourceTree = "<group>"; };
+		AA20001500000000000000A1 /* ChecklistRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChecklistRowView.swift"; sourceTree = "<group>"; };
+		AA20001600000000000000A1 /* ChecklistsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChecklistsView.swift"; sourceTree = "<group>"; };
+		AA20001700000000000000A1 /* ChecklistScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChecklistScreen.swift"; sourceTree = "<group>"; };
+		AA20001800000000000000A1 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RootView.swift"; sourceTree = "<group>"; };
 		AA140002000000000000A1 /* ICloudStatusLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudStatusLoader.swift"; sourceTree = "<group>"; };
-		AA140003000000000000A1 /* SyncStatusTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncStatusTableViewCell.swift"; sourceTree = "<group>"; };
 		AA140004000000000000A1 /* SyncStatusTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncStatusTests.swift"; sourceTree = "<group>"; };
 		AA140005000000000000A1 /* ICloudStatusLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudStatusLoaderTests.swift"; sourceTree = "<group>"; };
 		AA15000100000000000000A1 /* StoreReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoreReset.swift"; sourceTree = "<group>"; };
@@ -254,6 +252,8 @@
 		323ADC6922828C0900644931 /* checklists */ = {
 			isa = PBXGroup;
 			children = (
+				AA20000000000000000000G1 /* App */,
+				AA20000000000000000000G2 /* Screens */,
 				AA110000000000000000G1 /* Persistence */,
 				32A928A02320C765005F9B34 /* Analytics */,
 				AA01000000000000000000A1 /* Logging */,
@@ -261,8 +261,6 @@
 				32F4C8412287525B000D63CF /* Views */,
 				323ADCA122867EAC00644931 /* DataModels */,
 				323ADC9D2282929A00644931 /* checklists.entitlements */,
-				323ADC6A22828C0900644931 /* AppDelegate.swift */,
-				AA02000000000000000000B1 /* SceneDelegate.swift */,
 				323ADC7622828C0C00644931 /* Assets.xcassets */,
 				32E767DD22EA4743003C8634 /* Colors.xcassets */,
 				323ADC7B22828C0C00644931 /* Info.plist */,
@@ -343,20 +341,14 @@
 				32E767DB22EA4639003C8634 /* AddItemButtonTableFooterView.swift */,
 				3233C793228BAD3C002BF01D /* CheckboxButton.swift */,
 				32E767DF22EA6476003C8634 /* CLButton.swift */,
-				32BA5020235CE84C007E506D /* CLCircleButton.swift */,
 				323FCF2822F2A33E00F761BB /* CLTextView.swift */,
 				32AECAEA22ED118100747080 /* Colors.swift */,
 				32F4C84322875308000D63CF /* ItemTableViewCell.swift */,
 				32A964702291E14F00CAB7C0 /* ItemContentView.swift */,
-				322DE13A22FFE1F600C6E57A /* RoundCheckboxButton.swift */,
 				32F8F1AE2311E71900F12306 /* CLTextField.swift */,
 				32C8D62525671FFD003E9569 /* CircularPercentStatusIcon.swift */,
-				32C8D62925673C0D003E9569 /* ChecklistTableViewCell.swift */,
-				32B4C176257AF608005721F5 /* ChecklistCellContentView.swift */,
-				AA03000000000000000000C1 /* ThemeItemTableViewCell.swift */,
-				AA04000000000000000000D1 /* InfoRowTableViewCell.swift */,
-				AA05000000000000000000E1 /* MainMenuItemTableViewCell.swift */,
-				AA140003000000000000A1 /* SyncStatusTableViewCell.swift */,
+				AA20000600000000000000A1 /* StatusIconView.swift */,
+				AA20000700000000000000A1 /* Colors+SwiftUI.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -364,13 +356,7 @@
 		32F4C84222875289000D63CF /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				AA11001900000000000000A1 /* LoadingViewController.swift */,
-				AA11002000000000000000A1 /* ContainerFailureViewController.swift */,
-				32D721ED22AB4BC000794F6D /* ChecklistsViewController.swift */,
 				32D721F122AC56FB00794F6D /* ChecklistViewController.swift */,
-				322CA9FA22EEA6A2009ACC4D /* MainMenuTableViewController.swift */,
-				322DE13C22FFE4E500C6E57A /* SettingsViewController.swift */,
-				324930B32566EEB100A5FC66 /* ChecklistsMenuViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -381,6 +367,33 @@
 				AA01000000000000000000A2 /* AppLoggers.swift */,
 			);
 			path = Logging;
+			sourceTree = "<group>";
+		};
+		AA20000000000000000000G1 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				AA20000500000000000000A1 /* ChecklistsApp.swift */,
+				AA20000100000000000000A1 /* Router.swift */,
+				AA20000200000000000000A1 /* AppRoute.swift */,
+				AA20000300000000000000A1 /* SheetRoute.swift */,
+				AA20000400000000000000A1 /* AppStartupModel.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		AA20000000000000000000G2 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				AA20001800000000000000A1 /* RootView.swift */,
+				AA20001600000000000000A1 /* ChecklistsView.swift */,
+				AA20001500000000000000A1 /* ChecklistRowView.swift */,
+				AA20001700000000000000A1 /* ChecklistScreen.swift */,
+				AA20001300000000000000A1 /* MainMenuView.swift */,
+				AA20001400000000000000A1 /* SettingsView.swift */,
+				AA20001100000000000000A1 /* LoadingView.swift */,
+				AA20001200000000000000A1 /* ContainerFailureView.swift */,
+			);
+			path = Screens;
 			sourceTree = "<group>";
 		};
 		AA110000000000000000G1 /* Persistence */ = {
@@ -576,38 +589,37 @@
 				AA11001600000000000000A2 /* LegacyRealmImporter.swift in Sources */,
 				AA11001700000000000000A2 /* RemoteChangeObserver.swift in Sources */,
 				AA11001800000000000000A2 /* AppStartupCoordinator.swift in Sources */,
-				AA11001900000000000000A2 /* LoadingViewController.swift in Sources */,
-				AA11002000000000000000A2 /* ContainerFailureViewController.swift in Sources */,
 				AA140001000000000000A2 /* SyncStatus.swift in Sources */,
 				AA140002000000000000A2 /* ICloudStatusLoader.swift in Sources */,
-				AA140003000000000000A2 /* SyncStatusTableViewCell.swift in Sources */,
+				AA20000100000000000000A2 /* Router.swift in Sources */,
+				AA20000200000000000000A2 /* AppRoute.swift in Sources */,
+				AA20000300000000000000A2 /* SheetRoute.swift in Sources */,
+				AA20000400000000000000A2 /* AppStartupModel.swift in Sources */,
+				AA20000500000000000000A2 /* ChecklistsApp.swift in Sources */,
+				AA20000600000000000000A2 /* StatusIconView.swift in Sources */,
+				AA20000700000000000000A2 /* Colors+SwiftUI.swift in Sources */,
+				AA20001100000000000000A2 /* LoadingView.swift in Sources */,
+				AA20001200000000000000A2 /* ContainerFailureView.swift in Sources */,
+				AA20001300000000000000A2 /* MainMenuView.swift in Sources */,
+				AA20001400000000000000A2 /* SettingsView.swift in Sources */,
+				AA20001500000000000000A2 /* ChecklistRowView.swift in Sources */,
+				AA20001600000000000000A2 /* ChecklistsView.swift in Sources */,
+				AA20001700000000000000A2 /* ChecklistScreen.swift in Sources */,
+				AA20001800000000000000A2 /* RootView.swift in Sources */,
 				32F8F1AF2311E71900F12306 /* CLTextField.swift in Sources */,
 				32F040472336DDBC007CB244 /* SampleData.swift in Sources */,
 				32E767E022EA6476003C8634 /* CLButton.swift in Sources */,
-				324930B42566EEB100A5FC66 /* ChecklistsMenuViewController.swift in Sources */,
 				32D721F222AC56FB00794F6D /* ChecklistViewController.swift in Sources */,
 				32C8D62625671FFD003E9569 /* CircularPercentStatusIcon.swift in Sources */,
 				323FCF2922F2A33E00F761BB /* CLTextView.swift in Sources */,
-				32BA5021235CE84C007E506D /* CLCircleButton.swift in Sources */,
 				32E767DC22EA4639003C8634 /* AddItemButtonTableFooterView.swift in Sources */,
 				32A928A42320CED0005F9B34 /* AnalyticsManager.swift in Sources */,
 				AA01000000000000000000A3 /* AppLoggers.swift in Sources */,
-				32B4C177257AF608005721F5 /* ChecklistCellContentView.swift in Sources */,
 				3233C794228BAD3C002BF01D /* CheckboxButton.swift in Sources */,
-				322DE13D22FFE4E500C6E57A /* SettingsViewController.swift in Sources */,
-				323ADC6B22828C0900644931 /* AppDelegate.swift in Sources */,
 				322DE13F23006FBD00C6E57A /* SettingsManager.swift in Sources */,
 				32AECAEB22ED118100747080 /* Colors.swift in Sources */,
-				32C8D62A25673C0D003E9569 /* ChecklistTableViewCell.swift in Sources */,
 				32F4C84422875308000D63CF /* ItemTableViewCell.swift in Sources */,
-				32D721EE22AB4BC000794F6D /* ChecklistsViewController.swift in Sources */,
-				322DE13B22FFE1F600C6E57A /* RoundCheckboxButton.swift in Sources */,
 				32A964712291E14F00CAB7C0 /* ItemContentView.swift in Sources */,
-				322CA9FB22EEA6A2009ACC4D /* MainMenuTableViewController.swift in Sources */,
-				AA02000000000000000000B2 /* SceneDelegate.swift in Sources */,
-				AA03000000000000000000C2 /* ThemeItemTableViewCell.swift in Sources */,
-				AA04000000000000000000D2 /* InfoRowTableViewCell.swift in Sources */,
-				AA05000000000000000000E2 /* MainMenuItemTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

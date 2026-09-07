@@ -37,7 +37,7 @@ import UIKit
 enum AnalyticsManager {
   // MARK: - Session
 
-  /// Called once from `AppDelegate.application(_:didFinishLaunchingWithOptions:)`.
+  /// Called once from `ChecklistsApp.init()`.
   ///
   /// **Under Flurry** this built a `FlurrySessionBuilder` (crash reporting on, log level
   /// `CriticalOnly`, app version = `SettingsManager.versionBuildString`) and called

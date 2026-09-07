@@ -55,7 +55,7 @@ nonisolated final class ICloudStatusLoaderTests: XCTestCase {
   }
 
   /// Re-query after a sign-in: the notification-driven path transitions unavailable →
-  /// available (the live chain `SettingsViewController.observeSingleNotification` drives on
+  /// available (the live chain `SettingsView.observeSingleNotification` drives on
   /// CKAccountChanged / NSUbiquityIdentityDidChange).
   @MainActor func testReloadAfterSignInTransitionsToAvailable() async {
     let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .checking)

@@ -12,10 +12,6 @@ private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
 private let defaultChecklistName = "untitled checklist"
 
-protocol ChecklistViewControllerDelegate: AnyObject {
-  func willDismissChecklistViewController(_ checklistViewController: ChecklistViewController)
-}
-
 /**
  Discussion about UITableViewController:
  Had to ditch it because the keyboard dynamics weren't working. The two main issues:
@@ -28,7 +24,11 @@ class ChecklistViewController: UIViewController {
   private var tableView: UITableView!
   var checklist: Checklist! // Expected to be set on seque or right after init(). Behavior undefined if this is set/reset after viewDidLoad().
 
-  weak var delegate: ChecklistViewControllerDelegate?
+  /// Set by the SwiftUI host (`ChecklistScreen`) so leaving the screen updates the router's
+  /// navigation state instead of calling UIKit `dismiss`/`pop` directly — a UIKit dismissal of a
+  /// SwiftUI-presented container would leave the router's sheet/path out of sync with what's on
+  /// screen. When unset (pure-UIKit presentation), the original dismiss/pop paths still run.
+  var onRequestDismiss: (() -> Void)?
 
   private let checklistInfoHeaderView = UIView()
   private let statusIcon = CircularPercentStatusIcon(iconType: .header)
@@ -173,7 +173,9 @@ class ChecklistViewController: UIViewController {
     guard !checklist.isDeleted, context.checklist(id: checklist.id) != nil else {
       // Deleted on another device while open here. Leaving the screen up would let the user keep
       // editing a record that no longer exists.
-      if let navigationController, navigationController.viewControllers.count > 1 {
+      if let onRequestDismiss {
+        onRequestDismiss()
+      } else if let navigationController, navigationController.viewControllers.count > 1 {
         navigationController.popViewController(animated: true)
       } else {
         dismiss(animated: true)
@@ -220,16 +222,16 @@ class ChecklistViewController: UIViewController {
     // each of the two has its own ordering hazard:
     //
     //   - Header (checklistNameTextField/checklistNotesTextView): its commit
-    //     (textFieldDidEndEditing/textViewDidEndEditing, below) has to land before the delegate's
-    //     `reloadData()` on the next line, or the checklists list's cached cell preview keeps showing
-    //     the pre-edit value until some unrelated reload happens to occur.
+    //     (textFieldDidEndEditing/textViewDidEndEditing, below) has to land while this screen is
+    //     still up — the checklists list renders from the store (`@Query` in `ChecklistsView`), so
+    //     a commit that landed late would leave the list showing the pre-edit value until some
+    //     unrelated store change happened to refresh it.
     //   - Item cells: their commit (ItemContentView's textViewDidEndEditing →
     //     `itemContentView(_:nameFieldUpdatedWith:)`) has to land before `viewDidDisappear`'s
     //     dangling-empty-item trim loop, which deletes trailing items whose name and notes are both
     //     empty. A name typed into the last item but not yet committed reads as empty to that loop, so
     //     the item gets deleted and the pending write then targets an invalidated Realm object.
     view.endEditing(true)
-    delegate?.willDismissChecklistViewController(self)
     super.viewWillDisappear(animated)
   }
 
@@ -257,7 +259,11 @@ class ChecklistViewController: UIViewController {
   }
 
   @objc func doneButtonTapped() {
-    dismiss(animated: true, completion: nil)
+    if let onRequestDismiss {
+      onRequestDismiss()
+    } else {
+      dismiss(animated: true, completion: nil)
+    }
   }
 
   @objc func resetButtonTapped() {
