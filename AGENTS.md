@@ -227,6 +227,11 @@ device and skips sandbox management entirely.
   out. The actual rule: `typeText` forces the software keyboard up, so a test survives if it *types*
   before it *taps* a keyboard key (`Next:`, `delete`) — only tests that tap a key first fail.
 
+  Expect to re-apply the remedy in later sessions. The preference persists, but anything that
+  shuts down and re-boots the device — including the simulator tooling's own build/launch cycle —
+  brings the failures back, so a run that was 17/17 yesterday can be 11/17 today with the
+  preference still reading `0`. Re-run the one-liner rather than re-diagnosing it.
+
 - **Analytics send nowhere.** Flurry was removed; Mixpanel is not implemented. Every
   `AnalyticsManager.log*` call still fires but hits a no-op (it prints in DEBUG). The full
   tracking plan, the event/property catalog, and the decisions still open are in

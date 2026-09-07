@@ -11,8 +11,8 @@ import SwiftUI
 /// The reset-all menu is a popover on the toolbar button rather than a separate screen.
 ///
 /// The `navigationDestination` for `AppRoute` is attached once at the root of the
-/// `NavigationStack`, not here, so this screen only produces routes (`NavigationLink(value:)`)
-/// and never resolves them.
+/// `NavigationStack`, not here, so this screen only pushes routes onto the router's path and
+/// never resolves them.
 struct ChecklistsView: View {
   /// All checklists in display order.
   ///
@@ -45,19 +45,36 @@ struct ChecklistsView: View {
   var body: some View {
     List {
       ForEach(checklists) { checklist in
-        NavigationLink(value: AppRoute.checklist(id: checklist.id)) {
+        // A `Button` pushing the route by hand rather than a `NavigationLink`: the link draws a
+        // disclosure chevron in a `List` and offers no way to suppress it, and these rows never
+        // had one.
+        Button {
+          router.path.append(.checklist(id: checklist.id))
+        } label: {
           ChecklistRowView(checklist: checklist)
+            // The row's own content is only as wide as its text, so widen it to make the whole
+            // row tappable rather than just the words.
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
         .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         .listRowSeparator(.hidden)
+        // Lets the screen's background show through instead of the system's row fill.
+        .listRowBackground(Color.clear)
         .swipeActions(edge: .trailing) {
           // Deliberately NOT `role: .destructive`: a full swipe on a destructive action
           // optimistically animates the row away before any model change, but this action only
           // records intent — the delete itself waits for the confirmation alert. A cancelled
           // confirmation must leave the row visible, so the red comes from an explicit tint
           // instead of the role.
-          Button("Delete") {
+          Button {
             pendingDeleteID = checklist.id
+          } label: {
+            // Icon-only for the visible button, but the title is what VoiceOver reads and what
+            // the UI tests match on, so it stays part of the label rather than being dropped.
+            Label("Delete", systemImage: "trash")
+              .labelStyle(.iconOnly)
           }
           .tint(.red)
         }
