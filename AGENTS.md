@@ -17,6 +17,15 @@ tooling, plus **`core-docs/`** — design docs that outlive any single change an
 their subject. (`docs/` is something else entirely: the published Jekyll/GitHub Pages site for the
 privacy policy and landing page. Never put internal docs there.)
 
+All three targets use **file-system-synchronized folders**
+(`PBXFileSystemSynchronizedRootGroup`), so `project.pbxproj` holds no per-file references. A new
+`.swift` anywhere under `checklists/`, `checklistsTests/`, or `checklistsUITests/` is compiled into
+that target as soon as it exists — just create the file; there is nothing to register, and adding
+one produces no project-file diff. Each folder carries one membership exception, its `Info.plist`,
+which is consumed via `INFOPLIST_FILE` rather than copied as a resource. To exclude some other file
+from a target, uncheck it in Xcode's File inspector, which extends that exception set. The project
+is `objectVersion = 100` (Xcode 26 format) and requires Xcode 26+ to open; CI pins 26.6.
+
 Tooling here was ported from the `budgets1` repo and deliberately trimmed — see
 "Deviations from budgets1" at the bottom for what was changed and why.
 
@@ -43,13 +52,13 @@ Swift on this platform). `checklistsUITests` needed no linkage changes; it was b
 shared scheme's unit target failing to build, and on `test-ui`'s `warmed` sentinel (see
 `scripts/test-ui.sh`), both now resolved. Formerly tracked in
 [issue #116](https://github.com/jimmynotjames/checklists/issues/116), now closed.
-`checklistsTests` has 106 tests across `DataModelTests`, `ModelBehaviorTests`, `SampleDataTests`,
+`checklistsTests` has 111 tests across `DataModelTests`, `ModelBehaviorTests`, `SampleDataTests`,
 `SortKeyReorderTests`, `LegacyRealmImporterTests`, `ProductionContainerFactoryTests`,
 `PersistentStoreURLTests`, `RemoteChangeObserverTests`, `TwoDeviceUnionTests`,
 `SampleDataDedupeTests`, `SyncStatusTests`, `ICloudStatusLoaderTests`, `StoreResetTests`,
 `AnalyticsManagerTests`,
-`SettingsManagerTests`, `CircularPercentStatusIconTests`, `CLTextViewTests`, and
-`ItemContentViewTests`; `checklistsUITests` has 17. Both are green, verified twice in a row for
+`SettingsManagerTests`, `CircularPercentStatusIconTests`, `CLTextViewTests`,
+`ItemContentViewTests`, and `ChecklistReorderFailureTests`; `checklistsUITests` has 17. Both are green, verified twice in a row for
 flakes — but still opt-in, not part of `make gate`.
 
 All of `checklistsTests` runs against disposable in-memory `ModelContainer`s (see
