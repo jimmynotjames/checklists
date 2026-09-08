@@ -14,6 +14,12 @@ extension Colors {
   static let inactiveTextColor = Color("inactiveText")
   static let darkBlueGrayColor = Color("darkBlueGray")
   static let salmonRedColor = Color("salmonRed")
+
+  /// Destructive actions, over the same colorset `salmonRedColor` reads.
+  static let destructiveColor = Color("salmonRed")
+  static let successColor = Color("success")
+  static let warningColor = Color("warning")
+  static let shadowColor = Color("shadow")
 }
 
 extension View {

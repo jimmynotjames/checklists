@@ -75,7 +75,7 @@ struct SettingsView: View {
         Text("iCloud Sync is Active")
       } icon: {
         Image(systemName: "checkmark.icloud")
-          .foregroundStyle(.green)
+          .foregroundStyle(Colors.successColor)
       }
       .accessibilityElement(children: .combine)
 
@@ -84,7 +84,7 @@ struct SettingsView: View {
         Text("iCloud Sync Paused")
       } icon: {
         Image(systemName: "exclamationmark.icloud")
-          .foregroundStyle(.orange)
+          .foregroundStyle(Colors.warningColor)
       }
       .accessibilityElement(children: .combine)
 
@@ -93,7 +93,7 @@ struct SettingsView: View {
         Text("iCloud Not Available")
       } icon: {
         Image(systemName: "xmark.icloud")
-          .foregroundStyle(.orange)
+          .foregroundStyle(Colors.warningColor)
       }
       .accessibilityElement(children: .combine)
     }

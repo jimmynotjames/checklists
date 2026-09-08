@@ -76,7 +76,7 @@ struct ChecklistsView: View {
             Label("Delete", systemImage: "trash")
               .labelStyle(.iconOnly)
           }
-          .tint(.red)
+          .tint(Colors.destructiveColor)
         }
       }
       .onMove(perform: move)
@@ -177,7 +177,7 @@ struct ChecklistsView: View {
         .padding(10)
         .frame(width: 60, height: 60)
         .background(Circle().fill(Colors.defaultBackgroundColor))
-        .shadow(color: .gray.opacity(0.4), radius: 3, x: 0, y: 2)
+        .shadow(color: Colors.shadowColor.opacity(0.4), radius: 3, x: 0, y: 2)
     }
     .accessibilityLabel("Add new checklist.")
     .padding(20)
