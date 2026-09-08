@@ -42,7 +42,7 @@ class CLTextView: UITextView {
     }
   }
 
-  var placeholderTextColor: UIColor = .lightGray {
+  var placeholderTextColor: UIColor = Colors.placeholderText {
     didSet {
       placeholderLabel.textColor = placeholderTextColor
     }

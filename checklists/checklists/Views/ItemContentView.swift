@@ -128,7 +128,7 @@ class ItemContentView: UIView {
   func updateCheckedStatus() {
     guard let status = item?.status else { return }
     checkboxButton.setCheckboxState(with: status)
-    let textColor = status == .checked ? Colors.inactiveText : .black
+    let textColor = status == .checked ? Colors.inactiveText : Colors.primaryText
     nameTextView.textColor = textColor
     notesTextView.textColor = textColor
   }
