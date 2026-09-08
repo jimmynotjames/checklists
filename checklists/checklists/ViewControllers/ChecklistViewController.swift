@@ -166,6 +166,8 @@ class ChecklistViewController: UIViewController {
     } else {
       navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetButtonTapped))
     }
+    // iOS 26 renders bar buttons in `labelColor` unless the item itself carries a tint.
+    navigationItem.rightBarButtonItem?.tintColor = .tintColor
     if checklist.items.isEmpty {
       try? context.insert(item: Item(), at: 0, in: checklist)
     }

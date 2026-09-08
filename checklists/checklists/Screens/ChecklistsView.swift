@@ -95,6 +95,8 @@ struct ChecklistsView: View {
         } label: {
           Image("MenuIcon25x25")
         }
+        // iOS 26 renders bar buttons in `labelColor` unless the button itself carries a tint.
+        .tint(Color.accentColor)
         .accessibilityLabel("Miscellaneous Menu")
       }
 
@@ -104,6 +106,7 @@ struct ChecklistsView: View {
         } label: {
           Image("MoreMenuIcon32x32")
         }
+        .tint(Color.accentColor)
         .accessibilityLabel("Checklists Menu")
         .popover(isPresented: $showsResetMenu) {
           Button("Reset All") {
@@ -111,7 +114,7 @@ struct ChecklistsView: View {
             showsResetMenu = false
           }
           .font(.body)
-          .tint(Colors.tealColor)
+          .tint(Color.accentColor)
           .padding()
           // Stops iPhone adapting this popover into a sheet.
           .presentationCompactAdaptation(.popover)

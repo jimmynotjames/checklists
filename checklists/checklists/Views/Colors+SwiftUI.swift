@@ -9,7 +9,6 @@ import SwiftUI
 /// `UIColor` for UIKit. Both read from the same colorsets in `Colors.xcassets`, so a
 /// screen can be UIKit or SwiftUI without the palette drifting between them.
 extension Colors {
-  static let tealColor = Color("teal")
   static let defaultBackgroundColor = Color("defaultBackground")
   static let inactiveTextColor = Color("inactiveText")
   static let darkBlueGrayColor = Color("darkBlueGray")

@@ -44,7 +44,6 @@ struct RootView: View {
       }
     }
     .animation(.easeInOut(duration: 0.2), value: router.isMainMenuVisible)
-    .tint(Colors.tealColor)
     .sheet(item: $router.sheet) { route in
       Group {
         switch route {
@@ -61,8 +60,6 @@ struct RootView: View {
           }
         }
       }
-      // Sheets don't inherit the navigation stack's tint; re-apply it (budgets1 pattern).
-      .tint(Colors.tealColor)
     }
   }
 

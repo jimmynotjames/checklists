@@ -24,7 +24,9 @@ struct LoadingView: View {
     VStack(spacing: 16) {
       ProgressView()
         .controlSize(.large)
-        .tint(Colors.tealColor)
+        // An indeterminate ProgressView stays system gray unless a tint is set explicitly; the
+        // app-wide accent color alone does not reach it.
+        .tint(Color.accentColor)
 
       Text(message)
         .font(.body)
