@@ -17,10 +17,6 @@ struct ChecklistsApp: App {
     // From the Apple docs, I'm slightly worried about power usage by turning this on, but can find nothing online saying this is a power hog.
     // TODO-DEFERRED: Nevertheless, once we collect stats on landscape/portrait, maybe remove this?
     UIDevice.current.beginGeneratingDeviceOrientationNotifications()
-
-    // SwiftUI screens get their tint from RootView; this covers the UIKit navigation bar still
-    // embedded by ChecklistScreen (the unconverted checklist-detail screen).
-    UINavigationBar.appearance().tintColor = Colors.teal
   }
 
   var body: some Scene {

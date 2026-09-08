@@ -30,7 +30,7 @@ class CircularPercentStatusIcon: UIView {
     }
   }
 
-  private let color: CGColor = Colors.teal.cgColor
+  private let color: CGColor = Colors.accent.cgColor
   private var radius: CGFloat!
   private var innerRadius: CGFloat!
   private var outerRingLineWidth: CGFloat!

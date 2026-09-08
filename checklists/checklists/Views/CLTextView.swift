@@ -71,7 +71,7 @@ class CLTextView: UITextView {
   private lazy var inputAccessoryToolbar: UIToolbar = {
     let toolbar = UIToolbar()
     let button = UIBarButtonItem(title: inputAccessoryButtonName, style: .plain, target: self, action: #selector(inputAccessoryButtonTapped))
-    button.tintColor = Colors.teal
+    button.tintColor = .tintColor
     let buttons = [
       UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
       button,

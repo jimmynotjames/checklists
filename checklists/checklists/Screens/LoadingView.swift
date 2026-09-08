@@ -24,7 +24,6 @@ struct LoadingView: View {
     VStack(spacing: 16) {
       ProgressView()
         .controlSize(.large)
-        .tint(Colors.tealColor)
 
       Text(message)
         .font(.body)

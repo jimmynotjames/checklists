@@ -30,7 +30,7 @@ struct SettingsView: View {
           Button("Done") {
             dismiss()
           }
-          .tint(Colors.tealColor) // iOS 26 Liquid Glass renders bar buttons monochrome without an explicit tint.
+          .tint(Color.accentColor) // iOS 26 Liquid Glass renders bar buttons monochrome without an explicit tint.
         }
       }
       // Two independent `.task`s, each auto-cancelled by SwiftUI when the sheet is dismissed,
@@ -153,7 +153,7 @@ struct SettingsView: View {
             .resizable()
             .scaledToFit()
             .frame(width: 24, height: 24)
-            .foregroundStyle(Colors.tealColor)
+            .foregroundStyle(Color.accentColor)
         }
       }
     } header: {

@@ -45,7 +45,7 @@ class CheckboxButton: UIButton {
       accessibilityValue = "Checked"
     case .unchecked:
       isSelected = false
-      tintColor = Colors.teal
+      tintColor = .tintColor
       accessibilityValue = "Unchecked"
     }
   }

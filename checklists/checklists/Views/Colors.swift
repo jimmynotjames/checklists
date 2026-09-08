@@ -14,7 +14,11 @@ class Colors {
   static let placeholderText = UIColor(named: "placeholderText") ?? .lightGray
 
   static let darkBlueGray = UIColor(named: "darkBlueGray") ?? .darkGray
-  static let teal = UIColor(named: "teal") ?? .darkGray
+
+  /// The app's accent color, also wired up as the global tint via
+  /// `ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME`. Prefer `UIColor.tintColor` at call sites;
+  /// this exists for `CircularPercentStatusIcon`, which needs a concrete `CGColor`.
+  static let accent = UIColor(named: "AccentColor") ?? .systemBlue
   static let salmonRed = UIColor(named: "salmonRed") ?? .red
   static let darkPurple = UIColor(named: "darkPurple") ?? .purple
 }

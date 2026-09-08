@@ -11,7 +11,9 @@ class CLButton: UIButton {
   override init(frame: CGRect) {
     super.init(frame: frame)
     configuration = .glass()
-    configuration?.baseForegroundColor = Colors.teal
+    // Not `.tintColor`: a configuration resolves its colors before the button has a window to
+    // inherit a tint from, so the dynamic color lands on the label color instead of the accent.
+    configuration?.baseForegroundColor = Colors.accent
   }
 
   @available(*, unavailable)

@@ -39,6 +39,8 @@ struct ChecklistScreen: UIViewControllerRepresentable {
         image: UIImage(systemName: "chevron.backward"),
         primaryAction: UIAction { _ in onRequestDismiss() }
       )
+      // iOS 26 renders bar buttons in `labelColor` unless the item itself carries a tint.
+      backButton.tintColor = .tintColor
       backButton.accessibilityLabel = "Back"
       viewController.navigationItem.leftBarButtonItem = backButton
     }
