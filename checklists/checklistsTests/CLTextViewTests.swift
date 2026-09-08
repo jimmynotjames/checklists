@@ -69,6 +69,23 @@ nonisolated final class CLTextViewTests: XCTestCase {
     XCTAssertTrue(label.isHidden)
   }
 
+  /// The collapsed-notes case: `ItemContentView` collapses an item's notes field to a 0pt height
+  /// constraint, and the placeholder must not show through. It is the text view's clipping that
+  /// enforces that — the label is pinned to all four edges, which on a scroll view sets contentSize
+  /// rather than the label's frame, so the label keeps its natural height and overflows.
+  @MainActor func testCollapsedTextViewClipsItsOverflowingPlaceholder() throws {
+    let textView = CLTextView()
+    textView.placeholderText = "Notes"
+    textView.translatesAutoresizingMaskIntoConstraints = false
+    textView.heightAnchor.constraint(equalToConstant: 0.0).isActive = true
+    textView.widthAnchor.constraint(equalToConstant: 200.0).isActive = true
+    textView.layoutIfNeeded()
+
+    let label = try XCTUnwrap(placeholderLabel(in: textView))
+    XCTAssertGreaterThan(label.frame.height, textView.bounds.height, "Precondition: the label overflows.")
+    XCTAssertTrue(textView.clipsToBounds, "Without clipping, the placeholder renders outside the collapsed field.")
+  }
+
   @MainActor func testFontOverrideKeepsPlaceholderLabelInSync() throws {
     let textView = CLTextView()
     let font = UIFont.boldSystemFont(ofSize: 21.0)

@@ -101,6 +101,10 @@ class CLTextView: UITextView {
 
   private func commonInit() {
     isScrollEnabled = false
+    // The placeholder label is pinned to all four edges, which on a scroll view sets contentSize
+    // rather than the label's frame — so it keeps its natural height and spills out of a text view
+    // constrained shorter than one line. Clipping is what keeps it out of sight.
+    clipsToBounds = true
     textContainer.heightTracksTextView = true
 
     textContainerInset = .zero
