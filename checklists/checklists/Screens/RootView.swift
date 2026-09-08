@@ -28,9 +28,6 @@ struct RootView: View {
                 }
                 // Only the embedded UIKit bar should show for this destination; see ChecklistScreen.
                 .toolbar(.hidden, for: .navigationBar)
-                // The view controller does its own keyboard avoidance via contentInset (the reason
-                // it ditched UITableViewController); opt out of SwiftUI's so they don't stack.
-                .ignoresSafeArea(.keyboard)
               } else {
                 unresolvedPushDestination
               }
@@ -54,7 +51,6 @@ struct RootView: View {
             ChecklistScreen(checklist: checklist, isNewChecklist: true) {
               router.sheet = nil
             }
-            .ignoresSafeArea(.keyboard)
           } else {
             unresolvedSheetDestination
           }
