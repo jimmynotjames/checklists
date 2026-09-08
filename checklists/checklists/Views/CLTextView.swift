@@ -101,6 +101,8 @@ class CLTextView: UITextView {
 
   private func commonInit() {
     isScrollEnabled = false
+    // Without this the placeholder label, sized by the scroll view's contentSize rather than its frame, spills out of a collapsed field.
+    clipsToBounds = true
     textContainer.heightTracksTextView = true
 
     textContainerInset = .zero
