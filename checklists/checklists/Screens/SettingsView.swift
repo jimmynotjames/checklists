@@ -26,11 +26,11 @@ struct SettingsView: View {
       .navigationTitle("Settings")
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
-        ToolbarItem(placement: .confirmationAction) {
-          Button("Done") {
+        ToolbarItem(placement: .topBarTrailing) {
+          Button(role: .close) {
             dismiss()
           }
-          .tint(Color.accentColor) // iOS 26 Liquid Glass renders bar buttons monochrome without an explicit tint.
+          .tint(Color.accentColor)
         }
       }
       // Two independent `.task`s, each auto-cancelled by SwiftUI when the sheet is dismissed,
