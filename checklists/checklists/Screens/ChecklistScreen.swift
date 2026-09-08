@@ -16,11 +16,37 @@ import UIKit
 ///   - the UI tests address `navigationBars["checklists.ChecklistView"]` and its buttons.
 /// When pushed, the caller hides SwiftUI's navigation bar for this destination so only the
 /// embedded bar shows.
-struct ChecklistScreen: UIViewControllerRepresentable {
+///
+/// The wrapper exists so the safe-area handling below travels with the screen instead of being
+/// restated at each presentation site.
+struct ChecklistScreen: View {
   let checklist: Checklist
   var isNewChecklist = false
   /// Routes every way of leaving the screen (Done, back, remote deletion) through the SwiftUI
   /// router so navigation state can't desync from what's on screen.
+  let onRequestDismiss: () -> Void
+
+  var body: some View {
+    ChecklistControllerView(
+      checklist: checklist,
+      isNewChecklist: isNewChecklist,
+      onRequestDismiss: onRequestDismiss
+    )
+    // The view controller does its own keyboard avoidance via contentInset (the reason it ditched
+    // UITableViewController); opt out of SwiftUI's so they don't stack.
+    .ignoresSafeArea(.keyboard)
+    // `.keyboard` narrows the ignored region, not the edges, so the hosted navigation controller is
+    // still laid out inside the container safe area — leaving the strips above and below it showing
+    // the presenting background rather than the table's own `Colors.defaultBackground`. Not a full
+    // `ignoresSafeArea()`: giving the table real safe-area insets would shift `scrollViewDidScroll`'s
+    // hardcoded title threshold and `scrollToTop()`'s `contentOffset.y == 0` assumptions.
+    .background(Colors.defaultBackgroundColor.ignoresSafeArea())
+  }
+}
+
+private struct ChecklistControllerView: UIViewControllerRepresentable {
+  let checklist: Checklist
+  let isNewChecklist: Bool
   let onRequestDismiss: () -> Void
 
   func makeCoordinator() -> Coordinator {
