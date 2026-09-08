@@ -172,6 +172,46 @@ nonisolated final class ItemContentViewTests: XCTestCase {
     XCTAssertEqual(delegate.didBackspaceEmptyCount, 0, "The notes field's empty-backspace path bounces focus; it isn't the item-deletion path.")
   }
 
+  // MARK: - Tapping between the two fields keeps the row in edit mode
+
+  /// A touch inside either field must read as "still editing this item," so moving from the name
+  /// field to the notes field doesn't collapse the row. `hitTest` hands back one of the text view's
+  /// internal subviews rather than the text view itself, so the check has to be by containment.
+  @MainActor func testTapInsideNotesFieldDoesNotFinishEditing() throws {
+    let contentView = ItemContentView()
+    contentView.item = Item(name: "Test") // No notes, so a collapse here would be visible.
+    contentView.updateTextViewHeight(isExpanded: true)
+    contentView.frame = CGRect(x: 0.0, y: 0.0, width: 340.0, height: 100.0)
+    contentView.layoutIfNeeded()
+    let delegate = RecordingDelegate()
+    contentView.delegate = delegate
+    let notesField = try notesTextView(in: contentView)
+    let nameField = try nameTextView(in: contentView)
+
+    let pointInNotes = contentView.convert(CGPoint(x: notesField.bounds.midX, y: notesField.bounds.midY), from: notesField)
+    _ = contentView.hitTest(pointInNotes, with: nil)
+    contentView.textViewDidEndEditing(nameField) // The name field resigns as notes takes over.
+
+    XCTAssertEqual(delegate.didFinishEditingCount, 0, "Tapping into the notes field should keep the row in edit mode.")
+  }
+
+  /// The other half of the same rule: a touch that misses both fields still ends editing.
+  @MainActor func testTapOutsideBothFieldsFinishesEditing() throws {
+    let contentView = ItemContentView()
+    contentView.item = Item(name: "Test")
+    contentView.updateTextViewHeight(isExpanded: true)
+    contentView.frame = CGRect(x: 0.0, y: 0.0, width: 340.0, height: 100.0)
+    contentView.layoutIfNeeded()
+    let delegate = RecordingDelegate()
+    contentView.delegate = delegate
+    let nameField = try nameTextView(in: contentView)
+
+    _ = contentView.hitTest(CGPoint(x: 2.0, y: 2.0), with: nil) // Above the fields, inside the view.
+    contentView.textViewDidEndEditing(nameField)
+
+    XCTAssertEqual(delegate.didFinishEditingCount, 1, "Tapping away from both fields should end editing.")
+  }
+
   // MARK: - refreshHeight() / expanded state driven by notes emptiness
 
   @MainActor func testRefreshHeightExpandsWhenItemHasNotes() throws {

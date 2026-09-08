@@ -139,7 +139,9 @@ class ItemContentView: UIView {
    */
   override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
     let view = super.hitTest(point, with: event)
-    wasInputFieldTapped = view != nil && (view! == nameTextView || view! == notesTextView)
+    // A text view hands back one of its own internal subviews, never itself, so this asks whether
+    // the touch landed anywhere inside a field rather than exactly on it.
+    wasInputFieldTapped = view.map { $0.isDescendant(of: nameTextView) || $0.isDescendant(of: notesTextView) } ?? false
     return view
   }
 
