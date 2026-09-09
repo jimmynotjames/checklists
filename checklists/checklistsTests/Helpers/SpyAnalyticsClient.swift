@@ -28,6 +28,14 @@ final class SpyAnalyticsClient: AnalyticsClient {
 
   private(set) var calls: [Call] = []
 
+  /// The raw property values, kept beside the `Equatable` `Call` list rather than inside it.
+  ///
+  /// `Call` stringifies values so ordering can be asserted with a single `XCTAssertEqual`, but
+  /// stringifying makes `42` and `"42"` indistinguishable — and a wrong-typed property is the one
+  /// failure the backend hides, dropping it silently rather than failing the build. Assert types
+  /// through `rawProperty(_:forFirst:as:)`.
+  private(set) var rawTrackCalls: [(event: String, properties: [String: any Sendable]?)] = []
+
   // MARK: - Convenience accessors
 
   var trackedEventNames: [String] {
@@ -47,10 +55,16 @@ final class SpyAnalyticsClient: AnalyticsClient {
     trackedEventNames.count { $0 == event }
   }
 
+  /// The raw, still-typed value of one property on the first `track` of `event`.
+  func rawProperty<T>(_ key: String, forFirst event: String, as _: T.Type) -> T? {
+    rawTrackCalls.first { $0.event == event }?.properties?[key] as? T
+  }
+
   // MARK: - AnalyticsClient
 
   func track(_ event: String, properties: [String: any Sendable]?) {
     calls.append(.track(event, properties.map { $0.mapValues { value in String(describing: value) } }))
+    rawTrackCalls.append((event: event, properties: properties))
   }
 
   func identify(_ distinctId: String?) {

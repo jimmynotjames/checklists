@@ -69,9 +69,11 @@ struct ChecklistsApp: App {
       // the tracker and let a duplicate open through.
       .environment(\.analytics, analytics)
       .task {
-        // A cold launch is an open by definition; the tracker dedupes this against the
-        // `.onChange` below so a launch never fires twice.
-        fireAppOpenedIfNeeded(for: .active)
+        // The scene's real phase, not a hardcoded `.active`: the app declares the
+        // remote-notification background mode, so it can be launched into the background, and
+        // asserting `.active` there would both invent an open and suppress the person's real one.
+        // The tracker dedupes this against the `.onChange` below, so a launch never fires twice.
+        fireAppOpenedIfNeeded(for: scenePhase)
       }
       .onChange(of: scenePhase) { _, newPhase in
         fireAppOpenedIfNeeded(for: newPhase)

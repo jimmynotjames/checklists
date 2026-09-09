@@ -59,7 +59,14 @@ nonisolated final class AnalyticsNamesTests: XCTestCase {
   /// Matches the spec's stated convention: flat `snake_case`, starting with a lowercase letter.
   private func assertSnakeCase(_ name: String, file: StaticString = #filePath, line: UInt = #line) {
     XCTAssertFalse(name.isEmpty, "Empty name.", file: file, line: line)
-    XCTAssertNotNil(name.first.map { $0.isLowercase && $0.isLetter }, file: file, line: line)
+    // `.map` on a non-nil optional always yields `.some`, so this has to compare the value —
+    // otherwise a leading underscore or digit passes, which `allSatisfy` below also permits.
+    XCTAssertTrue(
+      name.first?.isLowercase == true,
+      "\"\(name)\" must start with a lowercase letter.",
+      file: file,
+      line: line
+    )
     XCTAssertTrue(
       name.allSatisfy { ($0.isLowercase && $0.isLetter) || $0.isNumber || $0 == "_" },
       "\"\(name)\" is not flat snake_case.",

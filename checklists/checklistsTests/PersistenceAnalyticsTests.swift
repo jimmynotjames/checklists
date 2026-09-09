@@ -49,9 +49,14 @@ nonisolated final class PersistenceAnalyticsTests: XCTestCase {
       )
     )
 
-    let properties = spy.properties(forFirst: AnalyticsEvent.persistenceFatalError)
-    let message = properties?[AnalyticsProperty.error]
-    XCTAssertNotNil(message)
+    // Asserted against the *raw* value, not its description: the backend drops a property whose
+    // type it cannot represent, silently, so the type is part of the contract.
+    let message = spy.rawProperty(
+      AnalyticsProperty.error,
+      forFirst: AnalyticsEvent.persistenceFatalError,
+      as: String.self
+    )
+    XCTAssertNotNil(message, "The error property must arrive as a String.")
     XCTAssertEqual(message?.count, AnalyticsText.maximumLength)
   }
 

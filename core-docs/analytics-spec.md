@@ -327,6 +327,15 @@ All names are flat `snake_case`, `noun_pastTenseVerb`. 16 events.
 | `startup_store_reset` | "Start over fresh" chosen on that screen, deleting this device's stores | — | §3.6 |
 | `analytics_consent_changed` | The consent toggle or first-run sheet changes the setting | `new_value`, `old_value` | §3.8 |
 
+**`app_opened` fires on "`.active` having seen `.background`", not "`.active` preceded by
+`.background`".** iOS delivers `.inactive` on the way back in, so a real foreground return arrives
+as `background → inactive → active`. Testing only the immediately preceding phase misses every
+foreground return and silently reduces the event to cold launches — which would put every session,
+reach and retention number on this app's dashboards on a cold-launch-only basis. `budgets1`'s
+`AppOpenTracker`, which this was ported from, has that bug. Verified here on a simulator: one cold
+launch plus two background/foreground cycles produces exactly three events, and an `.inactive`
+detour with no `.background` in it produces none.
+
 **`startup_failed` is the one to watch.** It is the only signal that someone was shown a failure
 screen instead of their checklists, and its count measures how often the store cannot be opened in
 the field. Note that no data has been lost when it fires — the store simply would not open, and the
@@ -389,7 +398,7 @@ every rotation, which never varied within an install.
 | `first_seen_at` | `setOnce` on first identify |
 | `last_app_open_at` | `set` on every `app_opened` |
 | `analytics_opt_in_at` | On the opt-in transition |
-| `checklists_count_bucket` | `0` / `1` / `2-3` / `4-7` / `8+`, recomputed after `checklist_created` and on `checklists_viewed` |
+| `checklists_count_bucket` | `0` / `1` / `2-3` / `4-7` / `8+`, recomputed on `checklists_viewed` — the list reappears after every creation and deletion, and `@Query` has not yet updated at the moment `checklist_created` fires |
 
 Bucketing on the **profile** while sending the raw count on **events** is consistent, not
 contradictory: §9.1's "raw" argument is about event properties, and profiles are what cohorts are

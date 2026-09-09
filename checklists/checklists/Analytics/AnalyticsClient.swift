@@ -44,6 +44,11 @@ protocol AnalyticsClient: AnyObject, Sendable {
   func reset()
 
   /// Re-registers the properties attached to every event (§9.2).
+  ///
+  /// Deliberately has **no production caller**. Registration happens inside lazy SDK
+  /// initialization (§7.2), which also covers the reset → re-opt-in path, so there is nothing for
+  /// the app to call at launch. It stays on the protocol for a client that needs to refresh a
+  /// super property mid-session — and so a spy can observe that nothing calls it.
   func refreshSuperProperties()
 
   /// Updates the one profile-level cohort signal this app has (§9.3).

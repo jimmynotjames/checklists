@@ -38,16 +38,52 @@ nonisolated final class AppOpenTrackerTests: XCTestCase {
     )
   }
 
-  /// Backgrounding *through* `.inactive` is the real-world path, and the phase immediately before
-  /// `.active` is `.inactive` in that sequence too — so the tracker must not fire. The open is
-  /// already counted by the launch, and iOS delivers `.inactive` on the way back in.
-  @MainActor func testBackgroundThenInactiveThenActiveDoesNotDoubleFire() {
+  /// **The sequence iOS actually delivers**, measured on a device: backgrounding goes
+  /// `active → inactive → background`, and reopening comes back `inactive → active`. So the phase
+  /// immediately before the `.active` that ends a real foreground return is `.inactive`, never
+  /// `.background`.
+  ///
+  /// This is the case that matters most and the one an earlier implementation got wrong — it
+  /// tested only the immediately preceding phase, which silently reduced `app_opened` to cold
+  /// launches and would have built every session, reach and retention number on them.
+  @MainActor func testRealForegroundReturnSequenceFires() {
+    let tracker = AppOpenTracker()
+    XCTAssertTrue(tracker.shouldFire(for: .active), "Cold launch.")
+    _ = tracker.shouldFire(for: .inactive)
+    _ = tracker.shouldFire(for: .background)
+    XCTAssertFalse(tracker.shouldFire(for: .inactive), "Still on the way back in.")
+    XCTAssertTrue(tracker.shouldFire(for: .active), "This is the foreground return.")
+  }
+
+  /// Two full cycles, to prove the background flag is cleared on each open rather than latching
+  /// true and firing on every subsequent `.active`.
+  @MainActor func testTwoForegroundReturnsFireTwiceNotMore() {
+    let tracker = AppOpenTracker()
+    var opens = 0
+    for phase in [ScenePhase.active, .inactive, .background, .inactive, .active,
+                  .inactive, .background, .inactive, .active] where tracker.shouldFire(for: phase) {
+      opens += 1
+    }
+    XCTAssertEqual(opens, 3, "One cold launch plus two foreground returns.")
+  }
+
+  /// The flicker case, stated against the same rule: an `.inactive` detour with no `.background`
+  /// in it is the notification shade or the app switcher, and is not an open.
+  @MainActor func testInactiveDetourWithoutBackgroundDoesNotFire() {
     let tracker = AppOpenTracker()
     _ = tracker.shouldFire(for: .active)
     _ = tracker.shouldFire(for: .inactive)
-    _ = tracker.shouldFire(for: .background)
-    XCTAssertTrue(tracker.shouldFire(for: .active), "background → active is an open.")
+    XCTAssertFalse(tracker.shouldFire(for: .active))
     XCTAssertFalse(tracker.shouldFire(for: .active), "Staying active is not a second open.")
+  }
+
+  /// A scene that connects in the background — possible here because the app declares the
+  /// remote-notification background mode — must not count as an open, and must not swallow the
+  /// person's real open when they later launch it.
+  @MainActor func testBackgroundLaunchDoesNotFireButLaterActivationDoes() {
+    let tracker = AppOpenTracker()
+    XCTAssertFalse(tracker.shouldFire(for: .background), "A background launch is not an open.")
+    XCTAssertTrue(tracker.shouldFire(for: .active), "Opening it afterwards is.")
   }
 
   @MainActor func testRepeatedActiveDoesNotFireTwice() {
