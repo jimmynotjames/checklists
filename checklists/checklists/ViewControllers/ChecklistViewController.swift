@@ -37,6 +37,9 @@ class ChecklistViewController: UIViewController {
 
   private var remoteChangeObserver: RemoteChangeObserver?
 
+  /// How far down the list must be dragged before an in-progress edit is committed.
+  private let keyboardDismissDragThreshold: CGFloat = 40.0
+
   private var context: ModelContext {
     PersistenceController.shared.mainContext
   }
@@ -381,6 +384,13 @@ class ChecklistViewController: UIViewController {
     }
   }
 
+  /// Ends editing when the list is dragged down far enough to mean it.
+  ///
+  /// Overridden in tests to observe the dismissal without loading the view.
+  func endEditingAfterDragDismiss() {
+    view.endEditing(true)
+  }
+
   /// Puts the table back in step with the model after a move that could not be saved.
   ///
   /// Deferred to a later turn of the run loop deliberately: reloading from inside
@@ -449,7 +459,16 @@ extension ChecklistViewController: UITableViewDelegate {
 }
 
 extension ChecklistViewController: UIScrollViewDelegate {
+  /// Drag-to-dismiss. `keyboardDismissMode` is the stock way to get this, but on iOS 26 both
+  /// `.onDragWithAccessory` and `.interactiveWithAccessory` hide the keyboard without resigning the
+  /// field, which strands the Done accessory at the bottom of the screen.
+  ///
+  /// Only a deliberate downward drag counts, so scrolling up to read the rest of the list leaves an
+  /// edit in progress alone.
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    if scrollView.isDragging, scrollView.panGestureRecognizer.translation(in: scrollView).y > keyboardDismissDragThreshold {
+      endEditingAfterDragDismiss()
+    }
     let currentY: CGFloat = scrollView.contentOffset.y
     let thresholdY: CGFloat = 52.0
 
