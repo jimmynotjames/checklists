@@ -25,9 +25,14 @@ final class AppStartupCoordinator {
   typealias MakeContainer = @MainActor () throws -> (container: ModelContainer, backing: ContainerBacking)
 
   private let makeContainer: MakeContainer
+  private let analytics: any AnalyticsClient
 
-  init(makeContainer: @escaping MakeContainer = LaunchModeContainerFactory.make) {
+  init(
+    makeContainer: @escaping MakeContainer = LaunchModeContainerFactory.make,
+    analytics: any AnalyticsClient = AppAnalytics.shared
+  ) {
     self.makeContainer = makeContainer
+    self.analytics = analytics
   }
 
   /// Whether this launch has to copy data out of the old Realm store.
@@ -65,7 +70,10 @@ final class AppStartupCoordinator {
       // has been deleted in any of these cases; the Realm file is still on disk.
       let failure = ContainerCreationFailure(underlying: error)
       AppLog.bootstrap.error("bootstrap.failed: \(failure.diagnosticDescription, privacy: .public)")
-      AnalyticsManager.logStartupFailure(errorMessage: failure.diagnosticDescription)
+      analytics.track(
+        AnalyticsEvent.startupFailed,
+        properties: [AnalyticsProperty.error: AnalyticsText.truncated(failure.diagnosticDescription)]
+      )
       return .failed(failure)
     }
   }

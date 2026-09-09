@@ -13,8 +13,8 @@ canonical for:
 - **What NOT to do**, especially machine-wide simulator destruction
 - Known issues (the old Flurry API key still in git history; test targets don't link)
 
-Analytics are **stubbed** — Flurry was removed, Mixpanel is not implemented, and
-`AnalyticsManager.log*` calls are no-ops.
+Analytics go through the `AnalyticsClient` protocol in `checklists/checklists/Analytics/`. The
+Mixpanel SDK is not connected yet, so events reach `ConsoleAnalyticsClient`.
 [`core-docs/analytics-spec.md`](../core-docs/analytics-spec.md) is canonical for analytics: the
 event and property catalogs, the privacy contract, and the consent model. `core-docs/` holds
 design docs that outlive a single change; `docs/` is the published GitHub Pages site, not a place

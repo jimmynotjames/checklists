@@ -10,6 +10,7 @@ import SwiftUI
 struct MainMenuView: View {
   @Environment(Router.self) private var router
   @Environment(\.openURL) private var openURL
+  @Environment(\.analytics) private var analytics
 
   var body: some View {
     // The gap between menu rows lives here rather than in the rows themselves.
@@ -29,14 +30,14 @@ struct MainMenuView: View {
       .padding(.bottom, 8)
 
       MainMenuRow(title: "Feedback", iconName: "MainMenuFeedbackIcon") {
-        AnalyticsManager.logSendFeedback()
+        analytics.track(AnalyticsEvent.feedbackTapped)
         guard let url = URL(string: "mailto:jimmyho.appfeedback@gmail.com?subject=Feedback%20for%20reChecklist%20App")
         else { assertionFailure(); return }
         openURL(url)
       }
 
       MainMenuRow(title: "Rate in App Store", iconName: "MainMenuRateInAppStoreIcon") {
-        AnalyticsManager.logRateInAppStore()
+        analytics.track(AnalyticsEvent.rateAppTapped)
         guard let url = URL(string: "https://itunes.apple.com/app/id1475724536?action=write-review")
         else { assertionFailure(); return }
         openURL(url)
@@ -58,7 +59,7 @@ struct MainMenuView: View {
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     .background(Colors.darkBlueGrayColor.ignoresSafeArea())
     .task {
-      AnalyticsManager.logMainMenuViewed()
+      analytics.track(AnalyticsEvent.mainMenuViewed)
     }
   }
 }

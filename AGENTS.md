@@ -9,7 +9,8 @@ once, on the single launch that needs it, and never writes to it. See
 [`core-docs/persistence-design.md`](core-docs/persistence-design.md) for the model, the CloudKit
 constraints it was designed against, the legacy import, and sort-key ordering. Analytics are
 **being wired up** — Flurry was removed, and the Mixpanel implementation is landing as a PR
-sequence. Until it completes, `AnalyticsManager.log*` calls are still no-ops. See
+sequence. The client layer is in place; until the SDK is connected, `analytics.track(...)` calls
+reach a console client that prints in DEBUG and does nothing in Release. See
 [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md).
 
 The Xcode project lives one level down at `checklists/checklists.xcodeproj`. The repo root holds
@@ -56,7 +57,8 @@ shared scheme's unit target failing to build, and on `test-ui`'s `warmed` sentin
 `SortKeyReorderTests`, `LegacyRealmImporterTests`, `ProductionContainerFactoryTests`,
 `PersistentStoreURLTests`, `RemoteChangeObserverTests`, `TwoDeviceUnionTests`,
 `SampleDataDedupeTests`, `SyncStatusTests`, `ICloudStatusLoaderTests`, `StoreResetTests`,
-`AnalyticsManagerTests`,
+`AnalyticsTextTests`, `AnalyticsNamesTests`, `AppOpenTrackerTests`,
+`ChecklistAnalyticsPropertiesTests`, `PersistenceAnalyticsTests`, `AppConfigSentinelTests`,
 `SettingsManagerTests`, `CircularPercentStatusIconTests`, `CLTextViewTests`,
 `ItemContentViewTests`, `ChecklistReorderFailureTests`, and `ChecklistKeyboardDismissTests`;
 `checklistsUITests` has 17. Both are green, verified twice in a row for flakes — but still opt-in,
@@ -202,7 +204,7 @@ with an explanation, so following these avoids both prompts and denials:
 - Don't add `make format`/`make lint` (repo-wide) to any hook or gate. See the lint policy.
 - Don't hardcode an analytics token in source. Tokens come from `config/Secrets.local.xcconfig`
   via Info.plist — see [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md) §10. The Flurry
-  key sat in `AnalyticsManager.swift` for six years and gitleaks never caught it.
+  key sat in source for six years and gitleaks never caught it.
 - **Ignore the local `swiftui_2024` branch entirely** — don't investigate it, diff against it, or
   flag it as context for unrelated work, even in passing. It's an unmerged, in-progress
   UIKit→SwiftUI migration; spending tokens exploring it is wasted unless the user explicitly asks
@@ -269,8 +271,9 @@ device and skips sandbox management entirely.
   above is now automated in `_ensure_sim_booted` rather than left as a one-liner to remember: it
   re-checks and re-applies on every run instead of trusting that yesterday's fix still holds.
 
-- **Analytics send nowhere.** Flurry was removed; Mixpanel is not implemented. Every
-  `AnalyticsManager.log*` call still fires but hits a no-op (it prints in DEBUG). The event and
+- **Analytics send nowhere yet.** Flurry was removed; the Mixpanel SDK is not connected. Every
+  `analytics.track(...)` call fires into `ConsoleAnalyticsClient`, which prints in DEBUG and does
+  nothing in Release. The event and
   property catalogs, the privacy contract, and the consent model are in
   [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md) — read it before touching analytics.
 - **The old Flurry API key is still in git history.** It left the working tree with the Flurry

@@ -8,13 +8,14 @@
 //
 // This is the *diagnostics* channel: operational failures that a developer needs to see when
 // something goes wrong on a real device. It is architecturally independent of
-// `AnalyticsManager`, which is the *product* channel (what users do). The two never feed each
-// other. The same split is used in the sibling `budgets1` repo (`AppLoggers.swift` +
-// `docs/analytics-spec.md` §17).
+// `AnalyticsClient`, which is the *product* channel (what users do). The two never feed each
+// other — that is why they live in separate directories. See core-docs/analytics-spec.md §11 and
+// the same split in the sibling `budgets1` repo.
 //
-// Why this exists: analytics are currently stubbed (Flurry removed, Mixpanel not wired up), so
-// `AnalyticsManager.log*` calls go nowhere in Release. Without this channel, a Realm failure
-// would crash the app having left no record anywhere. `os_log` needs no backend, no SDK, and no
+// Why this exists: analytics are consent-gated and network-buffered, so they are not a record you
+// can rely on — an opted-out install sends nothing at all, and an event queued for HTTP does not
+// survive a trap. Without this channel, a store failure would crash the app having left no record
+// anywhere. `os_log` needs no backend, no SDK, and no
 // network — it writes to the unified log, which is readable in Console.app on an attached device
 // and is captured in a sysdiagnose.
 //

@@ -49,6 +49,8 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   let isNewChecklist: Bool
   let onRequestDismiss: () -> Void
 
+  @Environment(\.analytics) private var analytics
+
   func makeCoordinator() -> Coordinator {
     Coordinator(onRequestDismiss: onRequestDismiss)
   }
@@ -58,6 +60,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
     viewController.checklist = checklist
     viewController.isNewChecklist = isNewChecklist
     viewController.onRequestDismiss = onRequestDismiss
+    viewController.analytics = analytics
     if !isNewChecklist {
       // The embedded navigation controller's root has no system back button, so recreate one.
       // Chevron-only, with no back title, is the intended look.

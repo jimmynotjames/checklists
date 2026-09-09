@@ -14,6 +14,7 @@ struct SettingsView: View {
   @Environment(SyncStatus.self) private var syncStatus
   @Environment(\.dismiss) private var dismiss
   @Environment(\.openURL) private var openURL
+  @Environment(\.analytics) private var analytics
 
   var body: some View {
     NavigationStack {
@@ -42,7 +43,7 @@ struct SettingsView: View {
         await observeAccountChanges()
       }
       .task {
-        AnalyticsManager.logSettingsViewed()
+        analytics.track(AnalyticsEvent.settingsViewed)
       }
     }
   }
@@ -137,7 +138,7 @@ struct SettingsView: View {
   private var infoSection: some View {
     Section {
       Button {
-        AnalyticsManager.logViewPrivacyPolicy()
+        analytics.track(AnalyticsEvent.privacyPolicyTapped)
         guard let url = URL(string: "https://www.termsfeed.com/privacy-policy/0420e699b562320b2beb80af0a4e08b9") else {
           assertionFailure()
           return

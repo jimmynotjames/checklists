@@ -17,8 +17,8 @@ import Foundation
 /// so that is the value callers actually see on a fresh clone. Both are rejected by
 /// `MixpanelTokenSource.isValidToken`, which is what makes either safe.
 ///
-/// The Flurry key was a hardcoded literal in `AnalyticsManager.swift` for six years and is still
-/// in this repo's history (issue #115). This indirection exists so that cannot recur.
+/// The Flurry key was a hardcoded source literal for six years and is still in this repo's
+/// history (issue #115). This indirection exists so that cannot recur.
 enum AppConfig {
   // MARK: - Sentinels
 

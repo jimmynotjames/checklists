@@ -29,6 +29,7 @@ struct ContainerFailureView: View {
   let onStoreReset: () -> Void
 
   @Environment(\.openURL) private var openURL
+  @Environment(\.analytics) private var analytics
   @State private var isShowingStartOverConfirmation = false
 
   init(failure: ContainerCreationFailure, onStoreReset: @escaping () -> Void) {
@@ -91,7 +92,7 @@ struct ContainerFailureView: View {
     ) {
       Button("Cancel", role: .cancel) {}
       Button("Start Over", role: .destructive) {
-        AnalyticsManager.logStartupStoreReset()
+        analytics.track(AnalyticsEvent.startupStoreReset)
         StoreReset.startOverFresh()
         onStoreReset()
       }
@@ -101,7 +102,7 @@ struct ContainerFailureView: View {
   }
 
   private func sendFeedbackTapped() {
-    AnalyticsManager.logSendFeedback()
+    analytics.track(AnalyticsEvent.feedbackTapped)
 
     var components = URLComponents()
     components.scheme = "mailto"

@@ -27,6 +27,7 @@ struct ChecklistsView: View {
 
   @Environment(\.modelContext) private var context
   @Environment(Router.self) private var router
+  @Environment(\.analytics) private var analytics
 
   /// Created on the first `.task` rather than at init: a `@State` initial value would be
   /// rebuilt on every re-render of the view struct, and this observer registers for a
@@ -162,7 +163,11 @@ struct ChecklistsView: View {
       }
     }
     .onAppear {
-      AnalyticsManager.logChecklistsViewed(numChecklists: checklists.count)
+      analytics.track(
+        AnalyticsEvent.checklistsViewed,
+        properties: [AnalyticsProperty.checklistsCount: checklists.count]
+      )
+      analytics.refreshCohortPeopleProperties(checklistsCount: checklists.count)
     }
   }
 
@@ -187,7 +192,7 @@ struct ChecklistsView: View {
   }
 
   private func addChecklist() {
-    AnalyticsManager.logNewChecklist()
+    analytics.track(AnalyticsEvent.checklistCreated)
     let checklist = Checklist()
     do {
       try context.insert(checklist: checklist, at: 0, among: Array(checklists))
