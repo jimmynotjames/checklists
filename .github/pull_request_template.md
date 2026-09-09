@@ -20,10 +20,10 @@ For any change that touches the data model, user actions, or UI — confirm each
       changed, a new `VersionedSchema`, a `MigrationStage` in `ChecklistsMigrationPlan`, and a
       migration test all exist. Once the CloudKit production schema is deployed, changes are
       additive only. See `core-docs/persistence-design.md`.
-- [ ] **Analytics** *(no backend right now — Flurry removed, Mixpanel not wired up, so these
-      calls are no-ops)* — new user-initiated state changes still fire a matching
-      `AnalyticsManager.log*` event, with names in the `AnalyticsEvent`/`AnalyticsProperty` enums
-      and a row added to `core-docs/analytics-spec.md`. No PII.
+- [ ] **Analytics** *(SDK not connected yet — events reach the console client, which prints in
+      DEBUG and is silent in Release)* — new user-initiated state changes still fire a matching
+      `analytics.track(...)` call, with names in the `AnalyticsEvent`/`AnalyticsProperty` enums in
+      `Analytics/AnalyticsNames.swift` and a row added to `core-docs/analytics-spec.md`. No PII.
 - [ ] **Accessibility** — new controls have `accessibilityLabel` and appropriate traits; nothing
       clips at large Dynamic Type.
 

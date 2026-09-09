@@ -16,8 +16,8 @@
 > deliberately aligned to it; §16 records every place they intentionally diverge.
 
 **Implementation status.** The token/secrets mechanism, the privacy manifest, the Mixpanel projects
-and their dashboards (§12), and this document are **built**. The client protocol, the consent flow,
-and the Mixpanel SDK itself are **pending** —
+and their dashboards (§12), this document, and the **client protocol with all 16 call sites
+migrated** (§7) are built. The consent flow (§6) and the Mixpanel SDK itself are **pending** —
 tracked as the remaining PRs in the sequence that began with `analytics-secrets-and-spec`. Section
 headers below say "Built" or "Pending" where it matters. Nothing in this app sends analytics
 anywhere until the final PR lands.
@@ -241,6 +241,9 @@ open.
 | Tokens are still placeholder sentinels (fresh clone) | `ConsoleAnalyticsClient` |
 | Otherwise | `MixpanelAnalyticsClient` |
 
+Until the SDK lands, the selection returns `ConsoleAnalyticsClient` unconditionally — the shape is
+in place, the third row is not yet reachable.
+
 The test guard delegates to the existing `LaunchModeContainerFactory.isRunningTests`, which already
 handles **both** signals. `budgets1` checks only its `IS_TESTING` env var; ported literally, that
 would let this repo's UI-test runs send real events, because the XCUITest bundle passes only the
@@ -288,6 +291,14 @@ three testable.
 > wrong and the three persistence events silently go to the console client forever, in every build,
 > with no error.
 
+**Every name constant is `nonisolated`.** The project sets
+`SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`, but SwiftData `@Model` types are not MainActor, so a
+`Checklist` extension — such as the one assembling `checklist_viewed`'s properties — is nonisolated
+and cannot reach a MainActor-isolated constant. Declaring `AnalyticsEvent`, `AnalyticsProperty` and
+`AnalyticsText` members `nonisolated` is what lets names be used from anywhere, which is the whole
+point of having them in one place. `budgets1` does the same, for the same reason. A new constant
+without `nonisolated` compiles until the first model extension tries to use it.
+
 **Consent interacts with this and it is not a bug.** These three error events are consent-gated like
 everything else, so in strict-opt-in jurisdictions they are dropped on exactly the launch where they
 would matter most. That is correct under §6.2's no-retroactive-replay rule, and it is precisely why
@@ -315,6 +326,15 @@ All names are flat `snake_case`, `noun_pastTenseVerb`. 16 events.
 | `startup_failed` | Launch could not produce a usable store, so the retry screen was shown | `error` | §3.6 |
 | `startup_store_reset` | "Start over fresh" chosen on that screen, deleting this device's stores | — | §3.6 |
 | `analytics_consent_changed` | The consent toggle or first-run sheet changes the setting | `new_value`, `old_value` | §3.8 |
+
+**`app_opened` fires on "`.active` having seen `.background`", not "`.active` preceded by
+`.background`".** iOS delivers `.inactive` on the way back in, so a real foreground return arrives
+as `background → inactive → active`. Testing only the immediately preceding phase misses every
+foreground return and silently reduces the event to cold launches — which would put every session,
+reach and retention number on this app's dashboards on a cold-launch-only basis. `budgets1`'s
+`AppOpenTracker`, which this was ported from, has that bug. Verified here on a simulator: one cold
+launch plus two background/foreground cycles produces exactly three events, and an `.inactive`
+detour with no `.background` in it produces none.
 
 **`startup_failed` is the one to watch.** It is the only signal that someone was shown a failure
 screen instead of their checklists, and its count measures how often the store cannot be opened in
@@ -378,7 +398,7 @@ every rotation, which never varied within an install.
 | `first_seen_at` | `setOnce` on first identify |
 | `last_app_open_at` | `set` on every `app_opened` |
 | `analytics_opt_in_at` | On the opt-in transition |
-| `checklists_count_bucket` | `0` / `1` / `2-3` / `4-7` / `8+`, recomputed after `checklist_created` and on `checklists_viewed` |
+| `checklists_count_bucket` | `0` / `1` / `2-3` / `4-7` / `8+`, recomputed on `checklists_viewed` — the list reappears after every creation and deletion, and `@Query` has not yet updated at the moment `checklist_created` fires |
 
 Bucketing on the **profile** while sending the raw count on **events** is consistent, not
 contradictory: §9.1's "raw" argument is about event properties, and profiles are what cohorts are
@@ -533,29 +553,32 @@ introduce Swift Testing** — that is a `budgets1` convention that does not appl
 matters: it is what lets §6.3's ordering contract be asserted against real production code rather
 than re-simulated inside the test body.
 
-Contracts:
+Contracts — **built** except where marked, which land with the consent and SDK changes:
 
 1. `truncated(_:)` — under, at, and over 127 chars, and no splitting of a multi-scalar emoji.
 2. `ConsentJurisdiction` — every strict code maps to `.required`; representative others to
-   `.autoOptin`; **`nil` → `.required`**.
+   `.autoOptin`; **`nil` → `.required`**. *(pending — consent)*
 3. Opt-in defaults — strict region → `false`, elsewhere → `true`, and **the resolved default is not
-   written to the store**; an explicit value overrides the locale default.
-4. `distinct_id` — generated once, persisted, stable across instances, parses as a UUID.
+   written to the store**; an explicit value overrides the locale default. *(pending — consent)*
+4. `distinct_id` — generated once, persisted, stable across instances, parses as a UUID. *(pending — consent)*
 5. `AppOpenTracker` — fires on first `.active` and on `.background → .active`; **not** on
    `.inactive → .active` (the notification shade and app switcher are not opens).
-6. `isConfigured(dev:prod:)` — the truth table, without touching `Bundle.main`.
+6. `isValidToken(_:)` — the 32-lowercase-hex shape rule, without touching `Bundle.main`.
 7. Placeholder sentinels — non-empty, distinct, and not mistakable for a real token.
 8. **Consent ordering** — toggle-off produces exactly `[track(consent_changed, false), reset]` and
    leaves the flag false; toggle-on sets the flag before tracking; decline sends nothing but marks
-   the choice explicit.
+   the choice explicit. *(pending — consent)*
 9. Lazy init — an opted-out client never initializes the SDK however many `track` calls it receives;
-   flipping to opted-in initializes exactly once.
+   flipping to opted-in initializes exactly once. *(pending — SDK)*
 10. Name constants — all distinct, all `snake_case`.
 11. Orientation mapping — portrait/landscape values, `nil` for face-up/face-down.
 12. Checklist view properties — counts, notes length for nil notes, name truncation.
-13. The persistence error events, via the already-injectable container factory and save helper.
-14. `StoreReset` leaves the analytics keys alone (§5).
-15. The client-selection predicate covers **both** `-UITests1` and `IS_TESTING` (§7.1).
+13. `persistence_fatal_error` and `startup_failed`, via the injectable container factory and
+    startup coordinator — including that a *successful* launch emits nothing. (The save-helper path
+    is injectable too, but a real SwiftData save only fails on a full or damaged disk, which a unit
+    test cannot arrange.)
+14. `StoreReset` leaves the analytics keys alone (§5). *(pending — consent)*
+15. The client-selection predicate covers **both** `-UITests1` and `IS_TESTING` (§7.1). *(pending — SDK)*
 
 Tests are opt-in and not gated (`make test-unit`). Read pass/fail from the `.xcresult`, never from a
 piped exit code — see AGENTS.md.
@@ -649,4 +672,5 @@ The region list in §6.2 and the region set in `ConsentJurisdiction.swift` must 
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
+| 1.1 | 2026-09-09 | Jimmy Ho | Client protocol built and all 16 call sites migrated off the static facade (#153). Recorded the three non-SwiftUI injection points and the `ChecklistsApp.init()` ordering requirement in §7.3, and the nonisolated-constants requirement that SwiftData model extensions impose. `AnalyticsManager` deleted. |
 | 1.0 | 2026-09-09 | Jimmy Ho | Initial spec, superseding `analytics-design.md`. Records the decisions taken for the Mixpanel implementation: full locale-aware consent port, `AnalyticsClient` protocol (overriding the earlier "no abstraction" decision), `UserDefaults` rather than iCloud KV for identity, and the consent-sheet trigger on first `checklist_viewed`. Token/secrets mechanism, privacy manifest, and gitleaks rule built and verified end to end; both Mixpanel projects provisioned and their five boards built via MCP. Client, consent, and SDK pending. |

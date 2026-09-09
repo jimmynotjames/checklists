@@ -50,9 +50,13 @@ enum ProductionContainerFactory {
   }
 
   /// CloudKit-backed if possible, otherwise local-only. Throws only when both paths fail.
+  /// `analytics` is a parameter rather than a direct `AppAnalytics.shared` read so the failure
+  /// branch below is testable; it runs long before any SwiftUI environment exists, which is why
+  /// the default is the process-wide handle. See analytics-spec.md §7.3.
   static func make(
     cloud: MakeContainer = realContainer,
-    local: MakeContainer = realContainer
+    local: MakeContainer = realContainer,
+    analytics: any AnalyticsClient = AppAnalytics.shared
   ) throws -> (container: ModelContainer, backing: ContainerBacking) {
     if cloudKitEnabled {
       if let container = try? cloud(cloudConfiguration()) {
@@ -71,7 +75,10 @@ enum ProductionContainerFactory {
       AppLog.cloudKit.error(
         "cloudkit.container.failed: \(error.domain, privacy: .public) \(error.code, privacy: .public) \(error.localizedDescription, privacy: .public)"
       )
-      AnalyticsManager.logPersistenceFailure(errorMessage: error.description)
+      analytics.track(
+        AnalyticsEvent.persistenceFatalError,
+        properties: [AnalyticsProperty.error: AnalyticsText.truncated(error.description)]
+      )
       throw error
     }
   }

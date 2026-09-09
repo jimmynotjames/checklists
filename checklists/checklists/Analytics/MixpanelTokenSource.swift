@@ -7,8 +7,7 @@
 ///
 /// Debug builds route to the "reChecklist App - Dev" project and Release builds to
 /// "reChecklist App - Prod", so local instrumentation can be verified without polluting
-/// production data. This is a deliberate departure from the Flurry integration, which compiled
-/// analytics out of debug builds entirely and thereby made them impossible to check.
+/// production data.
 ///
 /// `isConfigured` gates SDK initialization: when the active token is not a real one — a fresh
 /// clone with no `config/Secrets.local.xcconfig`, or a half-filled one — the app falls back to

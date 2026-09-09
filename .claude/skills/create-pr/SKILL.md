@@ -143,21 +143,21 @@ CloudKit record types are additive-only, so a field can be added but never remov
 `core-docs/persistence-design.md`. If a model change ships without its schema/migration/test triad,
 stop and raise it — this is not something to paper over.
 
-**Analytics events** — *placeholder: there is currently no analytics backend.*
-Flurry was removed and Mixpanel is not wired up, so every `AnalyticsManager.log*` call is a no-op
-(it prints in DEBUG, does nothing in Release). **Keep instrumenting anyway** — the point is that the
-event catalog is complete and correct on the day Mixpanel lands, not that anything is being
-collected today.
+**Analytics events** — the Mixpanel SDK is not connected yet, so events currently reach
+`ConsoleAnalyticsClient`, which prints in DEBUG and does nothing in Release. **Keep instrumenting
+anyway** — the point is that the catalog is complete and correct on the day the SDK lands.
 
 Applies if: the diff introduces a new user-initiated action that materially changes app state (a new
 button, a new destructive action, a new setting).
-Check: a matching `AnalyticsManager.log*` call is present. Follow the existing house pattern in
-`checklists/checklists/Analytics/AnalyticsManager.swift` — a named `static func` wrapping
-`logEvent(_:withParameters:)`, e.g. `logNewChecklist()`, `logResetChecklist()`,
-`logRateInAppStore()`. Add the event and property names to the `AnalyticsEvent` /
-`AnalyticsProperty` enums in that file (never inline string literals), and **add a row to the
-catalog in `core-docs/analytics-spec.md` in the same change**. Names are flat `snake_case`,
-`noun_pastTenseVerb`. Route any user-supplied string through `truncatedString`.
+Check: a matching `analytics.track(...)` call is present. In a SwiftUI view, read the client with
+`@Environment(\.analytics)`; in `ChecklistViewController` it is the injected `analytics` property;
+in the three pre-environment persistence sites it is a parameter defaulting to
+`AppAnalytics.shared` (see `core-docs/analytics-spec.md` §7.3). Add the event and property names to
+the `AnalyticsEvent` / `AnalyticsProperty` enums in
+`checklists/checklists/Analytics/AnalyticsNames.swift` — **never a string literal**, and declare
+them `nonisolated static let` so SwiftData model extensions can use them — and **add a row to the
+catalog in `core-docs/analytics-spec.md` §8/§9 in the same change**. Names are flat `snake_case`,
+`noun_pastTenseVerb`. Route any user-supplied string through `AnalyticsText.truncated`.
 
 No PII: item names, item notes, and checklist notes must never be sent as raw event parameters.
 The one exception is `checklist_name` on `checklist_viewed`, which is a pre-existing accepted risk

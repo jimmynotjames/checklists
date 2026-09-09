@@ -15,7 +15,7 @@ import XCTest
 /// that the Swift constants exist, are distinct, and can never be mistaken for a real token.
 /// The other two are held together by review and by the spec (core-docs/analytics-spec.md §10).
 ///
-/// See the note on `AnalyticsManagerTests` for why this is `nonisolated` at the type level with
+/// See the note on `AnalyticsTextTests` for why this is `nonisolated` at the type level with
 /// `@MainActor` on the individual methods.
 nonisolated final class AppConfigSentinelTests: XCTestCase {
   // MARK: - Sentinels

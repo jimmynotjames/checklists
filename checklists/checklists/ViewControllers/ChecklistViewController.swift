@@ -30,6 +30,12 @@ class ChecklistViewController: UIViewController {
   /// screen. When unset (pure-UIKit presentation), the original dismiss/pop paths still run.
   var onRequestDismiss: (() -> Void)?
 
+  /// Set by the SwiftUI host (`ChecklistScreen`), like `onRequestDismiss` above. There is no
+  /// environment to read from here, so the client is pushed in. The console default keeps
+  /// pure-UIKit construction and previews working without any setup, and means a missed
+  /// injection degrades to "no events" rather than a crash.
+  var analytics: any AnalyticsClient = ConsoleAnalyticsClient()
+
   private let checklistInfoHeaderView = UIView()
   private let statusIcon = CircularPercentStatusIcon(iconType: .header)
   private let checklistNameTextField = CLTextField()
@@ -218,12 +224,7 @@ class ChecklistViewController: UIViewController {
     } else {
       tableView.flashScrollIndicators()
     }
-    AnalyticsManager.logChecklistViewed(
-      checklistName: checklist.name,
-      checklistNotesLength: checklist.notes?.count ?? 0,
-      numItems: checklist.items.count,
-      numItemsWithNotes: checklist.items.count(where: { $0.notes != nil && !$0.notes!.isEmpty })
-    )
+    analytics.track(AnalyticsEvent.checklistViewed, properties: checklist.analyticsViewedProperties)
   }
 
   override func viewWillDisappear(_ animated: Bool) {
@@ -280,7 +281,7 @@ class ChecklistViewController: UIViewController {
   }
 
   @objc func resetButtonTapped() {
-    AnalyticsManager.logResetChecklist()
+    analytics.track(AnalyticsEvent.checklistReset)
 
     checklist.uncheckAllItems()
     context.saveChangesIgnoringFailure(operation: .checklistEdit)

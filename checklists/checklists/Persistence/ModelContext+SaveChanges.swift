@@ -44,14 +44,17 @@ extension ModelContext {
    actionable; the full error description can serialise `userInfo`, which is not bounded and not
    ours to promise is free of the user's own content.
    */
-  func saveChanges(operation: PersistenceOperation) throws {
+  func saveChanges(operation: PersistenceOperation, analytics: any AnalyticsClient = AppAnalytics.shared) throws {
     do {
       try save()
     } catch let error as NSError {
       AppLog.persistence.error(
         "Save failed during \(operation.rawValue, privacy: .public): \(error.domain, privacy: .public) \(error.code, privacy: .public) \(error.localizedDescription, privacy: .public) | \(error.description, privacy: .private)"
       )
-      AnalyticsManager.logPersistenceWriteFailure(errorMessage: error.description)
+      analytics.track(
+        AnalyticsEvent.persistenceWriteFailed,
+        properties: [AnalyticsProperty.error: AnalyticsText.truncated(error.description)]
+      )
       throw PersistenceError(operation: operation, errorDomain: error.domain, errorCode: error.code)
     }
   }
@@ -64,7 +67,7 @@ extension ModelContext {
    bet that these saves do not fail in practice; it just crashed rather than continuing when that
    bet was wrong. Startup and import paths do **not** use this.
    */
-  func saveChangesIgnoringFailure(operation: PersistenceOperation) {
-    try? saveChanges(operation: operation)
+  func saveChangesIgnoringFailure(operation: PersistenceOperation, analytics: any AnalyticsClient = AppAnalytics.shared) {
+    try? saveChanges(operation: operation, analytics: analytics)
   }
 }

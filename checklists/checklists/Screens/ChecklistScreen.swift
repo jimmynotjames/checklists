@@ -49,6 +49,8 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   let isNewChecklist: Bool
   let onRequestDismiss: () -> Void
 
+  @Environment(\.analytics) private var analytics
+
   func makeCoordinator() -> Coordinator {
     Coordinator(onRequestDismiss: onRequestDismiss)
   }
@@ -58,6 +60,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
     viewController.checklist = checklist
     viewController.isNewChecklist = isNewChecklist
     viewController.onRequestDismiss = onRequestDismiss
+    viewController.analytics = analytics
     if !isNewChecklist {
       // The embedded navigation controller's root has no system back button, so recreate one.
       // Chevron-only, with no back title, is the intended look.
@@ -101,7 +104,14 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
     }
   }
 
-  /// Deliberately empty: ChecklistViewController documents that resetting `checklist` after
-  /// viewDidLoad is undefined behavior, and the SwiftUI host never changes it in place.
-  func updateUIViewController(_: UINavigationController, context _: Context) {}
+  /// The checklist itself is deliberately not re-applied: ChecklistViewController documents that
+  /// resetting `checklist` after viewDidLoad is undefined behavior, and the SwiftUI host never
+  /// changes it in place.
+  ///
+  /// The analytics client *is* re-applied. It never changes today — one process-wide instance —
+  /// but if a future change swaps the client rather than gating inside it, a checklist already on
+  /// screen would otherwise keep sending through the old one.
+  func updateUIViewController(_ navigationController: UINavigationController, context _: Context) {
+    (navigationController.viewControllers.first as? ChecklistViewController)?.analytics = analytics
+  }
 }
