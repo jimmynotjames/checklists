@@ -55,11 +55,17 @@ _pick_sim() {
 _KEYBOARD_PREF_PLIST="${HOME}/Library/Preferences/com.apple.iphonesimulator.plist"
 
 _hw_keyboard_pref_ok() {
-    # $1: UDID. True only if ConnectHardwareKeyboard reads back as 0 for this device.
+    # $1: UDID. True only if ConnectHardwareKeyboard reads back falsy for this device.
+    # `defaults write` (see _write_keyboard_pref) stores it as the string/number "0",
+    # but Simulator.app itself persists this same preference as a real boolean once it
+    # touches the plist (verified: every genuinely Simulator-managed entry on this
+    # machine reads back "false", never "0") — so both forms must be accepted, or a
+    # device Simulator.app has touched would read as "not ok" forever and force an
+    # unnecessary reboot (and warm-sentinel invalidation) on every single run.
     local val
     val="$(/usr/libexec/PlistBuddy -c "Print :DevicePreferences:$1:ConnectHardwareKeyboard" \
         "${_KEYBOARD_PREF_PLIST}" 2>/dev/null || true)"
-    [[ "${val}" == "0" ]]
+    [[ "${val}" == "0" || "${val}" == "false" ]]
 }
 
 _write_keyboard_pref() {
