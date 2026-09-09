@@ -16,12 +16,21 @@ useDefault = true
 
 [[rules]]
 id = "mixpanel-project-token"
-description = "Mixpanel project token (32-char hex adjacent to a mixpanel token key)"
-regex = '''(?i)mixpanel[a-z0-9_\-\.]{0,24}?token[a-z0-9_\-\.]{0,8}?["'\s]*[=:]["'\s]*([a-f0-9]{32})'''
+description = "Mixpanel project token (32-char hex near a mixpanel/token keyword)"
+# The gap between keywords is deliberately permissive rather than [a-z0-9_.-]. The canonical
+# leak is `Mixpanel.initialize(token: "…")`, where "(" and "." sit between "mixpanel" and
+# "token"; a stricter class caught a bare `mixpanelToken = "…"` but missed the SDK call itself.
+regex = '''(?i)mixpanel[^\n]{0,40}?token[^\n]{0,20}?[=:][^\n]{0,12}?([a-f0-9]{32})'''
 secretGroup = 1
 keywords = ["mixpanel"]
 
-  [rules.allowlist]
-  # The committed placeholder sentinels are not secrets, and neither is the template.
-  regexes = ['''PLACEHOLDER_MIXPANEL_(DEV|PROD)_TOKEN''', '''your_32_char_(dev|prod)_token_here''']
-  paths = ['''config/Secrets\.xcconfig''', '''config/Secrets\.local\.xcconfig\.template''']
+# No allowlist, deliberately.
+#
+# A `paths` entry exempting config/Secrets.xcconfig was removed after review. That file is
+# COMMITTED and its key names are precisely what invite a paste, so exempting it blinded the
+# rule to the most likely real leak. The path regex was also unanchored, so it exempted
+# neighbours such as config/Secrets.xcconfig.prod and backup/config/Secrets.xcconfig.
+#
+# No allowlist is needed for the placeholders: PLACEHOLDER_MIXPANEL_DEV_TOKEN,
+# PLACEHOLDER_MIXPANEL_PROD_TOKEN and your_32_char_*_token_here are not 32 hex characters, so
+# they cannot match secretGroup at all. The committed config files are verified clean below.

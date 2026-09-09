@@ -8,10 +8,14 @@ import Foundation
 /// Typed access to configuration injected through Info.plist, which is built from the committed
 /// `config/Secrets.xcconfig` plus the gitignored `config/Secrets.local.xcconfig`.
 ///
-/// Reads happen at the call site against `Bundle.main` with no caching, and fall back to the
-/// placeholder sentinel rather than trapping. That fallback is the point: a fresh clone has no
-/// local secrets file, and it must still build, launch, and run its tests. Analytics degrade to
-/// the console client instead — see `MixpanelTokenSource.isConfigured`.
+/// Reads happen at the call site against `Bundle.main` with no caching, and never trap. A fresh
+/// clone has no local secrets file and must still build, launch, and run its tests; analytics
+/// degrade to the console client instead — see `MixpanelTokenSource.isConfigured`.
+///
+/// Note the sentinel fallback below only fires if the Info.plist key is missing entirely. When
+/// the key is present but its build setting is undefined, Xcode substitutes an **empty string**,
+/// so that is the value callers actually see on a fresh clone. Both are rejected by
+/// `MixpanelTokenSource.isValidToken`, which is what makes either safe.
 ///
 /// The Flurry key was a hardcoded literal in `AnalyticsManager.swift` for six years and is still
 /// in this repo's history (issue #115). This indirection exists so that cannot recur.

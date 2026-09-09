@@ -405,8 +405,21 @@ The sentinel strings exist in **three** places that must stay in sync: `config/S
 `AppConfig.Placeholder`, and `scripts/verify_release_secrets.sh`. `AppConfigSentinelTests` guards the
 Swift half.
 
-**A fresh clone works.** No local secrets file means the placeholders resolve, `isConfigured` returns
-false, and the app falls back to the console client. It builds, launches, and passes its tests.
+**Validity is a shape check, not a blacklist.** Both `MixpanelTokenSource.isValidToken` and the ship
+guard require **32 lowercase hex characters**. Comparing against the known sentinels was not enough:
+the likeliest mistake is copying `Secrets.local.xcconfig.template` and forgetting to paste, which
+leaves `your_32_char_prod_token_here` — neither empty nor a sentinel. That would have passed the ship
+guard *and* satisfied `isConfigured`, initializing the SDK with a junk token that drops every event.
+Shape-checking also rejects `$(inherited)` and a sentinel with trailing garbage, in one rule.
+
+**`isConfigured` checks only the active token**, not both. Requiring both (as `budgets1` does) means a
+maintainer who fills in the prod token but leaves dev at its placeholder gets a green ship guard and a
+Release build where `isConfigured` is false — zero analytics, everything green. The ship guard checks
+only the prod token for the same reason; the two now agree.
+
+**A fresh clone works.** No local secrets file means the token resolves to an empty string (Xcode
+substitutes empty for an undefined build setting), `isConfigured` returns false, and the app falls
+back to the console client. It builds, launches, and passes its tests.
 
 **The ship guard.** `scripts/verify_release_secrets.sh` refuses a Release archive carrying the
 placeholder prod token or missing the local file. It runs from two places: `make verify-secrets` (the
@@ -417,18 +430,35 @@ declares all three files as `inputPaths` or the sandbox denies the reads. Note X
 `checklists/`, one level below the repo root, hence the `$(SRCROOT)/../` paths — another divergence
 from `budgets1`, whose project sits at its repo root.
 
+Inside the build phase the guard prefers the **resolved** `$MIXPANEL_PROD_TOKEN` from the build
+environment over parsing the repo file, falling back to the file for `make verify-secrets`. Checking
+only the file fails open: if `baseConfigurationReference` were ever dropped from the project, the
+xcconfig would still hold a real token while Info.plist got an empty one — a green guard on a build
+with no working token.
+
 It is deliberately **not** part of `make gate` or lefthook: a fresh clone has no local secrets file,
 and failing the everyday gate on that would be wrong.
 
 **Gitleaks proves less than it looks like.** The default ruleset never caught the Flurry key — a bare
 20-character alphanumeric with no adjacent keyword matches nothing. `.gitleaks.toml` adds a
-Mixpanel-token rule as a second line of defense, with the placeholder sentinels allow-listed. The
-real defense remains the `.gitignore` entry.
+Mixpanel-token rule as a second line of defense. It carries **no allowlist**: an earlier draft
+exempted `config/Secrets.xcconfig` by path, which blinded the rule to the one committed file whose
+key names most invite a paste. The placeholders need no exemption — they are not 32 hex characters,
+so they cannot match. The real defense remains the `.gitignore` entry.
 
 **Privacy manifest.** `checklists/checklists/PrivacyInfo.xcprivacy` declares `NSPrivacyTracking =
-false`, no tracking domains, two collected data types (Product Interaction and Other User Content,
-both linked, purpose Analytics), and one accessed-API reason (`UserDefaults`, `CA92.1`). It needs no
-project-file entry — the synchronized root group adds it to the Resources phase automatically.
+false`, no tracking domains, one accessed-API reason (`UserDefaults`, `CA92.1`), and **four**
+collected data types — all linked, purpose Analytics, none used for tracking:
+
+| Type | Covers |
+| --- | --- |
+| Product Interaction | Screen views, counts, action events |
+| Other User Content | `checklist_name` (§4.4) |
+| Device ID | The persisted `distinct_id` (§5) — app-generated, but still a per-install identifier sent to a third party, and the reason everything else is *linked* |
+| Other Diagnostic Data | The `error` property on the failure events |
+
+It needs no project-file entry — the synchronized root group adds it to the Resources phase
+automatically.
 
 ## 11. Boundary with `OSLog`
 
@@ -571,8 +601,9 @@ and will be wrong in the other direction once Mixpanel ships:
 
 - **The privacy policy** linked from Settings is externally hosted (termsfeed). It must describe
   Mixpanel analytics, the `checklist_name` exception (§4.4), and the opt-out.
-- **The App Store Connect privacy nutrition label** must match `PrivacyInfo.xcprivacy`: Product
-  Interaction **and** Other User Content, both Linked, purpose Analytics, **not** used for tracking.
+- **The App Store Connect privacy nutrition label** must match `PrivacyInfo.xcprivacy` — all four
+  types: Product Interaction, Other User Content, Device ID, and Other Diagnostic Data. All Linked,
+  purpose Analytics, **not** used for tracking.
 
 Neither lives in this repo, so neither can be fixed by a PR here. Do both when the Mixpanel PR ships.
 
@@ -593,6 +624,15 @@ Neither lives in this repo, so neither can be fixed by a PR here. Do both when t
 | Fastlane lanes invoke the ship guard | Archive-only run-script phase + `make verify-secrets` | No Fastfile; CI disabled (§10) |
 | `budgets_count_bucket` as a super property | `checklists_count` raw per-event; bucket on the profile | The count already rides on the most frequent event (§9) |
 | A protocol, but ordering logic inline in bindings | Ordering extracted into a testable controller | So the §6.3 contract tests real code (§13) |
+| `isConfigured` requires **both** tokens | Requires only the **active** token | Requiring both ships a green, analytics-dead Release when only dev is unfilled (§10) |
+| Ship guard blacklists the sentinel string | Ship guard validates token **shape** | A straight copy of the template passes a blacklist (§10) |
+
+**Known trade-off, deliberately kept.** Both `MixpanelDevToken` and `MixpanelProdToken` ship in every
+build's Info.plist, so the dev project's token is extractable from a release IPA and vice versa. A
+single `MIXPANEL_TOKEN` key resolved per-configuration in the xcconfig would ship only one. This
+follows `budgets1` as-is because Mixpanel project tokens are client-side credentials — the active one
+is extractable from any shipped app regardless — so the marginal exposure is the ability to send junk
+events to the *other* project. Revisit if that ever happens.
 
 ## 17. Keeping this current
 

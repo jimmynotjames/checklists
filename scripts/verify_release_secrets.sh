@@ -61,10 +61,27 @@ ERRORS=""
 
 # Only the prod token is ship-critical. MIXPANEL_DEV_TOKEN is irrelevant to a Release archive
 # and is deliberately not checked — a maintainer archiving without a dev token is fine.
-MIXPANEL_PROD="$(xcconfig_value MIXPANEL_PROD_TOKEN)"
+# MixpanelTokenSource.isConfigured matches this: it validates only the token the active build
+# configuration will actually use.
+#
+# When this runs as an Xcode build phase, the *resolved* value is already in the environment.
+# Prefer it: if baseConfigurationReference is ever dropped from the project, the repo xcconfig
+# still holds a real token while Info.plist gets an empty one — checking the file alone would
+# pass green on a build with no working token. Fall back to parsing the file for `make
+# verify-secrets`, where no build environment exists.
+MIXPANEL_PROD="${MIXPANEL_PROD_TOKEN:-$(xcconfig_value MIXPANEL_PROD_TOKEN)}"
 
-if [[ "$MIXPANEL_PROD" == "PLACEHOLDER_MIXPANEL_PROD_TOKEN" ]] || [[ -z "$MIXPANEL_PROD" ]]; then
-  ERRORS="${ERRORS}  - MIXPANEL_PROD_TOKEN is still the clone default\n"
+# Validate the SHAPE, not a blacklist of two known-bad strings. A Mixpanel project token is 32
+# lowercase hex characters. Blacklisting only the sentinel let the most likely mistake through:
+# copying Secrets.local.xcconfig.template and forgetting to paste leaves
+# `your_32_char_prod_token_here`, which is neither empty nor the sentinel. Shape-checking also
+# rejects `$(inherited)`, a trailing-garbage sentinel, and any other typo in one rule.
+if [[ ! "$MIXPANEL_PROD" =~ ^[0-9a-f]{32}$ ]]; then
+  if [[ -z "$MIXPANEL_PROD" ]]; then
+    ERRORS="${ERRORS}  - MIXPANEL_PROD_TOKEN is empty\n"
+  else
+    ERRORS="${ERRORS}  - MIXPANEL_PROD_TOKEN is not a valid token (expected 32 lowercase hex characters)\n"
+  fi
 fi
 
 if [[ ! -f "$LOCAL_XCCONFIG" ]]; then

@@ -10,8 +10,8 @@
 	<array/>
 	<key>NSPrivacyCollectedDataTypes</key>
 	<array>
-		<!-- Screen views, counts, and the error events. Linked, because the persisted
-		     distinct_id ties events to one install. -->
+		<!-- Screen views and counts. Linked, because the persisted distinct_id ties events
+		     to one install. -->
 		<dict>
 			<key>NSPrivacyCollectedDataType</key>
 			<string>NSPrivacyCollectedDataTypeProductInteraction</string>
@@ -27,10 +27,40 @@
 		<!-- checklist_name is raw user content. This declaration is the reason this app's
 		     manifest differs from budgets1's, which collects no free text. Item names, item
 		     notes, and checklist notes are never transmitted — only their counts and lengths.
-		     See the accepted-risk section of core-docs/analytics-spec.md §5. -->
+		     See the accepted-risk section, core-docs/analytics-spec.md §4.4. -->
 		<dict>
 			<key>NSPrivacyCollectedDataType</key>
 			<string>NSPrivacyCollectedDataTypeOtherUserContent</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<true/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAnalytics</string>
+			</array>
+		</dict>
+		<!-- The persisted distinct_id: a UUID the app generates itself, not derived from IDFV or
+		     any Apple identifier. It is still a per-install identifier transmitted to a third
+		     party, and it is the reason the other types here are marked Linked, so it is
+		     declared rather than argued away. See core-docs/analytics-spec.md §5. -->
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeDeviceID</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<true/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAnalytics</string>
+			</array>
+		</dict>
+		<!-- The `error` property on the persistence and startup failure events: truncated
+		     SwiftData/CloudKit error descriptions. Diagnostic data, not product interaction. -->
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeOtherDiagnosticData</string>
 			<key>NSPrivacyCollectedDataTypeLinked</key>
 			<true/>
 			<key>NSPrivacyCollectedDataTypeTracking</key>

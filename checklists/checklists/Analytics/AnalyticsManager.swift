@@ -81,10 +81,10 @@ enum AnalyticsManager {
   ///   - `device_class` — `phone` / `pad`. This replaces the per-event `ui_idiom` property that
   ///     `orientation_changed` used to carry: it is constant for an install, so it does not belong
   ///     on individual events.
-  ///   - `locale` / `region` — `Locale.current.identifier`, and for the region
-  ///     **`Locale.current.regionCode`** on this deployment target. `Locale.current.region` (what
-  ///     `budgets1` uses) is iOS 16+ and will not compile against iOS 13.2 — switch to it when the
-  ///     deployment target is raised. See issue #119.
+  ///   - `locale` / `region` — `Locale.current.identifier` and
+  ///     `Locale.current.region?.identifier`, matching `budgets1`. (This once had to use the
+  ///     deprecated `regionCode` because the deployment target was iOS 13.2; it is now iOS 26,
+  ///     so the modern API is the right one. Issue #119 is closed.)
   static func registerSuperProperties() {
     // No-op: no analytics backend. See core-docs/analytics-spec.md.
   }
@@ -334,7 +334,6 @@ enum AnalyticsProperty {
   static let deviceClass = "device_class"
   /// `Locale.current.identifier`.
   static let locale = "locale"
-  /// `Locale.current.regionCode` on iOS 13.2; `Locale.current.region?.identifier` once the
-  /// deployment target reaches iOS 16+. See issue #119.
+  /// `Locale.current.region?.identifier`.
   static let region = "region"
 }
