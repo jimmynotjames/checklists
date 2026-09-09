@@ -63,7 +63,7 @@ full descriptions live in the `create-pr` skill (step 4) and `.github/pull_reque
   wired up, so `AnalyticsManager.log*` calls are no-ops. Instrument anyway: new user-initiated
   state changes get an `AnalyticsManager.log*` event following the existing house pattern, with
   its names added to the `AnalyticsEvent`/`AnalyticsProperty` enums and a row in
-  `core-docs/analytics-design.md`. No PII.
+  `core-docs/analytics-spec.md`. No PII.
 - **Accessibility** — new controls get `accessibilityLabel` and appropriate traits; nothing clips at
   large Dynamic Type.
 

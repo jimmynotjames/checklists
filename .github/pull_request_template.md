@@ -23,7 +23,7 @@ For any change that touches the data model, user actions, or UI — confirm each
 - [ ] **Analytics** *(no backend right now — Flurry removed, Mixpanel not wired up, so these
       calls are no-ops)* — new user-initiated state changes still fire a matching
       `AnalyticsManager.log*` event, with names in the `AnalyticsEvent`/`AnalyticsProperty` enums
-      and a row added to `core-docs/analytics-design.md`. No PII.
+      and a row added to `core-docs/analytics-spec.md`. No PII.
 - [ ] **Accessibility** — new controls have `accessibilityLabel` and appropriate traits; nothing
       clips at large Dynamic Type.
 

@@ -8,9 +8,9 @@ linked for one purpose only: `LegacyRealmImporter` reads a pre-migration install
 once, on the single launch that needs it, and never writes to it. See
 [`core-docs/persistence-design.md`](core-docs/persistence-design.md) for the model, the CloudKit
 constraints it was designed against, the legacy import, and sort-key ordering. Analytics are
-**stubbed** — Flurry was removed and Mixpanel is not wired up yet, so `AnalyticsManager.log*`
-calls are no-ops. See
-[`core-docs/analytics-design.md`](core-docs/analytics-design.md).
+**being wired up** — Flurry was removed, and the Mixpanel implementation is landing as a PR
+sequence. Until it completes, `AnalyticsManager.log*` calls are still no-ops. See
+[`core-docs/analytics-spec.md`](core-docs/analytics-spec.md).
 
 The Xcode project lives one level down at `checklists/checklists.xcodeproj`. The repo root holds
 tooling, plus **`core-docs/`** — design docs that outlive any single change and are canonical for
@@ -200,9 +200,9 @@ with an explanation, so following these avoids both prompts and denials:
   repos' and Xcode's own. Use `make sim-shutdown` / `make sim-clean`, which act only on the
   UDID in `.build/sim/device.udid`.
 - Don't add `make format`/`make lint` (repo-wide) to any hook or gate. See the lint policy.
-- Don't hardcode an analytics token in source when wiring up Mixpanel. See
-  [`core-docs/analytics-design.md`](core-docs/analytics-design.md) — the Flurry key sat in `AnalyticsManager.swift` for six years
-  and gitleaks never caught it.
+- Don't hardcode an analytics token in source. Tokens come from `config/Secrets.local.xcconfig`
+  via Info.plist — see [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md) §10. The Flurry
+  key sat in `AnalyticsManager.swift` for six years and gitleaks never caught it.
 - **Ignore the local `swiftui_2024` branch entirely** — don't investigate it, diff against it, or
   flag it as context for unrelated work, even in passing. It's an unmerged, in-progress
   UIKit→SwiftUI migration; spending tokens exploring it is wasted unless the user explicitly asks
@@ -270,9 +270,9 @@ device and skips sandbox management entirely.
   re-checks and re-applies on every run instead of trusting that yesterday's fix still holds.
 
 - **Analytics send nowhere.** Flurry was removed; Mixpanel is not implemented. Every
-  `AnalyticsManager.log*` call still fires but hits a no-op (it prints in DEBUG). The full
-  tracking plan, the event/property catalog, and the decisions still open are in
-  [`core-docs/analytics-design.md`](core-docs/analytics-design.md) — read it before touching analytics.
+  `AnalyticsManager.log*` call still fires but hits a no-op (it prints in DEBUG). The event and
+  property catalogs, the privacy contract, and the consent model are in
+  [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md) — read it before touching analytics.
 - **The old Flurry API key is still in git history.** It left the working tree with the Flurry
   removal, but it is present in ~294 commits of history and **the gitleaks gate does NOT catch
   it** — the key is a bare 20-char alphanumeric with no adjacent keyword and gitleaks ships no
@@ -299,4 +299,4 @@ adding the jobs as required status checks in the existing branch protection.
 | `--header strip` | `--header ignore` | would delete every file's authorship header |
 | CI on by default (public repo, free macOS minutes) | ported but disabled | private repo, macOS bills at 10× |
 | i18n gates, fastlane, OpenSpec | not ported | no counterpart stack here |
-| Mixpanel analytics | not ported *yet* | Flurry removed; budgets1's `docs/analytics-spec.md` and `Logging/` are the reference for the eventual port. See [`core-docs/analytics-design.md`](core-docs/analytics-design.md) |
+| Mixpanel analytics | in progress | Flurry removed; budgets1's `docs/analytics-spec.md` and `Logging/` are the reference for the port. Deviations are recorded in [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md) §16 |

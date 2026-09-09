@@ -1,0 +1,36 @@
+# .gitleaks.toml — repo-local gitleaks config.
+#
+# Extends the default ruleset (which we still want) with a Mixpanel-token rule.
+#
+# Why this exists: the old Flurry API key sat in AnalyticsManager.swift for six years and is
+# still in ~294 commits of this repo's history, and gitleaks never flagged it — a bare 20-char
+# alphanumeric with no adjacent keyword matches no default rule. A green secrets gate therefore
+# proves nothing on its own. See AGENTS.md "Known issues" and issue #115.
+#
+# The real defense is that config/Secrets.local.xcconfig is gitignored. This rule is the
+# second line: it catches a Mixpanel token pasted anywhere gitignore does not cover, such as
+# straight into a Swift literal, a test fixture, or a doc.
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "mixpanel-project-token"
+description = "Mixpanel project token (32-char hex near a mixpanel/token keyword)"
+# The gap between keywords is deliberately permissive rather than [a-z0-9_.-]. The canonical
+# leak is `Mixpanel.initialize(token: "…")`, where "(" and "." sit between "mixpanel" and
+# "token"; a stricter class caught a bare `mixpanelToken = "…"` but missed the SDK call itself.
+regex = '''(?i)mixpanel[^\n]{0,40}?token[^\n]{0,20}?[=:][^\n]{0,12}?([a-f0-9]{32})'''
+secretGroup = 1
+keywords = ["mixpanel"]
+
+# No allowlist, deliberately — and do not add one.
+#
+# In particular, never exempt config/Secrets.xcconfig by path. It is COMMITTED, and its key
+# names are precisely what invite someone to paste a real token there, so it is the file this
+# rule most needs to watch. A path regex is also easy to under-anchor, which would silently
+# exempt neighbours like config/Secrets.xcconfig.prod.
+#
+# The placeholders need no exemption: PLACEHOLDER_MIXPANEL_DEV_TOKEN,
+# PLACEHOLDER_MIXPANEL_PROD_TOKEN and your_32_char_*_token_here are not 32 hex characters, so
+# they cannot match secretGroup at all. Both committed config files scan clean.

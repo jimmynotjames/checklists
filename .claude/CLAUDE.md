@@ -15,6 +15,7 @@ canonical for:
 
 Analytics are **stubbed** — Flurry was removed, Mixpanel is not implemented, and
 `AnalyticsManager.log*` calls are no-ops.
-[`core-docs/analytics-design.md`](../core-docs/analytics-design.md) is canonical for the event
-catalog and the Mixpanel migration plan. `core-docs/` holds design docs that outlive a single
-change; `docs/` is the published GitHub Pages site, not a place for internal docs.
+[`core-docs/analytics-spec.md`](../core-docs/analytics-spec.md) is canonical for analytics: the
+event and property catalogs, the privacy contract, and the consent model. `core-docs/` holds
+design docs that outlive a single change; `docs/` is the published GitHub Pages site, not a place
+for internal docs.

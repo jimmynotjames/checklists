@@ -5,7 +5,7 @@ migration (Stage 1). CloudKit sync is designed for but switched off (`Production
 
 This document is canonical for the data model, the constraints it was designed against, the
 one-time legacy import, sort-key ordering, and the startup/failure UX. The sibling
-[`analytics-design.md`](analytics-design.md) is canonical for analytics; this file does not repeat
+[`analytics-spec.md`](analytics-spec.md) is canonical for analytics; this file does not repeat
 it.
 
 ## Model
