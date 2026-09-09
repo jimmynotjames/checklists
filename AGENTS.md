@@ -52,14 +52,36 @@ Swift on this platform). `checklistsUITests` needed no linkage changes; it was b
 shared scheme's unit target failing to build, and on `test-ui`'s `warmed` sentinel (see
 `scripts/test-ui.sh`), both now resolved. Formerly tracked in
 [issue #116](https://github.com/jimmynotjames/checklists/issues/116), now closed.
-`checklistsTests` has 111 tests across `DataModelTests`, `ModelBehaviorTests`, `SampleDataTests`,
+`checklistsTests` has 118 tests across `DataModelTests`, `ModelBehaviorTests`, `SampleDataTests`,
 `SortKeyReorderTests`, `LegacyRealmImporterTests`, `ProductionContainerFactoryTests`,
 `PersistentStoreURLTests`, `RemoteChangeObserverTests`, `TwoDeviceUnionTests`,
 `SampleDataDedupeTests`, `SyncStatusTests`, `ICloudStatusLoaderTests`, `StoreResetTests`,
 `AnalyticsManagerTests`,
 `SettingsManagerTests`, `CircularPercentStatusIconTests`, `CLTextViewTests`,
-`ItemContentViewTests`, and `ChecklistReorderFailureTests`; `checklistsUITests` has 17. Both are
-green, verified twice in a row for flakes — but still opt-in, not part of `make gate`.
+`ItemContentViewTests`, `ChecklistReorderFailureTests`, and `ChecklistKeyboardDismissTests`;
+`checklistsUITests` has 17. Both are green, verified twice in a row for flakes — but still opt-in,
+not part of `make gate`.
+
+### Reading a test result
+
+**Never pipe a test command into `tail`/`head`/`grep` and then trust the exit code.** A shell
+pipeline reports the *last* command's status, so `make test-unit 2>&1 | tail -20` exits 0 even when
+the suite fails. `make test-unit` and `make test-ui` do propagate failure correctly on their own
+(both scripts `set -euo pipefail`, and `xcodebuild test` is the terminal command) — verified by
+breaking a test deliberately: unpiped, `make test-unit` exits 2. The exit code is only ever wrong
+when a pipe throws it away.
+
+Either drop the pipe and redirect instead (`make test-unit > tmp/test.log 2>&1; echo $?`), or read
+the counts out of the result bundle, which is authoritative either way:
+
+```bash
+R=$(ls -td .build/sim/results/*-unit.xcresult | head -1)
+xcrun xcresulttool get test-results summary --path "$R"
+```
+
+Look at `result` / `passedTests` / `failedTests`. Do not read pass/fail from `tmp/gate.log` or a
+piped console tail — a stale log from an earlier run reads as a pass. For failure detail, swap
+`summary` for `tests` and walk the nodes for `"result": "Failed"`.
 
 All of `checklistsTests` runs against disposable in-memory `ModelContainer`s (see
 `checklistsTests/Helpers/TestModelContainer.swift`), except `LegacyRealmImporterTests`, which
