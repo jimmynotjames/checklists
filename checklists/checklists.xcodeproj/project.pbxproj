@@ -45,6 +45,8 @@
 		323ADC6722828C0900644931 /* checklists.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = checklists.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		323ADC8022828C0C00644931 /* checklistsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = checklistsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		323ADC8B22828C0C00644931 /* checklistsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = checklistsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA06000000000000000000B1 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Secrets.xcconfig; path = ../config/Secrets.xcconfig; sourceTree = "<group>"; };
+		AA06000000000000000000B2 /* Secrets.local.xcconfig.template */ = {isa = PBXFileReference; lastKnownFileType = text; name = Secrets.local.xcconfig.template; path = ../config/Secrets.local.xcconfig.template; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -127,6 +129,7 @@
 				A48CA791304F04F60048D9AF /* checklistsUITests */,
 				323ADC6822828C0900644931 /* Products */,
 				323ADC9E228292A400644931 /* Frameworks */,
+				AA06000000000000000000B3 /* config */,
 			);
 			sourceTree = "<group>";
 		};
@@ -147,6 +150,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		AA06000000000000000000B3 /* config */ = {
+			isa = PBXGroup;
+			children = (
+				AA06000000000000000000B1 /* Secrets.xcconfig */,
+				AA06000000000000000000B2 /* Secrets.local.xcconfig.template */,
+			);
+			name = config;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -158,6 +170,7 @@
 				323ADC6422828C0900644931 /* Frameworks */,
 				32F040422335BA51007CB244 /* Embed Frameworks */,
 				323ADC6522828C0900644931 /* Resources */,
+				AA06000000000000000000B4 /* Verify release secrets */,
 			);
 			buildRules = (
 			);
@@ -283,6 +296,27 @@
 			);
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		AA06000000000000000000B4 /* Verify release secrets */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/../scripts/verify_release_secrets.sh",
+				"$(SRCROOT)/../config/Secrets.xcconfig",
+				"$(SRCROOT)/../config/Secrets.local.xcconfig",
+			);
+			name = "Verify release secrets";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../scripts/verify_release_secrets.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		323ADC6322828C0900644931 /* Sources */ = {
@@ -440,6 +474,7 @@
 		};
 		323ADC9522828C0C00644931 /* Debug configuration for PBXNativeTarget "checklists" */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AA06000000000000000000B1 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -465,6 +500,7 @@
 		};
 		323ADC9622828C0C00644931 /* Release configuration for PBXNativeTarget "checklists" */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AA06000000000000000000B1 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

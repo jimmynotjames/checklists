@@ -1,0 +1,27 @@
+# .gitleaks.toml — repo-local gitleaks config.
+#
+# Extends the default ruleset (which we still want) with a Mixpanel-token rule.
+#
+# Why this exists: the old Flurry API key sat in AnalyticsManager.swift for six years and is
+# still in ~294 commits of this repo's history, and gitleaks never flagged it — a bare 20-char
+# alphanumeric with no adjacent keyword matches no default rule. A green secrets gate therefore
+# proves nothing on its own. See AGENTS.md "Known issues" and issue #115.
+#
+# The real defense is that config/Secrets.local.xcconfig is gitignored. This rule is the
+# second line: it catches a Mixpanel token pasted anywhere gitignore does not cover, such as
+# straight into a Swift literal, a test fixture, or a doc.
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "mixpanel-project-token"
+description = "Mixpanel project token (32-char hex adjacent to a mixpanel token key)"
+regex = '''(?i)mixpanel[a-z0-9_\-\.]{0,24}?token[a-z0-9_\-\.]{0,8}?["'\s]*[=:]["'\s]*([a-f0-9]{32})'''
+secretGroup = 1
+keywords = ["mixpanel"]
+
+  [rules.allowlist]
+  # The committed placeholder sentinels are not secrets, and neither is the template.
+  regexes = ['''PLACEHOLDER_MIXPANEL_(DEV|PROD)_TOKEN''', '''your_32_char_(dev|prod)_token_here''']
+  paths = ['''config/Secrets\.xcconfig''', '''config/Secrets\.local\.xcconfig\.template''']

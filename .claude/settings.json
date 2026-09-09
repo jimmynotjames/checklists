@@ -71,7 +71,23 @@
       "Bash(rm -rf tmp/*)",
       "Bash(mkdir -p tmp)",
       "Read(./tmp/**)",
-      "Edit(./tmp/**)"
+      "Edit(./tmp/**)",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__Get-Business-Context",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__Get-Projects",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__List-Organizations",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__Get-Events",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__List-Properties",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__Get-Property-Values",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__Get-Query-Schema",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__Run-Query",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__Search-Entities",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__List-Dashboards",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__Get-Dashboard",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__Get-Report",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__Get-Lexicon-URL",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__Display-Query",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__Create-Dashboard",
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65__Update-Dashboard"
     ]
   }
 }

@@ -75,3 +75,7 @@ fastlane/test_output
 # Agent/tooling scratch — project-local working dir (see AGENTS.md "Bash command hygiene").
 # Kept in-repo rather than /tmp so it is allowlisted and never leaks across clones.
 tmp/
+
+# App secrets — local overrides holding real Mixpanel tokens; never commit.
+# The committed config/Secrets.xcconfig holds safe placeholder sentinels instead.
+config/Secrets.local.xcconfig

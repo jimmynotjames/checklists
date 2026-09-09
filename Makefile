@@ -1,4 +1,4 @@
-.PHONY: system format format-check format-changed lint lint-changed build test-unit test-ui gate hooks-install initialize-sims sim-status sim-shutdown sim-clean
+.PHONY: system format format-check format-changed lint lint-changed build test-unit test-ui gate verify-secrets hooks-install initialize-sims sim-status sim-shutdown sim-clean
 
 system:
 	bash scripts/system-setup.sh
@@ -54,6 +54,13 @@ test-ui:
 # single-command form exists (avoids the subshell/`; echo` permission prompt).
 gate:
 	bash scripts/gate.sh
+
+# Release ship guard. Fails if config/Secrets.local.xcconfig is missing or the Mixpanel
+# prod token is still the committed placeholder. Run this before archiving for TestFlight
+# or the App Store — there is no Fastlane here and CI is disabled, so this is the check.
+# Deliberately NOT part of `make gate`: a fresh clone has no local secrets file.
+verify-secrets:
+	bash scripts/verify_release_secrets.sh
 
 hooks-install:
 	lefthook install

@@ -156,12 +156,12 @@ Check: a matching `AnalyticsManager.log*` call is present. Follow the existing h
 `logEvent(_:withParameters:)`, e.g. `logNewChecklist()`, `logResetChecklist()`,
 `logRateInAppStore()`. Add the event and property names to the `AnalyticsEvent` /
 `AnalyticsProperty` enums in that file (never inline string literals), and **add a row to the
-catalog in `core-docs/analytics-design.md` in the same change**. Names are flat `snake_case`,
+catalog in `core-docs/analytics-spec.md` in the same change**. Names are flat `snake_case`,
 `noun_pastTenseVerb`. Route any user-supplied string through `truncatedString`.
 
 No PII: item names, item notes, and checklist notes must never be sent as raw event parameters.
 The one exception is `checklist_name` on `checklist_viewed`, which is a pre-existing accepted risk
-documented in `core-docs/analytics-design.md` — it is not a precedent for adding more user content.
+documented in `core-docs/analytics-spec.md` §4.4 — it is not a precedent for adding more user content.
 
 **Accessibility**
 Applies if: the diff adds or modifies a SwiftUI `View`, a `UIView`, or a `UIViewController`.

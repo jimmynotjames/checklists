@@ -14,7 +14,7 @@
 // events go nowhere: `logEvent` prints in DEBUG and does nothing in Release.
 //
 // The full tracking plan — every event, every property, what each one recorded under Flurry, and
-// the decisions still open — lives in `core-docs/analytics-design.md`. Read that before
+// the decisions still open — lives in `core-docs/analytics-spec.md`. Read that before
 // implementing Mixpanel. The sibling `budgets1` repo has a complete Mixpanel implementation
 // (`simple-recurring-budgets/Logging/`, `docs/analytics-spec.md`) that this file's naming
 // conventions were deliberately aligned to.
@@ -86,7 +86,7 @@ enum AnalyticsManager {
   ///     `budgets1` uses) is iOS 16+ and will not compile against iOS 13.2 — switch to it when the
   ///     deployment target is raised. See issue #119.
   static func registerSuperProperties() {
-    // No-op: no analytics backend. See core-docs/analytics-design.md.
+    // No-op: no analytics backend. See core-docs/analytics-spec.md.
   }
 
   // MARK: - Utilities
@@ -141,7 +141,7 @@ enum AnalyticsManager {
     numItemsWithNotes: Int
   ) {
     let params: [String: Any] = [
-      // ACCEPTED RISK: this is raw user content. Deliberately retained — see core-docs/analytics-design.md.
+      // ACCEPTED RISK: this is raw user content. Deliberately retained — see core-docs/analytics-spec.md.
       AnalyticsProperty.checklistName: checklistName,
       AnalyticsProperty.notesLength: checklistNotesLength,
       AnalyticsProperty.itemsCount: numItems,
@@ -227,7 +227,7 @@ enum AnalyticsManager {
 ///
 /// These were renamed when Flurry was removed. Nothing depended on the old names: the Flurry data
 /// is not migrating anywhere, so there was no continuity to preserve. The old Flurry name is noted
-/// on each constant for anyone reading historical Flurry exports. `core-docs/analytics-design.md` has the full
+/// on each constant for anyone reading historical Flurry exports. `core-docs/analytics-spec.md` has the full
 /// mapping table.
 enum AnalyticsEvent {
   // MARK: Session
@@ -303,7 +303,7 @@ enum AnalyticsProperty {
   ///
   /// Retained as an accepted risk rather than dropped or bucketed, mirroring the way `budgets1`
   /// allow-lists `budget_name`. It is the one free-text property this app sends. Documented in
-  /// `core-docs/analytics-design.md`; revisit it alongside the consent work.
+  /// `core-docs/analytics-spec.md`; revisit it alongside the consent work.
   static let checklistName = "checklist_name"
   /// Character count of the checklist's notes field. Flurry: `notesLength` — the one camelCase
   /// key in the old catalog.
