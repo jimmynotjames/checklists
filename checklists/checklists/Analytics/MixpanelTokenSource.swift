@@ -29,12 +29,11 @@ enum MixpanelTokenSource {
 
   /// Whether a string is shaped like a Mixpanel project token: 32 lowercase hex characters.
   ///
-  /// Shape-checking rather than comparing against known placeholder strings. Blacklisting the
-  /// sentinels let the likeliest mistake through — copying
-  /// `config/Secrets.local.xcconfig.template` and forgetting to paste leaves
-  /// `your_32_char_prod_token_here`, which is neither empty nor a sentinel, and would have
-  /// initialized the SDK with a junk token that drops every event. This mirrors the identical
-  /// check in `scripts/verify_release_secrets.sh`; keep the two in step.
+  /// Shape is the whole check, deliberately — do not narrow it to specific known-bad strings.
+  /// The likeliest mistake is copying `config/Secrets.local.xcconfig.template` and forgetting to
+  /// paste, which leaves `your_32_char_prod_token_here`: not empty, not a sentinel, and not a
+  /// token. Anything that accepts it initializes the SDK with a junk token and drops every event
+  /// silently. `scripts/verify_release_secrets.sh` applies the same rule; keep the two in step.
   ///
   /// Pure, so tests never touch `Bundle.main` and do not depend on whether the machine running
   /// them has a secrets file.

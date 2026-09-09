@@ -71,11 +71,11 @@ ERRORS=""
 # verify-secrets`, where no build environment exists.
 MIXPANEL_PROD="${MIXPANEL_PROD_TOKEN:-$(xcconfig_value MIXPANEL_PROD_TOKEN)}"
 
-# Validate the SHAPE, not a blacklist of two known-bad strings. A Mixpanel project token is 32
-# lowercase hex characters. Blacklisting only the sentinel let the most likely mistake through:
-# copying Secrets.local.xcconfig.template and forgetting to paste leaves
-# `your_32_char_prod_token_here`, which is neither empty nor the sentinel. Shape-checking also
-# rejects `$(inherited)`, a trailing-garbage sentinel, and any other typo in one rule.
+# A Mixpanel project token is 32 lowercase hex characters, and that shape is the whole check.
+# Keep it that way rather than comparing against specific bad values: the likeliest mistake is
+# copying Secrets.local.xcconfig.template and forgetting to paste, which leaves
+# `your_32_char_prod_token_here` — not empty, not the sentinel, and not a token. One shape rule
+# also covers `$(inherited)`, a sentinel with trailing garbage, and any typo.
 if [[ ! "$MIXPANEL_PROD" =~ ^[0-9a-f]{32}$ ]]; then
   if [[ -z "$MIXPANEL_PROD" ]]; then
     ERRORS="${ERRORS}  - MIXPANEL_PROD_TOKEN is empty\n"

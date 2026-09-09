@@ -24,13 +24,13 @@ regex = '''(?i)mixpanel[^\n]{0,40}?token[^\n]{0,20}?[=:][^\n]{0,12}?([a-f0-9]{32
 secretGroup = 1
 keywords = ["mixpanel"]
 
-# No allowlist, deliberately.
+# No allowlist, deliberately — and do not add one.
 #
-# A `paths` entry exempting config/Secrets.xcconfig was removed after review. That file is
-# COMMITTED and its key names are precisely what invite a paste, so exempting it blinded the
-# rule to the most likely real leak. The path regex was also unanchored, so it exempted
-# neighbours such as config/Secrets.xcconfig.prod and backup/config/Secrets.xcconfig.
+# In particular, never exempt config/Secrets.xcconfig by path. It is COMMITTED, and its key
+# names are precisely what invite someone to paste a real token there, so it is the file this
+# rule most needs to watch. A path regex is also easy to under-anchor, which would silently
+# exempt neighbours like config/Secrets.xcconfig.prod.
 #
-# No allowlist is needed for the placeholders: PLACEHOLDER_MIXPANEL_DEV_TOKEN,
+# The placeholders need no exemption: PLACEHOLDER_MIXPANEL_DEV_TOKEN,
 # PLACEHOLDER_MIXPANEL_PROD_TOKEN and your_32_char_*_token_here are not 32 hex characters, so
-# they cannot match secretGroup at all. The committed config files are verified clean below.
+# they cannot match secretGroup at all. Both committed config files scan clean.
