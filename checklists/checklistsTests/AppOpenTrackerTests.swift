@@ -43,9 +43,10 @@ nonisolated final class AppOpenTrackerTests: XCTestCase {
   /// immediately before the `.active` that ends a real foreground return is `.inactive`, never
   /// `.background`.
   ///
-  /// This is the case that matters most and the one an earlier implementation got wrong — it
-  /// tested only the immediately preceding phase, which silently reduced `app_opened` to cold
-  /// launches and would have built every session, reach and retention number on them.
+  /// This is the case that matters most. A rule that inspects only the phase immediately before
+  /// `.active` sees `.inactive` here and stays silent, which reduces `app_opened` to cold launches
+  /// and puts every session, reach and retention number on that footing. Keep this test pointed at
+  /// the full sequence, not at a single transition.
   @MainActor func testRealForegroundReturnSequenceFires() {
     let tracker = AppOpenTracker()
     XCTAssertTrue(tracker.shouldFire(for: .active), "Cold launch.")

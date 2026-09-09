@@ -7,9 +7,8 @@
 enum AnalyticsText {
   /// The longest string sent as a property value.
   ///
-  /// 127 characters was chosen against Flurry's 255-character parameter limit, halved in case the
-  /// limit was counted in UTF-8 bytes rather than characters. Mixpanel's limit is also 255, so the
-  /// value carries over unchanged.
+  /// The backend's own limit is 255 characters; 127 is half that, which leaves headroom in case a
+  /// limit is ever counted in UTF-8 bytes rather than characters.
   nonisolated static let maximumLength = 127
 
   /// Truncates a user-supplied or error string before it is sent.

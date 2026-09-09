@@ -8,9 +8,9 @@
 /// This is the SwiftUI environment default and the client the app uses whenever Mixpanel should
 /// not be talked to: during tests, and on a clone with no configured token (§7.1).
 ///
-/// Printing rather than staying silent is deliberate. The Flurry integration compiled analytics
-/// out of debug builds entirely, which made it impossible to check locally whether an event fired
-/// with the right properties — the reason instrumentation drifted.
+/// Printing rather than staying silent in DEBUG is deliberate: it is the only way to confirm
+/// locally that an event fires, once, with the properties it should. Analytics that are compiled
+/// out of debug builds cannot be checked before they ship.
 final class ConsoleAnalyticsClient: AnalyticsClient {
   func track(_ event: String, properties: [String: any Sendable]?) {
     #if DEBUG

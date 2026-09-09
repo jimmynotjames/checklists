@@ -17,8 +17,9 @@ import Foundation
 /// so that is the value callers actually see on a fresh clone. Both are rejected by
 /// `MixpanelTokenSource.isValidToken`, which is what makes either safe.
 ///
-/// The Flurry key was a hardcoded source literal for six years and is still in this repo's
-/// history (issue #115). This indirection exists so that cannot recur.
+/// An analytics token is never a source literal. It reaches the app only through this
+/// indirection — see core-docs/analytics-spec.md §10, and `scripts/verify_release_secrets.sh`,
+/// which refuses to ship a build whose token is still the committed placeholder.
 enum AppConfig {
   // MARK: - Sentinels
 

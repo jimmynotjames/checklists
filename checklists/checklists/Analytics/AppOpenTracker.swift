@@ -8,8 +8,7 @@ import SwiftUI
 /// Decides whether a `scenePhase` transition should fire `app_opened`.
 ///
 /// Mixpanel has no session concept of its own — it derives sessions server-side from this event
-/// stream — so a foreground has to be reported explicitly. Flurry's `startSession` did this
-/// invisibly, which is why the event is new (§14).
+/// stream — so a foreground has to be reported explicitly.
 ///
 /// A cold launch and a return from background are both opens. A drop to `.inactive` and back is
 /// not: the notification shade, the app switcher, Face ID and permission dialogs all produce that

@@ -8,8 +8,7 @@ import SwiftData
 import XCTest
 
 /// Covers the two pure mappings that feed events: `Checklist.analyticsViewedProperties` and
-/// `orientationAnalyticsValue`. Both were previously buried inside `AnalyticsManager` wrappers
-/// with no way to test them.
+/// `orientationAnalyticsValue`.
 ///
 /// `analyticsViewedProperties` is also where this app's PII boundary is drawn in code
 /// (analytics-spec.md §4), so the negative assertions below — that no note text and no item name
@@ -37,7 +36,7 @@ nonisolated final class ChecklistAnalyticsPropertiesTests: XCTestCase {
     for (index, spec) in items.enumerated() {
       let item = Item(name: spec.name, notes: spec.notes, sortKey: Double(index + 1))
       // Insert first, then wire the inverse — the order the other model tests use. Setting the
-      // relationship on an unregistered model is what crashed an earlier draft of this helper.
+      // relationship on a model the context does not yet know about traps at runtime.
       context.insert(item)
       item.checklist = checklist
     }
