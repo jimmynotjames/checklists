@@ -46,6 +46,55 @@ _pick_sim() {
         --state "$1"
 }
 
+# Self-healing fix for a known issue (see AGENTS.md "Known issues"): when the
+# simulator's ConnectHardwareKeyboard preference is on, the software keyboard never
+# appears and every UI test that taps a keyboard key (Next:, delete) before typing
+# fails. The preference is per-UDID but owned by Simulator.app, not the device, and
+# is only read at boot — so it must be written before a boot, and Simulator.app must
+# be open afterward for it to take effect at all.
+_KEYBOARD_PREF_PLIST="${HOME}/Library/Preferences/com.apple.iphonesimulator.plist"
+
+_hw_keyboard_pref_ok() {
+    # $1: UDID. True only if ConnectHardwareKeyboard reads back falsy for this device.
+    # `defaults write` (see _write_keyboard_pref) stores it as the string/number "0",
+    # but Simulator.app itself persists this same preference as a real boolean once it
+    # touches the plist (verified: every genuinely Simulator-managed entry on this
+    # machine reads back "false", never "0") — so both forms must be accepted, or a
+    # device Simulator.app has touched would read as "not ok" forever and force an
+    # unnecessary reboot (and warm-sentinel invalidation) on every single run.
+    local val
+    val="$(/usr/libexec/PlistBuddy -c "Print :DevicePreferences:$1:ConnectHardwareKeyboard" \
+        "${_KEYBOARD_PREF_PLIST}" 2>/dev/null || true)"
+    [[ "${val}" == "0" || "${val}" == "false" ]]
+}
+
+_write_keyboard_pref() {
+    # $1: UDID. Safe to call whether or not the device is booted.
+    defaults write com.apple.iphonesimulator DevicePreferences \
+        -dict-add "$1" '{ ConnectHardwareKeyboard = 0; }'
+}
+
+# Any real boot transition (shutdown->boot, create->boot, or the self-heal cycle
+# below) starts a session that hasn't hosted an app yet, which invalidates
+# test-ui.sh's `warmed` sentinel (see its header comment: the XCUITest IPC socket
+# isn't reliable until *this* booted session has run an app once). Without this,
+# a rebooted-but-still-"warmed"-on-disk device produces confusing, wrong-cause test
+# failures instead of test-ui.sh's own clear "run make test-unit first" error.
+_invalidate_warm_sentinel() {
+    rm -f "${ROOT}/.build/sim/warmed"
+}
+
+_fix_software_keyboard() {
+    # $1: UDID of an already-booted device whose preference read back wrong.
+    echo "sim-sandbox: software-keyboard preference wrong for $1 — cycling to fix" >&2
+    _write_keyboard_pref "$1"
+    xcrun simctl shutdown "$1"
+    xcrun simctl boot "$1"
+    open -a Simulator
+    _wait_for_ready "$1"
+    _invalidate_warm_sentinel
+}
+
 _ensure_sim_booted() {
     if [[ -n "${SIMULATOR_UDID:-}" ]]; then
         echo "sim-sandbox: SIMULATOR_UDID pinned — skipping sandbox management" >&2
@@ -61,16 +110,21 @@ _ensure_sim_booted() {
     if [[ -n "${udid}" ]]; then
         echo "sim-sandbox: reusing booted ${_SIM_DEVICE_NAME} (${udid})" >&2
         _wait_for_ready "${udid}"
+        _hw_keyboard_pref_ok "${udid}" || _fix_software_keyboard "${udid}"
         SIM_UDID="${udid}"
         printf '%s' "${SIM_UDID}" > "${_UDID_FILE}"
         return
     fi
 
-    # 2. Exists but shutdown — boot it and wait for full readiness
+    # 2. Exists but shutdown — set the keyboard pref before it boots, then boot and
+    #    wait for full readiness
     udid="$(_pick_sim any)"
     if [[ -n "${udid}" ]]; then
         echo "sim-sandbox: booting existing ${_SIM_DEVICE_NAME} (${udid})" >&2
+        _write_keyboard_pref "${udid}"
         _boot_and_wait "${udid}"
+        open -a Simulator
+        _invalidate_warm_sentinel
         SIM_UDID="${udid}"
         printf '%s' "${SIM_UDID}" > "${_UDID_FILE}"
         return
@@ -90,7 +144,10 @@ _ensure_sim_booted() {
     echo "sim-sandbox: creating ${_SIM_DEVICE_NAME} (first-run, ~30–90s)" >&2
     udid="$(xcrun simctl create "${_SIM_DEVICE_NAME}" "${device_type}" "${runtime}")"
     echo "sim-sandbox: booting new ${_SIM_DEVICE_NAME} (${udid})" >&2
+    _write_keyboard_pref "${udid}"
     _boot_and_wait "${udid}"
+    open -a Simulator
+    _invalidate_warm_sentinel
     SIM_UDID="${udid}"
     printf '%s' "${SIM_UDID}" > "${_UDID_FILE}"
 }
