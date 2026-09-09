@@ -220,9 +220,14 @@ device and skips sandbox management entirely.
 
 ## Known issues
 
-- **UI tests fail en masse when the simulator's software keyboard is off.** Every test that types
-  through the on-screen keyboard fails with the same signature — XCUITest cannot reach a keyboard
-  key (`Next:`, `delete`), at coordinates down in the keyboard region:
+- **UI tests fail en masse when the simulator's software keyboard is off.** `scripts/_sim_sandbox.sh`
+  now self-heals this automatically on every `make test-unit` / `make test-ui` run — it checks the
+  `ConnectHardwareKeyboard` preference for this repo's sandboxed UDID before reuse, and re-applies
+  the fix below (cycle + `open -a Simulator`) if it's wrong. This does **not** run when
+  `SIMULATOR_UDID` is set — that env var skips sandbox management entirely, so a pinned device needs
+  the manual remedy below if it hits this. Kept here for that case and for the record: every test
+  that types through the on-screen keyboard fails with the same signature — XCUITest cannot reach a
+  keyboard key (`Next:`, `delete`), at coordinates down in the keyboard region:
 
   ```
   Failed to failed to scroll to visible (by AX action) Button, {{300.7, 1121.0}, {99.0, 54.0}},
@@ -258,10 +263,11 @@ device and skips sandbox management entirely.
   out. The actual rule: `typeText` forces the software keyboard up, so a test survives if it *types*
   before it *taps* a keyboard key (`Next:`, `delete`) — only tests that tap a key first fail.
 
-  Expect to re-apply the remedy in later sessions. The preference persists, but anything that
-  shuts down and re-boots the device — including the simulator tooling's own build/launch cycle —
-  brings the failures back, so a run that was 17/17 yesterday can be 11/17 today with the
-  preference still reading `0`. Re-run the one-liner rather than re-diagnosing it.
+  The preference persists, but anything that shuts down and re-boots the device — including the
+  simulator tooling's own build/launch cycle — brings the failures back, so a run that was 17/17
+  yesterday can be 11/17 today with the preference still reading `0`. This is exactly why the fix
+  above is now automated in `_ensure_sim_booted` rather than left as a one-liner to remember: it
+  re-checks and re-applies on every run instead of trusting that yesterday's fix still holds.
 
 - **Analytics send nowhere.** Flurry was removed; Mixpanel is not implemented. Every
   `AnalyticsManager.log*` call still fires but hits a no-op (it prints in DEBUG). The full
