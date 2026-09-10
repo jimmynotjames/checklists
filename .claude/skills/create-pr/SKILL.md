@@ -46,7 +46,10 @@ Branch name format: `u/jimmyho/<tool>/<short-kebab-description>`, all lowercase,
 `<tool>` documents authorship (e.g. `claude-code`, `codex`, `cursor`).
 
 **On `main` with local commits**: preserve them on a feature branch before staging more work.
-Do not force-push or rewrite remote `main`; inspect branch divergence before proceeding.
+Fetch `origin`, create and switch to the feature branch, then point only the local
+`main` ref at the fetched `origin/main` (`git branch -f main origin/main`). The
+commits remain on the feature branch, and the review/gate comparisons against
+`main` now include them. Inspect divergence first; do not rewrite remote `main`.
 
 **On a feature branch with no commits and no uncommitted changes**: nothing to PR. Ask for
 clarification.
