@@ -1,0 +1,16 @@
+{
+  "bundle_id": "com.jimmyho.checklists",
+  "app_id": "1475724536",
+  "version": "1.1",
+  "platform": "IOS",
+  "app_info_id": "59eadfa2-30e8-4267-9037-5acce2aaab7e",
+  "app_store_version_id": "9eb408ce-6806-47dd-ba5c-7380b398a9aa",
+  "retrieved_at": "2026-09-10T11:54:23Z",
+  "app_info_locales": [
+    "en-US"
+  ],
+  "version_locales": [
+    "en-US"
+  ],
+  "source": "App Store Connect live listing; public fields only"
+}

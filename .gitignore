@@ -68,6 +68,10 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+fastlane/.env
+fastlane/.env.*
+!fastlane/.env.template
+*.p8
 
 # Emacs
 *~
