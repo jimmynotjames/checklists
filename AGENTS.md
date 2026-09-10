@@ -148,6 +148,13 @@ cleanup, issue linkage); this section holds the conventions they cite:
 - **Code already written, no issue:** `/create-pr`, then `/merge-pr <PR>`.
 - **Issue → PR:** `/create-pr-for-issue <N>`, then `/merge-pr <PR>`.
 
+Route all fastlane commands through the App Store skills as well, including read-only diagnostics
+and archive-only validation. Use `appstore-push-testflight-build` for diagnostics, local archive
+validation, and ordinary TestFlight builds; `appstore-push-release-build` for a versioned candidate;
+`appstore-push-metadata` for listing publication; and `appstore-prepare-for-release` for the
+resumable release workflow. Publishing skills open their PR through `/create-pr` and stop; a later
+turn may use `/merge-pr`. Never run an upload lane merely to test release infrastructure.
+
 **Never merge on the same turn the PR is opened.** The PR exists to be read.
 
 ### Conventions
@@ -306,5 +313,5 @@ adding the jobs as required status checks in the existing branch protection.
 | `--header strip` | `--header ignore` | would delete every file's authorship header |
 | CI on by default (public repo, free macOS minutes) | ported but disabled | private repo, macOS bills at 10× |
 | i18n gates, OpenSpec | not ported | no counterpart stack here |
-| fastlane | read-only auth and imported English marketing copy | publishing and screenshot lanes deferred; see `fastlane/SETUP.md` |
+| fastlane | binary and metadata publishing, no automated submission | screenshot automation and translation generation remain deferred; see `fastlane/SETUP.md` |
 | Mixpanel analytics | in progress | Flurry removed; budgets1's `docs/analytics-spec.md` and `Logging/` are the reference for the port. Deviations are recorded in [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md) §16 |
