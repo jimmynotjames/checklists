@@ -57,7 +57,7 @@ gate:
 
 # Release ship guard. Fails if config/Secrets.local.xcconfig is missing or the Mixpanel
 # prod token is still the committed placeholder. Run this before archiving for TestFlight
-# or the App Store — there is no Fastlane here and CI is disabled, so this is the check.
+# or the App Store — Fastlane currently provides read-only ASC tools; CI is disabled.
 # Deliberately NOT part of `make gate`: a fresh clone has no local secrets file.
 verify-secrets:
 	bash scripts/verify_release_secrets.sh
