@@ -137,6 +137,10 @@ exclusions beyond build scratch.
 
 ## Commit and PR style
 
+Shared skills are canonical under `.claude/skills/`; `.agents/skills/` contains
+relative symlinks for Codex discovery. Edit the canonical files, never create
+independent copies. See [`core-docs/agent-skills.md`](core-docs/agent-skills.md).
+
 **Route branch → commit → PR → merge through the skills — don't hand-roll the pipeline.** The
 skills are the canonical step-by-step spec (review, cross-cutting audit, gate, PR body, branch
 cleanup, issue linkage); this section holds the conventions they cite:
