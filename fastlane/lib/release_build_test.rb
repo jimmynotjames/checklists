@@ -70,7 +70,7 @@ class ReleaseBuildTest < Minitest::Test
     commit = @release.commands.find { |command| command.first == "commit" }
     assert_equal ["--", ReleaseBuild::PBXPROJ], commit.last(2)
     assert_includes commit, "--only"
-    message = File.read(commit[3])
+    message = File.read(commit[commit.index("-F") + 1])
     assert_includes message, "Source-commit: #{'a' * 40}"
     assert_operator message.lines.first.strip.length, :<=, 72
   end
@@ -114,6 +114,28 @@ class ReleaseBuildTest < Minitest::Test
     @release.untracked = ".codex/hooks.json"
     run_beta
     assert_equal "committed", record["status"]
+  end
+
+  def test_real_git_records_upload_when_build_number_is_already_current
+    release = ReleaseBuild.new(@root)
+    def release.verify_secrets!; end
+    release.git("init", "-b", "release-test")
+    release.git("config", "user.name", "Release test")
+    release.git("config", "user.email", "release-test@example.invalid")
+    release.git("config", "commit.gpgsign", "false")
+    File.write(File.join(@root, ".gitignore"), "tmp/\n")
+    release.git("add", ".gitignore", ReleaseBuild::PBXPROJ)
+    message = File.join(@root, "tmp", "initial-message.txt")
+    FileUtils.mkdir_p(File.dirname(message))
+    File.write(message, "Prepared test fixture.\n")
+    release.git("commit", "-F", message)
+    original_sha = release.git("rev-parse", "HEAD")
+    current = @original[/CURRENT_PROJECT_VERSION = (\d+);/, 1].to_i
+    path = release.beta(latest: ->(_) { current - 1 }, archive: ->(_) { "artifact.ipa" }, upload: ->(_) {})
+    refute_equal original_sha, release.git("rev-parse", "HEAD")
+    assert_equal "", release.git("diff", "HEAD^", "HEAD", "--", ReleaseBuild::PBXPROJ)
+    assert_includes release.git("log", "-1", "--format=%B"), "Source-commit: #{original_sha}"
+    assert_equal "committed", JSON.parse(File.read(path))["status"]
   end
 
   def test_archive_validation_preserves_project_without_git_or_provisioning

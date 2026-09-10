@@ -111,7 +111,9 @@ class ReleaseBuild
     message_path = File.join(output, "commit-message.txt")
     File.write(message_path, "Updated TestFlight build number to #{number}.\n\nSource-commit: #{source_sha}\nVersion: #{marketing_version}\nBuild: #{number}\n")
     # --only prevents unrelated staged changes from entering this commit.
-    git("commit", "--only", "-F", message_path, "--", PBXPROJ)
+    # A version's ASC next number can already equal the local project value.
+    # Keep a provenance commit in that case rather than failing after upload.
+    git("commit", "--only", "--allow-empty", "-F", message_path, "--", PBXPROJ)
     persist.call("committed")
     record_path
   rescue StandardError
