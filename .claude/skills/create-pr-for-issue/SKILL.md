@@ -47,7 +47,7 @@ git checkout -b u/jimmyho/<tool>/<short-kebab-description>
 ```
 
 Branch name format: `u/jimmyho/<tool>/<short-kebab-description>`, all lowercase, no underscores.
-`<tool>` documents authorship (e.g. `claude-code`, `cursor`, `cursor+claude`).
+`<tool>` documents authorship (e.g. `claude-code`, `codex`, `cursor`).
 
 ### 3. Implement the fix
 
@@ -70,13 +70,16 @@ full descriptions live in the `create-pr` skill (step 4) and `.github/pull_reque
 
 ### 4. Fresh-eye code review
 
+Stage only the issue changes and commit them using a message file in `tmp/`, following
+AGENTS.md. This makes the implementation visible in the branch diff below.
+
 Get the full branch diff:
 
 ```bash
 git diff main..HEAD
 ```
 
-Spawn a **`general-purpose` Agent** with the same brief as the `create-pr` skill (step 3) — the
+Spawn a fresh-context review subagent (Claude: `general-purpose`; Codex/Cursor: the available subagent tool) with the same brief as the `create-pr` skill (step 3) — the
 UIKit/SwiftData/Swift 6 review criteria: save correctness, relationship wiring, sort-key ordering, retain
 cycles, newly-introduced force-unwraps/casts, `UITableView` data-source consistency, and
 main-thread UI. Fresh context, no prior conversation history.
@@ -95,7 +98,7 @@ Apply all fixes at once. Do not re-spawn the reviewer after each fix.
 make gate
 ```
 
-Run in the background (`run_in_background: true`). Re-run after any step-4 fixes. **Do not open the
+Run asynchronously using the current tool’s background/session mechanism and collect its final exit status. Re-run after any step-4 fixes. **Do not open the
 PR until it's green.**
 
 `make gate` is **format-changed → lint-changed → build** — it does not run tests. On failure: read
@@ -103,11 +106,13 @@ PR until it's green.**
 
 ### 6. Push and open the PR
 
+Commit any review or gate fixes using specific paths and a message file in `tmp/` before pushing.
+
 ```bash
 git push -u origin <branch-name>
 ```
 
-Write the PR body to `tmp/pr-body.md` using the **Write tool** (never inline `--body` — see
+Write the PR body to `tmp/pr-body.md` using the available file-editing tool (never inline `--body` — see
 AGENTS.md §"Commit and PR style"), following `.github/pull_request_template.md`. Issue linkage:
 
 - **`Closes #<N>`** — complete fix (auto-closes on squash-merge)

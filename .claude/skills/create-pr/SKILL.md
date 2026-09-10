@@ -43,10 +43,13 @@ git checkout -b u/jimmyho/<tool>/<short-kebab-description>
 ```
 
 Branch name format: `u/jimmyho/<tool>/<short-kebab-description>`, all lowercase, no underscores.
-`<tool>` documents authorship (e.g. `claude-code`, `cursor`, `cursor+claude`).
+`<tool>` documents authorship (e.g. `claude-code`, `codex`, `cursor`).
 
-**On `main` with commits already on main**: this path requires a force-push to move commits to a
-branch — stop and ask the user how to proceed.
+**On `main` with local commits**: preserve them on a feature branch before staging more work.
+Fetch `origin`, create and switch to the feature branch, then point only the local
+`main` ref at the fetched `origin/main` (`git branch -f main origin/main`). The
+commits remain on the feature branch, and the review/gate comparisons against
+`main` now include them. Inspect divergence first; do not rewrite remote `main`.
 
 **On a feature branch with no commits and no uncommitted changes**: nothing to PR. Ask for
 clarification.
@@ -65,7 +68,7 @@ git status --short   # identify the changed files
 git add <specific-files>
 ```
 
-Write the commit message to `tmp/commit-msg.txt` using the **Write tool** — never an inline heredoc
+Write the commit message to `tmp/commit-msg.txt` using the available file-editing tool — never an inline heredoc
 or `printf >` (AGENTS.md §"Commit and PR style" explains why). Follow the subject/body conventions
 there. Then commit:
 
@@ -84,7 +87,7 @@ Get the full branch diff:
 git diff main..HEAD
 ```
 
-Spawn a **`general-purpose` Agent** with the diff in the prompt — a fresh context, so it has no
+Spawn a fresh-context review subagent (Claude: `general-purpose`; Codex/Cursor: the available subagent tool) with the diff in the prompt — a fresh context, so it has no
 prior conversation history coloring the review. Brief it as:
 
 > "You are reviewing a code diff for a **UIKit iOS app (no storyboards) written in Swift 6.0 with
@@ -123,7 +126,7 @@ Process the returned findings:
   suggestions outside the change's scope.
 - **Low** — skip (style, premature optimization; not your job here).
 
-Apply all fixes at once with the Edit or Write tool. Do not re-spawn the reviewer after each fix.
+Apply all fixes at once with the available file-editing tool. Do not re-spawn the reviewer after each fix.
 
 ### 4. Cross-cutting concerns
 
@@ -178,7 +181,7 @@ Fix any gaps you find.
 make gate
 ```
 
-Run in the background (`run_in_background: true`) — it tees output to `tmp/gate.log`. **Do not open
+Run asynchronously using the current tool’s background/session mechanism and collect its final exit status — it tees output to `tmp/gate.log`. **Do not open
 the PR until the gate is green.**
 
 `make gate` here is **format-changed → lint-changed → build**. It formats and strict-lints only the
@@ -212,7 +215,7 @@ The pre-push hook runs `scripts/build.sh` and blocks a push from `main`.
 
 ### 8. Open the PR
 
-Write the PR body to `tmp/pr-body.md` using the **Write tool**, following the structure in
+Write the PR body to `tmp/pr-body.md` using the available file-editing tool, following the structure in
 `.github/pull_request_template.md` (What / Why / Test plan / Tools, then the cross-cutting checklist
 marked done-or-N/A from step 4). End with the `Co-Authored-By:` footer.
 
@@ -223,8 +226,7 @@ Guidelines (per AGENTS.md §"Commit and PR style"):
 - PR title follows the subject convention: past-tense verb, sentence case, ends with a period,
   ≤72 chars, no `feat:`/`fix:`/`chore:` prefix. Examples: `"Fixed checklist reset losing item
   notes."`, `"Added sort-order persistence to the checklists list."`
-- In **Test plan**, say how the change was actually verified. Be honest that the automated suites
-  are unavailable (see below) — a plausible-sounding test plan that was never run is worse than
+- In **Test plan**, say how the change was actually verified. State accurately which automated suites were run — a plausible-sounding test plan that was never run is worse than
   "verified by hand in the simulator: <steps>".
 
 Create the PR:
@@ -240,7 +242,7 @@ Report the PR URL to the user.
 Run all steps without prompting, except when a review finding is genuinely ambiguous about product
 intent, or when a SwiftData model change lacks its schema/migration/test triad (step 4) — that one
 always gets raised.
-Gate commands, git operations, and `gh pr create` are all allowlisted.
+Use the current agent’s configured permissions for gate commands, git operations, and `gh pr create`.
 
 ## What this skill does NOT do
 
