@@ -1,5 +1,3 @@
-require_relative "lib/marketing_snapshot"
-
 default_platform(:ios)
 skip_docs
 opt_out_usage
@@ -22,13 +20,9 @@ platform :ios do
 
   desc "Verify read-only access to the existing checklists app"
   lane :verify_auth do
-    app = MarketingSnapshot.find_app!
+    identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    app = Spaceship::ConnectAPI::App.find(identifier)
+    UI.user_error!("No access to #{identifier}") unless app && app.bundle_id == identifier
     UI.success("Auth OK: #{app.name} (#{app.bundle_id}, ASC #{app.id})")
-  end
-
-  desc "Download public live iOS marketing copy into a new scratch directory"
-  lane :download_metadata do
-    destination = MarketingSnapshot.download!
-    UI.success("Downloaded to #{destination}. Review before importing; see fastlane/SETUP.md.")
   end
 end

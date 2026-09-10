@@ -14,27 +14,24 @@ the bundle ID in Appfile selects checklists. Keep the `.p8` outside the repo.
 Never paste its contents into configuration or logs. `.env` is ignored by git.
 Fastlane loads it automatically and reads the key internally for authentication.
 
-## Read-only commands
+## Authentication check
 
-`fastlane verify_auth` confirms access to `com.jimmyho.checklists` and prints its
-App Store Connect ID. `fastlane download_metadata` retrieves the distributed iOS
-version and distributed app information. It fails if either is absent, rather
-than falling back to draft data. Neither command uploads, builds, changes version
-numbers, or alters storefront availability.
+`fastlane verify_auth` confirms read-only access to the app configured in Appfile
+and prints its App Store Connect ID. It does not upload, build, change version
+numbers, or alter storefront availability.
 
-The download uses fastlane's Spaceship API with an explicit public-field list:
-name, subtitle, privacy URL, description, keywords, marketing URL, promotional
-text, support URL, release notes, and copyright. Missing values are omitted;
-empty values are preserved. It does not export review contacts, credentials,
-screenshots, categories, pricing, or availability. API failures fail the lane.
+## Initial marketing copy
 
-Each run creates a new directory under `tmp/app-store-metadata/live-*`, containing
-`metadata/` and `metadata-source.json`. The provenance file records the source app,
-version, record IDs, locale lists, and UTC retrieval time. Tracked marketing copy
-is never overwritten by a lane. Compare the downloaded files with
-`fastlane/metadata/`, review additions/removals, then explicitly copy the approved
-files and provenance into `fastlane/` and review the git diff before committing.
-Treat absent fields/locales as review items, not instructions to delete local copy.
+The live version 1.1 English listing was imported once to establish the baseline.
+`metadata-source.json` records that initial import's app, version, record IDs,
+locale lists, and UTC retrieval time; it is historical provenance, not a claim
+that subsequently edited copy still matches App Store Connect.
+
+The files under `metadata/` are now the source of truth for future publishing.
+Edit them in the repository and review changes through PRs. There is no ongoing
+download lane. The initial public copy includes name, subtitle, privacy URL,
+description, keywords, support URL, release notes, and copyright. Marketing URL
+and promotional text were absent from the source listing.
 
 ## English now, translations later
 
@@ -47,15 +44,13 @@ The app is currently English-only and intended for worldwide distribution.
 Storefront availability is separate from listing languages and remains unchanged.
 Do not create duplicate locale directories or translate copy in this phase. A
 later publishing phase will define English distribution across listing locales
-and explicit translated overrides. Review unexpected non-English copy or a
-missing en-US listing before importing. No translation pipeline is installed yet.
+and explicit translated overrides. No translation pipeline is installed yet.
 
 ## Validation
 
-Run `ruby fastlane/tests/marketing_snapshot_test.rb` for public-field, exact-text,
-and locale-path checks. Run `fastlane lanes` to check lane discovery, then the two
-read-only commands above for integration verification. `make gate` remains the
-repository build gate; fastlane does not alter it.
+Run `fastlane lanes` to check lane discovery and `fastlane verify_auth` for
+integration verification. `make gate` remains the repository build gate;
+fastlane does not alter it.
 
 ## Future publishing phase (second PR)
 

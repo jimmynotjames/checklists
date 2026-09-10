@@ -302,5 +302,5 @@ adding the jobs as required status checks in the existing branch protection.
 | `--header strip` | `--header ignore` | would delete every file's authorship header |
 | CI on by default (public repo, free macOS minutes) | ported but disabled | private repo, macOS bills at 10× |
 | i18n gates, OpenSpec | not ported | no counterpart stack here |
-| fastlane | read-only auth and live marketing-copy download | publishing and screenshot lanes deferred; see `fastlane/SETUP.md` |
+| fastlane | read-only auth and imported English marketing copy | publishing and screenshot lanes deferred; see `fastlane/SETUP.md` |
 | Mixpanel analytics | in progress | Flurry removed; budgets1's `docs/analytics-spec.md` and `Logging/` are the reference for the port. Deviations are recorded in [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md) §16 |

@@ -1,4 +1,4 @@
 # checklists
 
-Fastlane provides read-only App Store Connect authentication and live marketing-copy
-downloads. See [fastlane setup](fastlane/SETUP.md) for configuration and commands.
+Fastlane provides App Store Connect authentication and an initial English marketing-copy
+baseline for future publishing. See [fastlane setup](fastlane/SETUP.md) for configuration.
