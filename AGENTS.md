@@ -7,11 +7,11 @@ screen are SwiftUI (`App/`, `Screens/`); `ChecklistViewController` remains UIKit
 linked for one purpose only: `LegacyRealmImporter` reads a pre-migration install's old Realm file
 once, on the single launch that needs it, and never writes to it. See
 [`core-docs/persistence-design.md`](core-docs/persistence-design.md) for the model, the CloudKit
-constraints it was designed against, the legacy import, and sort-key ordering. Analytics are
-**being wired up** — Flurry was removed, and the Mixpanel implementation is landing as a PR
-sequence. The client layer is in place; until the SDK is connected, `analytics.track(...)` calls
-reach a console client that prints in DEBUG and does nothing in Release. See
-[`core-docs/analytics-spec.md`](core-docs/analytics-spec.md).
+constraints it was designed against, the legacy import, and sort-key ordering. **Analytics reach
+Mixpanel** — Flurry was removed and replaced across a PR sequence that is now complete: the client
+protocol, the locale-aware consent flow, and the Mixpanel SDK itself. A build with no configured
+token, or a test run, falls back to a console client that prints in DEBUG and does nothing in
+Release. See [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md).
 
 The Xcode project lives one level down at `checklists/checklists.xcodeproj`. The repo root holds
 tooling, plus **`core-docs/`** — design docs that outlive any single change and are canonical for

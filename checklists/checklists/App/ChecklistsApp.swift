@@ -107,12 +107,31 @@ struct ChecklistsApp: App {
   /// XCUITest bundle passes only the former, so checking just the env var would let UI-test runs
   /// reach real Mixpanel.
   private static func makeAnalyticsClient(settings: AnalyticsSettings) -> any AnalyticsClient {
-    guard !LaunchModeContainerFactory.isRunningTests, MixpanelTokenSource.isConfigured else {
+    guard
+      !shouldUseConsoleClient(
+        isRunningTests: LaunchModeContainerFactory.isRunningTests,
+        isTokenConfigured: MixpanelTokenSource.isConfigured
+      )
+    else {
       return ConsoleAnalyticsClient()
     }
     return MixpanelAnalyticsClient(
       token: MixpanelTokenSource.activeToken,
-      distinctIdProvider: { [weak settings] in settings?.analyticsDistinctId }
+      // Captured strongly, matching the gate's `isOptedIn` closure above: `settings` is the same
+      // instance `_analyticsSettings` retains for the app's lifetime, so there is nothing for
+      // `weak` to protect against here, and this is the only path by which the persisted
+      // `distinct_id` reaches Mixpanel — `identify(_:)` has no production caller. Were this `weak`
+      // and `settings` ever nil, `identify` and the baseline people properties would both silently
+      // no-op and Mixpanel would invent its own device id instead.
+      distinctIdProvider: { settings.analyticsDistinctId }
     )
+  }
+
+  /// The truth table behind `makeAnalyticsClient()`, pulled out so it is testable without
+  /// touching `LaunchModeContainerFactory` or `MixpanelTokenSource` directly (spec §13 contract
+  /// 15). `true` means "use `ConsoleAnalyticsClient`" — a test run, or a build with no configured
+  /// token, both fall back rather than reach real Mixpanel.
+  static func shouldUseConsoleClient(isRunningTests: Bool, isTokenConfigured: Bool) -> Bool {
+    isRunningTests || !isTokenConfigured
   }
 }

@@ -244,8 +244,8 @@ open.
 | Tokens are still placeholder sentinels (fresh clone) | `ConsoleAnalyticsClient` |
 | Otherwise | `MixpanelAnalyticsClient` |
 
-Until the SDK lands, the selection returns `ConsoleAnalyticsClient` unconditionally — the shape is
-in place, the third row is not yet reachable.
+All three rows are reachable: `ChecklistsApp.shouldUseConsoleClient(isRunningTests:isTokenConfigured:)`
+is the truth table above, and `makeAnalyticsClient()` calls it before constructing either client.
 
 The test guard delegates to the existing `LaunchModeContainerFactory.isRunningTests`, which already
 handles **both** signals. `budgets1` checks only its `IS_TESTING` env var; ported literally, that
@@ -416,6 +416,13 @@ Bucketing on the **profile** while sending the raw count on **events** is consis
 contradictory: §9.1's "raw" argument is about event properties, and profiles are what cohorts are
 built from, where coarse buckets are what you actually want. This is this app's one cohort signal.
 
+**`analytics_opt_in_at` is absent on an auto-opt-in install that never touches the toggle.** This is
+spec-consistent, not a gap: the property is set "on the opt-in transition" (§6.3), and an
+auto-opt-in jurisdiction's default-on state is not a transition. Do not build a cohort on this
+property expecting full population coverage — pair it with `consent_jurisdiction` if "when did this
+person's data start flowing" needs an answer for every install, not just the ones that made an
+explicit choice.
+
 ## 10. Build hygiene — **Built**
 
 **The token is never a source literal.** The Flurry API key was hardcoded in `AnalyticsManager.swift`
@@ -580,8 +587,15 @@ Contracts — **built** except where marked, which land with the consent and SDK
 8. **Consent ordering** — toggle-off produces exactly `[track(consent_changed, false), reset]` and
    leaves the flag false; toggle-on sets the flag before tracking; decline sends nothing but marks
    the choice explicit.
-9. Lazy init — an opted-out client never initializes the SDK however many `track` calls it receives;
-   flipping to opted-in initializes exactly once.
+9. Lazy init, verified two ways against the **real** `MixpanelAnalyticsClient` (`MixpanelClientGateTests`):
+   a never-initialized client's `reset()` and its people-property setters cannot themselves reach
+   `Mixpanel.initialize` — the regression that would matter most, since `reset()` always passes
+   through the consent gate; and `ConsentGatedAnalyticsClient` wrapping a real client with
+   `isOptedIn: { false }` leaves the SDK uninitialized after repeated `track`/`identify` calls.
+   **Not separately asserted:** that an opted-in `track` initializes the SDK exactly once — doing so
+   would require actually calling `Mixpanel.initialize`, which contacts `api.mixpanel.com` even with
+   a fake token and leaves real artifacts on disk (discovered in this PR's review). That half is
+   covered by the manual simulator verification in §5 instead.
 10. Name constants — all distinct, all `snake_case`.
 11. Orientation mapping — portrait/landscape values, `nil` for face-up/face-down.
 12. Checklist view properties — counts, notes length for nil notes, name truncation.
