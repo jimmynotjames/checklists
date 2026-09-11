@@ -24,14 +24,16 @@ final class AnalyticsConsentController {
     self.analytics = analytics
   }
 
-  /// The first-run sheet's affirmative path. Sets the flag first, so a lazy SDK initializer
-  /// triggered by this `track` observes an opted-in state, then tracks the change, then stamps
-  /// the opt-in timestamp people property.
+  /// The first-run sheet's affirmative path. Reads the prior value before writing it — spec §8
+  /// lists `old_value` on every `analytics_consent_changed` event, not only the Settings
+  /// toggle's — sets the flag first, so a lazy SDK initializer triggered by this `track` observes
+  /// an opted-in state, then tracks the change, then stamps the opt-in timestamp people property.
   func accept() {
+    let oldValue = settings.analyticsOptIn
     settings.analyticsOptIn = true
     analytics.track(
       AnalyticsEvent.analyticsConsentChanged,
-      properties: [AnalyticsProperty.newValue: true]
+      properties: [AnalyticsProperty.newValue: true, AnalyticsProperty.oldValue: oldValue]
     )
     analytics.setAnalyticsOptInAt()
   }

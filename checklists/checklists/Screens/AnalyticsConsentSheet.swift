@@ -37,8 +37,9 @@ struct AnalyticsConsentSheet: View {
           Text("""
           This app can send anonymous usage data to help understand how it's used and fix \
           problems. Included: how often screens are opened, how many checklists and items you \
-          have, the names of your checklists, and error codes. Never included: item names, any \
-          notes, or any Apple or iCloud identifiers. You can change this anytime in Settings.
+          have, the names of your checklists, error codes, and a random identifier for this \
+          install — never linked to your Apple Account. Never included: item names, any notes, \
+          or any Apple or iCloud identifiers. You can change this anytime in Settings.
           """)
           .font(.body)
           .foregroundStyle(Colors.inactiveTextColor)

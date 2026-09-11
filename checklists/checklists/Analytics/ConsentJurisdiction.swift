@@ -23,13 +23,6 @@ nonisolated enum ConsentJurisdiction: Equatable {
   /// Analytics are default-on; the user may opt out at any time via the Settings toggle.
   case autoOptin
 
-  static func == (lhs: ConsentJurisdiction, rhs: ConsentJurisdiction) -> Bool {
-    switch (lhs, rhs) {
-    case (.required, .required), (.autoOptin, .autoOptin): true
-    default: false
-    }
-  }
-
   // MARK: - Lookup
 
   /// Returns the jurisdiction kind for the given `Locale.Region` identifier string.

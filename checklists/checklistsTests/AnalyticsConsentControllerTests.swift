@@ -15,6 +15,7 @@ import XCTest
 nonisolated final class AnalyticsConsentControllerTests: XCTestCase {
   @MainActor func testAcceptTracksThenStampsTheOptInTimestampAndSetsTheFlagExplicitly() {
     let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
+    settings.analyticsOptIn = false
     let spy = SpyAnalyticsClient()
     let controller = AnalyticsConsentController(settings: settings, analytics: spy)
 
@@ -23,7 +24,7 @@ nonisolated final class AnalyticsConsentControllerTests: XCTestCase {
     XCTAssertEqual(
       spy.calls,
       [
-        .track(AnalyticsEvent.analyticsConsentChanged, ["new_value": "true"]),
+        .track(AnalyticsEvent.analyticsConsentChanged, ["new_value": "true", "old_value": "false"]),
         .setAnalyticsOptInAt,
       ]
     )
@@ -110,17 +111,49 @@ nonisolated final class AnalyticsConsentControllerTests: XCTestCase {
     )
     XCTAssertTrue(settings.analyticsOptIn)
   }
+
+  /// The ordered `calls` array alone cannot catch a swap of the flag-write and the `track` call
+  /// inside `setOptIn(true)`'s branch — both orders produce the same final calls and the same
+  /// final flag value. This needs the same snapshotting technique `testAcceptSetsTheFlagBeforeTracking`
+  /// uses.
+  @MainActor func testTogglingOnSetsTheFlagBeforeTracking() {
+    let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
+    settings.analyticsOptIn = false
+    let snapshotter = FlagSnapshottingAnalyticsClient(settings: settings)
+    let controller = AnalyticsConsentController(settings: settings, analytics: snapshotter)
+
+    controller.setOptIn(true)
+
+    XCTAssertEqual(snapshotter.optInStateWhenTracked, true)
+  }
+
+  /// Likewise, the ordered `calls` array cannot catch a swap of `reset()` and the flag-write
+  /// inside `setOptIn(false)`'s branch — `[track, reset]` and the final `false` flag look
+  /// identical either way. `reset()` has to run *while the flag is still true*, or a real
+  /// Mixpanel client's `reset()` would already be racing a flag that says "opted out."
+  @MainActor func testTogglingOffResetsWhileTheFlagIsStillTrue() {
+    let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
+    settings.analyticsOptIn = true
+    let snapshotter = FlagSnapshottingAnalyticsClient(settings: settings)
+    let controller = AnalyticsConsentController(settings: settings, analytics: snapshotter)
+
+    controller.setOptIn(false)
+
+    XCTAssertEqual(snapshotter.optInStateWhenReset, true)
+    XCTAssertFalse(settings.analyticsOptIn)
+  }
 }
 
 // MARK: - FlagSnapshottingAnalyticsClient
 
-/// Records whether `settings.analyticsOptIn` was already at the expected value at the moment
-/// `track` was called — the one thing `SpyAnalyticsClient`'s ordered `calls` array cannot prove,
-/// since the flag write is a mutation on a different object, not a call the spy observes.
+/// Records `settings.analyticsOptIn`'s value at the moment `track` and `reset` were each
+/// called — the one thing `SpyAnalyticsClient`'s ordered `calls` array cannot prove, since the
+/// flag write is a mutation on a different object, not a call the spy observes.
 @MainActor
 private final class FlagSnapshottingAnalyticsClient: AnalyticsClient {
   private let settings: AnalyticsSettings
   private(set) var optInStateWhenTracked: Bool?
+  private(set) var optInStateWhenReset: Bool?
 
   init(settings: AnalyticsSettings) {
     self.settings = settings
@@ -131,5 +164,8 @@ private final class FlagSnapshottingAnalyticsClient: AnalyticsClient {
   }
 
   func identify(_: String?) {}
-  func reset() {}
+
+  func reset() {
+    optInStateWhenReset = settings.analyticsOptIn
+  }
 }

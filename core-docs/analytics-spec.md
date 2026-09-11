@@ -255,14 +255,23 @@ default, so a SwiftUI preview or a view constructed in isolation never needs a r
 
 ### 7.2 Launch and consent-transition ordering
 
-**Cold launch.** Build the client → install it for the pre-environment call sites (§7.3) → construct
-the startup model → inject the client into the environment for every startup phase → fire
-`app_opened` once the scene becomes active.
+**Cold launch.** Build the client → wrap it in the consent gate → install the wrapped client for
+the pre-environment call sites (§7.3) → construct the startup model → inject the wrapped client
+into the environment for every startup phase → fire `app_opened` once the scene becomes active.
 
-**SDK initialization is lazy.** `Mixpanel.initialize` is not called in the client's initializer. It
-happens on the first `track` that passes the opt-in guard, and that same path registers the super
-properties and identifies the person. An install that is opted out therefore never constructs a
-Mixpanel instance and never opens a socket.
+**The opt-in gate is a decorator, not internal to any one client.**
+`ConsentGatedAnalyticsClient` wraps whichever client §7.1 selects and suppresses every method
+except `reset()` while the person is opted out; `reset()` always passes through, since a gated
+reset could never clear state on the transition that needs it. `ChecklistsApp.init()` builds it
+once, around the base client, before installing anything — every call site, SwiftUI and
+non-SwiftUI alike, reaches the base client only through this one gate.
+
+**SDK initialization is lazy, and the gate is what makes that hold without either client knowing
+about consent.** `Mixpanel.initialize` is not called in `MixpanelAnalyticsClient`'s own
+initializer; it happens inside `ensureInitialized()`, called from that client's `track`. A
+`track` the gate suppresses never reaches the wrapped client at all, so an install that is opted
+out never constructs a Mixpanel instance and never opens a socket — the same guarantee as before,
+now enforced one layer up instead of inside the Mixpanel client itself.
 
 **After `reset()`** the instance is discarded. A later opt-in re-runs the full lazy init, which
 re-registers super properties and re-identifies — this is why super-property registration lives
@@ -580,6 +589,10 @@ Contracts — **built** except where marked, which land with the consent and SDK
     test cannot arrange.)
 14. `StoreReset` leaves the analytics keys alone (§5).
 15. The client-selection predicate covers **both** `-UITests1` and `IS_TESTING` (§7.1). *(pending — SDK)*
+16. `ConsentGatedAnalyticsClient` (§7.2) — opted-out suppresses `track`, `identify`, both refresh
+    methods, and `setAnalyticsOptInAt`; opted-in passes all of them through; `reset()` always
+    passes through regardless; the gate re-reads its `isOptedIn` closure on every call rather than
+    capturing it once.
 
 Tests are opt-in and not gated (`make test-unit`). Read pass/fail from the `.xcresult`, never from a
 piped exit code — see AGENTS.md.

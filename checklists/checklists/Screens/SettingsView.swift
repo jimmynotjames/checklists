@@ -155,8 +155,8 @@ struct SettingsView: View {
       Text("""
       Anonymous usage data helps troubleshoot issues and understand usage. What's included: how \
       often screens are opened, how many checklists and items you have, the names of your \
-      checklists, and error codes. Never included: item names, any notes, or any Apple or \
-      iCloud identifiers.
+      checklists, error codes, and a random identifier for this install — never linked to your \
+      Apple Account. Never included: item names, any notes, or any Apple or iCloud identifiers.
       """)
       .foregroundStyle(Colors.inactiveTextColor)
     }

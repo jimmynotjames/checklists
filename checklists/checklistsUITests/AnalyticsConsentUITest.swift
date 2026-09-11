@@ -121,6 +121,12 @@ class AnalyticsConsentUITest: XCTestCase {
 
     checklistsList.staticTexts["Morning Routine"].tap()
 
+    // Positive assertion first: without it, this test would also pass if navigation into the
+    // checklist failed entirely, since the sheet would then also be absent for the wrong reason.
+    XCTAssertTrue(
+      app.tables["ChecklistTableView"].waitForExistence(timeout: 5),
+      "Checklist detail screen did not appear."
+    )
     XCTAssertFalse(
       consentAcceptButton.waitForExistence(timeout: 3),
       "Auto-opt-in regions must never see the first-run sheet."
