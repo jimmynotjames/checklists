@@ -1,6 +1,6 @@
 ---
 name: create-pr-for-issue
-description: Turn a GitHub issue into an open, review-ready PR. Implements the fix, runs a fresh-eye review, audits the cross-cutting checklist (SwiftData schema migration, analytics, accessibility), runs `make gate`, pushes, and opens the PR with Closes #N linkage. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr-for-issue <N>.
+description: Turn a GitHub issue into an open, review-ready PR. Implements the fix, runs a fresh-eye review, audits the cross-cutting checklist (SwiftData schema migration, analytics, accessibility, secrets inventory), runs `make gate`, pushes, and opens the PR with Closes #N linkage. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr-for-issue <N>.
 ---
 
 # Create PR for issue
@@ -67,6 +67,10 @@ full descriptions live in the `create-pr` skill (step 4) and `.github/pull_reque
   in `core-docs/analytics-spec.md`. No PII.
 - **Accessibility** — new controls get `accessibilityLabel` and appropriate traits; nothing clips at
   large Dynamic Type.
+- **Secrets inventory** — if the change adds, removes, or renames a gitignored secret-bearing file,
+  API token, private key, credential variable, external secret location, or machine-local credential
+  prerequisite, update `core-docs/secrets-list.md` with safe reconstruction and validation guidance.
+  Never include secret values or read/print an actual secret file while documenting it.
 
 ### 4. Fresh-eye code review
 

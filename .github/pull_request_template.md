@@ -14,7 +14,7 @@
 
 ## Cross-cutting concerns
 
-For any change that touches the data model, user actions, or UI — confirm each applies-or-N/A:
+For every change, confirm each concern applies or is N/A:
 
 - [ ] **SwiftData schema migration** — if `Checklist.swift`, `Item.swift`, or `SchemaV1.swift`
       changed, a new `VersionedSchema`, a `MigrationStage` in `ChecklistsMigrationPlan`, and a
@@ -26,6 +26,9 @@ For any change that touches the data model, user actions, or UI — confirm each
       `Analytics/AnalyticsNames.swift` and a row added to `core-docs/analytics-spec.md`. No PII.
 - [ ] **Accessibility** — new controls have `accessibilityLabel` and appropriate traits; nothing
       clips at large Dynamic Type.
+- [ ] **Secrets inventory** — added, removed, or renamed secret-bearing files, credential variables,
+      external secret locations, and machine-local credential prerequisites are reflected in
+      `core-docs/secrets-list.md`; no secret values are documented or exposed during verification.
 
 ---
 

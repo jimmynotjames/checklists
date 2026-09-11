@@ -69,6 +69,14 @@ control, or logs.
 The base file must remain tracked so a fresh clone has a valid Xcode configuration. The populated
 local override must remain ignored so real tokens cannot be committed.
 
+## Keeping this inventory current
+
+Any change that adds, removes, or renames a gitignored secret-bearing file, API token, private key,
+credential variable, external secret location, or machine-local credential prerequisite must update
+this document in the same PR. Record only the path, required variable names, restoration source,
+tracked template or setup source, and a validation method that does not expose the value. Never read
+or print an actual secret file to verify an inventory update.
+
 ## Other machine-local release prerequisites
 
 These are not gitignored repository files, but a fresh machine also needs a valid Apple
