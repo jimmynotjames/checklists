@@ -22,13 +22,13 @@ nonisolated final class AnalyticsSettingsTests: XCTestCase {
   }
 
   @MainActor func testDefaultMatchesTheCurrentLocalesJurisdiction() {
-    let settings = AnalyticsSettings(store: MockKeyValueStore())
+    let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
 
     XCTAssertEqual(settings.analyticsOptIn, currentLocaleDefault)
   }
 
   @MainActor func testResolvedDefaultIsNotWrittenToTheStore() {
-    let store = MockKeyValueStore()
+    let store = InMemoryKeyValueStore()
     _ = AnalyticsSettings(store: store)
 
     XCTAssertNil(
@@ -38,7 +38,7 @@ nonisolated final class AnalyticsSettingsTests: XCTestCase {
   }
 
   @MainActor func testExplicitValueOverridesTheLocaleDefault() {
-    let store = MockKeyValueStore()
+    let store = InMemoryKeyValueStore()
     let explicitValue = !currentLocaleDefault
     store.set(explicitValue, forKey: AnalyticsSettings.analyticsOptInKey)
 
@@ -48,7 +48,7 @@ nonisolated final class AnalyticsSettingsTests: XCTestCase {
   }
 
   @MainActor func testExplicitlySetIsFalseUntilAnExplicitWrite() {
-    let store = MockKeyValueStore()
+    let store = InMemoryKeyValueStore()
     let settings = AnalyticsSettings(store: store)
 
     XCTAssertFalse(settings.analyticsOptInExplicitlySet)
@@ -61,13 +61,13 @@ nonisolated final class AnalyticsSettingsTests: XCTestCase {
   // MARK: - distinct_id
 
   @MainActor func testDistinctIdIsAValidUUID() {
-    let settings = AnalyticsSettings(store: MockKeyValueStore())
+    let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
 
     XCTAssertNotNil(UUID(uuidString: settings.analyticsDistinctId))
   }
 
   @MainActor func testDistinctIdIsStableAcrossASecondInstanceOverTheSameStore() {
-    let store = MockKeyValueStore()
+    let store = InMemoryKeyValueStore()
     let first = AnalyticsSettings(store: store)
     let second = AnalyticsSettings(store: store)
 
@@ -75,7 +75,7 @@ nonisolated final class AnalyticsSettingsTests: XCTestCase {
   }
 
   @MainActor func testDistinctIdIsPersistedOnFirstGeneration() {
-    let store = MockKeyValueStore()
+    let store = InMemoryKeyValueStore()
     let settings = AnalyticsSettings(store: store)
 
     XCTAssertEqual(

@@ -14,7 +14,7 @@ import XCTest
 /// pattern.
 nonisolated final class AnalyticsConsentControllerTests: XCTestCase {
   @MainActor func testAcceptTracksThenStampsTheOptInTimestampAndSetsTheFlagExplicitly() {
-    let settings = AnalyticsSettings(store: MockKeyValueStore())
+    let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
     let spy = SpyAnalyticsClient()
     let controller = AnalyticsConsentController(settings: settings, analytics: spy)
 
@@ -37,7 +37,7 @@ nonisolated final class AnalyticsConsentControllerTests: XCTestCase {
   /// order relative to a different object's mutation, so this uses a purpose-built snapshotting
   /// double instead.
   @MainActor func testAcceptSetsTheFlagBeforeTracking() {
-    let settings = AnalyticsSettings(store: MockKeyValueStore())
+    let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
     let snapshotter = FlagSnapshottingAnalyticsClient(settings: settings)
     let controller = AnalyticsConsentController(settings: settings, analytics: snapshotter)
 
@@ -47,7 +47,7 @@ nonisolated final class AnalyticsConsentControllerTests: XCTestCase {
   }
 
   @MainActor func testDeclineSendsNoEventButMarksTheChoiceExplicit() {
-    let settings = AnalyticsSettings(store: MockKeyValueStore())
+    let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
     let spy = SpyAnalyticsClient()
     let controller = AnalyticsConsentController(settings: settings, analytics: spy)
 
@@ -63,7 +63,7 @@ nonisolated final class AnalyticsConsentControllerTests: XCTestCase {
   }
 
   @MainActor func testTogglingOffTracksThenResetsThenClearsTheFlag() {
-    let settings = AnalyticsSettings(store: MockKeyValueStore())
+    let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
     settings.analyticsOptIn = true
     let spy = SpyAnalyticsClient()
     let controller = AnalyticsConsentController(settings: settings, analytics: spy)
@@ -83,7 +83,7 @@ nonisolated final class AnalyticsConsentControllerTests: XCTestCase {
   /// The opt-out event is the only record the opt-out happened, so it must be sent *while still
   /// opted in* — before `reset()` and before the flag flips.
   @MainActor func testTogglingOffTracksWhileStillOptedIn() {
-    let settings = AnalyticsSettings(store: MockKeyValueStore())
+    let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
     settings.analyticsOptIn = true
     let snapshotter = FlagSnapshottingAnalyticsClient(settings: settings)
     let controller = AnalyticsConsentController(settings: settings, analytics: snapshotter)
@@ -95,7 +95,7 @@ nonisolated final class AnalyticsConsentControllerTests: XCTestCase {
   }
 
   @MainActor func testTogglingOnTracksThenStampsTheOptInTimestamp() {
-    let settings = AnalyticsSettings(store: MockKeyValueStore())
+    let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
     let spy = SpyAnalyticsClient()
     let controller = AnalyticsConsentController(settings: settings, analytics: spy)
 

@@ -59,6 +59,8 @@ struct AnalyticsConsentSheet: View {
           .buttonStyle(.glass)
           .controlSize(.large)
           .tint(Color.accentColor)
+          .accessibilityIdentifier("analyticsConsentSheet.accept")
+          .accessibilityLabel("Share Anonymous Usage Data")
           .accessibilityHint("Turns on anonymous usage data. No item names, notes, or Apple or iCloud identifiers are ever included.")
 
           Button {
@@ -70,6 +72,8 @@ struct AnalyticsConsentSheet: View {
           }
           .buttonStyle(.glass)
           .controlSize(.large)
+          .accessibilityIdentifier("analyticsConsentSheet.decline")
+          .accessibilityLabel("Not Now")
           .accessibilityHint("Keeps anonymous usage data off. This can be changed later in Settings.")
         }
       }

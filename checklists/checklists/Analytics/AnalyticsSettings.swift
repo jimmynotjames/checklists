@@ -52,7 +52,7 @@ final class AnalyticsSettings {
     }
   }
 
-  init(store: KeyValueStore = UserDefaults.standard) {
+  init(store: KeyValueStore = AnalyticsSettings.defaultStore()) {
     self.store = store
     // Locale-aware default; absent from the store → NOT persisted. `didSet` does not fire on a
     // property's first assignment inside its own type's initializer, so this read-through never
@@ -60,6 +60,14 @@ final class AnalyticsSettings {
     analyticsOptIn = Self.readAnalyticsOptIn(from: store)
     // Generates and persists a UUID if the store has no value yet.
     analyticsDistinctId = Self.readOrCreateDistinctId(from: store)
+  }
+
+  /// `UserDefaults.standard` persists across process launches, so a UI test's consent decision
+  /// would otherwise leak into the next test's launch. Test-launch isolation, mirroring
+  /// `LaunchModeContainerFactory.make()`'s in-memory `ModelContainer` under the same condition —
+  /// not a workaround, the same seam this app already uses for persistence.
+  private static func defaultStore() -> KeyValueStore {
+    LaunchModeContainerFactory.isRunningTests ? InMemoryKeyValueStore() : UserDefaults.standard
   }
 
   // MARK: - Private: store reads
