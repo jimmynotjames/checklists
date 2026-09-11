@@ -8,6 +8,9 @@ locale per command if your shell does not already have one:
 
 ## Credentials
 
+See [`core-docs/secrets-list.md`](../core-docs/secrets-list.md) for the complete fresh-clone secret
+inventory and safe reconstruction checklist.
+
 Copy `.env.template` to `.env` in this directory and fill in the team API key ID,
 issuer ID, and absolute private-key path. Both apps can reuse a team API key;
 the bundle ID in Appfile selects checklists. Keep the `.p8` outside the repo.

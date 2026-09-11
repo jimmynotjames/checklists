@@ -1,6 +1,6 @@
 ---
 name: create-pr
-description: Turn already-written code changes into a reviewed, gated, open PR. Spawns a fresh-context code-reviewer subagent for a correctness-first look at the diff, audits the AGENTS.md cross-cutting checklist (SwiftData schema migration, analytics, accessibility), fills in any gaps autonomously, runs `make gate`, commits residual fixes, pushes the branch, and opens the PR. Use when the solution is mostly done and you want to review, gate, and ship it to a PR — without involving a GitHub issue. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr.
+description: Turn already-written code changes into a reviewed, gated, open PR. Spawns a fresh-context code-reviewer subagent for a correctness-first look at the diff, audits the AGENTS.md cross-cutting checklist (SwiftData schema migration, analytics, accessibility, secrets inventory), fills in any gaps autonomously, runs `make gate`, commits residual fixes, pushes the branch, and opens the PR. Use when the solution is mostly done and you want to review, gate, and ship it to a PR — without involving a GitHub issue. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr.
 ---
 
 # Create a PR
@@ -18,7 +18,7 @@ Print this unchecked at the start; tick each step as it completes.
 1. **Branch** — confirm on a feature branch (create one if on `main`)
 2. **Initial commit** — uncommitted changes staged and committed so the diff is reviewable
 3. **Fresh-eye review** — full diff reviewed; findings processed
-4. **Cross-cutting concerns** — the three-item checklist audited against the diff
+4. **Cross-cutting concerns** — the four-item checklist audited against the diff
 5. **Gaps fixed** — review findings and any cross-cutting gaps addressed
 6. **Gate** — `make gate` passes clean
 7. **Commit fixes** — any post-review changes committed
@@ -172,6 +172,14 @@ Check: new interactive controls have an `accessibilityLabel`; custom controls (`
 `CLButton`, `CircularPercentStatusIcon`) set appropriate `accessibilityTraits` and reflect state
 (a checkbox should expose selected/unselected); no fixed frame heights that clip text at large
 Dynamic Type — prefer `minHeight` over a fixed `height` on rows that contain text.
+
+**Secrets inventory**
+Applies if: the diff adds, removes, or renames a gitignored secret-bearing file; introduces a new
+API token, private key, credential variable, or external secret location; or changes a machine-local
+credential prerequisite needed after a fresh clone.
+Check: update `core-docs/secrets-list.md` in the same change with the local path, tracked template or
+setup source, required variable names, restoration source, and a safe validation method. Never put
+secret values in the inventory or read/print an actual secret file to verify the documentation.
 
 Fix any gaps you find.
 

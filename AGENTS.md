@@ -30,6 +30,9 @@ is `objectVersion = 100` (Xcode 26 format) and requires Xcode 26+ to open; CI pi
 Tooling here was ported from the `budgets1` repo and deliberately trimmed — see
 "Deviations from budgets1" at the bottom for what was changed and why.
 
+After a fresh clone, use [`core-docs/secrets-list.md`](core-docs/secrets-list.md) to restore the
+gitignored Mixpanel and App Store Connect credentials without exposing their contents.
+
 ## Build and test
 
 ```bash
