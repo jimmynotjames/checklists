@@ -1,0 +1,46 @@
+# frozen_string_literal: true
+
+require "minitest/autorun"
+require_relative "../lib/screenshot_capture"
+
+class ScreenshotCaptureTest < Minitest::Test
+  ROOT = File.expand_path("../..", __dir__)
+
+  def setup
+    @capture = ScreenshotCapture.new(ROOT)
+  end
+
+  def test_snapshot_options_are_serial_and_run_scoped
+    options = @capture.snapshot_options(
+      run_id: "test-run",
+      locales: ["en-US"],
+      simulator_name: "iPhone 17 Pro Max Screenshots [12345678]"
+    )
+
+    assert_equal ["en-US"], options.fetch(:languages)
+    assert_equal ["iPhone 17 Pro Max Screenshots [12345678]"], options.fetch(:devices)
+    assert_equal false, options.fetch(:concurrent_simulators)
+    assert_equal false, options.fetch(:erase_simulator)
+    assert_includes options.fetch(:output_directory), "/.build/screenshots/runs/test-run/raw"
+    refute options.key?(:xcargs)
+  end
+
+  def test_test_runner_environment_is_scoped_and_restored
+    original = ENV["TEST_RUNNER_RUN_APP_STORE_SCREENSHOTS"]
+    ENV.delete("TEST_RUNNER_RUN_APP_STORE_SCREENSHOTS")
+
+    @capture.send(:with_test_runner_environment, "test-run", "/repo/cache") do
+      assert_equal "1", ENV.fetch("TEST_RUNNER_RUN_APP_STORE_SCREENSHOTS")
+      assert_equal "/repo/cache", ENV.fetch("TEST_RUNNER_SCREENSHOT_CACHE_DIR")
+      assert_equal "1", ENV.fetch("CHECKLISTS_SCOPED_SCREENSHOT_CAPTURE")
+    end
+    refute ENV.key?("TEST_RUNNER_RUN_APP_STORE_SCREENSHOTS")
+  ensure
+    original.nil? ? ENV.delete("TEST_RUNNER_RUN_APP_STORE_SCREENSHOTS") : ENV["TEST_RUNNER_RUN_APP_STORE_SCREENSHOTS"] = original
+  end
+
+  def test_inactive_locale_is_rejected
+    error = assert_raises(ArgumentError) { @capture.send(:selected_locales, "de") }
+    assert_includes error.message, "inactive screenshot locale"
+  end
+end

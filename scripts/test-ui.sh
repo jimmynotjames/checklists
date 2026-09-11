@@ -31,4 +31,6 @@ xcodebuild test \
     -derivedDataPath "${SIM_DERIVED}" \
     -resultBundlePath "${RESULT_BUNDLE}" \
     -parallel-testing-enabled NO \
-    -only-testing:checklistsUITests
+    -only-testing:checklistsUITests/checklistsUITests \
+    -only-testing:checklistsUITests/checklistUITest \
+    -only-testing:checklistsUITests/checklistCreateUITest

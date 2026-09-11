@@ -59,6 +59,7 @@ struct ChecklistsView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("checklistRow.\(checklist.id)")
         .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         .listRowSeparator(.hidden)
         // Lets the screen's background show through instead of the system's row fill.

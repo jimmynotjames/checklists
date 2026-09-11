@@ -20,6 +20,7 @@ struct ChecklistRowView: View {
         // Deliberately 7, not the standard 8: keeps the ring tight against the name (matches
         // the pre-SwiftUI design; see PR #136).
         StatusIconView(percentageComplete: checklist.percentageComplete)
+          .accessibilityIdentifier("checklistProgress.\(checklist.id)")
         Text(checklist.name)
           .font(.headline)
           .lineLimit(1)
