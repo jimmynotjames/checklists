@@ -35,11 +35,9 @@ struct AnalyticsConsentSheet: View {
             .font(.title2.bold())
 
           Text("""
-          This app can send anonymous usage data to help understand how it's used and fix \
-          problems. Included: how often screens are opened, how many checklists and items you \
-          have, the names of your checklists, error codes, and a random identifier for this \
-          install — never linked to your Apple Account. Never included: item names, any notes, \
-          or any Apple or iCloud identifiers. You can change this anytime in Settings.
+          This app can send anonymous usage data that helps troubleshoot issues and understand usage. \
+          Data is never linked to your Apple Account. Never included: checklist item names, \
+          item notes, or any Apple or iCloud identifiers. You can change this anytime in Settings.
           """)
           .font(.body)
           .foregroundStyle(Colors.inactiveTextColor)
@@ -62,7 +60,7 @@ struct AnalyticsConsentSheet: View {
           .tint(Color.accentColor)
           .accessibilityIdentifier("analyticsConsentSheet.accept")
           .accessibilityLabel("Share Anonymous Usage Data")
-          .accessibilityHint("Turns on anonymous usage data. Includes your checklist names and a random identifier for this install. Never includes item names or notes.")
+          .accessibilityHint("Turns on anonymous usage data to help improve the app. No checklist item names, item notes, or Apple or iCloud identifiers are ever included.")
 
           Button {
             controller.decline()
