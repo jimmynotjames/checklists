@@ -46,6 +46,8 @@ struct RootView: View {
         switch route {
         case .settings:
           SettingsView()
+        case .analyticsConsent:
+          AnalyticsConsentSheet()
         case let .newChecklist(id):
           if let checklist = context.checklist(id: id) {
             ChecklistScreen(checklist: checklist, isNewChecklist: true) {

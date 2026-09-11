@@ -2,8 +2,8 @@
 
 | Field        | Value      |
 | ------------ | ---------- |
-| Version      | 1.0        |
-| Last Updated | 2026-09-09 |
+| Version      | 1.2        |
+| Last Updated | 2026-09-11 |
 | Author/Owner | Jimmy Ho   |
 
 > This is the canonical description of what this app measures, what it refuses to measure, and
@@ -16,11 +16,12 @@
 > deliberately aligned to it; §16 records every place they intentionally diverge.
 
 **Implementation status.** The token/secrets mechanism, the privacy manifest, the Mixpanel projects
-and their dashboards (§12), this document, and the **client protocol with all 16 call sites
-migrated** (§7) are built. The consent flow (§6) and the Mixpanel SDK itself are **pending** —
-tracked as the remaining PRs in the sequence that began with `analytics-secrets-and-spec`. Section
-headers below say "Built" or "Pending" where it matters. Nothing in this app sends analytics
-anywhere until the final PR lands.
+and their dashboards (§12), this document, the **client protocol with all 16 call sites migrated**
+(§7), and the **locale-aware consent flow** (§6) are built. Only the Mixpanel SDK itself is
+**pending** — tracked as the final PR in the sequence that began with `analytics-secrets-and-spec`.
+Section headers below say "Built" or "Pending" where it matters. Nothing in this app sends
+analytics anywhere until that PR lands; the consent UI exists and the opt-in flag is tracked, but
+today it gates only `ConsoleAnalyticsClient`, which prints in DEBUG and does nothing in Release.
 
 ---
 
@@ -442,9 +443,9 @@ substitutes empty for an undefined build setting), `isConfigured` returns false,
 back to the console client. It builds, launches, and passes its tests.
 
 **The ship guard.** `scripts/verify_release_secrets.sh` refuses a Release archive carrying the
-placeholder prod token or missing the local file. It runs from two places: `make verify-secrets` (the
-manual pre-archive check — there is no Fastlane here and CI is disabled) and an Xcode "Verify release
-secrets" run-script phase restricted to install/archive builds via
+placeholder prod token or missing the local file. It runs from three places: `make verify-secrets`
+(the manual pre-archive check), `fastlane/lib/release_build.rb`'s release-candidate lane, and an
+Xcode "Verify release secrets" run-script phase restricted to install/archive builds via
 `runOnlyForDeploymentPostprocessing`. Because `ENABLE_USER_SCRIPT_SANDBOXING = YES`, that phase
 declares all three files as `inputPaths` or the sandbox denies the reads. Note Xcode's `SRCROOT` is
 `checklists/`, one level below the repo root, hence the `$(SRCROOT)/../` paths — another divergence
@@ -557,17 +558,17 @@ Contracts — **built** except where marked, which land with the consent and SDK
 
 1. `truncated(_:)` — under, at, and over 127 chars, and no splitting of a multi-scalar emoji.
 2. `ConsentJurisdiction` — every strict code maps to `.required`; representative others to
-   `.autoOptin`; **`nil` → `.required`**. *(pending — consent)*
+   `.autoOptin`; **`nil` → `.required`**.
 3. Opt-in defaults — strict region → `false`, elsewhere → `true`, and **the resolved default is not
-   written to the store**; an explicit value overrides the locale default. *(pending — consent)*
-4. `distinct_id` — generated once, persisted, stable across instances, parses as a UUID. *(pending — consent)*
+   written to the store**; an explicit value overrides the locale default.
+4. `distinct_id` — generated once, persisted, stable across instances, parses as a UUID.
 5. `AppOpenTracker` — fires on first `.active` and on `.background → .active`; **not** on
    `.inactive → .active` (the notification shade and app switcher are not opens).
 6. `isValidToken(_:)` — the 32-lowercase-hex shape rule, without touching `Bundle.main`.
 7. Placeholder sentinels — non-empty, distinct, and not mistakable for a real token.
 8. **Consent ordering** — toggle-off produces exactly `[track(consent_changed, false), reset]` and
    leaves the flag false; toggle-on sets the flag before tracking; decline sends nothing but marks
-   the choice explicit. *(pending — consent)*
+   the choice explicit.
 9. Lazy init — an opted-out client never initializes the SDK however many `track` calls it receives;
    flipping to opted-in initializes exactly once. *(pending — SDK)*
 10. Name constants — all distinct, all `snake_case`.
@@ -577,7 +578,7 @@ Contracts — **built** except where marked, which land with the consent and SDK
     startup coordinator — including that a *successful* launch emits nothing. (The save-helper path
     is injectable too, but a real SwiftData save only fails on a full or damaged disk, which a unit
     test cannot arrange.)
-14. `StoreReset` leaves the analytics keys alone (§5). *(pending — consent)*
+14. `StoreReset` leaves the analytics keys alone (§5).
 15. The client-selection predicate covers **both** `-UITests1` and `IS_TESTING` (§7.1). *(pending — SDK)*
 
 Tests are opt-in and not gated (`make test-unit`). Read pass/fail from the `.xcresult`, never from a
@@ -644,11 +645,11 @@ Neither lives in this repo, so neither can be fixed by a PR here. Do both when t
 | Analytics and `OSLog` both in `Logging/` | Analytics in `Analytics/`, `OSLog` in `Logging/` | Both docs insist the channels are independent — let the directories say so (§11) |
 | One collected data type; empty accessed-API array | Two data types; `UserDefaults` declared | `checklist_name` is user content; this app uses `UserDefaults` in four places (§10) |
 | `$(SRCROOT)/config/…` | `$(SRCROOT)/../config/…` | The Xcode project sits one level below the repo root (§10) |
-| Fastlane lanes invoke the ship guard | Archive-only run-script phase + `make verify-secrets` | No Fastfile; CI disabled (§10) |
 | `budgets_count_bucket` as a super property | `checklists_count` raw per-event; bucket on the profile | The count already rides on the most frequent event (§9) |
 | A protocol, but ordering logic inline in bindings | Ordering extracted into a testable controller | So the §6.3 contract tests real code (§13) |
 | `isConfigured` requires **both** tokens | Requires only the **active** token | Requiring both ships a green, analytics-dead Release when only dev is unfilled (§10) |
 | Ship guard blacklists the sentinel string | Ship guard validates token **shape** | A straight copy of the template passes a blacklist (§10) |
+| `KeyValueStore` protocol lives in `Settings/` | Lives in `Analytics/` | Nothing else in this app uses the seam; analytics owns it |
 
 **Known trade-off, deliberately kept.** Both `MixpanelDevToken` and `MixpanelProdToken` ship in every
 build's Info.plist, so the dev project's token is extractable from a release IPA and vice versa. A
@@ -672,5 +673,6 @@ The region list in §6.2 and the region set in `ConsentJurisdiction.swift` must 
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
+| 1.2 | 2026-09-11 | Jimmy Ho | Consent flow built (#PR3): `ConsentJurisdiction`, `AnalyticsSettings`, the testable `AnalyticsConsentController`, the first-run sheet gated on the first pushed `checklist_viewed`, and the always-on Settings toggle. Flipped §13's consent contracts from pending. Corrected §10's stale "no Fastlane here" claim and removed the now-agreeing Fastlane deviation row from §16 — both drifted true after Fastlane landed on `main`. |
 | 1.1 | 2026-09-09 | Jimmy Ho | Client protocol built and all 16 call sites migrated off the static facade (#153). Recorded the three non-SwiftUI injection points and the `ChecklistsApp.init()` ordering requirement in §7.3, and the nonisolated-constants requirement that SwiftData model extensions impose. `AnalyticsManager` deleted. |
 | 1.0 | 2026-09-09 | Jimmy Ho | Initial spec, superseding `analytics-design.md`. Records the decisions taken for the Mixpanel implementation: full locale-aware consent port, `AnalyticsClient` protocol (overriding the earlier "no abstraction" decision), `UserDefaults` rather than iCloud KV for identity, and the consent-sheet trigger on first `checklist_viewed`. Token/secrets mechanism, privacy manifest, and gitleaks rule built and verified end to end; both Mixpanel projects provisioned and their five boards built via MCP. Client, consent, and SDK pending. |

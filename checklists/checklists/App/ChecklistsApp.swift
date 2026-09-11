@@ -16,6 +16,7 @@ struct ChecklistsApp: App {
   @State private var startup: AppStartupModel
   @State private var router = Router()
   @State private var appOpenTracker = AppOpenTracker()
+  @State private var analyticsSettings = AnalyticsSettings()
 
   @Environment(\.scenePhase) private var scenePhase
 
@@ -68,6 +69,7 @@ struct ChecklistsApp: App {
       // outside the switch also stops them remounting when the phase changes, which would reset
       // the tracker and let a duplicate open through.
       .environment(\.analytics, analytics)
+      .environment(analyticsSettings)
       .task {
         // The scene's real phase, not a hardcoded `.active`: the app declares the
         // remote-notification background mode, so it can be launched into the background, and

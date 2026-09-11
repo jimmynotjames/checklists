@@ -15,6 +15,7 @@ import Foundation
 enum SheetRoute: Hashable, Identifiable {
   case settings
   case newChecklist(id: String)
+  case analyticsConsent
 
   var id: Self {
     self

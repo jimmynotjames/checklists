@@ -112,6 +112,25 @@ nonisolated final class StoreResetTests: XCTestCase {
     XCTAssertTrue(userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
   }
 
+  /// A data reset is not a consent withdrawal (core-docs/analytics-spec.md §5). Silently
+  /// re-prompting someone who already declined would be worse than keeping the decision, so
+  /// the analytics keys must survive even though everything else in this suite is cleared.
+  @MainActor func testDoesNotRemoveTheAnalyticsKeys() {
+    userDefaults.set(false, forKey: AnalyticsSettings.analyticsOptInKey)
+    userDefaults.set("11111111-1111-1111-1111-111111111111", forKey: AnalyticsSettings.analyticsDistinctIdKey)
+
+    reset(
+      storeURL: directory.appendingPathComponent("default.store"),
+      realmURL: directory.appendingPathComponent("default.realm")
+    )
+
+    XCTAssertFalse(userDefaults.bool(forKey: AnalyticsSettings.analyticsOptInKey))
+    XCTAssertEqual(
+      userDefaults.string(forKey: AnalyticsSettings.analyticsDistinctIdKey),
+      "11111111-1111-1111-1111-111111111111"
+    )
+  }
+
   /// The failure it exists for may well be a store that was never created, so absent files must be
   /// a no-op rather than a second failure on top of the first.
   @MainActor func testSucceedsWhenNothingIsThereToDelete() {
