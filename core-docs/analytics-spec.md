@@ -609,6 +609,13 @@ Contracts — **built** except where marked, which land with the consent and SDK
     methods, and `setAnalyticsOptInAt`; opted-in passes all of them through; `reset()` always
     passes through regardless; the gate re-reads its `isOptedIn` closure on every call rather than
     capturing it once.
+17. Test-launch settings isolation — every automated launch gets a fresh in-memory settings store.
+    In Debug screenshot launches, the combination of a recognized test marker, screenshot seed
+    JSON, and a nonempty screenshot locale preseeds an explicit opt-out before
+    `AnalyticsSettings` initializes. Ordinary test launches retain absent consent, production uses
+    its persistent defaults, and Release contains no screenshot consent-seeding path. The strict
+    region UI regression keeps the ordinary first-run presentation case and proves a localized
+    screenshot fixture does not present it.
 
 Tests are opt-in and not gated (`make test-unit`). Read pass/fail from the `.xcresult`, never from a
 piped exit code — see AGENTS.md.

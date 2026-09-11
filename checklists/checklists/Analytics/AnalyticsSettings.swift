@@ -70,7 +70,34 @@ final class AnalyticsSettings {
   /// `LaunchModeContainerFactory.make()`'s in-memory `ModelContainer` under the same condition —
   /// not a workaround, the same seam this app already uses for persistence.
   private static func defaultStore() -> KeyValueStore {
-    LaunchModeContainerFactory.isRunningTests ? InMemoryKeyValueStore() : UserDefaults.standard
+    makeStore(
+      arguments: CommandLine.arguments,
+      environment: ProcessInfo.processInfo.environment,
+      persistentStore: UserDefaults.standard
+    )
+  }
+
+  /// Builds the settings store for a launch without requiring tests to touch real defaults.
+  /// Every test launch gets a fresh store. Screenshot launches additionally begin with an
+  /// explicit opt-out so a strict-region consent sheet cannot cover a marketing capture.
+  static func makeStore(
+    arguments: [String],
+    environment: [String: String],
+    persistentStore: @autoclosure () -> KeyValueStore
+  ) -> KeyValueStore {
+    guard LaunchModeContainerFactory.isRunningTests(arguments: arguments, environment: environment) else {
+      return persistentStore()
+    }
+
+    let store = InMemoryKeyValueStore()
+    #if DEBUG
+      if environment[LaunchModeContainerFactory.screenshotSeedJSONKey] != nil,
+         let locale = environment[LaunchModeContainerFactory.screenshotSeedLocaleKey],
+         !locale.isEmpty {
+        store.set(false, forKey: analyticsOptInKey)
+      }
+    #endif
+    return store
   }
 
   // MARK: - Private: store reads

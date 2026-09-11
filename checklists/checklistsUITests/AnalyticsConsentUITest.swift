@@ -37,10 +37,14 @@ class AnalyticsConsentUITest: XCTestCase {
 
   /// Launches with `-UITests1` plus `-AppleLocale <locale>`, so `Locale.current.region` resolves
   /// to `locale`'s region regardless of the simulator's own setting.
-  private func launch(locale: String) {
+  private func launch(locale: String, screenshotSeedJSON: String? = nil) {
     continueAfterFailure = false
     app = XCUIApplication()
     app.launchArguments = ["-UITests1", "-AppleLocale", locale]
+    if let screenshotSeedJSON {
+      app.launchEnvironment["SEED_SCREENSHOTS_JSON"] = screenshotSeedJSON
+      app.launchEnvironment["SCREENSHOT_SEED_LOCALE"] = "consent-regression"
+    }
     app.launch()
     XCTAssertTrue(app.collectionViews.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
   }
@@ -130,6 +134,41 @@ class AnalyticsConsentUITest: XCTestCase {
     XCTAssertFalse(
       consentAcceptButton.waitForExistence(timeout: 3),
       "Auto-opt-in regions must never see the first-run sheet."
+    )
+  }
+
+  func testStrictRegionScreenshotLaunchDoesNotShowConsentSheet() {
+    let checklistID = "C4EC1157-0000-4000-A000-000000000167"
+    let seed = """
+    {
+      "schemaVersion": 1,
+      "locale": "consent-regression",
+      "primaryLocale": "de_DE",
+      "checklists": [
+        {
+          "id": "\(checklistID)",
+          "name": "Consent Regression",
+          "items": [{"name": "Ready", "isChecked": false}]
+        }
+      ]
+    }
+    """
+    launch(locale: "de_DE", screenshotSeedJSON: seed)
+
+    let checklistRow = app.buttons["checklistRow.\(checklistID)"]
+    XCTAssertTrue(checklistRow.waitForExistence(timeout: 5), "Seeded checklist row did not appear.")
+    checklistRow.tap()
+    XCTAssertTrue(
+      app.tables["ChecklistTableView"].waitForExistence(timeout: 5),
+      "Seeded checklist detail screen did not appear."
+    )
+    XCTAssertFalse(
+      consentAcceptButton.waitForExistence(timeout: 3),
+      "Screenshot launch must start with an explicit opt-out in a strict region."
+    )
+    XCTAssertFalse(
+      consentDeclineButton.waitForExistence(timeout: 1),
+      "Screenshot launch must not present either consent action."
     )
   }
 }

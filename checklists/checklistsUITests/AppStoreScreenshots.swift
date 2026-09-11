@@ -63,7 +63,23 @@ final class AppStoreScreenshots: XCTestCase {
       detailTable.waitForExistence(timeout: 15),
       "Pre-Trip checklist detail did not appear."
     )
+    assertConsentSheetIsAbsent(in: app)
     snapshot("02_pre_trip")
+  }
+
+  /// The seeded opt-out is the primary invariant. This bounded check makes a broken invariant
+  /// fail the capture workflow visibly if either consent action appears asynchronously.
+  @MainActor private func assertConsentSheetIsAbsent(in app: XCUIApplication) {
+    let accept = app.buttons["analyticsConsentSheet.accept"]
+    let decline = app.buttons["analyticsConsentSheet.decline"]
+    XCTAssertFalse(
+      accept.waitForExistence(timeout: 3),
+      "Analytics consent appeared over the screenshot detail screen."
+    )
+    XCTAssertFalse(
+      decline.waitForExistence(timeout: 1),
+      "Analytics consent appeared over the screenshot detail screen."
+    )
   }
 
   @MainActor private func activeLocale() -> String {
