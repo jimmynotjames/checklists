@@ -155,6 +155,11 @@ validation, and ordinary TestFlight builds; `appstore-push-release-build` for a 
 resumable release workflow. Publishing skills open their PR through `/create-pr` and stop; a later
 turn may use `/merge-pr`. Never run an upload lane merely to test release infrastructure.
 
+Use `appstore-generate-screenshot-seeding` for screenshot fixture changes and
+`appstore-generate-push-screenshots` for local capture, read-only screenshot inspection,
+and explicitly requested screenshot publication. Refreshing screenshots reuses the approved
+catalog; it does not regenerate content or authorize an upload.
+
 **Never merge on the same turn the PR is opened.** The PR exists to be read.
 
 ### Conventions
@@ -313,5 +318,5 @@ adding the jobs as required status checks in the existing branch protection.
 | `--header strip` | `--header ignore` | would delete every file's authorship header |
 | CI on by default (public repo, free macOS minutes) | ported but disabled | private repo, macOS bills at 10× |
 | i18n gates, OpenSpec | not ported | no counterpart stack here |
-| fastlane | binary and metadata publishing, no automated submission | screenshot automation and translation generation remain deferred; see `fastlane/SETUP.md` |
+| fastlane | binary, metadata, and screenshot workflows; no automated submission | screenshots enable en-US only; translation integration deferred in #161; see `fastlane/SETUP.md` |
 | Mixpanel analytics | in progress | Flurry removed; budgets1's `docs/analytics-spec.md` and `Logging/` are the reference for the port. Deviations are recorded in [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md) §16 |

@@ -3,12 +3,14 @@ skip_docs
 opt_out_usage
 require_relative "lib/release_build"
 require_relative "lib/metadata_publish"
+require_relative "lib/screenshot_publish"
+require_relative "lib/screenshot_capture"
 
 RELEASE_ROOT = File.expand_path("..", __dir__)
 
 platform :ios do
   before_all do |lane|
-    next if lane == :archive_validation
+    next if [:archive_validation, :screenshots].include?(lane)
     %w[ASC_API_KEY_ID ASC_API_ISSUER_ID ASC_API_KEY_FILEPATH].each do |name|
       UI.user_error!("Set #{name} in fastlane/.env; see fastlane/SETUP.md") if ENV[name].to_s.strip.empty?
     end
@@ -45,6 +47,49 @@ platform :ios do
     version = app.get_edit_app_store_version(platform: "IOS")
     MetadataPublish.validate_target!(version, requested)
     upload_to_app_store(MetadataPublish.options(identifier, requested, File.join(RELEASE_ROOT, "tmp/appstore-metadata")))
+  end
+
+  desc "Read the primary language and existing editable-version screenshot sets"
+  lane :inspect_screenshots do
+    require "json"
+    identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    app = Spaceship::ConnectAPI::App.find(identifier)
+    UI.user_error!("No access to #{identifier}") unless app && app.bundle_id == identifier
+    UI.message(JSON.pretty_generate(ScreenshotPublish.inventory(app)))
+  end
+
+  desc "Capture and validate the configured marketing screenshots locally"
+  lane :screenshots do |options|
+    result = ScreenshotCapture.new(RELEASE_ROOT).capture(options) do |snapshot_options|
+      capture_screenshots(snapshot_options)
+    end
+    UI.success("Screenshot run #{result.fetch('run_id')}: #{result.fetch('screenshots_path')}")
+  end
+
+  desc "Publish a reviewed screenshot run to an explicit existing editable version"
+  lane :push_screenshots do |options|
+    require "json"
+    require "open3"
+    require "deliver"
+    version = options[:app_version].to_s
+    run_id = options[:run_id].to_s
+    UI.user_error!("Pass app_version:<version> and run_id:<reviewed-run> explicitly") if version.empty? || run_id.empty?
+    command = ["python3", File.join(RELEASE_ROOT, "scripts/screenshot_content/prepare_output.py"), "--run-id", run_id]
+    command += ["--locales", options[:locales].to_s] if options[:locales]
+    output, status = Open3.capture2e(*command)
+    UI.user_error!(output) unless status.success?
+    staging = JSON.parse(output)
+    report = JSON.parse(File.read(staging.fetch("report")))
+    locales = report.fetch("files").map { |file| file.fetch("storefront") }.uniq
+    identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    app = Spaceship::ConnectAPI::App.find(identifier)
+    UI.user_error!("No access to #{identifier}") unless app && app.bundle_id == identifier
+    ScreenshotPublish.publish(
+      app: app, version: version, locales: locales,
+      screenshots: Deliver::Loader.load_app_screenshots(staging.fetch("output"), false),
+      uploader: Deliver::UploadScreenshots.new
+    )
+    UI.success("Screenshots uploaded for #{version}: #{locales.join(', ')}; run #{run_id}")
   end
 
   desc "Archive and export locally with existing signing assets; never upload or commit"

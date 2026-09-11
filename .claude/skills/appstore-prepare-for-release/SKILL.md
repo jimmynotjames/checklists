@@ -24,4 +24,10 @@ Drive one release across sessions using a small record under `releases/`. Conver
 
 Use `create-pr` to persist release-record edits at sensible boundaries. It opens a PR and stops; merge only through a later explicit `merge-pr` request. This repository has disabled CI, so the skills rely on the local `make gate` build rather than waiting for CI.
 
-Do not add screenshot capture/upload, translation generation, CloudKit deployment, automated submission, or monitoring work to this workflow unless the user separately requests and scopes it.
+When screenshots need refreshing for the release, use `appstore-generate-push-screenshots`
+to capture and review the existing catalog. Use `appstore-generate-screenshot-seeding`
+only for requested fixture changes. Record the reviewed capture run and, after an explicitly
+authorized upload, its target version and result. Capture does not authorize publication.
+
+Do not add translation generation, CloudKit deployment, automated submission, or monitoring
+work to this workflow unless the user separately requests and scopes it.

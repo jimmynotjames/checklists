@@ -1,0 +1,26 @@
+# Screenshot defaults. The screenshots lane supplies a run-scoped output/cache and
+# the repository-owned simulator's exact name at runtime.
+require "json"
+require "digest"
+
+unless ENV["CHECKLISTS_SCOPED_SCREENSHOT_CAPTURE"] == "1"
+  raise "Use `fastlane ios screenshots`; direct snapshot bypasses repository simulator isolation"
+end
+
+root = File.expand_path("..", FastlaneCore::FastlaneFolder.path)
+config = JSON.parse(File.read(File.join(root, "fastlane", "screenshot-config.json")))
+slug = Digest::SHA1.hexdigest(root)[0, 8]
+
+devices(config.fetch("devices").map { |device| "#{device.fetch('name')} Screenshots [#{slug}]" })
+languages(config.fetch("active_locales"))
+scheme("checklists")
+only_testing(["checklistsUITests/AppStoreScreenshots"])
+output_directory("./.build/screenshots/direct")
+clear_previous_screenshots(false)
+erase_simulator(false)
+reinstall_app(false)
+override_status_bar(true)
+localize_simulator(false)
+concurrent_simulators(false)
+stop_after_first_error(true)
+skip_open_summary(true)

@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "en-US",
+  "primaryLocale": "en_US",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Morning Routine",
+      "items": [
+        {
+          "name": "START COFFEE MAKER",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditation",
+          "isChecked": true
+        },
+        {
+          "name": "Traffic and weather reports",
+          "isChecked": true
+        },
+        {
+          "name": "Breakfast",
+          "isChecked": true
+        },
+        {
+          "name": "Journaling",
+          "isChecked": false
+        },
+        {
+          "name": "Argue politics on Facebook",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Weekend Getaway Essentials",
+      "items": [
+        {
+          "name": "Phone charger",
+          "isChecked": false
+        },
+        {
+          "name": "Wallet/ID",
+          "notes": "Proper ID (ID for air travel, international, driver license for roadtrip, etc.)",
+          "isChecked": false
+        },
+        {
+          "name": "Prescriptions, medicines, supplements",
+          "isChecked": true
+        },
+        {
+          "name": "Toiletries bag",
+          "notes": "Small liquids only in separate bag if flying and in carry-on.",
+          "isChecked": true
+        },
+        {
+          "name": "Sun screen",
+          "isChecked": false
+        },
+        {
+          "name": "Headphones",
+          "isChecked": false
+        },
+        {
+          "name": "Book, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Rain/wind items",
+          "isChecked": false
+        },
+        {
+          "name": "Sunglasses",
+          "isChecked": true
+        },
+        {
+          "name": "Sunhat",
+          "isChecked": true
+        },
+        {
+          "name": "Swimsuit",
+          "isChecked": false
+        },
+        {
+          "name": "Pool shoes",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Pre-Trip Checklist",
+      "items": [
+        {
+          "name": "Set up auto-reply on email accounts",
+          "isChecked": true
+        },
+        {
+          "name": "Post office: hold mail",
+          "isChecked": true
+        },
+        {
+          "name": "Pet care arrangements",
+          "isChecked": true
+        },
+        {
+          "name": "Plant care, housesitting arrangements",
+          "isChecked": false
+        },
+        {
+          "name": "School absence arrangements",
+          "isChecked": false
+        },
+        {
+          "name": "Send travel itineraries to trusted friend/relative",
+          "isChecked": false
+        },
+        {
+          "name": "Unplug appliances",
+          "isChecked": false
+        },
+        {
+          "name": "Stow away valuables",
+          "isChecked": false
+        },
+        {
+          "name": "Turn off heater or A/C",
+          "notes": "Or set minimum temp to prevent freezing pipes.",
+          "isChecked": false
+        },
+        {
+          "name": "Check stoves, oven are off",
+          "isChecked": false
+        },
+        {
+          "name": "Lock doors and windows",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

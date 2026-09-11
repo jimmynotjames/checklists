@@ -29,4 +29,13 @@ enum InMemoryModelContainer {
     try SampleData.seed(into: container.mainContext)
     return container
   }
+
+  #if DEBUG
+    /// Empty container populated from a localized App Store screenshot catalog.
+    static func makeSeeded(with screenshotSeed: ScreenshotSeed) throws -> ModelContainer {
+      let container = try makeEmpty()
+      try screenshotSeed.seed(into: container.mainContext)
+      return container
+    }
+  #endif
 }

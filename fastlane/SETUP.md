@@ -88,6 +88,89 @@ version to already exist in App Store Connect. Create or select it manually firs
 The lane does not create or rename a version, and changes no screenshots, binary,
 submission state, availability, pricing, or phased-release setting.
 
-Screenshot automation, translation generation, and automatic submission remain
-out of scope. The user manually attaches the tested TestFlight build and submits
-the release in App Store Connect.
+Translation generation and automatic submission remain out of scope. The user
+manually attaches the tested TestFlight build and submits the release in App Store Connect.
+
+## Screenshot content and capture
+
+Use `appstore-generate-screenshot-seeding` for fixture changes and
+`appstore-generate-push-screenshots` for capture, review, inspection, and explicitly
+requested publication. A request to refresh screenshots reuses the committed
+catalog; it does not regenerate content or authorize uploading.
+
+`fastlane/screenshot-config.json` records the 50 runtime/storefront locale
+mappings independently of the translation pipeline. Only runtime `en-US` is
+active, with regional locale `en_US`. This list is separate from the metadata
+pipeline's all-locale English fallback. Enable additional screenshot locales
+only after supplying their catalogs and translated app strings. The remaining
+translation integration is tracked in [issue #161](https://github.com/jimmynotjames/checklists/issues/161).
+
+The English catalog under `checklists/checklistsUITests/ScreenshotSeeds/` mirrors
+the shipped sample data, except it checks the first three Pre-Trip items. Thus the
+home screen shows completion counts 5/6, 4/12, and 3/11. Normal first-launch data
+is unchanged. Screenshot launches use a Debug-only, disposable in-memory store;
+they never import or sync user data. The marketing UI test captures two screens,
+`01_checklists` and `02_pre_trip`, and is excluded from normal UI-test runs.
+
+The app target is iPhone-only. The configured device is an iPhone 17 Pro Max
+(1320 × 2868, portrait), using light appearance, default text size, and a clean
+status bar. Capture uses a repository-owned simulator and runs serially. The
+pipeline is structured for additional locales/devices without generating them
+now. It captures the actual app UI without frames or generated artwork.
+
+Validate content with `python3 scripts/screenshot_content/check_content.py` and
+capture with `fastlane ios screenshots`. Local capture does not authenticate
+with App Store Connect. Preserve its run ID and review both generated PNGs before
+publication; the run's validation rejects missing, malformed, or stale images.
+
+Runs live under `.build/screenshots/runs/RUN_ID/`: `raw/` retains runtime-coded
+captures, `storefront/` contains validated upload files, `review.html` displays
+the images, and `capture-report.json` records their hashes and dimensions.
+Build logs and the private Snapshot cache also stay in the run directory.
+The reusable build cache lives in `.build/screenshots/DerivedData`; a per-checkout
+lock permits one capture at a time so runs cannot compete for its simulator or cache.
+
+```bash
+python3 scripts/screenshot_content/capture_progress.py status --run-id RUN_ID
+fastlane ios screenshots run_id:RUN_ID locales:en-US
+```
+
+The second command resumes only pending targets from that run, preserving successful
+captures. To refresh everything, omit `run_id` to create a new run. Changed source,
+seeds, or configuration require a new run. Direct `fastlane snapshot` is rejected:
+the lane supplies simulator/cache isolation and the explicit UI-test environment.
+The private Snapshot integration is verified with Fastlane 2.236.1 and fails on
+other versions until its isolation behavior is revalidated.
+
+## Screenshot publication
+
+`fastlane ios inspect_screenshots` is read-only: it reports the primary locale
+and screenshot sets on the editable version, falling back to the live version
+when none is editable. The initial check found primary locale en-US and only
+English screenshots on live version 1.1; no editable version existed.
+
+Apple defaults new localizations to primary-language screenshots. Existing
+explicit sets can take precedence, so inspect before relying on fallback.
+See [Apple's localization guidance](https://developer.apple.com/help/app-store-connect/manage-app-information/localize-app-information/)
+and [screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/).
+
+Screenshot publication requires a reviewed run and an explicit existing editable
+version:
+
+```bash
+fastlane ios push_screenshots app_version:X.Y.Z run_id:REVIEWED_RUN
+# Optional subset retry: add locales:en-US (runtime codes; enabled locales only).
+```
+
+It replaces screenshot sets in selected active locales, including their
+old display-size sets, allowing the new large iPhone screenshots to serve smaller
+sizes. Other locales remain untouched. The implementation scopes Deliver's
+deletion, processing retries, and sorting to selected localizations; it does not
+invoke the general metadata/version publishing runner. Each operation has bounded
+deletion/upload retries, followed by checksum, processing, and order verification.
+Preserve logs and inspect remote state after a partial failure before
+retrying the affected locale subset.
+
+There is no binary upload, text-metadata update, localization/version creation,
+availability change, or submission in this path. No screenshot upload is needed
+to validate the infrastructure; use mocked publishing tests and local captures.
