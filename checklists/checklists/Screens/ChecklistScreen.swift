@@ -26,6 +26,9 @@ struct ChecklistScreen: View {
   /// router so navigation state can't desync from what's on screen.
   let onRequestDismiss: () -> Void
 
+  @Environment(Router.self) private var router
+  @Environment(AnalyticsSettings.self) private var settings
+
   var body: some View {
     ChecklistControllerView(
       checklist: checklist,
@@ -41,6 +44,16 @@ struct ChecklistScreen: View {
     // `ignoresSafeArea()`: giving the table real safe-area insets would shift `scrollViewDidScroll`'s
     // hardcoded title threshold and `scrollToTop()`'s `contentOffset.y == 0` assumptions.
     .background(Colors.defaultBackgroundColor.ignoresSafeArea())
+    // First-run consent trigger (core-docs/analytics-spec.md §6.2): the moment right before
+    // `checklist_name` could first be transmitted. `isNewChecklist` is load-bearing — in the
+    // `.newChecklist` route this view *is* the presented sheet, so presenting the consent sheet
+    // there would replace the sheet the person is already looking at.
+    .task {
+      guard !isNewChecklist else { return }
+      guard ConsentJurisdiction.kind(for: Locale.current.region?.identifier) == .required,
+            !settings.analyticsOptInExplicitlySet else { return }
+      router.sheet = .analyticsConsent
+    }
   }
 }
 

@@ -33,4 +33,5 @@ xcodebuild test \
     -parallel-testing-enabled NO \
     -only-testing:checklistsUITests/checklistsUITests \
     -only-testing:checklistsUITests/checklistUITest \
-    -only-testing:checklistsUITests/checklistCreateUITest
+    -only-testing:checklistsUITests/checklistCreateUITest \
+    -only-testing:checklistsUITests/AnalyticsConsentUITest

@@ -12,6 +12,7 @@ import SwiftUI
 /// analytics-consent machinery budgets1 has.
 struct SettingsView: View {
   @Environment(SyncStatus.self) private var syncStatus
+  @Environment(AnalyticsSettings.self) private var settings
   @Environment(\.dismiss) private var dismiss
   @Environment(\.openURL) private var openURL
   @Environment(\.analytics) private var analytics
@@ -20,6 +21,7 @@ struct SettingsView: View {
     NavigationStack {
       Form {
         iCloudSection
+        analyticsSection
         infoSection
         aboutSection
       }
@@ -130,6 +132,31 @@ struct SettingsView: View {
     let notifications = NotificationCenter.default.notifications(named: name)
     for await _ in notifications {
       await ICloudStatusLoader().load(into: syncStatus)
+    }
+  }
+
+  // MARK: - Analytics section
+
+  private var analyticsSection: some View {
+    Section {
+      Toggle(isOn: Binding(
+        get: { settings.analyticsOptIn },
+        set: { newValue in
+          AnalyticsConsentController(settings: settings, analytics: analytics).setOptIn(newValue)
+        }
+      )) {
+        Text("Share Anonymous Usage Data")
+      }
+      .tint(Color.accentColor)
+      .accessibilityHint("Allows the app to send anonymous usage data to help improve the app. No checklist item names, item notes, or Apple or iCloud identifiers are ever included.")
+    } header: {
+      Text("Diagnostics & Analytics")
+    } footer: {
+      Text("""
+      Anonymous usage data helps troubleshoot issues and understand usage. Data is never linked to your \
+      Apple Account. Never included: checklist item names, item notes, or any Apple or iCloud identifiers.
+      """)
+      .foregroundStyle(Colors.inactiveTextColor)
     }
   }
 

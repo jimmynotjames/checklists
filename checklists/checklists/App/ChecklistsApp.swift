@@ -16,16 +16,25 @@ struct ChecklistsApp: App {
   @State private var startup: AppStartupModel
   @State private var router = Router()
   @State private var appOpenTracker = AppOpenTracker()
+  /// Not inline either, for a related reason: `init()` needs this exact instance — not a second
+  /// one — to build the consent gate's `isOptedIn` closure before injecting it into the
+  /// environment below.
+  @State private var analyticsSettings: AnalyticsSettings
 
   @Environment(\.scenePhase) private var scenePhase
 
   private let analytics: any AnalyticsClient
 
   init() {
-    let client = Self.makeAnalyticsClient()
+    let settings = AnalyticsSettings()
+    let base = Self.makeAnalyticsClient()
+    // Every call site reaches the base client through this gate, so an opted-out install never
+    // touches it — see `ConsentGatedAnalyticsClient` and core-docs/analytics-spec.md §7.2.
+    let client = ConsentGatedAnalyticsClient(wrapping: base, isOptedIn: { [settings] in settings.analyticsOptIn })
     // Install first: the startup sequence below emits analytics.
     AppAnalytics.install(client)
     analytics = client
+    _analyticsSettings = State(initialValue: settings)
     _startup = State(initialValue: AppStartupModel())
 
     // From the Apple docs, I'm slightly worried about power usage by turning this on, but can find nothing online saying this is a power hog.
@@ -68,6 +77,7 @@ struct ChecklistsApp: App {
       // outside the switch also stops them remounting when the phase changes, which would reset
       // the tracker and let a duplicate open through.
       .environment(\.analytics, analytics)
+      .environment(analyticsSettings)
       .task {
         // The scene's real phase, not a hardcoded `.active`: the app declares the
         // remote-notification background mode, so it can be launched into the background, and
