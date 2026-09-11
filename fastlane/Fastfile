@@ -1,9 +1,14 @@
 default_platform(:ios)
 skip_docs
 opt_out_usage
+require_relative "lib/release_build"
+require_relative "lib/metadata_publish"
+
+RELEASE_ROOT = File.expand_path("..", __dir__)
 
 platform :ios do
-  before_all do
+  before_all do |lane|
+    next if lane == :archive_validation
     %w[ASC_API_KEY_ID ASC_API_ISSUER_ID ASC_API_KEY_FILEPATH].each do |name|
       UI.user_error!("Set #{name} in fastlane/.env; see fastlane/SETUP.md") if ENV[name].to_s.strip.empty?
     end
@@ -24,5 +29,45 @@ platform :ios do
     app = Spaceship::ConnectAPI::App.find(identifier)
     UI.user_error!("No access to #{identifier}") unless app && app.bundle_id == identifier
     UI.success("Auth OK: #{app.name} (#{app.bundle_id}, ASC #{app.id})")
+    version = ReleaseBuild.new(RELEASE_ROOT).version
+    latest = latest_testflight_build_number(app_identifier: identifier, version: version, initial_build_number: 0, platform: "ios")
+    UI.message("Latest TestFlight build for #{version}: #{latest}")
+  end
+
+  desc "Validate and upload metadata to an existing editable version; no binary or screenshots"
+  lane :push_metadata do |options|
+    requested = options[:app_version].to_s
+    UI.user_error!("Pass app_version:<version> explicitly") if requested.strip.empty?
+    sh("python3", File.join(RELEASE_ROOT, "scripts/appstore_metadata.py"), "prepare", "--output", File.join(RELEASE_ROOT, "tmp/appstore-metadata"))
+    identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    app = Spaceship::ConnectAPI::App.find(identifier)
+    UI.user_error!("No access to #{identifier}") unless app && app.bundle_id == identifier
+    version = app.get_edit_app_store_version(platform: "IOS")
+    MetadataPublish.validate_target!(version, requested)
+    upload_to_app_store(MetadataPublish.options(identifier, requested, File.join(RELEASE_ROOT, "tmp/appstore-metadata")))
+  end
+
+  desc "Archive and export locally with existing signing assets; never upload or commit"
+  lane :archive_validation do
+    ReleaseBuild.new(RELEASE_ROOT).archive_only do |options|
+      build_app(options)
+    end
+  end
+
+  desc "Archive, upload to TestFlight, then commit only the app build number"
+  lane :beta do
+    record = ReleaseBuild.new(RELEASE_ROOT).beta(
+      latest: lambda { |version|
+        latest_testflight_build_number(
+          app_identifier: ReleaseBuild::IDENTIFIER,
+          version: version, initial_build_number: 0, platform: "ios"
+        )
+      },
+      archive: lambda { |options| build_app(options) },
+      upload: lambda { |ipa|
+        upload_to_testflight(ipa: ipa, skip_waiting_for_build_processing: true)
+      }
+    )
+    UI.success("Uploaded and committed the build number. Recovery record: #{record}")
   end
 end

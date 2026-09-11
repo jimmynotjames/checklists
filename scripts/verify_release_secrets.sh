@@ -6,8 +6,9 @@
 #   • Xcode — a "Verify release secrets" Run Script phase on the app target, restricted to
 #     install/archive builds via runOnlyForDeploymentPostprocessing. A normal `make build`
 #     does not trigger it.
-#   • `make verify-secrets` — the manual pre-archive check. There is no Fastlane in this repo
-#     and CI is disabled, so this target is the human-facing entry point.
+#   • `make verify-secrets` — the manual pre-archive check.
+#   • Fastlane beta / archive_validation — before spending time archiving. Both reject
+#     the local-only bypass; CI remains disabled.
 #
 # Deliberately NOT wired into `make gate` or lefthook: a fresh clone has no
 # config/Secrets.local.xcconfig, and failing the everyday gate on that would be wrong.
