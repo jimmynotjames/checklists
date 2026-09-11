@@ -5,10 +5,10 @@ description: Prepare or validate reChecklist's deterministic App Store screensho
 
 # Prepare screenshot content
 
-Ported from budgets1's screenshot-content workflow. The active locale set is in
-`fastlane/screenshot-config.json`; currently only en-US is enabled. Future
-localized catalogs use runtime-language filenames, with explicit regional locale
-settings. Translation generation is deferred in GitHub issue #161.
+The active locale set is in `fastlane/screenshot-config.json`; currently only
+en-US is enabled. Future localized catalogs use runtime-language filenames, with
+explicit regional locale settings. Translation generation is deferred in GitHub
+issue #161.
 
 1. Read `fastlane/SETUP.md`, the screenshot configuration, and the existing
    `checklists/checklistsUITests/ScreenshotSeeds/` catalogs.
@@ -31,6 +31,7 @@ screenshot launch path. It must never seed the user's persistent store or sync
 marketing content to CloudKit. The existing normal sample fixture remains the
 source of truth for first-launch behavior.
 
-After translation tooling is ported, add localized catalogs and enable their
-locales deliberately. Do not port budgets1's currency/budget generation prompts
-or invoke missing translation skills as a prerequisite to English captures.
+After translation tooling is added, add localized catalogs and enable their
+locales deliberately. Currency-specific fixture generation is outside this app's
+requirements; do not make missing translation tooling a prerequisite for English
+captures.

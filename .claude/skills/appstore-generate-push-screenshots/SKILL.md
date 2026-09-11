@@ -5,9 +5,9 @@ description: Capture and review reChecklist App Store screenshots locally, inspe
 
 # Capture and publish screenshots
 
-Ported from budgets1's capture/review/publish workflow, with two screens and an
-explicit active locale set. Run commands from the repository root. Read
-`fastlane/SETUP.md` and `fastlane/screenshot-config.json` first.
+The workflow captures two screens for an explicit active locale set. Run commands
+from the repository root. Read `fastlane/SETUP.md` and
+`fastlane/screenshot-config.json` first.
 
 ## Capture and review
 
