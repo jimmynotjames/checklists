@@ -1,7 +1,7 @@
 # Fastlane setup
 
-This repo uses Homebrew fastlane, ported from budgets1 and verified with 2.236.1.
-Run commands from the repository root. Install on a new machine with
+This repo uses Homebrew fastlane, verified with 2.236.1. Run commands from the
+repository root. Install on a new machine with
 `brew install fastlane`. There is no Gemfile or plugin dependency. Supply a UTF-8
 locale per command if your shell does not already have one:
 `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 fastlane lanes`.
