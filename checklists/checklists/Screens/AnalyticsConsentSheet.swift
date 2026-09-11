@@ -62,7 +62,7 @@ struct AnalyticsConsentSheet: View {
           .tint(Color.accentColor)
           .accessibilityIdentifier("analyticsConsentSheet.accept")
           .accessibilityLabel("Share Anonymous Usage Data")
-          .accessibilityHint("Turns on anonymous usage data. No item names, notes, or Apple or iCloud identifiers are ever included.")
+          .accessibilityHint("Turns on anonymous usage data. Includes your checklist names and a random identifier for this install. Never includes item names or notes.")
 
           Button {
             controller.decline()
