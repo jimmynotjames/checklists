@@ -21,6 +21,8 @@ class ScreenshotCaptureTest < Minitest::Test
     assert_equal ["iPhone 17 Pro Max Screenshots [12345678]"], options.fetch(:devices)
     assert_equal false, options.fetch(:concurrent_simulators)
     assert_equal false, options.fetch(:erase_simulator)
+    assert_equal true, options.fetch(:stop_after_first_error)
+    assert_equal true, options.fetch(:result_bundle)
     assert_includes options.fetch(:output_directory), "/.build/screenshots/runs/test-run/raw"
     refute options.key?(:xcargs)
   end

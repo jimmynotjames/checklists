@@ -127,6 +127,8 @@ Runs live under `.build/screenshots/runs/RUN_ID/`: `raw/` retains runtime-coded
 captures, `storefront/` contains validated upload files, `review.html` displays
 the images, and `capture-report.json` records their hashes and dimensions.
 Build logs and the private Snapshot cache also stay in the run directory.
+The reusable build cache lives in `.build/screenshots/DerivedData`; a per-checkout
+lock permits one capture at a time so runs cannot compete for its simulator or cache.
 
 ```bash
 python3 scripts/screenshot_content/capture_progress.py status --run-id RUN_ID

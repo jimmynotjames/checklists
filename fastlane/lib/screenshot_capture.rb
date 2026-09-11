@@ -16,7 +16,16 @@ class ScreenshotCapture
     @command_runner = command_runner || method(:capture_command)
   end
 
-  def capture(options = {})
+  def capture(options = {}, &block)
+    directory = File.join(@root, ".build", "screenshots")
+    FileUtils.mkdir_p(directory)
+    File.open(File.join(directory, "capture.lock"), "w") do |lock|
+      raise "A screenshot capture is already running in this checkout" unless lock.flock(File::LOCK_EX | File::LOCK_NB)
+      capture_run(options, &block)
+    end
+  end
+
+  def capture_run(options = {})
     raise ArgumentError, "capture requires a capture_screenshots callback" unless block_given?
 
     locales = selected_locales(options[:locales])
@@ -43,6 +52,7 @@ class ScreenshotCapture
     verify_capture(run_id, locales)
     prepare_output(run_id: run_id, locales: locales)
   end
+  private :capture_run
 
   def prepare_output(run_id:, locales: nil)
     selected = selected_locales(locales)
@@ -71,7 +81,7 @@ class ScreenshotCapture
       devices: [simulator_name],
       languages: locales,
       output_directory: File.join(run_directory(run_id), "raw"),
-      derived_data_path: File.join(run_directory(run_id), "DerivedData"),
+      derived_data_path: File.join(@root, ".build", "screenshots", "DerivedData"),
       buildlog_path: File.join(run_directory(run_id), "logs"),
       package_cache_path: File.join(@root, ".build", "screenshots", "package-cache"),
       clear_previous_screenshots: false,
@@ -80,7 +90,10 @@ class ScreenshotCapture
       override_status_bar: true,
       localize_simulator: false,
       concurrent_simulators: false,
-      stop_after_first_error: false,
+      # Each invocation covers one target. Fail before recording success even
+      # when a failing test left some image files behind.
+      stop_after_first_error: true,
+      result_bundle: true,
       number_of_retries: 0,
       skip_open_summary: true,
       output_simulator_logs: true,
@@ -172,7 +185,10 @@ class ScreenshotCapture
     # device; all other preparation features are disabled in snapshot_options.
     launcher.prepend(Module.new do
       def prepare_simulators_for_launch(_device_types, language: nil, locale: nil) # rubocop:disable Lint/UnusedMethodArgument
-        nil
+        # Snapshot otherwise retries non-65 xcodebuild failures up to twenty
+        # times independently of number_of_retries. Leave retries to an explicit
+        # resume after diagnosis, including simulator-launch failures.
+        self.current_number_of_retries_due_to_failing_simulator = 20
       end
     end)
     launcher.instance_variable_set(:@checklists_scoped_preparation, true)

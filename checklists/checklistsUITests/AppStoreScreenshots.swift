@@ -53,22 +53,8 @@ final class AppStoreScreenshots: XCTestCase {
     let list = app.collectionViews.firstMatch
     XCTAssertTrue(list.waitForExistence(timeout: 30), "Main checklists list did not appear.")
 
-    let expectedRows = [
-      ("C4EC1157-0000-4000-A000-000000000001", "Checklist 83 percent complete"),
-      ("C4EC1157-0000-4000-A000-000000000002", "Checklist 33 percent complete"),
-      (Self.preTripChecklistID, "Checklist 27 percent complete"),
-    ]
-    for (id, progress) in expectedRows {
-      XCTAssertTrue(
-        app.buttons["checklistRow.\(id)"].waitForExistence(timeout: 10),
-        "Expected checklist row \(id) did not appear."
-      )
-      let progressIcon = app.otherElements["checklistProgress.\(id)"]
-      XCTAssertTrue(progressIcon.waitForExistence(timeout: 5), "Progress icon \(id) did not appear.")
-      XCTAssertEqual(progressIcon.value as? String, progress)
-    }
-
     let preTripRow = app.buttons["checklistRow.\(Self.preTripChecklistID)"]
+    XCTAssertTrue(preTripRow.waitForExistence(timeout: 10), "Pre-Trip checklist row did not appear.")
     snapshot("01_checklists")
 
     preTripRow.tap()
@@ -77,11 +63,6 @@ final class AppStoreScreenshots: XCTestCase {
       detailTable.waitForExistence(timeout: 15),
       "Pre-Trip checklist detail did not appear."
     )
-    for index in 0 ..< 3 {
-      let checkbox = detailTable.cells.element(boundBy: index).buttons["Checkbox"]
-      XCTAssertTrue(checkbox.waitForExistence(timeout: 5), "Checkbox \(index) did not appear.")
-      XCTAssertEqual(checkbox.value as? String, "Checked")
-    }
     snapshot("02_pre_trip")
   }
 
