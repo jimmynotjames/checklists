@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3252E73C2CE71074009B6F7C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73B2CE71074009B6F7C /* RealmSwift */; };
 		3252E73D2CE71074009B6F7C /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3252E73B2CE71074009B6F7C /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		7D11720AA4700B12F605982A /* Mixpanel in Frameworks */ = {isa = PBXBuildFile; productRef = 2F898801B1E119F2BD30EB5A /* Mixpanel */; };
 		AA06000000000000000000A2 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AA06000000000000000000A1 /* RealmSwift */; };
 /* End PBXBuildFile section */
 
@@ -105,6 +106,7 @@
 			isa = PBXFrameworksBuildPhase;
 			files = (
 				3252E73C2CE71074009B6F7C /* RealmSwift in Frameworks */,
+				7D11720AA4700B12F605982A /* Mixpanel in Frameworks */,
 			);
 		};
 		323ADC7D22828C0C00644931 /* Frameworks */ = {
@@ -178,6 +180,9 @@
 				A48CA729304F04EB0048D9AF /* checklists */,
 			);
 			name = checklists;
+			packageProductDependencies = (
+				2F898801B1E119F2BD30EB5A /* Mixpanel */,
+			);
 			productName = checklists;
 			productReference = 323ADC6722828C0900644931 /* checklists.app */;
 			productType = "com.apple.product-type.application";
@@ -266,6 +271,7 @@
 			mainGroup = 323ADC5E22828C0900644931;
 			packageReferences = (
 				3252E7392CE70F79009B6F7C /* XCRemoteSwiftPackageReference "realm-swift" */,
+				B665B1641DDE206A2642D8FF /* XCRemoteSwiftPackageReference "mixpanel-swift" */,
 			);
 			preferredProjectObjectVersion = 100;
 			productRefGroup = 323ADC6822828C0900644931 /* Products */;
@@ -656,9 +662,22 @@
 				minimumVersion = 20.0.5;
 			};
 		};
+		B665B1641DDE206A2642D8FF /* XCRemoteSwiftPackageReference "mixpanel-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mixpanel/mixpanel-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.5.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		2F898801B1E119F2BD30EB5A /* Mixpanel */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B665B1641DDE206A2642D8FF /* XCRemoteSwiftPackageReference "mixpanel-swift" */;
+			productName = Mixpanel;
+		};
 		3252E73B2CE71074009B6F7C /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3252E7392CE70F79009B6F7C /* XCRemoteSwiftPackageReference "realm-swift" */;

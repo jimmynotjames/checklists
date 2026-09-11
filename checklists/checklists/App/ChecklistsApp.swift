@@ -27,7 +27,7 @@ struct ChecklistsApp: App {
 
   init() {
     let settings = AnalyticsSettings()
-    let base = Self.makeAnalyticsClient()
+    let base = Self.makeAnalyticsClient(settings: settings)
     // Every call site reaches the base client through this gate, so an opted-out install never
     // touches it — see `ConsentGatedAnalyticsClient` and core-docs/analytics-spec.md §7.2.
     let client = ConsentGatedAnalyticsClient(wrapping: base, isOptedIn: { [settings] in settings.analyticsOptIn })
@@ -96,12 +96,23 @@ struct ChecklistsApp: App {
     analytics.track(AnalyticsEvent.appOpened)
   }
 
-  /// Which client this build talks to.
+  /// Which client this build talks to — analytics-spec.md §7.1.
   ///
-  /// TODO-DEFERRED: returns the console client unconditionally until the Mixpanel SDK lands, at
-  /// which point this becomes the selection described in analytics-spec.md §7.1 — Mixpanel when
-  /// the token is configured and we are not running tests, console otherwise.
-  private static func makeAnalyticsClient() -> any AnalyticsClient {
-    ConsoleAnalyticsClient()
+  /// The consent gate wraps whatever this returns (see `init()` above), so this makes no opt-in
+  /// check of its own: a test run or an unconfigured token falls back to the console client,
+  /// otherwise every call reaches a real `MixpanelAnalyticsClient`, gated one layer up.
+  ///
+  /// `LaunchModeContainerFactory.isRunningTests` — not budgets1's `IS_TESTING`-only check —
+  /// because it covers both the `-UITests1` launch argument and the `IS_TESTING` env var; the
+  /// XCUITest bundle passes only the former, so checking just the env var would let UI-test runs
+  /// reach real Mixpanel.
+  private static func makeAnalyticsClient(settings: AnalyticsSettings) -> any AnalyticsClient {
+    guard !LaunchModeContainerFactory.isRunningTests, MixpanelTokenSource.isConfigured else {
+      return ConsoleAnalyticsClient()
+    }
+    return MixpanelAnalyticsClient(
+      token: MixpanelTokenSource.activeToken,
+      distinctIdProvider: { [weak settings] in settings?.analyticsDistinctId }
+    )
   }
 }
