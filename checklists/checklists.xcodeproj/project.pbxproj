@@ -301,20 +301,18 @@
 		AA06000000000000000000B4 /* Verify release secrets */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
 			inputPaths = (
 				"$(SRCROOT)/../scripts/verify_release_secrets.sh",
 				"$(SRCROOT)/../config/Secrets.xcconfig",
 				"$(SRCROOT)/../config/Secrets.local.xcconfig",
 			);
 			name = "Verify release secrets";
-			outputPaths = (
-			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../scripts/verify_release_secrets.sh\"\n";
+			shellScript = (
+				"\"${SRCROOT}/../scripts/verify_release_secrets.sh\"",
+				"",
+			);
 		};
 /* End PBXShellScriptBuildPhase section */
 
