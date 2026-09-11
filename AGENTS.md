@@ -7,11 +7,11 @@ screen are SwiftUI (`App/`, `Screens/`); `ChecklistViewController` remains UIKit
 linked for one purpose only: `LegacyRealmImporter` reads a pre-migration install's old Realm file
 once, on the single launch that needs it, and never writes to it. See
 [`core-docs/persistence-design.md`](core-docs/persistence-design.md) for the model, the CloudKit
-constraints it was designed against, the legacy import, and sort-key ordering. Analytics are
-**being wired up** — Flurry was removed, and the Mixpanel implementation is landing as a PR
-sequence. The client layer is in place; until the SDK is connected, `analytics.track(...)` calls
-reach a console client that prints in DEBUG and does nothing in Release. See
-[`core-docs/analytics-spec.md`](core-docs/analytics-spec.md).
+constraints it was designed against, the legacy import, and sort-key ordering. **Analytics reach
+Mixpanel** — Flurry was removed and replaced across a PR sequence that is now complete: the client
+protocol, the locale-aware consent flow, and the Mixpanel SDK itself. A build with no configured
+token, or a test run, falls back to a console client that prints in DEBUG and does nothing in
+Release. See [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md).
 
 The Xcode project lives one level down at `checklists/checklists.xcodeproj`. The repo root holds
 tooling, plus **`core-docs/`** — design docs that outlive any single change and are canonical for
@@ -56,7 +56,7 @@ Swift on this platform). `checklistsUITests` needed no linkage changes; it was b
 shared scheme's unit target failing to build, and on `test-ui`'s `warmed` sentinel (see
 `scripts/test-ui.sh`), both now resolved. Formerly tracked in
 [issue #116](https://github.com/jimmynotjames/checklists/issues/116), now closed.
-`checklistsTests` has 179 tests across `DataModelTests`, `ModelBehaviorTests`, `SampleDataTests`,
+`checklistsTests` has 192 tests across `DataModelTests`, `ModelBehaviorTests`, `SampleDataTests`,
 `SortKeyReorderTests`, `LegacyRealmImporterTests`, `ProductionContainerFactoryTests`,
 `PersistentStoreURLTests`, `RemoteChangeObserverTests`, `TwoDeviceUnionTests`,
 `SampleDataDedupeTests`, `SyncStatusTests`, `ICloudStatusLoaderTests`, `StoreResetTests`,
@@ -64,8 +64,9 @@ shared scheme's unit target failing to build, and on `test-ui`'s `warmed` sentin
 `ChecklistAnalyticsPropertiesTests`, `PersistenceAnalyticsTests`, `AppConfigSentinelTests`,
 `SettingsManagerTests`, `CircularPercentStatusIconTests`, `CLTextViewTests`,
 `ItemContentViewTests`, `ChecklistReorderFailureTests`, `ChecklistKeyboardDismissTests`,
-`ConsentJurisdictionTests`, `AnalyticsSettingsTests`, `AnalyticsConsentControllerTests`, and
-`ConsentGateTests`; `checklistsUITests` has 21. Both are green, verified twice in a row for flakes — but still opt-in,
+`ConsentJurisdictionTests`, `AnalyticsSettingsTests`, `AnalyticsConsentControllerTests`,
+`ConsentGateTests`, `MixpanelClientGateTests`, and `AnalyticsClientSelectionTests`;
+`checklistsUITests` has 21. Both are green, verified twice in a row for flakes — but still opt-in,
 not part of `make gate`.
 
 ### Reading a test result
@@ -291,10 +292,11 @@ device and skips sandbox management entirely.
   above is now automated in `_ensure_sim_booted` rather than left as a one-liner to remember: it
   re-checks and re-applies on every run instead of trusting that yesterday's fix still holds.
 
-- **Analytics send nowhere yet.** Flurry was removed; the Mixpanel SDK is not connected. Every
-  `analytics.track(...)` call fires into `ConsoleAnalyticsClient`, which prints in DEBUG and does
-  nothing in Release. The event and
-  property catalogs, the privacy contract, and the consent model are in
+- **Analytics now reach Mixpanel.** `ChecklistsApp.makeAnalyticsClient()` selects
+  `MixpanelAnalyticsClient` whenever a real token is configured and the process is not a test run;
+  otherwise (a fresh clone, or `-UITests1`/`IS_TESTING`) it falls back to `ConsoleAnalyticsClient`,
+  which prints in DEBUG and does nothing in Release. The event and property catalogs, the privacy
+  contract, and the consent model are in
   [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md) — read it before touching analytics.
 - **The old Flurry API key is still in git history.** It left the working tree with the Flurry
   removal, but it is present in ~294 commits of history and **the gitleaks gate does NOT catch
@@ -323,4 +325,4 @@ adding the jobs as required status checks in the existing branch protection.
 | CI on by default (public repo, free macOS minutes) | ported but disabled | private repo, macOS bills at 10× |
 | i18n gates, OpenSpec | not ported | no counterpart stack here |
 | fastlane | binary, metadata, and screenshot workflows; no automated submission | screenshots enable en-US only; translation integration deferred in #161; see `fastlane/SETUP.md` |
-| Mixpanel analytics | in progress | Flurry removed; budgets1's `docs/analytics-spec.md` and `Logging/` are the reference for the port. Deviations are recorded in [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md) §16 |
+| Mixpanel analytics | built | Flurry removed; budgets1's `docs/analytics-spec.md` and `Logging/` were the reference for the port. Deviations are recorded in [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md) §16 |

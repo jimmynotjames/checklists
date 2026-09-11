@@ -43,8 +43,11 @@ final class AnalyticsSettings {
   /// A stable UUIDv4 string used as the Mixpanel `distinct_id` (§5).
   ///
   /// On first init with a fresh store, a new UUID is generated, written to the backing store,
-  /// and returned. Subsequent reads return the stored value. `private(set)` — rotating identity
-  /// is `MixpanelAnalyticsClient.reset()`'s job on the SDK side, not this type's.
+  /// and returned. Subsequent reads return the stored value. `private(set)` — this type never
+  /// changes it on its own. `MixpanelAnalyticsClient.reset()` does clear the SDK's own notion of
+  /// the current distinct id, but the next lazy init re-identifies with this same stored UUID, so
+  /// an opt-out followed by a re-opt-in rejoins the same Mixpanel profile rather than starting a
+  /// new one — that persistence is the point of keeping this value here rather than in the client.
   private(set) var analyticsDistinctId: String {
     didSet {
       store.set(analyticsDistinctId, forKey: Self.analyticsDistinctIdKey)

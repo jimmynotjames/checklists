@@ -2,7 +2,7 @@
 
 | Field        | Value      |
 | ------------ | ---------- |
-| Version      | 1.2        |
+| Version      | 1.3        |
 | Last Updated | 2026-09-11 |
 | Author/Owner | Jimmy Ho   |
 
@@ -17,11 +17,13 @@
 
 **Implementation status.** The token/secrets mechanism, the privacy manifest, the Mixpanel projects
 and their dashboards (§12), this document, the **client protocol with all 16 call sites migrated**
-(§7), and the **locale-aware consent flow** (§6) are built. Only the Mixpanel SDK itself is
-**pending** — tracked as the final PR in the sequence that began with `analytics-secrets-and-spec`.
-Section headers below say "Built" or "Pending" where it matters. Nothing in this app sends
-analytics anywhere until that PR lands; the consent UI exists and the opt-in flag is tracked, but
-today it gates only `ConsoleAnalyticsClient`, which prints in DEBUG and does nothing in Release.
+(§7), the **locale-aware consent flow** (§6), and the **`MixpanelAnalyticsClient` SDK integration**
+(§7.2, §9) are built — the final PR in the sequence that began with `analytics-secrets-and-spec`.
+Section headers below say "Built" where it matters. `ChecklistsApp.makeAnalyticsClient()` now
+selects `MixpanelAnalyticsClient` whenever a real token is configured and the process is not a
+test run; the consent gate still wraps it, so an opted-out install never opens a connection.
+End-to-end confirmation that real events land in the Dev project (§12) is the last step before
+this PR merges.
 
 ---
 
@@ -242,8 +244,8 @@ open.
 | Tokens are still placeholder sentinels (fresh clone) | `ConsoleAnalyticsClient` |
 | Otherwise | `MixpanelAnalyticsClient` |
 
-Until the SDK lands, the selection returns `ConsoleAnalyticsClient` unconditionally — the shape is
-in place, the third row is not yet reachable.
+All three rows are reachable: `ChecklistsApp.shouldUseConsoleClient(isRunningTests:isTokenConfigured:)`
+is the truth table above, and `makeAnalyticsClient()` calls it before constructing either client.
 
 The test guard delegates to the existing `LaunchModeContainerFactory.isRunningTests`, which already
 handles **both** signals. `budgets1` checks only its `IS_TESTING` env var; ported literally, that
@@ -414,6 +416,13 @@ Bucketing on the **profile** while sending the raw count on **events** is consis
 contradictory: §9.1's "raw" argument is about event properties, and profiles are what cohorts are
 built from, where coarse buckets are what you actually want. This is this app's one cohort signal.
 
+**`analytics_opt_in_at` is absent on an auto-opt-in install that never touches the toggle.** This is
+spec-consistent, not a gap: the property is set "on the opt-in transition" (§6.3), and an
+auto-opt-in jurisdiction's default-on state is not a transition. Do not build a cohort on this
+property expecting full population coverage — pair it with `consent_jurisdiction` if "when did this
+person's data start flowing" needs an answer for every install, not just the ones that made an
+explicit choice.
+
 ## 10. Build hygiene — **Built**
 
 **The token is never a source literal.** The Flurry API key was hardcoded in `AnalyticsManager.swift`
@@ -578,8 +587,15 @@ Contracts — **built** except where marked, which land with the consent and SDK
 8. **Consent ordering** — toggle-off produces exactly `[track(consent_changed, false), reset]` and
    leaves the flag false; toggle-on sets the flag before tracking; decline sends nothing but marks
    the choice explicit.
-9. Lazy init — an opted-out client never initializes the SDK however many `track` calls it receives;
-   flipping to opted-in initializes exactly once. *(pending — SDK)*
+9. Lazy init, verified two ways against the **real** `MixpanelAnalyticsClient` (`MixpanelClientGateTests`):
+   a never-initialized client's `reset()` and its people-property setters cannot themselves reach
+   `Mixpanel.initialize` — the regression that would matter most, since `reset()` always passes
+   through the consent gate; and `ConsentGatedAnalyticsClient` wrapping a real client with
+   `isOptedIn: { false }` leaves the SDK uninitialized after repeated `track`/`identify` calls.
+   **Not separately asserted:** that an opted-in `track` initializes the SDK exactly once — doing so
+   would require actually calling `Mixpanel.initialize`, which contacts `api.mixpanel.com` even with
+   a fake token and leaves real artifacts on disk (discovered in this PR's review). That half is
+   covered by the manual simulator verification in §5 instead.
 10. Name constants — all distinct, all `snake_case`.
 11. Orientation mapping — portrait/landscape values, `nil` for face-up/face-down.
 12. Checklist view properties — counts, notes length for nil notes, name truncation.
@@ -588,7 +604,7 @@ Contracts — **built** except where marked, which land with the consent and SDK
     is injectable too, but a real SwiftData save only fails on a full or damaged disk, which a unit
     test cannot arrange.)
 14. `StoreReset` leaves the analytics keys alone (§5).
-15. The client-selection predicate covers **both** `-UITests1` and `IS_TESTING` (§7.1). *(pending — SDK)*
+15. The client-selection predicate covers **both** `-UITests1` and `IS_TESTING` (§7.1).
 16. `ConsentGatedAnalyticsClient` (§7.2) — opted-out suppresses `track`, `identify`, both refresh
     methods, and `setAnalyticsOptInAt`; opted-in passes all of them through; `reset()` always
     passes through regardless; the gate re-reads its `isOptedIn` closure on every call rather than
@@ -686,6 +702,7 @@ The region list in §6.2 and the region set in `ConsentJurisdiction.swift` must 
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
+| 1.3 | 2026-09-11 | Jimmy Ho | Mixpanel SDK built (#PR4): `MixpanelAnalyticsClient` ported with lazy `Mixpanel.initialize` and no `isOptedIn` closure of its own — `ConsentGatedAnalyticsClient` is the only gate. `ChecklistsApp.makeAnalyticsClient()` now selects it whenever a real token is configured and the process is not a test run. SPM dependency added by hand-editing `project.pbxproj`. Flipped §13's SDK contracts (9, 15) from pending. |
 | 1.2 | 2026-09-11 | Jimmy Ho | Consent flow built (#PR3): `ConsentJurisdiction`, `AnalyticsSettings`, the testable `AnalyticsConsentController`, the first-run sheet gated on the first pushed `checklist_viewed`, and the always-on Settings toggle. Flipped §13's consent contracts from pending. Corrected §10's stale "no Fastlane here" claim and removed the now-agreeing Fastlane deviation row from §16 — both drifted true after Fastlane landed on `main`. |
 | 1.1 | 2026-09-09 | Jimmy Ho | Client protocol built and all 16 call sites migrated off the static facade (#153). Recorded the three non-SwiftUI injection points and the `ChecklistsApp.init()` ordering requirement in §7.3, and the nonisolated-constants requirement that SwiftData model extensions impose. `AnalyticsManager` deleted. |
 | 1.0 | 2026-09-09 | Jimmy Ho | Initial spec, superseding `analytics-design.md`. Records the decisions taken for the Mixpanel implementation: full locale-aware consent port, `AnalyticsClient` protocol (overriding the earlier "no abstraction" decision), `UserDefaults` rather than iCloud KV for identity, and the consent-sheet trigger on first `checklist_viewed`. Token/secrets mechanism, privacy manifest, and gitleaks rule built and verified end to end; both Mixpanel projects provisioned and their five boards built via MCP. Client, consent, and SDK pending. |

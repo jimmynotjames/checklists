@@ -27,7 +27,7 @@ struct ChecklistsApp: App {
 
   init() {
     let settings = AnalyticsSettings()
-    let base = Self.makeAnalyticsClient()
+    let base = Self.makeAnalyticsClient(settings: settings)
     // Every call site reaches the base client through this gate, so an opted-out install never
     // touches it — see `ConsentGatedAnalyticsClient` and core-docs/analytics-spec.md §7.2.
     let client = ConsentGatedAnalyticsClient(wrapping: base, isOptedIn: { [settings] in settings.analyticsOptIn })
@@ -96,12 +96,42 @@ struct ChecklistsApp: App {
     analytics.track(AnalyticsEvent.appOpened)
   }
 
-  /// Which client this build talks to.
+  /// Which client this build talks to — analytics-spec.md §7.1.
   ///
-  /// TODO-DEFERRED: returns the console client unconditionally until the Mixpanel SDK lands, at
-  /// which point this becomes the selection described in analytics-spec.md §7.1 — Mixpanel when
-  /// the token is configured and we are not running tests, console otherwise.
-  private static func makeAnalyticsClient() -> any AnalyticsClient {
-    ConsoleAnalyticsClient()
+  /// The consent gate wraps whatever this returns (see `init()` above), so this makes no opt-in
+  /// check of its own: a test run or an unconfigured token falls back to the console client,
+  /// otherwise every call reaches a real `MixpanelAnalyticsClient`, gated one layer up.
+  ///
+  /// `LaunchModeContainerFactory.isRunningTests` — not budgets1's `IS_TESTING`-only check —
+  /// because it covers both the `-UITests1` launch argument and the `IS_TESTING` env var; the
+  /// XCUITest bundle passes only the former, so checking just the env var would let UI-test runs
+  /// reach real Mixpanel.
+  private static func makeAnalyticsClient(settings: AnalyticsSettings) -> any AnalyticsClient {
+    guard
+      !shouldUseConsoleClient(
+        isRunningTests: LaunchModeContainerFactory.isRunningTests,
+        isTokenConfigured: MixpanelTokenSource.isConfigured
+      )
+    else {
+      return ConsoleAnalyticsClient()
+    }
+    return MixpanelAnalyticsClient(
+      token: MixpanelTokenSource.activeToken,
+      // Captured strongly, matching the gate's `isOptedIn` closure above: `settings` is the same
+      // instance `_analyticsSettings` retains for the app's lifetime, so there is nothing for
+      // `weak` to protect against here, and this is the only path by which the persisted
+      // `distinct_id` reaches Mixpanel — `identify(_:)` has no production caller. Were this `weak`
+      // and `settings` ever nil, `identify` and the baseline people properties would both silently
+      // no-op and Mixpanel would invent its own device id instead.
+      distinctIdProvider: { settings.analyticsDistinctId }
+    )
+  }
+
+  /// The truth table behind `makeAnalyticsClient()`, pulled out so it is testable without
+  /// touching `LaunchModeContainerFactory` or `MixpanelTokenSource` directly (spec §13 contract
+  /// 15). `true` means "use `ConsoleAnalyticsClient`" — a test run, or a build with no configured
+  /// token, both fall back rather than reach real Mixpanel.
+  static func shouldUseConsoleClient(isRunningTests: Bool, isTokenConfigured: Bool) -> Bool {
+    isRunningTests || !isTokenConfigured
   }
 }
