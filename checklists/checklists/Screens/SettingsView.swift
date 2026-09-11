@@ -148,12 +148,12 @@ struct SettingsView: View {
         Text("Share Anonymous Usage Data")
       }
       .tint(Color.accentColor)
-      .accessibilityHint("Allows the app to send anonymous usage data to help improve the app. No checklist item names, notes, or Apple or iCloud identifiers are ever included.")
+      .accessibilityHint("Allows the app to send anonymous usage data to help improve the app. No checklist item names, item notes, or Apple or iCloud identifiers are ever included.")
     } header: {
       Text("Diagnostics & Analytics")
     } footer: {
       Text("""
-      Anonymous usage data that helps troubleshoot issues and understand usage. Data is never linked to your \
+      Anonymous usage data helps troubleshoot issues and understand usage. Data is never linked to your \
       Apple Account. Never included: checklist item names, item notes, or any Apple or iCloud identifiers.
       """)
       .foregroundStyle(Colors.inactiveTextColor)
