@@ -2,7 +2,7 @@
 
 | Field        | Value      |
 | ------------ | ---------- |
-| Version      | 1.3        |
+| Version      | 1.4        |
 | Last Updated | 2026-09-11 |
 | Author/Owner | Jimmy Ho   |
 
@@ -649,8 +649,10 @@ Flurry also had `withCrashReporting(true)`, `withLogLevel`, and vendored `Flurry
 
 ## 15. Published disclosures — **action needed outside this repo**
 
-Both were written for Flurry-era collection, are currently wrong in the "collects nothing" direction,
-and will be wrong in the other direction once Mixpanel ships:
+**Collection is live as of #169, so both are wrong right now** — they were written for Flurry-era
+collection and describe an app that gathers nothing. Tracked in
+[issue #170](https://github.com/jimmynotjames/checklists/issues/170), which carries the step-by-step
+detail; this section states what has to end up true.
 
 - **The privacy policy** linked from Settings is externally hosted (termsfeed). It must describe
   Mixpanel analytics, the `checklist_name` exception (§4.4), and the opt-out.
@@ -658,7 +660,9 @@ and will be wrong in the other direction once Mixpanel ships:
   types: Product Interaction, Other User Content, Device ID, and Other Diagnostic Data. All Linked,
   purpose Analytics, **not** used for tracking.
 
-Neither lives in this repo, so neither can be fixed by a PR here. Do both when the Mixpanel PR ships.
+Neither lives in this repo, so neither can be fixed by a PR here — which is exactly why they are easy
+to forget. Do them before the next App Store submission: the nutrition label is checked against the
+binary's privacy manifest at review time.
 
 ## 16. Deviations from `budgets1`
 
@@ -702,7 +706,8 @@ The region list in §6.2 and the region set in `ConsentJurisdiction.swift` must 
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
-| 1.3 | 2026-09-11 | Jimmy Ho | Mixpanel SDK built (#PR4): `MixpanelAnalyticsClient` ported with lazy `Mixpanel.initialize` and no `isOptedIn` closure of its own — `ConsentGatedAnalyticsClient` is the only gate. `ChecklistsApp.makeAnalyticsClient()` now selects it whenever a real token is configured and the process is not a test run. SPM dependency added by hand-editing `project.pbxproj`. Flipped §13's SDK contracts (9, 15) from pending. |
-| 1.2 | 2026-09-11 | Jimmy Ho | Consent flow built (#PR3): `ConsentJurisdiction`, `AnalyticsSettings`, the testable `AnalyticsConsentController`, the first-run sheet gated on the first pushed `checklist_viewed`, and the always-on Settings toggle. Flipped §13's consent contracts from pending. Corrected §10's stale "no Fastlane here" claim and removed the now-agreeing Fastlane deviation row from §16 — both drifted true after Fastlane landed on `main`. |
+| 1.4 | 2026-09-11 | Jimmy Ho | Corrected the placeholder PR references in the 1.2 and 1.3 rows, and rewrote §15 now that collection is live — the published disclosures are wrong *today*, not once Mixpanel ships, and are tracked in issue #170. Verified the dashboard tiles resolve against real data: the saved `checklist_name` and `consent_jurisdiction × direction` reports both return values, so the boards were wired to the right names. |
+| 1.3 | 2026-09-11 | Jimmy Ho | Mixpanel SDK built (#169): `MixpanelAnalyticsClient` ported with lazy `Mixpanel.initialize` and no `isOptedIn` closure of its own — `ConsentGatedAnalyticsClient` is the only gate. `ChecklistsApp.makeAnalyticsClient()` now selects it whenever a real token is configured and the process is not a test run. SPM dependency added by hand-editing `project.pbxproj`. Flipped §13's SDK contracts (9, 15) from pending. |
+| 1.2 | 2026-09-11 | Jimmy Ho | Consent flow built (#168): `ConsentJurisdiction`, `AnalyticsSettings`, the testable `AnalyticsConsentController`, the first-run sheet gated on the first pushed `checklist_viewed`, and the always-on Settings toggle. Flipped §13's consent contracts from pending. Corrected §10's stale "no Fastlane here" claim and removed the now-agreeing Fastlane deviation row from §16 — both drifted true after Fastlane landed on `main`. |
 | 1.1 | 2026-09-09 | Jimmy Ho | Client protocol built and all 16 call sites migrated off the static facade (#153). Recorded the three non-SwiftUI injection points and the `ChecklistsApp.init()` ordering requirement in §7.3, and the nonisolated-constants requirement that SwiftData model extensions impose. `AnalyticsManager` deleted. |
 | 1.0 | 2026-09-09 | Jimmy Ho | Initial spec, superseding `analytics-design.md`. Records the decisions taken for the Mixpanel implementation: full locale-aware consent port, `AnalyticsClient` protocol (overriding the earlier "no abstraction" decision), `UserDefaults` rather than iCloud KV for identity, and the consent-sheet trigger on first `checklist_viewed`. Token/secrets mechanism, privacy manifest, and gitleaks rule built and verified end to end; both Mixpanel projects provisioned and their five boards built via MCP. Client, consent, and SDK pending. |
