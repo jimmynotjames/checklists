@@ -111,8 +111,11 @@ translation integration is tracked in [issue #161](https://github.com/jimmynotja
 The English catalog under `checklists/checklistsUITests/ScreenshotSeeds/` mirrors
 the shipped sample data, except it checks the first three Pre-Trip items. Thus the
 home screen shows completion counts 5/6, 4/12, and 3/11. Normal first-launch data
-is unchanged. Screenshot launches use a Debug-only, disposable in-memory store;
-they never import or sync user data. The marketing UI test captures two screens,
+is unchanged. Screenshot launches use Debug-only, disposable in-memory model and settings stores;
+they never import or sync user data. The settings store begins with an explicit analytics opt-out
+so strict-region captures cannot be covered by first-run consent, while the catalog's regional
+locale still controls the rendered UI. The marketing UI test checks for either consent action
+immediately before the detail capture. It captures two screens,
 `01_checklists` and `02_pre_trip`, and is excluded from normal UI-test runs.
 
 The app target is iPhone-only. The configured device is an iPhone 17 Pro Max
