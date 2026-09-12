@@ -26,8 +26,17 @@ class CircularPercentStatusIcon: UIView {
   var percentageComplete: CGFloat = 0.0 {
     didSet {
       setInnerCircle(percentageComplete: percentageComplete)
-      accessibilityValue = String(format: "Checklist %.0f percent complete", percentageComplete * 100)
+      accessibilityValue = Self.accessibilityValueText(forPercentageComplete: percentageComplete)
     }
+  }
+
+  /// The icon's whole VoiceOver announcement, as a value rather than a label — see `commonInit`.
+  ///
+  /// Exposed as a static so the string has one definition: the icon itself announces it, and
+  /// `ChecklistRowView` declares the same text on the SwiftUI row that hosts the icon rather than
+  /// restating the format there.
+  static func accessibilityValueText(forPercentageComplete percentageComplete: CGFloat) -> String {
+    String(format: "Checklist %.0f percent complete", percentageComplete * 100)
   }
 
   private let color: CGColor = Colors.accent.cgColor
@@ -65,7 +74,12 @@ class CircularPercentStatusIcon: UIView {
 
   private func commonInit() {
     isAccessibilityElement = true
+    // The percent is the whole announcement, so it lives in `accessibilityValue` and the label
+    // stays nil: giving it a label too makes VoiceOver read the progress twice over.
     accessibilityLabel = nil
+    // `percentageComplete`'s `didSet` does not run for the property's own default, so without this
+    // an icon that is never assigned afterwards would announce nothing at all.
+    accessibilityValue = Self.accessibilityValueText(forPercentageComplete: percentageComplete)
 
     backgroundColor = .clear
 

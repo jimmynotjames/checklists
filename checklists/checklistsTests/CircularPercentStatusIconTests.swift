@@ -36,6 +36,43 @@ nonisolated final class CircularPercentStatusIconTests: XCTestCase {
     XCTAssertEqual(icon.accessibilityValue, "Checklist 100 percent complete")
   }
 
+  /// The `didSet` that derives `accessibilityValue` does not run for `percentageComplete`'s own
+  /// default, so an icon nobody assigns to has to pick the value up from `commonInit` instead —
+  /// otherwise VoiceOver reaches a focusable element with nothing to announce.
+  @MainActor func testAccessibilityValueIsPopulatedBeforeAnyAssignment() {
+    let icon = CircularPercentStatusIcon(iconType: .header)
+    XCTAssertEqual(icon.accessibilityValue, "Checklist 0 percent complete")
+  }
+
+  @MainActor func testIconIsItsOwnAccessibilityElement() {
+    let icon = CircularPercentStatusIcon(iconType: .header)
+    XCTAssertTrue(icon.isAccessibilityElement)
+  }
+
+  /// `ChecklistRowView` announces the row's progress by calling this, so the icon's own value and
+  /// the SwiftUI row's declared value cannot drift apart.
+  @MainActor func testAccessibilityValueTextMatchesTheValueTheIconAnnounces() {
+    for percentageComplete in [0.0, 2.0 / 11.0, 0.5, 1.0] as [CGFloat] {
+      let icon = CircularPercentStatusIcon(iconType: .row)
+      icon.percentageComplete = percentageComplete
+      XCTAssertEqual(
+        icon.accessibilityValue,
+        CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: percentageComplete)
+      )
+    }
+  }
+
+  @MainActor func testAccessibilityValueTextRoundsToNearestWhole() {
+    XCTAssertEqual(
+      CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: 2.0 / 11.0),
+      "Checklist 18 percent complete"
+    )
+    XCTAssertEqual(
+      CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: 1.0),
+      "Checklist 100 percent complete"
+    )
+  }
+
   @MainActor func testAccessibilityLabelIsNil() {
     // The percent complete is only meaningful as the accessibility *value*; the label is
     // deliberately nil so VoiceOver doesn't announce a redundant/awkward "value, value".
