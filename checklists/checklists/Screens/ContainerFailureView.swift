@@ -78,7 +78,7 @@ struct ContainerFailureView: View {
         }
         .buttonStyle(.glass)
         .controlSize(.large)
-        .tint(Colors.salmonRedColor)
+        .tint(Colors.destructiveColor)
         .accessibilityLabel("Start over fresh")
         .accessibilityHint("Starts the app as if it were newly installed. Any data on this device will be lost.")
       }
