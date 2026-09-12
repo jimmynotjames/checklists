@@ -25,6 +25,12 @@ struct ICloudStatusLoader {
         return .noAccount
       }
     #endif
+    // Requires the `application-identifier` entitlement: without it CKContainer.default()
+    // has no container to resolve and CloudKit raises the Objective-C exception
+    // `CKException` ("containerIdentifier can not be nil"). That is not a Swift error, so
+    // the `do`/`catch` below cannot intercept it and the process aborts. A build produced
+    // with CODE_SIGNING_ALLOWED=NO is exactly that binary, which is why neither
+    // scripts/build.sh nor the CI build passes that flag any more (#140).
     return try await CKContainer.default().accountStatus()
   }
 

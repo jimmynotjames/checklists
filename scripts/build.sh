@@ -32,12 +32,28 @@ cd "$ROOT"
 # If you ever need genuine x86_64 coverage: delete ARCHS=arm64 below but KEEP
 # ONLY_ACTIVE_ARCH=NO — that is the flag that forces both slices to be built. Deleting both
 # would fall back to the active arch only and give you the same single slice you have now.
+# Signing is deliberately left at the project's default (automatic, ad-hoc against
+# DEVELOPMENT_TEAM) rather than disabled.
+#
+# `CODE_SIGNING_ALLOWED=NO` skips ProcessProductPackaging, and with it the
+# `checklists.app-Simulated.xcent` blob that carries the entitlements a *simulator*
+# build gets — simulator entitlements live in that blob, not in the code signature,
+# which is why `codesign -d --entitlements -` looks empty either way and hides the
+# difference. Without it the binary has no `application-identifier`, so
+# `CKContainer.default()` cannot resolve a container and CloudKit raises an
+# Objective-C `CKException` ("containerIdentifier can not be nil"). That is not a
+# Swift error, so the `do`/`catch` in ICloudStatusLoader.load(into:) cannot catch it
+# and opening Settings kills the process (#140).
+#
+# The test scripts already build this way — they pass no CODE_SIGN* flags at all —
+# so this only brings `make build` in line with `make test-unit` / `make test-ui`.
+# The destination is a simulator, so no real identity or provisioning profile is
+# needed: the result is still an ad-hoc signature with no Team ID.
 exec xcodebuild build \
     -project checklists/checklists.xcodeproj \
     -scheme checklists \
     -destination 'generic/platform=iOS Simulator' \
     -derivedDataPath .build/DerivedData \
     -quiet \
-    CODE_SIGNING_ALLOWED=NO \
     ARCHS=arm64 \
     ONLY_ACTIVE_ARCH=NO
