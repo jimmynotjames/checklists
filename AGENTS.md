@@ -202,6 +202,22 @@ stops a broken merge. `/merge-pr` compensates by running `make gate` on the PR b
 to merge unless it passes. **If CI is ever enabled, `/merge-pr` should wait on `gh pr checks`
 instead, keeping the local gate as a fallback.**
 
+## Concurrency
+
+All three targets set `SWIFT_APPROACHABLE_CONCURRENCY = YES`; the app and `checklistsTests` also
+set `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` (Xcode 26's app-target defaults).
+[#154](https://github.com/jimmynotjames/checklists/issues/154) records why the MainActor default
+stays and what was weighed against it.
+
+- **Types holding only constants or pure functions get `nonisolated` on the type, up front** — one
+  annotation covers the type, and declaring it early beats discovering the opt-out one compile
+  error at a time. See `AnalyticsEvent` in `Analytics/AnalyticsNames.swift`, `ConsentJurisdiction`.
+- **Keep explicit `@MainActor`** where it documents a real constraint (`PersistenceController`,
+  `AppAnalytics`), even though the default already implies it.
+- **Never add the isolation default to `checklistsUITests`** — tried and reverted in #154. Its
+  `XCTestCase` subclasses hit the initializer-isolation collision described above, and a separate
+  process driving the app shares no isolation domain with it anyway.
+
 ## Bash command hygiene
 
 Enforced deterministically by `scripts/hooks/guard_bash_hygiene.sh`
