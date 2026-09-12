@@ -162,6 +162,11 @@ jobs:
       # ARCHS=arm64 is a build-speed choice, not a correctness constraint (it was one, while
       # Flurry's malformed x86_64 slice was vendored). The destination is generic, so dropping
       # it would build both slices and compile Realm's C++ tree twice. See scripts/build.sh.
+      # Signing is left at the project default rather than disabled: CODE_SIGNING_ALLOWED=NO
+      # strips the simulator entitlements blob and with it `application-identifier`, which
+      # makes CKContainer.default() raise an uncatchable CKException (#140). A simulator
+      # destination needs no identity or profile, so this works on a bare runner.
+      # See scripts/build.sh.
       - name: xcodebuild build
         run: |
           xcodebuild build \
@@ -169,6 +174,5 @@ jobs:
             -scheme checklists \
             -destination 'generic/platform=iOS Simulator' \
             -derivedDataPath .build/DerivedData \
-            CODE_SIGNING_ALLOWED=NO \
             ARCHS=arm64 \
             ONLY_ACTIVE_ARCH=NO

@@ -273,6 +273,24 @@ outcomes (plus a two-phase sign-in transition) directly. The loader also short-c
 line, because `CKContainer.accountStatus()` hangs on an account-less Simulator and would otherwise
 pin the row to a spinner and block UI tests from ever reaching Settings.
 
+**The live call needs the `application-identifier` entitlement, and nothing in Swift can rescue it
+if it is missing.** `CKContainer.default()` derives its container from that entitlement; with no
+entitlement there is no container identifier, and CloudKit reports the fault by raising the
+Objective-C exception `CKException` ("containerIdentifier can not be nil"). An ObjC exception is not
+a Swift `Error`, so the `do`/`catch` in `load(into:)` — which otherwise makes good on "anything else
+or a thrown error → unavailable" — cannot see it and the process aborts instead of degrading into
+the existing "iCloud Not Available" row.
+
+A simulator build carries its entitlements in the `…app-Simulated.xcent` blob rather than in the
+code signature, so `codesign -d --entitlements -` prints nothing for a simulator `.app` whether or
+not the entitlements are present — it is not a useful check. `strings` for the
+`application-identifier` value is. Passing `CODE_SIGNING_ALLOWED=NO` skips the packaging step that
+writes that blob, which is why `scripts/build.sh` and the CI build no longer pass it (#140); the
+test scripts never did. Note this only guarantees that *our* build paths produce a launchable
+binary — any other tool that builds this project with signing disabled reintroduces the crash, and
+the shipped-build gap (a release whose profile lost the iCloud capability) is still open, since the
+exception remains uncatchable from Swift.
+
 ## CloudKit ops record
 
 **Container:** `iCloud.com.jimmyho.checklists`, private database, assigned to the
