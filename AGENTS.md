@@ -56,18 +56,10 @@ Swift on this platform). `checklistsUITests` needed no linkage changes; it was b
 shared scheme's unit target failing to build, and on `test-ui`'s `warmed` sentinel (see
 `scripts/test-ui.sh`), both now resolved. Formerly tracked in
 [issue #116](https://github.com/jimmynotjames/checklists/issues/116), now closed.
-`checklistsTests` has 192 tests across `DataModelTests`, `ModelBehaviorTests`, `SampleDataTests`,
-`SortKeyReorderTests`, `LegacyRealmImporterTests`, `ProductionContainerFactoryTests`,
-`PersistentStoreURLTests`, `RemoteChangeObserverTests`, `TwoDeviceUnionTests`,
-`SampleDataDedupeTests`, `SyncStatusTests`, `ICloudStatusLoaderTests`, `StoreResetTests`,
-`AnalyticsTextTests`, `AnalyticsNamesTests`, `AppOpenTrackerTests`,
-`ChecklistAnalyticsPropertiesTests`, `PersistenceAnalyticsTests`, `AppConfigSentinelTests`,
-`SettingsManagerTests`, `CircularPercentStatusIconTests`, `CLTextViewTests`,
-`ItemContentViewTests`, `ChecklistReorderFailureTests`, `ChecklistKeyboardDismissTests`,
-`ConsentJurisdictionTests`, `AnalyticsSettingsTests`, `AnalyticsConsentControllerTests`,
-`ConsentGateTests`, `MixpanelClientGateTests`, and `AnalyticsClientSelectionTests`;
-`checklistsUITests` has 21. Both are green, verified twice in a row for flakes — but still opt-in,
-not part of `make gate`.
+
+**Don't record test counts or test-class inventories here** — they go stale on every
+test-adding PR, and a wrong number in the docs is worse than no number. For the current
+counts, run the suites and read the result bundle (see below).
 
 ### Reading a test result
 
