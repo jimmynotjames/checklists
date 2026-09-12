@@ -35,9 +35,9 @@ For every change, confirm each concern applies or is N/A:
 ### 🧪 Running tests
 
 Tests are **opt-in and not part of the gate** — `make gate` is format → lint → build only.
-Both suites do run and pass (68 unit tests, 17 UI tests), so run whichever the change
-warrants and state explicitly in the Test plan above how it was verified — including "not run,
-verified manually in the simulator" when that's the honest answer.
+Both suites do run and pass, so run whichever the change warrants and state explicitly in the
+Test plan above how it was verified — including "not run, verified manually in the simulator"
+when that's the honest answer.
 
 - `make test-unit` — runs entirely against in-memory `ModelContainer`s; it does not touch the
   simulator's real store.
