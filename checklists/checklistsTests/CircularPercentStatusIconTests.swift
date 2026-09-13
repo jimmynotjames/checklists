@@ -6,7 +6,8 @@
 //
 
 @testable import checklists
-import XCTest
+import Testing
+import UIKit
 
 /// Covers `CircularPercentStatusIcon`'s accessibility contract (its `accessibilityValue` label,
 /// since `accessibilityLabel` is deliberately nil) and its per-`IconType` dimensions. The arc/bezier
@@ -14,70 +15,77 @@ import XCTest
 /// tested, not the drawing internals.
 ///
 /// No Realm/DBManager involvement, so this doesn't need the in-memory-Realm save/restore pattern
-/// the persistence-touching test classes use. See the note on `DataModelTests` for why this class
-/// is `nonisolated` at the type level with individual `@MainActor` test methods (this view type is
-/// implicitly MainActor-isolated, like everything else in the app target).
-nonisolated final class CircularPercentStatusIconTests: XCTestCase {
-  @MainActor func testAccessibilityValueAtZeroPercent() {
+/// the persistence-touching test classes use.
+@Suite("CircularPercentStatusIcon accessibility and dimensions")
+struct CircularPercentStatusIconTests {
+  @Test("0% progress reports as 0 percent complete")
+  func accessibilityValueAtZeroPercent() {
     let icon = CircularPercentStatusIcon(iconType: .header)
     icon.percentageComplete = 0.0
-    XCTAssertEqual(icon.accessibilityValue, "Checklist 0 percent complete")
+    #expect(icon.accessibilityValue == "Checklist 0 percent complete")
   }
 
-  @MainActor func testAccessibilityValueAtFractionalPercentRoundsToNearestWhole() {
+  @Test("a fractional percent complete rounds to the nearest whole percent")
+  func accessibilityValueAtFractionalPercentRoundsToNearestWhole() {
     let icon = CircularPercentStatusIcon(iconType: .header)
     icon.percentageComplete = 2.0 / 11.0 // 18.18...%
-    XCTAssertEqual(icon.accessibilityValue, "Checklist 18 percent complete")
+    #expect(icon.accessibilityValue == "Checklist 18 percent complete")
   }
 
-  @MainActor func testAccessibilityValueAtFullPercent() {
+  @Test("100% progress reports as 100 percent complete")
+  func accessibilityValueAtFullPercent() {
     let icon = CircularPercentStatusIcon(iconType: .header)
     icon.percentageComplete = 1.0
-    XCTAssertEqual(icon.accessibilityValue, "Checklist 100 percent complete")
+    #expect(icon.accessibilityValue == "Checklist 100 percent complete")
   }
 
   /// The `didSet` that derives `accessibilityValue` does not run for `percentageComplete`'s own
   /// default, so an icon nobody assigns to has to pick the value up from `commonInit` instead —
   /// otherwise VoiceOver reaches a focusable element with nothing to announce.
-  @MainActor func testAccessibilityValueIsPopulatedBeforeAnyAssignment() {
+  @Test("picks up its accessibility value from commonInit before any assignment")
+  func accessibilityValueIsPopulatedBeforeAnyAssignment() {
     let icon = CircularPercentStatusIcon(iconType: .header)
-    XCTAssertEqual(icon.accessibilityValue, "Checklist 0 percent complete")
+    #expect(icon.accessibilityValue == "Checklist 0 percent complete")
   }
 
-  @MainActor func testIconIsItsOwnAccessibilityElement() {
+  @Test("the icon is its own accessibility element")
+  func iconIsItsOwnAccessibilityElement() {
     let icon = CircularPercentStatusIcon(iconType: .header)
-    XCTAssertTrue(icon.isAccessibilityElement)
+    #expect(icon.isAccessibilityElement)
   }
 
   /// `ChecklistRowView` announces the row's progress by calling this, so the icon's own value and
   /// the SwiftUI row's declared value cannot drift apart.
-  @MainActor func testAccessibilityValueTextMatchesTheValueTheIconAnnounces() {
+  @Test("accessibilityValueText matches what the icon itself announces")
+  func accessibilityValueTextMatchesTheValueTheIconAnnounces() {
     for percentageComplete in [0.0, 2.0 / 11.0, 0.5, 1.0] as [CGFloat] {
       let icon = CircularPercentStatusIcon(iconType: .row)
       icon.percentageComplete = percentageComplete
-      XCTAssertEqual(
-        icon.accessibilityValue,
-        CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: percentageComplete)
+      #expect(
+        icon.accessibilityValue ==
+          CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: percentageComplete)
       )
     }
   }
 
-  @MainActor func testAccessibilityValueTextRoundsToNearestWhole() {
-    XCTAssertEqual(
-      CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: 2.0 / 11.0),
-      "Checklist 18 percent complete"
+  @Test("accessibilityValueText rounds to the nearest whole percent")
+  func accessibilityValueTextRoundsToNearestWhole() {
+    #expect(
+      CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: 2.0 / 11.0) ==
+        "Checklist 18 percent complete"
     )
-    XCTAssertEqual(
-      CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: 1.0),
-      "Checklist 100 percent complete"
+    #expect(
+      CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: 1.0) ==
+        "Checklist 100 percent complete"
     )
   }
 
-  @MainActor func testAccessibilityLabelIsNil() {
+  @Test("accessibility label is nil")
+  func accessibilityLabelIsNil() {
     // The percent complete is only meaningful as the accessibility *value*; the label is
     // deliberately nil so VoiceOver doesn't announce a redundant/awkward "value, value".
     let icon = CircularPercentStatusIcon(iconType: .header)
-    XCTAssertNil(icon.accessibilityLabel)
+    #expect(icon.accessibilityLabel == nil)
   }
 
   // MARK: - Per-IconType dimensions
@@ -86,18 +94,20 @@ nonisolated final class CircularPercentStatusIconTests: XCTestCase {
   /// contract is the view's own laid-out size (2 * radius, per `updateConstraints()`), which
   /// `systemLayoutSizeFitting` can compute from the view's self-contained height/width constraints
   /// without needing a superview or window.
-  @MainActor func testTableViewCellIconTypeDimensions() {
+  @Test("a row icon lays out at 20x20 for radius 10")
+  func tableViewCellIconTypeDimensions() {
     let icon = CircularPercentStatusIcon(iconType: .row)
     icon.updateConstraintsIfNeeded()
     let size = icon.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
-    XCTAssertEqual(size, CGSize(width: 20.0, height: 20.0)) // radius 10.0
+    #expect(size == CGSize(width: 20.0, height: 20.0)) // radius 10.0
   }
 
-  @MainActor func testHeaderIconTypeDimensions() {
+  @Test("a header icon lays out at 24x24 for radius 12")
+  func headerIconTypeDimensions() {
     let icon = CircularPercentStatusIcon(iconType: .header)
     icon.updateConstraintsIfNeeded()
     let size = icon.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
-    XCTAssertEqual(size, CGSize(width: 24.0, height: 24.0)) // radius 12.0
+    #expect(size == CGSize(width: 24.0, height: 24.0)) // radius 12.0
   }
 
   // NOTE: a test asserting that mutating `iconType` on a *live* instance re-triggers layout to the

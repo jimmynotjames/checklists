@@ -5,7 +5,7 @@
 
 @testable import checklists
 import SwiftUI
-import XCTest
+import Testing
 
 /// Covers which `scenePhase` transitions count as an app open (analytics-spec.md §8).
 ///
@@ -13,27 +13,29 @@ import XCTest
 /// the notification shade, the app switcher, Face ID and permission dialogs — none of which are
 /// someone opening the app. Counting them would inflate every reach and retention number on the
 /// dashboards, and the inflation would look like real growth.
-///
-/// See the note on `AnalyticsTextTests` for the `nonisolated` class / `@MainActor` method pattern.
-nonisolated final class AppOpenTrackerTests: XCTestCase {
-  @MainActor func testFirstActiveFires() {
+@Suite("App open detection from scenePhase transitions")
+struct AppOpenTrackerTests {
+  @Test("a cold launch fires an open")
+  func firstActiveFires() {
     let tracker = AppOpenTracker()
-    XCTAssertTrue(tracker.shouldFire(for: .active), "A cold launch is an open.")
+    #expect(tracker.shouldFire(for: .active), "A cold launch is an open.")
   }
 
-  @MainActor func testReturnFromBackgroundFires() {
+  @Test("returning from background fires an open")
+  func returnFromBackgroundFires() {
     let tracker = AppOpenTracker()
     _ = tracker.shouldFire(for: .active)
     _ = tracker.shouldFire(for: .background)
-    XCTAssertTrue(tracker.shouldFire(for: .active), "Returning from background is an open.")
+    #expect(tracker.shouldFire(for: .active), "Returning from background is an open.")
   }
 
-  @MainActor func testInactiveFlickerDoesNotFire() {
+  @Test("an inactive flicker does not fire an open")
+  func inactiveFlickerDoesNotFire() {
     let tracker = AppOpenTracker()
     _ = tracker.shouldFire(for: .active)
     _ = tracker.shouldFire(for: .inactive)
-    XCTAssertFalse(
-      tracker.shouldFire(for: .active),
+    #expect(
+      !tracker.shouldFire(for: .active),
       "The notification shade and app switcher are not app opens."
     )
   }
@@ -47,55 +49,61 @@ nonisolated final class AppOpenTrackerTests: XCTestCase {
   /// `.active` sees `.inactive` here and stays silent, which reduces `app_opened` to cold launches
   /// and puts every session, reach and retention number on that footing. Keep this test pointed at
   /// the full sequence, not at a single transition.
-  @MainActor func testRealForegroundReturnSequenceFires() {
+  @Test("the real foreground-return sequence fires an open")
+  func realForegroundReturnSequenceFires() {
     let tracker = AppOpenTracker()
-    XCTAssertTrue(tracker.shouldFire(for: .active), "Cold launch.")
+    #expect(tracker.shouldFire(for: .active), "Cold launch.")
     _ = tracker.shouldFire(for: .inactive)
     _ = tracker.shouldFire(for: .background)
-    XCTAssertFalse(tracker.shouldFire(for: .inactive), "Still on the way back in.")
-    XCTAssertTrue(tracker.shouldFire(for: .active), "This is the foreground return.")
+    #expect(!tracker.shouldFire(for: .inactive), "Still on the way back in.")
+    #expect(tracker.shouldFire(for: .active), "This is the foreground return.")
   }
 
   /// Two full cycles, to prove the background flag is cleared on each open rather than latching
   /// true and firing on every subsequent `.active`.
-  @MainActor func testTwoForegroundReturnsFireTwiceNotMore() {
+  @Test("two foreground returns fire exactly twice, not more")
+  func twoForegroundReturnsFireTwiceNotMore() {
     let tracker = AppOpenTracker()
     var opens = 0
     for phase in [ScenePhase.active, .inactive, .background, .inactive, .active,
                   .inactive, .background, .inactive, .active] where tracker.shouldFire(for: phase) {
       opens += 1
     }
-    XCTAssertEqual(opens, 3, "One cold launch plus two foreground returns.")
+    #expect(opens == 3, "One cold launch plus two foreground returns.")
   }
 
   /// The flicker case, stated against the same rule: an `.inactive` detour with no `.background`
   /// in it is the notification shade or the app switcher, and is not an open.
-  @MainActor func testInactiveDetourWithoutBackgroundDoesNotFire() {
+  @Test("an inactive detour without background does not fire")
+  func inactiveDetourWithoutBackgroundDoesNotFire() {
     let tracker = AppOpenTracker()
     _ = tracker.shouldFire(for: .active)
     _ = tracker.shouldFire(for: .inactive)
-    XCTAssertFalse(tracker.shouldFire(for: .active))
-    XCTAssertFalse(tracker.shouldFire(for: .active), "Staying active is not a second open.")
+    #expect(!tracker.shouldFire(for: .active))
+    #expect(!tracker.shouldFire(for: .active), "Staying active is not a second open.")
   }
 
   /// A scene that connects in the background — possible here because the app declares the
   /// remote-notification background mode — must not count as an open, and must not swallow the
   /// person's real open when they later launch it.
-  @MainActor func testBackgroundLaunchDoesNotFireButLaterActivationDoes() {
+  @Test("a background launch does not fire, but a later activation does")
+  func backgroundLaunchDoesNotFireButLaterActivationDoes() {
     let tracker = AppOpenTracker()
-    XCTAssertFalse(tracker.shouldFire(for: .background), "A background launch is not an open.")
-    XCTAssertTrue(tracker.shouldFire(for: .active), "Opening it afterwards is.")
+    #expect(!tracker.shouldFire(for: .background), "A background launch is not an open.")
+    #expect(tracker.shouldFire(for: .active), "Opening it afterwards is.")
   }
 
-  @MainActor func testRepeatedActiveDoesNotFireTwice() {
+  @Test("repeated active does not fire twice")
+  func repeatedActiveDoesNotFireTwice() {
     let tracker = AppOpenTracker()
-    XCTAssertTrue(tracker.shouldFire(for: .active))
-    XCTAssertFalse(tracker.shouldFire(for: .active))
+    #expect(tracker.shouldFire(for: .active))
+    #expect(!tracker.shouldFire(for: .active))
   }
 
-  @MainActor func testNonActivePhasesNeverFire() {
+  @Test("non-active phases never fire")
+  func nonActivePhasesNeverFire() {
     let tracker = AppOpenTracker()
-    XCTAssertFalse(tracker.shouldFire(for: .background))
-    XCTAssertFalse(tracker.shouldFire(for: .inactive))
+    #expect(!tracker.shouldFire(for: .background))
+    #expect(!tracker.shouldFire(for: .inactive))
   }
 }

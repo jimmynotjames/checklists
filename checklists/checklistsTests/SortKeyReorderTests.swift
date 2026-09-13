@@ -4,50 +4,52 @@
 //
 
 @testable import checklists
-import XCTest
+import Testing
 
 /// Covers `SortKeyReorder`'s pure arithmetic: midpoint insertion at the front, the end, and between
 /// two neighbours; the `epsilon` floor that signals a caller must renormalize; and renormalization
 /// itself.
-///
-/// `SortKeyReorder`'s members are all `nonisolated static`, so — unlike the rest of this target —
-/// these test methods need no `@MainActor` annotation: there is no `@Model`, `ModelContext`, or
-/// UIKit involved. See the doc comment on `DataModelTests` for why other classes in this target
-/// need it.
-nonisolated final class SortKeyReorderTests: XCTestCase {
+@Suite("SortKeyReorder arithmetic")
+struct SortKeyReorderTests {
   private final class Box {
     var value: Double = 0.0
   }
 
-  func testInsertAtFrontHalvesFirstKey() {
+  @Test("inserting at the front halves the first key")
+  func insertAtFrontHalvesFirstKey() {
     let key = SortKeyReorder.key(forInsertingAt: 0, in: [1.0, 2.0, 3.0])
-    XCTAssertEqual(key, 0.5)
+    #expect(key == 0.5)
   }
 
-  func testInsertAtEndAddsOne() {
+  @Test("inserting at the end adds one to the last key")
+  func insertAtEndAddsOne() {
     let key = SortKeyReorder.key(forInsertingAt: 3, in: [1.0, 2.0, 3.0])
-    XCTAssertEqual(key, 4.0)
+    #expect(key == 4.0)
   }
 
-  func testInsertBetweenUsesMidpoint() {
+  @Test("inserting between two neighbours uses their midpoint")
+  func insertBetweenUsesMidpoint() {
     let key = SortKeyReorder.key(forInsertingAt: 1, in: [1.0, 2.0])
-    XCTAssertEqual(key, 1.5)
+    #expect(key == 1.5)
   }
 
-  func testTinyGapReturnsNil() {
+  @Test("a gap smaller than epsilon returns nil")
+  func tinyGapReturnsNil() {
     let tinyGap = SortKeyReorder.epsilon / 2.0
     let key = SortKeyReorder.key(forInsertingAt: 1, in: [1.0, 1.0 + tinyGap])
-    XCTAssertNil(key)
+    #expect(key == nil)
   }
 
-  func testEmptyListReturnsStep() {
+  @Test("an empty list returns the step value")
+  func emptyListReturnsStep() {
     let key = SortKeyReorder.key(forInsertingAt: 0, in: [])
-    XCTAssertEqual(key, SortKeyReorder.step)
+    #expect(key == SortKeyReorder.step)
   }
 
-  func testRenormalizeAssignsIntegers() {
+  @Test("renormalizing assigns contiguous integer keys")
+  func renormalizeAssignsIntegers() {
     let boxes = [Box(), Box(), Box()]
     SortKeyReorder.renormalize(boxes) { box, key in box.value = key }
-    XCTAssertEqual(boxes.map(\.value), [1.0, 2.0, 3.0])
+    #expect(boxes.map(\.value) == [1.0, 2.0, 3.0])
   }
 }

@@ -4,29 +4,25 @@
 //
 
 @testable import checklists
+import Foundation
 import SwiftData
+import Testing
 import UniformTypeIdentifiers
-import XCTest
 
 /// Covers the ordering/mutation methods that replace Realm's `List` mutators (`Reordering.swift`),
 /// plus `Item.toggleStatus()`, `Checklist.uncheckAllItems()`, and the `dragItems()` `NSItemProvider`
 /// round trip on both model types.
 ///
-/// See the doc comment on `DataModelTests` for why this class is `nonisolated` at the type level
-/// with individual `@MainActor` test methods.
-///
 /// Reorder tests assert the resulting **order** via `fetchChecklistsSorted()` / `checklist.items`
 /// rather than specific `sortKey` values — the values are an implementation detail of
 /// `SortKeyReorder`, already covered directly by `SortKeyReorderTests`.
-nonisolated final class ModelBehaviorTests: XCTestCase {
-  @MainActor private func makeContext() throws -> ModelContext {
-    try ModelContext(TestModelContainer.make())
-  }
-
+@Suite("Model ordering, status, and drag payloads")
+struct ModelBehaviorTests {
   // MARK: - Checklist reordering
 
-  @MainActor func testMoveChecklistReordersByKey() throws {
-    let context = try makeContext()
+  @Test("moving a checklist to the end reorders the sorted fetch")
+  func moveChecklistReordersByKey() throws {
+    let context = try TestModelContainer.makeContext()
     let checklistA = Checklist(name: "A", sortKey: 1.0)
     let checklistB = Checklist(name: "B", sortKey: 2.0)
     let checklistC = Checklist(name: "C", sortKey: 3.0)
@@ -38,11 +34,12 @@ nonisolated final class ModelBehaviorTests: XCTestCase {
     // Move A to the end: [A, B, C] -> [B, C, A].
     try context.move(checklist: checklistA, among: [checklistA, checklistB, checklistC], to: 2)
 
-    XCTAssertEqual(try context.fetchChecklistsSorted().map(\.name), ["B", "C", "A"])
+    #expect(try context.fetchChecklistsSorted().map(\.name) == ["B", "C", "A"])
   }
 
-  @MainActor func testInsertChecklistAtTop() throws {
-    let context = try makeContext()
+  @Test("inserting at index 0 puts the new checklist first")
+  func insertChecklistAtTop() throws {
+    let context = try TestModelContainer.makeContext()
     let existingOne = Checklist(name: "Existing One", sortKey: 1.0)
     let existingTwo = Checklist(name: "Existing Two", sortKey: 2.0)
     context.insert(existingOne)
@@ -52,13 +49,14 @@ nonisolated final class ModelBehaviorTests: XCTestCase {
     let newChecklist = Checklist(name: "New")
     try context.insert(checklist: newChecklist, at: 0, among: [existingOne, existingTwo])
 
-    XCTAssertEqual(try context.fetchChecklistsSorted().map(\.name), ["New", "Existing One", "Existing Two"])
+    #expect(try context.fetchChecklistsSorted().map(\.name) == ["New", "Existing One", "Existing Two"])
   }
 
   // MARK: - Item reordering
 
-  @MainActor func testMoveItemReordersByKey() throws {
-    let context = try makeContext()
+  @Test("moving an item to the end reorders its parent's items")
+  func moveItemReordersByKey() throws {
+    let context = try TestModelContainer.makeContext()
     let checklist = Checklist(name: "Test", sortKey: 1.0)
     context.insert(checklist)
 
@@ -74,27 +72,29 @@ nonisolated final class ModelBehaviorTests: XCTestCase {
     // Move "one" to the end: [one, two, three] -> [two, three, one].
     try context.move(item: itemOne, among: [itemOne, itemTwo, itemThree], to: 2)
 
-    XCTAssertEqual(checklist.items.map(\.name), ["two", "three", "one"])
+    #expect(checklist.items.map(\.name) == ["two", "three", "one"])
   }
 
   // MARK: - Status mutation
 
-  @MainActor func testToggleStatus() throws {
-    let context = try makeContext()
+  @Test("toggleStatus() flips unchecked to checked and back")
+  func toggleStatus() throws {
+    let context = try TestModelContainer.makeContext()
     let item = Item(name: "Test")
     context.insert(item)
     try context.saveChanges(operation: .itemEdit)
-    XCTAssertEqual(item.status, .unchecked)
+    #expect(item.status == .unchecked)
 
     item.toggleStatus()
-    XCTAssertEqual(item.status, .checked)
+    #expect(item.status == .checked)
 
     item.toggleStatus()
-    XCTAssertEqual(item.status, .unchecked)
+    #expect(item.status == .unchecked)
   }
 
-  @MainActor func testUncheckAllItems() throws {
-    let context = try makeContext()
+  @Test("uncheckAllItems() clears every checked item and leaves the rest alone")
+  func uncheckAllItems() throws {
+    let context = try TestModelContainer.makeContext()
     let checklist = Checklist(name: "Test", sortKey: 1.0)
     context.insert(checklist)
 
@@ -117,60 +117,60 @@ nonisolated final class ModelBehaviorTests: XCTestCase {
     checklist.uncheckAllItems()
     try context.saveChanges(operation: .itemEdit)
 
-    XCTAssertTrue(checklist.items.allSatisfy { $0.status == .unchecked })
+    #expect(checklist.items.allSatisfy { $0.status == .unchecked })
   }
 
   // MARK: - dragItems() NSItemProvider round trip
 
-  @MainActor func testChecklistDragItemsRoundTripsId() throws {
-    let context = try makeContext()
+  /// The `.timeLimit` stands in for the explicit `wait(for:timeout: 5)` the XCTest version used.
+  /// A minute is far coarser than five seconds, but it is the finest granularity the trait offers
+  /// and it still bounds a provider that never calls back, which is the failure worth catching.
+  @Test("a checklist's drag payload round-trips its id", .timeLimit(.minutes(1)))
+  func checklistDragItemsRoundTripsId() async throws {
+    let context = try TestModelContainer.makeContext()
     let checklist = Checklist(name: "Test")
     context.insert(checklist)
     try context.saveChanges(operation: .checklistEdit)
 
     let dragItems = checklist.dragItems()
-    XCTAssertEqual(dragItems.count, 1)
+    #expect(dragItems.count == 1)
 
-    let payload = try loadPlainTextPayload(from: dragItems[0].itemProvider)
-    XCTAssertEqual(payload, checklist.id)
+    let payload = try await loadPlainTextPayload(from: dragItems[0].itemProvider)
+    #expect(payload == checklist.id)
   }
 
-  @MainActor func testItemDragItemsRoundTripsId() throws {
-    let context = try makeContext()
+  @Test("an item's drag payload round-trips its id", .timeLimit(.minutes(1)))
+  func itemDragItemsRoundTripsId() async throws {
+    let context = try TestModelContainer.makeContext()
     let item = Item(name: "Test")
     context.insert(item)
     try context.saveChanges(operation: .itemEdit)
 
     let dragItems = item.dragItems()
-    XCTAssertEqual(dragItems.count, 1)
+    #expect(dragItems.count == 1)
 
-    let payload = try loadPlainTextPayload(from: dragItems[0].itemProvider)
-    XCTAssertEqual(payload, item.id)
+    let payload = try await loadPlainTextPayload(from: dragItems[0].itemProvider)
+    #expect(payload == item.id)
   }
 
   /// Drives the async `NSItemProvider` data-representation callback registered by `dragItems()`
-  /// and decodes the resulting UTF-8 payload synchronously for the test.
-  private func loadPlainTextPayload(from itemProvider: NSItemProvider) throws -> String {
-    let expectation = expectation(description: "plain text data representation loaded")
-    var result: Result<String, Error> = .failure(placeholderError)
-
-    itemProvider.loadDataRepresentation(forTypeIdentifier: UTType.plainText.identifier) { data, error in
-      if let error {
-        result = .failure(error)
-      } else if let data, let string = String(data: data, encoding: .utf8) {
-        result = .success(string)
-      } else {
-        result = .failure(placeholderError)
+  /// and decodes the resulting UTF-8 payload.
+  ///
+  /// The callback is `@Sendable` because the system can invoke it off the main actor — which is
+  /// also why the XCTest version needed a `nonisolated` file-level placeholder error to seed a
+  /// `Result` it could write from there. Resuming a continuation needs neither.
+  private func loadPlainTextPayload(from itemProvider: NSItemProvider) async throws -> String {
+    let data: Data? = try await withCheckedThrowingContinuation { continuation in
+      itemProvider.loadDataRepresentation(forTypeIdentifier: UTType.plainText.identifier) { @Sendable data, error in
+        if let error {
+          continuation.resume(throwing: error)
+        } else {
+          continuation.resume(returning: data)
+        }
       }
-      expectation.fulfill()
     }
 
-    wait(for: [expectation], timeout: 5)
-    return try result.get()
+    let payloadData = try #require(data, "loadDataRepresentation returned neither data nor an error")
+    return try #require(String(data: payloadData, encoding: .utf8), "the drag payload was not valid UTF-8")
   }
 }
-
-/// Placeholder `Error` used only to seed `Result`'s initial value before the async callback in
-/// `loadPlainTextPayload(from:)` runs; never surfaced to a passing test. `nonisolated` because
-/// it's read from that callback, which the system can invoke off the main actor.
-nonisolated private let placeholderError = NSError(domain: "ModelBehaviorTests", code: -1)

@@ -1,22 +1,19 @@
 #!/usr/bin/env bash
 # Unit tests only (checklistsTests) — skips the UI test target.
 #
-# OPT-IN: not part of `make gate`. This suite compiles and passes (106 tests across
-# DataModelTests, ModelBehaviorTests, SampleDataTests, SortKeyReorderTests,
-# LegacyRealmImporterTests, ProductionContainerFactoryTests, PersistentStoreURLTests,
-# RemoteChangeObserverTests, TwoDeviceUnionTests, SampleDataDedupeTests,
-# SyncStatusTests, ICloudStatusLoaderTests, StoreResetTests, AnalyticsManagerTests,
-# SettingsManagerTests,
-# CircularPercentStatusIconTests, CLTextViewTests, and ItemContentViewTests);
-# promoting it into the blocking gate is a separate decision. Run it explicitly with
-# `make test-unit`.
+# OPT-IN: not part of `make gate`; promoting it into the blocking gate is a separate
+# decision. Run it explicitly with `make test-unit`. For the current pass/fail counts,
+# read the result bundle rather than trusting a piped exit code — see AGENTS.md
+# §"Reading a test result".
 #
-# Every class runs against a disposable in-memory ModelContainer (see
-# checklistsTests/Helpers/TestModelContainer.swift), except LegacyRealmImporterTests,
-# which writes real Realm fixture files to the test process's own temporary directory
-# and removes them in tearDown. Nothing here touches the simulator's real on-disk
-# store — a deliberate break from the Realm-era DataModelTests, which asserted against
-# the persisted store and wiped it in setUp.
+# Every suite runs against a disposable in-memory ModelContainer (see
+# checklistsTests/Helpers/TestModelContainer.swift), except LegacyRealmImporterTests and
+# TwoDeviceUnionTests, which write real Realm fixture files into a temporary directory
+# scoped to the test. Nothing here touches the simulator's real on-disk store.
+#
+# `-parallel-testing-enabled NO` is load-bearing for more than speed: it is also what
+# keeps Swift Testing, which parallelizes within the process by default, running the
+# suite serially.
 #
 # DESTINATION, SIM_DERIVED, and SIM_RESULTS_DIR are set by _destination.sh.
 set -euo pipefail

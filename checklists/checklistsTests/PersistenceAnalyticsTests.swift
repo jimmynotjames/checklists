@@ -4,8 +4,9 @@
 //
 
 @testable import checklists
+import Foundation
 import SwiftData
-import XCTest
+import Testing
 
 /// Covers the analytics emitted by the three call sites that run before any SwiftUI environment
 /// exists (analytics-spec.md §7.3).
@@ -13,41 +14,42 @@ import XCTest
 /// These were untestable while they reached a static facade directly. Each now takes the client
 /// as a parameter defaulting to `AppAnalytics.shared`, which is what lets a spy be passed in here
 /// without changing how the app wires them.
-///
-/// See the note on `AnalyticsTextTests` for the `nonisolated` class / `@MainActor` method pattern.
-nonisolated final class PersistenceAnalyticsTests: XCTestCase {
+@Suite("Persistence and startup analytics")
+struct PersistenceAnalyticsTests {
   /// Both store paths failing is the only way the app cannot open a store at all — the event
   /// fires once, from the local fallback's catch, not once per attempted path.
-  @MainActor func testUnopenableStoreReportsFatalErrorOnce() {
+  @Test("an unopenable store reports a fatal-error event exactly once")
+  func unopenableStoreReportsFatalErrorOnce() {
     let spy = SpyAnalyticsClient()
     let failure = NSError(domain: "NSCocoaErrorDomain", code: 134_060)
 
-    XCTAssertThrowsError(
+    #expect(throws: (any Error).self) {
       try ProductionContainerFactory.make(
         cloud: { _ in throw failure },
         local: { _ in throw failure },
         analytics: spy
       )
-    )
+    }
 
-    XCTAssertEqual(spy.count(of: AnalyticsEvent.persistenceFatalError), 1)
-    XCTAssertEqual(spy.trackedEventNames, [AnalyticsEvent.persistenceFatalError])
+    #expect(spy.count(of: AnalyticsEvent.persistenceFatalError) == 1)
+    #expect(spy.trackedEventNames == [AnalyticsEvent.persistenceFatalError])
   }
 
-  @MainActor func testFatalErrorCarriesATruncatedErrorProperty() {
+  @Test("a fatal error's error property arrives as a string truncated to the max length")
+  func fatalErrorCarriesATruncatedErrorProperty() {
     let spy = SpyAnalyticsClient()
     let failure = NSError(
       domain: String(repeating: "D", count: 400),
       code: 1
     )
 
-    XCTAssertThrowsError(
+    #expect(throws: (any Error).self) {
       try ProductionContainerFactory.make(
         cloud: { _ in throw failure },
         local: { _ in throw failure },
         analytics: spy
       )
-    )
+    }
 
     // Asserted against the *raw* value, not its description: the backend drops a property whose
     // type it cannot represent, silently, so the type is part of the contract.
@@ -56,12 +58,13 @@ nonisolated final class PersistenceAnalyticsTests: XCTestCase {
       forFirst: AnalyticsEvent.persistenceFatalError,
       as: String.self
     )
-    XCTAssertNotNil(message, "The error property must arrive as a String.")
-    XCTAssertEqual(message?.count, AnalyticsText.maximumLength)
+    #expect(message != nil, "The error property must arrive as a String.")
+    #expect(message?.count == AnalyticsText.maximumLength)
   }
 
   /// A store that opens fine must emit nothing — the error events are not launch telemetry.
-  @MainActor func testSuccessfulStoreEmitsNoAnalytics() throws {
+  @Test("a store that opens successfully emits no analytics")
+  func successfulStoreEmitsNoAnalytics() throws {
     let spy = SpyAnalyticsClient()
     let stubContainer = try TestModelContainer.make()
 
@@ -71,12 +74,13 @@ nonisolated final class PersistenceAnalyticsTests: XCTestCase {
       analytics: spy
     )
 
-    XCTAssertTrue(spy.calls.isEmpty)
+    #expect(spy.calls.isEmpty)
   }
 
   // MARK: - Startup coordinator
 
-  @MainActor func testFailedStartupReportsStartupFailed() {
+  @Test("a failed startup reports the startup-failed event")
+  func failedStartupReportsStartupFailed() {
     let spy = SpyAnalyticsClient()
     let coordinator = AppStartupCoordinator(
       makeContainer: { throw NSError(domain: "NSCocoaErrorDomain", code: 134_060) },
@@ -84,16 +88,18 @@ nonisolated final class PersistenceAnalyticsTests: XCTestCase {
     )
 
     guard case .failed = coordinator.run() else {
-      return XCTFail("Expected the coordinator to report failure.")
+      Issue.record("Expected the coordinator to report failure.")
+      return
     }
 
-    XCTAssertEqual(spy.trackedEventNames, [AnalyticsEvent.startupFailed])
-    XCTAssertNotNil(spy.properties(forFirst: AnalyticsEvent.startupFailed)?[AnalyticsProperty.error])
+    #expect(spy.trackedEventNames == [AnalyticsEvent.startupFailed])
+    #expect(spy.properties(forFirst: AnalyticsEvent.startupFailed)?[AnalyticsProperty.error] != nil)
   }
 
   /// `startup_failed` is the measure of how often someone is shown the failure screen instead of
   /// their checklists, so it must not fire on a launch that succeeded.
-  @MainActor func testSuccessfulStartupEmitsNoAnalytics() throws {
+  @Test("a successful startup emits no analytics")
+  func successfulStartupEmitsNoAnalytics() throws {
     let spy = SpyAnalyticsClient()
     let stubContainer = try TestModelContainer.make()
     let coordinator = AppStartupCoordinator(
@@ -102,9 +108,10 @@ nonisolated final class PersistenceAnalyticsTests: XCTestCase {
     )
 
     guard case .ready = coordinator.run() else {
-      return XCTFail("Expected the coordinator to report readiness.")
+      Issue.record("Expected the coordinator to report readiness.")
+      return
     }
 
-    XCTAssertTrue(spy.calls.isEmpty)
+    #expect(spy.calls.isEmpty)
   }
 }

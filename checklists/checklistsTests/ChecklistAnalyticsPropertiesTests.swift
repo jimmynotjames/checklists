@@ -5,7 +5,7 @@
 
 @testable import checklists
 import SwiftData
-import XCTest
+import Testing
 
 /// Covers the two pure mappings that feed events: `Checklist.analyticsViewedProperties` and
 /// `orientationAnalyticsValue`.
@@ -13,18 +13,8 @@ import XCTest
 /// `analyticsViewedProperties` is also where this app's PII boundary is drawn in code
 /// (analytics-spec.md §4), so the negative assertions below — that no note text and no item name
 /// appears anywhere in the payload — are the point of the class, not padding.
-///
-/// See the note on `AnalyticsTextTests` for the `nonisolated` class / `@MainActor` method pattern.
-nonisolated final class ChecklistAnalyticsPropertiesTests: XCTestCase {
-  /// `ModelContext(container)` rather than `container.mainContext`: the context initializer
-  /// retains its container, whereas chaining off `.mainContext` lets the container deallocate at
-  /// the end of the statement and the context crashes on first use. Same helper the other model
-  /// test classes use.
-  @MainActor private func makeContext() throws -> ModelContext {
-    try ModelContext(TestModelContainer.make())
-  }
-
-  @MainActor
+@Suite("Checklist analytics property mapping")
+struct ChecklistAnalyticsPropertiesTests {
   private func makeChecklist(
     in context: ModelContext,
     name: String,
@@ -43,8 +33,9 @@ nonisolated final class ChecklistAnalyticsPropertiesTests: XCTestCase {
     return checklist
   }
 
-  @MainActor func testCountsItemsAndNotes() throws {
-    let context = try makeContext()
+  @Test("checklist analytics properties count items and notes")
+  func countsItemsAndNotes() throws {
+    let context = try TestModelContainer.makeContext()
     let checklist = makeChecklist(
       in: context,
       name: "Camping",
@@ -54,40 +45,42 @@ nonisolated final class ChecklistAnalyticsPropertiesTests: XCTestCase {
 
     let properties = checklist.analyticsViewedProperties
 
-    XCTAssertEqual(properties[AnalyticsProperty.checklistName] as? String, "Camping")
-    XCTAssertEqual(properties[AnalyticsProperty.notesLength] as? Int, "four nights".count)
-    XCTAssertEqual(properties[AnalyticsProperty.itemsCount] as? Int, 3)
-    XCTAssertEqual(
-      properties[AnalyticsProperty.itemsWithNotesCount] as? Int,
-      1,
+    #expect(properties[AnalyticsProperty.checklistName] as? String == "Camping")
+    #expect(properties[AnalyticsProperty.notesLength] as? Int == "four nights".count)
+    #expect(properties[AnalyticsProperty.itemsCount] as? Int == 3)
+    #expect(
+      properties[AnalyticsProperty.itemsWithNotesCount] as? Int == 1,
       "An empty-string note is not a note."
     )
   }
 
-  @MainActor func testAbsentNotesLengthIsZeroNotNil() throws {
-    let context = try makeContext()
+  @Test("absent notes report a notes length of zero, not nil")
+  func absentNotesLengthIsZeroNotNil() throws {
+    let context = try TestModelContainer.makeContext()
     let checklist = makeChecklist(in: context, name: "Groceries", notes: nil)
 
     let properties = checklist.analyticsViewedProperties
 
-    XCTAssertEqual(properties[AnalyticsProperty.notesLength] as? Int, 0)
-    XCTAssertEqual(properties[AnalyticsProperty.itemsCount] as? Int, 0)
-    XCTAssertEqual(properties[AnalyticsProperty.itemsWithNotesCount] as? Int, 0)
+    #expect(properties[AnalyticsProperty.notesLength] as? Int == 0)
+    #expect(properties[AnalyticsProperty.itemsCount] as? Int == 0)
+    #expect(properties[AnalyticsProperty.itemsWithNotesCount] as? Int == 0)
   }
 
-  @MainActor func testLongNameIsTruncated() throws {
-    let context = try makeContext()
+  @Test("an overlong checklist name is truncated")
+  func longNameIsTruncated() throws {
+    let context = try TestModelContainer.makeContext()
     let checklist = makeChecklist(in: context, name: String(repeating: "n", count: 300))
 
     let name = checklist.analyticsViewedProperties[AnalyticsProperty.checklistName] as? String
 
-    XCTAssertEqual(name?.count, AnalyticsText.maximumLength)
+    #expect(name?.count == AnalyticsText.maximumLength)
   }
 
   /// The deny-list, asserted directly: item names and every kind of note text must be absent from
   /// the payload entirely, not merely unread by the current dashboard queries.
-  @MainActor func testNoItemNamesOrNoteTextIsIncluded() throws {
-    let context = try makeContext()
+  @Test("item names and note text are excluded from analytics properties")
+  func noItemNamesOrNoteTextIsIncluded() throws {
+    let context = try TestModelContainer.makeContext()
     let checklist = makeChecklist(
       in: context,
       name: "Trip",
@@ -99,42 +92,46 @@ nonisolated final class ChecklistAnalyticsPropertiesTests: XCTestCase {
       .map { "\($0.key)=\(String(describing: $0.value))" }
       .joined(separator: "&")
 
-    XCTAssertFalse(rendered.contains("SECRET_ITEM_NAME"))
-    XCTAssertFalse(rendered.contains("SECRET_ITEM_NOTE"))
-    XCTAssertFalse(rendered.contains("SECRET_CHECKLIST_NOTE"))
-    XCTAssertTrue(rendered.contains("Trip"), "The checklist name is the one allow-listed free text.")
+    #expect(!rendered.contains("SECRET_ITEM_NAME"))
+    #expect(!rendered.contains("SECRET_ITEM_NOTE"))
+    #expect(!rendered.contains("SECRET_CHECKLIST_NOTE"))
+    #expect(rendered.contains("Trip"), "The checklist name is the one allow-listed free text.")
   }
 
   // MARK: - Orientation
 
-  @MainActor func testPortraitOrientationsMapToPortrait() {
-    XCTAssertEqual(orientationAnalyticsValue(.portrait), "portrait")
-    XCTAssertEqual(orientationAnalyticsValue(.portraitUpsideDown), "portrait")
+  @Test("portrait orientations map to portrait")
+  func portraitOrientationsMapToPortrait() {
+    #expect(orientationAnalyticsValue(.portrait) == "portrait")
+    #expect(orientationAnalyticsValue(.portraitUpsideDown) == "portrait")
   }
 
-  @MainActor func testLandscapeOrientationsMapToLandscape() {
-    XCTAssertEqual(orientationAnalyticsValue(.landscapeLeft), "landscape")
-    XCTAssertEqual(orientationAnalyticsValue(.landscapeRight), "landscape")
+  @Test("landscape orientations map to landscape")
+  func landscapeOrientationsMapToLandscape() {
+    #expect(orientationAnalyticsValue(.landscapeLeft) == "landscape")
+    #expect(orientationAnalyticsValue(.landscapeRight) == "landscape")
   }
 
   /// Laying the device flat fires the same notification as a real rotation but says nothing about
   /// how the app is being held, so it must produce no event at all.
-  @MainActor func testFlatAndUnknownOrientationsAreDropped() {
-    XCTAssertNil(orientationAnalyticsValue(.faceUp))
-    XCTAssertNil(orientationAnalyticsValue(.faceDown))
-    XCTAssertNil(orientationAnalyticsValue(.unknown))
+  @Test("flat and unknown orientations are dropped")
+  func flatAndUnknownOrientationsAreDropped() {
+    #expect(orientationAnalyticsValue(.faceUp) == nil)
+    #expect(orientationAnalyticsValue(.faceDown) == nil)
+    #expect(orientationAnalyticsValue(.unknown) == nil)
   }
 
   // MARK: - Cohort bucketing
 
-  @MainActor func testChecklistsCountBucketBoundaries() {
-    XCTAssertEqual(checklistsCountBucket(0), "0")
-    XCTAssertEqual(checklistsCountBucket(1), "1")
-    XCTAssertEqual(checklistsCountBucket(2), "2-3")
-    XCTAssertEqual(checklistsCountBucket(3), "2-3")
-    XCTAssertEqual(checklistsCountBucket(4), "4-7")
-    XCTAssertEqual(checklistsCountBucket(7), "4-7")
-    XCTAssertEqual(checklistsCountBucket(8), "8+")
-    XCTAssertEqual(checklistsCountBucket(999), "8+")
+  @Test("checklistsCountBucket boundaries")
+  func checklistsCountBucketBoundaries() {
+    #expect(checklistsCountBucket(0) == "0")
+    #expect(checklistsCountBucket(1) == "1")
+    #expect(checklistsCountBucket(2) == "2-3")
+    #expect(checklistsCountBucket(3) == "2-3")
+    #expect(checklistsCountBucket(4) == "4-7")
+    #expect(checklistsCountBucket(7) == "4-7")
+    #expect(checklistsCountBucket(8) == "8+")
+    #expect(checklistsCountBucket(999) == "8+")
   }
 }

@@ -5,7 +5,8 @@
 
 @testable import checklists
 import SwiftData
-import XCTest
+import Testing
+import UIKit
 
 /// Covers what `ChecklistViewController` does when an item reorder cannot be saved.
 ///
@@ -16,12 +17,10 @@ import XCTest
 /// These tests deliberately never load the view. `tableView(_:moveRowAt:to:)` reads only the
 /// checklist and that closure, so leaving the view unloaded keeps the test away from
 /// `PersistenceController.shared`, which is not installed in this target.
-///
-/// See the note on `DataModelTests` for why this class is `nonisolated` at the type level with
-/// `@MainActor` test methods.
-nonisolated final class ChecklistReorderFailureTests: XCTestCase {
+@Suite("Recovering from a failed item reorder save")
+struct ChecklistReorderFailureTests {
   /// Records resync requests instead of touching a table view that was never loaded.
-  @MainActor private final class SpyViewController: ChecklistViewController {
+  private final class SpyViewController: ChecklistViewController {
     var resyncCount = 0
 
     override func resyncAfterFailedMove() {
@@ -35,7 +34,6 @@ nonisolated final class ChecklistReorderFailureTests: XCTestCase {
   private let destinationIndexPath = IndexPath(row: 2, section: 0)
 
   /// A checklist with three named items, in a container that lives only for this test.
-  @MainActor
   private func makeChecklist() throws -> (Checklist, ModelContext) {
     let container = try TestModelContainer.make()
     let context = ModelContext(container)
@@ -52,26 +50,25 @@ nonisolated final class ChecklistReorderFailureTests: XCTestCase {
     return (checklist, context)
   }
 
-  @MainActor
   private func makeViewController(for checklist: Checklist) -> SpyViewController {
     let viewController = SpyViewController()
     viewController.checklist = checklist
     return viewController
   }
 
-  @MainActor
-  func testFailedMoveAsksForAResync() throws {
+  @Test("a failed move asks for a resync")
+  func failedMoveAsksForAResync() throws {
     let (checklist, _) = try makeChecklist()
     let viewController = makeViewController(for: checklist)
     viewController.saveItemMove = { _, _, _ in throw SaveFailure() }
 
     viewController.tableView(UITableView(), moveRowAt: sourceIndexPath, to: destinationIndexPath)
 
-    XCTAssertEqual(viewController.resyncCount, 1, "A move that could not be saved must resync the table from the store.")
+    #expect(viewController.resyncCount == 1, "A move that could not be saved must resync the table from the store.")
   }
 
-  @MainActor
-  func testSuccessfulMoveDoesNotResync() throws {
+  @Test("a successful move does not resync")
+  func successfulMoveDoesNotResync() throws {
     let (checklist, _) = try makeChecklist()
     let viewController = makeViewController(for: checklist)
     var recordedIndex: Int?
@@ -79,23 +76,23 @@ nonisolated final class ChecklistReorderFailureTests: XCTestCase {
 
     viewController.tableView(UITableView(), moveRowAt: sourceIndexPath, to: destinationIndexPath)
 
-    XCTAssertEqual(recordedIndex, destinationIndexPath.row, "The destination row is what the reorder helper expects as its index.")
-    XCTAssertEqual(viewController.resyncCount, 0, "A save that succeeded leaves the table agreeing with the store already.")
+    #expect(recordedIndex == destinationIndexPath.row, "The destination row is what the reorder helper expects as its index.")
+    #expect(viewController.resyncCount == 0, "A save that succeeded leaves the table agreeing with the store already.")
   }
 
   /// `saveMove` reports the outcome so the drop path can decline to move a row it failed to save;
   /// that path itself needs a `UITableViewDropCoordinator`, which cannot be constructed in a test.
-  @MainActor
-  func testSaveMoveReportsWhetherItSaved() throws {
+  @Test("saveMove reports whether it saved")
+  func saveMoveReportsWhetherItSaved() throws {
     let (checklist, _) = try makeChecklist()
     let viewController = makeViewController(for: checklist)
     let items = checklist.items
 
     viewController.saveItemMove = { _, _, _ in }
-    XCTAssertTrue(viewController.saveMove(of: items[0], among: items, to: 2))
+    #expect(viewController.saveMove(of: items[0], among: items, to: 2))
 
     viewController.saveItemMove = { _, _, _ in throw SaveFailure() }
-    XCTAssertFalse(viewController.saveMove(of: items[0], among: items, to: 2))
+    #expect(!viewController.saveMove(of: items[0], among: items, to: 2))
   }
 
   // MARK: - The restore itself
@@ -104,25 +101,25 @@ nonisolated final class ChecklistReorderFailureTests: XCTestCase {
   /// order back out of the context rather than off disk, so a failed save has to leave those keys
   /// exactly as it found them — otherwise the unsaved order goes on being displayed as though it
   /// had been written.
-  @MainActor
-  func testFailedSaveLeavesEverySortKeyAsItWas() throws {
+  @Test("a failed save leaves every sort key as it was")
+  func failedSaveLeavesEverySortKeyAsItWas() throws {
     let (checklist, context) = try makeChecklist()
     let items = checklist.items
     let keysBefore = items.map(\.sortKey)
 
-    XCTAssertThrowsError(
+    #expect(throws: (any Error).self) {
       try context.placeAndSave(items[0], at: 2, among: Array(items.dropFirst()), restoringSortKeysOf: items) {
         throw SaveFailure()
       }
-    )
+    }
 
-    XCTAssertEqual(items.map(\.sortKey), keysBefore)
-    XCTAssertEqual(checklist.items.map(\.name), ["first", "second", "third"], "The displayed order comes from those keys, so it must be unchanged too.")
+    #expect(items.map(\.sortKey) == keysBefore)
+    #expect(checklist.items.map(\.name) == ["first", "second", "third"], "The displayed order comes from those keys, so it must be unchanged too.")
   }
 
   /// The same path on success, to prove the restore is not simply undoing every move.
-  @MainActor
-  func testSuccessfulSaveKeepsTheNewOrder() throws {
+  @Test("a successful save keeps the new order")
+  func successfulSaveKeepsTheNewOrder() throws {
     let (checklist, context) = try makeChecklist()
     let items = checklist.items
 
@@ -130,6 +127,6 @@ nonisolated final class ChecklistReorderFailureTests: XCTestCase {
       try context.save()
     }
 
-    XCTAssertEqual(checklist.items.map(\.name), ["second", "third", "first"])
+    #expect(checklist.items.map(\.name) == ["second", "third", "first"])
   }
 }

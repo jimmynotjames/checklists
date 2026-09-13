@@ -4,14 +4,12 @@
 //
 
 @testable import checklists
-import XCTest
+import Testing
 
 /// Pins the jurisdiction lookup in core-docs/analytics-spec.md §6.2, including the
 /// conservative default for an unrecognized region — the easiest behaviour to regress.
-///
-/// See the note on `AnalyticsTextTests` for the `nonisolated` class / `@MainActor` method
-/// pattern.
-nonisolated final class ConsentJurisdictionTests: XCTestCase {
+@Suite("Consent jurisdiction lookup")
+struct ConsentJurisdictionTests {
   private static let strictCodes = [
     // European Union
     "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT",
@@ -24,21 +22,24 @@ nonisolated final class ConsentJurisdictionTests: XCTestCase {
     "CH", "KR", "CN", "BR", "TR", "TH", "CA",
   ]
 
-  @MainActor func testEveryStrictCodeResolvesToRequired() {
+  @Test("every strict code resolves to required")
+  func everyStrictCodeResolvesToRequired() {
     for code in Self.strictCodes {
-      XCTAssertEqual(ConsentJurisdiction.kind(for: code), .required, "Regressed for \(code).")
+      #expect(ConsentJurisdiction.kind(for: code) == .required, "Regressed for \(code).")
     }
   }
 
-  @MainActor func testRepresentativeAutoOptinRegions() {
+  @Test("representative regions resolve to auto opt-in")
+  func representativeAutoOptinRegions() {
     for code in ["US", "JP", "AU", "IN", "MX", "ZA"] {
-      XCTAssertEqual(ConsentJurisdiction.kind(for: code), .autoOptin, "Regressed for \(code).")
+      #expect(ConsentJurisdiction.kind(for: code) == .autoOptin, "Regressed for \(code).")
     }
   }
 
   /// A device with no resolvable region (`Locale.current.region` is `nil`) must resolve to the
   /// conservative default, not to auto opt-in.
-  @MainActor func testNilRegionResolvesToRequired() {
-    XCTAssertEqual(ConsentJurisdiction.kind(for: nil), .required)
+  @Test("a nil region resolves to required, the conservative default")
+  func nilRegionResolvesToRequired() {
+    #expect(ConsentJurisdiction.kind(for: nil) == .required)
   }
 }

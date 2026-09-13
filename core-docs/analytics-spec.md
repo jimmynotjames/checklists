@@ -564,9 +564,26 @@ events arrive with the right properties before a release.
 
 ## 13. Test strategy
 
-The suite is 100% XCTest, in the house pattern (`nonisolated final class … : XCTestCase` with
-`@MainActor` on each test method, forced by `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`). **Do not
-introduce Swift Testing** — that is a `budgets1` convention that does not apply here.
+**Unit tests are Swift Testing** (`@Suite` / `@Test` / `#expect`), matching `budgets1`.
+`checklistsTests` was converted wholesale in
+[#176](https://github.com/jimmynotjames/checklists/issues/176) — nothing in the unit target imports
+`XCTest` any more.
+
+`checklistsUITests` stays XCTest **permanently**: Swift Testing has no `XCUIApplication`
+equivalent, so a UI test bundle has no alternative. `budgets1` keeps its UI bundle on XCTest for
+the same reason.
+
+Suites need no isolation annotations. `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` already isolates
+a `struct` declared in this target, which is what the SwiftData and UIKit code under test requires.
+The type-level `nonisolated` plus per-method `@MainActor` that the XCTest suite carried — 266
+annotations — existed only to satisfy `XCTestCase`'s nonisolated designated initializers; a struct
+has no such base class. See AGENTS.md §Concurrency.
+
+Per-test fixtures come from `Helpers/TestScope.swift` — `withTemporaryDirectory` and
+`withIsolatedDefaults` hand a scratch directory or an isolated `UserDefaults` to the test and clean
+up in `defer`. A Swift Testing suite is a struct with no `deinit`, so there is nowhere to tear down
+from; scoping the fixture is the replacement for `setUp`/`tearDown`, and it also retires the
+implicitly-unwrapped `var`s the XCTest suites stored fixtures in.
 
 `SpyAnalyticsClient` records an **ordered list of calls**, not parallel per-method arrays. This
 matters: it is what lets §6.3's ordering contract be asserted against real production code rather
@@ -681,7 +698,6 @@ binary's privacy manifest at review time.
 | All consent copy in `Localizable.xcstrings` | English string literals | No localization infrastructure at all; five keyed strings among ~200 literals is worse than either standard. Follow-up issue. |
 | Sheet triggered after the first `budget_created` | After the first `checklist_viewed` on an existing checklist | Sample checklists are seeded, so creation may never happen (§6.2) |
 | `IS_TESTING` env var only | `-UITests1` **or** `IS_TESTING` | The XCUITest bundle passes only the launch argument (§7.1) |
-| Swift Testing | XCTest | The whole suite is XCTest (§13) |
 | Analytics and `OSLog` both in `Logging/` | Analytics in `Analytics/`, `OSLog` in `Logging/` | Both docs insist the channels are independent — let the directories say so (§11) |
 | One collected data type; empty accessed-API array | Two data types; `UserDefaults` declared | `checklist_name` is user content; this app uses `UserDefaults` in four places (§10) |
 | `$(SRCROOT)/config/…` | `$(SRCROOT)/../config/…` | The Xcode project sits one level below the repo root (§10) |
