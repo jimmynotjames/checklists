@@ -21,18 +21,18 @@
 
 ## 1. Status by axis
 
-| Axis | Status | Where |
+| Axis | Status | Notes |
 | --- | --- | --- |
-| **VoiceOver labels/values** | Partial | `CheckboxButton`, `ItemContentView`, `ChecklistViewController`, `AnalyticsConsentSheet` |
-| **VoiceOver traits** | Not started | No `accessibilityTraits` anywhere; everything relies on default SwiftUI/UIKit traits |
-| **Reduce Motion** | Implemented | Two sites: `RootView` (menu transition) and `ChecklistViewController` (Reset scroll). Full inventory and verdicts in §3 |
-| **Dynamic Type** | Partial | SwiftUI uses semantic tokens (`ChecklistRowView`); UIKit hardcodes point sizes — §2.3. Issue **#183** |
-| **Dark Mode** | Not started | Forced off: `Info.plist` `UIUserInterfaceStyle = Light` (since `cc1bba2`). Issue **#180** |
-| **Increase Contrast** | Not started | No `isDarkerSystemColorsEnabled` call site. Issue **#182** |
-| **Touch targets (44×44)** | Not started | Issue **#184** |
-| **Color-only signaling** | N/A — none | Completion is an icon swap plus `accessibilityValue`, not tint alone (`CheckboxButton`) |
-| **Screen-change announcements** | Partial | One call site: `LoadingView` (`UIAccessibility.post(.screenChanged:)`) |
-| **Automated a11y tests** | Not started | No `performAccessibilityAudit`; UI tests use `accessibilityIdentifier`/`accessibilityValue` as element hooks only |
+| **VoiceOver labels/values** | Partial | Most interactive controls are labelled; the reordering gap and the remaining unlabelled controls are **#181** |
+| **VoiceOver traits** | Not started | No traits set anywhere; everything relies on platform defaults |
+| **Reduce Motion** | Implemented | Every app-authored animation has a recorded verdict — §3 |
+| **Dynamic Type** | Partial | SwiftUI scales via semantic tokens; UIKit hardcodes point sizes — §2.3, **#183** |
+| **Dark Mode** | Not started | The app is locked to Light appearance in `Info.plist` — **#180** |
+| **Increase Contrast** | Not started | **#182** |
+| **Touch targets (44×44)** | Not started | **#184** |
+| **Color-only signaling** | N/A — none | Completion state is an icon swap plus a spoken value, never tint alone |
+| **Screen-change announcements** | Partial | One screen announces its state change; the rest don't |
+| **Automated a11y tests** | Not started | No audit-API coverage; UI tests use accessibility attributes only as element hooks |
 
 Other `UIAccessibility` flags (`isVoiceOverRunning`, `isReduceTransparency`, `isBoldTextEnabled`,
 `shouldDifferentiateWithoutColor`, `accessibilityViewIsModal`) have **zero call sites**. Assume not
