@@ -51,23 +51,22 @@ git hooks. Run it once per clone.
 
 - **Unit tests are Swift Testing** — `@Suite` / `@Test` / `#expect`, structs with no base class and
   **no isolation annotations**: the target default already isolates them to the main actor, which is
-  what the SwiftData and UIKit code under test needs. Converted wholesale in
-  [#179](https://github.com/jimmynotjames/checklists/pull/179), with the reasoning in
-  [#176](https://github.com/jimmynotjames/checklists/issues/176). Don't write new ones in XCTest.
+  what the SwiftData and UIKit code under test needs. Don't write new ones in XCTest.
 - **Per-test fixtures come from `Helpers/TestScope.swift`**, not `setUp`/`tearDown` — a struct has no
   `deinit` to tear down in. `withTemporaryDirectory` and `withIsolatedDefaults` hand the fixture to
   the test and clean up in `defer`. `TestModelContainer.makeContext()` is the shared in-memory stack.
 - **`checklistsUITests` is XCTest and stays that way** — Swift Testing has no `XCUIApplication`
   equivalent, so a UI test bundle has no alternative. `budgets1` keeps its UI bundle on XCTest too.
 
-`checklistsUITests` needed no linkage changes; it was blocked only on the shared scheme's unit
-target failing to build, and on `test-ui`'s `warmed` sentinel (see `scripts/test-ui.sh`), both now
-resolved. Formerly tracked in
-[issue #116](https://github.com/jimmynotjames/checklists/issues/116), now closed.
-
 **Don't record test counts or test-class inventories here** — they go stale on every
 test-adding PR, and a wrong number in the docs is worse than no number. For the current
 counts, run the suites and read the result bundle (see below).
+
+**Don't record history here either.** This file is what to do now, so cite an issue or PR only when
+it still changes someone's behaviour: an open hazard, or a decision that would otherwise get quietly
+reverted (`#154` below is the example — it exists to stop the MainActor default being "cleaned up"
+again). Provenance for a change that is already done belongs in `git blame` and the PR, not here; a
+resolved blocker should be deleted rather than narrated as resolved.
 
 ### Reading a test result
 
