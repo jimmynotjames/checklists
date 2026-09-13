@@ -4,23 +4,11 @@
 //
 
 @testable import checklists
+import Foundation
 import RealmSwift
 import SwiftData
-import XCTest
+import Testing
 
-/**
- Covers the one-time copy out of the old Realm store — the only code path in the app that can lose
- a user's data, and the one that runs exactly once on a device we will never see.
-
- Each test builds a real Realm file in the test process's temporary directory, in the same shape
- v1.1.0 wrote, then imports it into an in-memory SwiftData container. The fixture is written
- through `LegacyGroup`/`LegacyChecklist`/`LegacyItem`, so these tests would also catch those
- declarations drifting away from the shipped schema.
-
- See the doc comment on `DataModelTests` for why this class — and every other `XCTestCase`
- subclass in this target — is `nonisolated` at the type level with individual `@MainActor` test
- methods and helpers.
- */
 private struct FixtureItem {
   let name: String
   var notes: String?
@@ -35,35 +23,31 @@ private struct FixtureChecklist {
   var sortNumber: Double = 0.0
 }
 
-nonisolated final class LegacyRealmImporterTests: XCTestCase {
-  private var fixtureDirectory: URL!
-  private var fixtureURL: URL!
-  private var suiteName: String!
-  private var userDefaults: UserDefaults!
+/**
+ Covers the one-time copy out of the old Realm store — the only code path in the app that can lose
+ a user's data, and the one that runs exactly once on a device we will never see.
 
-  override func setUpWithError() throws {
-    try super.setUpWithError()
-    fixtureDirectory = FileManager.default.temporaryDirectory
-      .appendingPathComponent("legacy-realm-\(UUID().uuidString)", isDirectory: true)
-    try FileManager.default.createDirectory(at: fixtureDirectory, withIntermediateDirectories: true)
-    fixtureURL = fixtureDirectory.appendingPathComponent("default.realm")
-
-    suiteName = "LegacyRealmImporterTests-\(UUID().uuidString)"
-    userDefaults = UserDefaults(suiteName: suiteName)
-  }
-
-  override func tearDownWithError() throws {
-    userDefaults.removePersistentDomain(forName: suiteName)
-    userDefaults = nil
-    try? FileManager.default.removeItem(at: fixtureDirectory)
-    fixtureDirectory = nil
-    fixtureURL = nil
-    try super.tearDownWithError()
+ Each test builds a real Realm file in the test process's temporary directory, in the same shape
+ v1.1.0 wrote, then imports it into an in-memory SwiftData container. The fixture is written
+ through `LegacyGroup`/`LegacyChecklist`/`LegacyItem`, so these tests would also catch those
+ declarations drifting away from the shipped schema.
+ */
+@Suite("Legacy Realm import")
+struct LegacyRealmImporterTests {
+  /// The per-test fixture: a scratch directory holding the legacy `default.realm` the importer
+  /// reads, plus a `UserDefaults` on its own suite so the completion flag can be observed
+  /// without touching `.standard`.
+  private func withFixture(_ body: (URL, UserDefaults) throws -> Void) throws {
+    try TestScope.withTemporaryDirectory("legacy-realm") { directory in
+      try TestScope.withIsolatedDefaults("LegacyRealmImporterTests") { userDefaults in
+        try body(directory.appendingPathComponent("default.realm"), userDefaults)
+      }
+    }
   }
 
   // MARK: - Helpers
 
-  @MainActor private func legacyConfiguration() -> Realm.Configuration {
+  private func legacyConfiguration(fixtureURL: URL) -> Realm.Configuration {
     LegacyRealmImporter.legacyConfiguration(fileURL: fixtureURL)
   }
 
@@ -71,12 +55,13 @@ nonisolated final class LegacyRealmImporterTests: XCTestCase {
   ///
   /// - Parameter unlinkedChecklistNames: checklists written to the file but deliberately left out
   ///   of the `Group`, to stand in for a store that lost its ordering link.
-  @MainActor private func writeFixture(
+  private func writeFixture(
+    fixtureURL: URL,
     checklists: [FixtureChecklist],
     unlinkedChecklistNames: [String] = [],
     includeGroup: Bool = true
   ) throws {
-    let realm = try Realm(configuration: legacyConfiguration())
+    let realm = try Realm(configuration: legacyConfiguration(fixtureURL: fixtureURL))
     try realm.write {
       let group = LegacyGroup()
       for checklist in checklists {
@@ -110,15 +95,11 @@ nonisolated final class LegacyRealmImporterTests: XCTestCase {
     }
   }
 
-  @MainActor private func makeContext() throws -> ModelContext {
-    try ModelContext(TestModelContainer.make())
-  }
-
-  @MainActor private func runImport(into context: ModelContext) throws {
+  private func runImport(into context: ModelContext, fixtureURL: URL, userDefaults: UserDefaults) throws {
     try LegacyRealmImporter.importIfNeeded(
       into: context,
       userDefaults: userDefaults,
-      configuration: legacyConfiguration()
+      configuration: legacyConfiguration(fixtureURL: fixtureURL)
     )
   }
 
@@ -128,181 +109,220 @@ nonisolated final class LegacyRealmImporterTests: XCTestCase {
   /// SwiftData models. Realm names its tables after the Objective-C runtime name, so each class
   /// carries an `@objc(...)` attribute to keep the on-disk names as they shipped. If this fails,
   /// every existing user's store has become unreadable.
-  @MainActor func testLegacyClassNamesMatchTheShippedSchema() {
-    XCTAssertEqual(LegacyGroup.className(), "Group")
-    XCTAssertEqual(LegacyChecklist.className(), "Checklist")
-    XCTAssertEqual(LegacyItem.className(), "Item")
+  @Test("legacy class names match the shipped schema")
+  func legacyClassNamesMatchTheShippedSchema() {
+    #expect(LegacyGroup.className() == "Group")
+    #expect(LegacyChecklist.className() == "Checklist")
+    #expect(LegacyItem.className() == "Item")
   }
 
   // MARK: - Ordering and content
 
-  @MainActor func testImportPreservesChecklistOrderFromTheGroup() throws {
-    try writeFixture(checklists: [
-      FixtureChecklist(name: "Groceries"),
-      FixtureChecklist(name: "Packing", notes: "for the trip"),
-      FixtureChecklist(name: "Chores"),
-    ])
-    let context = try makeContext()
+  @Test("import preserves checklist order from the group")
+  func importPreservesChecklistOrderFromTheGroup() throws {
+    try withFixture { fixtureURL, userDefaults in
+      try writeFixture(fixtureURL: fixtureURL, checklists: [
+        FixtureChecklist(name: "Groceries"),
+        FixtureChecklist(name: "Packing", notes: "for the trip"),
+        FixtureChecklist(name: "Chores"),
+      ])
+      let context = try TestModelContainer.makeContext()
 
-    try runImport(into: context)
+      try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults)
 
-    let imported = try context.fetchChecklistsSorted()
-    XCTAssertEqual(imported.map(\.name), ["Groceries", "Packing", "Chores"])
-    XCTAssertEqual(imported[1].notes, "for the trip")
-    XCTAssertNil(imported[0].notes)
+      let imported = try context.fetchChecklistsSorted()
+      #expect(imported.map(\.name) == ["Groceries", "Packing", "Chores"])
+      #expect(imported[1].notes == "for the trip")
+      #expect(imported[0].notes == nil)
+    }
   }
 
-  @MainActor func testImportPreservesItemOrderNotesAndStatuses() throws {
-    try writeFixture(checklists: [
-      FixtureChecklist(name: "Packing", items: [
-        FixtureItem(name: "Passport", notes: "in the drawer", statusRaw: 1),
-        FixtureItem(name: "Charger"),
-        FixtureItem(name: "Tickets", statusRaw: 1),
-      ]),
-    ])
-    let context = try makeContext()
+  @Test("import preserves item order, notes, and statuses")
+  func importPreservesItemOrderNotesAndStatuses() throws {
+    try withFixture { fixtureURL, userDefaults in
+      try writeFixture(fixtureURL: fixtureURL, checklists: [
+        FixtureChecklist(name: "Packing", items: [
+          FixtureItem(name: "Passport", notes: "in the drawer", statusRaw: 1),
+          FixtureItem(name: "Charger"),
+          FixtureItem(name: "Tickets", statusRaw: 1),
+        ]),
+      ])
+      let context = try TestModelContainer.makeContext()
 
-    try runImport(into: context)
+      try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults)
 
-    let checklist = try XCTUnwrap(try context.fetchChecklistsSorted().first)
-    XCTAssertEqual(checklist.items.map(\.name), ["Passport", "Charger", "Tickets"])
-    XCTAssertEqual(checklist.items.map(\.status), [.checked, .unchecked, .checked])
-    XCTAssertEqual(checklist.items[0].notes, "in the drawer")
-    XCTAssertNil(checklist.items[1].notes)
+      let checklist = try #require(context.fetchChecklistsSorted().first)
+      #expect(checklist.items.map(\.name) == ["Passport", "Charger", "Tickets"])
+      #expect(checklist.items.map(\.status) == [.checked, .unchecked, .checked])
+      #expect(checklist.items[0].notes == "in the drawer")
+      #expect(checklist.items[1].notes == nil)
+    }
   }
 
   /// Sort keys have to be distinct and ascending, or the order above is luck rather than data.
-  @MainActor func testImportAssignsAscendingSortKeys() throws {
-    try writeFixture(checklists: [
-      FixtureChecklist(name: "One", items: [FixtureItem(name: "a"), FixtureItem(name: "b")]),
-      FixtureChecklist(name: "Two"),
-    ])
-    let context = try makeContext()
+  @Test("import assigns ascending sort keys")
+  func importAssignsAscendingSortKeys() throws {
+    try withFixture { fixtureURL, userDefaults in
+      try writeFixture(fixtureURL: fixtureURL, checklists: [
+        FixtureChecklist(name: "One", items: [FixtureItem(name: "a"), FixtureItem(name: "b")]),
+        FixtureChecklist(name: "Two"),
+      ])
+      let context = try TestModelContainer.makeContext()
 
-    try runImport(into: context)
+      try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults)
 
-    let imported = try context.fetchChecklistsSorted()
-    // Checklist keys are relative to a random per-import block (see `randomImportSortKeyBase`), so
-    // assert the spacing rather than absolute values.
-    XCTAssertEqual(imported.count, 2)
-    XCTAssertEqual(imported[1].sortKey - imported[0].sortKey, SortKeyReorder.step)
-    XCTAssertGreaterThanOrEqual(imported[0].sortKey, SortKeyReorder.step)
-    // Items are scoped to one checklist from one device, so they always start at 1.0.
-    XCTAssertEqual(imported[0].items.map(\.sortKey), [1.0, 2.0])
+      let imported = try context.fetchChecklistsSorted()
+      // Checklist keys are relative to a random per-import block (see `randomImportSortKeyBase`), so
+      // assert the spacing rather than absolute values.
+      #expect(imported.count == 2)
+      #expect(imported[1].sortKey - imported[0].sortKey == SortKeyReorder.step)
+      #expect(imported[0].sortKey >= SortKeyReorder.step)
+      // Items are scoped to one checklist from one device, so they always start at 1.0.
+      #expect(imported[0].items.map(\.sortKey) == [1.0, 2.0])
+    }
   }
 
   /// Relationship wiring: items must come back through the parent, not just exist.
-  @MainActor func testImportedItemsAreLinkedToTheirChecklist() throws {
-    try writeFixture(checklists: [
-      FixtureChecklist(name: "One", items: [FixtureItem(name: "a")]),
-      FixtureChecklist(name: "Two", items: [FixtureItem(name: "b")]),
-    ])
-    let context = try makeContext()
+  @Test("imported items are linked to their checklist")
+  func importedItemsAreLinkedToTheirChecklist() throws {
+    try withFixture { fixtureURL, userDefaults in
+      try writeFixture(fixtureURL: fixtureURL, checklists: [
+        FixtureChecklist(name: "One", items: [FixtureItem(name: "a")]),
+        FixtureChecklist(name: "Two", items: [FixtureItem(name: "b")]),
+      ])
+      let context = try TestModelContainer.makeContext()
 
-    try runImport(into: context)
+      try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults)
 
-    let imported = try context.fetchChecklistsSorted()
-    XCTAssertEqual(imported[0].items.map(\.name), ["a"])
-    XCTAssertEqual(imported[1].items.map(\.name), ["b"])
-    XCTAssertEqual(imported[0].items.first?.checklist?.name, "One")
+      let imported = try context.fetchChecklistsSorted()
+      #expect(imported[0].items.map(\.name) == ["a"])
+      #expect(imported[1].items.map(\.name) == ["b"])
+      #expect(imported[0].items.first?.checklist?.name == "One")
+    }
   }
 
-  @MainActor func testChecklistsMissingFromTheGroupAreAppendedRatherThanDropped() throws {
-    try writeFixture(
-      checklists: [FixtureChecklist(name: "Linked")],
-      unlinkedChecklistNames: ["Orphan"]
-    )
-    let context = try makeContext()
+  @Test("checklists missing from the group are appended rather than dropped")
+  func checklistsMissingFromTheGroupAreAppendedRatherThanDropped() throws {
+    try withFixture { fixtureURL, userDefaults in
+      try writeFixture(
+        fixtureURL: fixtureURL,
+        checklists: [FixtureChecklist(name: "Linked")],
+        unlinkedChecklistNames: ["Orphan"]
+      )
+      let context = try TestModelContainer.makeContext()
 
-    try runImport(into: context)
+      try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults)
 
-    XCTAssertEqual(try context.fetchChecklistsSorted().map(\.name), ["Linked", "Orphan"])
+      #expect(try context.fetchChecklistsSorted().map(\.name) == ["Linked", "Orphan"])
+    }
   }
 
   // MARK: - Idempotency and the completion flag
 
-  @MainActor func testSecondRunChangesNothing() throws {
-    try writeFixture(checklists: [
-      FixtureChecklist(name: "Packing", items: [FixtureItem(name: "Passport", statusRaw: 1)]),
-    ])
-    let context = try makeContext()
-    try runImport(into: context)
+  @Test("running the import a second time changes nothing")
+  func secondRunChangesNothing() throws {
+    try withFixture { fixtureURL, userDefaults in
+      try writeFixture(fixtureURL: fixtureURL, checklists: [
+        FixtureChecklist(name: "Packing", items: [FixtureItem(name: "Passport", statusRaw: 1)]),
+      ])
+      let context = try TestModelContainer.makeContext()
+      try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults)
 
-    // Clearing the flag forces the work to run a second time, standing in for a crash between the
-    // save and the flag reaching disk.
-    userDefaults.set(false, forKey: LegacyRealmImporter.completedFlagKey)
-    try runImport(into: context)
+      // Clearing the flag forces the work to run a second time, standing in for a crash between the
+      // save and the flag reaching disk.
+      userDefaults.set(false, forKey: LegacyRealmImporter.completedFlagKey)
+      try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults)
 
-    let imported = try context.fetchChecklistsSorted()
-    XCTAssertEqual(imported.count, 1)
-    XCTAssertEqual(imported.first?.items.count, 1)
+      let imported = try context.fetchChecklistsSorted()
+      #expect(imported.count == 1)
+      #expect(imported.first?.items.count == 1)
+    }
   }
 
-  @MainActor func testSuccessfulImportSetsTheCompletionFlag() throws {
-    try writeFixture(checklists: [FixtureChecklist(name: "Packing")])
-    let context = try makeContext()
+  @Test("a successful import sets the completion flag")
+  func successfulImportSetsTheCompletionFlag() throws {
+    try withFixture { fixtureURL, userDefaults in
+      try writeFixture(fixtureURL: fixtureURL, checklists: [FixtureChecklist(name: "Packing")])
+      let context = try TestModelContainer.makeContext()
 
-    try runImport(into: context)
+      try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults)
 
-    XCTAssertTrue(userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
-    XCTAssertFalse(LegacyRealmImporter.isNeeded(userDefaults: userDefaults, fileURL: fixtureURL))
+      #expect(userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
+      #expect(!LegacyRealmImporter.isNeeded(userDefaults: userDefaults, fileURL: fixtureURL))
+    }
   }
 
   /// A failed import must stay pending. Setting the flag on the way in would turn one bad launch
   /// into permanent data loss, because the Realm file would never be read again.
-  @MainActor func testFailedImportLeavesTheFlagUnsetSoItRetries() throws {
-    try Data("not a realm file".utf8).write(to: fixtureURL)
-    let context = try makeContext()
+  @Test("a failed import leaves the flag unset so it retries")
+  func failedImportLeavesTheFlagUnsetSoItRetries() throws {
+    try withFixture { fixtureURL, userDefaults in
+      try Data("not a realm file".utf8).write(to: fixtureURL)
+      let context = try TestModelContainer.makeContext()
 
-    XCTAssertThrowsError(try runImport(into: context))
+      #expect(throws: (any Error).self) { try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults) }
 
-    XCTAssertFalse(userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
-    XCTAssertTrue(LegacyRealmImporter.isNeeded(userDefaults: userDefaults, fileURL: fixtureURL))
+      #expect(!userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
+      #expect(LegacyRealmImporter.isNeeded(userDefaults: userDefaults, fileURL: fixtureURL))
+    }
   }
 
   /// A store with no `Group` was written before v1.1.0, which ordered checklists by `sortNumber`.
   /// Upgrading straight from that release is not a supported path, but the import still has to
   /// carry the data across: it runs once and then never reads the Realm file again, so anything it
   /// skips here is gone permanently.
-  @MainActor func testStoreWithNoGroupRecoversChecklistsBySortNumber() throws {
-    try writeFixture(
-      checklists: [
-        FixtureChecklist(name: "Third", sortNumber: 3.0),
-        FixtureChecklist(name: "First", items: [FixtureItem(name: "a")], sortNumber: 1.0),
-        FixtureChecklist(name: "Second", sortNumber: 2.0),
-      ],
-      includeGroup: false
-    )
-    let context = try makeContext()
+  @Test("a store with no group recovers checklists by sort number")
+  func storeWithNoGroupRecoversChecklistsBySortNumber() throws {
+    try withFixture { fixtureURL, userDefaults in
+      try writeFixture(
+        fixtureURL: fixtureURL,
+        checklists: [
+          FixtureChecklist(name: "Third", sortNumber: 3.0),
+          FixtureChecklist(name: "First", items: [FixtureItem(name: "a")], sortNumber: 1.0),
+          FixtureChecklist(name: "Second", sortNumber: 2.0),
+        ],
+        includeGroup: false
+      )
+      let context = try TestModelContainer.makeContext()
 
-    try runImport(into: context)
+      try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults)
 
-    let imported = try context.fetchChecklistsSorted()
-    XCTAssertEqual(imported.map(\.name), ["First", "Second", "Third"])
-    XCTAssertEqual(imported.first?.items.map(\.name), ["a"])
-    XCTAssertTrue(userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
+      let imported = try context.fetchChecklistsSorted()
+      #expect(imported.map(\.name) == ["First", "Second", "Third"])
+      #expect(imported.first?.items.map(\.name) == ["a"])
+      #expect(userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
+    }
   }
 
-  @MainActor func testEmptyStoreImportsNothingButStillCompletes() throws {
-    try writeFixture(checklists: [])
-    let context = try makeContext()
+  @Test("an empty store imports nothing but still completes")
+  func emptyStoreImportsNothingButStillCompletes() throws {
+    try withFixture { fixtureURL, userDefaults in
+      try writeFixture(fixtureURL: fixtureURL, checklists: [])
+      let context = try TestModelContainer.makeContext()
 
-    try runImport(into: context)
+      try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults)
 
-    XCTAssertEqual(try context.fetchChecklistsSorted().count, 0)
-    XCTAssertTrue(userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
+      #expect(try context.fetchChecklistsSorted().isEmpty)
+      #expect(userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
+    }
   }
 
   // MARK: - isNeeded
 
-  @MainActor func testImportIsNotNeededWhenNoLegacyFileExists() {
-    let missing = fixtureDirectory.appendingPathComponent("absent.realm")
-    XCTAssertFalse(LegacyRealmImporter.isNeeded(userDefaults: userDefaults, fileURL: missing))
+  @Test("import is not needed when no legacy file exists")
+  func importIsNotNeededWhenNoLegacyFileExists() throws {
+    try withFixture { fixtureURL, userDefaults in
+      let missing = fixtureURL.deletingLastPathComponent().appendingPathComponent("absent.realm")
+      #expect(!LegacyRealmImporter.isNeeded(userDefaults: userDefaults, fileURL: missing))
+    }
   }
 
-  @MainActor func testImportIsNotNeededOnceTheFlagIsSet() throws {
-    try writeFixture(checklists: [])
-    userDefaults.set(true, forKey: LegacyRealmImporter.completedFlagKey)
-    XCTAssertFalse(LegacyRealmImporter.isNeeded(userDefaults: userDefaults, fileURL: fixtureURL))
+  @Test("import is not needed once the flag is set")
+  func importIsNotNeededOnceTheFlagIsSet() throws {
+    try withFixture { fixtureURL, userDefaults in
+      try writeFixture(fixtureURL: fixtureURL, checklists: [])
+      userDefaults.set(true, forKey: LegacyRealmImporter.completedFlagKey)
+      #expect(!LegacyRealmImporter.isNeeded(userDefaults: userDefaults, fileURL: fixtureURL))
+    }
   }
 }

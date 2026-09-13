@@ -13,8 +13,8 @@ import Foundation
 /// event is sent *before* `reset()` — an ordering that parallel arrays cannot express, and which
 /// would otherwise have to be re-simulated inside the test rather than observed on real code.
 /// `@MainActor` so the recorded calls can be mutable state while still satisfying the protocol's
-/// `Sendable` requirement — the isolation is what makes it safe. Every test method is `@MainActor`
-/// already, so this costs call sites nothing.
+/// `Sendable` requirement — the isolation is what makes it safe, and it is not redundant with the
+/// target's default isolation. Suites are main-actor isolated too, so it costs call sites nothing.
 @MainActor
 final class SpyAnalyticsClient: AnalyticsClient {
   enum Call: Equatable {
@@ -30,7 +30,7 @@ final class SpyAnalyticsClient: AnalyticsClient {
 
   /// The raw property values, kept beside the `Equatable` `Call` list rather than inside it.
   ///
-  /// `Call` stringifies values so ordering can be asserted with a single `XCTAssertEqual`, but
+  /// `Call` stringifies values so ordering can be asserted with a single `#expect`, but
   /// stringifying makes `42` and `"42"` indistinguishable — and a wrong-typed property is the one
   /// failure the backend hides, dropping it silently rather than failing the build. Assert types
   /// through `rawProperty(_:forFirst:as:)`.

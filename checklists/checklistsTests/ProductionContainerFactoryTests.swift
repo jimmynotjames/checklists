@@ -4,22 +4,22 @@
 //
 
 @testable import checklists
+import Foundation
 import SwiftData
-import XCTest
+import Testing
 
 /// Covers `ProductionContainerFactory`'s branch selection and the store-URL invariant it depends
 /// on, using injected `MakeContainer` closures rather than the real on-disk store.
-///
-/// See the doc comment on `DataModelTests` for why this class is `nonisolated` at the type level
-/// with individual `@MainActor` test methods.
-nonisolated final class ProductionContainerFactoryTests: XCTestCase {
+@Suite("ProductionContainerFactory branch selection")
+struct ProductionContainerFactoryTests {
   /// CloudKit is the preferred store, so it must be attempted before the local fallback is even
   /// considered.
   ///
   /// (This replaces the tripwire that asserted the opposite while CloudKit was switched off. It was
   /// written to fail deliberately on the day the flag flipped, and it did.)
-  @MainActor func testCloudKitPathIsTriedFirst() throws {
-    XCTAssertTrue(ProductionContainerFactory.cloudKitEnabled)
+  @Test("CloudKit is tried before the local fallback")
+  func cloudKitPathIsTriedFirst() throws {
+    #expect(ProductionContainerFactory.cloudKitEnabled)
 
     let stubContainer = try TestModelContainer.make()
     var configurationOfferedToCloud: ModelConfiguration?
@@ -36,14 +36,15 @@ nonisolated final class ProductionContainerFactoryTests: XCTestCase {
       }
     )
 
-    XCTAssertEqual(result.backing, .cloudKit)
-    XCTAssertFalse(localAttempted, "The local fallback must not run when CloudKit succeeds.")
-    XCTAssertEqual(configurationOfferedToCloud?.url, ProductionContainerFactory.storeURL())
+    #expect(result.backing == .cloudKit)
+    #expect(!localAttempted, "The local fallback must not run when CloudKit succeeds.")
+    #expect(configurationOfferedToCloud?.url == ProductionContainerFactory.storeURL())
   }
 
   /// iCloud being unavailable is an ordinary state — no account, no network on a first launch, a
   /// simulator that has never signed in — and must degrade to the local store rather than failing.
-  @MainActor func testFallsBackToLocalWhenCloudKitIsUnavailable() throws {
+  @Test("an unavailable CloudKit falls back to the local store")
+  func fallsBackToLocalWhenCloudKitIsUnavailable() throws {
     let stubContainer = try TestModelContainer.make()
     var configurationOfferedToLocal: ModelConfiguration?
 
@@ -55,10 +56,9 @@ nonisolated final class ProductionContainerFactoryTests: XCTestCase {
       }
     )
 
-    XCTAssertEqual(result.backing, .localFallback)
-    XCTAssertEqual(
-      configurationOfferedToLocal?.url,
-      ProductionContainerFactory.storeURL(),
+    #expect(result.backing == .localFallback)
+    #expect(
+      configurationOfferedToLocal?.url == ProductionContainerFactory.storeURL(),
       "The fallback must open the same file, so a local-only session is promoted in place once iCloud returns."
     )
   }
@@ -66,24 +66,25 @@ nonisolated final class ProductionContainerFactoryTests: XCTestCase {
   /// This is the invariant that prevents an offline first launch from forking into a second,
   /// never-synced store: both configurations, and the shared `storeURL()` they are pinned to, must
   /// resolve to the exact same file.
-  @MainActor func testCloudAndLocalConfigurationsShareStoreURL() {
+  @Test("the cloud and local configurations share the same store URL")
+  func cloudAndLocalConfigurationsShareStoreURL() {
     let storeURL = ProductionContainerFactory.storeURL()
-    XCTAssertEqual(ProductionContainerFactory.cloudConfiguration().url, storeURL)
-    XCTAssertEqual(ProductionContainerFactory.localConfiguration().url, storeURL)
+    #expect(ProductionContainerFactory.cloudConfiguration().url == storeURL)
+    #expect(ProductionContainerFactory.localConfiguration().url == storeURL)
   }
 
-  @MainActor func testContainerCreationFailurePropagates() throws {
+  @Test("a container-creation failure from both branches propagates")
+  func containerCreationFailurePropagates() throws {
     let failingError = NSError(domain: "TestDomain", code: 42)
 
-    XCTAssertThrowsError(
+    let error = #expect(throws: (any Error).self) {
       try ProductionContainerFactory.make(
         cloud: { _ in throw failingError },
         local: { _ in throw failingError }
       )
-    ) { error in
-      let nsError = error as NSError
-      XCTAssertEqual(nsError.domain, "TestDomain")
-      XCTAssertEqual(nsError.code, 42)
     }
+    let nsError = error as NSError?
+    #expect(nsError?.domain == "TestDomain")
+    #expect(nsError?.code == 42)
   }
 }

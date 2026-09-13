@@ -5,14 +5,12 @@
 
 @testable import checklists
 import Foundation
-import XCTest
+import Testing
 
 /// Covers `AnalyticsSettings`'s locale-aware opt-in default, its non-persistence, the explicit
 /// override, and the stable, once-generated `distinct_id` (core-docs/analytics-spec.md §5, §6).
-///
-/// See the note on `AnalyticsTextTests` for the `nonisolated` class / `@MainActor` method
-/// pattern.
-nonisolated final class AnalyticsSettingsTests: XCTestCase {
+@Suite("Analytics settings")
+struct AnalyticsSettingsTests {
   /// The exact jurisdiction lookup `AnalyticsSettings` itself uses. Comparing against it, rather
   /// than a hardcoded `true`/`false`, keeps this test correct regardless of which region the
   /// test runner actually resolves to — `ConsentJurisdictionTests` covers the strict-vs-auto-optin
@@ -21,54 +19,61 @@ nonisolated final class AnalyticsSettingsTests: XCTestCase {
     ConsentJurisdiction.kind(for: Locale.current.region?.identifier) == .autoOptin
   }
 
-  @MainActor func testDefaultMatchesTheCurrentLocalesJurisdiction() {
+  @Test("the default opt-in matches the current locale's jurisdiction")
+  func defaultMatchesTheCurrentLocalesJurisdiction() {
     let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
 
-    XCTAssertEqual(settings.analyticsOptIn, currentLocaleDefault)
+    #expect(settings.analyticsOptIn == currentLocaleDefault)
   }
 
-  @MainActor func testResolvedDefaultIsNotWrittenToTheStore() {
+  @Test("the locale-resolved default is not written to the store")
+  func resolvedDefaultIsNotWrittenToTheStore() {
     let store = InMemoryKeyValueStore()
     _ = AnalyticsSettings(store: store)
 
-    XCTAssertNil(
-      store.object(forKey: AnalyticsSettings.analyticsOptInKey),
+    #expect(
+      store.object(forKey: AnalyticsSettings.analyticsOptInKey) == nil,
       "Writing the locale-resolved default would make every install look like it had already decided."
     )
   }
 
-  @MainActor func testExplicitValueOverridesTheLocaleDefault() {
+  @Test("an explicit value overrides the locale default")
+  func explicitValueOverridesTheLocaleDefault() {
     let store = InMemoryKeyValueStore()
     let explicitValue = !currentLocaleDefault
     store.set(explicitValue, forKey: AnalyticsSettings.analyticsOptInKey)
 
     let settings = AnalyticsSettings(store: store)
 
-    XCTAssertEqual(settings.analyticsOptIn, explicitValue)
+    #expect(settings.analyticsOptIn == explicitValue)
   }
 
-  @MainActor func testExplicitlySetIsFalseUntilAnExplicitWrite() {
+  @Test("analyticsOptInExplicitlySet is false until an explicit write")
+  func explicitlySetIsFalseUntilAnExplicitWrite() {
     let store = InMemoryKeyValueStore()
     let settings = AnalyticsSettings(store: store)
 
-    XCTAssertFalse(settings.analyticsOptInExplicitlySet)
+    #expect(!settings.analyticsOptInExplicitlySet)
 
     settings.analyticsOptIn = true
 
-    XCTAssertTrue(settings.analyticsOptInExplicitlySet)
+    #expect(settings.analyticsOptInExplicitlySet)
   }
 
   // MARK: - Launch stores
 
-  @MainActor func testScreenshotLaunchThroughUITestArgumentSeedsExplicitOptOut() {
+  @Test("a screenshot launch through the UI test argument seeds an explicit opt-out")
+  func screenshotLaunchThroughUITestArgumentSeedsExplicitOptOut() {
     assertScreenshotConsent(arguments: ["-UITests1"], environment: [:])
   }
 
-  @MainActor func testScreenshotLaunchThroughTestEnvironmentSeedsExplicitOptOut() {
+  @Test("a screenshot launch through the test environment variable seeds an explicit opt-out")
+  func screenshotLaunchThroughTestEnvironmentSeedsExplicitOptOut() {
     assertScreenshotConsent(arguments: [], environment: ["IS_TESTING": "1"])
   }
 
-  @MainActor func testOrdinaryTestLaunchLeavesConsentAbsent() {
+  @Test("an ordinary test launch leaves consent absent")
+  func ordinaryTestLaunchLeavesConsentAbsent() {
     let store = AnalyticsSettings.makeStore(
       arguments: ["-UITests1"],
       environment: [:],
@@ -76,11 +81,12 @@ nonisolated final class AnalyticsSettingsTests: XCTestCase {
     )
     let settings = AnalyticsSettings(store: store)
 
-    XCTAssertFalse(settings.analyticsOptInExplicitlySet)
-    XCTAssertNil(store.object(forKey: AnalyticsSettings.analyticsOptInKey))
+    #expect(!settings.analyticsOptInExplicitlySet)
+    #expect(store.object(forKey: AnalyticsSettings.analyticsOptInKey) == nil)
   }
 
-  @MainActor func testOrdinaryTestLaunchAfterScreenshotLaunchGetsFreshConsentState() {
+  @Test("an ordinary test launch after a screenshot launch gets fresh consent state")
+  func ordinaryTestLaunchAfterScreenshotLaunchGetsFreshConsentState() {
     let screenshotStore = makeScreenshotStore(arguments: ["-UITests1"], environment: [:])
     let ordinaryStore = AnalyticsSettings.makeStore(
       arguments: ["-UITests1"],
@@ -91,14 +97,15 @@ nonisolated final class AnalyticsSettingsTests: XCTestCase {
     let ordinarySettings = AnalyticsSettings(store: ordinaryStore)
 
     #if DEBUG
-      XCTAssertTrue(screenshotSettings.analyticsOptInExplicitlySet)
+      #expect(screenshotSettings.analyticsOptInExplicitlySet)
     #else
-      XCTAssertFalse(screenshotSettings.analyticsOptInExplicitlySet)
+      #expect(!screenshotSettings.analyticsOptInExplicitlySet)
     #endif
-    XCTAssertFalse(ordinarySettings.analyticsOptInExplicitlySet)
+    #expect(!ordinarySettings.analyticsOptInExplicitlySet)
   }
 
-  @MainActor func testIncompleteScreenshotMetadataLeavesConsentAbsent() {
+  @Test("incomplete screenshot metadata leaves consent absent")
+  func incompleteScreenshotMetadataLeavesConsentAbsent() {
     let jsonOnlyStore = AnalyticsSettings.makeStore(
       arguments: ["-UITests1"],
       environment: [LaunchModeContainerFactory.screenshotSeedJSONKey: "{}"],
@@ -114,47 +121,50 @@ nonisolated final class AnalyticsSettingsTests: XCTestCase {
       environment: [LaunchModeContainerFactory.screenshotSeedLocaleKey: ""]
     )
 
-    XCTAssertFalse(AnalyticsSettings(store: jsonOnlyStore).analyticsOptInExplicitlySet)
-    XCTAssertFalse(AnalyticsSettings(store: localeOnlyStore).analyticsOptInExplicitlySet)
-    XCTAssertFalse(AnalyticsSettings(store: emptyLocaleStore).analyticsOptInExplicitlySet)
+    #expect(!AnalyticsSettings(store: jsonOnlyStore).analyticsOptInExplicitlySet)
+    #expect(!AnalyticsSettings(store: localeOnlyStore).analyticsOptInExplicitlySet)
+    #expect(!AnalyticsSettings(store: emptyLocaleStore).analyticsOptInExplicitlySet)
   }
 
-  @MainActor func testScreenshotMetadataCannotSeedANonTestLaunch() {
+  @Test("screenshot metadata cannot seed a non-test launch")
+  func screenshotMetadataCannotSeedANonTestLaunch() {
     let persistentStore = InMemoryKeyValueStore()
     let store = makeScreenshotStore(arguments: [], environment: [:], persistentStore: persistentStore)
     let settings = AnalyticsSettings(store: store)
 
-    XCTAssertTrue(store === persistentStore)
-    XCTAssertFalse(settings.analyticsOptInExplicitlySet)
+    #expect(store === persistentStore)
+    #expect(!settings.analyticsOptInExplicitlySet)
   }
 
   // MARK: - distinct_id
 
-  @MainActor func testDistinctIdIsAValidUUID() {
+  @Test("the distinct id is a valid UUID")
+  func distinctIdIsAValidUUID() {
     let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
 
-    XCTAssertNotNil(UUID(uuidString: settings.analyticsDistinctId))
+    #expect(UUID(uuidString: settings.analyticsDistinctId) != nil)
   }
 
-  @MainActor func testDistinctIdIsStableAcrossASecondInstanceOverTheSameStore() {
+  @Test("the distinct id is stable across a second instance over the same store")
+  func distinctIdIsStableAcrossASecondInstanceOverTheSameStore() {
     let store = InMemoryKeyValueStore()
     let first = AnalyticsSettings(store: store)
     let second = AnalyticsSettings(store: store)
 
-    XCTAssertEqual(first.analyticsDistinctId, second.analyticsDistinctId)
+    #expect(first.analyticsDistinctId == second.analyticsDistinctId)
   }
 
-  @MainActor func testDistinctIdIsPersistedOnFirstGeneration() {
+  @Test("the distinct id is persisted on first generation")
+  func distinctIdIsPersistedOnFirstGeneration() {
     let store = InMemoryKeyValueStore()
     let settings = AnalyticsSettings(store: store)
 
-    XCTAssertEqual(
-      store.object(forKey: AnalyticsSettings.analyticsDistinctIdKey) as? String,
-      settings.analyticsDistinctId
+    #expect(
+      store.object(forKey: AnalyticsSettings.analyticsDistinctIdKey) as? String == settings.analyticsDistinctId
     )
   }
 
-  @MainActor private func assertScreenshotConsent(
+  private func assertScreenshotConsent(
     arguments: [String],
     environment: [String: String]
   ) {
@@ -162,17 +172,17 @@ nonisolated final class AnalyticsSettingsTests: XCTestCase {
     let settings = AnalyticsSettings(store: store)
 
     #if DEBUG
-      XCTAssertFalse(settings.analyticsOptIn)
-      XCTAssertTrue(settings.analyticsOptInExplicitlySet)
+      #expect(!settings.analyticsOptIn)
+      #expect(settings.analyticsOptInExplicitlySet)
     #else
-      XCTAssertFalse(
-        settings.analyticsOptInExplicitlySet,
+      #expect(
+        !settings.analyticsOptInExplicitlySet,
         "Release builds must not contain screenshot consent seeding."
       )
     #endif
   }
 
-  @MainActor private func makeScreenshotStore(
+  private func makeScreenshotStore(
     arguments: [String],
     environment: [String: String],
     persistentStore: KeyValueStore = InMemoryKeyValueStore()

@@ -47,19 +47,26 @@ git hooks. Run it once per clone.
 
 **Tests are not in the gate, but both suites compile and pass.** `checklistsTests` links
 `RealmSwift` (for `LegacyRealmImporterTests`'s fixtures) and `SwiftData`, and sets
-`SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` (mirroring the app target); its `XCTestCase` subclasses
-stay `nonisolated` at the type level with individual `@MainActor` test methods, since an isolated
-subclass conflicts with `XCTestCase`'s own nonisolated designated initializers (see the doc comment
-on `DataModelTests` for the full explanation, including the one initializer —
-`init(invocation:)` — that can't be overridden to fix because `NSInvocation` is unavailable in
-Swift on this platform). `checklistsUITests` needed no linkage changes; it was blocked only on the
-shared scheme's unit target failing to build, and on `test-ui`'s `warmed` sentinel (see
-`scripts/test-ui.sh`), both now resolved. Formerly tracked in
-[issue #116](https://github.com/jimmynotjames/checklists/issues/116), now closed.
+`SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` (mirroring the app target).
+
+- **Unit tests are Swift Testing** — `@Suite` / `@Test` / `#expect`, structs with no base class and
+  **no isolation annotations**: the target default already isolates them to the main actor, which is
+  what the SwiftData and UIKit code under test needs. Don't write new ones in XCTest.
+- **Per-test fixtures come from `Helpers/TestScope.swift`**, not `setUp`/`tearDown` — a struct has no
+  `deinit` to tear down in. `withTemporaryDirectory` and `withIsolatedDefaults` hand the fixture to
+  the test and clean up in `defer`. `TestModelContainer.makeContext()` is the shared in-memory stack.
+- **`checklistsUITests` is XCTest and stays that way** — Swift Testing has no `XCUIApplication`
+  equivalent, so a UI test bundle has no alternative. `budgets1` keeps its UI bundle on XCTest too.
 
 **Don't record test counts or test-class inventories here** — they go stale on every
 test-adding PR, and a wrong number in the docs is worse than no number. For the current
 counts, run the suites and read the result bundle (see below).
+
+**Don't record history here either.** This file is what to do now, so cite an issue or PR only when
+it still changes someone's behaviour: an open hazard, or a decision that would otherwise get quietly
+reverted (`#154` below is the example — it exists to stop the MainActor default being "cleaned up"
+again). Provenance for a change that is already done belongs in `git blame` and the PR, not here; a
+resolved blocker should be deleted rather than narrated as resolved.
 
 ### Reading a test result
 
@@ -83,11 +90,12 @@ piped console tail — a stale log from an earlier run reads as a pass. For fail
 `summary` for `tests` and walk the nodes for `"result": "Failed"`.
 
 All of `checklistsTests` runs against disposable in-memory `ModelContainer`s (see
-`checklistsTests/Helpers/TestModelContainer.swift`), except `LegacyRealmImporterTests`, which
-writes real Realm fixture files to the test process's own temporary directory and cleans them up in
-`tearDown`. Neither touches the simulator's real on-disk store, so running the suite has no lasting
-effect on the app's data — a deliberate break from the Realm-era `DataModelTests`, which asserted
-against the persisted store and wiped it in `setUp`.
+`checklistsTests/Helpers/TestModelContainer.swift`), except `LegacyRealmImporterTests` and
+`TwoDeviceUnionTests`, which write real Realm fixture files into a temporary directory scoped to
+the test by `Helpers/TestScope.swift` and removed when that scope exits. Neither touches the
+simulator's real on-disk store, so running the suite has no lasting effect on the app's data — a
+deliberate break from the Realm-era `DataModelTests`, which asserted against the persisted store
+and wiped it in `setUp`.
 
 ### The arm64 pin is now just a speed choice
 
@@ -206,9 +214,12 @@ stays and what was weighed against it.
   error at a time. See `AnalyticsEvent` in `Analytics/AnalyticsNames.swift`, `ConsentJurisdiction`.
 - **Keep explicit `@MainActor`** where it documents a real constraint (`PersistenceController`,
   `AppAnalytics`), even though the default already implies it.
-- **Never add the isolation default to `checklistsUITests`** — tried and reverted in #154. Its
-  `XCTestCase` subclasses hit the initializer-isolation collision described above, and a separate
-  process driving the app shares no isolation domain with it anyway.
+- **Never add the isolation default to `checklistsUITests`** — tried and reverted in #154. A
+  main-actor-isolated `XCTestCase` subclass conflicts with `XCTestCase`'s own nonisolated
+  designated initializers, and `init(invocation:)` can't even be overridden to fix that because
+  `NSInvocation` is unavailable in Swift on this platform. A separate process driving the app
+  shares no isolation domain with it anyway. The unit target sidesteps all of this by being Swift
+  Testing — its suites are structs with no base class to collide with.
 
 ## Bash command hygiene
 

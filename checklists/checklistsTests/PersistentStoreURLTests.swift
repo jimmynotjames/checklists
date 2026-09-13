@@ -4,42 +4,42 @@
 //
 
 @testable import checklists
+import Foundation
 import SwiftData
-import XCTest
+import Testing
 
 /// Guards the single-store invariant behind `ProductionContainerFactory`: a `ModelConfiguration`'s
 /// on-disk `url` is independent of its `cloudKitDatabase` setting, which is what lets an
 /// offline-first store be promoted to CloudKit-backed in place rather than forking into a second,
-/// empty file. Ported from `budgets1`'s `PersistentStoreURLTests`
-/// (`simple-recurring-budgetsTests/App/PersistentStoreURLTests.swift`), converted from Swift
-/// Testing's `#expect` to `XCTAssertEqual`.
+/// empty file. Ported from `budgets1`'s suite of the same name
+/// (`simple-recurring-budgetsTests/App/PersistentStoreURLTests.swift`).
 ///
 /// These pin SwiftData's own behavior directly, independent of `ProductionContainerFactoryTests`,
 /// so a regression in the framework itself surfaces here rather than only downstream.
-///
-/// See the doc comment on `DataModelTests` for why this class is `nonisolated` at the type level
-/// with individual `@MainActor` test methods.
-nonisolated final class PersistentStoreURLTests: XCTestCase {
+@Suite("Persistent store URL invariants")
+struct PersistentStoreURLTests {
   /// The default (implicit-URL) configuration exposes a concrete on-disk URL both real
   /// configurations can be anchored to.
-  @MainActor func testDefaultConfigurationExposesStableURL() {
+  @Test("the default configuration exposes a stable URL")
+  func defaultConfigurationExposesStableURL() {
     let schema = SchemaV1.swiftDataSchema
     let first = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
     let second = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-    XCTAssertEqual(first.url, second.url)
+    #expect(first.url == second.url)
   }
 
   /// Pinning the same explicit `url` yields the same store file regardless of whether CloudKit
   /// mirroring is enabled.
-  @MainActor func testCloudAndLocalConfigsShareStoreURLWhenPinned() {
+  @Test("cloud and local configs share a store URL when pinned to the same one")
+  func cloudAndLocalConfigsShareStoreURLWhenPinned() {
     let schema = SchemaV1.swiftDataSchema
     let storeURL = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false).url
 
     let cloud = ModelConfiguration(schema: schema, url: storeURL, cloudKitDatabase: .automatic)
     let local = ModelConfiguration(schema: schema, url: storeURL, cloudKitDatabase: .none)
 
-    XCTAssertEqual(cloud.url, storeURL)
-    XCTAssertEqual(local.url, storeURL)
-    XCTAssertEqual(cloud.url, local.url)
+    #expect(cloud.url == storeURL)
+    #expect(local.url == storeURL)
+    #expect(cloud.url == local.url)
   }
 }

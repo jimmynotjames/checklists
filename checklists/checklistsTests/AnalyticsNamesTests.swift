@@ -4,16 +4,15 @@
 //
 
 @testable import checklists
-import XCTest
+import Testing
 
 /// Guards the naming convention for the event and property catalogs (analytics-spec.md §8, §9).
 ///
 /// Cheap, but it is the regression net for a rename: two constants that collide would silently
 /// merge two events in Mixpanel, and a stray capital or space would create a second event that
 /// looks like the first in a dashboard listing.
-///
-/// See the note on `AnalyticsTextTests` for the `nonisolated` class / `@MainActor` method pattern.
-nonisolated final class AnalyticsNamesTests: XCTestCase {
+@Suite("Analytics event and property naming")
+struct AnalyticsNamesTests {
   /// Every event the app can emit. Add new events here when adding them to `AnalyticsEvent`.
   private static let allEvents: [String] = [
     AnalyticsEvent.appOpened,
@@ -57,43 +56,44 @@ nonisolated final class AnalyticsNamesTests: XCTestCase {
   ]
 
   /// Matches the spec's stated convention: flat `snake_case`, starting with a lowercase letter.
-  private func assertSnakeCase(_ name: String, file: StaticString = #filePath, line: UInt = #line) {
-    XCTAssertFalse(name.isEmpty, "Empty name.", file: file, line: line)
+  private func assertSnakeCase(_ name: String, sourceLocation: SourceLocation = #_sourceLocation) {
+    #expect(!name.isEmpty, "Empty name.", sourceLocation: sourceLocation)
     // `.map` on a non-nil optional always yields `.some`, so this has to compare the value —
     // otherwise a leading underscore or digit passes, which `allSatisfy` below also permits.
-    XCTAssertTrue(
+    #expect(
       name.first?.isLowercase == true,
       "\"\(name)\" must start with a lowercase letter.",
-      file: file,
-      line: line
+      sourceLocation: sourceLocation
     )
-    XCTAssertTrue(
+    #expect(
       name.allSatisfy { ($0.isLowercase && $0.isLetter) || $0.isNumber || $0 == "_" },
       "\"\(name)\" is not flat snake_case.",
-      file: file,
-      line: line
+      sourceLocation: sourceLocation
     )
   }
 
-  @MainActor func testEventNamesAreDistinct() {
-    XCTAssertEqual(
-      Set(Self.allEvents).count,
-      Self.allEvents.count,
+  @Test("no two analytics events share a name")
+  func eventNamesAreDistinct() {
+    #expect(
+      Set(Self.allEvents).count == Self.allEvents.count,
       "Two events share a name; they would merge in Mixpanel."
     )
   }
 
-  @MainActor func testEventNamesAreSnakeCase() {
+  @Test("every analytics event name is flat snake_case")
+  func eventNamesAreSnakeCase() {
     for name in Self.allEvents {
       assertSnakeCase(name)
     }
   }
 
-  @MainActor func testPropertyKeysAreDistinct() {
-    XCTAssertEqual(Set(Self.allProperties).count, Self.allProperties.count)
+  @Test("no two analytics property keys share a name")
+  func propertyKeysAreDistinct() {
+    #expect(Set(Self.allProperties).count == Self.allProperties.count)
   }
 
-  @MainActor func testPropertyKeysAreSnakeCase() {
+  @Test("every analytics property key is flat snake_case")
+  func propertyKeysAreSnakeCase() {
     for name in Self.allProperties {
       assertSnakeCase(name)
     }
@@ -101,7 +101,8 @@ nonisolated final class AnalyticsNamesTests: XCTestCase {
 
   /// Pinned literally: this event is what every reach, session and retention number on the
   /// dashboards is built from, so a rename would silently empty them.
-  @MainActor func testAppOpenedNameIsPinned() {
-    XCTAssertEqual(AnalyticsEvent.appOpened, "app_opened")
+  @Test("the app_opened event name is pinned literally")
+  func appOpenedNameIsPinned() {
+    #expect(AnalyticsEvent.appOpened == "app_opened")
   }
 }

@@ -4,36 +4,39 @@
 //
 
 @testable import checklists
-import XCTest
+import Testing
 
 /// Covers `SyncStatus.rowState`'s derivation from `(containerBacking, accountStatus)`. No
 /// container needed — `SyncStatus` is constructed directly and its properties mutated.
-///
-/// See the doc comment on `DataModelTests` for why this is `nonisolated final class ... :
-/// XCTestCase` with `@MainActor` on each test method.
-nonisolated final class SyncStatusTests: XCTestCase {
-  @MainActor func testRowStateChecking() {
+@Suite("SyncStatus.rowState")
+struct SyncStatusTests {
+  @Test("checking account status yields .checking")
+  func rowStateChecking() {
     let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .checking)
-    XCTAssertEqual(syncStatus.rowState, .checking)
+    #expect(syncStatus.rowState == .checking)
   }
 
-  @MainActor func testRowStateAvailable() {
+  @Test("available on a CloudKit container yields .available")
+  func rowStateAvailable() {
     let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .available)
-    XCTAssertEqual(syncStatus.rowState, .available)
+    #expect(syncStatus.rowState == .available)
   }
 
-  @MainActor func testRowStateUnavailable() {
+  @Test("unavailable on a CloudKit container yields .unavailable")
+  func rowStateUnavailable() {
     let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .unavailable)
-    XCTAssertEqual(syncStatus.rowState, .unavailable)
+    #expect(syncStatus.rowState == .unavailable)
   }
 
-  @MainActor func testRowStatePausedWhenLocalFallbackAndAvailable() {
+  @Test("local fallback with an available account yields .paused")
+  func rowStatePausedWhenLocalFallbackAndAvailable() {
     let syncStatus = SyncStatus(containerBacking: .localFallback, accountStatus: .available)
-    XCTAssertEqual(syncStatus.rowState, .paused)
+    #expect(syncStatus.rowState == .paused)
   }
 
-  @MainActor func testRowStateUnavailableWhenLocalFallbackAndUnavailable() {
+  @Test("local fallback with an unavailable account yields .unavailable")
+  func rowStateUnavailableWhenLocalFallbackAndUnavailable() {
     let syncStatus = SyncStatus(containerBacking: .localFallback, accountStatus: .unavailable)
-    XCTAssertEqual(syncStatus.rowState, .unavailable)
+    #expect(syncStatus.rowState == .unavailable)
   }
 }

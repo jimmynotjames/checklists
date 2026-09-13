@@ -6,16 +6,17 @@
 //
 
 @testable import checklists
-import XCTest
+import Testing
+import UIKit
 
 /// Covers `CLTextView`'s placeholder-visibility rule (`updatePlaceholderLabel`, private, but its
 /// effect on the placeholder label's `isHidden` is observable via the view hierarchy) and that the
 /// `text`/`font` property overrides keep it in sync.
 ///
 /// No Realm/DBManager involvement, so this doesn't need the in-memory-Realm save/restore pattern
-/// the persistence-touching test classes use. See the note on `DataModelTests` for why this class
-/// is `nonisolated` at the type level with individual `@MainActor` test methods.
-nonisolated final class CLTextViewTests: XCTestCase {
+/// the persistence-touching test classes use.
+@Suite("CLTextView placeholder visibility")
+struct CLTextViewTests {
   /// `placeholderLabel` is private; it's the view's only `UILabel` subview, added directly to the
   /// text view itself (`setUpSubviews()`), so it's reachable this way without touching anything
   /// else private.
@@ -23,57 +24,63 @@ nonisolated final class CLTextViewTests: XCTestCase {
     textView.subviews.compactMap { $0 as? UILabel }.first
   }
 
-  @MainActor func testPlaceholderHiddenWhenNoPlaceholderTextSet() throws {
+  @Test("placeholder is hidden when no placeholder text is set")
+  func placeholderHiddenWhenNoPlaceholderTextSet() throws {
     let textView = CLTextView()
-    let label = try XCTUnwrap(placeholderLabel(in: textView))
-    XCTAssertTrue(label.isHidden)
+    let label = try #require(placeholderLabel(in: textView))
+    #expect(label.isHidden)
   }
 
-  @MainActor func testPlaceholderVisibleWhenTextEmptyAndPlaceholderSet() throws {
+  @Test("placeholder is visible when text is empty and placeholder text is set")
+  func placeholderVisibleWhenTextEmptyAndPlaceholderSet() throws {
     let textView = CLTextView()
     textView.placeholderText = "Notes"
 
-    let label = try XCTUnwrap(placeholderLabel(in: textView))
-    XCTAssertFalse(label.isHidden)
-    XCTAssertEqual(label.text, "Notes")
+    let label = try #require(placeholderLabel(in: textView))
+    #expect(!label.isHidden)
+    #expect(label.text == "Notes")
   }
 
-  @MainActor func testPlaceholderHiddenOnceTextIsSet() throws {
+  @Test("placeholder hides once text is set")
+  func placeholderHiddenOnceTextIsSet() throws {
     let textView = CLTextView()
     textView.placeholderText = "Notes"
-    let label = try XCTUnwrap(placeholderLabel(in: textView))
-    XCTAssertFalse(label.isHidden) // Precondition.
+    let label = try #require(placeholderLabel(in: textView))
+    #expect(!label.isHidden) // Precondition.
 
     textView.text = "hello"
 
-    XCTAssertTrue(label.isHidden)
+    #expect(label.isHidden)
   }
 
-  @MainActor func testPlaceholderReappearsWhenTextClearedAgain() throws {
+  @Test("placeholder reappears when text is cleared again")
+  func placeholderReappearsWhenTextClearedAgain() throws {
     let textView = CLTextView()
     textView.placeholderText = "Notes"
     textView.text = "hello"
-    let label = try XCTUnwrap(placeholderLabel(in: textView))
-    XCTAssertTrue(label.isHidden) // Precondition.
+    let label = try #require(placeholderLabel(in: textView))
+    #expect(label.isHidden) // Precondition.
 
     textView.text = ""
 
-    XCTAssertFalse(label.isHidden)
+    #expect(!label.isHidden)
   }
 
-  @MainActor func testEmptyPlaceholderTextIsTreatedAsNoPlaceholder() throws {
+  @Test("an empty placeholder string is treated as no placeholder")
+  func emptyPlaceholderTextIsTreatedAsNoPlaceholder() throws {
     let textView = CLTextView()
     textView.placeholderText = "" // Explicitly empty, not nil.
 
-    let label = try XCTUnwrap(placeholderLabel(in: textView))
-    XCTAssertTrue(label.isHidden)
+    let label = try #require(placeholderLabel(in: textView))
+    #expect(label.isHidden)
   }
 
   /// The collapsed-notes case: `ItemContentView` collapses an item's notes field to a 0pt height
   /// constraint, and the placeholder must not show through. It is the text view's clipping that
   /// enforces that — the label is pinned to all four edges, which on a scroll view sets contentSize
   /// rather than the label's frame, so the label keeps its natural height and overflows.
-  @MainActor func testCollapsedTextViewClipsItsOverflowingPlaceholder() throws {
+  @Test("a collapsed text view clips its overflowing placeholder")
+  func collapsedTextViewClipsItsOverflowingPlaceholder() throws {
     let textView = CLTextView()
     textView.placeholderText = "Notes"
     textView.translatesAutoresizingMaskIntoConstraints = false
@@ -81,27 +88,29 @@ nonisolated final class CLTextViewTests: XCTestCase {
     textView.widthAnchor.constraint(equalToConstant: 200.0).isActive = true
     textView.layoutIfNeeded()
 
-    let label = try XCTUnwrap(placeholderLabel(in: textView))
-    XCTAssertGreaterThan(label.frame.height, textView.bounds.height, "Precondition: the label overflows.")
-    XCTAssertTrue(textView.clipsToBounds, "Without clipping, the placeholder renders outside the collapsed field.")
+    let label = try #require(placeholderLabel(in: textView))
+    #expect(label.frame.height > textView.bounds.height, "Precondition: the label overflows.")
+    #expect(textView.clipsToBounds, "Without clipping, the placeholder renders outside the collapsed field.")
   }
 
-  @MainActor func testFontOverrideKeepsPlaceholderLabelInSync() throws {
+  @Test("setting font keeps the placeholder label's font in sync")
+  func fontOverrideKeepsPlaceholderLabelInSync() throws {
     let textView = CLTextView()
     let font = UIFont.boldSystemFont(ofSize: 21.0)
 
     textView.font = font
 
-    let label = try XCTUnwrap(placeholderLabel(in: textView))
-    XCTAssertEqual(label.font, font)
+    let label = try #require(placeholderLabel(in: textView))
+    #expect(label.font == font)
   }
 
-  @MainActor func testFontOverrideFallsBackWhenSetToNil() throws {
+  @Test("setting font to nil falls back to the default placeholder font")
+  func fontOverrideFallsBackWhenSetToNil() throws {
     let textView = CLTextView()
 
     textView.font = nil
 
-    let label = try XCTUnwrap(placeholderLabel(in: textView))
-    XCTAssertEqual(label.font, UIFont.systemFont(ofSize: 8.0))
+    let label = try #require(placeholderLabel(in: textView))
+    #expect(label.font == UIFont.systemFont(ofSize: 8.0))
   }
 }

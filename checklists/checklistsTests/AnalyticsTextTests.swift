@@ -6,35 +6,33 @@
 //
 
 @testable import checklists
-import XCTest
+import Testing
 
 /// Covers `AnalyticsText.truncated(_:)`, which every user-supplied or error string passes
 /// through before it is sent as a property value. No store involvement, so this needs none of the
 /// container fixtures the other test classes use.
-/// See the note on `DataModelTests` for why this is `nonisolated` at the type level: an implicitly
-/// (or explicitly) MainActor-isolated `XCTestCase` subclass conflicts with the framework's own
-/// nonisolated designated initializers, including one whose parameter type is unavailable in
-/// Swift and so can't be overridden to fix. `AnalyticsText` (like every other unannotated type
-/// in the app target) is implicitly MainActor-isolated too, so the individual test methods below
-/// need `@MainActor`, same as the store-touching test classes.
-nonisolated final class AnalyticsTextTests: XCTestCase {
-  @MainActor func testUnderLimitStringIsUnchanged() {
+@Suite("AnalyticsText truncation")
+struct AnalyticsTextTests {
+  @Test("a string under the limit is unchanged")
+  func underLimitStringIsUnchanged() {
     let input = "a short string"
-    XCTAssertEqual(AnalyticsText.truncated(input), input)
+    #expect(AnalyticsText.truncated(input) == input)
   }
 
-  @MainActor func testExactlyAtLimitIsUnchanged() {
+  @Test("a string exactly at the limit is unchanged")
+  func exactlyAtLimitIsUnchanged() {
     let input = String(repeating: "a", count: 127)
     let result = AnalyticsText.truncated(input)
-    XCTAssertEqual(result, input)
-    XCTAssertEqual(result.count, 127)
+    #expect(result == input)
+    #expect(result.count == 127)
   }
 
-  @MainActor func testOverLimitIsTruncatedTo127Characters() {
+  @Test("a string over the limit is truncated to 127 characters")
+  func overLimitIsTruncatedTo127Characters() {
     let input = String(repeating: "a", count: 200)
     let result = AnalyticsText.truncated(input)
-    XCTAssertEqual(result.count, 127)
-    XCTAssertEqual(result, String(repeating: "a", count: 127))
+    #expect(result.count == 127)
+    #expect(result == String(repeating: "a", count: 127))
   }
 
   /// `String.prefix` counts extended grapheme clusters ("Characters"), not UTF-8 bytes or Unicode
@@ -43,16 +41,17 @@ nonisolated final class AnalyticsTextTests: XCTestCase {
   /// multi-scalar emoji (a ZWJ family sequence — several Unicode scalars, one Character) placed
   /// right at the boundary proves the cut lands on a Character boundary, not mid-scalar: the
   /// truncated string is still valid text, not a corrupted partial sequence.
-  @MainActor func testTruncationDoesNotSplitAMultiScalarEmojiAtTheBoundary() {
+  @Test("truncation does not split a multi-scalar emoji at the boundary")
+  func truncationDoesNotSplitAMultiScalarEmojiAtTheBoundary() {
     let familyEmoji = "👨‍👩‍👧‍👦" // Single Character, multiple Unicode scalars joined by ZWJ.
-    XCTAssertEqual(familyEmoji.count, 1, "Precondition: this emoji sequence must be exactly one Character.")
+    #expect(familyEmoji.count == 1, "Precondition: this emoji sequence must be exactly one Character.")
 
     let prefix126 = String(repeating: "a", count: 126)
     let input = prefix126 + familyEmoji + String(repeating: "b", count: 20)
 
     let result = AnalyticsText.truncated(input)
 
-    XCTAssertEqual(result.count, 127)
-    XCTAssertEqual(result, prefix126 + familyEmoji)
+    #expect(result.count == 127)
+    #expect(result == prefix126 + familyEmoji)
   }
 }

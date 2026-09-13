@@ -4,7 +4,7 @@
 //
 
 @testable import checklists
-import XCTest
+import Testing
 
 /// core-docs/analytics-spec.md §13 contract 15: the client-selection predicate must return
 /// "use the console client" for **both** the `-UITests1` launch argument and the `IS_TESTING`
@@ -19,44 +19,45 @@ import XCTest
 /// budgets1-style regression to checking only `IS_TESTING`), because nothing here called through to
 /// `ChecklistsApp` at all. Both levels are covered below: the signal-detection primitive, and the
 /// selection truth table built on top of it.
-nonisolated final class AnalyticsClientSelectionTests: XCTestCase {
+@Suite("Analytics client selection")
+struct AnalyticsClientSelectionTests {
   // MARK: - `ChecklistsApp.shouldUseConsoleClient` — the actual selection truth table
 
-  @MainActor
-  func testUsesConsoleWhenRunningTestsRegardlessOfTokenConfiguration() {
-    XCTAssertTrue(ChecklistsApp.shouldUseConsoleClient(isRunningTests: true, isTokenConfigured: true))
-    XCTAssertTrue(ChecklistsApp.shouldUseConsoleClient(isRunningTests: true, isTokenConfigured: false))
+  @Test("running tests selects the console client regardless of token configuration")
+  func usesConsoleWhenRunningTestsRegardlessOfTokenConfiguration() {
+    #expect(ChecklistsApp.shouldUseConsoleClient(isRunningTests: true, isTokenConfigured: true))
+    #expect(ChecklistsApp.shouldUseConsoleClient(isRunningTests: true, isTokenConfigured: false))
   }
 
-  @MainActor
-  func testUsesConsoleWhenTokenIsNotConfiguredRegardlessOfTestRun() {
-    XCTAssertTrue(ChecklistsApp.shouldUseConsoleClient(isRunningTests: false, isTokenConfigured: false))
+  @Test("an unconfigured token selects the console client outside of tests")
+  func usesConsoleWhenTokenIsNotConfiguredRegardlessOfTestRun() {
+    #expect(ChecklistsApp.shouldUseConsoleClient(isRunningTests: false, isTokenConfigured: false))
   }
 
-  @MainActor
-  func testUsesMixpanelOnlyWhenNotTestingAndTokenIsConfigured() {
-    XCTAssertFalse(ChecklistsApp.shouldUseConsoleClient(isRunningTests: false, isTokenConfigured: true))
+  @Test("Mixpanel is used only when not testing and the token is configured")
+  func usesMixpanelOnlyWhenNotTestingAndTokenIsConfigured() {
+    #expect(!ChecklistsApp.shouldUseConsoleClient(isRunningTests: false, isTokenConfigured: true))
   }
 
   // MARK: - `LaunchModeContainerFactory.isRunningTests` — the signal `shouldUseConsoleClient` consumes
 
-  @MainActor
-  func testUITestLaunchArgumentIsDetectedAsRunningTests() {
-    XCTAssertTrue(
+  @Test("the -UITests1 launch argument is detected as running tests")
+  func uiTestLaunchArgumentIsDetectedAsRunningTests() {
+    #expect(
       LaunchModeContainerFactory.isRunningTests(arguments: ["-UITests1"], environment: [:])
     )
   }
 
-  @MainActor
-  func testIsTestingEnvironmentVariableIsDetectedAsRunningTests() {
-    XCTAssertTrue(
+  @Test("the IS_TESTING environment variable is detected as running tests")
+  func isTestingEnvironmentVariableIsDetectedAsRunningTests() {
+    #expect(
       LaunchModeContainerFactory.isRunningTests(arguments: [], environment: ["IS_TESTING": "1"])
     )
   }
 
-  @MainActor
-  func testBothSignalsPresentIsDetectedAsRunningTests() {
-    XCTAssertTrue(
+  @Test("both signals present together are detected as running tests")
+  func bothSignalsPresentIsDetectedAsRunningTests() {
+    #expect(
       LaunchModeContainerFactory.isRunningTests(
         arguments: ["-UITests1"],
         environment: ["IS_TESTING": "1"]
@@ -64,17 +65,17 @@ nonisolated final class AnalyticsClientSelectionTests: XCTestCase {
     )
   }
 
-  @MainActor
-  func testNeitherSignalPresentIsNotDetectedAsRunningTests() {
-    XCTAssertFalse(
-      LaunchModeContainerFactory.isRunningTests(arguments: [], environment: [:])
+  @Test("neither signal present is not detected as running tests")
+  func neitherSignalPresentIsNotDetectedAsRunningTests() {
+    #expect(
+      !LaunchModeContainerFactory.isRunningTests(arguments: [], environment: [:])
     )
   }
 
-  @MainActor
-  func testUnrelatedArgumentsAndEnvironmentAreNotDetectedAsRunningTests() {
-    XCTAssertFalse(
-      LaunchModeContainerFactory.isRunningTests(
+  @Test("unrelated arguments and environment variables are not detected as running tests")
+  func unrelatedArgumentsAndEnvironmentAreNotDetectedAsRunningTests() {
+    #expect(
+      !LaunchModeContainerFactory.isRunningTests(
         arguments: ["-SomeOtherFlag"],
         environment: ["PATH": "/usr/bin"]
       )

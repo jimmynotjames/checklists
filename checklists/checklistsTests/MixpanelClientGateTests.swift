@@ -4,7 +4,7 @@
 //
 
 @testable import checklists
-import XCTest
+import Testing
 
 /// Exercises `MixpanelAnalyticsClient`'s lazy-init contract against the **real class**, not a
 /// simulation — see core-docs/analytics-spec.md §13 contract 9 and §7.2.
@@ -20,7 +20,8 @@ import XCTest
 /// **positive** half — that an opted-in `track` actually initializes the SDK exactly once — is not
 /// safely assertable in a unit test against the real class, and is instead covered by the manual
 /// simulator verification in analytics-spec.md §5.
-nonisolated final class MixpanelClientGateTests: XCTestCase {
+@Suite("MixpanelAnalyticsClient lazy-init gate")
+struct MixpanelClientGateTests {
   /// Not a real project token, and deliberately **not** shaped like one (32 lowercase hex) —
   /// `MixpanelAnalyticsClient` never validates shape, only `MixpanelTokenSource` does, and that
   /// check happens before this class is ever constructed. A hex-shaped literal here would also
@@ -28,41 +29,41 @@ nonisolated final class MixpanelClientGateTests: XCTestCase {
   /// allowlist by design.
   private static let testToken = "unit-test-mixpanel-token-not-real"
 
-  @MainActor
-  func testInitLeavesSDKUninitialized() {
+  @Test("constructing the client does not initialize the SDK")
+  func initLeavesSDKUninitialized() {
     let client = MixpanelAnalyticsClient(token: Self.testToken, distinctIdProvider: { nil })
-    XCTAssertFalse(client.isSDKInitializedForTesting)
+    #expect(!client.isSDKInitializedForTesting)
   }
 
   /// The regression guard that matters most: `reset()` must never itself be a path to
   /// `ensureInitialized()`. If it ever became one, an opted-out `ConsentGatedAnalyticsClient`
   /// calling the always-passed-through `reset()` (§7.2) would silently open a connection.
-  @MainActor
-  func testResetOnNeverInitializedClientLeavesItUninitialized() {
+  @Test("calling reset() on a never-initialized client leaves it uninitialized")
+  func resetOnNeverInitializedClientLeavesItUninitialized() {
     let client = MixpanelAnalyticsClient(token: Self.testToken, distinctIdProvider: { nil })
     client.reset()
-    XCTAssertFalse(client.isSDKInitializedForTesting)
+    #expect(!client.isSDKInitializedForTesting)
   }
 
-  @MainActor
-  func testRefreshSuperPropertiesIsANoOpBeforeInitialization() {
+  @Test("refreshSuperProperties() is a no-op before initialization")
+  func refreshSuperPropertiesIsANoOpBeforeInitialization() {
     let client = MixpanelAnalyticsClient(token: Self.testToken, distinctIdProvider: { nil })
     client.refreshSuperProperties()
-    XCTAssertFalse(client.isSDKInitializedForTesting)
+    #expect(!client.isSDKInitializedForTesting)
   }
 
-  @MainActor
-  func testRefreshCohortPeoplePropertiesIsANoOpBeforeInitialization() {
+  @Test("refreshCohortPeopleProperties() is a no-op before initialization")
+  func refreshCohortPeoplePropertiesIsANoOpBeforeInitialization() {
     let client = MixpanelAnalyticsClient(token: Self.testToken, distinctIdProvider: { nil })
     client.refreshCohortPeopleProperties(checklistsCount: 3)
-    XCTAssertFalse(client.isSDKInitializedForTesting)
+    #expect(!client.isSDKInitializedForTesting)
   }
 
-  @MainActor
-  func testSetAnalyticsOptInAtIsANoOpBeforeInitialization() {
+  @Test("setAnalyticsOptInAt() is a no-op before initialization")
+  func setAnalyticsOptInAtIsANoOpBeforeInitialization() {
     let client = MixpanelAnalyticsClient(token: Self.testToken, distinctIdProvider: { nil })
     client.setAnalyticsOptInAt()
-    XCTAssertFalse(client.isSDKInitializedForTesting)
+    #expect(!client.isSDKInitializedForTesting)
   }
 
   /// States the privacy contract directly: `ConsentGatedAnalyticsClient` wrapping a **real**
@@ -72,8 +73,8 @@ nonisolated final class MixpanelClientGateTests: XCTestCase {
   /// reaches the wrapped client, so `Mixpanel.initialize` is never invoked here either. Without
   /// this test, adding an `ensureInitialized()` call to `reset()` or a people-property setter
   /// would break the guarantee with an otherwise-green suite.
-  @MainActor
-  func testGatedClientNeverInitializesMixpanelWhenOptedOut() {
+  @Test("an opted-out gated client never initializes the wrapped Mixpanel client")
+  func gatedClientNeverInitializesMixpanelWhenOptedOut() {
     let mixpanelClient = MixpanelAnalyticsClient(token: Self.testToken, distinctIdProvider: { nil })
     let gated = ConsentGatedAnalyticsClient(wrapping: mixpanelClient, isOptedIn: { false })
 
@@ -84,6 +85,6 @@ nonisolated final class MixpanelClientGateTests: XCTestCase {
     gated.refreshCohortPeopleProperties(checklistsCount: 5)
     gated.setAnalyticsOptInAt()
 
-    XCTAssertFalse(mixpanelClient.isSDKInitializedForTesting)
+    #expect(!mixpanelClient.isSDKInitializedForTesting)
   }
 }
