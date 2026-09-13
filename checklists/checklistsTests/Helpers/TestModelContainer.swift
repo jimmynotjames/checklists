@@ -31,9 +31,7 @@ enum TestModelContainer {
     )
   }
 
-  /// A fresh context over a fresh in-memory container.
-  ///
-  /// Hoisted here because six suites had declared an identical private `makeContext()`.
+  /// A fresh context over a fresh in-memory container — what most suites actually want.
   static func makeContext() throws -> ModelContext {
     try ModelContext(make())
   }

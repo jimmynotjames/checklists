@@ -11,14 +11,12 @@ import Testing
 /// notifications — the shape a CloudKit merge actually produces — collapses into one callback.
 @Suite("RemoteChangeObserver coalescing")
 struct RemoteChangeObserverTests {
-  /// `confirmation` replaces the XCTest expectation *and* the separate `callCount` assertion: it
-  /// fails both when the callback never arrives and when it arrives twice.
+  /// `confirmation` is doing two jobs: it fails if the callback never arrives, and it fails if it
+  /// arrives more than once. Coalescing is only proven by the second half.
   ///
-  /// The sleep is ten times the coalescing delay, and it is what gives a *second*, un-coalesced
-  /// callback time to show up and be caught. The XCTest version could not check that — `wait(for:)`
-  /// returned on the first fulfilment and asserted the count immediately after, so a late second
-  /// callback would have gone unnoticed. `Task.sleep` also yields the main actor, which the
-  /// observer's callback needs in order to run at all.
+  /// Hence the sleep, at ten times the coalescing delay — it has to outlast any second, un-coalesced
+  /// callback rather than return the moment the first one lands. `Task.sleep` also yields the main
+  /// actor, which the observer's callback needs in order to run at all.
   @Test("a burst of remote-change notifications collapses into one callback", .timeLimit(.minutes(1)))
   func postingNotificationCallsOnChangeOnce() async throws {
     try await confirmation("coalesced callback fired") { callbackFired in

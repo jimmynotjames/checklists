@@ -30,9 +30,9 @@ struct TwoDeviceUnionTests {
   /// fresh `UserDefaults` per simulated device.
   ///
   /// Each device gets its own suite because the importer's completion flag is per-device state —
-  /// sharing one would make the second device skip its import and the union under test would never
-  /// happen. Every suite minted here is removed when the scope ends, which is what the
-  /// `addTeardownBlock` in the XCTest version did.
+  /// sharing one would make the second device skip its import, and the union under test would never
+  /// happen. Every suite minted through the factory is removed when the scope ends, however many a
+  /// test asks for.
   private func withFixture(_ body: (URL, () -> UserDefaults) throws -> Void) throws {
     try TestScope.withTemporaryDirectory("two-device") { directory in
       var suiteNames: [String] = []

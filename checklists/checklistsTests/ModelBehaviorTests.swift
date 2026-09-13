@@ -156,9 +156,9 @@ struct ModelBehaviorTests {
   /// Drives the async `NSItemProvider` data-representation callback registered by `dragItems()`
   /// and decodes the resulting UTF-8 payload.
   ///
-  /// The callback is `@Sendable` because the system can invoke it off the main actor — which is
-  /// also why the XCTest version needed a `nonisolated` file-level placeholder error to seed a
-  /// `Result` it could write from there. Resuming a continuation needs neither.
+  /// The callback is `@Sendable` because the system can invoke it off the main actor, which also
+  /// opts it out of this target's main-actor default. Everything it touches is the continuation,
+  /// which is safe to resume from anywhere.
   private func loadPlainTextPayload(from itemProvider: NSItemProvider) async throws -> String {
     let data: Data? = try await withCheckedThrowingContinuation { continuation in
       itemProvider.loadDataRepresentation(forTypeIdentifier: UTType.plainText.identifier) { @Sendable data, error in

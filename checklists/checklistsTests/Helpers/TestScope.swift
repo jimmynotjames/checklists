@@ -5,15 +5,12 @@
 
 import Foundation
 
-/// Scoped replacements for the `setUp`/`tearDown` pairs the suites used while they were
-/// `XCTestCase` subclasses.
+/// Per-test fixtures that clean themselves up.
 ///
-/// A Swift Testing suite is a `struct`, which has no `deinit` to tear down in, so per-test
-/// fixtures are handed to the test through a closure and cleaned up in `defer`. That is the
-/// better shape regardless of framework: creation and cleanup sit next to each other instead of
-/// forty lines apart, and nothing has to be stored in an implicitly-unwrapped `var` that crashes
-/// rather than fails when setup is skipped. Ported from the same pattern in `budgets1`'s
-/// `MigrationTestSupport.withTemporaryStoreURL`.
+/// A suite is a `struct` with no `deinit`, so a fixture needing teardown is handed to the test
+/// through a closure and released in `defer`. Creation and cleanup end up next to each other, and
+/// nothing is stored in an implicitly-unwrapped `var` that would crash rather than fail if it were
+/// never populated. Same pattern as `budgets1`'s `MigrationTestSupport.withTemporaryStoreURL`.
 enum TestScope {
   /// Runs `body` with a fresh, empty directory under the test process's temporary directory, and
   /// removes it — along with any SwiftData `-wal`/`-shm` siblings written into it — afterwards.
