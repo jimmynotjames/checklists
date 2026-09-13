@@ -5,60 +5,38 @@
 
 @testable import checklists
 import SwiftData
-import XCTest
+import Testing
 
-/**
- Covers the `@Model` types themselves — persistence round-trips, `percentageComplete`, and the
- cascade delete rule between `Checklist` and `Item`.
-
- ## Why `nonisolated final class ... : XCTestCase` with `@MainActor` on each test method
-
- The app target sets `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`, and `checklistsTests` mirrors
- that setting. Left alone, that default would make every type declared in this target — including
- `XCTestCase` subclasses — implicitly main-actor isolated. That collides with `XCTestCase` itself:
- its designated initializers (`init()`, `init(selector:)`, `init(invocation:)`) and its
- `setUpWithError()`/`tearDownWithError()` overrides are all `nonisolated`, declared by a
- non-isolated Objective-C base class. A subclass cannot silently widen a nonisolated override to
- main-actor isolation, so the compiler rejects it with "Main actor-isolated instance method
- 'setUpWithError()' has different actor isolation from nonisolated overridden declaration".
-
- `init(invocation:)` in particular cannot be fixed by adding `@MainActor` to it directly, because
- `NSInvocation` is unavailable in Swift on this platform — there is no way to write the override at
- all, isolated or not.
-
- The fix is the pattern used throughout this test target: declare the class itself `nonisolated`
- (opting the type back out of the target's default isolation, so it satisfies `XCTestCase`'s own
- nonisolated contract), then mark each individual test method — and any private helper that touches
- `@Model` types, `ModelContext`, or UIKit — `@MainActor`, since the persistence and UI code under
- test really is main-actor isolated. XCTest always invokes `setUp`, every test method, and `tearDown`
- on the main thread for a given instance, so hopping onto `@MainActor` inside each method is free at
- runtime; it exists purely to satisfy the type checker.
-
- (Originally documented on `LegacyRealmImporterTests`, before the Realm-based test files this class
- replaces existed; moved here as the canonical explanation once this class became the natural home
- for it. See `LegacyRealmImporterTests` for a worked example that also swaps a real Realm
- configuration into `setUp`/`tearDown`.)
- */
-nonisolated final class DataModelTests: XCTestCase {
-  @MainActor private func makeContext() throws -> ModelContext {
+/// Covers the `@Model` types themselves — persistence round-trips, `percentageComplete`, and the
+/// cascade delete rule between `Checklist` and `Item`.
+///
+/// No isolation annotation: `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` already makes this struct
+/// and its `@Test` methods main-actor isolated, which is what the SwiftData code under test
+/// requires. Unlike an `XCTestCase` subclass there is no nonisolated base class to collide with,
+/// so the target's default is simply correct here.
+@Suite("Checklist and Item model behaviour")
+struct DataModelTests {
+  private func makeContext() throws -> ModelContext {
     try ModelContext(TestModelContainer.make())
   }
 
-  @MainActor func testChecklistPersistsAndFetches() throws {
+  @Test("a checklist round-trips through the store with every field intact")
+  func checklistPersistsAndFetches() throws {
     let context = try makeContext()
     let checklist = Checklist(name: "Groceries", notes: "Weekly", sortKey: 1.0)
     context.insert(checklist)
     try context.saveChanges(operation: .checklistEdit)
 
     let fetched = try context.fetchChecklistsSorted()
-    XCTAssertEqual(fetched.count, 1)
-    XCTAssertEqual(fetched.first?.id, checklist.id)
-    XCTAssertEqual(fetched.first?.name, "Groceries")
-    XCTAssertEqual(fetched.first?.notes, "Weekly")
-    XCTAssertEqual(fetched.first?.sortKey, 1.0)
+    #expect(fetched.count == 1)
+    #expect(fetched.first?.id == checklist.id)
+    #expect(fetched.first?.name == "Groceries")
+    #expect(fetched.first?.notes == "Weekly")
+    #expect(fetched.first?.sortKey == 1.0)
   }
 
-  @MainActor func testItemPersistsWithStatus() throws {
+  @Test("an item round-trips with its status and its parent link")
+  func itemPersistsWithStatus() throws {
     let context = try makeContext()
     let checklist = Checklist(name: "Packing", sortKey: 1.0)
     context.insert(checklist)
@@ -68,23 +46,25 @@ nonisolated final class DataModelTests: XCTestCase {
     item.checklist = checklist
     try context.saveChanges(operation: .itemEdit)
 
-    let fetchedItem = try XCTUnwrap(context.item(id: item.id))
-    XCTAssertEqual(fetchedItem.name, "Passport")
-    XCTAssertEqual(fetchedItem.notes, "in the drawer")
-    XCTAssertEqual(fetchedItem.status, .checked)
-    XCTAssertEqual(fetchedItem.checklist?.id, checklist.id)
+    let fetchedItem = try #require(context.item(id: item.id))
+    #expect(fetchedItem.name == "Passport")
+    #expect(fetchedItem.notes == "in the drawer")
+    #expect(fetchedItem.status == .checked)
+    #expect(fetchedItem.checklist?.id == checklist.id)
   }
 
-  @MainActor func testPercentageCompleteEmptyIsZero() throws {
+  @Test("an empty checklist is 0% complete rather than undefined")
+  func percentageCompleteEmptyIsZero() throws {
     let context = try makeContext()
     let checklist = Checklist(name: "Empty", sortKey: 1.0)
     context.insert(checklist)
     try context.saveChanges(operation: .checklistEdit)
 
-    XCTAssertEqual(checklist.percentageComplete, 0.0)
+    #expect(checklist.percentageComplete == 0.0)
   }
 
-  @MainActor func testPercentageCompleteHalf() throws {
+  @Test("one of two checked items is 50% complete")
+  func percentageCompleteHalf() throws {
     let context = try makeContext()
     let checklist = Checklist(name: "Half", sortKey: 1.0)
     context.insert(checklist)
@@ -100,10 +80,11 @@ nonisolated final class DataModelTests: XCTestCase {
 
     try context.saveChanges(operation: .itemEdit)
 
-    XCTAssertEqual(checklist.percentageComplete, 0.5, accuracy: 0.0001)
+    #expect(abs(checklist.percentageComplete - 0.5) < 0.0001)
   }
 
-  @MainActor func testDeletingChecklistCascadesItems() throws {
+  @Test("deleting a checklist cascades to its items")
+  func deletingChecklistCascadesItems() throws {
     let context = try makeContext()
     let checklist = Checklist(name: "Doomed", sortKey: 1.0)
     context.insert(checklist)
@@ -117,11 +98,11 @@ nonisolated final class DataModelTests: XCTestCase {
     itemTwo.checklist = checklist
 
     try context.saveChanges(operation: .checklistEdit)
-    XCTAssertEqual(try context.fetch(FetchDescriptor<Item>()).count, 2)
+    #expect(try context.fetch(FetchDescriptor<Item>()).count == 2)
 
     context.delete(checklist)
     try context.saveChanges(operation: .delete)
 
-    XCTAssertTrue(try context.fetch(FetchDescriptor<Item>()).isEmpty)
+    #expect(try context.fetch(FetchDescriptor<Item>()).isEmpty)
   }
 }
