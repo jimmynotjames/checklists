@@ -7,11 +7,12 @@ import SwiftData
 import SwiftUI
 
 /// The app's main scene once startup has succeeded: the checklists list inside a
-/// `NavigationStack`, with the slide-in main menu layered above it and sheets for
+/// `NavigationStack`, with the main menu layered above it and sheets for
 /// Settings and the new-checklist flow. Modeled on budgets1's `RootView`.
 struct RootView: View {
   @Environment(Router.self) private var router
   @Environment(\.modelContext) private var context
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
   var body: some View {
     @Bindable var router = router
@@ -37,7 +38,9 @@ struct RootView: View {
       if router.isMainMenuVisible {
         MainMenuView()
           .zIndex(1)
-          .transition(.move(edge: .leading))
+          // Reduce Motion suppresses simulated spatial movement, not animation itself: the
+          // panel cross-fades in place instead of sliding from the leading edge.
+          .transition(reduceMotion ? .opacity : .move(edge: .leading))
       }
     }
     .animation(.easeInOut(duration: 0.2), value: router.isMainMenuVisible)

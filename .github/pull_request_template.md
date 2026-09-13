@@ -25,7 +25,8 @@ For every change, confirm each concern applies or is N/A:
       `analytics.track(...)` call, with names in the `AnalyticsEvent`/`AnalyticsProperty` enums in
       `Analytics/AnalyticsNames.swift` and a row added to `core-docs/analytics-spec.md`. No PII.
 - [ ] **Accessibility** — new controls have `accessibilityLabel` and appropriate traits; nothing
-      clips at large Dynamic Type.
+      clips at large Dynamic Type. `core-docs/accessibility-spec.md` records per-axis status and
+      is updated in the same change when this diff shifts it.
 - [ ] **Secrets inventory** — added, removed, or renamed secret-bearing files, credential variables,
       external secret locations, and machine-local credential prerequisites are reflected in
       `core-docs/secrets-list.md`; no secret values are documented or exposed during verification.
