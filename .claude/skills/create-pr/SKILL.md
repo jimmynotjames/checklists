@@ -172,10 +172,8 @@ Check: new interactive controls have an `accessibilityLabel`; custom controls (`
 `CLButton`, `CircularPercentStatusIcon`) set appropriate `accessibilityTraits` and reflect state
 (a checkbox should expose selected/unselected); no fixed frame heights that clip text at large
 Dynamic Type — prefer `minHeight` over a fixed `height` on rows that contain text.
-Read `core-docs/accessibility-spec.md` first — it is the canonical per-axis status (VoiceOver,
-Dynamic Type, Reduce Motion, contrast) and saves re-deriving it from the tree. Update it in the
-same change when the diff shifts an axis's status, adds an app-authored animation, or records a
-deliberate decision to leave something alone; a status line that no longer matches the code is a bug.
+Only if the change is itself accessibility work: read `core-docs/accessibility-spec.md` and update
+it in the same PR. Otherwise leave it unread.
 
 **Secrets inventory**
 Applies if: the diff adds, removes, or renames a gitignored secret-bearing file; introduces a new

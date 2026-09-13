@@ -66,10 +66,8 @@ full descriptions live in the `create-pr` skill (step 4) and `.github/pull_reque
   to the `AnalyticsEvent`/`AnalyticsProperty` enums in `Analytics/AnalyticsNames.swift` and a row
   in `core-docs/analytics-spec.md`. No PII.
 - **Accessibility** — new controls get `accessibilityLabel` and appropriate traits; nothing clips at
-  large Dynamic Type. `core-docs/accessibility-spec.md` is canonical for per-axis status (VoiceOver,
-  Dynamic Type, Reduce Motion, contrast) — read it before an accessibility change instead of
-  re-deriving the state, and update it in the same change when the diff shifts an axis's status,
-  adds an app-authored animation, or records a decision to leave something alone.
+  large Dynamic Type. Only if the change is itself accessibility work, read
+  `core-docs/accessibility-spec.md` and update it in the same PR; otherwise leave it unread.
 - **Secrets inventory** — if the change adds, removes, or renames a gitignored secret-bearing file,
   API token, private key, credential variable, external secret location, or machine-local credential
   prerequisite, update `core-docs/secrets-list.md` with safe reconstruction and validation guidance.

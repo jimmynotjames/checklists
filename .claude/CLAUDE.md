@@ -21,5 +21,5 @@ design docs that outlive a single change; `docs/` is the published GitHub Pages 
 for internal docs.
 
 [`core-docs/accessibility-spec.md`](../core-docs/accessibility-spec.md) is canonical for
-accessibility: per-axis status, the app's animation inventory, and the conventions to follow when
-adding a control. Read it before accessibility work rather than re-deriving the state by grep.
+accessibility status and conventions — read and update it when doing accessibility work, not
+otherwise.
