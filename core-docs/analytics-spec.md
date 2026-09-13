@@ -566,8 +566,12 @@ events arrive with the right properties before a release.
 
 **Unit tests are Swift Testing** (`@Suite` / `@Test` / `#expect`), matching `budgets1`.
 `checklistsTests` was converted wholesale in
-[#176](https://github.com/jimmynotjames/checklists/issues/176) — nothing in the unit target imports
-`XCTest` any more.
+[#179](https://github.com/jimmynotjames/checklists/pull/179) — nothing in the unit target imports
+`XCTest` any more. [#176](https://github.com/jimmynotjames/checklists/issues/176) is the companion
+issue: it records why the previous "do not introduce Swift Testing" rule was unjustified, and it
+deliberately left open whether to migrate the existing suite incrementally or not at all. Migrating
+it in one pass was the answer to that question, not something the issue prescribes — read it for the
+reasoning, not as a description of what happened.
 
 `checklistsUITests` stays XCTest **permanently**: Swift Testing has no `XCUIApplication`
 equivalent, so a UI test bundle has no alternative. `budgets1` keeps its UI bundle on XCTest for
@@ -575,9 +579,10 @@ the same reason.
 
 Suites need no isolation annotations. `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` already isolates
 a `struct` declared in this target, which is what the SwiftData and UIKit code under test requires.
-The type-level `nonisolated` plus per-method `@MainActor` that the XCTest suite carried — 266
-annotations — existed only to satisfy `XCTestCase`'s nonisolated designated initializers; a struct
-has no such base class. See AGENTS.md §Concurrency.
+The type-level `nonisolated` plus per-method `@MainActor` that the XCTest suite carried — 239
+`@MainActor` annotations across 32 files — existed only to satisfy `XCTestCase`'s nonisolated
+designated initializers; a struct has no such base class. Three `@MainActor` remain, and each is
+load-bearing rather than inherited boilerplate. See AGENTS.md §Concurrency.
 
 Per-test fixtures come from `Helpers/TestScope.swift` — `withTemporaryDirectory` and
 `withIsolatedDefaults` hand a scratch directory or an isolated `UserDefaults` to the test and clean

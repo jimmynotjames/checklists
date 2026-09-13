@@ -52,6 +52,7 @@ git hooks. Run it once per clone.
 - **Unit tests are Swift Testing** — `@Suite` / `@Test` / `#expect`, structs with no base class and
   **no isolation annotations**: the target default already isolates them to the main actor, which is
   what the SwiftData and UIKit code under test needs. Converted wholesale in
+  [#179](https://github.com/jimmynotjames/checklists/pull/179), with the reasoning in
   [#176](https://github.com/jimmynotjames/checklists/issues/176). Don't write new ones in XCTest.
 - **Per-test fixtures come from `Helpers/TestScope.swift`**, not `setUp`/`tearDown` — a struct has no
   `deinit` to tear down in. `withTemporaryDirectory` and `withIsolatedDefaults` hand the fixture to
