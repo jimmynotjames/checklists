@@ -24,7 +24,7 @@
 | --- | --- | --- |
 | **VoiceOver labels/values** | Partial | `CheckboxButton.swift:18,45,49`, `ItemContentView.swift:66,80`, `ChecklistViewController.swift:89,97`, `AnalyticsConsentSheet.swift:62-76` |
 | **VoiceOver traits** | Not started | No `accessibilityTraits` anywhere; everything relies on default SwiftUI/UIKit traits |
-| **Reduce Motion** | Implemented | `RootView.swift` — the app's only decorative motion; §3 |
+| **Reduce Motion** | Implemented | Two sites: `RootView.swift:15,43` (menu transition), `ChecklistViewController.swift:290-301` (Reset scroll). Full inventory and verdicts in §3 |
 | **Dynamic Type** | Partial | SwiftUI uses semantic tokens (`ChecklistRowView.swift:36,42`); UIKit hardcodes point sizes — §2.3. Issue **#183** |
 | **Dark Mode** | Not started | Forced off: `Info.plist` `UIUserInterfaceStyle = Light` (since `cc1bba2`). Issue **#180** |
 | **Increase Contrast** | Not started | No `isDarkerSystemColorsEnabled` call site. Issue **#182** |
@@ -49,7 +49,8 @@ The app is mixed SwiftUI + UIKit (see `.claude/CLAUDE.md` and the SwiftUI conver
 - SwiftUI: `@Environment(\.accessibilityReduceMotion)`, `.accessibilityLabel(_:)`,
   `.accessibilityElement(children: .combine)`.
 - UIKit: `accessibilityLabel` / `accessibilityValue` assignment,
-  `UIAccessibility.isReduceMotionEnabled`, `UIAccessibility.post(notification:)`.
+  `UIAccessibility.isReduceMotionEnabled` (`ChecklistViewController.swift:292`),
+  `UIAccessibility.post(notification:)`.
 
 Introduce a shared helper only when a third call site actually needs one; two call sites is not a
 pattern.
@@ -83,15 +84,29 @@ VoiceOver and never substitutes for a label.
 Settled in **#185**. The app authors almost no custom motion; this table is the record so nobody
 re-investigates by grep. **Re-open a row only if the code changes.**
 
+When auditing for new motion, grep two families, not one: the animation APIs (`UIView.animate`,
+`withAnimation`, `.transition(`, `CABasicAnimation`) **and** the `animated:` parameter
+(`setContentOffset`, `scrollToRow`, `scrollRectToVisible`). The second family is how the Reset
+scroll below was missed on the first pass — `animated: true` is an instruction UIKit obeys
+regardless of Reduce Motion; it is never toned down for you.
+
 | Site | Verdict |
 | --- | --- |
 | `RootView.swift` main-menu transition | **Gated.** `reduceMotion ? .opacity : .move(edge: .leading)` — the only decorative spatial motion in the app |
-| `NavigationStack` push/pop, `.sheet`, `.popover`, `.alert`, `Toggle`, `.onMove`, `UIDragInteraction` reordering | System-owned. No app code specifies motion; UIKit/SwiftUI handle Reduce Motion themselves |
-| `ChecklistViewController.swift:337` (0.01s insert), `:517`/`:530` (0.1s keyboard insets), `:715` (0.05s pre-delete scroll) | **Functional, left alone.** They keep the edited field off the keyboard and the target row on screen. Suppressing them would trade an a11y win for an a11y regression, and at 0.01–0.1s there is no perceptible motion to reduce |
-| Table row animations — `insertRows(.top)` `:316`, `deleteRows(.fade)` `:366`, `moveRow` `:639`, `beginUpdates/endUpdates` `:354-355` | **Left alone, deliberately.** Ordinary list-editing feedback; Apple's own list apps don't suppress it |
-| `ChecklistViewController.swift:481-489` nav-title fade (2× 0.4s) | **Left alone.** Opacity, not simulated movement — outside what Reduce Motion targets |
+| `ChecklistViewController.swift:290-301` Reset scroll-to-top | **Gated.** Under Reduce Motion it jumps (`animated: false`) and reloads directly, skipping the `isResetting` → `scrollViewDidScroll` handoff, which depends on the animation's intermediate offsets. Destination functional, glide decorative |
+| `popViewController` `:198`, `dismiss` `:200,279`, `NavigationStack` push/pop, `.sheet`, `.popover`, `.alert`, `Toggle`, `.onMove`, `UIDragInteraction` reordering | System-owned. No app code specifies motion; UIKit/SwiftUI handle Reduce Motion themselves |
+| `ChecklistViewController.swift:343` (0.01s insert), `:523`/`:536` (0.1s keyboard insets), `:721-722` (0.05s pre-delete scroll), `:333` (`scrollToRow` onto the field being edited) | **Functional, left alone.** They keep the edited field off the keyboard and the target row on screen. Suppressing them would trade an a11y win for an a11y regression, and at 0.01–0.1s there is no perceptible motion to reduce |
+| Table row animations — `insertRows(.top)` `:322`, `deleteRows(.fade)` `:372`, `moveRow` `:645`, `beginUpdates/endUpdates` `:360-361` via `cellHeightRequiresRefresh` `:660,672` | **Left alone, deliberately.** Ordinary list-editing feedback; Apple's own list apps don't suppress it |
+| `ChecklistViewController.swift:487-493` nav-title fade (2× 0.4s) | **Left alone.** Opacity, not simulated movement — outside what Reduce Motion targets |
 | `CircularPercentStatusIcon.setInnerCircle` | **Not animated.** Sets `path`/`fillColor` directly after `removeAllAnimations()`; a view-backed layer's implicit actions are off outside an animation context |
 | `CheckboxButton.setCheckboxState` | **Not animated.** Plain image + tint assignment |
+| `ProgressView()` — `LoadingView.swift:25`, `SettingsView.swift:72` | System-owned. Indeterminate progress indicators are not suppressed under Reduce Motion, by Apple's design |
+
+**Swept and clear** as of #185, both API families: no `CADisplayLink`, `CABasicAnimation`/
+`add(_:forKey:)`, `UIViewPropertyAnimator`, animated images or GIFs, `UIMotionEffect`,
+`UIRefreshControl`, `AVPlayer`/`SKView`, and no SwiftUI `matchedGeometryEffect`, `phaseAnimator`,
+`symbolEffect`, `contentTransition`, `scrollTransition`, `TimelineView`, or `repeatForever`
+anywhere in the app. The only other `animated:` call site is `CLTextView.swift:79`, already `false`.
 
 ---
 
@@ -114,7 +129,7 @@ Links only — read the PR, not a summary of it.
 
 | When | Ref | What |
 | --- | --- | --- |
-| 2026-09-13 | #185 | Reduce Motion for the main-menu transition; this document; the animation decision table in §3 |
+| 2026-09-13 | #185 | Reduce Motion for the main-menu transition and the Reset scroll-to-top; this document; the animation decision table in §3 |
 | 2026-09-12 | #175 | Checklist row progress exposed as an `accessibilityValue` |
 | 2021-03-04 | `392301b`, `83c808c` | Percent-complete icon announcement reworded; label dropped in favor of value |
 | 2020-02-05 | `cc1bba2` | Locked the app to Light appearance (the reason Dark Mode is "not started") |

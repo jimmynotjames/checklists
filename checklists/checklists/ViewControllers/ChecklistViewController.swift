@@ -289,6 +289,12 @@ class ChecklistViewController: UIViewController {
 
     if tableView.contentOffset.y == 0.0 {
       tableView.reloadData()
+    } else if UIAccessibility.isReduceMotionEnabled {
+      // The trip to the top is functional; gliding there is not. Jump, and reload directly rather
+      // than waiting on the `isResetting` handoff in `scrollViewDidScroll`, which needs the
+      // animation's intermediate offsets to land on.
+      tableView.setContentOffset(CGPoint(x: 0.0, y: 0.0), animated: false)
+      tableView.reloadData()
     } else {
       isResetting = true
       scrollToTop()
