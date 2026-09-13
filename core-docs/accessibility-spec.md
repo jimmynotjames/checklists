@@ -6,16 +6,12 @@
 | Last Updated | 2026-09-13 |
 | Author/Owner | Jimmy Ho   |
 
-> Canonical per-axis accessibility status for this app, written to be **read instead of
-> re-derived**. If you are about to grep the tree for `accessibilityLabel` or
-> `isReduceMotionEnabled` to find out where things stand, read this first. Where this document and
-> the code disagree, one of them is a bug — say which in the PR.
+> What state each accessibility axis is in, the conventions to follow, and what was decided about
+> motion. Read it instead of re-deriving; where it and the code disagree, one is a bug — say which
+> in the PR. It gives status, not call sites: to find where something lives, grep.
 >
-> Deliberately terse. Detail lives in the linked PRs and issues, not here. Keep it that way:
-> a doc that costs more tokens than the grep it replaces has failed at its only job.
->
-> Umbrella tracking issue **#142** is the live list of open accessibility work — read it there,
-> not here.
+> Keep it terse. Detail belongs in the linked PRs and issues, and **#142** is the live list of open
+> work.
 
 ---
 
@@ -52,8 +48,7 @@ The app is mixed SwiftUI + UIKit (see `.claude/CLAUDE.md` and the SwiftUI conver
 - UIKit: `accessibilityLabel` / `accessibilityValue` assignment,
   `UIAccessibility.isReduceMotionEnabled`, `UIAccessibility.post(notification:)`.
 
-Introduce a shared helper only when a third call site actually needs one; two call sites is not a
-pattern.
+Introduce a shared helper only when a third call site needs one; two is not a pattern.
 
 ### 2.2 Label vs. value
 
@@ -107,7 +102,7 @@ Motion, and missing that family is how the Reset scroll escaped the first pass.
 Neither `make gate` nor the test suites prove anything about accessibility behavior. Real checks are
 manual, in the simulator:
 
-- VoiceOver: Settings → Accessibility → VoiceOver (or ⌘-click the status item in Accessibility Inspector).
+- VoiceOver: Settings → Accessibility → VoiceOver.
 - Reduce Motion / Dynamic Type: Settings → Accessibility → Motion / Display & Text Size.
 - Xcode's **Accessibility Inspector** audit is the cheapest broad sweep and is not wired into CI.
 

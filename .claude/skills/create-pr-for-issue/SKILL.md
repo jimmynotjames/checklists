@@ -66,7 +66,7 @@ full descriptions live in the `create-pr` skill (step 4) and `.github/pull_reque
   to the `AnalyticsEvent`/`AnalyticsProperty` enums in `Analytics/AnalyticsNames.swift` and a row
   in `core-docs/analytics-spec.md`. No PII.
 - **Accessibility** — new controls get `accessibilityLabel` and appropriate traits; nothing clips at
-  large Dynamic Type. Only if the change is itself accessibility work, read
+  large Dynamic Type. If the change involved any accessibility work, read
   `core-docs/accessibility-spec.md` and update it in the same PR; otherwise leave it unread.
 - **Secrets inventory** — if the change adds, removes, or renames a gitignored secret-bearing file,
   API token, private key, credential variable, external secret location, or machine-local credential

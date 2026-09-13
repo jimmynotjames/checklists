@@ -21,5 +21,5 @@ design docs that outlive a single change; `docs/` is the published GitHub Pages 
 for internal docs.
 
 [`core-docs/accessibility-spec.md`](../core-docs/accessibility-spec.md) is canonical for
-accessibility status and conventions — read and update it when doing accessibility work, not
-otherwise.
+accessibility status and conventions. Read and update it only if a change involved accessibility
+work.
