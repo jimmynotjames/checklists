@@ -14,7 +14,8 @@
 > Deliberately terse. Detail lives in the linked PRs and issues, not here. Keep it that way:
 > a doc that costs more tokens than the grep it replaces has failed at its only job.
 >
-> Umbrella tracking issue: **#142**.
+> Umbrella tracking issue **#142** is the live list of open accessibility work — read it there,
+> not here.
 
 ---
 
@@ -125,8 +126,3 @@ Links only — read the PR, not a summary of it.
 | 2021-03-04 | `392301b`, `83c808c` | Percent-complete icon announcement reworded; label dropped in favor of value |
 | 2020-02-05 | `cc1bba2` | Locked the app to Light appearance (the reason Dark Mode is "not started") |
 | 2020-02-01 | `cd00b94`, `78042b9`, `2f1a8e6` | Original pass: checklist fields and checkbox states, checklists + main menu controls, and toast announcements on the since-removed Donate screen (#122) |
-
-## 6. Open work
-
-`#142` (umbrella) → `#180` Dark Mode · `#181` reordering VoiceOver gap + unlabeled controls ·
-`#182` Increase Contrast · `#183` full Dynamic Type range · `#184` 44×44 touch targets.
