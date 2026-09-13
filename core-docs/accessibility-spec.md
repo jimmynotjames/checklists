@@ -22,15 +22,15 @@
 
 | Axis | Status | Where |
 | --- | --- | --- |
-| **VoiceOver labels/values** | Partial | `CheckboxButton.swift:18,45,49`, `ItemContentView.swift:66,80`, `ChecklistViewController.swift:89,97`, `AnalyticsConsentSheet.swift:62-76` |
+| **VoiceOver labels/values** | Partial | `CheckboxButton`, `ItemContentView`, `ChecklistViewController`, `AnalyticsConsentSheet` |
 | **VoiceOver traits** | Not started | No `accessibilityTraits` anywhere; everything relies on default SwiftUI/UIKit traits |
-| **Reduce Motion** | Implemented | Two sites: `RootView.swift:15,43` (menu transition), `ChecklistViewController.swift:290-301` (Reset scroll). Full inventory and verdicts in §3 |
-| **Dynamic Type** | Partial | SwiftUI uses semantic tokens (`ChecklistRowView.swift:36,42`); UIKit hardcodes point sizes — §2.3. Issue **#183** |
+| **Reduce Motion** | Implemented | Two sites: `RootView` (menu transition) and `ChecklistViewController` (Reset scroll). Full inventory and verdicts in §3 |
+| **Dynamic Type** | Partial | SwiftUI uses semantic tokens (`ChecklistRowView`); UIKit hardcodes point sizes — §2.3. Issue **#183** |
 | **Dark Mode** | Not started | Forced off: `Info.plist` `UIUserInterfaceStyle = Light` (since `cc1bba2`). Issue **#180** |
 | **Increase Contrast** | Not started | No `isDarkerSystemColorsEnabled` call site. Issue **#182** |
 | **Touch targets (44×44)** | Not started | Issue **#184** |
-| **Color-only signaling** | N/A — none | Completion is an icon swap plus `accessibilityValue`, not tint alone (`CheckboxButton.swift:39-51`) |
-| **Screen-change announcements** | Partial | One call site: `LoadingView.swift:52` (`UIAccessibility.post(.screenChanged:)`) |
+| **Color-only signaling** | N/A — none | Completion is an icon swap plus `accessibilityValue`, not tint alone (`CheckboxButton`) |
+| **Screen-change announcements** | Partial | One call site: `LoadingView` (`UIAccessibility.post(.screenChanged:)`) |
 | **Automated a11y tests** | Not started | No `performAccessibilityAudit`; UI tests use `accessibilityIdentifier`/`accessibilityValue` as element hooks only |
 
 Other `UIAccessibility` flags (`isVoiceOverRunning`, `isReduceTransparency`, `isBoldTextEnabled`,
@@ -49,8 +49,7 @@ The app is mixed SwiftUI + UIKit (see `.claude/CLAUDE.md` and the SwiftUI conver
 - SwiftUI: `@Environment(\.accessibilityReduceMotion)`, `.accessibilityLabel(_:)`,
   `.accessibilityElement(children: .combine)`.
 - UIKit: `accessibilityLabel` / `accessibilityValue` assignment,
-  `UIAccessibility.isReduceMotionEnabled` (`ChecklistViewController.swift:292`),
-  `UIAccessibility.post(notification:)`.
+  `UIAccessibility.isReduceMotionEnabled`, `UIAccessibility.post(notification:)`.
 
 Introduce a shared helper only when a third call site actually needs one; two call sites is not a
 pattern.
@@ -60,17 +59,17 @@ pattern.
 State that changes belongs in `accessibilityValue`, not baked into the label — a label that encodes
 state gets re-announced wholesale on every change. `CheckboxButton` sets a static label once and
 swaps only the value (`Checked`/`Unchecked`). `CircularPercentStatusIcon` goes further and sets
-`accessibilityLabel = nil` on purpose, because the percentage *is* the whole announcement
-(`CircularPercentStatusIcon.swift:74-82`) — don't "fix" that nil.
+`accessibilityLabel = nil` on purpose, because the percentage *is* the whole announcement — don't
+"fix" that nil.
 
 ### 2.3 Dynamic Type
 
 SwiftUI screens use semantic font tokens and scale for free. UIKit views do **not**: they hardcode
 point sizes with no `adjustsFontForContentSizeCategory` (zero hits repo-wide). Known offenders —
-`ItemContentView.swift:60,73`, `ChecklistViewController.swift:84,93` (`CLTextView.swift:67` is a
-fallback only reached when no caller sets `.font`). Fixed
-frames worth watching at large sizes: the FAB (`ChecklistsView.swift:187`, 60×60), `MainMenuView.swift:79`
-(44×44), `CheckboxButton.swift:31-32` (48×48). Tracked by **#183**; don't fix piecemeal in unrelated PRs.
+`ItemContentView` and `ChecklistViewController` (`CLTextView`'s hardcoded size is a fallback only
+reached when no caller sets `.font`). Fixed frames worth watching at large sizes: the FAB in
+`ChecklistsView` (60×60), `MainMenuView`'s close button (44×44), `CheckboxButton` (48×48). Tracked
+by **#183**; don't fix piecemeal in unrelated PRs.
 
 ### 2.4 Identifiers are test hooks, not accessibility
 
@@ -81,32 +80,24 @@ VoiceOver and never substitutes for a label.
 
 ## 3. Animation inventory and Reduce Motion decisions
 
-Settled in **#185**. The app authors almost no custom motion; this table is the record so nobody
-re-investigates by grep. **Re-open a row only if the code changes.**
-
-When auditing for new motion, grep two families, not one: the animation APIs (`UIView.animate`,
-`withAnimation`, `.transition(`, `CABasicAnimation`) **and** the `animated:` parameter
-(`setContentOffset`, `scrollToRow`, `scrollRectToVisible`). The second family is how the Reset
-scroll below was missed on the first pass — `animated: true` is an instruction UIKit obeys
-regardless of Reduce Motion; it is never toned down for you.
+The app authors almost no custom motion. This table is the record so nobody re-audits by grep —
+re-open a row only if that code changes. Dig into **#185** / PR **#186** for the audit method, the
+full two-family sweep, and the reasoning behind each verdict.
 
 | Site | Verdict |
 | --- | --- |
-| `RootView.swift` main-menu transition | **Gated.** `reduceMotion ? .opacity : .move(edge: .leading)` — the only decorative spatial motion in the app |
-| `ChecklistViewController.swift:290-301` Reset scroll-to-top | **Gated.** Under Reduce Motion it jumps (`animated: false`) and reloads directly, skipping the `isResetting` → `scrollViewDidScroll` handoff, which depends on the animation's intermediate offsets. Destination functional, glide decorative |
-| `popViewController` `:198`, `dismiss` `:200,279`, `NavigationStack` push/pop, `.sheet`, `.popover`, `.alert`, `Toggle`, `.onMove`, `UIDragInteraction` reordering | System-owned. No app code specifies motion; UIKit/SwiftUI handle Reduce Motion themselves |
-| `ChecklistViewController.swift:343` (0.01s insert), `:523`/`:536` (0.1s keyboard insets), `:721-722` (0.05s pre-delete scroll), `:333` (`scrollToRow` onto the field being edited) | **Functional, left alone.** They keep the edited field off the keyboard and the target row on screen. Suppressing them would trade an a11y win for an a11y regression, and at 0.01–0.1s there is no perceptible motion to reduce |
-| Table row animations — `insertRows(.top)` `:322`, `deleteRows(.fade)` `:372`, `moveRow` `:645`, `beginUpdates/endUpdates` `:360-361` via `cellHeightRequiresRefresh` `:660,672` | **Left alone, deliberately.** Ordinary list-editing feedback; Apple's own list apps don't suppress it |
-| `ChecklistViewController.swift:487-493` nav-title fade (2× 0.4s) | **Left alone.** Opacity, not simulated movement — outside what Reduce Motion targets |
-| `CircularPercentStatusIcon.setInnerCircle` | **Not animated.** Sets `path`/`fillColor` directly after `removeAllAnimations()`; a view-backed layer's implicit actions are off outside an animation context |
-| `CheckboxButton.setCheckboxState` | **Not animated.** Plain image + tint assignment |
-| `ProgressView()` — `LoadingView.swift:25`, `SettingsView.swift:72` | System-owned. Indeterminate progress indicators are not suppressed under Reduce Motion, by Apple's design |
+| `RootView` main-menu transition | **Gated** — cross-fades instead of sliding in from the leading edge |
+| `ChecklistViewController.resetButtonTapped` scroll-to-top | **Gated** — jumps instead of gliding, and reloads directly, because the animated path defers its reload to `scrollViewDidScroll` |
+| `NavigationStack` push/pop, `.sheet`, `.popover`, `.alert`, `Toggle`, `.onMove`, `UIDragInteraction` reorder, `popViewController`/`dismiss` | System-owned. No app code specifies motion |
+| `ChecklistViewController` keyboard-inset, item-insert, and scroll-into-view animations (all ≤ 0.1s) | **Functional, left alone.** They keep the edited field clear of the keyboard and the target row on screen; suppressing them trades an a11y win for an a11y regression |
+| `ChecklistViewController` row insert/delete/move and row-height reflow | **Left alone.** Ordinary list-editing feedback; Apple's own list apps don't suppress it |
+| `ChecklistViewController` nav-title fade on scroll | **Left alone.** Opacity, not simulated movement |
+| `CircularPercentStatusIcon.setInnerCircle`, `CheckboxButton.setCheckboxState` | **Not animated.** Direct property assignment, outside any animation context |
+| `ProgressView` spinners (`LoadingView`, `SettingsView`) | System-owned. Progress indicators are not suppressed under Reduce Motion, by Apple's design |
 
-**Swept and clear** as of #185, both API families: no `CADisplayLink`, `CABasicAnimation`/
-`add(_:forKey:)`, `UIViewPropertyAnimator`, animated images or GIFs, `UIMotionEffect`,
-`UIRefreshControl`, `AVPlayer`/`SKView`, and no SwiftUI `matchedGeometryEffect`, `phaseAnimator`,
-`symbolEffect`, `contentTransition`, `scrollTransition`, `TimelineView`, or `repeatForever`
-anywhere in the app. The only other `animated:` call site is `CLTextView.swift:79`, already `false`.
+When auditing for new motion, grep two families: the animation APIs **and** the `animated:`
+parameter (`setContentOffset`, `scrollToRow`) — UIKit obeys `animated: true` regardless of Reduce
+Motion, and missing that family is how the Reset scroll escaped the first pass.
 
 ---
 
