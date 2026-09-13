@@ -66,7 +66,8 @@ swaps only the value (`Checked`/`Unchecked`). `CircularPercentStatusIcon` goes f
 
 SwiftUI screens use semantic font tokens and scale for free. UIKit views do **not**: they hardcode
 point sizes with no `adjustsFontForContentSizeCategory` (zero hits repo-wide). Known offenders —
-`ItemContentView.swift:60,73`, `ChecklistViewController.swift:84,93`, `CLTextView.swift:67`. Fixed
+`ItemContentView.swift:60,73`, `ChecklistViewController.swift:84,93` (`CLTextView.swift:67` is a
+fallback only reached when no caller sets `.font`). Fixed
 frames worth watching at large sizes: the FAB (`ChecklistsView.swift:187`, 60×60), `MainMenuView.swift:79`
 (44×44), `CheckboxButton.swift:31-32` (48×48). Tracked by **#183**; don't fix piecemeal in unrelated PRs.
 
@@ -117,7 +118,7 @@ Links only — read the PR, not a summary of it.
 | 2026-09-12 | #175 | Checklist row progress exposed as an `accessibilityValue` |
 | 2021-03-04 | `392301b`, `83c808c` | Percent-complete icon announcement reworded; label dropped in favor of value |
 | 2020-02-05 | `cc1bba2` | Locked the app to Light appearance (the reason Dark Mode is "not started") |
-| 2020-02-01 | `cd00b94`, `78042b9`, `2f1a8e6` | Original pass: checklist fields and checkbox states, checklists + main menu controls, toast announcements |
+| 2020-02-01 | `cd00b94`, `78042b9`, `2f1a8e6` | Original pass: checklist fields and checkbox states, checklists + main menu controls, and toast announcements on the since-removed Donate screen (#122) |
 
 ## 6. Open work
 
