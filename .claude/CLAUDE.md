@@ -19,3 +19,7 @@ Mixpanel SDK is not connected yet, so events reach `ConsoleAnalyticsClient`.
 event and property catalogs, the privacy contract, and the consent model. `core-docs/` holds
 design docs that outlive a single change; `docs/` is the published GitHub Pages site, not a place
 for internal docs.
+
+[`core-docs/accessibility-spec.md`](../core-docs/accessibility-spec.md) is canonical for
+accessibility status and conventions. Read and update it only if a change involved accessibility
+work.
