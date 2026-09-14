@@ -19,7 +19,15 @@ struct ContainerCreationFailure: Equatable, Hashable {
     self.errorCode = errorCode
   }
 
+  /// `PersistenceError` is unwrapped first. It is a Swift struct, so `as NSError` would bridge it
+  /// to `domain = "checklists.PersistenceError", code = 1` — collapsing every import and seed save
+  /// failure into one bucket while the real domain and code sit in its own fields.
   init(underlying: any Error) {
+    if let persistenceError = underlying as? PersistenceError {
+      errorDomain = persistenceError.errorDomain
+      errorCode = persistenceError.errorCode
+      return
+    }
     let nsError = underlying as NSError
     errorDomain = nsError.domain
     errorCode = nsError.code

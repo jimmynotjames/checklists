@@ -373,7 +373,7 @@ floor, not a total — and see §11 for where the real record lives.
 | `items_with_notes_count` | Int | Counts items whose notes are non-nil *and* non-empty. |
 | `error_domain` | String | An `NSError` `domain`, e.g. `NSCocoaErrorDomain`. Framework-authored. |
 | `error_code` | Int | An `NSError` `code`. Sent as an Int, not a string. |
-| `error_operation` | String | `create` / `update` / `delete` / `dedupe`. `persistence_write_failed` only. |
+| `error_operation` | String | `PersistenceOperation.rawValue`: `checklistEdit`, `itemEdit`, `reorder`, `delete`, `legacyImport`, `sampleSeed`, `dedupe`. `persistence_write_failed` only. The one camelCase *value* this app sends — it is a Swift case name, so renaming a case changes the analytics vocabulary. `AnalyticsNamesTests` pins the set. |
 | `orientation` | String | `portrait` / `landscape`. Face-up/face-down are filtered out, not reported. |
 | `new_value` / `old_value` | Bool | `analytics_consent_changed` only. |
 
@@ -491,6 +491,12 @@ Mixpanel-token rule as a second line of defense. It carries **no allowlist**: an
 exempted `config/Secrets.xcconfig` by path, which blinded the rule to the one committed file whose
 key names most invite a paste. The placeholders need no exemption — they are not 32 hex characters,
 so they cannot match. The real defense remains the `.gitignore` entry.
+
+**Export compliance.** `Info.plist` sets `ITSAppUsesNonExemptEncryption = false`, which is what
+skips App Store Connect's per-upload export questionnaire. It is correct only while the app's
+encryption is entirely OS-provided — HTTPS via `URLSession` and CloudKit. Giving Realm an
+`encryptionKey`, or adopting any proprietary crypto, means flipping this key to `true` and
+supplying `ITSEncryptionExportComplianceCode`.
 
 **Privacy manifest.** `checklists/checklists/PrivacyInfo.xcprivacy` declares `NSPrivacyTracking =
 false`, no tracking domains, one accessed-API reason (`UserDefaults`, `CA92.1`), and **four**

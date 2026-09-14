@@ -8,7 +8,7 @@
 @testable import checklists
 import Testing
 
-/// Covers `AnalyticsText.truncated(_:)`, which every user-supplied or error string passes
+/// Covers `AnalyticsText.truncated(_:)`, which every user-supplied string passes
 /// through before it is sent as a property value. No store involvement, so this needs none of the
 /// container fixtures the other test classes use.
 @Suite("AnalyticsText truncation")

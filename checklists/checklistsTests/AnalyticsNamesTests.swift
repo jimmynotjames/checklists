@@ -107,4 +107,16 @@ struct AnalyticsNamesTests {
   func appOpenedNameIsPinned() {
     #expect(AnalyticsEvent.appOpened == "app_opened")
   }
+
+  /// `error_operation` transmits `PersistenceOperation.rawValue`, so the Swift case names *are* the
+  /// analytics vocabulary — renaming a case silently changes what the dashboards group by. Pinned
+  /// here because no test can arrange a real save failure (spec §13 item 13), so this is the only
+  /// place the value set is guarded. Update analytics-spec.md §9.1 in the same change.
+  @Test("the persistence operation values sent as error_operation are pinned")
+  func persistenceOperationValuesArePinned() {
+    let sent = Set(PersistenceOperation.allCases.map(\.rawValue))
+    #expect(sent == [
+      "checklistEdit", "itemEdit", "reorder", "delete", "legacyImport", "sampleSeed", "dedupe",
+    ])
+  }
 }
