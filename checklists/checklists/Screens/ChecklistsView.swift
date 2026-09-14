@@ -251,3 +251,19 @@ struct ChecklistsView: View {
     // so Observation redraws the rings.
   }
 }
+
+#if DEBUG
+  #Preview("Seeded") {
+    NavigationStack {
+      ChecklistsView()
+    }
+    .previewEnvironment()
+  }
+
+  #Preview("Empty") {
+    NavigationStack {
+      ChecklistsView()
+    }
+    .previewEnvironment(container: PreviewSupport.emptyContainer)
+  }
+#endif

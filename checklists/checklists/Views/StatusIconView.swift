@@ -38,3 +38,20 @@ struct StatusIconView: UIViewRepresentable {
     }
   }
 }
+
+#if DEBUG
+  #Preview("Row") {
+    HStack {
+      StatusIconView(percentageComplete: 0)
+      StatusIconView(percentageComplete: 0.33)
+      StatusIconView(percentageComplete: 0.83)
+      StatusIconView(percentageComplete: 1)
+    }
+    .padding()
+  }
+
+  #Preview("Header") {
+    StatusIconView(percentageComplete: 0.5, iconType: .header)
+      .padding()
+  }
+#endif

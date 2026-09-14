@@ -53,3 +53,13 @@ struct LoadingView: View {
     }
   }
 }
+
+#if DEBUG
+  #Preview("Migrating") {
+    LoadingView(showsCloudSyncNote: false)
+  }
+
+  #Preview("Migrating with iCloud note") {
+    LoadingView(showsCloudSyncNote: true)
+  }
+#endif

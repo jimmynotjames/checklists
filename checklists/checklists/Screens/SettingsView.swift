@@ -205,3 +205,25 @@ struct SettingsView: View {
     }
   }
 }
+
+#if DEBUG
+  #Preview("iCloud active") {
+    SettingsView()
+      .previewEnvironment(syncStatus: PreviewSupport.syncStatus(containerBacking: .cloudKit, accountStatus: .available))
+  }
+
+  #Preview("iCloud paused") {
+    SettingsView()
+      .previewEnvironment(syncStatus: PreviewSupport.syncStatus(containerBacking: .localFallback, accountStatus: .available))
+  }
+
+  #Preview("iCloud unavailable") {
+    SettingsView()
+      .previewEnvironment(syncStatus: PreviewSupport.syncStatus(containerBacking: .cloudKit, accountStatus: .unavailable))
+  }
+
+  #Preview("iCloud checking") {
+    SettingsView()
+      .previewEnvironment(syncStatus: PreviewSupport.syncStatus(containerBacking: .cloudKit, accountStatus: .checking))
+  }
+#endif
