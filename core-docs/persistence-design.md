@@ -1,7 +1,11 @@
 # Persistence
 
-**Status: SwiftData, local-only.** The app persists with SwiftData as of the Realm→SwiftData
-migration (Stage 1). CloudKit sync is designed for but switched off (`ProductionContainerFactory.cloudKitEnabled = false`) — turning it on is Stage 2, a separate change.
+**Status: SwiftData with CloudKit sync.** The app persists with SwiftData as of the Realm→SwiftData
+migration (Stage 1); CloudKit sync was switched on in #133
+(`ProductionContainerFactory.cloudKitEnabled = true`), with a local-only store as the fallback
+whenever iCloud is unavailable. **The pre-flight checklist below is therefore live, not
+hypothetical** — in particular, an App Store build talks only to the CloudKit **Production**
+environment, so the schema must be deployed there before 1.2 ships.
 
 This document is canonical for the data model, the constraints it was designed against, the
 one-time legacy import, sort-key ordering, and the startup/failure UX. The sibling

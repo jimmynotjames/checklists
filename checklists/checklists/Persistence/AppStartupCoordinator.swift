@@ -72,7 +72,10 @@ final class AppStartupCoordinator {
       AppLog.bootstrap.error("bootstrap.failed: \(failure.diagnosticDescription, privacy: .public)")
       analytics.track(
         AnalyticsEvent.startupFailed,
-        properties: [AnalyticsProperty.error: AnalyticsText.truncated(failure.diagnosticDescription)]
+        properties: [
+          AnalyticsProperty.errorDomain: failure.errorDomain,
+          AnalyticsProperty.errorCode: failure.errorCode,
+        ]
       )
       return .failed(failure)
     }

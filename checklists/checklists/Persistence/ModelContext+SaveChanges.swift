@@ -8,7 +8,9 @@ import SwiftData
 
 /// What was being written when a save failed. Recorded in diagnostics so a failure can be traced
 /// to a call site without a stack trace.
-enum PersistenceOperation: String {
+/// `CaseIterable` so `AnalyticsNamesTests` can pin the value set: `rawValue` is transmitted as
+/// `error_operation`, which makes these case names part of the analytics vocabulary.
+enum PersistenceOperation: String, CaseIterable {
   case checklistEdit
   case itemEdit
   case reorder
@@ -53,7 +55,11 @@ extension ModelContext {
       )
       analytics.track(
         AnalyticsEvent.persistenceWriteFailed,
-        properties: [AnalyticsProperty.error: AnalyticsText.truncated(error.description)]
+        properties: [
+          AnalyticsProperty.errorDomain: error.domain,
+          AnalyticsProperty.errorCode: error.code,
+          AnalyticsProperty.errorOperation: operation.rawValue,
+        ]
       )
       throw PersistenceError(operation: operation, errorDomain: error.domain, errorCode: error.code)
     }

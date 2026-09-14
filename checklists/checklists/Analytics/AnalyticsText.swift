@@ -14,7 +14,7 @@ nonisolated enum AnalyticsText {
   /// limit is ever counted in UTF-8 bytes rather than characters.
   static let maximumLength = 127
 
-  /// Truncates a user-supplied or error string before it is sent.
+  /// Truncates a user-supplied string before it is sent. `checklist_name` is the only caller.
   ///
   /// Cuts on a `Character` boundary, so a multi-scalar grapheme — a ZWJ emoji sequence, say — is
   /// never split into a broken pair.

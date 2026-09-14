@@ -20,8 +20,7 @@ For every change, confirm each concern applies or is N/A:
       changed, a new `VersionedSchema`, a `MigrationStage` in `ChecklistsMigrationPlan`, and a
       migration test all exist. Once the CloudKit production schema is deployed, changes are
       additive only. See `core-docs/persistence-design.md`.
-- [ ] **Analytics** *(SDK not connected yet — events reach the console client, which prints in
-      DEBUG and is silent in Release)* — new user-initiated state changes still fire a matching
+- [ ] **Analytics** — new user-initiated state changes fire a matching
       `analytics.track(...)` call, with names in the `AnalyticsEvent`/`AnalyticsProperty` enums in
       `Analytics/AnalyticsNames.swift` and a row added to `core-docs/analytics-spec.md`. No PII.
 - [ ] **Accessibility** — new controls have `accessibilityLabel` and appropriate traits; nothing

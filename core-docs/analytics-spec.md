@@ -2,7 +2,7 @@
 
 | Field        | Value      |
 | ------------ | ---------- |
-| Version      | 1.6        |
+| Version      | 1.7        |
 | Last Updated | 2026-09-14 |
 | Author/Owner | Jimmy Ho   |
 
@@ -15,15 +15,15 @@
 > (`simple-recurring-budgets/Logging/`, `docs/analytics-spec.md`). This app's conventions were
 > deliberately aligned to it; §16 records every place they intentionally diverge.
 
-**Implementation status.** The token/secrets mechanism, the privacy manifest, the Mixpanel projects
-and their dashboards (§12), this document, the **client protocol with all 16 call sites migrated**
-(§7), the **locale-aware consent flow** (§6), and the **`MixpanelAnalyticsClient` SDK integration**
-(§7.2, §9) are built — the final PR in the sequence that began with `analytics-secrets-and-spec`.
-Section headers below say "Built" where it matters. `ChecklistsApp.makeAnalyticsClient()` now
-selects `MixpanelAnalyticsClient` whenever a real token is configured and the process is not a
-test run; the consent gate still wraps it, so an opted-out install never opens a connection.
-End-to-end confirmation that real events land in the Dev project (§12) is the last step before
-this PR merges.
+**Implementation status — everything in this document is built.** The token/secrets mechanism, the
+privacy manifest, the Mixpanel projects and their dashboards (§12), the client protocol with all 16
+call sites migrated (§7), the locale-aware consent flow (§6), and the `MixpanelAnalyticsClient` SDK
+integration (§7.2, §9). `ChecklistsApp.makeAnalyticsClient()` selects `MixpanelAnalyticsClient`
+whenever a real token is configured and the process is not a test run; the consent gate wraps it, so
+an opted-out install never opens a connection.
+
+Events reach the Dev project from Debug builds today. **No App Store build carries the SDK yet** —
+see §15 for what that means for the published disclosures.
 
 ---
 
@@ -101,7 +101,7 @@ list is a spec change requiring a rationale recorded here — not a code review 
 | `notes_length` | Yes | A character count, never the characters. |
 | `checklist_name` | **Yes — accepted risk, see §4.4** | The only free-text field. Nothing else answers §3.2. |
 | `orientation` | Yes | `portrait` / `landscape`. |
-| `error` (truncated to 127 chars) | Yes | SwiftData/CloudKit error descriptions: a path and a code, not user content. |
+| `error_domain`, `error_code`, `error_operation` | Yes | A SwiftData/CloudKit error domain, its integer code, and which save failed. Structured, never an `NSError`'s `userInfo` — see §4.3. |
 | App version, build, locale, region, device class | Yes | Standard environment context (§9.2). |
 | A generated `distinct_id` UUID | Yes | Random, app-generated, not derived from any device or Apple identifier (§5). |
 
@@ -115,6 +115,7 @@ list is a spec change requiring a rationale recorded here — not a code review 
 | Any Apple identifier (IDFA, IDFV, device name) | Never | No tracking, no ATT (§1). |
 | IP-derived geolocation (`$city`, `$region`, `mp_country_code`) | Never | Mixpanel derives these from the request IP unless told not to; `MixpanelAnalyticsClient` sets `useIPAddressForGeoLocation = false`. The device's own settings are the location signal instead (§9.2) — a *setting*, not a *position* — which is why no location data type is declared in `PrivacyInfo.xcprivacy`. |
 | iCloud account identifiers or CloudKit record names | Never | Identity is the app-generated UUID only. |
+| An `NSError`'s `userInfo`, `description` or `localizedDescription` | Never | `userInfo` is unbounded and can serialise the user's own content. Send `error_domain` and `error_code` instead — the same rule `ContainerCreationFailure` and the `OSLog` `privacy:` annotations already follow. |
 | Any `OSLog` message text | Never | Separate channel (§11). |
 | Contents of the Realm import (legacy data) | Never | Only the import's success/failure reaches analytics, via `startup_failed`. |
 
@@ -334,9 +335,9 @@ All names are flat `snake_case`, `noun_pastTenseVerb`. 16 events.
 | `feedback_tapped` | "Send feedback" tapped (main menu **or** the failure screen) | — | §3.1 |
 | `privacy_policy_tapped` | The privacy policy is opened | — | §3.1 |
 | `orientation_changed` | Device rotates portrait ↔ landscape | `orientation` | §3.7 |
-| `persistence_fatal_error` | The store cannot be opened at all | `error` | §3.6 |
-| `persistence_write_failed` | A SwiftData save throws | `error` | §3.6 |
-| `startup_failed` | Launch could not produce a usable store, so the retry screen was shown | `error` | §3.6 |
+| `persistence_fatal_error` | The store cannot be opened at all | `error_domain`, `error_code` | §3.6 |
+| `persistence_write_failed` | A SwiftData save throws | `error_domain`, `error_code`, `error_operation` | §3.6 |
+| `startup_failed` | Launch could not produce a usable store, so the retry screen was shown | `error_domain`, `error_code` | §3.6 |
 | `startup_store_reset` | "Start over fresh" chosen on that screen, deleting this device's stores | — | §3.6 |
 | `analytics_consent_changed` | The consent toggle or first-run sheet changes the setting | `new_value`, `old_value` | §3.8 |
 
@@ -370,7 +371,9 @@ floor, not a total — and see §11 for where the real record lives.
 | `notes_length` | Int | Character count of the checklist's notes. 0 when absent. |
 | `items_count` | Int | |
 | `items_with_notes_count` | Int | Counts items whose notes are non-nil *and* non-empty. |
-| `error` | String | Truncated to 127 characters. |
+| `error_domain` | String | An `NSError` `domain`, e.g. `NSCocoaErrorDomain`. Framework-authored. |
+| `error_code` | Int | An `NSError` `code`. Sent as an Int, not a string. |
+| `error_operation` | String | `PersistenceOperation.rawValue`: `checklistEdit`, `itemEdit`, `reorder`, `delete`, `legacyImport`, `sampleSeed`, `dedupe`. `persistence_write_failed` only. The one camelCase *value* this app sends — it is a Swift case name, so renaming a case changes the analytics vocabulary. `AnalyticsNamesTests` pins the set. |
 | `orientation` | String | `portrait` / `landscape`. Face-up/face-down are filtered out, not reported. |
 | `new_value` / `old_value` | Bool | `analytics_consent_changed` only. |
 
@@ -489,6 +492,12 @@ exempted `config/Secrets.xcconfig` by path, which blinded the rule to the one co
 key names most invite a paste. The placeholders need no exemption — they are not 32 hex characters,
 so they cannot match. The real defense remains the `.gitignore` entry.
 
+**Export compliance.** `Info.plist` sets `ITSAppUsesNonExemptEncryption = false`, which is what
+skips App Store Connect's per-upload export questionnaire. It is correct only while the app's
+encryption is entirely OS-provided — HTTPS via `URLSession` and CloudKit. Giving Realm an
+`encryptionKey`, or adopting any proprietary crypto, means flipping this key to `true` and
+supplying `ITSEncryptionExportComplianceCode`.
+
 **Privacy manifest.** `checklists/checklists/PrivacyInfo.xcprivacy` declares `NSPrivacyTracking =
 false`, no tracking domains, one accessed-API reason (`UserDefaults`, `CA92.1`), and **four**
 collected data types — all linked, purpose Analytics, none used for tracking:
@@ -498,7 +507,7 @@ collected data types — all linked, purpose Analytics, none used for tracking:
 | Product Interaction | Screen views, counts, action events |
 | Other User Content | `checklist_name` (§4.4) |
 | Device ID | The persisted `distinct_id` (§5) — app-generated, but still a per-install identifier sent to a third party, and the reason everything else is *linked* |
-| Other Diagnostic Data | The `error` property on the failure events |
+| Other Diagnostic Data | The `error_*` properties on the failure events |
 
 It needs no project-file entry — the synchronized root group adds it to the Resources phase
 automatically.
@@ -666,7 +675,8 @@ data is not migrating, so there was no continuity to preserve.
 | `notes_length` | `notesLength` (the one camelCase key in the old catalog) |
 | `items_count` | `num_items` |
 | `items_with_notes_count` | `num_items_with_notes` |
-| `error`, `orientation` | unchanged |
+| `orientation` | unchanged |
+| `error_domain`, `error_code`, `error_operation` | `error` — one composed string, now split into a domain, an integer code, and the failing operation |
 | `device_class` (super) | was the per-event `ui_idiom` |
 
 Slashes were dropped from the Realm event names and the `realm/*` prefix became `persistence_*` so
@@ -739,6 +749,7 @@ belongs in the section it changed, where a reader will actually look for it.
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
+| 1.7 | 2026-09-14 | Jimmy Ho | `error` replaced by `error_domain` / `error_code` / `error_operation`; `NSError.userInfo` added to the §4.3 deny-list. |
 | 1.6 | 2026-09-14 | Jimmy Ho | §15 corrected: collection goes live at App Store release, not at #169; no documented automated label-vs-manifest check; nutrition label now matches the manifest. Refs #170. |
 | 1.5 | 2026-09-14 | Jimmy Ho | Mixpanel's IP-derived geolocation turned off; §4.3 denial and §9.2 settings-not-position note added. Refs #170. |
 | 1.4 | 2026-09-11 | Jimmy Ho | §15 rewritten, on the since-corrected premise that collection was already live. Dashboard tiles verified against real data. |

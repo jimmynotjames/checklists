@@ -125,8 +125,12 @@ nonisolated enum AnalyticsProperty {
 
   // MARK: Errors and failures
 
-  /// Error description, truncated by `AnalyticsText.truncated`.
-  static let error = "error"
+  /// An `NSError`'s `domain`. A framework-authored constant, never user content.
+  static let errorDomain = "error_domain"
+  /// An `NSError`'s `code`. Int.
+  static let errorCode = "error_code"
+  /// Which save failed: `PersistenceOperation.rawValue`. `persistence_write_failed` only.
+  static let errorOperation = "error_operation"
 
   // MARK: orientation_changed
 

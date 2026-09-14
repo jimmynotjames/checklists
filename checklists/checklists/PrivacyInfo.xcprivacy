@@ -56,8 +56,9 @@
 				<string>NSPrivacyCollectedDataTypePurposeAnalytics</string>
 			</array>
 		</dict>
-		<!-- The `error` property on the persistence and startup failure events: truncated
-		     SwiftData/CloudKit error descriptions. Diagnostic data, not product interaction. -->
+		<!-- `error_domain` / `error_code` / `error_operation` on the persistence and startup
+		     failure events: a SwiftData or CloudKit error domain and code. Diagnostic data, not
+		     product interaction. -->
 		<dict>
 			<key>NSPrivacyCollectedDataType</key>
 			<string>NSPrivacyCollectedDataTypeOtherDiagnosticData</string>

@@ -14,7 +14,8 @@ canonical for:
 - Known issues (the old Flurry API key still in git history; test targets don't link)
 
 Analytics go through the `AnalyticsClient` protocol in `checklists/checklists/Analytics/`. The
-Mixpanel SDK is not connected yet, so events reach `ConsoleAnalyticsClient`.
+Mixpanel SDK is connected; `ConsoleAnalyticsClient` is the fallback for test runs and for a fresh
+clone with no token.
 [`core-docs/analytics-spec.md`](../core-docs/analytics-spec.md) is canonical for analytics: the
 event and property catalogs, the privacy contract, and the consent model. `core-docs/` holds
 design docs that outlive a single change; `docs/` is the published GitHub Pages site, not a place
