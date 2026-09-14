@@ -59,8 +59,8 @@ full descriptions live in the `create-pr` skill (step 4) and `.github/pull_reque
   `ChecklistsMigrationPlan`, and a migration test — never an edit in place. Once the CloudKit
   production schema is deployed, model changes are additive only: a field can be added but never
   removed or renamed. Raise it rather than shipping it unmigrated.
-- **Analytics** — the Mixpanel SDK is not connected yet, so events reach `ConsoleAnalyticsClient`
-  (prints in DEBUG, silent in Release). Instrument anyway: new user-initiated state changes get an
+- **Analytics** — the Mixpanel SDK is connected, so a missing `track` call is a missing
+  measurement. New user-initiated state changes get an
   `analytics.track(...)` call — `@Environment(\.analytics)` in a view, the injected property in
   `ChecklistViewController`, a defaulted parameter in the persistence layer — with its names added
   to the `AnalyticsEvent`/`AnalyticsProperty` enums in `Analytics/AnalyticsNames.swift` and a row

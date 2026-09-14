@@ -17,7 +17,8 @@ import Foundation
 
    - screen views, action events, and integer counts;
    - `notes_length`, a character count;
-   - truncated error descriptions;
+   - `error_domain`, `error_code` and `error_operation` — a framework-authored domain string, an
+     integer, and a bounded operation name. Never an `NSError`'s `userInfo`;
    - `checklist_name` — **the only free-text property**, an accepted risk documented at
      analytics-spec.md §4.4.
 

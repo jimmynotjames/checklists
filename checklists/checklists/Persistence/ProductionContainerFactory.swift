@@ -77,7 +77,10 @@ enum ProductionContainerFactory {
       )
       analytics.track(
         AnalyticsEvent.persistenceFatalError,
-        properties: [AnalyticsProperty.error: AnalyticsText.truncated(error.description)]
+        properties: [
+          AnalyticsProperty.errorDomain: error.domain,
+          AnalyticsProperty.errorCode: error.code,
+        ]
       )
       throw error
     }

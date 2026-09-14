@@ -53,7 +53,11 @@ extension ModelContext {
       )
       analytics.track(
         AnalyticsEvent.persistenceWriteFailed,
-        properties: [AnalyticsProperty.error: AnalyticsText.truncated(error.description)]
+        properties: [
+          AnalyticsProperty.errorDomain: error.domain,
+          AnalyticsProperty.errorCode: error.code,
+          AnalyticsProperty.errorOperation: operation.rawValue,
+        ]
       )
       throw PersistenceError(operation: operation, errorDomain: error.domain, errorCode: error.code)
     }

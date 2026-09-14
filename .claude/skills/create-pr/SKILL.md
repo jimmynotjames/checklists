@@ -146,9 +146,8 @@ CloudKit record types are additive-only, so a field can be added but never remov
 `core-docs/persistence-design.md`. If a model change ships without its schema/migration/test triad,
 stop and raise it — this is not something to paper over.
 
-**Analytics events** — the Mixpanel SDK is not connected yet, so events currently reach
-`ConsoleAnalyticsClient`, which prints in DEBUG and does nothing in Release. **Keep instrumenting
-anyway** — the point is that the catalog is complete and correct on the day the SDK lands.
+**Analytics events** — the Mixpanel SDK is connected, so a missing `track` call is a missing
+measurement, not a deferred one. `ConsoleAnalyticsClient` is only the test-run and no-token fallback.
 
 Applies if: the diff introduces a new user-initiated action that materially changes app state (a new
 button, a new destructive action, a new setting).

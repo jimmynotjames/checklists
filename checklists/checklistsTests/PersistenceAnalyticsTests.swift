@@ -35,12 +35,46 @@ struct PersistenceAnalyticsTests {
     #expect(spy.trackedEventNames == [AnalyticsEvent.persistenceFatalError])
   }
 
-  @Test("a fatal error's error property arrives as a string truncated to the max length")
-  func fatalErrorCarriesATruncatedErrorProperty() {
+  @Test("a fatal error carries the error domain as a string and the code as an Int")
+  func fatalErrorCarriesStructuredErrorProperties() {
     let spy = SpyAnalyticsClient()
+    let failure = NSError(domain: "NSCocoaErrorDomain", code: 134_060)
+
+    #expect(throws: (any Error).self) {
+      try ProductionContainerFactory.make(
+        cloud: { _ in throw failure },
+        local: { _ in throw failure },
+        analytics: spy
+      )
+    }
+
+    // Asserted against the *raw* values, not their descriptions: the backend drops a property whose
+    // type it cannot represent, silently, so the type is part of the contract. The code especially —
+    // stringifying it would look like a pass while sending "134060" instead of 134060.
+    let domain = spy.rawProperty(
+      AnalyticsProperty.errorDomain,
+      forFirst: AnalyticsEvent.persistenceFatalError,
+      as: String.self
+    )
+    let code = spy.rawProperty(
+      AnalyticsProperty.errorCode,
+      forFirst: AnalyticsEvent.persistenceFatalError,
+      as: Int.self
+    )
+    #expect(domain == "NSCocoaErrorDomain")
+    #expect(code == 134_060)
+  }
+
+  /// `userInfo` can serialise the user's own content, which is why `ContainerCreationFailure` and
+  /// the `OSLog` privacy annotations refuse it. The analytics payload must refuse it too.
+  @Test("a fatal error never sends the error's userInfo")
+  func fatalErrorOmitsUserInfo() {
+    let spy = SpyAnalyticsClient()
+    let secret = "a-checklist-item-the-user-typed"
     let failure = NSError(
-      domain: String(repeating: "D", count: 400),
-      code: 1
+      domain: "NSCocoaErrorDomain",
+      code: 134_060,
+      userInfo: [NSLocalizedFailureReasonErrorKey: secret]
     )
 
     #expect(throws: (any Error).self) {
@@ -51,15 +85,8 @@ struct PersistenceAnalyticsTests {
       )
     }
 
-    // Asserted against the *raw* value, not its description: the backend drops a property whose
-    // type it cannot represent, silently, so the type is part of the contract.
-    let message = spy.rawProperty(
-      AnalyticsProperty.error,
-      forFirst: AnalyticsEvent.persistenceFatalError,
-      as: String.self
-    )
-    #expect(message != nil, "The error property must arrive as a String.")
-    #expect(message?.count == AnalyticsText.maximumLength)
+    let sent = spy.properties(forFirst: AnalyticsEvent.persistenceFatalError) ?? [:]
+    #expect(sent.values.allSatisfy { !$0.contains(secret) })
   }
 
   /// A store that opens fine must emit nothing — the error events are not launch telemetry.
@@ -93,7 +120,9 @@ struct PersistenceAnalyticsTests {
     }
 
     #expect(spy.trackedEventNames == [AnalyticsEvent.startupFailed])
-    #expect(spy.properties(forFirst: AnalyticsEvent.startupFailed)?[AnalyticsProperty.error] != nil)
+    let properties = spy.properties(forFirst: AnalyticsEvent.startupFailed)
+    #expect(properties?[AnalyticsProperty.errorDomain] == "NSCocoaErrorDomain")
+    #expect(properties?[AnalyticsProperty.errorCode] == "134060")
   }
 
   /// `startup_failed` is the measure of how often someone is shown the failure screen instead of
