@@ -140,6 +140,10 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
       return existing
     }
     let newInstance = Mixpanel.initialize(token: token, trackAutomaticEvents: false)
+    // Defaults to `true`, which sends `ip=1` and has Mixpanel derive `$city` / `$region` from the
+    // request IP. This app's location signal is the device's own `locale` / `region` settings, so
+    // the derived geolocation is turned off rather than declared. 6.7.0 has no init parameter.
+    newInstance.useIPAddressForGeoLocation = false
     // Conservative flush batch size — this app's event volume is small and there is no rush to
     // flush aggressively.
     newInstance.flushBatchSize = 50

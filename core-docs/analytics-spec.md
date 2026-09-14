@@ -2,8 +2,8 @@
 
 | Field        | Value      |
 | ------------ | ---------- |
-| Version      | 1.4        |
-| Last Updated | 2026-09-11 |
+| Version      | 1.5        |
+| Last Updated | 2026-09-14 |
 | Author/Owner | Jimmy Ho   |
 
 > This is the canonical description of what this app measures, what it refuses to measure, and
@@ -113,6 +113,7 @@ list is a spec change requiring a rationale recorded here — not a code review 
 | **Item notes** | Never | Free text. `items_with_notes_count` is sufficient. |
 | **Checklist notes** | Never | Free text. `notes_length` is sufficient. |
 | Any Apple identifier (IDFA, IDFV, device name) | Never | No tracking, no ATT (§1). |
+| IP-derived geolocation (`$city`, `$region`, `mp_country_code`) | Never | Mixpanel derives these from the request IP unless told not to; `MixpanelAnalyticsClient` sets `useIPAddressForGeoLocation = false`. The device's own settings are the location signal instead (§9.2) — a *setting*, not a *position* — which is why no location data type is declared in `PrivacyInfo.xcprivacy`. |
 | iCloud account identifiers or CloudKit record names | Never | Identity is the app-generated UUID only. |
 | Any `OSLog` message text | Never | Separate channel (§11). |
 | Contents of the Realm import (legacy data) | Never | Only the import's success/failure reaches analytics, via `startup_failed`. |
@@ -388,12 +389,15 @@ after a reset → re-opt-in cycle.
 | `app_build` | `CFBundleVersion` |
 | `device_class` | `UIDevice.current.userInterfaceIdiom` → `phone` / `pad` |
 | `locale` | `Locale.current.identifier` |
-| `region` | `Locale.current.region?.identifier` |
+| `region` | `Locale.current.region?.identifier` — the device's **region setting**, not where the device is |
 | `consent_jurisdiction` | `required` / `auto_optin` (§6.2) |
 
 `SettingsManager.versionBuildString` combines version and build into a display string and appends
 `- DEBUG` in debug builds. **Do not send it.** Version and build go separately so both can be
 filtered on.
+
+**`region` and `locale` are device settings, not positions.** Mixpanel's IP-derived `$region` is off
+(§4.3), so `consent_jurisdiction` follows the setting the person chose, not where they are.
 
 `consent_jurisdiction` is not cosmetic. The strict-jurisdiction cohort is silent until it opts in, so
 reach and retention are systematically under-counted for that segment; without this property a
@@ -723,14 +727,18 @@ app is supposed to emit; the name constants are the only record of what it does 
 
 The region list in §6.2 and the region set in `ConsentJurisdiction.swift` must be edited together.
 
+**Keep Appendix A entries to one line.** Say what changed and cite the PR or issue; the reasoning
+belongs in the section it changed, where a reader will actually look for it.
+
 ---
 
 ## Appendix A. Revision history
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
-| 1.4 | 2026-09-11 | Jimmy Ho | Corrected the placeholder PR references in the 1.2 and 1.3 rows, and rewrote §15 now that collection is live — the published disclosures are wrong *today*, not once Mixpanel ships, and are tracked in issue #170. Verified the dashboard tiles resolve against real data: the saved `checklist_name` and `consent_jurisdiction × direction` reports both return values, so the boards were wired to the right names. |
-| 1.3 | 2026-09-11 | Jimmy Ho | Mixpanel SDK built (#169): `MixpanelAnalyticsClient` ported with lazy `Mixpanel.initialize` and no `isOptedIn` closure of its own — `ConsentGatedAnalyticsClient` is the only gate. `ChecklistsApp.makeAnalyticsClient()` now selects it whenever a real token is configured and the process is not a test run. SPM dependency added by hand-editing `project.pbxproj`. Flipped §13's SDK contracts (9, 15) from pending. |
-| 1.2 | 2026-09-11 | Jimmy Ho | Consent flow built (#168): `ConsentJurisdiction`, `AnalyticsSettings`, the testable `AnalyticsConsentController`, the first-run sheet gated on the first pushed `checklist_viewed`, and the always-on Settings toggle. Flipped §13's consent contracts from pending. Corrected §10's stale "no Fastlane here" claim and removed the now-agreeing Fastlane deviation row from §16 — both drifted true after Fastlane landed on `main`. |
-| 1.1 | 2026-09-09 | Jimmy Ho | Client protocol built and all 16 call sites migrated off the static facade (#153). Recorded the three non-SwiftUI injection points and the `ChecklistsApp.init()` ordering requirement in §7.3, and the nonisolated-constants requirement that SwiftData model extensions impose. `AnalyticsManager` deleted. |
-| 1.0 | 2026-09-09 | Jimmy Ho | Initial spec, superseding `analytics-design.md`. Records the decisions taken for the Mixpanel implementation: full locale-aware consent port, `AnalyticsClient` protocol (overriding the earlier "no abstraction" decision), `UserDefaults` rather than iCloud KV for identity, and the consent-sheet trigger on first `checklist_viewed`. Token/secrets mechanism, privacy manifest, and gitleaks rule built and verified end to end; both Mixpanel projects provisioned and their five boards built via MCP. Client, consent, and SDK pending. |
+| 1.5 | 2026-09-14 | Jimmy Ho | Mixpanel's IP-derived geolocation turned off; §4.3 denial and §9.2 settings-not-position note added. Refs #170. |
+| 1.4 | 2026-09-11 | Jimmy Ho | §15 rewritten now that collection is live. Dashboard tiles verified against real data. |
+| 1.3 | 2026-09-11 | Jimmy Ho | Mixpanel SDK built (#169). §13 contracts 9 and 15 flipped from pending. |
+| 1.2 | 2026-09-11 | Jimmy Ho | Consent flow built (#168). §13 consent contracts flipped from pending; §10's stale Fastlane claim corrected. |
+| 1.1 | 2026-09-09 | Jimmy Ho | `AnalyticsClient` protocol built, all 16 call sites migrated, `AnalyticsManager` deleted (#153). §7.3 added. |
+| 1.0 | 2026-09-09 | Jimmy Ho | Initial spec, superseding `analytics-design.md`. Token/secrets, privacy manifest, gitleaks rule, and both Mixpanel projects and their boards built; client, consent and SDK pending. |
