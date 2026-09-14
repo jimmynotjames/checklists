@@ -2,7 +2,7 @@
 
 | Field        | Value      |
 | ------------ | ---------- |
-| Version      | 1.5        |
+| Version      | 1.6        |
 | Last Updated | 2026-09-14 |
 | Author/Owner | Jimmy Ho   |
 
@@ -677,20 +677,23 @@ Flurry also had `withCrashReporting(true)`, `withLogLevel`, and vendored `Flurry
 
 ## 15. Published disclosures — **action needed outside this repo**
 
-**Collection is live as of #169, so both are wrong right now** — they were written for Flurry-era
-collection and describe an app that gathers nothing. Tracked in
-[issue #170](https://github.com/jimmynotjames/checklists/issues/170), which carries the step-by-step
-detail; this section states what has to end up true.
+Two public disclosures must describe what this app collects. This section is the whole contract.
 
-- **The privacy policy** linked from Settings is externally hosted (termsfeed). It must describe
-  Mixpanel analytics, the `checklist_name` exception (§4.4), and the opt-out.
-- **The App Store Connect privacy nutrition label** must match `PrivacyInfo.xcprivacy` — all four
-  types: Product Interaction, Other User Content, Device ID, and Other Diagnostic Data. All Linked,
-  purpose Analytics, **not** used for tracking.
+**Deadline: the next App Store release.** #169 put the SDK on `main`, but no shipped build carries
+it — the last submission was `v1.1.0`. Merging is not shipping; nothing published is wrong today.
 
-Neither lives in this repo, so neither can be fixed by a PR here — which is exactly why they are easy
-to forget. Do them before the next App Store submission: the nutrition label is checked against the
-binary's privacy manifest at review time.
+- **The privacy policy** (termsfeed, linked from Settings) is **still wrong** — it describes an app
+  that collects nothing. It must describe Mixpanel analytics, the `checklist_name` exception (§4.4),
+  the §6.2 consent model, and the Settings opt-out.
+- **The nutrition label** — **done.** Declares the same four types as `PrivacyInfo.xcprivacy`, each
+  Linked, purpose Analytics, not tracking.
+
+Neither lives in this repo, which is why they are easy to forget.
+
+**Enforcement.** Apple documents no automated label-vs-manifest check; what is gated is manifest
+schema validity — a malformed `.xcprivacy` is rejected at upload. The label is a self-attestation,
+editable at any time with no new binary; the manifest only changes in a new build. Fix the label
+when it drifts, converge the manifest next release.
 
 ## 16. Deviations from `budgets1`
 
@@ -736,8 +739,9 @@ belongs in the section it changed, where a reader will actually look for it.
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
+| 1.6 | 2026-09-14 | Jimmy Ho | §15 corrected: collection goes live at App Store release, not at #169; no documented automated label-vs-manifest check; nutrition label now matches the manifest. Refs #170. |
 | 1.5 | 2026-09-14 | Jimmy Ho | Mixpanel's IP-derived geolocation turned off; §4.3 denial and §9.2 settings-not-position note added. Refs #170. |
-| 1.4 | 2026-09-11 | Jimmy Ho | §15 rewritten now that collection is live. Dashboard tiles verified against real data. |
+| 1.4 | 2026-09-11 | Jimmy Ho | §15 rewritten, on the since-corrected premise that collection was already live. Dashboard tiles verified against real data. |
 | 1.3 | 2026-09-11 | Jimmy Ho | Mixpanel SDK built (#169). §13 contracts 9 and 15 flipped from pending. |
 | 1.2 | 2026-09-11 | Jimmy Ho | Consent flow built (#168). §13 consent contracts flipped from pending; §10's stale Fastlane claim corrected. |
 | 1.1 | 2026-09-09 | Jimmy Ho | `AnalyticsClient` protocol built, all 16 call sites migrated, `AnalyticsManager` deleted (#153). §7.3 added. |
