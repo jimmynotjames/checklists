@@ -79,3 +79,21 @@ struct RootView: View {
     }
   }
 }
+
+#if DEBUG
+  #Preview("Root") {
+    RootView()
+      .previewEnvironment()
+  }
+
+  #Preview("Main menu open") {
+    // A fresh `Router`, not `PreviewSupport.router`: that instance is shared by every other
+    // preview in this process, and mutating `isMainMenuVisible` on it would leak into them.
+    RootView()
+      .previewEnvironment(router: {
+        let router = Router()
+        router.isMainMenuVisible = true
+        return router
+      }())
+  }
+#endif

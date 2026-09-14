@@ -115,3 +115,11 @@ struct ContainerFailureView: View {
     openURL(url)
   }
 }
+
+#if DEBUG
+  #Preview("Store failure") {
+    ContainerFailureView(
+      failure: ContainerCreationFailure(errorDomain: "NSCocoaErrorDomain", errorCode: 134_060)
+    ) {}
+  }
+#endif

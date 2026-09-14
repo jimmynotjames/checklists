@@ -128,3 +128,15 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
     (navigationController.viewControllers.first as? ChecklistViewController)?.analytics = analytics
   }
 }
+
+#if DEBUG
+  #Preview("Existing checklist") {
+    ChecklistScreen(checklist: PreviewSupport.checklist()) {}
+      .previewEnvironment()
+  }
+
+  #Preview("New checklist") {
+    ChecklistScreen(checklist: PreviewSupport.checklist(), isNewChecklist: true) {}
+      .previewEnvironment()
+  }
+#endif

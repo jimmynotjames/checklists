@@ -242,6 +242,8 @@ with an explanation, so following these avoids both prompts and denials:
   repos' and Xcode's own. Use `make sim-shutdown` / `make sim-clean`, which act only on the
   UDID in `.build/sim/device.udid`.
 - Don't add `make format`/`make lint` (repo-wide) to any hook or gate. See the lint policy.
+- Don't build a one-off container or router in a `#Preview`. Use `Utils/PreviewSupport.swift`
+  and `.previewEnvironment()`.
 - Don't hardcode an analytics token in source. Tokens come from `config/Secrets.local.xcconfig`
   via Info.plist — see [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md) §10. The Flurry
   key sat in source for six years and gitleaks never caught it.

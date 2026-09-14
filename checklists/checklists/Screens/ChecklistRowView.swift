@@ -48,3 +48,20 @@ struct ChecklistRowView: View {
     }
   }
 }
+
+#if DEBUG
+  #Preview("Untouched") {
+    ChecklistRowView(checklist: PreviewSupport.checklist(id: SampleData.preTripId))
+      .padding()
+  }
+
+  #Preview("Partly done") {
+    ChecklistRowView(checklist: PreviewSupport.checklist(id: SampleData.weekendGetawayId))
+      .padding()
+  }
+
+  #Preview("Nearly done") {
+    ChecklistRowView(checklist: PreviewSupport.checklist(id: SampleData.morningRoutineId))
+      .padding()
+  }
+#endif

@@ -90,3 +90,10 @@ struct AnalyticsConsentSheet: View {
     }
   }
 }
+
+#if DEBUG
+  #Preview("Consent") {
+    AnalyticsConsentSheet()
+      .environment(PreviewSupport.analyticsSettings)
+  }
+#endif

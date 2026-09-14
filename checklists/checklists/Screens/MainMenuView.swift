@@ -92,3 +92,16 @@ private struct MainMenuRow: View {
     .buttonStyle(.plain)
   }
 }
+
+#if DEBUG
+  #Preview("Main menu") {
+    MainMenuView()
+      .environment(PreviewSupport.router)
+  }
+
+  #Preview("Row") {
+    MainMenuRow(title: "Settings", iconName: "MainMenuSettingsIcon") {}
+      .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+      .background(Colors.darkBlueGrayColor.ignoresSafeArea())
+  }
+#endif

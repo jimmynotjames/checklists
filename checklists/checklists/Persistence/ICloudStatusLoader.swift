@@ -38,6 +38,12 @@ struct ICloudStatusLoader {
   /// else or a thrown error → unavailable), writes it into `syncStatus`, and
   /// logs state transitions.
   func load(into syncStatus: SyncStatus) async {
+    #if DEBUG
+      // Xcode previews inject the status they want to show. The live CKContainer query would
+      // overwrite it — and on an account-less simulator it hangs, pinning the row to its spinner.
+      if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" { return }
+    #endif
+
     let old = syncStatus.accountStatus
 
     let resolved: SyncStatus.AccountStatus
