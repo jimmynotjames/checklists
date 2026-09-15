@@ -693,10 +693,11 @@ Two public disclosures must describe what this app collects. This section is the
 submission was `v1.1.0`. Both disclosures below are correct ahead of the 1.2 submission rather
 than catching up to it.
 
-- **The privacy policy** — **done.** Self-hosted at
+- **The privacy policy** — **written and published**, and linked from Settings. Self-hosted at
   <https://jimmynotjames.github.io/checklists/privacy.html>, served from this repo's `gh-pages`
   branch, replacing the 2019 TermsFeed page that named Flurry and claimed location and cookie
-  collection this app has never done. It names Mixpanel as the processor. Refs #190.
+  collection this app has never done. It names Mixpanel as the processor. The App Store listing
+  field still points at the old page on purpose — see "Holding the listing" below. Refs #190.
 - **The nutrition label** — **done.** Declares the same four types as `PrivacyInfo.xcprivacy`, each
   Linked, purpose Analytics, not tracking.
 
@@ -711,10 +712,16 @@ sensitive-PI contradiction, and the account and server-log retention rows. Nothi
 If that trade is ever revisited, §4 and §6 are the input a rewrite would draw on.
 
 The policy now lives in this repo; the nutrition label still does not, which is why it is the one
-that is easy to forget. The URL is carried in exactly two tracked places —
-`SettingsView.swift` and `fastlane/metadata/en-US/privacy_url.txt` — and only the fastlane copy
-reaches App Store Connect, via `push_metadata`. Anyone still on `v1.1.0` keeps hitting the old
-TermsFeed page until they update.
+that is easy to forget. The URL is carried in exactly two tracked places — `SettingsView.swift`
+and `fastlane/metadata/en-US/privacy_url.txt`.
+
+**Holding the listing.** `privacy_url.txt` is updated in the repo but has **not** been pushed to
+App Store Connect, and must not be until the first build carrying the Mixpanel SDK is actually
+submitted. The published listing therefore still points at the 2019 TermsFeed page. That is the
+correct state while `v1.1.0` is what people can install: the old page is stale in other respects,
+but it does not under-disclose a build that collects nothing. Run `push_metadata` as part of the
+release that ships the SDK — not before, or the listing will describe collection that no shipped
+binary performs.
 
 **Enforcement.** Apple documents no automated label-vs-manifest check; what is gated is manifest
 schema validity — a malformed `.xcprivacy` is rejected at upload. The label is a self-attestation,
@@ -765,7 +772,7 @@ belongs in the section it changed, where a reader will actually look for it.
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
-| 1.8 | 2026-09-14 | Jimmy Ho | §15: privacy policy self-hosted on `gh-pages`, cloned from `budgets1`'s TermsFeed text; deliberately generic, six collection claims corrected. Refs #190. |
+| 1.8 | 2026-09-14 | Jimmy Ho | §15: privacy policy self-hosted on `gh-pages`, cloned from `budgets1`'s TermsFeed text; deliberately generic, six collection claims corrected. ASC listing field held until the Mixpanel build ships. Refs #190. |
 | 1.7 | 2026-09-14 | Jimmy Ho | `error` replaced by `error_domain` / `error_code` / `error_operation`; `NSError.userInfo` added to the §4.3 deny-list. |
 | 1.6 | 2026-09-14 | Jimmy Ho | §15 corrected: collection goes live at App Store release, not at #169; no documented automated label-vs-manifest check; nutrition label now matches the manifest. Refs #170. |
 | 1.5 | 2026-09-14 | Jimmy Ho | Mixpanel's IP-derived geolocation turned off; §4.3 denial and §9.2 settings-not-position note added. Refs #170. |
