@@ -117,8 +117,9 @@ Write the PR body to `tmp/pr-body.md` using the available file-editing tool, fol
 `.github/pull_request_template.md` (What / Why / Test plan / Tools, then the cross-cutting checklist
 marked done-or-N/A from step 4). End with the `Co-Authored-By:` footer.
 
-PR title and issue-linkage conventions: AGENTS.md §"Commit and PR style". Test-plan honesty:
-`reference/review-and-gate.md` §"Gate and PR body".
+PR title and issue-linkage conventions: AGENTS.md §"Commit and PR style". Test-plan honesty, and
+what belongs in the body versus what to leave out: `reference/review-and-gate.md` §"Gate and PR
+body".
 
 Create the PR:
 
