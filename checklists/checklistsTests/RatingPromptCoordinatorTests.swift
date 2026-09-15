@@ -9,11 +9,7 @@ import Testing
 
 /// Covers the automatic App Store review prompt's decision core: the persisted counters, the
 /// balanced-profile thresholds, the once-per-version guard, the presenter gate, and the two
-/// analytics events — including that the counters keep working when analytics are opted out.
-///
-/// The native `requestReview` call itself is not under test. StoreKit never shows the dialog in
-/// TestFlight or on a simulator and reports nothing back, so the eligibility logic is the whole
-/// testable surface; the same split `simple-recurring-budgets` makes.
+/// analytics events. `requestReview` itself is not under test: StoreKit never shows the dialog on a simulator and reports nothing back.
 @Suite("Rating prompt — eligibility and request")
 struct RatingPromptCoordinatorTests {
   /// A fixed install date and a UTC calendar so the day arithmetic does not depend on the
