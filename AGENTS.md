@@ -171,11 +171,17 @@ catalog; it does not regenerate content or authorize an upload.
 
 These govern *every* commit, including ad-hoc ones not run through a skill:
 
-- **Never push to `main`.** Branch first: `git checkout -b u/jimmyho/<tool>/<kebab-description>`
-  **before the first `git add`** — moving a commit off `main` afterwards needs a destructive
-  force-push. `<tool>` documents authorship (`claude-code`, `cursor`, `cursor+claude`; omit for
-  manual branches). Description is lowercase kebab-case, no underscores. Enforced by the `pre-push`
-  lefthook, the bash-hygiene guard (rule 4), and server-side branch protection.
+- **Never push to `main` or `gh-pages`.** Branch first:
+  `git checkout -b u/jimmyho/<tool>/<kebab-description>` **before the first `git add`** — moving a
+  commit off a protected branch afterwards needs a destructive force-push. `<tool>` documents
+  authorship (`claude-code`, `cursor`, `cursor+claude`; omit for manual branches). Description is
+  lowercase kebab-case, no underscores. Enforced by the `pre-push` lefthook, the bash-hygiene guard
+  (rule 4), and server-side branch protection.
+  - **`gh-pages` is protected for the same reason as `main`, not a weaker one.** It is the public
+    site, it hosts `privacy.html` — the policy that both the App Store listing and the in-app
+    Settings link point at — and a push to it is live immediately, with no build step in between.
+    Branch off `gh-pages`, open the PR against `gh-pages`, and merge it there; the site rebuilds on
+    merge. Do not retarget such a PR at `main`: the branches share no history.
 - **Commit/PR subject:** `<Past-tense verb> <description>.` — sentence case, ends with a period,
   **≤72 chars**, no conventional-commit prefix (`feat:`/`fix:`/`chore:`). Match the verb's weight to
   the change (`Implemented` a feature, not `Updated`). The PR number `(#N)` goes at the end of the

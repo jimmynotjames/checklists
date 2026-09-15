@@ -5,7 +5,8 @@
 #   rule 1 - no absolute /tmp/ (use project-local, gitignored tmp/)
 #   rule 2 - no `sed -i` mutation (use the Edit / Write tools)
 #   rule 3 - no `sed -n RANGE_p` slicing (use the Read tool with offset/limit)
-#   rule 4 - no direct push to main (create a branch + PR instead)
+#   rule 4 - no direct push to a protected branch: main, or gh-pages (the public
+#            site, which is live the moment it is pushed). Create a branch + PR.
 #   rule 5 - no machine-wide simulator destruction (kills other repos'/Xcode's
 #            sims); only the global `all`/`unavailable` forms are blocked, scoped
 #            `simctl <verb> <udid>` stays allowed. See AGENTS.md "What NOT to do".
@@ -31,8 +32,8 @@ elif printf '%s' "$cmd" | grep -Eq '(^|[^[:alnum:]_/])sed +(-[a-zA-Z]*i|--in-pla
   reason='Blocked (hygiene rule 2): do not use `sed -i` to mutate files — it is non-portable (BSD vs GNU), unsafe to allowlist, and bypasses the file-state tracker. Use the Edit tool (replace_all for find/replace) or Write for a full rewrite.'
 elif printf '%s' "$cmd" | grep -Eq '(^|[^[:alnum:]_/])sed +-[a-zA-Z]*n'; then
   reason='Blocked (hygiene rule 3): do not use `sed -n RANGE_p FILE` to slice a file. Use the Read tool with offset and limit instead.'
-elif printf '%s' "$cmd" | grep -Eq 'git(\s+-C\s+\S+)?\s+push(\s+--[a-zA-Z-]+)*\s+\S{3,}\s+main\b'; then
-  reason='Blocked (hygiene rule 4): never push directly to main. Create a feature branch (u/jimmyho/claude-code/<description>), push the branch, and open a PR instead. `main` also has server-side branch protection, so this would be rejected anyway.'
+elif printf '%s' "$cmd" | grep -Eq 'git(\s+-C\s+\S+)?\s+push(\s+--[a-zA-Z-]+)*\s+\S{3,}\s+(main|gh-pages)\b'; then
+  reason='Blocked (hygiene rule 4): never push directly to main or gh-pages. Create a branch (u/jimmyho/claude-code/<description>), push it, and open a PR against the branch you are targeting. Both have server-side branch protection, so this would be rejected anyway. gh-pages is protected because it is the public site — it carries the privacy policy the App Store listing and the in-app Settings link point at, and a push to it is live immediately.'
 elif printf '%s' "$cmd" | grep -Eq '(^|[^[:alnum:]_/])(pkill|killall)\b[^|&;]*\bSimulator\b'; then
   reason='Blocked (hygiene rule 5): do not `pkill`/`killall Simulator` — it kills every simulator on the machine, including other repo clones'\'' and Xcode'\''s. Use `make sim-shutdown` (this repo'\''s device only). See AGENTS.md §"What NOT to do".'
 elif printf '%s' "$cmd" | grep -Eq 'simctl\s+((shutdown|erase|delete)\s+all|delete\s+unavailable)\b'; then
