@@ -1,4 +1,7 @@
 # checklists
 
-Fastlane provides App Store Connect authentication and an initial English marketing-copy
-baseline for future publishing. See [fastlane setup](fastlane/SETUP.md) for configuration.
+A SwiftUI/UIKit iOS app (Swift 6, iOS 26+) persisted with SwiftData + CloudKit.
+
+- Agent and contributor instructions: [`AGENTS.md`](AGENTS.md)
+- Design docs: [`core-docs/`](core-docs/)
+- Release tooling: [`fastlane/SETUP.md`](fastlane/SETUP.md)
