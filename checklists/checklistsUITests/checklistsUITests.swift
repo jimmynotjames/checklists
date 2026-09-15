@@ -7,7 +7,6 @@
 
 import XCTest
 
-/// IMPORTANT NOTE: Running these tests will clear/reset the persisted database on the app.
 class checklistsUITests: XCTestCase {
   var app: XCUIApplication!
 
@@ -22,8 +21,7 @@ class checklistsUITests: XCTestCase {
   }
 
   func testChecklistDeletion() {
-    // The main checklists list is a SwiftUI `List`, which XCUITest exposes as a collection view
-    // (the detail screen is still a real UIKit table view — see `checklistUITest`).
+    // See checklistUITest.checklistsList.
     let listQuery = app.collectionViews
     listQuery.staticTexts["Weekend Getaway Essentials"].swipeLeft()
     // The swipe action lives in the row, but scoping to `app` keeps this working regardless of

@@ -10,10 +10,6 @@ import Testing
 
 /// Covers the analytics emitted by the three call sites that run before any SwiftUI environment
 /// exists (analytics-spec.md §7.3).
-///
-/// These were untestable while they reached a static facade directly. Each now takes the client
-/// as a parameter defaulting to `AppAnalytics.shared`, which is what lets a spy be passed in here
-/// without changing how the app wires them.
 @Suite("Persistence and startup analytics")
 struct PersistenceAnalyticsTests {
   /// Both store paths failing is the only way the app cannot open a store at all — the event

@@ -27,10 +27,7 @@ private struct FixtureChecklist {
  Covers the one-time copy out of the old Realm store — the only code path in the app that can lose
  a user's data, and the one that runs exactly once on a device we will never see.
 
- Each test builds a real Realm file in the test process's temporary directory, in the same shape
- v1.1.0 wrote, then imports it into an in-memory SwiftData container. The fixture is written
- through `LegacyGroup`/`LegacyChecklist`/`LegacyItem`, so these tests would also catch those
- declarations drifting away from the shipped schema.
+ Each test builds a real, v1.1.0-shaped Realm fixture (`LegacyGroup`/`LegacyChecklist`/`LegacyItem`) and imports it into an in-memory SwiftData container.
  */
 @Suite("Legacy Realm import")
 struct LegacyRealmImporterTests {

@@ -9,21 +9,10 @@ import RealmSwift
 import SwiftData
 import Testing
 
-/**
- Guards the requirement that two devices which never synced must end up with **both** sets of
- checklists, not one of them.
-
- A user on v1.1.0 with an iPad and an iPhone has a different set of checklists on each, because
- there was no sync. When both upgrade, the union has to survive. It does, for a reason that is easy
- to break by accident: v1.1.0 minted `NSUUID().uuidString` per record on each device independently,
- and `LegacyRealmImporter` preserves those ids, so the two sets are disjoint and neither overwrites
- the other.
-
- The obvious "improvement" that would break it is rewriting an imported checklist's id to something
- canonical — matching a sample by name, say — which would make the two devices' copies collide and
- silently discard one device's edits and checked states. These tests exist to fail loudly if anyone
- tries it.
- */
+/// Guards against a specific regression: rewriting an imported checklist's id to something
+/// canonical (matching a sample by name, say) would make two devices' copies collide and silently
+/// discard one device's edits and checked states. These tests exist to fail loudly if anyone tries
+/// it.
 @Suite("Two-device legacy import union")
 struct TwoDeviceUnionTests {
   /// The per-test fixture: a scratch directory for the two device stores, and a factory minting a
@@ -82,7 +71,6 @@ struct TwoDeviceUnionTests {
 
   // MARK: - Union
 
-  /// The headline requirement: both devices' data survives into one store.
   @Test("both devices' checklists survive into one union rather than one overwriting the other")
   func twoIndependentStoresUnionRatherThanOverwrite() throws {
     try withFixture { fixtureDirectory, freshDefaults in
@@ -106,7 +94,6 @@ struct TwoDeviceUnionTests {
     }
   }
 
-  /// Items must come across with their parents, not just the checklists.
   @Test("the union preserves every item from both devices")
   func unionPreservesEveryItemFromBothDevices() throws {
     try withFixture { fixtureDirectory, freshDefaults in
@@ -218,8 +205,6 @@ struct TwoDeviceUnionTests {
     }
   }
 
-  /// Whichever block sorts lower comes first — the ordering between devices is arbitrary but the
-  /// contiguity is not.
   @Test("the lower block sorts first regardless of import order")
   func lowerBlockSortsFirstRegardlessOfImportOrder() throws {
     try withFixture { fixtureDirectory, freshDefaults in
@@ -286,7 +271,6 @@ struct TwoDeviceUnionTests {
     #expect(try #require(midpoint) < second)
   }
 
-  /// The base must leave enough room for midpoint insertion to keep working afterwards.
   @Test("sort keys remain subdividable after an import")
   func sortKeysRemainSubdividableAfterAnImport() throws {
     try withFixture { fixtureDirectory, freshDefaults in

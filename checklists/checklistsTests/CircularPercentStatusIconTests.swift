@@ -9,13 +9,8 @@
 import Testing
 import UIKit
 
-/// Covers `CircularPercentStatusIcon`'s accessibility contract (its `accessibilityValue` label,
-/// since `accessibilityLabel` is deliberately nil) and its per-`IconType` dimensions. The arc/bezier
-/// math itself is private and not part of the contract — per the plan, label + dimensions are what's
-/// tested, not the drawing internals.
-///
-/// No Realm/DBManager involvement, so this doesn't need the in-memory-Realm save/restore pattern
-/// the persistence-touching test classes use.
+/// Covers `CircularPercentStatusIcon`'s accessibility contract (`accessibilityValue`;
+/// `accessibilityLabel` is deliberately nil) and its per-`IconType` dimensions, not the private arc/bezier drawing math.
 @Suite("CircularPercentStatusIcon accessibility and dimensions")
 struct CircularPercentStatusIconTests {
   @Test("0% progress reports as 0 percent complete")
@@ -110,10 +105,6 @@ struct CircularPercentStatusIconTests {
     #expect(size == CGSize(width: 24.0, height: 24.0)) // radius 12.0
   }
 
-  // NOTE: a test asserting that mutating `iconType` on a *live* instance re-triggers layout to the
-  // new dimensions was tried and dropped — `systemLayoutSizeFitting`, with no window/superview to
-  // drive a real layout pass, doesn't reliably re-solve after `setNeedsUpdateConstraints()` on an
-  // already-measured view in this headless environment, which looks like a test-harness limitation
-  // rather than a production bug (the two dimension tests above, one instance per `IconType`, are
-  // what the plan actually asks for).
+  // No test mutates `iconType` on a live instance: without a window, `systemLayoutSizeFitting` doesn't reliably re-solve after `setNeedsUpdateConstraints()`, which reads as a harness limitation, not
+  // a product bug.
 }

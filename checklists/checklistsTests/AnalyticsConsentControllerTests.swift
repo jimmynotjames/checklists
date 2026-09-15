@@ -154,10 +154,6 @@ struct AnalyticsConsentControllerTests {
 /// Records `settings.analyticsOptIn`'s value at the moment `track` and `reset` were each
 /// called — the one thing `SpyAnalyticsClient`'s ordered `calls` array cannot prove, since the
 /// flag write is a mutation on a different object, not a call the spy observes.
-///
-/// `@MainActor` is load-bearing here and not redundant with the target's default isolation, for the
-/// same reason it is on `SpyAnalyticsClient`: `AnalyticsClient` requires `Sendable`, and a class
-/// with mutable stored properties only satisfies that through actor isolation.
 @MainActor
 private final class FlagSnapshottingAnalyticsClient: AnalyticsClient {
   private let settings: AnalyticsSettings

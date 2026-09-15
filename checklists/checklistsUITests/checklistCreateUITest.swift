@@ -21,9 +21,7 @@ class checklistCreateUITest: XCTestCase {
 
   override func tearDownWithError() throws {}
 
-  /// The main checklists list is a SwiftUI `List`, which XCUITest exposes as a collection view.
-  /// The checklist *detail* screen behind it is still a UIKit table view (`ChecklistTableView`),
-  /// so `app.tables` still addresses that screen and only that screen.
+  /// See checklistUITest.checklistsList.
   private var checklistsList: XCUIElementQuery {
     app.collectionViews
   }
@@ -34,11 +32,6 @@ class checklistCreateUITest: XCTestCase {
     app.buttons["Add new checklist."]
   }
 
-  /**
-   1a. Create a checklist with 3 Checklist Name, Notes, and 3 items, one item with Item Notes.
-   1b. Do it in a way that exercises different ways of adding a new Item.
-   2. Then go Back to main page, then tap back in and verify that it's all there, in the right order.
-   */
   func testCreateChecklistAndAddItems() {
     let checklistName = "Mindfulness Checklist"
     let checklistNotes = "New year! New checklist!"
@@ -177,7 +170,6 @@ class checklistCreateUITest: XCTestCase {
     app.navigationBars["checklists.ChecklistView"].buttons["Done"].tap()
   }
 
-  /// Trailing empty Items should be auto-deleted.
   func testItemCleanup() {
     let checklistName = "Mindfulness Checklist"
     let item1Name = "Gratitude - 1 min"
