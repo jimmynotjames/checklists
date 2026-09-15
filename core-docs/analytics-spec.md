@@ -708,8 +708,22 @@ controller. It does **not** enumerate the §10 events, the `checklist_name` exce
 a hand-written inventory, because deviating from it carries more risk than the added specificity
 buys. Six passages were corrected where the template asserted collection or sale this app does not
 do — CCPA Category B, the sale/sharing disclosure, the ad-network opt-out instructions, the
-sensitive-PI contradiction, and the account and server-log retention rows. Nothing else was changed.
-If that trade is ever revisited, §4 and §6 are the input a rewrite would draw on.
+sensitive-PI contradiction, and the account and server-log retention rows. If that trade is ever
+revisited, §4 and §6 are the input a rewrite would draw on.
+
+**A fresh-eye review then found eight more.** Three were caused by the corrections above: Category B
+was still listed as *disclosed* after being marked not collected; a replacement sentence pointed at
+a list that does not exist; and the retention lead-in still promised several categories above a list
+left with one. Three were inherited from the template and are present in `budgets1`'s copy too: two
+cross-references naming sections that do not exist ("Use of Your Personal Information", "Retention
+of Your Personal Information" — the real headings say *Data*), and cookies listed as a source of
+personal information in an app with no webview. Two were judgment calls: the only opt-out the policy
+named was `mixpanel.com/optout`, which does nothing for a native SDK, so a clause now names the
+Settings toggle — **the one place the policy is deliberately app-specific** — and the browser and
+web-page phrases were dropped from the Usage Data definition, identifier language kept.
+
+Every difference from the source text is enumerable: four substitutions, two decoded contact
+addresses, the six deviations, and those eight fixes. Nothing else was changed.
 
 The policy now lives in this repo; the nutrition label still does not, which is why it is the one
 that is easy to forget. The URL is carried in exactly two tracked places — `SettingsView.swift`
@@ -772,7 +786,7 @@ belongs in the section it changed, where a reader will actually look for it.
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
-| 1.8 | 2026-09-14 | Jimmy Ho | §15: privacy policy self-hosted on `gh-pages`, cloned from `budgets1`'s TermsFeed text; deliberately generic, six collection claims corrected. ASC listing field held until the Mixpanel build ships. Refs #190. |
+| 1.8 | 2026-09-14 | Jimmy Ho | §15: privacy policy self-hosted on `gh-pages`, cloned from `budgets1`'s TermsFeed text; deliberately generic, six collection claims corrected plus eight review fixes. ASC listing field held until the Mixpanel build ships. Refs #190. |
 | 1.7 | 2026-09-14 | Jimmy Ho | `error` replaced by `error_domain` / `error_code` / `error_operation`; `NSError.userInfo` added to the §4.3 deny-list. |
 | 1.6 | 2026-09-14 | Jimmy Ho | §15 corrected: collection goes live at App Store release, not at #169; no documented automated label-vs-manifest check; nutrition label now matches the manifest. Refs #170. |
 | 1.5 | 2026-09-14 | Jimmy Ho | Mixpanel's IP-derived geolocation turned off; §4.3 denial and §9.2 settings-not-position note added. Refs #170. |
