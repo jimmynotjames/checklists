@@ -8,9 +8,6 @@ class ReleaseBuild
   PROJECT = "checklists/checklists.xcodeproj".freeze
   PBXPROJ = "#{PROJECT}/project.pbxproj".freeze
   IDENTIFIER = "com.jimmyho.checklists".freeze
-  TEAM_ID = "EDMB3Z5KAY".freeze
-  DISTRIBUTION_CERTIFICATE = "Apple Distribution".freeze
-  PROVISIONING_PROFILE_ENV = "ARCHIVE_VALIDATION_PROVISIONING_PROFILE".freeze
 
   def initialize(root)
     @root = root
@@ -75,24 +72,7 @@ class ReleaseBuild
     verify_secrets!
     output = File.join(@root, "tmp/archive-validation")
     FileUtils.mkdir_p(output)
-    options = build_options(output)
-    options[:xcargs] = "CODE_SIGN_STYLE=Automatic"
-    options.delete(:export_xcargs)
-    # Automatic export needs an authenticated session to pick a profile; this lane has none
-    # (no -allowProvisioningUpdates, no ASC auth), so export manually from what's installed.
-    options[:export_options] = {
-      signingStyle: "manual",
-      teamID: TEAM_ID,
-      signingCertificate: DISTRIBUTION_CERTIFICATE,
-      provisioningProfiles: { IDENTIFIER => provisioning_profile_name }
-    }
-    yield options
-  end
-
-  def provisioning_profile_name
-    name = ENV[PROVISIONING_PROFILE_ENV].to_s.strip
-    raise "Set #{PROVISIONING_PROFILE_ENV} in fastlane/.env; see fastlane/SETUP.md" if name.empty?
-    name
+    yield build_options(output)
   end
 
   def beta(latest:, archive:, upload:)

@@ -138,39 +138,13 @@ class ReleaseBuildTest < Minitest::Test
     assert_equal "committed", JSON.parse(File.read(path))["status"]
   end
 
-  def test_archive_validation_preserves_project_without_git_or_provisioning
-    with_env(ReleaseBuild::PROVISIONING_PROFILE_ENV, "reChecklist Distribution Profile") do
-      @release.archive_only do |options|
-        refute_includes options[:xcargs], "allowProvisioningUpdates"
-        refute options.key?(:export_xcargs)
-        assert options[:archive_path].start_with?(File.join(@root, "tmp/"))
-        assert_equal(
-          {
-            signingStyle: "manual",
-            teamID: ReleaseBuild::TEAM_ID,
-            signingCertificate: ReleaseBuild::DISTRIBUTION_CERTIFICATE,
-            provisioningProfiles: { ReleaseBuild::IDENTIFIER => "reChecklist Distribution Profile" }
-          },
-          options[:export_options]
-        )
-      end
+  def test_archive_validation_uses_beta_build_options_without_git
+    expected = @release.build_options(File.join(@root, "tmp/archive-validation"))
+    @release.archive_only do |options|
+      assert_equal expected, options
     end
     assert_empty @release.commands
     assert_equal @original, File.read(@path)
-  end
-
-  def test_archive_validation_requires_provisioning_profile_env
-    with_env(ReleaseBuild::PROVISIONING_PROFILE_ENV, nil) do
-      assert_raises(RuntimeError) { @release.archive_only { |_options| } }
-    end
-  end
-
-  def with_env(name, value)
-    previous = ENV[name]
-    ENV[name] = value
-    yield
-  ensure
-    ENV[name] = previous
   end
 
   def test_source_change_during_archive_stops_before_upload

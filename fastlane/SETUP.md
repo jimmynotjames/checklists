@@ -14,15 +14,11 @@ the app configured in Appfile and prints its App Store Connect ID, with no uploa
 change, or availability change.
 
 Binary archives also require a valid Apple Distribution identity in the login
-keychain for team `EDMB3Z5KAY`. `archive_validation` archives with automatic
-signing but exports manually, since it has no App Store Connect session and must
-not request a provisioning update: set `ARCHIVE_VALIDATION_PROVISIONING_PROFILE`
-in `fastlane/.env` to the name of an already-installed App Store distribution
-provisioning profile for `com.jimmyho.checklists` (Xcode > Settings > Accounts >
-Manage Certificates, or download it from App Store Connect). The real beta lane
-stays on automatic signing and allows Xcode to update provisioning through an
-existing signed-in Xcode account. It also requires the Release values checked by
-`scripts/verify_release_secrets.sh`.
+keychain and automatic signing for team `EDMB3Z5KAY`. `archive_validation` uses
+the same authenticated, automatic-signing build options as the real beta lane
+(so it can also update provisioning through the App Store Connect API key), but
+never uploads, bumps the build number, or commits. It also requires the Release
+values checked by `scripts/verify_release_secrets.sh`.
 
 ## Initial marketing copy
 
