@@ -50,7 +50,7 @@ pre-push:
             ;;
         esac
 
-    # Compile check only. `simple-recurring-budgets` also runs its i18n gates here; this repo has no
-    # localization pipeline. Tests are deliberately not run on push — see AGENTS.md.
+    # Compile check only. `simple-recurring-budgets` also runs its i18n gates here; this
+    # repo has no localization pipeline. Tests are deliberately not run on push — see AGENTS.md.
     build:
       run: bash scripts/build.sh

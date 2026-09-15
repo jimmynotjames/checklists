@@ -9,7 +9,7 @@ import SwiftUI
 /// Settings screen presented as a sheet from the app's `Router`. Mirrors
 /// `simple-recurring-budgets`'s `SettingsView` structure (Form + sections, `.task` loaders,
 /// `observeAccountChanges` withTaskGroup pattern), but has no Themes section and none of the
-/// currency/week-start/analytics-consent machinery that app has.
+/// currency/week-start machinery that repo has.
 struct SettingsView: View {
   @Environment(SyncStatus.self) private var syncStatus
   @Environment(AnalyticsSettings.self) private var settings

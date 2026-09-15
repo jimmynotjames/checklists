@@ -13,7 +13,7 @@ import Foundation
 ///
 /// Modeled on `simple-recurring-budgets`'s `Router`, with one deviation: `isMainMenuVisible`
 /// drives a slide-in overlay menu (this app's replacement for the UIKit hamburger menu), not a
-/// sheet. That app has no equivalent — every one of its destinations is either a push
+/// sheet. That repo has no equivalent — every one of its destinations is either a push
 /// (`path`) or a sheet (`sheet`). The main menu is neither: it overlays the current
 /// screen without navigating away from it, so it gets its own flag rather than being
 /// forced into `SheetRoute`.

@@ -9,8 +9,7 @@ import Testing
 /// core-docs/analytics-spec.md §13 contract 15: the client-selection predicate must return
 /// "use the console client" for **both** the `-UITests1` launch argument and the `IS_TESTING`
 /// environment variable, since `simple-recurring-budgets`'s `IS_TESTING`-only check would let this
-/// app's XCUITest
-/// runs — which pass only the launch argument — reach real Mixpanel.
+/// app's XCUITest runs — which pass only the launch argument — reach real Mixpanel.
 ///
 /// `ChecklistsApp.shouldUseConsoleClient(isRunningTests:isTokenConfigured:)` is the actual
 /// predicate `makeAnalyticsClient()` calls, pulled out to `internal` specifically so this suite can
@@ -18,9 +17,8 @@ import Testing
 /// only `LaunchModeContainerFactory.isRunningTests(arguments:environment:)` — correct in isolation,
 /// but incapable of failing if `makeAnalyticsClient()` ever stopped consulting it (e.g. a
 /// `simple-recurring-budgets`-style regression to checking only `IS_TESTING`), because nothing here
-/// called through to
-/// `ChecklistsApp` at all. Both levels are covered below: the signal-detection primitive, and the
-/// selection truth table built on top of it.
+/// called through to `ChecklistsApp` at all. Both levels are covered below: the signal-detection
+/// primitive, and the selection truth table built on top of it.
 @Suite("Analytics client selection")
 struct AnalyticsClientSelectionTests {
   // MARK: - `ChecklistsApp.shouldUseConsoleClient` — the actual selection truth table

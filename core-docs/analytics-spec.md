@@ -12,9 +12,10 @@
 > of them is a bug — say which in the PR.
 >
 > The sibling **`simple-recurring-budgets`** repo — the **Wren** app — has the reference Mixpanel
-> implementation (`simple-recurring-budgets/Logging/`, `docs/analytics-spec.md`). This app's
-> conventions were deliberately aligned to it; §16 records every place they intentionally diverge.
-> Below, `simple-recurring-budgets` names the codebase and Wren names the product.
+> implementation (its `simple-recurring-budgets/Logging/` target, and `docs/analytics-spec.md` at
+> that repo's root). This app's conventions were deliberately aligned to it; §16 records every
+> place they intentionally diverge. Below, `simple-recurring-budgets` names the codebase and Wren
+> names the product.
 
 **Implementation status — everything in this document is built.** The token/secrets mechanism, the
 privacy manifest, the Mixpanel projects and their dashboards (§12), the client protocol with all 16
@@ -124,9 +125,8 @@ list is a spec change requiring a rationale recorded here — not a code review 
 
 `checklist_viewed` sends the checklist's name verbatim, truncated to 127 characters. This is a
 deliberate, eyes-open decision mirroring the way `simple-recurring-budgets` allow-lists
-`budget_name`. **Question
-§3.2 — what do people actually make checklists for? — is not answerable any other way**, and it is
-the single most valuable product question this app has.
+`budget_name`. **Question §3.2 — what do people actually make checklists for? — is not answerable
+any other way**, and it is the single most valuable product question this app has.
 
 Constraints on the exception, all of which are load-bearing:
 
@@ -157,11 +157,10 @@ derived from any Apple identifier, and it is not the IDFV.
 
 **Stored in `UserDefaults.standard`, not `NSUbiquitousKeyValueStore`.** This is a deliberate
 deviation from `simple-recurring-budgets`, forced by a real constraint: `checklists.entitlements`
-declares CloudKit
-but **not** `com.apple.developer.ubiquity-kvstore-identifier`, so the iCloud key-value store would
-not sync. Adding that entitlement means a capability change, a regenerated provisioning profile, and
-an App Store Connect edit — a bad thing to bundle into the change that also introduces a third-party
-SDK.
+declares CloudKit but **not** `com.apple.developer.ubiquity-kvstore-identifier`, so the iCloud
+key-value store would not sync. Adding that entitlement means a capability change, a regenerated
+provisioning profile, and an App Store Connect edit — a bad thing to bundle into the change that
+also introduces a third-party SDK.
 
 Accepted consequences:
 
@@ -210,11 +209,10 @@ launch would make every install look like it had already decided.
 
 **Trigger: the first `checklist_viewed` on an existing (pushed) checklist.**
 `simple-recurring-budgets` triggers its sheet after the first `budget_created`; that does not port,
-because **this app seeds sample
-checklists on first launch**, so a person may never create one and could use the app indefinitely
-without being asked. Opening a checklist is this app's core loop, always happens, and happens after
-the product has shown its value. Decisively, it is the moment `checklist_name` (§4.4) would first be
-transmitted.
+because **this app seeds sample checklists on first launch**, so a person may never create one and
+could use the app indefinitely without being asked. Opening a checklist is this app's core loop,
+always happens, and happens after the product has shown its value. Decisively, it is the moment
+`checklist_name` (§4.4) would first be transmitted.
 
 The trigger is guarded to the *pushed* presentation only: in the new-checklist route the checklist
 screen **is** the presented sheet, and asking for consent there would replace the sheet the person is
@@ -255,9 +253,8 @@ is the truth table above, and `makeAnalyticsClient()` calls it before constructi
 
 The test guard delegates to the existing `LaunchModeContainerFactory.isRunningTests`, which already
 handles **both** signals. `simple-recurring-budgets` checks only its `IS_TESTING` env var; ported
-literally, that
-would let this repo's UI-test runs send real events, because the XCUITest bundle passes only the
-launch argument.
+literally, that would let this repo's UI-test runs send real events, because the XCUITest bundle
+passes only the launch argument.
 
 `ConsoleAnalyticsClient` prints in DEBUG and does nothing in Release. It is also the environment
 default, so a SwiftUI preview or a view constructed in isolation never needs a real client.
@@ -316,8 +313,7 @@ three testable.
 and cannot reach a MainActor-isolated constant. Declaring `AnalyticsEvent`, `AnalyticsProperty` and
 `AnalyticsText` members `nonisolated` is what lets names be used from anywhere, which is the whole
 point of having them in one place. `simple-recurring-budgets` does the same, for the same reason. A
-new constant
-without `nonisolated` compiles until the first model extension tries to use it.
+new constant without `nonisolated` compiles until the first model extension tries to use it.
 
 **Consent interacts with this and it is not a bug.** These three error events are consent-gated like
 everything else, so in strict-opt-in jurisdictions they are dropped on exactly the launch where they
@@ -353,9 +349,8 @@ as `background → inactive → active`. Testing only the immediately preceding 
 foreground return and silently reduces the event to cold launches — which would put every session,
 reach and retention number on this app's dashboards on a cold-launch-only basis.
 `simple-recurring-budgets`'s `AppOpenTracker`, which this was ported from, has that bug. Verified
-here on a simulator: one cold
-launch plus two background/foreground cycles produces exactly three events, and an `.inactive`
-detour with no `.background` in it produces none.
+here on a simulator: one cold launch plus two background/foreground cycles produces exactly three
+events, and an `.inactive` detour with no `.background` in it produces none.
 
 **`startup_failed` is the one to watch.** It is the only signal that someone was shown a failure
 screen instead of their checklists, and its count measures how often the store cannot be opened in
@@ -386,8 +381,7 @@ floor, not a total — and see §11 for where the real record lives.
 
 Counts are sent **raw** rather than bucketed. Mixpanel handles numeric properties natively, and
 `simple-recurring-budgets`'s bucketing is privacy-motivated — which would be incoherent here, given
-that we send the
-checklist name.
+that we send the checklist name.
 
 ### 9.2 Super properties
 
@@ -467,10 +461,10 @@ guard *and* satisfied `isConfigured`, initializing the SDK with a junk token tha
 Shape-checking also rejects `$(inherited)` and a sentinel with trailing garbage, in one rule.
 
 **`isConfigured` checks only the active token**, not both. Requiring both (as
-`simple-recurring-budgets` does) means a maintainer who fills in the prod token but leaves dev at its
-placeholder gets a green ship guard and a Release build where `isConfigured` is false — zero
-analytics, everything green. The ship guard checks
-only the prod token for the same reason; the two now agree.
+`simple-recurring-budgets` does) means a maintainer who fills in the prod token but leaves dev at
+its placeholder gets a green ship guard and a Release build where `isConfigured` is false — zero
+analytics, everything green. The ship guard checks only the prod token for the same reason; the two
+now agree.
 
 **A fresh clone works.** No local secrets file means the token resolves to an empty string (Xcode
 substitutes empty for an undefined build setting), `isConfigured` returns false, and the app falls
@@ -587,10 +581,9 @@ events arrive with the right properties before a release.
 ## 13. Test strategy
 
 **Unit tests are Swift Testing** (`@Suite` / `@Test` / `#expect`), matching
-`simple-recurring-budgets`. Nothing in
-`checklistsTests` imports `XCTest`. An earlier version of this section prohibited Swift Testing;
-[#176](https://github.com/jimmynotjames/checklists/issues/176) records why that rule was
-unjustified — read it before reinstating anything like it.
+`simple-recurring-budgets`. Nothing in `checklistsTests` imports `XCTest`. An earlier version of
+this section prohibited Swift Testing; [#176](https://github.com/jimmynotjames/checklists/issues/176)
+records why that rule was unjustified — read it before reinstating anything like it.
 
 `checklistsUITests` stays XCTest **permanently**: Swift Testing has no `XCUIApplication`
 equivalent, so a UI test bundle has no alternative. `simple-recurring-budgets` keeps its UI bundle
@@ -752,9 +745,8 @@ with a reason.
 build's Info.plist, so the dev project's token is extractable from a release IPA and vice versa. A
 single `MIXPANEL_TOKEN` key resolved per-configuration in the xcconfig would ship only one. This
 follows `simple-recurring-budgets` as-is because Mixpanel project tokens are client-side
-credentials — the active one
-is extractable from any shipped app regardless — so the marginal exposure is the ability to send junk
-events to the *other* project. Revisit if that ever happens.
+credentials — the active one is extractable from any shipped app regardless — so the marginal
+exposure is the ability to send junk events to the *other* project. Revisit if that ever happens.
 
 ## 17. Keeping this current
 

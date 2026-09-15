@@ -1,7 +1,8 @@
 # https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md
 #
 # Ported from the `simple-recurring-budgets` repo. Deviations from that config are
-# called out inline — this project is Swift 6 / UIKit / iOS 26, not SwiftUI.
+# called out inline — this project is Swift 6 / iOS 26 and hybrid SwiftUI + UIKit,
+# not pure SwiftUI.
 #
 # Pre-commit runs this on STAGED FILES ONLY (see lefthook.yml), so the 2020-era tree
 # is reformatted incrementally as files are touched, never in one big-bang rewrite.

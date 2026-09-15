@@ -7,15 +7,15 @@
 #    required checks — without step 2 this workflow is advisory only.
 # =======================================================================
 #
-# Why it ships disabled: unlike `simple-recurring-budgets` (a public repo with free, unbounded
-# macOS runner minutes), THIS REPO IS PRIVATE — macOS minutes bill at 10× the
+# Why it ships disabled: unlike `simple-recurring-budgets` (a public repo with free,
+# unbounded macOS runner minutes), THIS REPO IS PRIVATE — macOS minutes bill at 10× the
 # ubuntu rate. The three ubuntu jobs are cheap; the `build` job is not. The local
 # lefthook hooks already run the same gates on every commit and push, so CI here
 # is defense-in-depth against `--no-verify`, a hookless clone, or a web-UI merge —
 # valuable, but a deliberate spend rather than a default.
 #
-# Deliberately NOT ported from `simple-recurring-budgets`: the `i18n-gates` job (no localization
-# pipeline here), the `test` job (the 2020-era XCTest suites are not yet proven
+# Deliberately NOT ported from `simple-recurring-budgets`: the `i18n-gates` job (no
+# localization pipeline here), the `test` job (the 2020-era XCTest suites are not yet proven
 # green — see AGENTS.md), and the `pr-summary` aggregation comment.
 name: CI
 

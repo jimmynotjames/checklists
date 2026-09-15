@@ -103,10 +103,9 @@ struct ChecklistsApp: App {
   /// otherwise every call reaches a real `MixpanelAnalyticsClient`, gated one layer up.
   ///
   /// `LaunchModeContainerFactory.isRunningTests` — not `simple-recurring-budgets`'s
-  /// `IS_TESTING`-only check —
-  /// because it covers both the `-UITests1` launch argument and the `IS_TESTING` env var; the
-  /// XCUITest bundle passes only the former, so checking just the env var would let UI-test runs
-  /// reach real Mixpanel.
+  /// `IS_TESTING`-only check — because it covers both the `-UITests1` launch argument and the
+  /// `IS_TESTING` env var; the XCUITest bundle passes only the former, so checking just the env
+  /// var would let UI-test runs reach real Mixpanel.
   private static func makeAnalyticsClient(settings: AnalyticsSettings) -> any AnalyticsClient {
     guard
       !shouldUseConsoleClient(
