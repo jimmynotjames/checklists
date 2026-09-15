@@ -1,6 +1,6 @@
 ---
 name: appstore-prepare-for-release
-description: Start or resume a lightweight, file-backed App Store release workflow and route metadata, TestFlight, and release-candidate work through the repository skills. Use for release planning, status updates, approval or rejection follow-up, and manual submission tracking.
+description: "Start or resume the file-backed App Store release record, routing metadata, TestFlight, and candidate work to the other appstore skills."
 ---
 
 # Prepare an App Store release
@@ -22,12 +22,8 @@ Drive one release across sessions using a small record under `releases/`. Conver
 5. On approval, rejection, or release, resume from the record. Preserve rejection text or a concise link/reference, decide the fix with the user, and route any new binary through `appstore-push-release-build`. Availability, release timing, phased release, and final submission remain manual.
 6. When released and the user has completed their desired smoke check, record the release date and mark the record `complete`. Mark cancelled attempts `abandoned` with a reason.
 
-Use `create-pr` to persist release-record edits at sensible boundaries. It opens a PR and stops; merge only through a later explicit `merge-pr` request. This repository has disabled CI, so the skills rely on the local `make gate` build rather than waiting for CI.
-
-When screenshots need refreshing for the release, use `appstore-generate-push-screenshots`
-to capture and review the existing catalog. Use `appstore-generate-screenshot-seeding`
-only for requested fixture changes. Record the reviewed capture run and, after an explicitly
-authorized upload, its target version and result. Capture does not authorize publication.
+For screenshots, route per AGENTS.md; record the reviewed run and, after an authorized upload,
+its target version and result.
 
 Do not add translation generation, CloudKit deployment, automated submission, or monitoring
 work to this workflow unless the user separately requests and scopes it.

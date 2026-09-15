@@ -1,6 +1,6 @@
 ---
 name: explore-ux-designs
-description: Prototype several visual redesigns of one screen side by side in Xcode's canvas. Generates a gitignored folder of renamed copies of the screen's files, one set per variant, each with its own #Preview, so variants can be compared without editing production code, launching the simulator, or navigating to the screen. Use when asked to explore, compare, or mock up UI/UX options for an existing screen. Also handles cleanup of a previous exploration. Invoked via /explore-ux-designs.
+description: "Prototype and compare several visual redesigns of one screen in Xcode's canvas, as gitignored renamed copies each with its own #Preview. Also cleans up a prior exploration."
 ---
 
 # Explore UX designs for a screen
@@ -12,10 +12,8 @@ Generates N variants of one screen as **renamed copies** of its source files, ea
 `checklists/checklists/DesignExplorations/`, which is gitignored. It is never committed, never
 merged, and is deleted when the exploration ends.
 
-**No production file is edited.** Copies own their own `private` members, so there is no need to
-loosen access in the real screen. That constraint is what makes this approach worth its rename cost —
-if you find yourself wanting to edit a shipping file to make a variant work, you have misunderstood
-the design: copy that file into the variant instead.
+**No production file is edited.** To make a variant work, copy the file into the variant — never
+loosen access in a shipping file.
 
 ## Invocation
 
@@ -46,23 +44,9 @@ For `/explore-ux-designs clean`, run the above, confirm `git status` is clean, a
 Copy only the files a variant actually changes. Everything not copied keeps referencing the shared
 production type, which is usually what you want.
 
-### `ChecklistScreen` file map
-
-| File | Owns visually |
-|---|---|
-| `Screens/ChecklistScreen.swift` | SwiftUI host: safe-area handling, background colour, the embedded `UINavigationController`, the back button. **Always copy this** — it is the preview's entry point. |
-| `ViewControllers/ChecklistViewController.swift` | The screen: table, header layout (status icon / name field / notes), nav-bar buttons, scroll-driven title, keyboard avoidance, drag-reorder. **Almost always copy this.** |
-| `Views/ItemContentView.swift` | One item row's interior: checkbox, name, notes, row height animation. Copy for row redesigns. |
-| `Views/ItemTableViewCell.swift` | The cell wrapper pinning `ItemContentView` to `contentView`. Copy only if the cell's own constraints change. |
-| `Views/CircularPercentStatusIcon.swift` | The circular percent ring (`.header` and `.row` sizes), drawn with `CAShapeLayer`. |
-| `Views/CheckboxButton.swift` | The per-item check control. |
-| `Views/CLTextField.swift` | The checklist-name field's styling. |
-| `Views/CLTextView.swift` | The notes view and its placeholder; also used inside item rows. |
-| `Views/AddItemButtonTableFooterView.swift` | The "add item" footer button. |
-| `Views/Colors.swift` | Palette. **Do not copy** — to change colours in one variant, set them inline in that variant's own code. Copying the palette makes every variant's diff unreadable. |
-
-For a screen not in this table, derive the set by grepping the screen's file for the custom types it
-constructs, then repeat one level down.
+File map for `ChecklistScreen`: `reference/checklist-screen-files.md`. For a screen not in that
+table, derive the set by grepping the screen's file for the custom types it constructs, then
+repeat one level down.
 
 ## Step 3 — Copy and rename
 
@@ -95,8 +79,7 @@ What must **not** be renamed, because file-scope `private` does not collide acro
 - `private struct ChecklistControllerView` in `ChecklistScreen.swift` — but its body still needs
   `ChecklistViewController()` changed to `ChecklistViewControllerCompact()`.
 
-Wrap each generated file in `#if DEBUG` / `#endif`. This is belt-and-braces (the files are
-gitignored, so a clean-checkout archive never sees them) but costs two lines.
+Wrap each generated file in `#if DEBUG` / `#endif`.
 
 After renaming, verify nothing was missed:
 
@@ -104,9 +87,8 @@ After renaming, verify nothing was missed:
 grep -rn 'ChecklistViewController\b\|ChecklistScreen\b' checklists/checklists/DesignExplorations/Compact/
 ```
 
-Every hit should carry the suffix. A bare name is a reference that will bind to the production type —
-which compiles silently and then previews the wrong screen. This grep is the main defence against
-that.
+Every hit should carry the suffix. A bare name binds to the production type — which compiles
+silently and then previews the wrong screen.
 
 ## Step 4 — Apply the design change
 
@@ -154,12 +136,11 @@ one `#Preview` at a time, so a combined block is the only way to see them togeth
 
 ## Step 6 — Build before reporting
 
-**Non-negotiable.** These files compile into the app target, so a broken variant fails `make build`,
-`make gate`, and both test suites until it is fixed or deleted.
-
 ```bash
 make build 2>&1 | tail -40
 ```
+
+These files compile into the app target, so a broken variant breaks the gate.
 
 On a duplicate-symbol error: a top-level type was left unrenamed — re-run the Step 3 grep.
 On "cannot find X in scope": a reference was renamed in one copied file but not another.
@@ -175,15 +156,13 @@ Tell the human:
 - What actually differs between the variants, in one line each — the design idea, not the diff.
 - That `/explore-ux-designs clean` removes everything when they are done.
 
-Do not claim to have seen the variants render. This skill verifies that they **compile**; the canvas
-is the human's surface. If a variant embodies a guess you could not check — a layout that may clip, a
-ring size that may collide with the title — say so rather than presenting all three as equally
-sound.
+Do not claim to have seen the variants render. This skill verifies only that they **compile** —
+nothing here renders a PNG, so visual mistakes reach the human unfiltered on the canvas. If a
+variant embodies a guess you could not check — a layout that may clip, a ring size that may
+collide with the title — say so rather than presenting all three as equally sound.
 
 ## Known limits
 
-- **Compile-only verification.** Nothing here renders a PNG, so visual mistakes reach the human
-  unfiltered.
 - **Static only.** The canvas cannot show the scroll-driven nav-bar title animation or
   keyboard-avoidance behaviour. Prototyping those needs the running app.
 - **Debug build weight** grows while variants exist. Another reason to clean up promptly.

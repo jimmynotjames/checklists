@@ -1,27 +1,12 @@
 #!/usr/bin/env bash
 # scripts/verify_release_secrets.sh — release ship guard.
 #
-# Blocks TestFlight / App Store builds that still carry the committed placeholder token.
-# Run by:
-#   • Xcode — a "Verify release secrets" Run Script phase on the app target, restricted to
-#     install/archive builds via runOnlyForDeploymentPostprocessing. A normal `make build`
-#     does not trigger it.
-#   • `make verify-secrets` — the manual pre-archive check.
-#   • Fastlane beta / archive_validation — before spending time archiving. Both reject
-#     the local-only bypass; CI remains disabled.
-#
-# Deliberately NOT wired into `make gate` or lefthook: a fresh clone has no
-# config/Secrets.local.xcconfig, and failing the everyday gate on that would be wrong.
-#
 # Escape hatch (exceptional local Release archives ONLY — never for shipping):
 #   SKIP_RELEASE_SECRETS_CHECK=1 bash scripts/verify_release_secrets.sh
 #
 # Exit codes:
 #   0 — checks passed, safe to archive.
 #   1 — a placeholder is still active; ship blocked.
-#
-# Sentinels must stay in sync with config/Secrets.xcconfig and AppConfig.Placeholder in Swift.
-# AppConfigSentinelTests guards the Swift half. See core-docs/analytics-spec.md §10.
 
 set -euo pipefail
 
@@ -65,18 +50,12 @@ ERRORS=""
 # MixpanelTokenSource.isConfigured matches this: it validates only the token the active build
 # configuration will actually use.
 #
-# When this runs as an Xcode build phase, the *resolved* value is already in the environment.
-# Prefer it: if baseConfigurationReference is ever dropped from the project, the repo xcconfig
-# still holds a real token while Info.plist gets an empty one — checking the file alone would
-# pass green on a build with no working token. Fall back to parsing the file for `make
-# verify-secrets`, where no build environment exists.
+# Prefer the build-phase env value if present: without baseConfigurationReference the
+# xcconfig still has a real token while Info.plist would get an empty one, hiding failure.
 MIXPANEL_PROD="${MIXPANEL_PROD_TOKEN:-$(xcconfig_value MIXPANEL_PROD_TOKEN)}"
 
-# A Mixpanel project token is 32 lowercase hex characters, and that shape is the whole check.
-# Keep it that way rather than comparing against specific bad values: the likeliest mistake is
-# copying Secrets.local.xcconfig.template and forgetting to paste, which leaves
-# `your_32_char_prod_token_here` — not empty, not the sentinel, and not a token. One shape rule
-# also covers `$(inherited)`, a sentinel with trailing garbage, and any typo.
+# A token is 32 lowercase hex; the shape check also rejects $(inherited), the template
+# placeholder, and typos.
 if [[ ! "$MIXPANEL_PROD" =~ ^[0-9a-f]{32}$ ]]; then
   if [[ -z "$MIXPANEL_PROD" ]]; then
     ERRORS="${ERRORS}  - MIXPANEL_PROD_TOKEN is empty\n"

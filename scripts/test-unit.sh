@@ -1,15 +1,8 @@
 #!/usr/bin/env bash
-# Unit tests only (checklistsTests) — skips the UI test target.
+# Unit tests only (checklistsTests) — skips the UI test target. OPT-IN, not in the gate.
 #
-# OPT-IN: not part of `make gate`; promoting it into the blocking gate is a separate
-# decision. Run it explicitly with `make test-unit`. For the current pass/fail counts,
-# read the result bundle rather than trusting a piped exit code — see AGENTS.md
-# §"Reading a test result".
-#
-# Every suite runs against a disposable in-memory ModelContainer (see
-# checklistsTests/Helpers/TestModelContainer.swift), except LegacyRealmImporterTests and
-# TwoDeviceUnionTests, which write real Realm fixture files into a temporary directory
-# scoped to the test. Nothing here touches the simulator's real on-disk store.
+# Suites use in-memory ModelContainers (Helpers/TestModelContainer.swift) or per-test
+# temp dirs (Helpers/TestScope.swift); nothing touches the simulator's real store.
 #
 # `-parallel-testing-enabled NO` is load-bearing for more than speed: it is also what
 # keeps Swift Testing, which parallelizes within the process by default, running the

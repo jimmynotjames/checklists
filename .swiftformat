@@ -4,8 +4,7 @@
 # called out inline — this project is Swift 6 / iOS 26 and hybrid SwiftUI + UIKit,
 # not pure SwiftUI.
 #
-# Pre-commit runs this on STAGED FILES ONLY (see lefthook.yml), so the 2020-era tree
-# is reformatted incrementally as files are touched, never in one big-bang rewrite.
+# Pre-commit and the gate lint changed/staged files only — AGENTS.md §"Lint policy".
 --swiftversion 6.0
 --indent 2
 --importgrouping alpha
@@ -25,6 +24,5 @@
 # statements, so the two oscillate and swiftlint-fix (run last in pre-commit) wins — leaving
 # code that `swiftformat --lint` then rejects. Disable here so swiftformat defers.
 --disable wrapMultilineStatementBraces
-# `build/` and `DerivedData/` are gitignored scratch. There is no vendored third-party
-# source in this tree any more (the Flurry SDK was the only one, and it is gone).
+# build/ and DerivedData/ are gitignored scratch.
 --exclude build,DerivedData,.build
