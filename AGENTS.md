@@ -15,8 +15,8 @@ Release. See [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md).
 
 The Xcode project lives one level down at `checklists/checklists.xcodeproj`. The repo root holds
 tooling, plus **`core-docs/`** — design docs that outlive any single change and are canonical for
-their subject. (`docs/` is something else entirely: the published Jekyll/GitHub Pages site for the
-privacy policy and landing page. Never put internal docs there.)
+their subject. The public support site is not here at all: it is a single static `index.html` on
+the orphan `gh-pages` branch, served at <https://jimmynotjames.github.io/checklists/>.
 
 All three targets use **file-system-synchronized folders**
 (`PBXFileSystemSynchronizedRootGroup`), so `project.pbxproj` holds no per-file references. A new

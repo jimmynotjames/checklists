@@ -18,8 +18,8 @@ Mixpanel SDK is connected; `ConsoleAnalyticsClient` is the fallback for test run
 clone with no token.
 [`core-docs/analytics-spec.md`](../core-docs/analytics-spec.md) is canonical for analytics: the
 event and property catalogs, the privacy contract, and the consent model. `core-docs/` holds
-design docs that outlive a single change; `docs/` is the published GitHub Pages site, not a place
-for internal docs.
+design docs that outlive a single change. The public support site lives on the orphan `gh-pages`
+branch, not on `main`.
 
 [`core-docs/accessibility-spec.md`](../core-docs/accessibility-spec.md) is canonical for
 accessibility status and conventions. Read and update it only if a change involved accessibility
