@@ -163,6 +163,10 @@ enum LegacyRealmImporter {
 
    The largest key this produces is under 1e7, where a `Double`'s ULP is around 1.9e-9 — far below
    `SortKeyReorder.epsilon`, so midpoint insertion keeps working afterwards.
+
+   A collision (1 in `sortKeyBlockCount`) degrades to the old interleaved order; nothing is lost
+   either way, since ids are per-device random UUIDs. Item sort keys still start at 1.0: items
+   belong to one checklist from one device, so they can never interleave with another device's.
    */
   static func randomImportSortKeyBase() -> Double {
     Double(Int.random(in: 0 ..< sortKeyBlockCount)) * sortKeyBlockSize
