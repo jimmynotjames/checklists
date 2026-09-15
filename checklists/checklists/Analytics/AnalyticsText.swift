@@ -5,8 +5,7 @@
 
 /// Text handling for property values.
 ///
-/// `nonisolated` for the same reason as `AnalyticsEvent`: pure string handling with no state, and
-/// isolating it would stop a nonisolated caller from preparing a property value.
+/// nonisolated on the type: see AnalyticsEvent.
 nonisolated enum AnalyticsText {
   /// The longest string sent as a property value.
   ///

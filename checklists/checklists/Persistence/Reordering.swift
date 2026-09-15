@@ -66,16 +66,8 @@ extension ModelContext {
   ///
   /// A move assigns sort keys before it saves, and `place` may renormalize every sibling on the
   /// way, so without this a failed save leaves the context holding an order that was never
-  /// written. That matters because the screens render from the context rather than from disk —
-  /// `Checklist.items` sorts by the in-memory `sortKey`, and SwiftUI's `@Query` re-reads the same
-  /// context — so the new order would look saved right up until the next launch quietly restored
-  /// it. Restoring here makes a move all-or-nothing: either it is on disk, or it never happened.
-  ///
-  /// - Parameters:
-  ///   - snapshotSource: every record whose key may change, which is the moved element together
-  ///     with all of its siblings.
-  ///   - save: how to persist the change. A parameter so a test can supply one that throws: a real
-  ///     SwiftData save only fails on a full or damaged disk, which a test cannot arrange.
+  /// written. The screens render from the context rather than from disk, so the new order would
+  /// look saved right up until the next launch quietly restored it.
   func placeAndSave<T: SortKeyed>(
     _ element: T,
     at index: Int,

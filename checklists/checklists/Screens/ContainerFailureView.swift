@@ -6,23 +6,10 @@
 import SwiftUI
 
 /**
- Shown when the store cannot be opened, or the one-time Realm copy cannot be completed.
-
- Shown rather than continuing into an empty checklist list, because to an upgrading user an empty
- list is indistinguishable from having lost everything. Nothing has been deleted at this point —
- the store simply would not open, and on the one launch that migrates, the old Realm file is still
- untouched on disk — so relaunching is a real chance of recovery.
-
- There is deliberately no Retry button. It re-ran the same startup sequence in the same process,
- which is what relaunching does anyway and more thoroughly, so it offered a second path to the same
- outcome while the copy was already telling the user to restart.
-
- The error code is not shown on screen (nobody acts on "134060"); it travels in the feedback mail
- body instead, where it is useful. Only the error's domain and code go in, never its description,
- which can carry the user's own content.
-
- By the time `onStoreReset` runs, every local store has already been deleted; the caller is
- responsible for re-running startup from there.
+ Shown when the store cannot be opened, or the one-time Realm copy cannot be completed — rather
+ than continuing into an empty list, which an upgrading user could mistake for having lost
+ everything. By the time `onStoreReset` runs, every local store has already been deleted; the
+ caller reruns startup from there. See core-docs/persistence-design.md §The failure screen.
  */
 struct ContainerFailureView: View {
   let failure: ContainerCreationFailure

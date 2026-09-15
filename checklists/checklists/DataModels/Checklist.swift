@@ -10,22 +10,10 @@ import SwiftData
 import UIKit
 import UniformTypeIdentifiers
 
-/**
- A single checklist. Top-level: unlike the Realm schema this replaces, there is no `Group`
- object holding an ordered list of checklists.
-
- `Group` existed only to give checklists an arbitrary user-defined order, and it was a
- singleton — exactly the shape CloudKit cannot express. CloudKit enforces no uniqueness
- constraint, so two devices that each created their "one" `Group` before their first sync would
- end up with two of them and no principled way to pick a winner. Ordering therefore lives on the
- checklist itself, in `sortKey`.
-
- CloudKit constraints reflected here (see `core-docs/persistence-design.md`):
- - no `@Attribute(.unique)` anywhere — `id` is a plain attribute that happens to hold a UUID
- - every non-optional attribute has a default value
- - the to-many relationship is optional, because CloudKit syncs a record graph in pieces and a
-   parent can legitimately arrive before its children
- */
+/// A single checklist. Top-level: unlike the Realm schema this replaces, there is no `Group`
+/// object holding an ordered list of checklists — ordering lives on the checklist itself, in
+/// `sortKey`, since a singleton `Group` is exactly the shape CloudKit cannot express.
+/// See core-docs/persistence-design.md §Model / §CloudKit rules.
 @Model
 final class Checklist {
   var id: String = UUID().uuidString

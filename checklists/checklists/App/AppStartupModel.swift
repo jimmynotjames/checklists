@@ -9,9 +9,6 @@ import SwiftData
 /**
  The startup sequence, as a phase the SwiftUI app body can switch on.
 
- The same root view renders whichever `Phase` this model is currently in; see the comments on
- each step below for *why* the sequence is shaped this way.
-
  `AppStartupCoordinator` still owns the actual work. This type owns only when it runs and what
  the screen shows while it does.
  */
@@ -26,11 +23,7 @@ final class AppStartupModel {
     case failed(ContainerCreationFailure)
   }
 
-  /// How long the migration screen stays up once it has been shown.
-  ///
-  /// The copy itself takes a small fraction of this for any realistic amount of data. Without a
-  /// floor the screen would flash by unread, which is worse than a brief wait: this is the one
-  /// moment to explain why the launch is different and that iCloud sync is now in play.
+  /// See core-docs/persistence-design.md for why this floor exists.
   private static let minimumMigrationScreenDuration: Duration = .seconds(1.5)
 
   private(set) var phase: Phase

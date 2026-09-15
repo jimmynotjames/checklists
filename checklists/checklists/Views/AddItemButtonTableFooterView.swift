@@ -54,11 +54,7 @@ class AddItemButtonTableFooterView: UIView {
     fatalError()
   }
 
-  /**
-   UITableView's way of handling tableFooterView is frustrating to say the least,
-   and from StackOverflow and experimentations, looks like I need to set the frame
-   height manually and somehow, this magically helps the table view lay out this view.
-   */
+  /// `UITableView.tableFooterView` needs its frame height set manually for correct layout.
   func adjustFrameHeight() {
     guard
       let spacing = metrics["spacing"],

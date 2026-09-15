@@ -58,9 +58,7 @@ final class Item {
     }
   }
 
-  /// `@MainActor` because `UIDragItem` is: SwiftData models are not actor-isolated, so this would
-  /// otherwise be a nonisolated method reaching into UIKit. Only ever called from a table view's
-  /// drag delegate, which is already on the main actor.
+  /// See Checklist.dragItems().
   @MainActor
   func dragItems() -> [UIDragItem] {
     let itemProvider = NSItemProvider()

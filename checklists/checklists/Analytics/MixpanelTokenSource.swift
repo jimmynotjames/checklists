@@ -5,42 +5,27 @@
 
 /// The Mixpanel project token for the active build configuration, read from Info.plist.
 ///
-/// Debug builds route to the "reChecklist App - Dev" project and Release builds to
-/// "reChecklist App - Prod", so local instrumentation can be verified without polluting
-/// production data.
-///
 /// `isConfigured` gates SDK initialization: when the active token is not a real one — a fresh
 /// clone with no `config/Secrets.local.xcconfig`, or a half-filled one — the app falls back to
 /// `ConsoleAnalyticsClient`. No Mixpanel traffic, no crash.
 ///
 /// See core-docs/analytics-spec.md §10.
 enum MixpanelTokenSource {
-  /// True when the token this build configuration will actually use is a real one.
-  ///
-  /// Deliberately checks **only the active token**, not both. `simple-recurring-budgets` requires
-  /// both to be filled in, which produces a bad failure: a maintainer who fills in the prod token
-  /// but leaves the dev one at its placeholder gets a green ship guard and a Release build where
-  /// this returns `false`, so every event silently goes to the console client. The ship guard
-  /// (`scripts/verify_release_secrets.sh`) checks only the prod token for the same reason.
+  /// True when the token this build configuration will actually use is a real one. Checks only
+  /// the active token, not both — so a filled-in prod token with a placeholder dev token doesn't
+  /// silently pass as fine on a Debug build.
   static var isConfigured: Bool {
     isValidToken(activeToken)
   }
 
-  /// Whether a string is shaped like a Mixpanel project token: 32 lowercase hex characters.
-  ///
-  /// Shape is the whole check, deliberately — do not narrow it to specific known-bad strings.
-  /// The likeliest mistake is copying `config/Secrets.local.xcconfig.template` and forgetting to
-  /// paste, which leaves `your_32_char_prod_token_here`: not empty, not a sentinel, and not a
-  /// token. Anything that accepts it initializes the SDK with a junk token and drops every event
-  /// silently. `scripts/verify_release_secrets.sh` applies the same rule; keep the two in step.
-  ///
-  /// Pure, so tests never touch `Bundle.main` and do not depend on whether the machine running
-  /// them has a secrets file.
+  /// Whether a string is shaped like a Mixpanel project token: 32 lowercase hex characters. Shape
+  /// is the whole check, deliberately — the likeliest mistake is leaving
+  /// `config/Secrets.local.xcconfig.template`'s placeholder in place, which is shaped like nothing
+  /// real. Keep in step with `scripts/verify_release_secrets.sh`, which applies the same rule.
   static func isValidToken(_ token: String) -> Bool {
     token.count == 32 && token.allSatisfy(hexCharacters.contains)
   }
 
-  /// The token for the active build configuration.
   static var activeToken: String {
     #if DEBUG
       AppConfig.mixpanelDevToken

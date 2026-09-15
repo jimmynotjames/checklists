@@ -14,14 +14,7 @@ import SwiftUI
 /// `NavigationStack`, not here, so this screen only pushes routes onto the router's path and
 /// never resolves them.
 struct ChecklistsView: View {
-  /// All checklists in display order.
-  ///
-  /// The sort is `ModelContext.fetchChecklistsSorted`'s, restated as a `@Query`: `id` breaks
-  /// ties so the order is total and stable. Two records can genuinely share a `sortKey` once
-  /// sync is involved — CloudKit cannot enforce uniqueness, so two devices editing while apart
-  /// can both land on the same key — and a list whose row order flickers between refreshes is
-  /// worse than an arbitrary but fixed choice. Keep this in step with `fetchChecklistsSorted`,
-  /// which the dedupe path still uses.
+  /// Display order; id breaks sortKey ties. Keep in step with ModelContext.fetchChecklistsSorted.
   @Query(sort: [SortDescriptor(\Checklist.sortKey), SortDescriptor(\Checklist.id)])
   private var checklists: [Checklist]
 
@@ -150,16 +143,9 @@ struct ChecklistsView: View {
     }
     .task {
       guard remoteChangeObserver == nil else { return }
-      // Refreshes when another device's changes are merged in. Inert until CloudKit is
-      // switched on.
-      //
-      // `@Query` already re-runs itself when the store changes, so this observer no longer
-      // has a list to reload — it exists only for the tidy-up below. The dedupe's own save
-      // is what nudges `@Query` a second time, once the duplicates are gone.
+      // `@Query` already reloads on remote changes; this observer exists only to run the dedupe
+      // when another device's duplicate sample lands.
       remoteChangeObserver = RemoteChangeObserver {
-        // A duplicate untouched sample arriving from another device is exactly the change
-        // that triggers this, and tidying it up here means the list settles to one copy
-        // rather than sitting on two.
         try? SampleData.dedupeChecklists(in: context)
       }
     }

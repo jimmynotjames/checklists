@@ -8,25 +8,14 @@ import Observation
 
 /// Decision core for the automatic App Store review prompt.
 ///
-/// Ported from `simple-recurring-budgets`'s `RatingPromptCoordinator`, whose thresholds are the
-/// calibration this app wants. There, the qualifying action is logging an expense; here it is
-/// **checking off an item** — the one thing people open this app to do. Each check-off advances
-/// the persisted counters in `RatingPromptState`, and once every threshold below holds — and no
-/// review has been requested for the running app version — `isRequestPending` flips. The root
-/// presenter (`ratingPromptPresenter()`) watches that flag and calls Apple's native
-/// `requestReview` once the person is back on the checklists list with the scene active, then
-/// calls `consumePendingRequest()`.
+/// **Checking off an item** is the qualifying action, advancing counters in `RatingPromptState`.
+/// Once every threshold below holds, and no review has been requested for the running app
+/// version, `isRequestPending` flips; the root presenter (`ratingPromptPresenter()`) watches that
+/// flag, calls `requestReview`, then `consumePendingRequest()`.
 ///
-/// **The prompt is never shown mid-task.** Checking an item happens on the checklist screen; the
-/// request waits until that screen has been left, so it lands on the list between tasks rather
-/// than over a half-finished checklist. Unchecking is not a qualifying action: it reads as a reset,
-/// not as progress.
-///
-/// No custom rating dialog and no "enjoying the app?" pre-prompt — review-gating hurts ratings and
-/// the app does not pressure anyone. Re-prompt prevention is the once-per-version guard here plus
-/// Apple's own throttle (at most three prompts per 365 days, and none for a version already rated).
-/// The native API reports neither whether StoreKit showed the dialog nor what the person chose, so
-/// nothing here depends on an outcome, and analytics stop at `rating_prompt_requested`.
+/// **Never shown mid-task** — the request waits until the checklist screen has been left.
+/// Unchecking does not qualify; it reads as a reset, not progress. No custom dialog or pre-prompt,
+/// and no outcome is observable: StoreKit reports neither whether it showed nor what was chosen.
 @Observable
 @MainActor
 final class RatingPromptCoordinator {
@@ -57,8 +46,7 @@ final class RatingPromptCoordinator {
   /// Records one item being checked off and advances eligibility.
   ///
   /// Counts taps, not items: checking, unchecking and re-checking the same item is two check-offs.
-  /// Deliberately not tightened — the sibling counts the same way, the distinct-day and install-age
-  /// thresholds still have to hold, and Apple's throttle sits above all of it.
+  /// Deliberately not tightened — the distinct-day and install-age thresholds still have to hold.
   ///
   /// `now` and `appVersion` are parameters so the tests can drive the calendar and the
   /// once-per-version guard without a clock or a bundle.

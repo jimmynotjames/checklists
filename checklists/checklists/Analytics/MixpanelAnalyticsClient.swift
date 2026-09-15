@@ -9,26 +9,14 @@ import UIKit
 
 /// Production `AnalyticsClient` backed by the Mixpanel SDK.
 ///
-/// **Lazy init is the consent guarantee (core-docs/analytics-spec.md §2's canonical constraint
-/// #3, §7.2).** `Mixpanel.initialize` is never called from `init`. The SDK is created the first
-/// time `track` reaches `ensureInitialized()` — which only happens from inside this class, never
-/// gated here. Consent is `ConsentGatedAnalyticsClient`'s job: it wraps whichever client
-/// `ChecklistsApp.makeAnalyticsClient()` returns and suppresses every call except `reset()` while
-/// the person is opted out, so a `track` this class never sees can never initialize the SDK. This
-/// client does **not** re-check opt-in itself — doing so would duplicate the gate rather than
-/// trust it.
+/// **Lazy init is the consent guarantee** (core-docs/analytics-spec.md §2's canonical constraint
+/// #3, §7.2): `Mixpanel.initialize` is never called from `init`, only from `ensureInitialized()`.
+/// Consent gating is `ConsentGatedAnalyticsClient`'s job — it suppresses every call except
+/// `reset()` while opted out, so this class never re-checks opt-in itself.
 ///
-/// **Isolation:** `@unchecked Sendable` because `MixpanelInstance` does not declare `Sendable`,
-/// which is what `AnalyticsClient: Sendable` requires. The target's
-/// `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` already makes every method below main-actor
-/// isolated — there is no nonisolated context anywhere in this class, so `instanceLock` is not
-/// covering a real race today. It stays because it is cheap and because isolation is a build
-/// setting, not a language guarantee: if that setting ever changed, or a future call site called
-/// in from a background queue, the lock is what would keep `ensureInitialized()` safe rather than
-/// silently relying on the project-wide default. Marking any method here `nonisolated` to "prove"
-/// the lock matters today would be a regression in its own right — it would let
-/// `Mixpanel.initialize` run off the main thread, and the SDK's automatic-properties collection
-/// touches UIKit (screen size, idiom) that assumes a main-thread caller.
+/// **Isolation:** `@unchecked Sendable` because `MixpanelInstance` isn't `Sendable`. `instanceLock`
+/// is a backstop, not load-bearing under the target's MainActor default — keep it rather than
+/// prove it unnecessary. Never mark a method here `nonisolated`: `Mixpanel.initialize` touches UIKit.
 final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
   // MARK: - Stored state
 
@@ -39,9 +27,7 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
   private let deviceClass: String
   private let distinctIdProvider: () -> String?
 
-  /// Guards `_instance`. See the type-level isolation note above: redundant under the project's
-  /// current default-MainActor isolation, kept as a correctness backstop rather than a load-bearing
-  /// lock.
+  /// Guards `_instance`.
   private let instanceLock = NSLock()
   /// The lazily-created SDK instance. `nil` until the first `track` after opt-in.
   private var _instance: MixpanelInstance?
@@ -85,14 +71,9 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
     instance.identify(distinctId: id)
   }
 
-  /// Clears this client's own reference **and** the Mixpanel SDK's process-wide registry entry
-  /// for `token` via `Mixpanel.removeInstance`. Dropping only `_instance` is not enough:
-  /// `Mixpanel.initialize` registers every instance in a singleton keyed by its instance name
-  /// (the token, since none is passed explicitly), which never releases it on its own. Without
-  /// `removeInstance`, the opted-out install's `MixpanelInstance` would keep running — a
-  /// foreground restarting its 60s flush timer, a background triggering `beginBackgroundTask` and
-  /// a flush — for the rest of the process. The queue is empty by then, so nothing would actually
-  /// leak out, but the instance would still be live and doing work it has no reason to do.
+  /// Clears this client's reference **and** the SDK's process-wide registry entry via
+  /// `Mixpanel.removeInstance` — `Mixpanel.initialize` keeps every instance alive in a singleton
+  /// keyed by token, so without this an opted-out install's instance keeps its flush timer running.
   func reset() {
     instanceLock.lock()
     _instance?.reset()

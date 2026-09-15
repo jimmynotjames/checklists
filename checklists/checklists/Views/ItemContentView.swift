@@ -133,10 +133,8 @@ class ItemContentView: UIView {
     notesTextView.textColor = textColor
   }
 
-  /**
-   I need to detect when to collapse the view (if notes are empty), but if user taps from one input
-   field to another, I can't tell properly with just endEditing...().
-   */
+  /// Detects taps between input fields (to decide whether to collapse when notes are empty);
+  /// `endEditing` alone can't distinguish that case from focus leaving entirely.
   override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
     let view = super.hitTest(point, with: event)
     // A text view hands back one of its own internal subviews, never itself, so this asks whether

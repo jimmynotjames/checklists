@@ -12,10 +12,6 @@ import SwiftData
  The container-creation closures are injectable because the real `ModelContainer` initializers
  cannot be made to fail on demand, and the branch selection here — which store the app ends up
  running on — is the part worth testing.
-
- Nothing in here calls `fatalError`. A store that cannot be opened is reported to
- `AppStartupCoordinator`, which shows a retryable failure screen; the old Realm stack crashed
- instead, which turned a recoverable disk problem into a bug report with no data attached.
  */
 enum ProductionContainerFactory {
   typealias MakeContainer = @MainActor (ModelConfiguration) throws -> ModelContainer
@@ -30,9 +26,9 @@ enum ProductionContainerFactory {
 
   /// The one on-disk location both configurations use.
   ///
-  /// This is the single most important line in the file. Asking SwiftData for the default
-  /// configuration's own `url` — rather than hardcoding a path — pins both the CloudKit-backed and
-  /// local-only configurations to the exact file an existing install already has. If the two were
+  /// Asking SwiftData for the default configuration's own `url` — rather than hardcoding a path —
+  /// pins both the CloudKit-backed and local-only configurations to the exact file an existing
+  /// install already has. If the two were
   /// ever allowed to resolve independently, a launch with iCloud unavailable would write to one
   /// file and a later launch with iCloud available would open a different, empty one, and the
   /// user's first session would appear to vanish. Sharing the URL means the local store is

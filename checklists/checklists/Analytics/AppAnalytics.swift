@@ -21,11 +21,6 @@
 
  Do not add a fourth caller without changing this comment.
 
- The same shape as `PersistenceController.shared` / `install(_:)`, deliberately — an installed
- handle rather than a lazily self-creating singleton — except that reading before `install(_:)`
- returns the console client instead of trapping. Analytics must never be the reason a launch
- fails.
-
  > **Install it before startup runs.** `ChecklistsApp` must call `install(_:)` before constructing
  > `AppStartupModel`, which means the model cannot use an inline property initializer: stored
  > properties are initialized before the body of `init()`. Get that order wrong and these three

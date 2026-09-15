@@ -12,17 +12,11 @@ private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
 private let defaultChecklistName = "untitled checklist"
 
-/**
- Discussion about UITableViewController:
- Had to ditch it because the keyboard dynamics weren't working. The two main issues:
- 1. When the user tapped to edit a field and quickly started typing, it would halt the animation to move the cell above the keyboard.
- 2. When the list is super-long with lots of notes, the entire tableView would jitter up and down very quickly and/or
-    have the wrong contentOffset.
- For some reason, when I implement manually with a couple slightly different coding things, this is all fixed. Urgghh...
- */
+/// Not a UITableViewController: its keyboard handling halted the animate-above-keyboard scroll and
+/// jittered on long lists with lots of notes. Keyboard avoidance below is manual instead.
 class ChecklistViewController: UIViewController {
   private var tableView: UITableView!
-  var checklist: Checklist! // Expected to be set on seque or right after init(). Behavior undefined if this is set/reset after viewDidLoad().
+  var checklist: Checklist! // Expected to be set right after init(). Behavior undefined if this is set/reset after viewDidLoad().
 
   /// Set by the SwiftUI host (`ChecklistScreen`) so leaving the screen updates the router's
   /// navigation state instead of calling UIKit `dismiss`/`pop` directly — a UIKit dismissal of a
@@ -162,17 +156,13 @@ class ChecklistViewController: UIViewController {
 
     updateStatusIcon()
 
-    //  Despite Apple docs saying the width is set, it is not (as of iOS 12), and StackOverflow seems to only show manual ways like this.
+    // The header view's width isn't set automatically despite the docs; set it manually.
     checklistInfoHeaderView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
     tableFooterView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
 
     // If I don't call this, the header view's frame's height isn't set and an extensive Notes section will overlap the top of the cells.
     checklistInfoHeaderView.setNeedsLayout()
     checklistInfoHeaderView.layoutIfNeeded()
-    /*
-     Admittedly a bit hacky, as this is already in the view hierarchy in IB, but want to properly set it while
-     not creating a separate xib file and custom UIView. This also adjusts the tableView for the newly calculated frame height.
-     */
     tableView.tableHeaderView = checklistInfoHeaderView
 
     if isNewChecklist {
@@ -186,7 +176,7 @@ class ChecklistViewController: UIViewController {
       try? context.insert(item: Item(), at: 0, in: checklist)
     }
 
-    // Refreshes when another device's changes are merged in. Inert until CloudKit is switched on.
+    // Refreshes when another device's changes are merged in via CloudKit sync.
     remoteChangeObserver = RemoteChangeObserver { [weak self] in
       self?.handleRemoteChange()
     }
@@ -233,23 +223,12 @@ class ChecklistViewController: UIViewController {
   }
 
   override func viewWillDisappear(_ animated: Bool) {
-    // If any field is still focused when the user backs out (e.g. tapped Back right after typing,
-    // without tapping elsewhere first), its `resignFirstResponder`-triggered commit would otherwise
-    // land late: resignation normally only happens once the view is actually removed from the window,
-    // near the end of the pop transition. `endEditing(true)` forces it here instead, synchronously,
-    // and covers the whole view — both the header fields and the item cells' text views — because
-    // each of the two has its own ordering hazard:
-    //
-    //   - Header (checklistNameTextField/checklistNotesTextView): its commit
-    //     (textFieldDidEndEditing/textViewDidEndEditing, below) has to land while this screen is
-    //     still up — the checklists list renders from the store (`@Query` in `ChecklistsView`), so
-    //     a commit that landed late would leave the list showing the pre-edit value until some
-    //     unrelated store change happened to refresh it.
-    //   - Item cells: their commit (ItemContentView's textViewDidEndEditing →
-    //     `itemContentView(_:nameFieldUpdatedWith:)`) has to land before `viewDidDisappear`'s
-    //     dangling-empty-item trim loop, which deletes trailing items whose name and notes are both
-    //     empty. A name typed into the last item but not yet committed reads as empty to that loop, so
-    //     the item gets deleted and the pending write then targets an invalidated Realm object.
+    // Forces the resignFirstResponder commit synchronously, rather than the usual late landing near
+    // the end of the pop transition, covering two ordering hazards:
+    //   - Header fields must commit before this screen disappears, or ChecklistsView's `@Query`
+    //     shows the pre-edit value until some unrelated store change refreshes it.
+    //   - Item cells must commit before viewDidDisappear's dangling-empty-item trim loop, or an
+    //     uncommitted name reads as empty and gets wrongly deleted.
     view.endEditing(true)
     super.viewWillDisappear(animated)
   }
@@ -332,19 +311,13 @@ class ChecklistViewController: UIViewController {
       if success {
         let indexPath = IndexPath(row: index, section: itemsSection)
         guard let cell = self.tableView.cellForRow(at: indexPath) as? ItemTableViewCell else { assertionFailure(); return }
-        // Added extra call below because of https://github.com/jimmynotjames/checklists/issues/97, where tapping Next,
-        // it didn't scroll up to make the editable view visible. Make first responder should have been, fine,
-        // but adding this explicit scroll makes it work much more reliably.
+        // Explicit scroll needed: becomeFirstResponder alone doesn't reliably scroll the new row into view (#97).
         self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
         cell.itemContentView.startEditing()
       }
     }
-    /*
-     This just isn't about making the animation snappier. If we're slow, and the user starts typing right after hitting Return,
-     the letters go into the prior cell, not the new one, and there isn't an easy way to prevent that while keeping the animation
-     smooth except to go faster. For example, I could resignFirstResponder() immediately, but then the keyboard drops and comes
-     back up super fast, which makes it feel jittery.
-     */
+    // Duration matters for correctness, not just polish: too slow and fast-typing-after-Return
+    // sends the letters into the prior cell instead of the new one.
     UIView.animate(withDuration: 0.01, animations: updates, completion: becomeFirstResponder ? startEditingBlock : nil)
 
     updateStatusIcon()
@@ -519,20 +492,16 @@ extension ChecklistViewController {
     var visibleFrame = tableView.frame
     visibleFrame.size.height -= keyboardHeight
 
-    // Conversion is unnecessary, as Cell's superview is actually tableView in iOS 12, but paranoid future-proofing.
     let cellFrame = tableView.convert(cell.frame, from: cell.superview)
 
     let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyboardHeight, right: 0.0)
-    // iOS 12: If user taps to edit, and then quickly starts typing, it halts the animation to scroll the cell above
-    // the keyboard if using the default scrollRectToVisible with animated=true, so need this animation block. Also, snappier.
+    // If the user taps to edit and quickly starts typing, the default animated scrollRectToVisible
+    // halts the animation — this explicit animation block avoids that, and is snappier besides.
     UIView.animate(withDuration: 0.1) {
       self.tableView.contentInset = contentInsets
       self.tableView.scrollIndicatorInsets = contentInsets
       if !visibleFrame.contains(cellFrame) { // If even partially covered, move it.
         self.tableView.scrollRectToVisible(cellFrame, animated: false)
-        // Known issue: As of iOS 12, when animated = false, on ONLY THE SIMULATOR, it scrolls just one cell too much. Weird.
-        // Doesn't happen when animated = true, but then the animation is too slow and when user types quickly after tapping to edit,
-        // the animation halts.
       }
     }
   }
@@ -655,11 +624,6 @@ extension ChecklistViewController: UITableViewDropDelegate {
 
 // MARK: - ItemContentViewDelegate - responding to cell events.
 
-/**
- This is architecturally questionable, as I'm passing the Item back from the ItemContentView to update
- the database as opposed to looking it up, but it's convenient right now. In a true MVVM
- model this wouldn't be possible.
- */
 extension ChecklistViewController: ItemContentViewDelegate {
   func itemContentViewDidFinishEditing(_: ItemContentView) {
     cellHeightRequiresRefresh(animated: true)
