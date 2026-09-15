@@ -35,11 +35,8 @@ extension ModelContext {
   /**
    Saves, and on failure logs a diagnostic and reports an analytics event before rethrowing.
 
-   This replaces the old `DBManager.write` wrapper, with one deliberate behavioural change: that
-   wrapper called `fatalError` on a failed write, so a transient save problem crashed the app and
-   took the user's unsaved edit with it. Here the error is surfaced instead, and each call site
-   decides — startup paths show the failure screen, incidental edits carry on (see
-   `saveChangesIgnoringFailure`).
+   Unlike the old `DBManager.write` wrapper, which called `fatalError` on a failed write, the error
+   is surfaced instead — each call site decides what to do (see `saveChangesIgnoringFailure`).
 
    The public/private split in the log line is inherited from `DBManager`: domain, code and
    `localizedDescription` are bounded, framework-authored strings and are what make a sysdiagnose
@@ -69,9 +66,8 @@ extension ModelContext {
    Saves, and on failure lets the error go after `saveChanges` has logged and reported it.
 
    For incidental edits — a renamed checklist, a toggled checkbox — where there is no useful
-   recovery and no sensible place to put an alert. The predecessor `DBManager.write` made the same
-   bet that these saves do not fail in practice; it just crashed rather than continuing when that
-   bet was wrong. Startup and import paths do **not** use this.
+   recovery and no sensible place to put an alert; the bet is that these saves do not fail in
+   practice. Startup and import paths do **not** use this.
    */
   func saveChangesIgnoringFailure(operation: PersistenceOperation, analytics: any AnalyticsClient = AppAnalytics.shared) {
     try? saveChanges(operation: operation, analytics: analytics)

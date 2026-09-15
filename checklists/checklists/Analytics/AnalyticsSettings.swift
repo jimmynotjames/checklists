@@ -22,9 +22,6 @@ final class AnalyticsSettings {
 
   private let store: KeyValueStore
 
-  /// Whether the user has opted in to product analytics (Mixpanel). See the type doc comment for
-  /// the locale-aware default and its never-persisted resolution. `@Observable` change
-  /// notifications emit on every write.
   var analyticsOptIn: Bool {
     didSet {
       store.set(analyticsOptIn, forKey: Self.analyticsOptInKey)
@@ -33,21 +30,13 @@ final class AnalyticsSettings {
   }
 
   /// `true` iff the backing store contains an explicit value for `"analyticsOptIn"`.
-  ///
-  /// Consumed by the first-run consent-sheet trigger: `false` means the user has never made a
-  /// consent decision.
   var analyticsOptInExplicitlySet: Bool {
     store.object(forKey: Self.analyticsOptInKey) != nil
   }
 
-  /// A stable UUIDv4 string used as the Mixpanel `distinct_id` (§5).
-  ///
-  /// On first init with a fresh store, a new UUID is generated, written to the backing store,
-  /// and returned. Subsequent reads return the stored value. `private(set)` — this type never
-  /// changes it on its own. `MixpanelAnalyticsClient.reset()` does clear the SDK's own notion of
-  /// the current distinct id, but the next lazy init re-identifies with this same stored UUID, so
-  /// an opt-out followed by a re-opt-in rejoins the same Mixpanel profile rather than starting a
-  /// new one — that persistence is the point of keeping this value here rather than in the client.
+  /// A stable UUIDv4 string used as the Mixpanel `distinct_id` (§5). Generated once and persisted;
+  /// `MixpanelAnalyticsClient.reset()` clears the SDK's notion of it but not this value, so a
+  /// re-opt-in rejoins the same Mixpanel profile — why this lives here rather than in the client.
   private(set) var analyticsDistinctId: String {
     didSet {
       store.set(analyticsDistinctId, forKey: Self.analyticsDistinctIdKey)
@@ -100,10 +89,6 @@ final class AnalyticsSettings {
     return store
   }
 
-  // MARK: - Private: store reads
-
-  /// Reads `analyticsOptIn` from the store, falling back to the locale-aware default if no
-  /// value has been persisted. The default is **not** written to the store.
   private static func readAnalyticsOptIn(from store: KeyValueStore) -> Bool {
     guard let object = store.object(forKey: analyticsOptInKey) else {
       return ConsentJurisdiction.kind(for: Locale.current.region?.identifier) == .autoOptin
@@ -113,8 +98,6 @@ final class AnalyticsSettings {
     return ConsentJurisdiction.kind(for: Locale.current.region?.identifier) == .autoOptin
   }
 
-  /// Reads the stored `analyticsDistinctId`. If absent, generates a new UUIDv4, persists it
-  /// immediately (so the same id is returned on subsequent reads), and returns it.
   private static func readOrCreateDistinctId(from store: KeyValueStore) -> String {
     if let existing = store.object(forKey: analyticsDistinctIdKey) as? String, !existing.isEmpty {
       return existing

@@ -6,31 +6,17 @@
 import Foundation
 
 /**
- The product-analytics sink.
-
- Everything the app measures goes through this one protocol. There are two conformers:
- `ConsoleAnalyticsClient`, which prints in DEBUG and does nothing in Release, and
- `MixpanelAnalyticsClient`. The app picks one at launch; see core-docs/analytics-spec.md §7.1.
+ The product-analytics sink. Everything the app measures goes through this one protocol — see
+ core-docs/analytics-spec.md §7.1 for the two conformers and how the app picks one at launch.
 
  **The PII contract, restated here because this is where a new `track` call gets written.**
  The default is deny. This app transmits:
-
    - screen views, action events, and integer counts;
    - `notes_length`, a character count;
-   - `error_domain`, `error_code` and `error_operation` — a framework-authored domain string, an
-     integer, and a bounded operation name. Never an `NSError`'s `userInfo`;
-   - `checklist_name` — **the only free-text property**, an accepted risk documented at
-     analytics-spec.md §4.4.
-
- It never transmits item names, item notes, or checklist notes; any Apple identifier; any iCloud
- or CloudKit identifier; or any text that came from `OSLog`. Adding a user-content property is a
- spec change, not a code-review decision.
-
- **Call sites go through this protocol, never through a concrete client.** Downcasting to
- `MixpanelAnalyticsClient` would put behaviour behind a type the test spy cannot stand in for.
-
- Diagnostics are a **separate channel** — `AppLog` in `Logging/AppLoggers.swift`. The two never
- feed each other (§11). That is why they live in different directories.
+   - `error_domain`, `error_code` and `error_operation` — never an `NSError`'s `userInfo`;
+   - `checklist_name` — **the only free-text property**, an accepted risk (analytics-spec §4.4).
+ It never transmits item names, item notes, checklist notes, Apple/iCloud/CloudKit identifiers, or
+ `OSLog` text. Adding a user-content property is a spec change, not a code-review decision.
  */
 protocol AnalyticsClient: AnyObject, Sendable {
   /// Records one event. `properties` values must be property-list-ish scalars; anything the

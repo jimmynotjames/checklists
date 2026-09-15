@@ -6,19 +6,14 @@
 import SwiftUI
 import UIKit
 
-/// SwiftUI host for the still-UIKit `ChecklistViewController` (the checklist-detail screen).
-///
-/// The view controller is deliberately not converted yet, and it is embedded in its own
-/// `UINavigationController` rather than bridged onto SwiftUI's toolbar because it leans on
-/// having a real UIKit navigation bar it can drive directly:
+/// SwiftUI host for the still-UIKit `ChecklistViewController`, embedded in its own `UINavigationController` because it drives a real UIKit nav bar directly:
 ///   - its scroll handler animates `navigationItem.title` in and out past a threshold,
 ///   - it swaps `navigationItem.rightBarButtonItem` (Done vs. Reset) based on `isNewChecklist`,
 ///   - the UI tests address `navigationBars["checklists.ChecklistView"]` and its buttons.
 /// When pushed, the caller hides SwiftUI's navigation bar for this destination so only the
 /// embedded bar shows.
 ///
-/// The wrapper exists so the safe-area handling below travels with the screen instead of being
-/// restated at each presentation site.
+/// The wrapper exists so the safe-area handling below travels with the screen instead of being restated at each presentation site.
 struct ChecklistScreen: View {
   let checklist: Checklist
   var isNewChecklist = false

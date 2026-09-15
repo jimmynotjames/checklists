@@ -7,11 +7,7 @@
 
 import UIKit
 
-/**
- Honestly, I don't know why I have to set the delegate explicitly here for UITextField but for UITextView (see CLTextView),
- I just had to implement the delegate method. The UITextField by default accepts drop events, so I'm confused why it wasn't already set.
- But not worth time to investigate at this point.
- */
+/// Unlike `UITextView` (see `CLTextView`), `UITextField` requires the drop delegate to be set explicitly.
 class CLTextField: UITextField {
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -30,7 +26,7 @@ class CLTextField: UITextField {
 
 /// Need this because the reordering of rows using Drag/Drop is causing it to accidentally drop into Checklist's Name field.
 extension CLTextField: UITextDropDelegate {
-  /// TECH DEBT: This may have long-term consequences in iPad and Mac App, if we move there. Maybe people will want to drop text in there??
+  /// See CLTextView's TECH DEBT note.
   func textDroppableView(_: UIView & UITextDroppable, proposalForDrop _: UITextDropRequest) -> UITextDropProposal {
     UITextDropProposal(operation: .forbidden)
   }

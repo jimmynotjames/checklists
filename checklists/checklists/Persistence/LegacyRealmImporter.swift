@@ -159,17 +159,14 @@ enum LegacyRealmImporter {
    tried first and is wrong: two devices updated in the same sitting import within the same second,
    which is the *common* case, not a rare one. Making the clock granular enough to separate them
    pushes sort keys to a magnitude where `Double` can no longer subdivide gaps for midpoint
-   insertion. A random block sidesteps both problems. The cost is that which device's list sorts
-   first is arbitrary rather than chronological, which is cosmetic.
-
-   A collision (1 in `sortKeyBlockCount`) degrades to the old interleaved behaviour. Nothing is lost
-   either way — ids are per-device random UUIDs, so both sets always survive regardless of order.
+   insertion. A random block sidesteps both problems.
 
    The largest key this produces is under 1e7, where a `Double`'s ULP is around 1.9e-9 — far below
    `SortKeyReorder.epsilon`, so midpoint insertion keeps working afterwards.
 
-   Item sort keys deliberately still start at 1.0: items belong to a single checklist, which came
-   from a single device, so they can never interleave with another device's.
+   A collision (1 in `sortKeyBlockCount`) degrades to the old interleaved order; nothing is lost
+   either way, since ids are per-device random UUIDs. Item sort keys still start at 1.0: items
+   belong to one checklist from one device, so they can never interleave with another device's.
    */
   static func randomImportSortKeyBase() -> Double {
     Double(Int.random(in: 0 ..< sortKeyBlockCount)) * sortKeyBlockSize

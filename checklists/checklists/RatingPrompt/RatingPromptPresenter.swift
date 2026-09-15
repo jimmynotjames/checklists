@@ -8,18 +8,12 @@ import SwiftUI
 
 /// Root-level presenter for the automatic App Store review prompt.
 ///
-/// Applied once, innermost on `RootView` in `ChecklistsApp`, so that `Router` and
-/// `RatingPromptCoordinator` are both ancestors in the environment. When the coordinator has a
-/// pending request, the scene is active, and the person is on the checklists list — nothing
-/// pushed, no sheet, main menu closed — it calls the native `requestReview` and lets the
-/// coordinator record that. Watching the router is what makes the prompt land *after* the
-/// checklist screen is popped (or the new-checklist sheet dismissed) rather than over it;
-/// StoreKit then decides whether a dialog actually appears.
+/// Must be applied once, innermost on `RootView` in `ChecklistsApp` — misplaced, the app traps at
+/// launch on the missing `Router` / `RatingPromptCoordinator` environment.
 ///
-/// **The request is deferred past the transition.** The router flag flips at the *start* of the
-/// pop or dismiss animation, and Apple's guidance is not to request during one, so the gate is
-/// re-checked after a short pause; a re-push, a sheet, the menu opening or a background in the
-/// meantime cancels the attempt and the next qualifying moment gets it instead.
+/// **Deferred past the transition**: the router flag flips at the *start* of a pop or dismiss
+/// animation, and Apple's guidance is not to request mid-transition, so the gate is re-checked
+/// after a short pause; anything that changes state in the meantime cancels the attempt.
 ///
 /// No custom rating UI is presented, here or anywhere else.
 private struct RatingPromptPresenter: ViewModifier {

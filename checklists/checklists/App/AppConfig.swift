@@ -21,16 +21,12 @@ import Foundation
 /// indirection — see core-docs/analytics-spec.md §10, and `scripts/verify_release_secrets.sh`,
 /// which refuses to ship a build whose token is still the committed placeholder.
 enum AppConfig {
-  // MARK: - Sentinels
-
   /// Must stay in sync with the defaults in `config/Secrets.xcconfig` and the values
   /// `scripts/verify_release_secrets.sh` refuses to ship. `AppConfigSentinelTests` guards this.
   enum Placeholder {
     static let mixpanelDevToken = "PLACEHOLDER_MIXPANEL_DEV_TOKEN"
     static let mixpanelProdToken = "PLACEHOLDER_MIXPANEL_PROD_TOKEN"
   }
-
-  // MARK: - Bundle reads
 
   static var mixpanelDevToken: String {
     Bundle.main.object(forInfoDictionaryKey: "MixpanelDevToken") as? String

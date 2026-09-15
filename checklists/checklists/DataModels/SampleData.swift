@@ -35,9 +35,7 @@ enum SampleData {
 
   // MARK: - Fixture description
 
-  //
-  // Plain values rather than models, so the fixture can be declared without a context and
-  // materialized the same way the importer materializes Realm data.
+  // Plain values rather than models, so the fixture can be declared without a context and materialized the same way the importer materializes Realm data.
 
   struct ChecklistFixture: Equatable {
     let id: String
@@ -118,11 +116,8 @@ enum SampleData {
    Collapses duplicate copies of the built-in samples that two devices can each create before their
    first sync, and deletes nothing else.
 
-   **The case it exists for.** Two devices both install fresh and race: A seeds the three fixed-id
-   samples and uploads; B launches before A's records arrive, finds an empty store, and seeds the
-   same three ids. The account then holds two of each. (If B launches after A's data lands, the
-   emptiness check in `insertFirstTimeLaunchDataIfNeeded` means B never seeds and none of this
-   applies.)
+   **The case it exists for.** Two devices both install fresh and race, each seeding the same
+   three fixed ids before either's upload reaches the other — the account then holds two of each.
 
    **Why it is safe.** A copy is removed only when it is identical to the fixture this app ships —
    name, notes, item names, item notes, checked states, order — *and* another identical copy shares
@@ -190,10 +185,6 @@ enum SampleData {
 
   // MARK: - The fixture itself
 
-  /**
-   REMINDER: This data set is also used for automated testing.
-   If we make adjustments to this, we should either update the tests or duplicate this test set.
-   */
   static func generateFirstTimeLaunchChecklists() -> [ChecklistFixture] {
     [
       ChecklistFixture(

@@ -16,9 +16,6 @@ import Foundation
 
  Changes arrive in bursts — a merge writes many records in quick succession — so callbacks are
  coalesced into one. The notification is posted on a background queue, hence the deliberate hop.
-
- Inert until CloudKit is switched on; wired up now so that both screens already refresh from a
- single, testable place when it is.
  */
 @MainActor
 final class RemoteChangeObserver: NSObject {

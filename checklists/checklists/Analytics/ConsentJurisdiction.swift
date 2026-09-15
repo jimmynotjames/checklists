@@ -13,9 +13,7 @@ import Foundation
 /// mirrors the canonical list in core-docs/analytics-spec.md §6.2; additions or removals should
 /// update both the spec and this source together.
 ///
-/// `nonisolated` on the type, not on each member: the target sets
-/// `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`, so without it every member here — including the
-/// static lookup and the region set — would be reachable only from the main actor.
+/// nonisolated on the type: see AnalyticsEvent.
 nonisolated enum ConsentJurisdiction: Equatable {
   /// Analytics require explicit, affirmative opt-in before any event may be sent.
   case required
@@ -23,13 +21,7 @@ nonisolated enum ConsentJurisdiction: Equatable {
   /// Analytics are default-on; the user may opt out at any time via the Settings toggle.
   case autoOptin
 
-  // MARK: - Lookup
-
-  /// Returns the jurisdiction kind for the given `Locale.Region` identifier string.
-  ///
-  /// - Parameter regionIdentifier: The ISO 3166-1 alpha-2 region code (e.g. `"DE"`, `"US"`), or
-  ///   `nil` if `Locale.current.region` is unavailable. `nil` → `.required` (the conservative
-  ///   default).
+  /// `nil` → `.required` (the conservative default).
   static func kind(for regionIdentifier: String?) -> ConsentJurisdiction {
     guard let code = regionIdentifier else {
       return .required
@@ -41,17 +33,7 @@ nonisolated enum ConsentJurisdiction: Equatable {
 
   /// All regions that require explicit opt-in consent.
   ///
-  /// Sources:
-  /// - EU member states: GDPR + ePrivacy Directive
-  /// - EEA (non-EU): IS, LI, NO — GDPR via the EEA agreement
-  /// - GB, GG, JE, IM — UK GDPR + PECR
-  /// - CH — revFADP
-  /// - KR — PIPA
-  /// - CN — PIPL
-  /// - BR — LGPD
-  /// - TR — KVKK
-  /// - TH — PDPA
-  /// - CA — Quebec Law 25, applied CA-wide as a pragmatic simplification
+  /// Legal basis per region: this file is the canonical list (analytics-spec §6.2 points here).
   ///
   /// To add or remove a region, update core-docs/analytics-spec.md §6.2 and this set together.
   private static let strictOptInRegions: Set<String> = [

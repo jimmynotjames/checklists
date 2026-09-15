@@ -8,7 +8,7 @@
 import UIKit
 
 class ItemTableViewCell: UITableViewCell {
-  var itemContentView: ItemContentView = .init(frame: .zero) // Exposing this because I'm tired of delegate chains.
+  var itemContentView: ItemContentView = .init(frame: .zero)
 
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)

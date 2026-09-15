@@ -42,8 +42,7 @@ struct ChecklistsApp: App {
     _ratingPrompt = State(initialValue: RatingPromptCoordinator(state: RatingPromptState(), analytics: client))
     _startup = State(initialValue: AppStartupModel())
 
-    // From the Apple docs, I'm slightly worried about power usage by turning this on, but can find nothing online saying this is a power hog.
-    // TODO-DEFERRED: Nevertheless, once we collect stats on landscape/portrait, maybe remove this?
+    // TODO: revisit once rotation stats land.
     UIDevice.current.beginGeneratingDeviceOrientationNotifications()
   }
 
@@ -82,12 +81,9 @@ struct ChecklistsApp: App {
           }
         }
       }
-      // On the Group rather than any one branch: the loading screen is up for at least 1.5s on a
-      // legacy-import launch, and the failure branch never becomes `.ready` at all. Attaching this
-      // to `.ready` would delay `app_opened` on migration launches and drop it entirely for anyone
-      // stuck on the failure screen — the population most worth counting. Keeping the modifiers
-      // outside the switch also stops them remounting when the phase changes, which would reset
-      // the tracker and let a duplicate open through.
+      // On the Group, not one switch branch: attaching to `.ready` would drop `app_opened` entirely
+      // for anyone stuck on the failure screen. Keeping modifiers outside the switch also stops them
+      // remounting on phase changes, which would reset the tracker and let a duplicate open through.
       .environment(\.analytics, analytics)
       .environment(analyticsSettings)
       .task {
@@ -129,12 +125,8 @@ struct ChecklistsApp: App {
     }
     return MixpanelAnalyticsClient(
       token: MixpanelTokenSource.activeToken,
-      // Captured strongly, matching the gate's `isOptedIn` closure above: `settings` is the same
-      // instance `_analyticsSettings` retains for the app's lifetime, so there is nothing for
-      // `weak` to protect against here, and this is the only path by which the persisted
-      // `distinct_id` reaches Mixpanel — `identify(_:)` has no production caller. Were this `weak`
-      // and `settings` ever nil, `identify` and the baseline people properties would both silently
-      // no-op and Mixpanel would invent its own device id instead.
+      // Captured strongly on purpose: this is the only path by which the persisted `distinct_id`
+      // reaches Mixpanel, and `settings` lives for the app's lifetime anyway.
       distinctIdProvider: { settings.analyticsDistinctId }
     )
   }
