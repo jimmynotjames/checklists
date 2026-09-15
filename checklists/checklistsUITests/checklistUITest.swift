@@ -46,6 +46,13 @@ class checklistUITest: XCTestCase {
     app.navigationBars.buttons["Back"]
   }
 
+  /**
+   1. Go to the "Morning Routine" Checklist.
+   2. Edit Checklist Name to "Morning Ritual"
+   3. Add Checklist Notes to empty notes.
+   4. Go back to main page and check that text was updated.
+   5. Tap back into that same Checklist and check that stuff is still updated.
+   */
   func testEditHeaderInfo() {
     let newChecklistName = "Morning Ritual"
     let newChecklistNotes = "Do this mindfully!!!"
@@ -133,6 +140,7 @@ class checklistUITest: XCTestCase {
     cell.swipeLeft() // "Yoga/meditation"
     tablesQuery/*@START_MENU_TOKEN@*/ .buttons["Delete"]/*[[".cells.buttons[\"Delete\"]",".buttons[\"Delete\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/ .tap()
 
+    // Check that item name is no longer there.
     guard let newItemName = tablesQuery.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String else {
       XCTFail("Item name text view value was not a String"); return
     }
@@ -140,6 +148,10 @@ class checklistUITest: XCTestCase {
     assertPercentComplete(tablesQuery["ChecklistTableView"], numCheckedItems: 4, numItems: 5) // Check that circular status icon updated. 4/5
   }
 
+  /**
+   You can create an Item by tapping Next on keyboard and remove one by tapping Delete
+   on an empty Item.
+   */
   func testAddDeleteItemsWithCursor() throws {
     checklistsList.staticTexts["Pre-Trip Checklist"].tap()
 
@@ -187,6 +199,7 @@ class checklistUITest: XCTestCase {
     }
     app.toolbars["Toolbar"].buttons["Done"].tap()
 
+    // Check that Name field still preserved.
     itemNameTextView2bValue = try XCTUnwrap(checklisttableviewTable.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].value as? String)
     XCTAssert(itemNameTextView2aValue == itemNameTextView2bValue)
   }
@@ -353,6 +366,7 @@ class checklistUITest: XCTestCase {
     checklistTableView.buttons["Add"].tap()
     app.typeText(newItemName1)
 
+    // Count should have increased by one.
     XCTAssert(checklistTableView.children(matching: .cell).count == numItems + 1)
     assertPercentComplete(checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems + 1) // Check that circular status icon updated.
 
@@ -383,6 +397,7 @@ class checklistUITest: XCTestCase {
 
     // Go back to main page, back into Checklist, and check again.
     detailBackButton.tap()
+    // Check that circular status icon updated on Checklists page.
     assertPercentComplete(checklistsList.cells.element(boundBy: 0), numCheckedItems: numCheckedItems, numItems: numItems + 2)
     checklistsList.staticTexts["Morning Routine"].tap()
 
