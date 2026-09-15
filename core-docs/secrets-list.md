@@ -33,6 +33,9 @@ not validate it.
 - Local file: `fastlane/.env` (gitignored)
 - Starting point: `fastlane/.env.template` (tracked)
 - Required values: `ASC_API_KEY_ID`, `ASC_API_ISSUER_ID`, and `ASC_API_KEY_FILEPATH`
+- Also in this file (not a secret, but only meaningful locally): `ARCHIVE_VALIDATION_PROVISIONING_PROFILE`
+  — the name of the installed App Store distribution provisioning profile; see
+  [`fastlane/SETUP.md`](../fastlane/SETUP.md)
 
 Create the local environment file from the repository root:
 
