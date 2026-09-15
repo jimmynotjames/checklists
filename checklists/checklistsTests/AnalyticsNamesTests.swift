@@ -31,6 +31,8 @@ struct AnalyticsNamesTests {
     AnalyticsEvent.startupStoreReset,
     AnalyticsEvent.orientationChanged,
     AnalyticsEvent.analyticsConsentChanged,
+    AnalyticsEvent.ratingPromptEligible,
+    AnalyticsEvent.ratingPromptRequested,
   ]
 
   private static let allProperties: [String] = [
@@ -55,6 +57,9 @@ struct AnalyticsNamesTests {
     AnalyticsProperty.lastAppOpenAt,
     AnalyticsProperty.analyticsOptInAt,
     AnalyticsProperty.checklistsCountBucket,
+    AnalyticsProperty.timeSinceFirstEligibleBucket,
+    AnalyticsProperty.ratingPromptFirstEligibleAt,
+    AnalyticsProperty.ratingPromptLastRequestedAt,
   ]
 
   /// Matches the spec's stated convention: flat `snake_case`, starting with a lowercase letter.

@@ -20,6 +20,10 @@ struct ChecklistsApp: App {
   /// one — to build the consent gate's `isOptedIn` closure before injecting it into the
   /// environment below.
   @State private var analyticsSettings: AnalyticsSettings
+  /// Built in `init()` too, because it takes the gated client above: its two events must go
+  /// through the same consent gate as everything else, while its eligibility counters
+  /// (`RatingPromptState`) are deliberately not consent-gated at all.
+  @State private var ratingPrompt: RatingPromptCoordinator
 
   @Environment(\.scenePhase) private var scenePhase
 
@@ -35,6 +39,7 @@ struct ChecklistsApp: App {
     AppAnalytics.install(client)
     analytics = client
     _analyticsSettings = State(initialValue: settings)
+    _ratingPrompt = State(initialValue: RatingPromptCoordinator(state: RatingPromptState(), analytics: client))
     _startup = State(initialValue: AppStartupModel())
 
     // From the Apple docs, I'm slightly worried about power usage by turning this on, but can find nothing online saying this is a power hog.
@@ -50,11 +55,18 @@ struct ChecklistsApp: App {
           LoadingView(showsCloudSyncNote: showsCloudSyncNote)
         case let .ready(container, _):
           RootView()
+            // Innermost on purpose: a modifier reads the environment of its *ancestors*, and every
+            // `.environment(...)` below is applied outside this one, so this is the only position
+            // from which the presenter can see `Router` and the coordinator. Put it after them and
+            // the app traps at launch on the missing observable. Only the ready branch has it: the
+            // prompt is fed by check-offs, which only happen here.
+            .ratingPromptPresenter()
             .modelContainer(container)
             .environment(router)
             // Reuse the instance PersistenceController installed at startup — the failure-retry path
             // patches it in place, so creating a second SyncStatus would split the source of truth.
             .environment(PersistenceController.shared.syncStatus)
+            .environment(ratingPrompt)
             .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
               guard let value = orientationAnalyticsValue(UIDevice.current.orientation) else { return }
               analytics.track(AnalyticsEvent.orientationChanged, properties: [AnalyticsProperty.orientation: value])

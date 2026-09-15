@@ -122,6 +122,19 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
     instance.people.set(properties: [AnalyticsProperty.analyticsOptInAt: Date()])
   }
 
+  /// Both rating-prompt stamps (§9.3) follow `setAnalyticsOptInAt()`'s shape: a no-op unless the
+  /// SDK is already up. In practice it always is — `RatingPromptCoordinator` tracks the matching
+  /// event first, and that `track` is what initializes the SDK — so the guard costs nothing.
+  func setRatingPromptFirstEligibleAt(_ date: Date) {
+    guard let instance = currentInstance() else { return }
+    instance.people.set(properties: [AnalyticsProperty.ratingPromptFirstEligibleAt: date])
+  }
+
+  func setRatingPromptLastRequestedAt(_ date: Date) {
+    guard let instance = currentInstance() else { return }
+    instance.people.set(properties: [AnalyticsProperty.ratingPromptLastRequestedAt: date])
+  }
+
   // MARK: - Private: lazy init
 
   #if DEBUG

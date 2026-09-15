@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Minimal key-value persistence seam used by `AnalyticsSettings`.
+/// Minimal key-value persistence seam used by `AnalyticsSettings` and `RatingPromptState`.
 ///
 /// Exists so the backing store is a one-line swap at the call site: production uses
 /// `UserDefaults.standard` (see the conformance below for why), and tests use an in-memory
@@ -13,7 +13,9 @@ import Foundation
 protocol KeyValueStore: AnyObject {
   func object(forKey key: String) -> Any?
   func set(_ value: Bool, forKey defaultName: String)
+  func set(_ value: Int, forKey defaultName: String)
   func set(_ value: String, forKey defaultName: String)
+  func removeObject(forKey defaultName: String)
   @discardableResult
   func synchronize() -> Bool
 }
@@ -28,10 +30,14 @@ extension UserDefaults: KeyValueStore {
   }
 }
 
-/// Unused today — `AnalyticsSettings` defaults to `UserDefaults.standard` — but kept so a later
-/// migration to iCloud-synced consent state is a one-line change at the call site, once the
-/// entitlement above is added.
+/// Unused today — both consumers default to `UserDefaults.standard` — but kept so a later
+/// migration to iCloud-synced state is a one-line change at the call site, once the entitlement
+/// above is added. Its native integer setter takes `Int64`, hence the `Int` bridge.
 extension NSUbiquitousKeyValueStore: KeyValueStore {
+  func set(_ value: Int, forKey defaultName: String) {
+    set(Int64(value), forKey: defaultName)
+  }
+
   func set(_ value: String, forKey defaultName: String) {
     set(value as Any, forKey: defaultName)
   }

@@ -3,6 +3,8 @@
 //  checklists
 //
 
+import Foundation
+
 /// Wraps any `AnalyticsClient` and suppresses every method except `reset()` while the person is
 /// opted out (core-docs/analytics-spec.md §2's canonical constraint #3: an opted-out install
 /// never opens a connection).
@@ -52,5 +54,15 @@ final class ConsentGatedAnalyticsClient: AnalyticsClient, @unchecked Sendable {
   func setAnalyticsOptInAt() {
     guard isOptedIn() else { return }
     wrapped.setAnalyticsOptInAt()
+  }
+
+  func setRatingPromptFirstEligibleAt(_ date: Date) {
+    guard isOptedIn() else { return }
+    wrapped.setRatingPromptFirstEligibleAt(date)
+  }
+
+  func setRatingPromptLastRequestedAt(_ date: Date) {
+    guard isOptedIn() else { return }
+    wrapped.setRatingPromptLastRequestedAt(date)
   }
 }

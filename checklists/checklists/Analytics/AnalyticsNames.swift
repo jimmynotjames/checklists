@@ -81,6 +81,21 @@ nonisolated enum AnalyticsEvent {
   /// practice rather than a one-off.
   static let startupStoreReset = "startup_store_reset"
 
+  // MARK: Rating prompt
+
+  /// The install first met every threshold for the automatic App Store review prompt. Fires
+  /// **once per install**, gated by `RatingPromptState.firstEligibleAt`.
+  ///
+  /// Not an engagement-pressure event (§2 constraint 7): it measures when the app's own bar is
+  /// reached, not how to push anyone over it.
+  static let ratingPromptEligible = "rating_prompt_eligible"
+  /// The app called Apple's native `requestReview`. Carries `time_since_first_eligible_bucket`.
+  ///
+  /// The deepest observable point: StoreKit reports neither whether it showed the dialog nor
+  /// what the person chose, so there is no `shown` or `resolved` event and there must not be one
+  /// manufactured with a pre-prompt. De-duplicated per app version by `RatingPromptCoordinator`.
+  static let ratingPromptRequested = "rating_prompt_requested"
+
   // MARK: Device
 
   /// Device rotated between portrait and landscape.
@@ -144,6 +159,13 @@ nonisolated enum AnalyticsProperty {
   /// The setting's previous value, sent on an opt-out. Bool.
   static let oldValue = "old_value"
 
+  // MARK: rating_prompt_requested
+
+  /// `<1d` / `<7d` / `<30d` / `30d+` between first eligibility and the request. Bucketed because
+  /// an exact interval on an event answers nothing a bucket does not; the exact moments live on
+  /// the profile.
+  static let timeSinceFirstEligibleBucket = "time_since_first_eligible_bucket"
+
   // MARK: Super properties (spec §9.2)
 
   /// `CFBundleShortVersionString`. Sent separately from the build number so both can be filtered
@@ -174,4 +196,9 @@ nonisolated enum AnalyticsProperty {
   /// `0` / `1` / `2-3` / `4-7` / `8+`. This app's one cohort signal. Bucketed because profiles are
   /// what cohorts are built from; the raw count still rides on `checklists_viewed`.
   static let checklistsCountBucket = "checklists_count_bucket"
+  /// Set the first time the rating-prompt thresholds are met. Lets retention be segmented by
+  /// whether — and how soon — someone reached the bar.
+  static let ratingPromptFirstEligibleAt = "rating_prompt_first_eligible_at"
+  /// Refreshed on every `rating_prompt_requested`. No outcome is stored: StoreKit reports none.
+  static let ratingPromptLastRequestedAt = "rating_prompt_last_requested_at"
 }
