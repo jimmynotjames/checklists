@@ -8,9 +8,7 @@
 @testable import checklists
 import Testing
 
-/// Covers `SettingsManager.versionBuildString` and the `AppTheme` enum. No Realm/DBManager
-/// involvement, so this doesn't need the in-memory-Realm save/restore pattern the other Phase 4
-/// test classes use.
+/// Covers `SettingsManager.versionBuildString` and the `AppTheme` enum.
 ///
 /// `setCurrentAppTheme`/`currentAppTheme` are deliberately NOT covered here: it's an in-memory
 /// TODO stub (the doc comment says "notifications" are still unimplemented) backing a themes UI

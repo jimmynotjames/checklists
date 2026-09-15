@@ -12,9 +12,6 @@ import UIKit
 /// Covers `CLTextView`'s placeholder-visibility rule (`updatePlaceholderLabel`, private, but its
 /// effect on the placeholder label's `isHidden` is observable via the view hierarchy) and that the
 /// `text`/`font` property overrides keep it in sync.
-///
-/// No Realm/DBManager involvement, so this doesn't need the in-memory-Realm save/restore pattern
-/// the persistence-touching test classes use.
 @Suite("CLTextView placeholder visibility")
 struct CLTextViewTests {
   /// `placeholderLabel` is private; it's the view's only `UILabel` subview, added directly to the

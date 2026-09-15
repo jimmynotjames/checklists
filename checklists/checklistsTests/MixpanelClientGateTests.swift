@@ -9,24 +9,17 @@ import Testing
 /// Exercises `MixpanelAnalyticsClient`'s lazy-init contract against the **real class**, not a
 /// simulation — see core-docs/analytics-spec.md §13 contract 9 and §7.2.
 ///
-/// **Every test here is restricted to paths that never call `Mixpanel.initialize`.** An earlier
-/// version of this file called `track`/`identify` directly against the real class to prove the
-/// SDK becomes initialized — but `MixpanelInstance.reset()`'s first statement is `flush()`, which
-/// POSTs the queue over the network. Even with a fake token, that leaves real artifacts behind
-/// (`*_MPDB.sqlite`, `Mixpanel.plist` in the simulator's `Library`) that persist across runs and
-/// get re-sent on the next one — and it writes through to the real `UserDefaults`, defeating test
-/// isolation. So this file asserts only the **negative** half of the contract: a client that has
-/// never been told to track something never touches the network, however it is called. The
-/// **positive** half — that an opted-in `track` actually initializes the SDK exactly once — is not
-/// safely assertable in a unit test against the real class, and is instead covered by the manual
-/// simulator verification in analytics-spec.md §5.
+/// **Every test here is restricted to paths that never call `Mixpanel.initialize`.** Calling
+/// `track`/`identify` directly against the real class would initialize the SDK and reach
+/// `MixpanelInstance.reset()`'s `flush()`, which POSTs over the network and leaves real artifacts
+/// (`*_MPDB.sqlite`, `Mixpanel.plist`) behind — so this file asserts only the **negative** half of
+/// the contract. The **positive** half — that an opted-in `track` actually initializes the SDK
+/// exactly once — isn't safely assertable here; it's covered by the manual simulator verification
+/// in analytics-spec.md §5.
 @Suite("MixpanelAnalyticsClient lazy-init gate")
 struct MixpanelClientGateTests {
-  /// Not a real project token, and deliberately **not** shaped like one (32 lowercase hex) —
-  /// `MixpanelAnalyticsClient` never validates shape, only `MixpanelTokenSource` does, and that
-  /// check happens before this class is ever constructed. A hex-shaped literal here would also
-  /// trip the repo's gitleaks Mixpanel-token rule (analytics-spec.md §10), which carries no
-  /// allowlist by design.
+  /// Deliberately not shaped like a real token (32 lowercase hex) — that would trip gitleaks
+  /// (analytics-spec.md §10); shape validation is `MixpanelTokenSource`'s job, not this class's.
   private static let testToken = "unit-test-mixpanel-token-not-real"
 
   @Test("constructing the client does not initialize the SDK")

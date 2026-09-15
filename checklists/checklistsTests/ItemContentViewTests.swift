@@ -10,23 +10,11 @@ import Testing
 import UIKit
 
 /// Covers `ItemContentView`'s keystroke state machine
-/// (`textView(_:shouldChangeTextIn:replacementText:)`) via a recording stub of
-/// `ItemContentViewDelegate`, plus `refreshHeight()`'s expanded/collapsed state driven by notes
-/// emptiness.
-///
-/// This is the plan's stretch item. What's covered: newline-in-name-field ("insert next item," and
-/// the method returning `false` to swallow the keystroke), backspace-on-an-empty-name-field (the
-/// merge-upward path), and `refreshHeight()`. What's NOT covered, and why: the notes-field
-/// backspace-to-name-field "focus bounce" only verifies the swallowed-keystroke return value, not
-/// that focus actually transfers — `becomeFirstResponder()` requires a real window/key-window to
-/// succeed, which a headless unit test doesn't have (that's what the UI test suite's keyboard
-/// interactions already cover end to end).
-///
-/// No Realm/DBManager involvement beyond creating unmanaged `Item` values, so this doesn't need the
-/// in-memory-Realm save/restore pattern the persistence-touching test classes use.
+/// (`textView(_:shouldChangeTextIn:replacementText:)`) and `refreshHeight()`'s notes-driven
+/// expand/collapse state; full focus transfer isn't covered, since `becomeFirstResponder()` needs
+/// a real window this test doesn't have.
 @Suite("ItemContentView keystroke and height behaviour")
 struct ItemContentViewTests {
-  /// Records every `ItemContentViewDelegate` callback it receives, for assertion.
   private final class RecordingDelegate: ItemContentViewDelegate {
     private(set) var checkboxTappedCount = 0
     private(set) var nameFieldDidBeginEditingCount = 0

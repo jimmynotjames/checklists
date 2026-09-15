@@ -14,9 +14,6 @@ import Testing
 struct ProductionContainerFactoryTests {
   /// CloudKit is the preferred store, so it must be attempted before the local fallback is even
   /// considered.
-  ///
-  /// (This replaces the tripwire that asserted the opposite while CloudKit was switched off. It was
-  /// written to fail deliberately on the day the flag flipped, and it did.)
   @Test("CloudKit is tried before the local fallback")
   func cloudKitPathIsTriedFirst() throws {
     #expect(ProductionContainerFactory.cloudKitEnabled)

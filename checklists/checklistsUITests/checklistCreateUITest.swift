@@ -21,9 +21,7 @@ class checklistCreateUITest: XCTestCase {
 
   override func tearDownWithError() throws {}
 
-  /// The main checklists list is a SwiftUI `List`, which XCUITest exposes as a collection view.
-  /// The checklist *detail* screen behind it is still a UIKit table view (`ChecklistTableView`),
-  /// so `app.tables` still addresses that screen and only that screen.
+  /// See checklistUITest.checklistsList.
   private var checklistsList: XCUIElementQuery {
     app.collectionViews
   }

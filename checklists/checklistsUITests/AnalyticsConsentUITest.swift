@@ -5,12 +5,6 @@
 
 import XCTest
 
-/// Exercises the first-run analytics consent sheet end-to-end: its trigger, decline, and
-/// swipe-to-dismiss (core-docs/analytics-spec.md §6.2, §6.3). The unit-level
-/// `AnalyticsConsentControllerTests` cover the ordering contract; this class covers presentation
-/// — in particular, that a swipe-to-dismiss actually reaches the sheet's `.onDisappear` guard.
-/// Without that, the sheet re-presents on every checklist open, and no unit test can see it.
-///
 /// Each test launches its own process with `-AppleLocale` forcing a specific region, so the
 /// jurisdiction lookup in `ConsentJurisdiction` resolves deterministically regardless of the
 /// simulator's own region setting. `AnalyticsSettings` resolves to a fresh in-memory store for
@@ -21,8 +15,7 @@ class AnalyticsConsentUITest: XCTestCase {
 
   override func tearDownWithError() throws {}
 
-  /// The main checklists list is a SwiftUI `List`, which XCUITest exposes as a collection view
-  /// (the detail screen behind it is still a UIKit table view — see `checklistUITest`).
+  /// See checklistUITest.checklistsList.
   private var checklistsList: XCUIElementQuery {
     app.collectionViews
   }

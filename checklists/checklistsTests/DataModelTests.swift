@@ -10,9 +10,7 @@ import Testing
 /// Covers the `@Model` types themselves — persistence round-trips, `percentageComplete`, and the
 /// cascade delete rule between `Checklist` and `Item`.
 ///
-/// No isolation annotation, as everywhere in this target: `SWIFT_DEFAULT_ACTOR_ISOLATION =
-/// MainActor` already makes this struct and its `@Test` methods main-actor isolated, which is what
-/// the SwiftData code under test requires. See AGENTS.md §Concurrency.
+/// No isolation annotation — AGENTS.md §"Concurrency".
 @Suite("Checklist and Item model behaviour")
 struct DataModelTests {
   private func makeContext() throws -> ModelContext {
