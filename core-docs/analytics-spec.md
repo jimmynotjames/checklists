@@ -1,28 +1,9 @@
 # Analytics Spec
 
-| Field        | Value      |
-| ------------ | ---------- |
-| Version      | 1.10       |
-| Last Updated | 2026-09-15 |
-| Author/Owner | Jimmy Ho   |
-
-> This is the canonical description of what this app measures, what it refuses to measure, and
-> how the measurement is wired. It supersedes `analytics-design.md`, which was the pre-implementation
-> tracking plan written while analytics were stubbed. Where this document and the code disagree, one
-> of them is a bug — say which in the PR.
->
-> The sibling **`simple-recurring-budgets`** repo — the **Wren** app — has the reference Mixpanel
-> implementation (its `simple-recurring-budgets/Logging/` target, and `docs/analytics-spec.md` at
-> that repo's root). This app's conventions were deliberately aligned to it; §16 records every
-> place they intentionally diverge. Below, `simple-recurring-budgets` names the codebase and Wren
-> names the product.
-
-**Implementation status — everything in this document is built.** The token/secrets mechanism, the
-privacy manifest, the Mixpanel projects and their dashboards (§12), the client protocol with all 16
-call sites migrated (§7), the locale-aware consent flow (§6), and the `MixpanelAnalyticsClient` SDK
-integration (§7.2, §9). `ChecklistsApp.makeAnalyticsClient()` selects `MixpanelAnalyticsClient`
-whenever a real token is configured and the process is not a test run; the consent gate wraps it, so
-an opted-out install never opens a connection.
+This is the canonical description of what this app measures, what it refuses to measure, and how
+the measurement is wired. Where this document and the code disagree, one of them is a bug — say
+which in the PR. The sibling `simple-recurring-budgets` repo (the **Wren** app) has the reference
+Mixpanel implementation; §16 records every place this app's conventions intentionally diverge.
 
 Events reach the Dev project from Debug builds today. **No App Store build carries the SDK yet** —
 see §15 for what that means for the published disclosures.
@@ -35,19 +16,18 @@ Flurry Analytics 11.2.0 instrumented this app from 2019 until it was removed at 
 `log*` call site survived that removal and has been firing into a no-op ever since. **Mixpanel is the
 replacement.**
 
-| Decision | Value |
-| --- | --- |
-| Vendor | Mixpanel (`mixpanel-swift`, SPM, pinned `upToNextMajorVersion` from 6.5.0) |
-| Projects | `reChecklist App - Prod` (4062256) and `reChecklist App - Dev` (4062257), selected by `#if DEBUG` |
-| Plan | Growth — unlimited saved reports, $0/month under the 1M-events/month allotment |
-| Automatic events | **Off.** `trackAutomaticEvents: false` |
-| Crash reporting | **None.** Mixpanel does not do it, and no third-party crash SDK is taken on. Xcode Organizer only. |
-| App Tracking Transparency | **Out of scope and staying there.** No IDFA, no ATT prompt. |
-| Sessions | Derived server-side from the `app_opened` event stream. Mixpanel has no `startSession`. |
+- Vendor: Mixpanel (`mixpanel-swift`, SPM, pinned `upToNextMajorVersion` from 6.5.0).
+- Projects: `reChecklist App - Prod` (4062256) and `reChecklist App - Dev` (4062257), selected by
+  `#if DEBUG`.
+- Plan: Growth — unlimited saved reports, $0/month under the 1M-events/month allotment.
+- Automatic events: **Off.** `trackAutomaticEvents: false`.
+- Crash reporting: **None.** Mixpanel does not do it, and no third-party crash SDK is taken on.
+  Xcode Organizer only.
+- App Tracking Transparency: **Out of scope and staying there.** No IDFA, no ATT prompt.
+- Sessions: derived server-side from the `app_opened` event stream. Mixpanel has no `startSession`.
 
 Two Flurry capabilities are **gone, deliberately**: automatic session tracking (replaced by an
-explicit `app_opened` on every foreground) and crash reporting. §14 records the full mapping for
-anyone reading a historical Flurry export.
+explicit `app_opened` on every foreground) and crash reporting.
 
 ## 2. Canonical constraints
 
@@ -203,21 +183,9 @@ removes that.
 In the regions listed below, analytics default to **off** and stay off until the person explicitly
 accepts. Everywhere else, analytics default to **on** with the §6.1 toggle available.
 
-| Jurisdiction | Region codes | Basis |
-| --- | --- | --- |
-| European Union | AT BE BG HR CY CZ DK EE FI FR DE GR HU IE IT LV LT LU MT NL PL PT RO SK SI ES SE | GDPR + ePrivacy Directive |
-| EEA (non-EU) | IS, LI, NO | GDPR via the EEA agreement |
-| United Kingdom + Crown Dependencies | GB, GG, JE, IM | UK GDPR + PECR |
-| Switzerland | CH | revFADP |
-| South Korea | KR | PIPA |
-| China (mainland) | CN | PIPL |
-| Brazil | BR | LGPD |
-| Turkey | TR | KVKK |
-| Thailand | TH | PDPA |
-| Canada | CA | Quebec Law 25, applied CA-wide as a pragmatic simplification |
-
-An **unknown region resolves to `.required`** — the conservative default. This is the easiest
-behaviour to regress and is covered by a test.
+The strict-opt-in region set, with the legal basis per entry, is
+`ConsentJurisdiction.strictOptInRegions` in `Analytics/ConsentJurisdiction.swift`. An unknown region
+resolves to `.required` — the conservative default, and covered by a test.
 
 **The resolved default is never written to the store.** Whether a choice has been made explicitly is
 exactly `store.object(forKey:) != nil`, and that is what gates the sheet. Writing the default at
@@ -258,13 +226,11 @@ open.
 
 ### 7.1 Client selection
 
-| Condition | Client |
-| --- | --- |
-| Running tests (`-UITests1` launch arg **or** `IS_TESTING` env var) | `ConsoleAnalyticsClient` |
-| Tokens are still placeholder sentinels (fresh clone) | `ConsoleAnalyticsClient` |
-| Otherwise | `MixpanelAnalyticsClient` |
+- Running tests (`-UITests1` launch arg **or** `IS_TESTING` env var) → `ConsoleAnalyticsClient`.
+- Tokens are still placeholder sentinels (fresh clone) → `ConsoleAnalyticsClient`.
+- Otherwise → `MixpanelAnalyticsClient`.
 
-All three rows are reachable: `ChecklistsApp.shouldUseConsoleClient(isRunningTests:isTokenConfigured:)`
+All three are reachable: `ChecklistsApp.shouldUseConsoleClient(isRunningTests:isTokenConfigured:)`
 is the truth table above, and `makeAnalyticsClient()` calls it before constructing either client.
 
 The test guard delegates to the existing `LaunchModeContainerFactory.isRunningTests`, which already
@@ -361,32 +327,8 @@ All names are flat `snake_case`, `noun_pastTenseVerb`. 18 events.
 | `rating_prompt_eligible` | The install first meets every review-prompt threshold. **Once per install**, gated by the persisted `firstEligibleAt` | — | §3.9 |
 | `rating_prompt_requested` | The app calls Apple's native `requestReview`. De-duplicated per app version by the local once-per-version guard | `time_since_first_eligible_bucket` | §3.9 |
 
-**The rating-prompt events fire from the coordinator, not the screen.** `RatingPromptCoordinator`
-is fed one call per item checked off (never unchecked) by `ChecklistViewController`, advances the
-counters in `RatingPromptState`, and flips a pending flag once the bar is met. The root-level
-`ratingPromptPresenter()` waits until the person is back on the checklists list with the scene
-active — no route pushed, no sheet, main menu closed — before calling `requestReview` and
-consuming the flag, so the prompt never lands over a half-finished checklist.
-`rating_prompt_requested` is the deepest observable point (§3.9).
-
-**`app_opened` fires on "`.active` having seen `.background`", not "`.active` preceded by
-`.background`".** iOS delivers `.inactive` on the way back in, so a real foreground return arrives
-as `background → inactive → active`. Testing only the immediately preceding phase misses every
-foreground return and silently reduces the event to cold launches — which would put every session,
-reach and retention number on this app's dashboards on a cold-launch-only basis.
-`simple-recurring-budgets`'s `AppOpenTracker`, which this was ported from, has that bug. Verified
-here on a simulator: one cold launch plus two background/foreground cycles produces exactly three
-events, and an `.inactive` detour with no `.background` in it produces none.
-
-**`startup_failed` is the one to watch.** It is the only signal that someone was shown a failure
-screen instead of their checklists, and its count measures how often the store cannot be opened in
-the field. Note that no data has been lost when it fires — the store simply would not open, and the
-legacy Realm file is still untouched on disk, with the import retried next launch. See
-[`persistence-design.md`](persistence-design.md).
-
-**The error events are diagnostics, not product signals.** `persistence_fatal_error` fires
-immediately before a `fatalError`, so Mixpanel may never flush it. Treat any count it reports as a
-floor, not a total — and see §11 for where the real record lives.
+**The rating-prompt events fire from `RatingPromptCoordinator`, not the screen** — see its doc
+comment for the check-off, eligibility, and presentation-gating mechanics.
 
 ## 9. Property catalog
 
@@ -578,29 +520,6 @@ section to match.
 Both are on the Growth plan, so there is no saved-report cap to work around. The Mixpanel MCP server
 is connected, so boards can be created and edited directly.
 
-**Built** — five boards, 12 report tiles, in **both** projects.
-
-| Board | Tiles as shipped | Answers |
-| --- | --- | --- |
-| Reach | Daily active people; Monthly active people; Does anyone rotate the device (by `orientation`) | §3.1, §3.7 |
-| Checklist composition | What people make checklists for (by `checklist_name`); How many checklists people keep (by `checklists_count`); How long checklists get (by `items_count`); Are notes actually used (by `items_with_notes_count`); Reuse or start over (`checklist_reset` vs `checklist_created`) | §3.2–§3.5 |
-| Retention | Come back and open a checklist — born `app_opened`, returning `checklist_viewed`, daily curve | §3.1 |
-| Startup failures | Failed launches vs. fresh starts (`startup_failed` vs `startup_store_reset`); Store errors in the field (`persistence_fatal_error`, `persistence_write_failed`) | §3.6 |
-| Consent | Opt-ins and opt-outs by jurisdiction (`consent_jurisdiction` × `new_value`) | §3.8 |
-
-Every board opens with a one-line framing card. The Startup-failures card states the floor-not-total
-caveat from §8, and the Consent card warns that the opt-in-required segment is under-counted on every
-other board — both are things a reader would otherwise misread. Boards show no data until the
-instrumentation PRs land; the definitions are correct and populate as events arrive.
-
-Each project also carries Mixpanel's auto-generated **🌱 Starter Board**. It is owned by the Mixpanel
-system user, not by us; delete it if it clutters the list.
-
-**Not yet charted: the rating prompt (§3.9).** The natural tile is a funnel,
-`rating_prompt_eligible → rating_prompt_requested`, broken down by `time_since_first_eligible_bucket`,
-on the Reach board. Build it once the first App Store build carrying the prompt has shipped and
-the events exist to chart; an empty funnel on a board is noise.
-
 `notes_length` is deliberately **not** charted. It is captured on `checklist_viewed` and available for
 ad-hoc queries, but a distribution of note lengths answers no question in §3 that
 `items_with_notes_count` does not answer better.
@@ -614,43 +533,10 @@ events arrive with the right properties before a release.
 
 ## 13. Test strategy
 
-**Unit tests are Swift Testing** (`@Suite` / `@Test` / `#expect`), matching
-`simple-recurring-budgets`. Nothing in `checklistsTests` imports `XCTest`. An earlier version of
-this section prohibited Swift Testing; [#176](https://github.com/jimmynotjames/checklists/issues/176)
-records why that rule was unjustified — read it before reinstating anything like it.
+Test conventions: AGENTS.md §"Build and test".
 
-`checklistsUITests` stays XCTest **permanently**: Swift Testing has no `XCUIApplication`
-equivalent, so a UI test bundle has no alternative. `simple-recurring-budgets` keeps its UI bundle
-on XCTest for the same reason.
+Contracts — built except where marked:
 
-Suites need no isolation annotations. `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` already isolates
-a `struct` declared in this target, which is what the SwiftData and UIKit code under test requires,
-and a suite has no `XCTestCase` base class to conflict with. Where `@MainActor` does appear it is
-load-bearing, not boilerplate: a class with mutable storage satisfies `AnalyticsClient`'s `Sendable`
-requirement only through isolation. See AGENTS.md §Concurrency.
-
-Per-test fixtures come from `Helpers/TestScope.swift` — `withTemporaryDirectory` and
-`withIsolatedDefaults` hand a scratch directory or an isolated `UserDefaults` to the test and clean
-up in `defer`. A suite is a struct with no `deinit`, so there is nowhere to tear down from; scoping
-the fixture keeps creation and cleanup together and keeps fixtures out of implicitly-unwrapped
-`var`s.
-
-`SpyAnalyticsClient` records an **ordered list of calls**, not parallel per-method arrays. This
-matters: it is what lets §6.3's ordering contract be asserted against real production code rather
-than re-simulated inside the test body.
-
-Contracts — **built** except where marked, which land with the consent and SDK changes:
-
-1. `truncated(_:)` — under, at, and over 127 chars, and no splitting of a multi-scalar emoji.
-2. `ConsentJurisdiction` — every strict code maps to `.required`; representative others to
-   `.autoOptin`; **`nil` → `.required`**.
-3. Opt-in defaults — strict region → `false`, elsewhere → `true`, and **the resolved default is not
-   written to the store**; an explicit value overrides the locale default.
-4. `distinct_id` — generated once, persisted, stable across instances, parses as a UUID.
-5. `AppOpenTracker` — fires on first `.active` and on `.background → .active`; **not** on
-   `.inactive → .active` (the notification shade and app switcher are not opens).
-6. `isValidToken(_:)` — the 32-lowercase-hex shape rule, without touching `Bundle.main`.
-7. Placeholder sentinels — non-empty, distinct, and not mistakable for a real token.
 8. **Consent ordering** — toggle-off produces exactly `[track(consent_changed, false), reset]` and
    leaves the flag false; toggle-on sets the flag before tracking; decline sends nothing but marks
    the choice explicit.
@@ -661,21 +547,8 @@ Contracts — **built** except where marked, which land with the consent and SDK
    `isOptedIn: { false }` leaves the SDK uninitialized after repeated `track`/`identify` calls.
    **Not separately asserted:** that an opted-in `track` initializes the SDK exactly once — doing so
    would require actually calling `Mixpanel.initialize`, which contacts `api.mixpanel.com` even with
-   a fake token and leaves real artifacts on disk (discovered in this PR's review). That half is
-   covered by the manual simulator verification in §5 instead.
-10. Name constants — all distinct, all `snake_case`.
-11. Orientation mapping — portrait/landscape values, `nil` for face-up/face-down.
-12. Checklist view properties — counts, notes length for nil notes, name truncation.
-13. `persistence_fatal_error` and `startup_failed`, via the injectable container factory and
-    startup coordinator — including that a *successful* launch emits nothing. (The save-helper path
-    is injectable too, but a real SwiftData save only fails on a full or damaged disk, which a unit
-    test cannot arrange.)
-14. `StoreReset` leaves the analytics keys alone (§5).
-15. The client-selection predicate covers **both** `-UITests1` and `IS_TESTING` (§7.1).
-16. `ConsentGatedAnalyticsClient` (§7.2) — opted-out suppresses `track`, `identify`, both refresh
-    methods, and `setAnalyticsOptInAt`; opted-in passes all of them through; `reset()` always
-    passes through regardless; the gate re-reads its `isOptedIn` closure on every call rather than
-    capturing it once.
+   a fake token and leaves real artifacts on disk. That half is covered by the manual simulator
+   verification in §5 instead.
 17. Test-launch settings isolation — every automated launch gets a fresh in-memory settings store.
     In Debug screenshot launches, the combination of a recognized test marker, screenshot seed
     JSON, and a nonempty screenshot locale preseeds an explicit opt-out before
@@ -683,51 +556,10 @@ Contracts — **built** except where marked, which land with the consent and SDK
     its persistent defaults, and Release contains no screenshot consent-seeding path. The strict
     region UI regression keeps the ordinary first-run presentation case and proves a localized
     screenshot fixture does not present it.
-18. Rating prompt (`RatingPromptCoordinatorTests`) — counters advance per check-off and per
-    distinct day; each threshold alone (count, distinct days, install age) blocks eligibility;
-    `rating_prompt_eligible` fires exactly once per install; consuming records the version, fires
-    `rating_prompt_requested` with the bucket, and a second request waits for a new version; the
-    presenter gate is a pure function of pending / on-the-list / active; and with the real
-    `ConsentGatedAnalyticsClient` opted out, the counters and the version guard still work while
-    nothing reaches the client. No shown / resolved event exists to assert on.
 
-Tests are opt-in and not gated (`make test-unit`). Read pass/fail from the `.xcresult`, never from a
-piped exit code — see AGENTS.md.
-
-## 14. Flurry-era history
-
-Kept because it is the only record of what old Flurry exports mean. Renaming was free: the Flurry
-data is not migrating, so there was no continuity to preserve.
-
-| Current event | Flurry name |
-| --- | --- |
-| `app_opened` | *(none — Flurry auto-tracked sessions)* |
-| `checklists_viewed`, `checklist_viewed`, `settings_viewed`, `main_menu_viewed`, `orientation_changed` | unchanged |
-| `checklist_created` | `create_new_checklist` |
-| `checklist_reset` | `reset_checklist` |
-| `rate_app_tapped` | `rate_in_app_store` |
-| `feedback_tapped` | `send_feedback` |
-| `privacy_policy_tapped` | `view_privacy_policy` |
-| `persistence_fatal_error` | `realm/fatal_error` |
-| `persistence_write_failed` | `realm/write_error` |
-| `startup_failed`, `startup_store_reset`, `analytics_consent_changed` | *(new)* |
-
-| Current property | Flurry key |
-| --- | --- |
-| `checklists_count` | `num_checklists` |
-| `checklist_name` | `name` |
-| `notes_length` | `notesLength` (the one camelCase key in the old catalog) |
-| `items_count` | `num_items` |
-| `items_with_notes_count` | `num_items_with_notes` |
-| `orientation` | unchanged |
-| `error_domain`, `error_code`, `error_operation` | `error` — one composed string, now split into a domain, an integer code, and the failing operation |
-| `device_class` (super) | was the per-event `ui_idiom` |
-
-Slashes were dropped from the Realm event names and the `realm/*` prefix became `persistence_*` so
-the events survive a persistence-layer swap — which they since have.
-
-Flurry also had `withCrashReporting(true)`, `withLogLevel`, and vendored `FlurryConsent` /
-`FlurryCCPA` objects that this app never actually used.
+The remaining contracts, including `RatingPromptCoordinatorTests`, map 1:1 onto the suites in
+`checklistsTests/`; read the suite names. Deliberately uncovered: no shown/resolved event exists to
+assert on for the rating prompt (§3.9).
 
 ## 15. Published disclosures
 
@@ -776,12 +608,11 @@ with a reason.
 | Sheet triggered after the first `budget_created` | After the first `checklist_viewed` on an existing checklist | Sample checklists are seeded, so creation may never happen (§6.2) |
 | `IS_TESTING` env var only | `-UITests1` **or** `IS_TESTING` | The XCUITest bundle passes only the launch argument (§7.1) |
 | Analytics and `OSLog` both in `Logging/` | Analytics in `Analytics/`, `OSLog` in `Logging/` | Both docs insist the channels are independent — let the directories say so (§11) |
-| One collected data type; empty accessed-API array | Two data types; `UserDefaults` declared | `checklist_name` is user content; this app uses `UserDefaults` in five places (§10) |
+| One collected data type; empty accessed-API array | Four data types; `UserDefaults` declared | `checklist_name` is user content; this app uses `UserDefaults` (§10) |
 | `$(SRCROOT)/config/…` | `$(SRCROOT)/../config/…` | The Xcode project sits one level below the repo root (§10) |
 | `budgets_count_bucket` as a super property | `checklists_count` raw per-event; bucket on the profile | The count already rides on the most frequent event (§9) |
 | A protocol, but ordering logic inline in bindings | Ordering extracted into a testable controller | So the §6.3 contract tests real code (§13) |
 | `isConfigured` requires **both** tokens | Requires only the **active** token | Requiring both ships a green, analytics-dead Release when only dev is unfilled (§10) |
-| Ship guard blacklists the sentinel string | Ship guard validates token **shape** | A straight copy of the template passes a blacklist (§10) |
 | `KeyValueStore` protocol lives in `Settings/` | Lives in `Analytics/` | Nothing else in this app uses the seam; analytics owns it |
 
 **Known trade-off, deliberately kept.** Both `MixpanelDevToken` and `MixpanelProdToken` ship in every
@@ -798,25 +629,5 @@ value in a categorical property, a new super or people property, a jurisdiction 
 **update this file in the same change**. The catalogs in §8 and §9 are the only record of what the
 app is supposed to emit; the name constants are the only record of what it does emit.
 
-The region list in §6.2 and the region set in `ConsentJurisdiction.swift` must be edited together.
-
-**Keep Appendix A entries to one line.** Say what changed and cite the PR or issue; the reasoning
-belongs in the section it changed, where a reader will actually look for it.
-
----
-
-## Appendix A. Revision history
-
-| Version | Date | Author | Changes |
-| --- | --- | --- | --- |
-| 1.10 | 2026-09-15 | Jimmy Ho | Automatic App Store review prompt: `rating_prompt_eligible` / `rating_prompt_requested`, `time_since_first_eligible_bucket`, two people properties, §3.9, §13 contract 18, §16 rows. Closes #17. |
-| 1.9 | 2026-09-15 | Jimmy Ho | The sibling repo is named `simple-recurring-budgets` and its app **Wren** throughout, replacing the machine-local folder name; §16 heading and table retitled. Closes #195. |
-| 1.8 | 2026-09-14 | Jimmy Ho | §15 rewritten: privacy policy self-hosted on `gh-pages`, cloned from Wren's TermsFeed text and deliberately generic. ASC listing field held until the Mixpanel build ships. Refs #190. |
-| 1.7 | 2026-09-14 | Jimmy Ho | `error` replaced by `error_domain` / `error_code` / `error_operation`; `NSError.userInfo` added to the §4.3 deny-list. |
-| 1.6 | 2026-09-14 | Jimmy Ho | §15 corrected: collection goes live at App Store release, not at #169; no documented automated label-vs-manifest check; nutrition label now matches the manifest. Refs #170. |
-| 1.5 | 2026-09-14 | Jimmy Ho | Mixpanel's IP-derived geolocation turned off; §4.3 denial and §9.2 settings-not-position note added. Refs #170. |
-| 1.4 | 2026-09-11 | Jimmy Ho | §15 rewritten, on the since-corrected premise that collection was already live. Dashboard tiles verified against real data. |
-| 1.3 | 2026-09-11 | Jimmy Ho | Mixpanel SDK built (#169). §13 contracts 9 and 15 flipped from pending. |
-| 1.2 | 2026-09-11 | Jimmy Ho | Consent flow built (#168). §13 consent contracts flipped from pending; §10's stale Fastlane claim corrected. |
-| 1.1 | 2026-09-09 | Jimmy Ho | `AnalyticsClient` protocol built, all 16 call sites migrated, `AnalyticsManager` deleted (#153). §7.3 added. |
-| 1.0 | 2026-09-09 | Jimmy Ho | Initial spec, superseding `analytics-design.md`. Token/secrets, privacy manifest, gitleaks rule, and both Mixpanel projects and their boards built; client, consent and SDK pending. |
+The strict-opt-in region set lives only in `ConsentJurisdiction.swift` now (§6.2) — there is no
+separate list here to keep in sync.

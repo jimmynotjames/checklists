@@ -47,7 +47,7 @@ troubleshooting.
 
 ### App Store Connect private key
 
-- External file: `/Users/jimmynotjames/.appstoreconnect/AuthKey_UN4N2PXFKN.p8`
+- External file: `~/.appstoreconnect/AuthKey_UN4N2PXFKN.p8`
 - Referenced by: `ASC_API_KEY_FILEPATH` in `fastlane/.env`
 
 Restore this file from secure storage. It deliberately lives outside the repository, and the
@@ -57,25 +57,14 @@ control, or logs.
 
 ## Why there are two tracked xcconfig files
 
-`config/Secrets.xcconfig` and `config/Secrets.local.xcconfig.template` are not interchangeable:
-
-- `Secrets.xcconfig` is the tracked base configuration referenced by the app target's Debug and
-  Release build configurations. Its safe placeholder values let a fresh clone build and launch,
-  and its final optional include loads `Secrets.local.xcconfig` when present.
-- `Secrets.local.xcconfig.template` is a tracked human-facing scaffold. Copy it to the ignored
-  `Secrets.local.xcconfig`, then replace its instructional values locally. Xcode never consumes the
-  template directly.
-
-The base file must remain tracked so a fresh clone has a valid Xcode configuration. The populated
-local override must remain ignored so real tokens cannot be committed.
+`Secrets.xcconfig` is the tracked base (safe placeholders, optional `#include?` of the local file);
+`Secrets.local.xcconfig.template` is a scaffold to copy — Xcode never reads the template. Full
+resolution chain: [`analytics-spec.md`](analytics-spec.md) §10.
 
 ## Keeping this inventory current
 
-Any change that adds, removes, or renames a gitignored secret-bearing file, API token, private key,
-credential variable, external secret location, or machine-local credential prerequisite must update
-this document in the same PR. Record only the path, required variable names, restoration source,
-tracked template or setup source, and a validation method that does not expose the value. Never read
-or print an actual secret file to verify an inventory update.
+A change that adds, removes, or renames a secret-bearing file, token, or credential updates this
+document in the same PR — see the Secrets checkbox in `.github/pull_request_template.md`.
 
 ## Other machine-local release prerequisites
 

@@ -1,11 +1,5 @@
 # Accessibility Spec
 
-| Field        | Value      |
-| ------------ | ---------- |
-| Version      | 1.0        |
-| Last Updated | 2026-09-13 |
-| Author/Owner | Jimmy Ho   |
-
 > What state each accessibility axis is in, the conventions to follow, and what was decided about
 > motion. Read it instead of re-deriving; where it and the code disagree, one is a bug — say which
 > in the PR. It gives status, not call sites: to find where something lives, grep.
@@ -40,7 +34,7 @@ handled unless this table says otherwise.
 
 ### 2.1 Two UI stacks, no shared helper
 
-The app is mixed SwiftUI + UIKit (see `.claude/CLAUDE.md` and the SwiftUI conversion work). There is
+The app is mixed SwiftUI + UIKit (see `AGENTS.md` and the SwiftUI conversion work). There is
 **no shared accessibility abstraction** and deliberately so — each stack calls its own platform API:
 
 - SwiftUI: `@Environment(\.accessibilityReduceMotion)`, `.accessibilityLabel(_:)`,
@@ -116,8 +110,6 @@ Links only — read the PR, not a summary of it.
 
 | When | Ref | What |
 | --- | --- | --- |
-| 2026-09-13 | #185 | Reduce Motion for the main-menu transition and the Reset scroll-to-top; this document; the animation decision table in §3 |
-| 2026-09-12 | #175 | Checklist row progress exposed as an `accessibilityValue` |
 | 2021-03-04 | `392301b`, `83c808c` | Percent-complete icon announcement reworded; label dropped in favor of value |
 | 2020-02-05 | `cc1bba2` | Locked the app to Light appearance (the reason Dark Mode is "not started") |
 | 2020-02-01 | `cd00b94`, `78042b9`, `2f1a8e6` | Original pass: checklist fields and checkbox states, checklists + main menu controls, and toast announcements on the since-removed Donate screen (#122) |

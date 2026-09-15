@@ -30,23 +30,9 @@ Both are declared under `SchemaV1` (`DataModels/SchemaV1.swift`) and registered 
 empty today — `SchemaV1` is the first SwiftData schema, so there is nothing to migrate *from*
 within SwiftData yet. See "CloudKit rules" below for what changing either model now costs.
 
-### What the old Realm schema had that these don't
-
-- **`Group`** — a singleton object that existed only to hold checklists in an ordered `List` (see
-  `checklists/checklists/DataModels/LegacyRealmSchema.swift` for the schema it shipped). A singleton
-  is exactly the shape CloudKit cannot express: two devices that each create their "one" `Group`
-  before their first sync end up with two of them and no principled way to pick a winner. Dropped
-  entirely — ordering now lives on each record via `sortKey` (see "Sort keys" below).
-- **`sortNumber`** — the old array-index-shaped ordering field `Group.checklists`/`Checklist.items`
-  made redundant once ordering moved off the collection and onto the record.
-- **`lastModified`** — present on the Realm schema, never read anywhere in the app. Not carried
-  forward; nothing depended on it.
-
 ## CloudKit rules
 
-`SchemaV1` is written to already satisfy CloudKit's constraints on a `ModelConfiguration`, even
-though CloudKit sync itself is off in this stage. Turning it on later should require no schema
-change:
+`SchemaV1` satisfies CloudKit's constraints on a `ModelConfiguration`:
 
 - **No unique constraints** (`@Attribute(.unique)`) anywhere. CloudKit has no way to enforce
   uniqueness across devices that write while offline, so a unique attribute in SwiftData's schema
@@ -144,10 +130,6 @@ Realm import did not complete, or first-launch seeding could not save. iCloud is
 local one, so an unavailable account degrades sync, never startup. In practice the realistic causes
 are a full disk and a corrupt store.
 
-There is deliberately no Retry button. It re-ran the same startup sequence in the same process,
-which is what relaunching does anyway and more thoroughly, so it offered a second route to the same
-outcome while the copy already told the user to restart.
-
 "Start over fresh" is the escape hatch of last resort — see `StoreReset` — because a corrupt store
 cannot be repaired in place, and without it the app is permanently unusable. It deletes only local
 stores, so a CloudKit-backed account repopulates on the next launch; for a corrupt local store that
@@ -181,16 +163,13 @@ once per device — goes straight to the checklist list exactly as before.
 **The screen has a 1.5-second floor** (`AppStartupModel.minimumMigrationScreenDuration`). The copy
 itself takes a small fraction of that for any realistic amount of data, so without a floor the
 screen would flash by unread; the floor exists purely so a user who is about to see the app's
-launch experience change (and, once Stage 2 ships, learn that iCloud sync is now in play) actually
-gets to read the message.
+launch experience change actually gets to read the message.
 
 **A retryable failure screen, never `fatalError`.** If container creation, the legacy import, or the
 first-launch seed throws, `AppStartupCoordinator.run()` returns `.failed(ContainerCreationFailure)`
 instead of propagating the error, and `ChecklistsApp` shows `ContainerFailureView`, whose
 "Start over fresh" path re-runs `AppStartupCoordinator().run()`. Nothing has been deleted at that point —
-in particular the Realm file, per "Legacy import" above — so retrying is a real chance of recovery,
-unlike the Realm-era `DBManager`, which called `fatalError` on any open failure and turned a
-transient disk problem into a crash report with no recovery path.
+in particular the Realm file, per "Legacy import" above — so retrying is a real chance of recovery.
 
 ## File protection
 
@@ -205,11 +184,8 @@ push arriving in the background cannot be merged and has to wait for the next un
 class keeps the store readable after the first unlock following a boot, which is what lets
 background sync make progress.
 
-The entitlement was briefly changed to state that level explicitly, which broke automatic signing:
-the value is encoded in the provisioning profile, and the App ID has carried "Complete Protection"
-since 2019. Removing the key reaches the same level without touching a live App ID. The sibling
-`simple-recurring-budgets` repo (the **Wren** app), which already ships SwiftData with CloudKit,
-sets no data-protection entitlement either.
+Do not add the entitlement explicitly: the value is baked into the provisioning profile, so stating
+it breaks automatic signing.
 
 **The trade-off is real and was taken knowingly:** files are readable after first unlock rather than
 only while unlocked. That is a small reduction in at-rest protection against an attacker with
@@ -224,9 +200,10 @@ stays at Complete. It is only ever read at launch, in the foreground, so that co
 
 `Persistence/SyncStatus.swift` is the user-facing half of "is my data syncing?" — it turns two
 independent signals into the single four-state row Settings shows. Ported from the sibling
-`simple-recurring-budgets` repo's `Sync/SyncStatus.swift`, trimmed of the App Store screenshot
-override (no marketing screenshot pipeline here yet) and using this project's existing
-`ContainerBacking` enum rather than redeclaring one.
+`simple-recurring-budgets` repo's `Sync/SyncStatus.swift`, trimmed of its App Store screenshot
+override — this app's screenshot pipeline seeds data and consent state directly instead of pinning
+sync status (`fastlane/SETUP.md`) — and using this project's existing `ContainerBacking` enum
+rather than redeclaring one.
 
 **Two signals, because they answer different questions and can disagree:**
 
@@ -237,16 +214,8 @@ override (no marketing screenshot pipeline here yet) and using this project's ex
   running (sign-in, sign-out, account switch) independently of which store this launch picked.
 
 Collapsing them into one flag would lose exactly the case that matters most: a signed-in user whose
-launch nonetheless fell back to the local store. `SyncStatus.rowState` keeps them apart and maps
-the pair to four states:
-
-| containerBacking | accountStatus  | rowState       | What it tells the user |
-|------------------|----------------|----------------|-------------------------|
-| any              | `.checking`    | `.checking`    | Still finding out — show a spinner, not a verdict. |
-| `.cloudKit`      | `.available`   | `.available`   | Signed in, this launch is on CloudKit — sync is active. |
-| `.cloudKit`      | `.unavailable` | `.unavailable` | Not signed in — nothing to sync to; sign in to enable it. |
-| `.localFallback` | `.available`   | `.paused`      | Signed in, but *this launch* is on the local store — edits are safe, just not syncing. |
-| `.localFallback` | `.unavailable` | `.unavailable` | Neither signed in nor on CloudKit — same message as the CloudKit/unavailable row. |
+launch nonetheless fell back to the local store. `SyncStatus.rowState` is the switch that maps the
+pair to the four user-facing states — read it there rather than here.
 
 **`.paused` is the state worth dwelling on.** It exists only because `containerBacking` and
 `accountStatus` can disagree — CloudKit container construction can fail at launch (transient
@@ -267,16 +236,6 @@ while it is on screen: one awaits `ICloudStatusLoader().load(into:)` once, the o
 account change without a dismiss and re-open. SwiftUI cancels both when the sheet goes away, so
 nothing keeps running once the screen is dismissed.
 
-**Why `ICloudStatusLoader` takes its query as a closure.** `Persistence/ICloudStatusLoader.swift`
-wraps the actual `CKContainer.default().accountStatus()` call behind an injectable
-`accountStatus: () async throws -> CKAccountStatus` property because `CKContainer` cannot be
-stubbed — there is no other seam to drive `.available` / `.noAccount` / a thrown error through in
-a unit test. Production uses the live CloudKit call; `ICloudStatusLoaderTests` injects the three
-outcomes (plus a two-phase sign-in transition) directly. The loader also short-circuits to
-`.noAccount` under `#if DEBUG` when `IS_TESTING` is set or `-UITests1` is passed on the command
-line, because `CKContainer.accountStatus()` hangs on an account-less Simulator and would otherwise
-pin the row to a spinner and block UI tests from ever reaching Settings.
-
 **The live call needs the `application-identifier` entitlement, and nothing in Swift can rescue it
 if it is missing.** `CKContainer.default()` derives its container from that entitlement; with no
 entitlement there is no container identifier, and CloudKit reports the fault by raising the
@@ -285,15 +244,8 @@ a Swift `Error`, so the `do`/`catch` in `load(into:)` — which otherwise makes 
 or a thrown error → unavailable" — cannot see it and the process aborts instead of degrading into
 the existing "iCloud Not Available" row.
 
-A simulator build carries its entitlements in the `…app-Simulated.xcent` blob rather than in the
-code signature, so `codesign -d --entitlements -` prints nothing for a simulator `.app` whether or
-not the entitlements are present — it is not a useful check. `strings` for the
-`application-identifier` value is. Passing `CODE_SIGNING_ALLOWED=NO` skips the packaging step that
-writes that blob, which is why `scripts/build.sh` and the CI build no longer pass it (#140); the
-test scripts never did. Note this only guarantees that *our* build paths produce a launchable
-binary — any other tool that builds this project with signing disabled reintroduces the crash, and
-the shipped-build gap (a release whose profile lost the iCloud capability) is still open, since the
-exception remains uncatchable from Swift.
+**Why `CODE_SIGNING_ALLOWED=NO` matters here:** it skips the packaging step that would otherwise
+write a simulator build's entitlements blob — see `scripts/build.sh`.
 
 ## CloudKit ops record
 
