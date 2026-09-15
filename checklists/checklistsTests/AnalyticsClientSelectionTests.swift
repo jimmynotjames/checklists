@@ -6,7 +6,7 @@
 @testable import checklists
 import Testing
 
-/// core-docs/analytics-spec.md §13 contract 15: the client-selection predicate must return
+/// core-docs/analytics-spec.md §13: the client-selection predicate must return
 /// "use the console client" for **both** the `-UITests1` launch argument and the `IS_TESTING`
 /// environment variable — `simple-recurring-budgets`'s `IS_TESTING`-only check would let this
 /// app's XCUITest runs reach real Mixpanel. `ChecklistsApp.shouldUseConsoleClient` is `internal`
