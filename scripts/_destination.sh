@@ -8,9 +8,9 @@
 # Override SIMULATOR_NAME to select a different device (default: iPhone 17).
 # Override SIMULATOR_UDID to pin a specific device and skip sandbox management.
 #
-# NOTE: budgets1 also sources a _sim_concurrency.sh here to fan the UI suite out
-# across simulator clones (its SRB_SIM_MAX knob). This repo's UI suite is not part
-# of the gate and is small, so that layer is deliberately not ported — tests run
+# NOTE: `simple-recurring-budgets` also sources a _sim_concurrency.sh here to fan the
+# UI suite out across simulator clones (its SRB_SIM_MAX knob). This repo's UI suite is
+# not part of the gate and is small, so that layer is deliberately not ported — tests run
 # serially on the single per-repo device.
 
 : "${ROOT:?ROOT must be set to the repo root before sourcing _destination.sh}"

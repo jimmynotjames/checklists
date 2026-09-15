@@ -17,7 +17,7 @@ import Observation
 /// `ICloudStatusLoader` and `CKAccountChangedNotification`/`NSUbiquityIdentityDidChange`
 /// observers.
 ///
-/// Ported from the sibling `budgets1` repo's `Sync/SyncStatus.swift`.
+/// Ported from the sibling `simple-recurring-budgets` repo's `Sync/SyncStatus.swift`.
 @Observable
 final class SyncStatus {
   // MARK: - Nested types

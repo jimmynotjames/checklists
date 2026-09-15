@@ -27,11 +27,32 @@ which is consumed via `INFOPLIST_FILE` rather than copied as a resource. To excl
 from a target, uncheck it in Xcode's File inspector, which extends that exception set. The project
 is `objectVersion = 100` (Xcode 26 format) and requires Xcode 26+ to open; CI pins 26.6.
 
-Tooling here was ported from the `budgets1` repo and deliberately trimmed — see
-"Deviations from budgets1" at the bottom for what was changed and why.
+Tooling here was ported from the sibling `simple-recurring-budgets` repo — the **Wren** app — and
+deliberately trimmed; see "Deviations from `simple-recurring-budgets`" at the bottom for what was
+changed and why.
 
 After a fresh clone, use [`core-docs/secrets-list.md`](core-docs/secrets-list.md) to restore the
 gitignored Mixpanel and App Store Connect credentials without exposing their contents.
+
+## Naming: a path on one machine is not an identifier
+
+**Never name a repo, an app, or a project by the directory it happens to sit in on someone's
+machine.** A folder name is local and ephemeral; committed text is read by clones that have a
+different layout, and by agents that treat these docs as authoritative.
+
+| Thing | Call it | Never |
+|---|---|---|
+| The sibling repo / codebase | `simple-recurring-budgets` | `budgets1` |
+| The sibling app / product | **Wren** | `budgets1` |
+| This repo | `checklists` (`jimmynotjames/checklists`) | `checklists2`, or any clone folder |
+
+Pick by what the sentence is about. **The codebase** — ported tooling, a type modeled on theirs,
+lint config, test conventions, "deviations from" comparisons → `simple-recurring-budgets`. **The
+product** — the app, its App Store listing, its privacy policy or privacy manifest → Wren. They are
+not interchangeable, so this is not a substitution a `sed` one-liner can do correctly.
+
+Introduce both names once at the first mention in a doc — `` `simple-recurring-budgets` (the
+**Wren** app) `` — then use the appropriate short form.
 
 ## Build and test
 
@@ -56,7 +77,8 @@ git hooks. Run it once per clone.
   `deinit` to tear down in. `withTemporaryDirectory` and `withIsolatedDefaults` hand the fixture to
   the test and clean up in `defer`. `TestModelContainer.makeContext()` is the shared in-memory stack.
 - **`checklistsUITests` is XCTest and stays that way** — Swift Testing has no `XCUIApplication`
-  equivalent, so a UI test bundle has no alternative. `budgets1` keeps its UI bundle on XCTest too.
+  equivalent, so a UI test bundle has no alternative. `simple-recurring-budgets` keeps its UI bundle
+  on XCTest too.
 
 **Don't record test counts or test-class inventories here** — they go stale on every
 test-adding PR, and a wrong number in the docs is worse than no number. For the current
@@ -340,9 +362,9 @@ the local gates (lint, secrets, large files, build) for defense-in-depth against
 is off by default. Enabling it means uncommenting the `pull_request:`/`push:` triggers **and**
 adding the jobs as required status checks in the existing branch protection.
 
-## Deviations from budgets1
+## Deviations from `simple-recurring-budgets`
 
-| budgets1 | here | why |
+| `simple-recurring-budgets` | here | why |
 |---|---|---|
 | repo-wide `swiftformat .` + `swiftlint --strict .` in gate | changed-files-only | ~96 pre-existing violations in a legacy tree |
 | gate = format → lint-fix → build → **test** | build only, tests opt-in | suites are green, but the UI run costs ~5 min on a simulator |
@@ -352,4 +374,4 @@ adding the jobs as required status checks in the existing branch protection.
 | CI on by default (public repo, free macOS minutes) | ported but disabled | private repo, macOS bills at 10× |
 | i18n gates, OpenSpec | not ported | no counterpart stack here |
 | fastlane | binary, metadata, and screenshot workflows; no automated submission | screenshots enable en-US only; translation integration deferred in #161; see `fastlane/SETUP.md` |
-| Mixpanel analytics | built | Flurry removed; budgets1's `docs/analytics-spec.md` and `Logging/` were the reference for the port. Deviations are recorded in [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md) §16 |
+| Mixpanel analytics | built | Flurry removed; `simple-recurring-budgets`'s `docs/analytics-spec.md` and `Logging/` were the reference for the port. Deviations are recorded in [`core-docs/analytics-spec.md`](core-docs/analytics-spec.md) §16 |

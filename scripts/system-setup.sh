@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # One-time (or repeat-safe) machine setup: Homebrew CLI tools, Python 3 for the
 # simulator resolvers, Xcode CLI, Lefthook hooks. Hooks use Lefthook, not Python
-# pre-commit. Ported from the budgets1 repo.
+# pre-commit. Ported from the `simple-recurring-budgets` repo.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Reject staged files larger than 1 MiB (accidental binaries, huge fixtures).
 #
-# Ported from budgets1. Its version skips .xcstrings catalogs (which grow with
-# translations); this repo has no localization catalogs. It also used to exempt the
+# Ported from `simple-recurring-budgets`. Its version skips .xcstrings catalogs (which
+# grow with translations); this repo has no localization catalogs. It also used to exempt the
 # vendored 32 MiB Flurry static archive — that SDK has been removed, so the cap now
 # applies uniformly and there are no carve-outs.
 set -euo pipefail

@@ -10,7 +10,7 @@
 // something goes wrong on a real device. It is architecturally independent of
 // `AnalyticsClient`, which is the *product* channel (what users do). The two never feed each
 // other — that is why they live in separate directories. See core-docs/analytics-spec.md §11 and
-// the same split in the sibling `budgets1` repo.
+// the same split in the sibling `simple-recurring-budgets` repo.
 //
 // Why this exists: analytics are consent-gated and network-buffered, so they are not a record you
 // can rely on — an opted-out install sends nothing at all, and an event queued for HTTP does not

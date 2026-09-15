@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Bare compile step: catches build errors quickly without running the test suite.
 #
-# Deviation from budgets1's build.sh: that script boots the per-repo simulator and
-# builds against its UDID. Here we use a generic simulator destination, so a plain
+# Deviation from `simple-recurring-budgets`'s build.sh: that script boots the per-repo
+# simulator and builds against its UDID. Here we use a generic simulator destination, so a plain
 # `make build` never pays the 30–90 s boot. The per-repo simulator sandbox
 # (scripts/_sim_sandbox.sh) is used only by the test scripts, which actually need
 # a running device.

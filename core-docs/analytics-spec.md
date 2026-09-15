@@ -2,8 +2,8 @@
 
 | Field        | Value      |
 | ------------ | ---------- |
-| Version      | 1.8        |
-| Last Updated | 2026-09-14 |
+| Version      | 1.9        |
+| Last Updated | 2026-09-15 |
 | Author/Owner | Jimmy Ho   |
 
 > This is the canonical description of what this app measures, what it refuses to measure, and
@@ -11,9 +11,11 @@
 > tracking plan written while analytics were stubbed. Where this document and the code disagree, one
 > of them is a bug — say which in the PR.
 >
-> The sibling **`budgets1`** repo has the reference Mixpanel implementation
-> (`simple-recurring-budgets/Logging/`, `docs/analytics-spec.md`). This app's conventions were
-> deliberately aligned to it; §16 records every place they intentionally diverge.
+> The sibling **`simple-recurring-budgets`** repo — the **Wren** app — has the reference Mixpanel
+> implementation (its `simple-recurring-budgets/Logging/` target, and `docs/analytics-spec.md` at
+> that repo's root). This app's conventions were deliberately aligned to it; §16 records every
+> place they intentionally diverge. Below, `simple-recurring-budgets` names the codebase and Wren
+> names the product.
 
 **Implementation status — everything in this document is built.** The token/secrets mechanism, the
 privacy manifest, the Mixpanel projects and their dashboards (§12), the client protocol with all 16
@@ -122,9 +124,9 @@ list is a spec change requiring a rationale recorded here — not a code review 
 ### 4.4 Accepted-risk exception: `checklist_name`
 
 `checklist_viewed` sends the checklist's name verbatim, truncated to 127 characters. This is a
-deliberate, eyes-open decision mirroring the way `budgets1` allow-lists `budget_name`. **Question
-§3.2 — what do people actually make checklists for? — is not answerable any other way**, and it is
-the single most valuable product question this app has.
+deliberate, eyes-open decision mirroring the way `simple-recurring-budgets` allow-lists
+`budget_name`. **Question §3.2 — what do people actually make checklists for? — is not answerable
+any other way**, and it is the single most valuable product question this app has.
 
 Constraints on the exception, all of which are load-bearing:
 
@@ -134,7 +136,7 @@ Constraints on the exception, all of which are load-bearing:
   first `checklist_viewed` rather than at launch or on first write (§6.2) — the gate is placed
   immediately before the riskiest event can first fire.
 - It is declared in `PrivacyInfo.xcprivacy` as `NSPrivacyCollectedDataTypeOtherUserContent`, which is
-  the reason this app's privacy manifest differs from `budgets1`'s (§16).
+  the reason this app's privacy manifest differs from Wren's (§16).
 - Revocation trigger: if this property ever proves uninteresting in practice, or if the disclosure
   burden grows, drop it. It is the first thing to cut.
 
@@ -154,11 +156,11 @@ A **UUIDv4 generated once by the app** and persisted, used as the Mixpanel `dist
 derived from any Apple identifier, and it is not the IDFV.
 
 **Stored in `UserDefaults.standard`, not `NSUbiquitousKeyValueStore`.** This is a deliberate
-deviation from `budgets1`, forced by a real constraint: `checklists.entitlements` declares CloudKit
-but **not** `com.apple.developer.ubiquity-kvstore-identifier`, so the iCloud key-value store would
-not sync. Adding that entitlement means a capability change, a regenerated provisioning profile, and
-an App Store Connect edit — a bad thing to bundle into the change that also introduces a third-party
-SDK.
+deviation from `simple-recurring-budgets`, forced by a real constraint: `checklists.entitlements`
+declares CloudKit but **not** `com.apple.developer.ubiquity-kvstore-identifier`, so the iCloud
+key-value store would not sync. Adding that entitlement means a capability change, a regenerated
+provisioning profile, and an App Store Connect edit — a bad thing to bundle into the change that
+also introduces a third-party SDK.
 
 Accepted consequences:
 
@@ -205,12 +207,12 @@ behaviour to regress and is covered by a test.
 exactly `store.object(forKey:) != nil`, and that is what gates the sheet. Writing the default at
 launch would make every install look like it had already decided.
 
-**Trigger: the first `checklist_viewed` on an existing (pushed) checklist.** `budgets1` triggers its
-sheet after the first `budget_created`; that does not port, because **this app seeds sample
-checklists on first launch**, so a person may never create one and could use the app indefinitely
-without being asked. Opening a checklist is this app's core loop, always happens, and happens after
-the product has shown its value. Decisively, it is the moment `checklist_name` (§4.4) would first be
-transmitted.
+**Trigger: the first `checklist_viewed` on an existing (pushed) checklist.**
+`simple-recurring-budgets` triggers its sheet after the first `budget_created`; that does not port,
+because **this app seeds sample checklists on first launch**, so a person may never create one and
+could use the app indefinitely without being asked. Opening a checklist is this app's core loop,
+always happens, and happens after the product has shown its value. Decisively, it is the moment
+`checklist_name` (§4.4) would first be transmitted.
 
 The trigger is guarded to the *pushed* presentation only: in the new-checklist route the checklist
 screen **is** the presented sheet, and asking for consent there would replace the sheet the person is
@@ -250,9 +252,9 @@ All three rows are reachable: `ChecklistsApp.shouldUseConsoleClient(isRunningTes
 is the truth table above, and `makeAnalyticsClient()` calls it before constructing either client.
 
 The test guard delegates to the existing `LaunchModeContainerFactory.isRunningTests`, which already
-handles **both** signals. `budgets1` checks only its `IS_TESTING` env var; ported literally, that
-would let this repo's UI-test runs send real events, because the XCUITest bundle passes only the
-launch argument.
+handles **both** signals. `simple-recurring-budgets` checks only its `IS_TESTING` env var; ported
+literally, that would let this repo's UI-test runs send real events, because the XCUITest bundle
+passes only the launch argument.
 
 `ConsoleAnalyticsClient` prints in DEBUG and does nothing in Release. It is also the environment
 default, so a SwiftUI preview or a view constructed in isolation never needs a real client.
@@ -310,8 +312,8 @@ three testable.
 `Checklist` extension — such as the one assembling `checklist_viewed`'s properties — is nonisolated
 and cannot reach a MainActor-isolated constant. Declaring `AnalyticsEvent`, `AnalyticsProperty` and
 `AnalyticsText` members `nonisolated` is what lets names be used from anywhere, which is the whole
-point of having them in one place. `budgets1` does the same, for the same reason. A new constant
-without `nonisolated` compiles until the first model extension tries to use it.
+point of having them in one place. `simple-recurring-budgets` does the same, for the same reason. A
+new constant without `nonisolated` compiles until the first model extension tries to use it.
 
 **Consent interacts with this and it is not a bug.** These three error events are consent-gated like
 everything else, so in strict-opt-in jurisdictions they are dropped on exactly the launch where they
@@ -345,10 +347,10 @@ All names are flat `snake_case`, `noun_pastTenseVerb`. 16 events.
 `.background`".** iOS delivers `.inactive` on the way back in, so a real foreground return arrives
 as `background → inactive → active`. Testing only the immediately preceding phase misses every
 foreground return and silently reduces the event to cold launches — which would put every session,
-reach and retention number on this app's dashboards on a cold-launch-only basis. `budgets1`'s
-`AppOpenTracker`, which this was ported from, has that bug. Verified here on a simulator: one cold
-launch plus two background/foreground cycles produces exactly three events, and an `.inactive`
-detour with no `.background` in it produces none.
+reach and retention number on this app's dashboards on a cold-launch-only basis.
+`simple-recurring-budgets`'s `AppOpenTracker`, which this was ported from, has that bug. Verified
+here on a simulator: one cold launch plus two background/foreground cycles produces exactly three
+events, and an `.inactive` detour with no `.background` in it produces none.
 
 **`startup_failed` is the one to watch.** It is the only signal that someone was shown a failure
 screen instead of their checklists, and its count measures how often the store cannot be opened in
@@ -378,8 +380,8 @@ floor, not a total — and see §11 for where the real record lives.
 | `new_value` / `old_value` | Bool | `analytics_consent_changed` only. |
 
 Counts are sent **raw** rather than bucketed. Mixpanel handles numeric properties natively, and
-`budgets1`'s bucketing is privacy-motivated — which would be incoherent here, given that we send the
-checklist name.
+`simple-recurring-budgets`'s bucketing is privacy-motivated — which would be incoherent here, given
+that we send the checklist name.
 
 ### 9.2 Super properties
 
@@ -458,10 +460,11 @@ leaves `your_32_char_prod_token_here` — neither empty nor a sentinel. That wou
 guard *and* satisfied `isConfigured`, initializing the SDK with a junk token that drops every event.
 Shape-checking also rejects `$(inherited)` and a sentinel with trailing garbage, in one rule.
 
-**`isConfigured` checks only the active token**, not both. Requiring both (as `budgets1` does) means a
-maintainer who fills in the prod token but leaves dev at its placeholder gets a green ship guard and a
-Release build where `isConfigured` is false — zero analytics, everything green. The ship guard checks
-only the prod token for the same reason; the two now agree.
+**`isConfigured` checks only the active token**, not both. Requiring both (as
+`simple-recurring-budgets` does) means a maintainer who fills in the prod token but leaves dev at
+its placeholder gets a green ship guard and a Release build where `isConfigured` is false — zero
+analytics, everything green. The ship guard checks only the prod token for the same reason; the two
+now agree.
 
 **A fresh clone works.** No local secrets file means the token resolves to an empty string (Xcode
 substitutes empty for an undefined build setting), `isConfigured` returns false, and the app falls
@@ -474,7 +477,7 @@ Xcode "Verify release secrets" run-script phase restricted to install/archive bu
 `runOnlyForDeploymentPostprocessing`. Because `ENABLE_USER_SCRIPT_SANDBOXING = YES`, that phase
 declares all three files as `inputPaths` or the sandbox denies the reads. Note Xcode's `SRCROOT` is
 `checklists/`, one level below the repo root, hence the `$(SRCROOT)/../` paths — another divergence
-from `budgets1`, whose project sits at its repo root.
+from `simple-recurring-budgets`, whose project sits at its repo root.
 
 Inside the build phase the guard prefers the **resolved** `$MIXPANEL_PROD_TOKEN` from the build
 environment over parsing the repo file, falling back to the file for `make verify-secrets`. Checking
@@ -577,14 +580,14 @@ events arrive with the right properties before a release.
 
 ## 13. Test strategy
 
-**Unit tests are Swift Testing** (`@Suite` / `@Test` / `#expect`), matching `budgets1`. Nothing in
-`checklistsTests` imports `XCTest`. An earlier version of this section prohibited Swift Testing;
-[#176](https://github.com/jimmynotjames/checklists/issues/176) records why that rule was
-unjustified — read it before reinstating anything like it.
+**Unit tests are Swift Testing** (`@Suite` / `@Test` / `#expect`), matching
+`simple-recurring-budgets`. Nothing in `checklistsTests` imports `XCTest`. An earlier version of
+this section prohibited Swift Testing; [#176](https://github.com/jimmynotjames/checklists/issues/176)
+records why that rule was unjustified — read it before reinstating anything like it.
 
 `checklistsUITests` stays XCTest **permanently**: Swift Testing has no `XCUIApplication`
-equivalent, so a UI test bundle has no alternative. `budgets1` keeps its UI bundle on XCTest for
-the same reason.
+equivalent, so a UI test bundle has no alternative. `simple-recurring-budgets` keeps its UI bundle
+on XCTest for the same reason.
 
 Suites need no isolation annotations. `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` already isolates
 a `struct` declared in this target, which is what the SwiftData and UIKit code under test requires,
@@ -718,11 +721,12 @@ schema validity — a malformed `.xcprivacy` is rejected at upload. The label is
 editable at any time with no new binary; the manifest only changes in a new build. Fix the label
 when it drifts, converge the manifest next release.
 
-## 16. Deviations from `budgets1`
+## 16. Deviations from `simple-recurring-budgets`
 
-`budgets1` is the reference implementation. Every difference below is deliberate, with a reason.
+`simple-recurring-budgets` is the reference implementation. Every difference below is deliberate,
+with a reason.
 
-| `budgets1` | Here | Why |
+| `simple-recurring-budgets` | Here | Why |
 | --- | --- | --- |
 | `NSUbiquitousKeyValueStore` for opt-in and `distinct_id` | `UserDefaults.standard` behind a `KeyValueStore` seam | No `ubiquity-kvstore-identifier` entitlement (§5) |
 | All consent copy in `Localizable.xcstrings` | English string literals | No localization infrastructure at all; five keyed strings among ~200 literals is worse than either standard. Follow-up issue. |
@@ -740,9 +744,9 @@ when it drifts, converge the manifest next release.
 **Known trade-off, deliberately kept.** Both `MixpanelDevToken` and `MixpanelProdToken` ship in every
 build's Info.plist, so the dev project's token is extractable from a release IPA and vice versa. A
 single `MIXPANEL_TOKEN` key resolved per-configuration in the xcconfig would ship only one. This
-follows `budgets1` as-is because Mixpanel project tokens are client-side credentials — the active one
-is extractable from any shipped app regardless — so the marginal exposure is the ability to send junk
-events to the *other* project. Revisit if that ever happens.
+follows `simple-recurring-budgets` as-is because Mixpanel project tokens are client-side
+credentials — the active one is extractable from any shipped app regardless — so the marginal
+exposure is the ability to send junk events to the *other* project. Revisit if that ever happens.
 
 ## 17. Keeping this current
 
@@ -762,6 +766,7 @@ belongs in the section it changed, where a reader will actually look for it.
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
+| 1.9 | 2026-09-15 | Jimmy Ho | The sibling repo is named `simple-recurring-budgets` and its app **Wren** throughout, replacing the machine-local folder name; §16 heading and table retitled. Closes #195. |
 | 1.8 | 2026-09-14 | Jimmy Ho | §15 rewritten: privacy policy self-hosted on `gh-pages`, cloned from Wren's TermsFeed text and deliberately generic. ASC listing field held until the Mixpanel build ships. Refs #190. |
 | 1.7 | 2026-09-14 | Jimmy Ho | `error` replaced by `error_domain` / `error_code` / `error_operation`; `NSError.userInfo` added to the §4.3 deny-list. |
 | 1.6 | 2026-09-14 | Jimmy Ho | §15 corrected: collection goes live at App Store release, not at #169; no documented automated label-vs-manifest check; nutrition label now matches the manifest. Refs #170. |

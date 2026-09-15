@@ -14,8 +14,9 @@
 #            the real command, breaking allowlist matching even for already-allowed
 #            commands. Use the Bash tool's run_in_background:true parameter instead.
 #
-# Ported from the budgets1 repo. Rule 5's remediation text is repo-specific and has
-# been repointed at this repo's own `make sim-shutdown` / `make sim-clean` targets.
+# Ported from the `simple-recurring-budgets` repo. Rule 5's remediation text is
+# repo-specific and has been repointed at this repo's own `make sim-shutdown` /
+# `make sim-clean` targets.
 #
 # Input: PreToolUse hook JSON on stdin -> .tool_input.command
 # Output: on match, a JSON deny decision + exit 0 (the deny is authoritative).

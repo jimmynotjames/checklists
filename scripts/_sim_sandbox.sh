@@ -2,7 +2,7 @@
 # Sourceable helper: manages a per-repo simulator in the default CoreSimulator device set.
 # Callers must set ROOT before sourcing (absolute path to repo root).
 #
-# Ported from the budgets1 repo. Each clone of this repo gets its own dedicated
+# Ported from the `simple-recurring-budgets` repo. Each clone of this repo gets its own dedicated
 # simulator, identified by a unique device name derived from the repo path
 # (e.g. "iPhone 17 [a1b2c3d4]"). The device lives in the default set so xcodebuild
 # can see it, but the name collision risk is eliminated — other repos and Xcode's

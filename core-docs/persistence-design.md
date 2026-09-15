@@ -208,8 +208,8 @@ background sync make progress.
 The entitlement was briefly changed to state that level explicitly, which broke automatic signing:
 the value is encoded in the provisioning profile, and the App ID has carried "Complete Protection"
 since 2019. Removing the key reaches the same level without touching a live App ID. The sibling
-`budgets1` app, which already ships SwiftData with CloudKit, sets no data-protection entitlement
-either.
+`simple-recurring-budgets` repo (the **Wren** app), which already ships SwiftData with CloudKit,
+sets no data-protection entitlement either.
 
 **The trade-off is real and was taken knowingly:** files are readable after first unlock rather than
 only while unlocked. That is a small reduction in at-rest protection against an attacker with
@@ -224,9 +224,9 @@ stays at Complete. It is only ever read at launch, in the foreground, so that co
 
 `Persistence/SyncStatus.swift` is the user-facing half of "is my data syncing?" — it turns two
 independent signals into the single four-state row Settings shows. Ported from the sibling
-`budgets1` repo's `Sync/SyncStatus.swift`, trimmed of the App Store screenshot override (no
-marketing screenshot pipeline here yet) and using this project's existing `ContainerBacking`
-enum rather than redeclaring one.
+`simple-recurring-budgets` repo's `Sync/SyncStatus.swift`, trimmed of the App Store screenshot
+override (no marketing screenshot pipeline here yet) and using this project's existing
+`ContainerBacking` enum rather than redeclaring one.
 
 **Two signals, because they answer different questions and can disagree:**
 
