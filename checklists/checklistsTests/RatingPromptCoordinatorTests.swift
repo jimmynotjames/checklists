@@ -153,8 +153,11 @@ struct RatingPromptCoordinatorTests {
   @Test("an install younger than seven days is not eligible")
   func belowInstallAgeNotEligible() {
     let harness = makeHarness()
+    // Ten check-offs over days 0, 1 and 2 — monotonic, as a real clock is; the distinct-day
+    // counter compares against the *last* check day only, so jumping back and forth would count
+    // every check as a new day.
     for index in 0 ..< 10 {
-      harness.coordinator.recordItemChecked(now: day(index % 3))
+      harness.coordinator.recordItemChecked(now: day(min(index / 4, 2)))
     }
     #expect(harness.state.checkedItemCount == 10)
     #expect(harness.state.distinctCheckDayCount == 3)

@@ -56,6 +56,10 @@ final class RatingPromptCoordinator {
 
   /// Records one item being checked off and advances eligibility.
   ///
+  /// Counts taps, not items: checking, unchecking and re-checking the same item is two check-offs.
+  /// Deliberately not tightened — the sibling counts the same way, the distinct-day and install-age
+  /// thresholds still have to hold, and Apple's throttle sits above all of it.
+  ///
   /// `now` and `appVersion` are parameters so the tests can drive the calendar and the
   /// once-per-version guard without a clock or a bundle.
   func recordItemChecked(

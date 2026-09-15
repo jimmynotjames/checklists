@@ -447,7 +447,7 @@ every rotation, which never varied within an install.
 | `last_app_open_at` | `set` on every `app_opened` |
 | `analytics_opt_in_at` | On the opt-in transition |
 | `checklists_count_bucket` | `0` / `1` / `2-3` / `4-7` / `8+`, recomputed on `checklists_viewed` — the list reappears after every creation and deletion, and `@Query` has not yet updated at the moment `checklist_created` fires |
-| `rating_prompt_first_eligible_at` | `set` once, alongside `rating_prompt_eligible`. Lets retention be segmented by whether — and how soon after `first_seen_at` — someone reached the bar |
+| `rating_prompt_first_eligible_at` | `set` once, alongside `rating_prompt_eligible`. Lets retention be segmented by whether — and how soon after `first_seen_at` — someone reached the bar. **Absent for anyone who reached it while opted out** and opted in later: the stamp is one-shot and the consent gate dropped it, the same population caveat as `analytics_opt_in_at` below |
 | `rating_prompt_last_requested_at` | `set` on every `rating_prompt_requested`. No outcome is stored: StoreKit reports none (§3.9) |
 
 Bucketing on the **profile** while sending the raw count on **events** is consistent, not

@@ -55,15 +55,18 @@ struct ChecklistsApp: App {
           LoadingView(showsCloudSyncNote: showsCloudSyncNote)
         case let .ready(container, _):
           RootView()
+            // Innermost on purpose: a modifier reads the environment of its *ancestors*, and every
+            // `.environment(...)` below is applied outside this one, so this is the only position
+            // from which the presenter can see `Router` and the coordinator. Put it after them and
+            // the app traps at launch on the missing observable. Only the ready branch has it: the
+            // prompt is fed by check-offs, which only happen here.
+            .ratingPromptPresenter()
             .modelContainer(container)
             .environment(router)
             // Reuse the instance PersistenceController installed at startup — the failure-retry path
             // patches it in place, so creating a second SyncStatus would split the source of truth.
             .environment(PersistenceController.shared.syncStatus)
-            // Only the ready branch: the prompt is fed by check-offs, which only happen here, and
-            // the presenter needs `Router`, which only this branch has.
             .environment(ratingPrompt)
-            .ratingPromptPresenter()
             .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
               guard let value = orientationAnalyticsValue(UIDevice.current.orientation) else { return }
               analytics.track(AnalyticsEvent.orientationChanged, properties: [AnalyticsProperty.orientation: value])
