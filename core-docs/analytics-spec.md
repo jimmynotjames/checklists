@@ -687,55 +687,31 @@ Flurry also had `withCrashReporting(true)`, `withLogLevel`, and vendored `Flurry
 
 ## 15. Published disclosures
 
-Two public disclosures must describe what this app collects. This section is the whole contract.
+- **Privacy policy** — <https://jimmynotjames.github.io/checklists/privacy.html>, served from this
+  repo's `gh-pages` branch (`privacy.html`). Names Mixpanel as the processor. Refs #190.
+- **Nutrition label** — declares the same four types as `PrivacyInfo.xcprivacy`, each Linked,
+  purpose Analytics, not tracking.
 
-**Release status.** #169 put the SDK on `main`, but no shipped build carries it — the last
-submission was `v1.1.0`. Both disclosures below are correct ahead of the 1.2 submission rather
-than catching up to it.
+The policy URL is carried in `SettingsView.swift` and `fastlane/metadata/en-US/privacy_url.txt`.
 
-- **The privacy policy** — **written and published**, and linked from Settings. Self-hosted at
-  <https://jimmynotjames.github.io/checklists/privacy.html>, served from this repo's `gh-pages`
-  branch, replacing the 2019 TermsFeed page that named Flurry and claimed location and cookie
-  collection this app has never done. It names Mixpanel as the processor. The App Store listing
-  field still points at the old page on purpose — see "Holding the listing" below. Refs #190.
-- **The nutrition label** — **done.** Declares the same four types as `PrivacyInfo.xcprivacy`, each
-  Linked, purpose Analytics, not tracking.
+**Do not push the App Store listing yet.** `privacy_url.txt` is updated in the repo but must not
+reach App Store Connect until the first build carrying the Mixpanel SDK is submitted; the listing
+still points at the 2019 page, which is correct while `v1.1.0` collects nothing. Run
+`push_metadata` as part of the release that ships the SDK.
 
-**The policy is a clone of `budgets1`'s, and is deliberately generic.** It reproduces the TermsFeed
-document generated for that app in June 2026, with reChecklist substituted and Jimmy Ho named as the
-controller. It does **not** enumerate the §10 events, the `checklist_name` exception (§4.4) or the
-§6.2 consent model. That is a decision, not an oversight: the vetted template takes precedence over
-a hand-written inventory, because deviating from it carries more risk than the added specificity
-buys. Six passages were corrected where the template asserted collection or sale this app does not
-do — CCPA Category B, the sale/sharing disclosure, the ad-network opt-out instructions, the
-sensitive-PI contradiction, and the account and server-log retention rows. If that trade is ever
-revisited, §4 and §6 are the input a rewrite would draw on.
+Three things about the policy are deliberate. Do not "fix" them:
 
-**A fresh-eye review then found eight more.** Three were caused by the corrections above: Category B
-was still listed as *disclosed* after being marked not collected; a replacement sentence pointed at
-a list that does not exist; and the retention lead-in still promised several categories above a list
-left with one. Three were inherited from the template and are present in `budgets1`'s copy too: two
-cross-references naming sections that do not exist ("Use of Your Personal Information", "Retention
-of Your Personal Information" — the real headings say *Data*), and cookies listed as a source of
-personal information in an app with no webview. Two were judgment calls: the only opt-out the policy
-named was `mixpanel.com/optout`, which does nothing for a native SDK, so a clause now names the
-Settings toggle — **the one place the policy is deliberately app-specific** — and the browser and
-web-page phrases were dropped from the Usage Data definition, identifier language kept.
+1. **It is generic.** It clones the TermsFeed document generated for `budgets1`, and does not
+   enumerate the §10 events, the `checklist_name` exception (§4.4) or the §6.2 consent model. A
+   vetted template beats a hand-written inventory. If that is ever revisited, §4 and §6 are the
+   input a rewrite would draw on.
+2. **One clause is app-specific:** it names the Settings toggle as the way to turn analytics off.
+   The template's only opt-out was `mixpanel.com/optout`, which does nothing for a native SDK.
+3. **CCPA categories A and F are "Collected: Yes"**; B–E and G–L are "No". `distinct_id` is an
+   identifier, and Mixpanel sees the request IP regardless of `useIPAddressForGeoLocation`.
 
-Every difference from the source text is enumerable: four substitutions, two decoded contact
-addresses, the six deviations, and those eight fixes. Nothing else was changed.
-
-The policy now lives in this repo; the nutrition label still does not, which is why it is the one
-that is easy to forget. The URL is carried in exactly two tracked places — `SettingsView.swift`
-and `fastlane/metadata/en-US/privacy_url.txt`.
-
-**Holding the listing.** `privacy_url.txt` is updated in the repo but has **not** been pushed to
-App Store Connect, and must not be until the first build carrying the Mixpanel SDK is actually
-submitted. The published listing therefore still points at the 2019 TermsFeed page. That is the
-correct state while `v1.1.0` is what people can install: the old page is stale in other respects,
-but it does not under-disclose a build that collects nothing. Run `push_metadata` as part of the
-release that ships the SDK — not before, or the listing will describe collection that no shipped
-binary performs.
+Where the policy departs from `budgets1`'s wording, it is because the template asserted collection,
+sale or sharing this app does not do. See the `gh-pages` history for what changed and why.
 
 **Enforcement.** Apple documents no automated label-vs-manifest check; what is gated is manifest
 schema validity — a malformed `.xcprivacy` is rejected at upload. The label is a self-attestation,
@@ -786,7 +762,7 @@ belongs in the section it changed, where a reader will actually look for it.
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
-| 1.8 | 2026-09-14 | Jimmy Ho | §15: privacy policy self-hosted on `gh-pages`, cloned from `budgets1`'s TermsFeed text; deliberately generic, six collection claims corrected plus eight review fixes. ASC listing field held until the Mixpanel build ships. Refs #190. |
+| 1.8 | 2026-09-14 | Jimmy Ho | §15 rewritten: privacy policy self-hosted on `gh-pages`, cloned from `budgets1`'s TermsFeed text and deliberately generic. ASC listing field held until the Mixpanel build ships. Refs #190. |
 | 1.7 | 2026-09-14 | Jimmy Ho | `error` replaced by `error_domain` / `error_code` / `error_operation`; `NSError.userInfo` added to the §4.3 deny-list. |
 | 1.6 | 2026-09-14 | Jimmy Ho | §15 corrected: collection goes live at App Store release, not at #169; no documented automated label-vs-manifest check; nutrition label now matches the manifest. Refs #170. |
 | 1.5 | 2026-09-14 | Jimmy Ho | Mixpanel's IP-derived geolocation turned off; §4.3 denial and §9.2 settings-not-position note added. Refs #170. |
