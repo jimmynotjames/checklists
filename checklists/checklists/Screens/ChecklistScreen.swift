@@ -63,6 +63,9 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   let onRequestDismiss: () -> Void
 
   @Environment(\.analytics) private var analytics
+  /// Optional on purpose: previews and tests build this screen without the app around it, and a
+  /// missing coordinator should mean "no prompt", never a crash. `ChecklistsApp` always injects it.
+  @Environment(RatingPromptCoordinator.self) private var ratingPrompt: RatingPromptCoordinator?
 
   func makeCoordinator() -> Coordinator {
     Coordinator(onRequestDismiss: onRequestDismiss)
@@ -74,6 +77,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
     viewController.isNewChecklist = isNewChecklist
     viewController.onRequestDismiss = onRequestDismiss
     viewController.analytics = analytics
+    viewController.ratingPrompt = ratingPrompt
     if !isNewChecklist {
       // The embedded navigation controller's root has no system back button, so recreate one.
       // Chevron-only, with no back title, is the intended look.
@@ -125,7 +129,9 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   /// but if a future change swaps the client rather than gating inside it, a checklist already on
   /// screen would otherwise keep sending through the old one.
   func updateUIViewController(_ navigationController: UINavigationController, context _: Context) {
-    (navigationController.viewControllers.first as? ChecklistViewController)?.analytics = analytics
+    guard let viewController = navigationController.viewControllers.first as? ChecklistViewController else { return }
+    viewController.analytics = analytics
+    viewController.ratingPrompt = ratingPrompt
   }
 }
 

@@ -57,6 +57,14 @@ protocol AnalyticsClient: AnyObject, Sendable {
 
   /// Stamps the moment consent was granted (§9.3).
   func setAnalyticsOptInAt()
+
+  /// Stamps the moment the rating-prompt thresholds were first met (§9.3). Called once per
+  /// install, right after `rating_prompt_eligible`.
+  func setRatingPromptFirstEligibleAt(_ date: Date)
+
+  /// Stamps the moment `requestReview` was last called (§9.3). Refreshed on every
+  /// `rating_prompt_requested`.
+  func setRatingPromptLastRequestedAt(_ date: Date)
 }
 
 extension AnalyticsClient {
@@ -67,8 +75,10 @@ extension AnalyticsClient {
   }
 
   // Default no-ops, so `ConsoleAnalyticsClient` and test doubles implement only what they care
-  // about. The Mixpanel client overrides all three.
+  // about. The Mixpanel client overrides all five.
   func refreshSuperProperties() {}
   func refreshCohortPeopleProperties(checklistsCount _: Int) {}
   func setAnalyticsOptInAt() {}
+  func setRatingPromptFirstEligibleAt(_: Date) {}
+  func setRatingPromptLastRequestedAt(_: Date) {}
 }

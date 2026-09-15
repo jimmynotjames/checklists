@@ -24,6 +24,8 @@ final class SpyAnalyticsClient: AnalyticsClient {
     case refreshSuperProperties
     case refreshCohort(Int)
     case setAnalyticsOptInAt
+    case setRatingPromptFirstEligibleAt(Date)
+    case setRatingPromptLastRequestedAt(Date)
   }
 
   private(set) var calls: [Call] = []
@@ -85,5 +87,13 @@ final class SpyAnalyticsClient: AnalyticsClient {
 
   func setAnalyticsOptInAt() {
     calls.append(.setAnalyticsOptInAt)
+  }
+
+  func setRatingPromptFirstEligibleAt(_ date: Date) {
+    calls.append(.setRatingPromptFirstEligibleAt(date))
+  }
+
+  func setRatingPromptLastRequestedAt(_ date: Date) {
+    calls.append(.setRatingPromptLastRequestedAt(date))
   }
 }

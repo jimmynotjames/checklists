@@ -2,7 +2,7 @@
 
 | Field        | Value      |
 | ------------ | ---------- |
-| Version      | 1.9        |
+| Version      | 1.10       |
 | Last Updated | 2026-09-15 |
 | Author/Owner | Jimmy Ho   |
 
@@ -63,7 +63,10 @@ not an implementation detail.
 5. **No string literals at call sites.** Every event and property name comes from the constants in
    `Analytics/AnalyticsNames.swift`, so a typo is a compile error.
 6. **The project token is never a source literal.** It is injected via xcconfig → Info.plist (§10).
-7. **No engagement-pressure events.** This app does not measure how to nag people.
+7. **No engagement-pressure events.** This app does not measure how to nag people. The two
+   rating-prompt events (§8) are not an exception: they record when the app's own fixed bar was met
+   and when it asked, so the bar can be sanity-checked — not how to move anyone toward it, and no
+   outcome is observable at all (§3.9).
 8. **Counts on events are raw; cohort signals on profiles are bucketed** (§9).
 
 ## 3. Product questions
@@ -82,6 +85,15 @@ by what happens to be easy to chart.
 | 3.6 | How often does the store fail to open in the field, and how often is that unrecoverable? | `startup_failed` / `startup_store_reset` |
 | 3.7 | Does anyone rotate the device? (The orientation-notification cost is only worth paying if so.) | `orientation_changed` |
 | 3.8 | What share of installs opt out, and how does that differ by jurisdiction? | `analytics_consent_changed`, `consent_jurisdiction` |
+| 3.9 | When do people reach the bar for the automatic App Store review prompt, and how soon after does the app actually ask? | `rating_prompt_eligible` → `rating_prompt_requested`, `time_since_first_eligible_bucket` |
+
+Question 3.9 stops at the request, deliberately. The prompt is Apple's native `requestReview`,
+which reports neither whether StoreKit showed the dialog nor what the person chose — there is no
+callback — so shown / dismissed / rated is not a question this app can answer. No custom pre-prompt
+is added to manufacture that signal: review-gating hurts ratings and would breach constraint 7.
+The bar itself (seven days installed, three distinct days with a check-off, ten check-offs,
+once per app version) is `simple-recurring-budgets`'s calibration ported as-is; if 3.9 shows it is
+met too early or too rarely, the thresholds are three constants on `RatingPromptCoordinator`.
 
 Question 3.7 has a defined end: `ChecklistsApp` carries a `TODO-DEFERRED` about the power cost of
 `beginGeneratingDeviceOrientationNotifications()`. Once `orientation_changed` has an answer, that
@@ -170,6 +182,10 @@ Accepted consequences:
   device's own defaults.
 - Migrating later is a one-line change to the store injected into `AnalyticsSettings`, plus a
   read-through migration, precisely because access goes through the `KeyValueStore` seam.
+- `RatingPromptState` — the review prompt's install date and usage counters — sits behind the same
+  seam and in the same `UserDefaults.standard`, for the same reason. Those counters are **not**
+  analytics state and are not consent-gated: an opted-out install still earns its prompt on the
+  same schedule, and only the two events about it are suppressed.
 
 **`StoreReset.startOverFresh()` does not clear the analytics keys.** A data reset is not a consent
 withdrawal, and silently re-prompting someone who already declined would be worse than keeping the
@@ -322,7 +338,7 @@ the `OSLog` channel (§11) remains the complete record. Do not "fix" it by exemp
 
 ## 8. Event catalog
 
-All names are flat `snake_case`, `noun_pastTenseVerb`. 16 events.
+All names are flat `snake_case`, `noun_pastTenseVerb`. 18 events.
 
 | Event | Fires when | Properties | Answers |
 | --- | --- | --- | --- |
@@ -342,6 +358,16 @@ All names are flat `snake_case`, `noun_pastTenseVerb`. 16 events.
 | `startup_failed` | Launch could not produce a usable store, so the retry screen was shown | `error_domain`, `error_code` | §3.6 |
 | `startup_store_reset` | "Start over fresh" chosen on that screen, deleting this device's stores | — | §3.6 |
 | `analytics_consent_changed` | The consent toggle or first-run sheet changes the setting | `new_value`, `old_value` | §3.8 |
+| `rating_prompt_eligible` | The install first meets every review-prompt threshold. **Once per install**, gated by the persisted `firstEligibleAt` | — | §3.9 |
+| `rating_prompt_requested` | The app calls Apple's native `requestReview`. De-duplicated per app version by the local once-per-version guard | `time_since_first_eligible_bucket` | §3.9 |
+
+**The rating-prompt events fire from the coordinator, not the screen.** `RatingPromptCoordinator`
+is fed one call per item checked off (never unchecked) by `ChecklistViewController`, advances the
+counters in `RatingPromptState`, and flips a pending flag once the bar is met. The root-level
+`ratingPromptPresenter()` waits until the person is back on the checklists list with the scene
+active — no route pushed, no sheet, main menu closed — before calling `requestReview` and
+consuming the flag, so the prompt never lands over a half-finished checklist.
+`rating_prompt_requested` is the deepest observable point (§3.9).
 
 **`app_opened` fires on "`.active` having seen `.background`", not "`.active` preceded by
 `.background`".** iOS delivers `.inactive` on the way back in, so a real foreground return arrives
@@ -378,6 +404,7 @@ floor, not a total — and see §11 for where the real record lives.
 | `error_operation` | String | `PersistenceOperation.rawValue`: `checklistEdit`, `itemEdit`, `reorder`, `delete`, `legacyImport`, `sampleSeed`, `dedupe`. `persistence_write_failed` only. The one camelCase *value* this app sends — it is a Swift case name, so renaming a case changes the analytics vocabulary. `AnalyticsNamesTests` pins the set. |
 | `orientation` | String | `portrait` / `landscape`. Face-up/face-down are filtered out, not reported. |
 | `new_value` / `old_value` | Bool | `analytics_consent_changed` only. |
+| `time_since_first_eligible_bucket` | String | `<1d` / `<7d` / `<30d` / `30d+` between first eligibility and the request. `rating_prompt_requested` only. Bucketed: an exact interval on an event answers nothing the bucket does not, and the exact moments are on the profile (§9.3). |
 
 Counts are sent **raw** rather than bucketed. Mixpanel handles numeric properties natively, and
 `simple-recurring-budgets`'s bucketing is privacy-motivated — which would be incoherent here, given
@@ -420,6 +447,8 @@ every rotation, which never varied within an install.
 | `last_app_open_at` | `set` on every `app_opened` |
 | `analytics_opt_in_at` | On the opt-in transition |
 | `checklists_count_bucket` | `0` / `1` / `2-3` / `4-7` / `8+`, recomputed on `checklists_viewed` — the list reappears after every creation and deletion, and `@Query` has not yet updated at the moment `checklist_created` fires |
+| `rating_prompt_first_eligible_at` | `set` once, alongside `rating_prompt_eligible`. Lets retention be segmented by whether — and how soon after `first_seen_at` — someone reached the bar |
+| `rating_prompt_last_requested_at` | `set` on every `rating_prompt_requested`. No outcome is stored: StoreKit reports none (§3.9) |
 
 Bucketing on the **profile** while sending the raw count on **events** is consistent, not
 contradictory: §9.1's "raw" argument is about event properties, and profiles are what cohorts are
@@ -567,6 +596,11 @@ instrumentation PRs land; the definitions are correct and populate as events arr
 Each project also carries Mixpanel's auto-generated **🌱 Starter Board**. It is owned by the Mixpanel
 system user, not by us; delete it if it clutters the list.
 
+**Not yet charted: the rating prompt (§3.9).** The natural tile is a funnel,
+`rating_prompt_eligible → rating_prompt_requested`, broken down by `time_since_first_eligible_bucket`,
+on the Reach board. Build it once the first App Store build carrying the prompt has shipped and
+the events exist to chart; an empty funnel on a board is noise.
+
 `notes_length` is deliberately **not** charted. It is captured on `checklist_viewed` and available for
 ad-hoc queries, but a distribution of note lengths answers no question in §3 that
 `items_with_notes_count` does not answer better.
@@ -649,6 +683,13 @@ Contracts — **built** except where marked, which land with the consent and SDK
     its persistent defaults, and Release contains no screenshot consent-seeding path. The strict
     region UI regression keeps the ordinary first-run presentation case and proves a localized
     screenshot fixture does not present it.
+18. Rating prompt (`RatingPromptCoordinatorTests`) — counters advance per check-off and per
+    distinct day; each threshold alone (count, distinct days, install age) blocks eligibility;
+    `rating_prompt_eligible` fires exactly once per install; consuming records the version, fires
+    `rating_prompt_requested` with the bucket, and a second request waits for a new version; the
+    presenter gate is a pure function of pending / on-the-list / active; and with the real
+    `ConsentGatedAnalyticsClient` opted out, the counters and the version guard still work while
+    nothing reaches the client. No shown / resolved event exists to assert on.
 
 Tests are opt-in and not gated (`make test-unit`). Read pass/fail from the `.xcresult`, never from a
 piped exit code — see AGENTS.md.
@@ -728,12 +769,14 @@ with a reason.
 
 | `simple-recurring-budgets` | Here | Why |
 | --- | --- | --- |
-| `NSUbiquitousKeyValueStore` for opt-in and `distinct_id` | `UserDefaults.standard` behind a `KeyValueStore` seam | No `ubiquity-kvstore-identifier` entitlement (§5) |
+| `NSUbiquitousKeyValueStore` for opt-in, `distinct_id` and the rating-prompt counters | `UserDefaults.standard` behind a `KeyValueStore` seam | No `ubiquity-kvstore-identifier` entitlement (§5) |
+| Rating prompt fed by an Add-mode expense log at a non-deficit moment; requested after the Add Expense sheet dismisses | Fed by an item check-off; requested once the person is back on the checklists list | Checking an item is this app's one core action, and the checklist screen is a push, not a sheet (§8) |
+| `time_since_first_eligible_bucket` top value `≥30d` | `30d+` | ASCII, so it can be typed into a Mixpanel filter without hunting for the glyph |
 | All consent copy in `Localizable.xcstrings` | English string literals | No localization infrastructure at all; five keyed strings among ~200 literals is worse than either standard. Follow-up issue. |
 | Sheet triggered after the first `budget_created` | After the first `checklist_viewed` on an existing checklist | Sample checklists are seeded, so creation may never happen (§6.2) |
 | `IS_TESTING` env var only | `-UITests1` **or** `IS_TESTING` | The XCUITest bundle passes only the launch argument (§7.1) |
 | Analytics and `OSLog` both in `Logging/` | Analytics in `Analytics/`, `OSLog` in `Logging/` | Both docs insist the channels are independent — let the directories say so (§11) |
-| One collected data type; empty accessed-API array | Two data types; `UserDefaults` declared | `checklist_name` is user content; this app uses `UserDefaults` in four places (§10) |
+| One collected data type; empty accessed-API array | Two data types; `UserDefaults` declared | `checklist_name` is user content; this app uses `UserDefaults` in five places (§10) |
 | `$(SRCROOT)/config/…` | `$(SRCROOT)/../config/…` | The Xcode project sits one level below the repo root (§10) |
 | `budgets_count_bucket` as a super property | `checklists_count` raw per-event; bucket on the profile | The count already rides on the most frequent event (§9) |
 | A protocol, but ordering logic inline in bindings | Ordering extracted into a testable controller | So the §6.3 contract tests real code (§13) |
@@ -766,6 +809,7 @@ belongs in the section it changed, where a reader will actually look for it.
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
+| 1.10 | 2026-09-15 | Jimmy Ho | Automatic App Store review prompt: `rating_prompt_eligible` / `rating_prompt_requested`, `time_since_first_eligible_bucket`, two people properties, §3.9, §13 contract 18, §16 rows. Closes #17. |
 | 1.9 | 2026-09-15 | Jimmy Ho | The sibling repo is named `simple-recurring-budgets` and its app **Wren** throughout, replacing the machine-local folder name; §16 heading and table retitled. Closes #195. |
 | 1.8 | 2026-09-14 | Jimmy Ho | §15 rewritten: privacy policy self-hosted on `gh-pages`, cloned from Wren's TermsFeed text and deliberately generic. ASC listing field held until the Mixpanel build ships. Refs #190. |
 | 1.7 | 2026-09-14 | Jimmy Ho | `error` replaced by `error_domain` / `error_code` / `error_operation`; `NSError.userInfo` added to the §4.3 deny-list. |

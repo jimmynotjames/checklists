@@ -36,6 +36,11 @@ class ChecklistViewController: UIViewController {
   /// injection degrades to "no events" rather than a crash.
   var analytics: any AnalyticsClient = ConsoleAnalyticsClient()
 
+  /// Set by the SwiftUI host, like `analytics` above. Fed one call per item checked off — the
+  /// qualifying action for the automatic App Store review prompt. `nil` (pure-UIKit construction,
+  /// previews, tests) means the prompt is simply never fed.
+  var ratingPrompt: RatingPromptCoordinator?
+
   private let checklistInfoHeaderView = UIView()
   private let statusIcon = CircularPercentStatusIcon(iconType: .header)
   private let checklistNameTextField = CLTextField()
@@ -665,6 +670,10 @@ extension ChecklistViewController: ItemContentViewDelegate {
     context.saveChangesIgnoringFailure(operation: .itemEdit)
     itemContentView.updateCheckedStatus()
     updateStatusIcon()
+    // Only a check counts toward the review prompt; unchecking reads as a reset, not progress.
+    if itemContentView.item?.status == .checked {
+      ratingPrompt?.recordItemChecked()
+    }
   }
 
   func itemContentViewNameFieldDidBeginEditing(_ itemContentView: ItemContentView) {

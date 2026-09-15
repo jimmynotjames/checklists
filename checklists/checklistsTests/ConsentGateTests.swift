@@ -4,6 +4,7 @@
 //
 
 @testable import checklists
+import Foundation
 import Testing
 
 /// Covers `ConsentGatedAnalyticsClient` — the seam that makes the consent flag actually gate
@@ -23,12 +24,16 @@ struct ConsentGateTests {
     gate.refreshSuperProperties()
     gate.refreshCohortPeopleProperties(checklistsCount: 3)
     gate.setAnalyticsOptInAt()
+    gate.setRatingPromptFirstEligibleAt(Self.stamp)
+    gate.setRatingPromptLastRequestedAt(Self.stamp)
 
     #expect(
       spy.calls.isEmpty,
       "An opted-out install must never reach the wrapped client through any of these."
     )
   }
+
+  private static let stamp = Date(timeIntervalSinceReferenceDate: 600_000_000)
 
   @Test("opting in allows every method through")
   func optedInAllowsEveryMethodThrough() {
@@ -40,6 +45,8 @@ struct ConsentGateTests {
     gate.refreshSuperProperties()
     gate.refreshCohortPeopleProperties(checklistsCount: 3)
     gate.setAnalyticsOptInAt()
+    gate.setRatingPromptFirstEligibleAt(Self.stamp)
+    gate.setRatingPromptLastRequestedAt(Self.stamp)
 
     #expect(
       spy.calls ==
@@ -49,6 +56,8 @@ struct ConsentGateTests {
           .refreshSuperProperties,
           .refreshCohort(3),
           .setAnalyticsOptInAt,
+          .setRatingPromptFirstEligibleAt(Self.stamp),
+          .setRatingPromptLastRequestedAt(Self.stamp),
         ]
     )
   }

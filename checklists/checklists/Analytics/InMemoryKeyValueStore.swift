@@ -24,8 +24,16 @@ final class InMemoryKeyValueStore: KeyValueStore {
     storage[defaultName] = value
   }
 
+  func set(_ value: Int, forKey defaultName: String) {
+    storage[defaultName] = value
+  }
+
   func set(_ value: String, forKey defaultName: String) {
     storage[defaultName] = value
+  }
+
+  func removeObject(forKey defaultName: String) {
+    storage[defaultName] = nil
   }
 
   @discardableResult
