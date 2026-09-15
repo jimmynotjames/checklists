@@ -701,7 +701,7 @@ still points at the 2019 page, which is correct while `v1.1.0` collects nothing.
 
 Three things about the policy are deliberate. Do not "fix" them:
 
-1. **It is generic.** It clones the TermsFeed document generated for `budgets1`, and does not
+1. **It is generic.** It clones the TermsFeed document generated for Wren, and does not
    enumerate the §10 events, the `checklist_name` exception (§4.4) or the §6.2 consent model. A
    vetted template beats a hand-written inventory. If that is ever revisited, §4 and §6 are the
    input a rewrite would draw on.
@@ -710,7 +710,7 @@ Three things about the policy are deliberate. Do not "fix" them:
 3. **CCPA categories A and F are "Collected: Yes"**; B–E and G–L are "No". `distinct_id` is an
    identifier, and Mixpanel sees the request IP regardless of `useIPAddressForGeoLocation`.
 
-Where the policy departs from `budgets1`'s wording, it is because the template asserted collection,
+Where the policy departs from Wren's wording, it is because the template asserted collection,
 sale or sharing this app does not do. See the `gh-pages` history for what changed and why.
 
 **Enforcement.** Apple documents no automated label-vs-manifest check; what is gated is manifest
@@ -762,7 +762,7 @@ belongs in the section it changed, where a reader will actually look for it.
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
-| 1.8 | 2026-09-14 | Jimmy Ho | §15 rewritten: privacy policy self-hosted on `gh-pages`, cloned from `budgets1`'s TermsFeed text and deliberately generic. ASC listing field held until the Mixpanel build ships. Refs #190. |
+| 1.8 | 2026-09-14 | Jimmy Ho | §15 rewritten: privacy policy self-hosted on `gh-pages`, cloned from Wren's TermsFeed text and deliberately generic. ASC listing field held until the Mixpanel build ships. Refs #190. |
 | 1.7 | 2026-09-14 | Jimmy Ho | `error` replaced by `error_domain` / `error_code` / `error_operation`; `NSError.userInfo` added to the §4.3 deny-list. |
 | 1.6 | 2026-09-14 | Jimmy Ho | §15 corrected: collection goes live at App Store release, not at #169; no documented automated label-vs-manifest check; nutrition label now matches the manifest. Refs #170. |
 | 1.5 | 2026-09-14 | Jimmy Ho | Mixpanel's IP-derived geolocation turned off; §4.3 denial and §9.2 settings-not-position note added. Refs #170. |
