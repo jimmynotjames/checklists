@@ -1,6 +1,6 @@
 ---
 name: appstore-generate-push-screenshots
-description: Capture and review reChecklist App Store screenshots locally, inspect existing App Store screenshot sets, or explicitly publish reviewed screenshots to an existing editable version. Capture alone never authorizes uploading.
+description: "Capture and review App Store screenshots locally, inspect existing sets, or publish reviewed screenshots to an editable version. Capture never authorizes upload."
 ---
 
 # Capture and publish screenshots
@@ -25,23 +25,20 @@ from the repository root. Read `fastlane/SETUP.md` and
 4. Report the run ID, image paths, and verification result. Preserve that run for
    review. Capture-only work stops here even though this skill also supports upload.
 
-Do not infer success from old images or a final filename. Require successful test
-execution and validation of this run's complete expected image set. A failed
-capture preserves its logs and partial output. Use the lane's subset/retry support
-to retry only missing work, at most twice after diagnosis; stop on a repeated
-build/test failure. Resume with `fastlane ios screenshots run_id:RUN_ID locales:en-US`
-(enabled runtime locale codes). Omit `run_id` for a fresh capture; a resumed run
-must still match its recorded source/configuration/seeds. Never clear good output
-to retry a subset. Do not use direct `fastlane snapshot`; it bypasses isolation.
+Do not infer success from old images or a final filename. Require successful test execution and
+validation of this run's complete expected image set. A failed capture preserves its logs and
+partial output. Use the lane's subset/retry support to retry only missing work, at most twice
+after diagnosis; stop on a repeated build/test failure. Resume with
+`fastlane ios screenshots run_id:RUN_ID locales:en-US` (enabled runtime locale codes); omit
+`run_id` for a fresh capture, but a resumed run must still match its recorded
+source/configuration/seeds. Never clear good output to retry a subset. Do not use direct
+`fastlane snapshot`; it bypasses isolation.
 
 ## Read-only App Store inspection
 
-`fastlane ios inspect_screenshots` reports the primary language and existing
-screenshot sets for the editable version, or the live version when none is
-editable. It makes no changes. The primary language should be en-US for the
-intended fallback. Existing explicit screenshots in other locales may take
-precedence over fallback; report them before a future upload and do not delete
-them without authorization.
+`fastlane ios inspect_screenshots` reports the primary language and existing screenshot sets; it
+makes no changes. Lane behaviour, fallback rules, and the no-op guarantees: `fastlane/SETUP.md`
+§"Screenshot publication".
 
 ## Publish only when explicitly requested
 
@@ -50,11 +47,6 @@ or release record. If either is ambiguous, ask before changing ASC. Use the
 `push_screenshots` lane with `app_version:X.Y.Z` and the reviewed run ID; consult
 `fastlane/SETUP.md` for exact options. It validates local artifacts first, then
 requires the matching existing editable version and existing listing locales.
-
-Publishing replaces screenshot sets only in the selected active locales. It does
-not create a version/localization, change text metadata or availability, upload a
-binary, or submit for review. English-only operation must not expand into the
-metadata pipeline's 50-locale set.
 
 The lane bounds deletion and upload retries and checks asset processing. Retain
 the real exit status and log; a failure after deletion/upload may leave partial

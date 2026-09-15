@@ -2,28 +2,12 @@
 # Sourceable helper: manages a per-repo simulator in the default CoreSimulator device set.
 # Callers must set ROOT before sourcing (absolute path to repo root).
 #
-# Ported from the `simple-recurring-budgets` repo. Each clone of this repo gets its own dedicated
-# simulator, identified by a unique device name derived from the repo path
-# (e.g. "iPhone 17 [a1b2c3d4]"). The device lives in the default set so xcodebuild
-# can see it, but the name collision risk is eliminated — other repos and Xcode's
-# own devices have different names/UDIDs. Nothing machine-global is created.
-#
-# Only the TEST scripts source this. `scripts/build.sh` deliberately uses a generic
-# destination so a plain compile never pays the 30–90 s simulator boot.
-#
-# After sourcing, the following are set for downstream scripts:
+# Sets, for downstream scripts:
 #   SIM_UDID        — UDID of a booted simulator for this repo
 #   SIM_DERIVED     — path for xcodebuild -derivedDataPath
 #   SIM_RESULTS_DIR — parent directory for -resultBundlePath
-#
-# Environment variables respected:
-#   SIMULATOR_UDID  — if set, skip sandbox management entirely (pin this device)
-#   SIMULATOR_NAME  — base device name to create/select (default: iPhone 17)
-#
-# NEVER use `pkill Simulator`, `killall Simulator`, or bare `simctl shutdown all` /
-# `simctl erase all` — those affect all simulators on the machine. Use
-# `make sim-shutdown` or `make sim-clean` instead (they operate on this repo's
-# device UDID only).
+# SIMULATOR_NAME picks a different base device; SIMULATOR_UDID pins one and skips
+# sandbox management. See AGENTS.md §"Simulator sandbox" / §"What NOT to do".
 
 : "${ROOT:?ROOT must be set before sourcing _sim_sandbox.sh}"
 

@@ -1,22 +1,7 @@
-# CI — ported from the `simple-recurring-budgets` repo and currently DISABLED.
-#
-# ============================ HOW TO ENABLE ============================
-# 1. Uncomment the `pull_request:` and `push:` triggers below.
-# 2. Add the jobs as REQUIRED status checks in branch protection
-#    (Settings → Branches → main). `main` already requires a PR, but has zero
-#    required checks — without step 2 this workflow is advisory only.
-# =======================================================================
-#
-# Why it ships disabled: unlike `simple-recurring-budgets` (a public repo with free,
-# unbounded macOS runner minutes), THIS REPO IS PRIVATE — macOS minutes bill at 10× the
-# ubuntu rate. The three ubuntu jobs are cheap; the `build` job is not. The local
-# lefthook hooks already run the same gates on every commit and push, so CI here
-# is defense-in-depth against `--no-verify`, a hookless clone, or a web-UI merge —
-# valuable, but a deliberate spend rather than a default.
-#
-# Deliberately NOT ported from `simple-recurring-budgets`: the `i18n-gates` job (no
-# localization pipeline here), the `test` job (the 2020-era XCTest suites are not yet proven
-# green — see AGENTS.md), and the `pr-summary` aggregation comment.
+# CI — DISABLED (workflow_dispatch only; private repo, macOS minutes bill at 10x).
+# To enable: uncomment the pull_request/push triggers AND add these jobs as required
+# status checks. See AGENTS.md §"CI".
+# Not ported: i18n-gates (no localization here), test (opt-in locally), pr-summary.
 name: CI
 
 on:
@@ -35,14 +20,8 @@ permissions:
 
 jobs:
   # --- Tier 1: lint/format parity with pre-commit (ubuntu) -------------------
-  # Pinned to the EXACT versions installed locally via Homebrew. A version skew
-  # would make CI fail on rules your machine doesn't enforce (or vice-versa) —
-  # keep these in lockstep with scripts/system-setup.sh / your brew installs.
-  #
-  # NOTE: these run REPO-WIDE, unlike the local hooks which are staged-files-only.
-  # On today's tree that means ~96 SwiftLint violations and 30/31 files failing
-  # the format check. Expect this job to be RED until the legacy tree is cleaned
-  # up — that is the honest signal, and one more reason the workflow ships off.
+  # Pinned to the versions in scripts/system-setup.sh. Runs REPO-WIDE, unlike the
+  # local gate (AGENTS.md §"Lint policy").
   lint:
     runs-on: ubuntu-latest
     env:
@@ -87,13 +66,7 @@ jobs:
           swiftlint_bin/swiftlint lint --strict
 
   # --- Tier 1: secret scan over full history (ubuntu) -------------------------
-  # Complements pre-commit `gitleaks protect --staged`. Pinned binary instead of
-  # gitleaks-action to avoid that action's org-license requirement.
-  #
-  # NOTE: green here is NOT the same as "no secrets". This scans full history, and the
-  # hardcoded Flurry API key that lived in AnalyticsManager.swift until Flurry was removed
-  # is STILL in that history and is still not matched by any gitleaks rule (a bare 20-char
-  # alphanumeric with no adjacent keyword). See AGENTS.md §"Known issues" and issue #115.
+  # Full-history scan. Green != no secrets — AGENTS.md §"Known issues" / #115.
   secrets:
     runs-on: ubuntu-latest
     env:
@@ -141,8 +114,6 @@ jobs:
         run: bash scripts/check-large-files.sh ${{ steps.diff.outputs.files }}
 
   # --- Tier 2: compile check (macOS — 10× minute cost on a private repo) ------
-  # Direct xcodebuild rather than the make/sandbox path, for ephemeral runners.
-  # Mirrors scripts/build.sh — keep the scheme/project/ARCHS in sync with that file.
   build:
     runs-on: macos-26
     needs: [lint, secrets, check-large-files]
@@ -159,14 +130,8 @@ jobs:
           key: spm-${{ runner.os }}-xcode26.6-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: |
             spm-${{ runner.os }}-xcode26.6-
-      # ARCHS=arm64 is a build-speed choice, not a correctness constraint (it was one, while
-      # Flurry's malformed x86_64 slice was vendored). The destination is generic, so dropping
-      # it would build both slices and compile Realm's C++ tree twice. See scripts/build.sh.
-      # Signing is left at the project default rather than disabled: CODE_SIGNING_ALLOWED=NO
-      # strips the simulator entitlements blob and with it `application-identifier`, which
-      # makes CKContainer.default() raise an uncatchable CKException (#140). A simulator
-      # destination needs no identity or profile, so this works on a bare runner.
-      # See scripts/build.sh.
+      # Mirrors scripts/build.sh — keep scheme/project/ARCHS/signing in sync with it
+      # (signing left at default: CODE_SIGNING_ALLOWED=NO breaks CKContainer, #140).
       - name: xcodebuild build
         run: |
           xcodebuild build \

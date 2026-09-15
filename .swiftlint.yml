@@ -2,10 +2,7 @@
 #
 # Ported from the `simple-recurring-budgets` repo, with this project's names substituted.
 #
-# Pre-commit lints STAGED FILES ONLY (see lefthook.yml). The repo-wide `make lint` target
-# exists but is deliberately NOT part of `make gate` — this is a 2020-era tree and a
-# repo-wide --strict pass would block every commit until the whole codebase is rewritten.
-# Files are brought up to standard as they are touched. Tighten over time.
+# Pre-commit and the gate lint changed/staged files only — AGENTS.md §"Lint policy".
 disabled_rules:
   - trailing_whitespace
   # SwiftFormat uses trailing commas for multiline collection literals.

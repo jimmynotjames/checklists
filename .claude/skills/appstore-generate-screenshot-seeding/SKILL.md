@@ -1,14 +1,11 @@
 ---
 name: appstore-generate-screenshot-seeding
-description: Prepare or validate reChecklist's deterministic App Store screenshot seed catalogs. Use for screenshot demo-content changes; refreshing screenshots alone reuses the existing catalogs.
+description: "Prepare or validate the deterministic App Store screenshot seed catalogs. Use for demo-content changes; a screenshot refresh alone reuses them."
 ---
 
 # Prepare screenshot content
 
-The active locale set is in `fastlane/screenshot-config.json`; currently only
-en-US is enabled. Future localized catalogs use runtime-language filenames, with
-explicit regional locale settings. Translation generation is deferred in GitHub
-issue #161.
+Active locales: `fastlane/screenshot-config.json` (en-US only today; #161).
 
 1. Read `fastlane/SETUP.md`, the screenshot configuration, and the existing
    `checklists/checklistsUITests/ScreenshotSeeds/` catalogs.
@@ -26,12 +23,5 @@ issue #161.
 5. Report the verified catalog and active locales. Persist authored changes using
    `create-pr`. Capture is a separate step; this skill never uploads anything.
 
-The catalog is bundled in the UI-test target and passed to the Debug-only
-screenshot launch path. It must never seed the user's persistent store or sync
-marketing content to CloudKit. The existing normal sample fixture remains the
-source of truth for first-launch behavior.
-
-After translation tooling is added, add localized catalogs and enable their
-locales deliberately. Currency-specific fixture generation is outside this app's
-requirements; do not make missing translation tooling a prerequisite for English
-captures.
+It must never seed the user's persistent store or sync marketing content to CloudKit. The existing
+normal sample fixture remains the source of truth for first-launch behavior.

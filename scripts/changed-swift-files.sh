@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 # Print the Swift files this branch has touched, one per line (empty output if none).
 #
-# Used by `make format-changed` / `make lint-changed`, which are what `make gate` runs.
-# The whole point is to keep the gate scoped to code you actually changed: this is a
-# 2020-era tree with ~96 pre-existing SwiftLint violations and 30/31 files needing
-# reformat, so repo-wide steps would rewrite everything and then block every commit.
+# Used by `make format-changed` / `make lint-changed`, which are what `make gate` runs
+# — AGENTS.md §"Lint policy".
 #
 # The union of:
 #   1. committed changes on this branch vs the merge-base with main  (main...HEAD)

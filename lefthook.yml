@@ -1,11 +1,5 @@
-# https://lefthook.dev/configuration/
-#
-# Ported from the `simple-recurring-budgets` repo. Install with `make hooks-install`
-# (or `make system`).
-#
-# Everything in pre-commit runs on {staged_files} ONLY. That is deliberate: this is a
-# 2020-era tree with ~96 pre-existing SwiftLint violations, so a repo-wide gate would
-# block every commit. Files are brought up to standard as they are touched.
+# https://lefthook.dev/configuration/ — install with make hooks-install.
+# Pre-commit runs on {staged_files} only (AGENTS.md §"Lint policy").
 pre-commit:
   parallel: false
   commands:
@@ -34,12 +28,7 @@ pre-commit:
 
 pre-push:
   commands:
-    # Belt-and-braces: both branches also have server-side branch protection. This
-    # just fails faster and more legibly than a rejected push.
-    #
-    # `gh-pages` is protected for the same reason as `main`, not a weaker one: it is
-    # the public site, it carries the privacy policy that the App Store listing and
-    # the in-app Settings link both point at, and a push to it is live immediately.
+    # Fails faster than the server-side protection that also covers both branches.
     no-direct-protected-push:
       run: |
         branch="$(git rev-parse --abbrev-ref HEAD)"
@@ -50,7 +39,6 @@ pre-push:
             ;;
         esac
 
-    # Compile check only. `simple-recurring-budgets` also runs its i18n gates here; this
-    # repo has no localization pipeline. Tests are deliberately not run on push — see AGENTS.md.
+    # Compile check only; tests are not run on push (AGENTS.md).
     build:
       run: bash scripts/build.sh

@@ -2,10 +2,8 @@
 #
 # Extends the default ruleset (which we still want) with a Mixpanel-token rule.
 #
-# Why this exists: the old Flurry API key sat in AnalyticsManager.swift for six years and is
-# still in ~294 commits of this repo's history, and gitleaks never flagged it — a bare 20-char
-# alphanumeric with no adjacent keyword matches no default rule. A green secrets gate therefore
-# proves nothing on its own. See AGENTS.md "Known issues" and issue #115.
+# The old Flurry key sat in source for years and matched no default rule — a green gate
+# proves nothing on its own (AGENTS.md §"Known issues", #115).
 #
 # The real defense is that config/Secrets.local.xcconfig is gitignored. This rule is the
 # second line: it catches a Mixpanel token pasted anywhere gitignore does not cover, such as
@@ -31,6 +29,5 @@ keywords = ["mixpanel"]
 # rule most needs to watch. A path regex is also easy to under-anchor, which would silently
 # exempt neighbours like config/Secrets.xcconfig.prod.
 #
-# The placeholders need no exemption: PLACEHOLDER_MIXPANEL_DEV_TOKEN,
-# PLACEHOLDER_MIXPANEL_PROD_TOKEN and your_32_char_*_token_here are not 32 hex characters, so
-# they cannot match secretGroup at all. Both committed config files scan clean.
+# Placeholders (PLACEHOLDER_MIXPANEL_DEV_TOKEN, etc.) aren't 32 hex chars, so they can't
+# match secretGroup — both committed config files scan clean.

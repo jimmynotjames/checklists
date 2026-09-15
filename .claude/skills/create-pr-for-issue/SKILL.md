@@ -1,15 +1,12 @@
 ---
 name: create-pr-for-issue
-description: Turn a GitHub issue into an open, review-ready PR. Implements the fix, runs a fresh-eye review, audits the cross-cutting checklist (SwiftData schema migration, analytics, accessibility, secrets inventory), runs `make gate`, pushes, and opens the PR with Closes #N linkage. Does NOT merge; pair with /merge-pr after review. Invoked via /create-pr-for-issue <N>.
+description: "Take GitHub issue #N from report to open PR: implement, fresh-eye review, cross-cutting audit, make gate, push, open with Closes #N. Does not merge."
 ---
 
 # Create PR for issue
 
 Takes GitHub issue `#<N>` from report to an open, review-ready PR. The issue number is passed when
 invoking this skill.
-
-**Does not merge.** Report the PR URL and hand back for manual review. Use `/merge-pr <PR>` after
-you're satisfied.
 
 ## Progress checklist
 
@@ -46,32 +43,12 @@ git pull --ff-only
 git checkout -b u/jimmyho/<tool>/<short-kebab-description>
 ```
 
-Branch name format: `u/jimmyho/<tool>/<short-kebab-description>`, all lowercase, no underscores.
-`<tool>` documents authorship (e.g. `claude-code`, `codex`, `cursor`).
+Branch format per AGENTS.md §"Conventions".
 
 ### 3. Implement the fix
 
-Satisfy the cross-cutting checklist **as you implement**, rather than retrofitting it later. The
-full descriptions live in the `create-pr` skill (step 4) and `.github/pull_request_template.md`:
-
-- **SwiftData schema migration** — if you touch `Checklist.swift`, `Item.swift`, or `SchemaV1.swift`,
-  remember a model change needs a new `VersionedSchema`, a `MigrationStage` in
-  `ChecklistsMigrationPlan`, and a migration test — never an edit in place. Once the CloudKit
-  production schema is deployed, model changes are additive only: a field can be added but never
-  removed or renamed. Raise it rather than shipping it unmigrated.
-- **Analytics** — the Mixpanel SDK is connected, so a missing `track` call is a missing
-  measurement. New user-initiated state changes get an
-  `analytics.track(...)` call — `@Environment(\.analytics)` in a view, the injected property in
-  `ChecklistViewController`, a defaulted parameter in the persistence layer — with its names added
-  to the `AnalyticsEvent`/`AnalyticsProperty` enums in `Analytics/AnalyticsNames.swift` and a row
-  in `core-docs/analytics-spec.md`. No PII.
-- **Accessibility** — new controls get `accessibilityLabel` and appropriate traits; nothing clips at
-  large Dynamic Type. If the change involved any accessibility work, read
-  `core-docs/accessibility-spec.md` and update it in the same PR; otherwise leave it unread.
-- **Secrets inventory** — if the change adds, removes, or renames a gitignored secret-bearing file,
-  API token, private key, credential variable, external secret location, or machine-local credential
-  prerequisite, update `core-docs/secrets-list.md` with safe reconstruction and validation guidance.
-  Never include secret values or read/print an actual secret file while documenting it.
+Satisfy the cross-cutting checklist **as you implement**, rather than retrofitting it later — see
+the `create-pr` skill's `reference/review-and-gate.md` §"Cross-cutting concerns".
 
 ### 4. Fresh-eye code review
 
@@ -84,30 +61,14 @@ Get the full branch diff:
 git diff main..HEAD
 ```
 
-Spawn a fresh-context review subagent (Claude: `general-purpose`; Codex/Cursor: the available subagent tool) with the same brief as the `create-pr` skill (step 3) — the
-UIKit/SwiftData/Swift 6 review criteria: save correctness, relationship wiring, sort-key ordering, retain
-cycles, newly-introduced force-unwraps/casts, `UITableView` data-source consistency, and
-main-thread UI. Fresh context, no prior conversation history.
-
-Process findings by severity:
-
-- **High** — fix now, autonomously.
-- **Medium** — fix real bugs and architectural issues; skip subjective preferences outside scope.
-- **Low** — skip (style, premature optimization).
-
-Apply all fixes at once. Do not re-spawn the reviewer after each fix.
+Spawn a fresh-context review subagent with the brief in the `create-pr` skill's
+`reference/review-and-gate.md` §"Reviewer brief" plus the diff above. Fix High and real-bug Medium
+findings in one pass; skip Low.
 
 ### 5. Run the gate
 
-```bash
-make gate
-```
-
-Run asynchronously using the current tool’s background/session mechanism and collect its final exit status. Re-run after any step-4 fixes. **Do not open the
-PR until it's green.**
-
-`make gate` is **format-changed → lint-changed → build** — it does not run tests. On failure: read
-`tmp/gate.log`, fix, re-run.
+Run `make gate` in the background and collect its exit status; re-run after fixes. Don't open the
+PR until green (on failure read `tmp/gate.log`).
 
 ### 6. Push and open the PR
 
@@ -123,10 +84,10 @@ AGENTS.md §"Commit and PR style"), following `.github/pull_request_template.md`
 - **`Closes #<N>`** — complete fix (auto-closes on squash-merge)
 - **`Refs #<N>`** — partial fix; note what's still pending
 
-In **Test plan**, state how the fix was actually verified. The automated suites do run and pass
-since #128 (`make test-unit`, then `make test-ui`), so run whichever the fix warrants and report the
-real result; where a change is only verifiable by hand, manual simulator steps are the honest
-answer. Either way, write what you actually did — don't imply coverage that doesn't exist.
+In **Test plan**, state how the fix was actually verified. The automated suites run and pass, so run
+whichever the fix warrants and report the real result; where a change is only verifiable by hand,
+manual simulator steps are the honest answer. Either way, write what you actually did — don't imply
+coverage that doesn't exist.
 
 Create the PR:
 
@@ -146,7 +107,6 @@ user's call; or a SwiftData model change lacks its schema/migration/test triad.
 
 ## What this skill does NOT do
 
-- **Does not merge.** Use `/merge-pr <PR>` after review.
 - **Does not run tests** — see the `create-pr` skill's closing section.
 - **Does not replace `/create-pr`.** Use `create-pr` when code is already written and no issue drives
   the work.

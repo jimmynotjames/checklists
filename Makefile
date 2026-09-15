@@ -1,25 +1,14 @@
-.PHONY: system format format-check format-changed lint lint-changed build test-unit test-ui gate verify-secrets hooks-install initialize-sims sim-status sim-shutdown sim-clean
+.PHONY: system format format-changed lint lint-changed build test-unit test-ui gate verify-secrets hooks-install initialize-sims sim-status sim-shutdown sim-clean
 
 system:
 	bash scripts/system-setup.sh
 
 # -- Formatting and linting ---------------------------------------------------
-# The *-changed targets are what `make gate` runs: they touch only the Swift files
-# this branch changed. The repo-wide targets below are deliberate manual escape
-# hatches — this tree carries ~96 pre-existing SwiftLint violations and 30/31 files
-# needing reformat, so running them repo-wide rewrites the whole codebase.
-# See scripts/changed-swift-files.sh.
-
-# Repo-wide rewrite. Manual only — NOT part of the gate.
+# *-changed targets are what `make gate` runs. Repo-wide format/lint are manual
+# only — AGENTS.md §"Lint policy".
 format:
 	swiftformat .
 
-# Repo-wide check-only (no rewrite). Manual only — NOT part of the gate.
-format-check:
-	swiftformat --lint .
-
-# Repo-wide strict lint. Manual only — NOT part of the gate. Expect ~96 violations
-# on the untouched legacy tree; this target is for tracking that number down over time.
 lint:
 	swiftlint lint --strict
 
@@ -40,25 +29,20 @@ lint-changed:
 build:
 	bash scripts/build.sh
 
-# Tests are OPT-IN and not part of the gate. Runs against disposable in-memory
-# ModelContainers (see checklistsTests/Helpers/TestModelContainer.swift); nothing here
-# touches the simulator's real on-disk store. See scripts/test-unit.sh.
+# Opt-in, not in the gate. See scripts/test-unit.sh.
 test-unit:
 	bash scripts/test-unit.sh
 
 test-ui:
 	bash scripts/test-ui.sh
 
-# Full gate (format-changed -> lint-changed -> build) in one command, logged to
-# tmp/gate.log, stopping at the first failure. See scripts/gate.sh for why this
-# single-command form exists (avoids the subshell/`; echo` permission prompt).
+# One command so the whole gate is a single allowlisted call; see scripts/gate.sh.
 gate:
 	bash scripts/gate.sh
 
 # Release ship guard. Fails if config/Secrets.local.xcconfig is missing or the Mixpanel
-# prod token is still the committed placeholder. Run this before archiving for TestFlight
-# or the App Store — Fastlane currently provides read-only ASC tools; CI is disabled.
-# Deliberately NOT part of `make gate`: a fresh clone has no local secrets file.
+# prod token is still the committed placeholder. Not part of make gate: a fresh clone
+# has no local secrets file.
 verify-secrets:
 	bash scripts/verify_release_secrets.sh
 
@@ -68,10 +52,7 @@ hooks-install:
 initialize-sims:
 	@ROOT="$(CURDIR)" bash -c 'source "$(CURDIR)/scripts/_sim_sandbox.sh"'
 
-# -- Scoped simulator management (affects only this repo's device) --
-# These targets operate on the single UDID stored in .build/sim/device.udid.
-# Never use `pkill Simulator`, `killall Simulator`, or bare `simctl shutdown/erase all`
-# — those commands affect every simulator on the machine.
+# Scoped to the UDID in .build/sim/device.udid only.
 
 _UDID_FILE := $(CURDIR)/.build/sim/device.udid
 
