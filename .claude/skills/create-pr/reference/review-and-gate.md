@@ -30,8 +30,24 @@ subagent tool) with the diff pasted after this brief:
 > - **Main-thread UI** — UIKit calls made off the main thread.
 > - Correctness bugs, architectural problems, and serious future-extensibility risks generally.
 >
-> Do NOT flag style issues — SwiftLint and SwiftFormat own those. For each finding: state the file
-> and approximate line, describe the issue, and rate it high/medium/low. Append the full diff below."
+> Then two checks on the diff as a whole. Report both every time, explicitly, even when the answer
+> is "nothing" — silence on them reads as "not looked at":
+>
+> - **Deletable prose** — any doc or comment line here that could be deleted with no loss: text
+>   restating what the code already shows, history or narration of how the change came about,
+>   drift-prone numbers (counts, dates, "since #N"), or duplication of something `core-docs/`,
+>   AGENTS.md, a config file, or this same file already says. Quote each line. Do not flag comments
+>   that narrate a UI flow for a human reader.
+> - **Scope creep** — anything in this diff not required by the stated change: renames, refactors,
+>   drive-by fixes, edits to files the change had no reason to touch. Name the files.
+>
+> Do NOT flag style issues — SwiftLint and SwiftFormat own those; the two checks above are not style.
+> For each finding: state the file and approximate line, describe the issue, and rate it
+> high/medium/low. Append the full diff below."
+>
+> **The stated change:** [one or two sentences — what this PR was asked to do, and which files that
+> should touch. `create-pr-for-issue`: summarise the issue here. The scope check has nothing to
+> measure against without this, and will otherwise infer scope from the diff it is judging.]
 >
 > [paste the full `git diff main..HEAD` output]
 
@@ -42,6 +58,13 @@ Process findings by severity:
 - **Medium** — fix real bugs and architectural issues; skip subjective preferences or refactoring
   suggestions outside the change's scope.
 - **Low** — skip (style, premature optimization; not your job here).
+
+The deletable-prose and scope-creep verdicts are **acted on regardless of the rating they carry** —
+they are the two findings the Low rule must not swallow. Delete the prose — `git blame` first, per
+AGENTS.md §"Writing style". Revert the out-of-scope edit, or, if the change genuinely can't work
+without it, keep it and say why in the PR body. (This
+does not reopen the Medium rule above: the reviewer *proposing* an adjacent refactor is still
+declined; the reviewer *catching* one already in the diff is not.)
 
 Apply all fixes at once. Do not re-spawn the reviewer after each fix.
 
@@ -106,3 +129,8 @@ fixes are auto-applied to changed files; build failures require code changes.
 In **Test plan**, say how the change was actually verified. State accurately which automated suites
 were run — a plausible-sounding test plan that was never run is worse than "verified by hand in the
 simulator: <steps>".
+
+Length scales with the change — a one-line fix gets a one-line body, a schema migration gets what it
+needs. What's constrained is the *kind* of content: AGENTS.md §"Writing style", which governs PR
+bodies too. The reader to write for is the agent who later mines merged PRs for the reasoning behind
+a decision, and pays for every line of noise on the way to it.

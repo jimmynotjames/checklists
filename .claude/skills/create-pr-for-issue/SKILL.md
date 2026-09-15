@@ -84,10 +84,8 @@ AGENTS.md §"Commit and PR style"), following `.github/pull_request_template.md`
 - **`Closes #<N>`** — complete fix (auto-closes on squash-merge)
 - **`Refs #<N>`** — partial fix; note what's still pending
 
-In **Test plan**, state how the fix was actually verified. The automated suites run and pass, so run
-whichever the fix warrants and report the real result; where a change is only verifiable by hand,
-manual simulator steps are the honest answer. Either way, write what you actually did — don't imply
-coverage that doesn't exist.
+Body length scales with the change, but its content doesn't — **Test plan** honesty included: the
+`create-pr` skill's `reference/review-and-gate.md` §"Gate and PR body".
 
 Create the PR:
 

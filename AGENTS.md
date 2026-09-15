@@ -25,6 +25,21 @@ its area:
 The public support site is `index.html` on the orphan `gh-pages` branch
 (<https://jimmynotjames.github.io/checklists/>), not on `main`.
 
+## Writing style
+
+Governs docs, code comments, commit bodies, and PR bodies alike.
+
+- **Describe the current state.** No history sections, changelogs, or revision appendices — git is
+  the record. Cite an issue or PR only where it still changes behaviour.
+- **No drifting numbers:** test counts, test inventories, annotation counts, dates, "since #N".
+- **Point at the canonical home; don't paraphrase it.** A one-line pointer to a `core-docs/` section
+  beats a restatement that falls out of date the moment that section changes.
+- **Comments explain why, not what.** The Swift per-file headers stay — `.swiftformat` says why.
+- **`git blame` a comment before deleting it**, and let the author decide. Human-written comments
+  that narrate a UI flow stay, however redundant they look: numbered `/** 1. 2. 3. */` step lists
+  above a test, `// Check that ...` lines inside one. Agent-written comments that restate a test
+  name or a spec are fair game.
+
 ## Naming
 
 Never name a repo or app by the folder it sits in on someone's machine. The sibling **codebase** is
@@ -54,8 +69,6 @@ Both test suites pass. Conventions:
 - Fixtures come from `Helpers/TestScope.swift` (`withTemporaryDirectory`, `withIsolatedDefaults`)
   and `TestModelContainer.makeContext()`, not `setUp`/`tearDown`.
 - `checklistsUITests` is XCTest and stays so — Swift Testing has no `XCUIApplication`.
-- Don't record test counts, test inventories, or history in docs. Cite an issue or PR only when it
-  still changes behaviour.
 
 ### Reading a test result
 
@@ -143,6 +156,10 @@ the fix:
 
 ## What NOT to do
 
+- **Implement what was asked, and stop there.** Don't rewrite GitHub issue text, and don't rename or
+  refactor beyond the change. Adjacent problems you notice get **said out loud** — in the reply or
+  the turn's closing summary — and nothing more. **Never `gh issue create` without asking first**:
+  "list them for later" means mention them, not file them. Which ones become issues is Jimmy's call.
 - Never `pkill`/`killall Simulator`, `simctl shutdown/erase/delete all`, or
   `simctl delete unavailable` — they hit every simulator on the machine. Use `make sim-shutdown` /
   `make sim-clean`, which act only on this repo's UDID.
