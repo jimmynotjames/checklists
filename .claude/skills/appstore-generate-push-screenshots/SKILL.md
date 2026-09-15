@@ -46,7 +46,8 @@ Resolve the explicit app version and reviewed capture run from the user's reques
 or release record. If either is ambiguous, ask before changing ASC. Use the
 `push_screenshots` lane with `app_version:X.Y.Z` and the reviewed run ID; consult
 `fastlane/SETUP.md` for exact options. It validates local artifacts first, then
-requires the matching existing editable version and existing listing locales.
+requires the matching existing editable version and existing listing locales. This is English-only
+capture — it must not expand into the metadata pipeline's 50-locale set.
 
 The lane bounds deletion and upload retries and checks asset processing. Retain
 the real exit status and log; a failure after deletion/upload may leave partial
