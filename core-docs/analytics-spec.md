@@ -2,7 +2,7 @@
 
 | Field        | Value      |
 | ------------ | ---------- |
-| Version      | 1.7        |
+| Version      | 1.8        |
 | Last Updated | 2026-09-14 |
 | Author/Owner | Jimmy Ho   |
 
@@ -685,20 +685,36 @@ the events survive a persistence-layer swap — which they since have.
 Flurry also had `withCrashReporting(true)`, `withLogLevel`, and vendored `FlurryConsent` /
 `FlurryCCPA` objects that this app never actually used.
 
-## 15. Published disclosures — **action needed outside this repo**
+## 15. Published disclosures
 
 Two public disclosures must describe what this app collects. This section is the whole contract.
 
-**Deadline: the next App Store release.** #169 put the SDK on `main`, but no shipped build carries
-it — the last submission was `v1.1.0`. Merging is not shipping; nothing published is wrong today.
+**Release status.** #169 put the SDK on `main`, but no shipped build carries it — the last
+submission was `v1.1.0`. Both disclosures below are correct ahead of the 1.2 submission rather
+than catching up to it.
 
-- **The privacy policy** (termsfeed, linked from Settings) is **still wrong** — it describes an app
-  that collects nothing. It must describe Mixpanel analytics, the `checklist_name` exception (§4.4),
-  the §6.2 consent model, and the Settings opt-out.
+- **The privacy policy** — **done.** Self-hosted at
+  <https://jimmynotjames.github.io/checklists/privacy.html>, served from this repo's `gh-pages`
+  branch, replacing the 2019 TermsFeed page that named Flurry and claimed location and cookie
+  collection this app has never done. It names Mixpanel as the processor. Refs #190.
 - **The nutrition label** — **done.** Declares the same four types as `PrivacyInfo.xcprivacy`, each
   Linked, purpose Analytics, not tracking.
 
-Neither lives in this repo, which is why they are easy to forget.
+**The policy is a clone of `budgets1`'s, and is deliberately generic.** It reproduces the TermsFeed
+document generated for that app in June 2026, with reChecklist substituted and Jimmy Ho named as the
+controller. It does **not** enumerate the §10 events, the `checklist_name` exception (§4.4) or the
+§6.2 consent model. That is a decision, not an oversight: the vetted template takes precedence over
+a hand-written inventory, because deviating from it carries more risk than the added specificity
+buys. Six passages were corrected where the template asserted collection or sale this app does not
+do — CCPA Category B, the sale/sharing disclosure, the ad-network opt-out instructions, the
+sensitive-PI contradiction, and the account and server-log retention rows. Nothing else was changed.
+If that trade is ever revisited, §4 and §6 are the input a rewrite would draw on.
+
+The policy now lives in this repo; the nutrition label still does not, which is why it is the one
+that is easy to forget. The URL is carried in exactly two tracked places —
+`SettingsView.swift` and `fastlane/metadata/en-US/privacy_url.txt` — and only the fastlane copy
+reaches App Store Connect, via `push_metadata`. Anyone still on `v1.1.0` keeps hitting the old
+TermsFeed page until they update.
 
 **Enforcement.** Apple documents no automated label-vs-manifest check; what is gated is manifest
 schema validity — a malformed `.xcprivacy` is rejected at upload. The label is a self-attestation,
@@ -749,6 +765,7 @@ belongs in the section it changed, where a reader will actually look for it.
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
+| 1.8 | 2026-09-14 | Jimmy Ho | §15: privacy policy self-hosted on `gh-pages`, cloned from `budgets1`'s TermsFeed text; deliberately generic, six collection claims corrected. Refs #190. |
 | 1.7 | 2026-09-14 | Jimmy Ho | `error` replaced by `error_domain` / `error_code` / `error_operation`; `NSError.userInfo` added to the §4.3 deny-list. |
 | 1.6 | 2026-09-14 | Jimmy Ho | §15 corrected: collection goes live at App Store release, not at #169; no documented automated label-vs-manifest check; nutrition label now matches the manifest. Refs #170. |
 | 1.5 | 2026-09-14 | Jimmy Ho | Mixpanel's IP-derived geolocation turned off; §4.3 denial and §9.2 settings-not-position note added. Refs #170. |

@@ -166,7 +166,7 @@ struct SettingsView: View {
     Section {
       Button {
         analytics.track(AnalyticsEvent.privacyPolicyTapped)
-        guard let url = URL(string: "https://www.termsfeed.com/privacy-policy/0420e699b562320b2beb80af0a4e08b9") else {
+        guard let url = URL(string: "https://jimmynotjames.github.io/checklists/privacy.html") else {
           assertionFailure()
           return
         }
