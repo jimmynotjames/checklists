@@ -11,7 +11,8 @@ test run, `ConsoleAnalyticsClient` is used instead. Tooling was ported from
 The Xcode project is `checklists/checklists.xcodeproj` (Xcode 26+; CI pins 26.6). All three targets
 use file-system-synchronized folders: a new `.swift` under `checklists/checklists/`,
 `checklists/checklistsTests/`, or `checklists/checklistsUITests/` compiles into that target with no
-project-file change. Each folder's `Info.plist` is its one membership exception.
+project-file change. Each folder's `Info.plist` is its one membership exception; to exclude another
+file, uncheck it in Xcode's File inspector.
 
 Design docs in `core-docs/` are canonical for their subject — read the relevant one before touching
 its area:
