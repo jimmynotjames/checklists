@@ -6,10 +6,10 @@
 import CloudKit
 import SwiftUI
 
-/// Settings screen presented as a sheet from the app's `Router`. Mirrors budgets1's
-/// `SettingsView` structure (Form + sections, `.task` loaders, `observeAccountChanges`
-/// withTaskGroup pattern), but has no Themes section and none of the currency/week-start/
-/// analytics-consent machinery budgets1 has.
+/// Settings screen presented as a sheet from the app's `Router`. Mirrors
+/// `simple-recurring-budgets`'s `SettingsView` structure (Form + sections, `.task` loaders,
+/// `observeAccountChanges` withTaskGroup pattern), but has no Themes section and none of the
+/// currency/week-start/analytics-consent machinery that app has.
 struct SettingsView: View {
   @Environment(SyncStatus.self) private var syncStatus
   @Environment(AnalyticsSettings.self) private var settings

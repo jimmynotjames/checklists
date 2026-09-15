@@ -11,7 +11,7 @@ import Testing
 /// Guards the single-store invariant behind `ProductionContainerFactory`: a `ModelConfiguration`'s
 /// on-disk `url` is independent of its `cloudKitDatabase` setting, which is what lets an
 /// offline-first store be promoted to CloudKit-backed in place rather than forking into a second,
-/// empty file. Ported from `budgets1`'s suite of the same name
+/// empty file. Ported from `simple-recurring-budgets`'s suite of the same name
 /// (`simple-recurring-budgetsTests/App/PersistentStoreURLTests.swift`).
 ///
 /// These pin SwiftData's own behavior directly, independent of `ProductionContainerFactoryTests`,

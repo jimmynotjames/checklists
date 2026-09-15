@@ -1,6 +1,7 @@
 # https://lefthook.dev/configuration/
 #
-# Ported from the budgets1 repo. Install with `make hooks-install` (or `make system`).
+# Ported from the `simple-recurring-budgets` repo. Install with `make hooks-install`
+# (or `make system`).
 #
 # Everything in pre-commit runs on {staged_files} ONLY. That is deliberate: this is a
 # 2020-era tree with ~96 pre-existing SwiftLint violations, so a repo-wide gate would
@@ -49,7 +50,7 @@ pre-push:
             ;;
         esac
 
-    # Compile check only. budgets1 also runs its i18n gates here; this repo has no
+    # Compile check only. `simple-recurring-budgets` also runs its i18n gates here; this repo has no
     # localization pipeline. Tests are deliberately not run on push — see AGENTS.md.
     build:
       run: bash scripts/build.sh

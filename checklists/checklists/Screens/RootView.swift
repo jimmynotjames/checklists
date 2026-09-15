@@ -8,7 +8,7 @@ import SwiftUI
 
 /// The app's main scene once startup has succeeded: the checklists list inside a
 /// `NavigationStack`, with the main menu layered above it and sheets for
-/// Settings and the new-checklist flow. Modeled on budgets1's `RootView`.
+/// Settings and the new-checklist flow. Modeled on `simple-recurring-budgets`'s `RootView`.
 struct RootView: View {
   @Environment(Router.self) private var router
   @Environment(\.modelContext) private var context

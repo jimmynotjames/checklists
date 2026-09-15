@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Single-command form of the gate (format-changed -> lint-changed -> build).
 #
-# Why this exists (inherited rationale from budgets1): the agent kept writing the
+# Why this exists (inherited rationale from `simple-recurring-budgets`): the agent kept writing the
 # gate as
 #   (make format && make lint-fix && make build) > tmp/gate.log 2>&1; echo "EXIT=$?"
 # Claude Code splits compound bash on (){};|&& and checks each segment against the
@@ -11,8 +11,8 @@
 # is `bash scripts/gate.sh`, which a single `Bash(bash scripts/*)` entry already
 # allows — no prompt, no subshell, no trailing echo.
 #
-# Deviation from budgets1: every step is scoped to the Swift files this branch
-# actually changed (vs `main`), not the whole tree. budgets1 runs `swiftformat .`
+# Deviation from `simple-recurring-budgets`: every step is scoped to the Swift files
+# this branch actually changed (vs `main`), not the whole tree. That repo runs `swiftformat .`
 # and `swiftlint --strict .` repo-wide, which it can afford because its tree is
 # already clean. This is a 2020-era tree carrying ~96 pre-existing violations and
 # 30/31 files needing reformat — repo-wide steps would rewrite the entire codebase

@@ -102,7 +102,8 @@ struct ChecklistsApp: App {
   /// check of its own: a test run or an unconfigured token falls back to the console client,
   /// otherwise every call reaches a real `MixpanelAnalyticsClient`, gated one layer up.
   ///
-  /// `LaunchModeContainerFactory.isRunningTests` — not budgets1's `IS_TESTING`-only check —
+  /// `LaunchModeContainerFactory.isRunningTests` — not `simple-recurring-budgets`'s
+  /// `IS_TESTING`-only check —
   /// because it covers both the `-UITests1` launch argument and the `IS_TESTING` env var; the
   /// XCUITest bundle passes only the former, so checking just the env var would let UI-test runs
   /// reach real Mixpanel.

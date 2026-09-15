@@ -10,7 +10,8 @@ import Foundation
 /// A suite is a `struct` with no `deinit`, so a fixture needing teardown is handed to the test
 /// through a closure and released in `defer`. Creation and cleanup end up next to each other, and
 /// nothing is stored in an implicitly-unwrapped `var` that would crash rather than fail if it were
-/// never populated. Same pattern as `budgets1`'s `MigrationTestSupport.withTemporaryStoreURL`.
+/// never populated. Same pattern as `simple-recurring-budgets`'s
+/// `MigrationTestSupport.withTemporaryStoreURL`.
 enum TestScope {
   /// Runs `body` with a fresh, empty directory under the test process's temporary directory, and
   /// removes it — along with any SwiftData `-wal`/`-shm` siblings written into it — afterwards.

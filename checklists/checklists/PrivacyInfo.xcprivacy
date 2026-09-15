@@ -25,7 +25,7 @@
 			</array>
 		</dict>
 		<!-- checklist_name is raw user content. This declaration is the reason this app's
-		     manifest differs from budgets1's, which collects no free text. Item names, item
+		     manifest differs from Wren's, which collects no free text. Item names, item
 		     notes, and checklist notes are never transmitted — only their counts and lengths.
 		     See the accepted-risk section, core-docs/analytics-spec.md §4.4. -->
 		<dict>

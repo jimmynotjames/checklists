@@ -1,6 +1,6 @@
 # https://realm.github.io/SwiftLint/rule-directory.html
 #
-# Ported from the budgets1 repo, with this project's names substituted.
+# Ported from the `simple-recurring-budgets` repo, with this project's names substituted.
 #
 # Pre-commit lints STAGED FILES ONLY (see lefthook.yml). The repo-wide `make lint` target
 # exists but is deliberately NOT part of `make gate` — this is a 2020-era tree and a

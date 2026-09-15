@@ -17,7 +17,8 @@
 enum MixpanelTokenSource {
   /// True when the token this build configuration will actually use is a real one.
   ///
-  /// Deliberately checks **only the active token**, not both. `budgets1` requires both to be
+  /// Deliberately checks **only the active token**, not both. `simple-recurring-budgets` requires
+  /// both to be
   /// filled in, which produces a bad failure: a maintainer who fills in the prod token but
   /// leaves the dev one at its placeholder gets a green ship guard and a Release build where
   /// this returns `false`, so every event silently goes to the console client. The ship guard

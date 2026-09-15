@@ -11,7 +11,7 @@ import Testing
 /// row — through injected account-status providers. `CKContainer` cannot be stubbed, which is
 /// why the loader takes its query as an injectable closure in the first place.
 ///
-/// Ported from budgets1's `ICloudStatusLoaderTests` suite of the same name.
+/// Ported from `simple-recurring-budgets`'s `ICloudStatusLoaderTests` suite of the same name.
 @Suite("ICloudStatusLoader account status mapping")
 struct ICloudStatusLoaderTests {
   @Test("an available provider writes available")

@@ -1,7 +1,7 @@
 # https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md
 #
-# Ported from the budgets1 repo. Deviations from that config are called out inline —
-# this project is Swift 6 / UIKit / iOS 26, not SwiftUI.
+# Ported from the `simple-recurring-budgets` repo. Deviations from that config are
+# called out inline — this project is Swift 6 / UIKit / iOS 26, not SwiftUI.
 #
 # Pre-commit runs this on STAGED FILES ONLY (see lefthook.yml), so the 2020-era tree
 # is reformatted incrementally as files are touched, never in one big-bang rewrite.
@@ -10,7 +10,7 @@
 --importgrouping alpha
 --wraparguments before-first
 --wrapparameters before-first
-# budgets1 uses `--header strip`. Every file here carries a
+# `simple-recurring-budgets` uses `--header strip`. Every file here carries a
 # `//  Created by Jimmy Ho ... Copyright © 2020` block that `strip` would delete on
 # first format — a large, pointless, authorship-destroying diff. Leave headers alone.
 --header ignore

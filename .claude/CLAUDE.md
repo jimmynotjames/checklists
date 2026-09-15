@@ -10,6 +10,9 @@ canonical for:
   escape hatches, never hooks or gates
 - **Bash command hygiene** (`/tmp/`, `sed`, pushing to main, `nohup`) — enforced by
   `scripts/hooks/guard_bash_hygiene.sh`, registered in `.claude/settings.json`
+- **Naming**: never name a repo or app by the folder it sits in on this machine. The sibling
+  codebase is `simple-recurring-budgets` and its app is **Wren** (never `budgets1`); this repo is
+  `checklists` (never `checklists2`). Pick repo vs product by what the sentence is about
 - **What NOT to do**, especially machine-wide simulator destruction
 - Known issues (the old Flurry API key still in git history; test targets don't link)
 
