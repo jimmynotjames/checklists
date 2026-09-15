@@ -105,6 +105,7 @@ struct CircularPercentStatusIconTests {
     #expect(size == CGSize(width: 24.0, height: 24.0)) // radius 12.0
   }
 
-  // No test mutates `iconType` on a live instance: without a window, `systemLayoutSizeFitting` doesn't reliably re-solve after `setNeedsUpdateConstraints()`, which reads as a harness limitation, not
-  // a product bug.
+  // No test mutates `iconType` on a live instance: without a window, `systemLayoutSizeFitting`
+  // doesn't reliably re-solve after `setNeedsUpdateConstraints()` — a harness limitation, not a
+  // product bug.
 }

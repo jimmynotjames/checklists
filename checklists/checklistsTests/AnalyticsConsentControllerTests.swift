@@ -154,6 +154,7 @@ struct AnalyticsConsentControllerTests {
 /// Records `settings.analyticsOptIn`'s value at the moment `track` and `reset` were each
 /// called — the one thing `SpyAnalyticsClient`'s ordered `calls` array cannot prove, since the
 /// flag write is a mutation on a different object, not a call the spy observes.
+/// `@MainActor` is load-bearing for the same reason as on `SpyAnalyticsClient`.
 @MainActor
 private final class FlagSnapshottingAnalyticsClient: AnalyticsClient {
   private let settings: AnalyticsSettings
