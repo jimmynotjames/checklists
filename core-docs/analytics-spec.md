@@ -2,7 +2,7 @@
 
 | Field        | Value      |
 | ------------ | ---------- |
-| Version      | 1.7        |
+| Version      | 1.8        |
 | Last Updated | 2026-09-14 |
 | Author/Owner | Jimmy Ho   |
 
@@ -685,20 +685,33 @@ the events survive a persistence-layer swap — which they since have.
 Flurry also had `withCrashReporting(true)`, `withLogLevel`, and vendored `FlurryConsent` /
 `FlurryCCPA` objects that this app never actually used.
 
-## 15. Published disclosures — **action needed outside this repo**
+## 15. Published disclosures
 
-Two public disclosures must describe what this app collects. This section is the whole contract.
+- **Privacy policy** — <https://jimmynotjames.github.io/checklists/privacy.html>, served from this
+  repo's `gh-pages` branch (`privacy.html`). Names Mixpanel as the processor. Refs #190.
+- **Nutrition label** — declares the same four types as `PrivacyInfo.xcprivacy`, each Linked,
+  purpose Analytics, not tracking.
 
-**Deadline: the next App Store release.** #169 put the SDK on `main`, but no shipped build carries
-it — the last submission was `v1.1.0`. Merging is not shipping; nothing published is wrong today.
+The policy URL is carried in `SettingsView.swift` and `fastlane/metadata/en-US/privacy_url.txt`.
 
-- **The privacy policy** (termsfeed, linked from Settings) is **still wrong** — it describes an app
-  that collects nothing. It must describe Mixpanel analytics, the `checklist_name` exception (§4.4),
-  the §6.2 consent model, and the Settings opt-out.
-- **The nutrition label** — **done.** Declares the same four types as `PrivacyInfo.xcprivacy`, each
-  Linked, purpose Analytics, not tracking.
+**Do not push the App Store listing yet.** `privacy_url.txt` is updated in the repo but must not
+reach App Store Connect until the first build carrying the Mixpanel SDK is submitted; the listing
+still points at the 2019 page, which is correct while `v1.1.0` collects nothing. Run
+`push_metadata` as part of the release that ships the SDK.
 
-Neither lives in this repo, which is why they are easy to forget.
+Three things about the policy are deliberate. Do not "fix" them:
+
+1. **It is generic.** It clones the TermsFeed document generated for Wren, and does not
+   enumerate the §10 events, the `checklist_name` exception (§4.4) or the §6.2 consent model. A
+   vetted template beats a hand-written inventory. If that is ever revisited, §4 and §6 are the
+   input a rewrite would draw on.
+2. **One clause is app-specific:** it names the Settings toggle as the way to turn analytics off.
+   The template's only opt-out was `mixpanel.com/optout`, which does nothing for a native SDK.
+3. **CCPA categories A and F are "Collected: Yes"**; B–E and G–L are "No". `distinct_id` is an
+   identifier, and Mixpanel sees the request IP regardless of `useIPAddressForGeoLocation`.
+
+Where the policy departs from Wren's wording, it is because the template asserted collection,
+sale or sharing this app does not do. See the `gh-pages` history for what changed and why.
 
 **Enforcement.** Apple documents no automated label-vs-manifest check; what is gated is manifest
 schema validity — a malformed `.xcprivacy` is rejected at upload. The label is a self-attestation,
@@ -749,6 +762,7 @@ belongs in the section it changed, where a reader will actually look for it.
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
+| 1.8 | 2026-09-14 | Jimmy Ho | §15 rewritten: privacy policy self-hosted on `gh-pages`, cloned from Wren's TermsFeed text and deliberately generic. ASC listing field held until the Mixpanel build ships. Refs #190. |
 | 1.7 | 2026-09-14 | Jimmy Ho | `error` replaced by `error_domain` / `error_code` / `error_operation`; `NSError.userInfo` added to the §4.3 deny-list. |
 | 1.6 | 2026-09-14 | Jimmy Ho | §15 corrected: collection goes live at App Store release, not at #169; no documented automated label-vs-manifest check; nutrition label now matches the manifest. Refs #170. |
 | 1.5 | 2026-09-14 | Jimmy Ho | Mixpanel's IP-derived geolocation turned off; §4.3 denial and §9.2 settings-not-position note added. Refs #170. |
