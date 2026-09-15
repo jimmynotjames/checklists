@@ -72,10 +72,7 @@ class ReleaseBuild
     verify_secrets!
     output = File.join(@root, "tmp/archive-validation")
     FileUtils.mkdir_p(output)
-    options = build_options(output)
-    options[:xcargs] = "CODE_SIGN_STYLE=Automatic"
-    options.delete(:export_xcargs)
-    yield options
+    yield build_options(output)
   end
 
   def beta(latest:, archive:, upload:)

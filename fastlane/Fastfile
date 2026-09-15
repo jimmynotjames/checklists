@@ -10,7 +10,7 @@ RELEASE_ROOT = File.expand_path("..", __dir__)
 
 platform :ios do
   before_all do |lane|
-    next if [:archive_validation, :screenshots].include?(lane)
+    next if lane == :screenshots
     %w[ASC_API_KEY_ID ASC_API_ISSUER_ID ASC_API_KEY_FILEPATH].each do |name|
       UI.user_error!("Set #{name} in fastlane/.env; see fastlane/SETUP.md") if ENV[name].to_s.strip.empty?
     end

@@ -138,11 +138,10 @@ class ReleaseBuildTest < Minitest::Test
     assert_equal "committed", JSON.parse(File.read(path))["status"]
   end
 
-  def test_archive_validation_preserves_project_without_git_or_provisioning
+  def test_archive_validation_uses_beta_build_options_without_git
+    expected = @release.build_options(File.join(@root, "tmp/archive-validation"))
     @release.archive_only do |options|
-      refute_includes options[:xcargs], "allowProvisioningUpdates"
-      refute options.key?(:export_xcargs)
-      assert options[:archive_path].start_with?(File.join(@root, "tmp/"))
+      assert_equal expected, options
     end
     assert_empty @release.commands
     assert_equal @original, File.read(@path)
