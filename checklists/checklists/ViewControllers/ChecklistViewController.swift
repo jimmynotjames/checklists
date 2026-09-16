@@ -38,6 +38,7 @@ class ChecklistViewController: UIViewController {
   private let checklistInfoHeaderView = UIView()
   private let statusIcon = CircularPercentStatusIcon(iconType: .header)
   private let checklistNameTextField = CLTextField()
+  private let metadataLabel = UILabel()
   private let checklistNotesTextView = CLTextView()
 
   private var remoteChangeObserver: RemoteChangeObserver?
@@ -88,6 +89,12 @@ class ChecklistViewController: UIViewController {
     checklistNameTextField.accessibilityLabel = "Checklist Name: "
     checklistNameTextField.text = checklist.name
 
+    // Safe to read `isNewChecklist` here: `viewDidAppear` only clears it after `viewDidLoad` has
+    // built this header.
+    let captionLines = ChecklistHistoryCaption.lines(for: checklist, isNewChecklist: isNewChecklist)
+    let hasCaption = !captionLines.isEmpty
+    ChecklistHistoryCaption.configure(metadataLabel, with: captionLines)
+
     checklistNotesTextView.delegate = self
     checklistNotesTextView.font = .systemFont(ofSize: 16.0)
     checklistNotesTextView.backgroundColor = .clear
@@ -102,8 +109,27 @@ class ChecklistViewController: UIViewController {
     statusIcon.translatesAutoresizingMaskIntoConstraints = false
     checklistNameTextField.translatesAutoresizingMaskIntoConstraints = false
     checklistNotesTextView.translatesAutoresizingMaskIntoConstraints = false
+    if hasCaption {
+      checklistInfoHeaderView.addSubview(metadataLabel)
+      metadataLabel.translatesAutoresizingMaskIntoConstraints = false
+    }
 
-    NSLayoutConstraint.activate([
+    // With no caption the notes go straight under the name at the original 4pt gap, so the header
+    // collapses to exactly the height it has without this feature. Hiding the label instead would
+    // leave its two surrounding gaps behind.
+    let captionConstraints: [NSLayoutConstraint] = hasCaption ? [
+      // Flush with the header's own left margin rather than the name field's, which is indented
+      // past the status ring. 16pt is where the ring's leading edge and the notes text both already
+      // sit, so the caption, the ring and the notes share one edge.
+      metadataLabel.topAnchor.constraint(equalTo: checklistNameTextField.bottomAnchor, constant: 2.0),
+      metadataLabel.leadingAnchor.constraint(equalTo: checklistInfoHeaderView.leadingAnchor, constant: 16.0),
+      metadataLabel.trailingAnchor.constraint(equalTo: checklistInfoHeaderView.trailingAnchor, constant: -16.0),
+      checklistNotesTextView.topAnchor.constraint(equalTo: metadataLabel.bottomAnchor, constant: 6.0),
+    ] : [
+      checklistNotesTextView.topAnchor.constraint(equalTo: checklistNameTextField.bottomAnchor, constant: 4.0),
+    ]
+
+    NSLayoutConstraint.activate(captionConstraints + [
       statusIcon.leadingAnchor.constraint(equalTo: checklistInfoHeaderView.leadingAnchor, constant: 16.0),
 
       checklistNameTextField.topAnchor.constraint(equalTo: checklistInfoHeaderView.topAnchor, constant: 22.0),
@@ -112,7 +138,6 @@ class ChecklistViewController: UIViewController {
       checklistNameTextField.centerYAnchor.constraint(equalTo: statusIcon.centerYAnchor),
       checklistNameTextField.heightAnchor.constraint(equalToConstant: 32.0),
 
-      checklistNotesTextView.topAnchor.constraint(equalTo: checklistNameTextField.bottomAnchor, constant: 4.0),
       checklistNotesTextView.leadingAnchor.constraint(equalTo: checklistInfoHeaderView.layoutMarginsGuide.leadingAnchor, constant: 8.0),
       checklistNotesTextView.trailingAnchor.constraint(equalTo: checklistInfoHeaderView.trailingAnchor, constant: -16.0),
       checklistNotesTextView.bottomAnchor.constraint(equalTo: checklistInfoHeaderView.bottomAnchor, constant: -15.0),
@@ -237,6 +262,7 @@ class ChecklistViewController: UIViewController {
     // If user left some 'dangling' empty items at end of list, remove them, but don't worry if there's one lone empty item.
     // Snapshotted up front: deleting from the context does not re-sort this array, so walking a
     // stale copy backwards is both correct and cheaper than recomputing the sorted items each step.
+    let wasComplete = checklist.isComplete
     let items = checklist.items
     var didDelete = false
     var i = items.count - 1
@@ -251,7 +277,10 @@ class ChecklistViewController: UIViewController {
       i -= 1
     }
     if didDelete {
-      context.saveChangesIgnoringFailure(operation: .delete)
+      // An abandoned empty row was never a task, but it does sit in `percentageComplete`'s
+      // denominator — so a list whose every real item is checked reads as incomplete until the trim
+      // removes it. Clearing it reveals that the final tick, moments earlier, finished the list.
+      context.saveDeletion(from: checklist, wasComplete: wasComplete)
     }
     super.viewDidDisappear(animated)
   }
@@ -267,8 +296,11 @@ class ChecklistViewController: UIViewController {
   @objc func resetButtonTapped() {
     analytics.track(AnalyticsEvent.checklistReset)
 
+    // Reset is a mass uncheck, so it counts as an update. The completion half of `saveStatusChange`
+    // is inert here by construction: unchecking everything lands on 0%, never on complete.
+    let wasComplete = checklist.isComplete
     checklist.uncheckAllItems()
-    context.saveChangesIgnoringFailure(operation: .checklistEdit)
+    context.saveStatusChange(to: checklist, wasComplete: wasComplete)
     updateStatusIcon()
 
     if tableView.contentOffset.y == 0.0 {
@@ -345,8 +377,12 @@ class ChecklistViewController: UIViewController {
   func deleteItem(at index: Int) {
     let items = checklist.items
     guard index >= 0, index < items.count else { assertionFailure(); return }
+    // Removing the one item still outstanding completes the list — the user decided it didn't need
+    // doing, and everything that remained is done. Deleting is an edit, so only the completion is
+    // recorded; `lastUpdated` stays where the last tick left it.
+    let wasComplete = checklist.isComplete
     context.delete(items[index])
-    context.saveChangesIgnoringFailure(operation: .delete)
+    context.saveDeletion(from: checklist, wasComplete: wasComplete)
     tableView.deleteRows(at: [IndexPath(item: index, section: itemsSection)], with: .fade)
     updateStatusIcon()
   }
@@ -630,8 +666,9 @@ extension ChecklistViewController: ItemContentViewDelegate {
   }
 
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView) {
+    let wasComplete = checklist.isComplete
     itemContentView.item?.toggleStatus()
-    context.saveChangesIgnoringFailure(operation: .itemEdit)
+    context.saveStatusChange(to: checklist, wasComplete: wasComplete)
     itemContentView.updateCheckedStatus()
     updateStatusIcon()
     // Only a check counts toward the review prompt; unchecking reads as a reset, not progress.

@@ -16,7 +16,8 @@ it.
 
 Two `@Model` types, both in `checklists/checklists/DataModels/`:
 
-- **`Checklist`** (`Checklist.swift`) — `id`, `name`, `notes`, `sortKey`, and `itemsStorage`, the
+- **`Checklist`** (`Checklist.swift`) — `id`, `name`, `notes`, `sortKey`, `lastUpdated`,
+  `lastCompleted`, and `itemsStorage`, the
   `@Relationship(deleteRule: .cascade, inverse: \Item.checklist)` to its items. App code never reads
   `itemsStorage` directly; the `items` computed property re-sorts it by `sortKey` (falling back to
   `id` to keep ties total and stable) on every read, because a to-many relationship is an unordered
@@ -24,6 +25,28 @@ Two `@Model` types, both in `checklists/checklists/DataModels/`:
 - **`Item`** (`Item.swift`) — `id`, `name`, `notes`, `sortKey`, `statusRaw` (an `Int`; `status` is a
   computed `Item.Status` wrapper so it stays filterable in a `#Predicate` and legible in the
   CloudKit dashboard), and `checklist`, the inverse of `itemsStorage`.
+
+### The two history stamps
+
+`lastUpdated` and `lastCompleted` are both optional, and follow deliberately different rules.
+
+- **`lastUpdated` records an action: an item's checked state changed.** One checkbox, or every item
+  at once via Reset. Renaming, re-noting, reordering, adding and deleting are *edits*, not updates,
+  and leave it alone — so "update" means exactly this throughout the codebase, and
+  `PersistenceOperation.itemUpdate` tags the saves that cause it.
+- **`lastCompleted` records a state transition: the list *became* complete**, by whatever local
+  route. Usually the final tick, but deleting the one item still outstanding counts too, because
+  people model "this list is done, when did that happen" rather than how it got done — a full
+  progress ring above a caption denying the list was ever completed reads as a bug. An empty list
+  is never complete (`Checklist.isComplete`), so deleting every item does not qualify. It survives
+  Reset: it is a record of a finished run, not a claim about the list's current state.
+
+Nothing ever clears either stamp, and an already-complete list is not restamped.
+
+**A merge arriving at 100% must never stamp `lastCompleted`.** The device that actually completed
+the list already stamped it and that field syncs; a local restamp would win last-writer-wins and
+replace the true completion moment with the merge time. This is why `handleRemoteChange` records
+nothing.
 
 Both are declared under `SchemaV1` (`DataModels/SchemaV1.swift`) and registered with
 `ChecklistsMigrationPlan` (`DataModels/ChecklistsMigrationPlan.swift`), whose `stages` array is

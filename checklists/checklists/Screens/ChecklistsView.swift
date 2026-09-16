@@ -229,10 +229,15 @@ struct ChecklistsView: View {
   // MARK: - Resetting
 
   private func resetAllChecklists() {
+    // Stamped in the loop rather than through `saveStatusChange`, which saves per checklist: one
+    // batched save for the whole sweep is the point of doing it here. Unchecking lands on 0%, so
+    // there is no completion to record.
+    let now = Date.now
     for checklist in checklists {
       checklist.uncheckAllItems()
+      checklist.recordUpdate(at: now)
     }
-    context.saveChangesIgnoringFailure(operation: .checklistEdit)
+    context.saveChangesIgnoringFailure(operation: .itemUpdate)
     // No reload to follow: each row's status icon reads `percentageComplete` in its own body,
     // so Observation redraws the rings.
   }

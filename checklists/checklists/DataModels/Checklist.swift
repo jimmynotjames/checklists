@@ -25,6 +25,16 @@ final class Checklist {
   /// rather than renumbering the whole list, which keeps cross-device merges small.
   var sortKey: Double = 0.0
 
+  /// When an item here was last checked or unchecked — including by Reset, which unchecks them
+  /// all. Renaming, re-noting, reordering, adding and deleting are *edits*, not updates, and
+  /// leave this alone. `nil` means nobody has ever ticked anything on this list.
+  var lastUpdated: Date?
+
+  /// When this list last *became* complete, by any local route: the final tick, or the deletion of
+  /// the one item still outstanding. Survives Reset — it records that a run finished rather than
+  /// describing the list's current state, which is what `percentageComplete` is for.
+  var lastCompleted: Date?
+
   /// Optional purely to satisfy CloudKit. **App code should never touch this** — use `items`,
   /// which is non-optional and correctly ordered.
   @Relationship(deleteRule: .cascade, inverse: \Item.checklist)
@@ -47,6 +57,17 @@ final class Checklist {
     return CGFloat(items.count(where: { $0.status == .checked })) / CGFloat(items.count)
   }
 
+  /// Every item checked, and there is at least one. An empty list is *not* complete, matching
+  /// `percentageComplete`'s 0.0 for that case — so deleting the last outstanding item completes a
+  /// list, while deleting all of them does not.
+  ///
+  /// Preferred over `percentageComplete == 1.0` at the call sites: it says what it means, and it
+  /// is not a floating-point equality test.
+  var isComplete: Bool {
+    let items = items
+    return !items.isEmpty && items.allSatisfy { $0.status == .checked }
+  }
+
   init(id: String = UUID().uuidString, name: String = "", notes: String? = nil, sortKey: Double = 0.0) {
     self.id = id
     self.name = name
@@ -58,6 +79,21 @@ final class Checklist {
     for item in items {
       item.status = .unchecked
     }
+  }
+
+  // The two stamps below stay single-purpose rather than having completion imply an update,
+  // because the rules behind them genuinely diverge: deleting the last outstanding item completes
+  // a list, but deleting is an edit, so it must not move `lastUpdated`. A final tick calls both.
+  //
+  // `date` is injectable for the same reason `RatingPromptCoordinator` takes a `now` — it is the
+  // only way to assert a stamp without sleeping.
+
+  func recordUpdate(at date: Date = .now) {
+    lastUpdated = date
+  }
+
+  func recordCompletion(at date: Date = .now) {
+    lastCompleted = date
   }
 
   /// `@MainActor` because `UIDragItem` is: SwiftData models are not actor-isolated, so this would

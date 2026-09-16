@@ -343,7 +343,7 @@ comment for the check-off, eligibility, and presentation-gating mechanics.
 | `items_with_notes_count` | Int | Counts items whose notes are non-nil *and* non-empty. |
 | `error_domain` | String | An `NSError` `domain`, e.g. `NSCocoaErrorDomain`. Framework-authored. |
 | `error_code` | Int | An `NSError` `code`. Sent as an Int, not a string. |
-| `error_operation` | String | `PersistenceOperation.rawValue`: `checklistEdit`, `itemEdit`, `reorder`, `delete`, `legacyImport`, `sampleSeed`, `dedupe`. `persistence_write_failed` only. The one camelCase *value* this app sends — it is a Swift case name, so renaming a case changes the analytics vocabulary. `AnalyticsNamesTests` pins the set. |
+| `error_operation` | String | `PersistenceOperation.rawValue`: `checklistEdit`, `itemEdit`, `itemUpdate`, `reorder`, `delete`, `legacyImport`, `sampleSeed`, `dedupe`. `persistence_write_failed` only. The one camelCase *value* this app sends — it is a Swift case name, so renaming a case changes the analytics vocabulary. `AnalyticsNamesTests` pins the set. |
 | `orientation` | String | `portrait` / `landscape`. Face-up/face-down are filtered out, not reported. |
 | `new_value` / `old_value` | Bool | `analytics_consent_changed` only. |
 | `time_since_first_eligible_bucket` | String | `<1d` / `<7d` / `<30d` / `30d+` between first eligibility and the request. `rating_prompt_requested` only. Bucketed: an exact interval on an event answers nothing the bucket does not, and the exact moments are on the profile (§9.3). |

@@ -121,7 +121,8 @@ struct AnalyticsNamesTests {
   func persistenceOperationValuesArePinned() {
     let sent = Set(PersistenceOperation.allCases.map(\.rawValue))
     #expect(sent == [
-      "checklistEdit", "itemEdit", "reorder", "delete", "legacyImport", "sampleSeed", "dedupe",
+      "checklistEdit", "itemEdit", "itemUpdate", "reorder", "delete", "legacyImport", "sampleSeed",
+      "dedupe",
     ])
   }
 }

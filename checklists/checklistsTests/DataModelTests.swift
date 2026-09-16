@@ -4,6 +4,7 @@
 //
 
 @testable import checklists
+import Foundation
 import SwiftData
 import Testing
 
@@ -30,6 +31,49 @@ struct DataModelTests {
     #expect(fetched.first?.name == "Groceries")
     #expect(fetched.first?.notes == "Weekly")
     #expect(fetched.first?.sortKey == 1.0)
+  }
+
+  @Test("the history timestamps round-trip, and a new checklist has neither")
+  func historyTimestampsPersist() throws {
+    let context = try makeContext()
+    let fresh = Checklist(name: "Groceries", sortKey: 1.0)
+    #expect(fresh.lastUpdated == nil)
+    #expect(fresh.lastCompleted == nil)
+
+    let updated = Date(timeIntervalSinceReferenceDate: 1000.0)
+    let completed = Date(timeIntervalSinceReferenceDate: 2000.0)
+    fresh.recordUpdate(at: updated)
+    fresh.recordCompletion(at: completed)
+    context.insert(fresh)
+    try context.saveChanges(operation: .itemUpdate)
+
+    let fetched = try context.fetchChecklistsSorted().first
+    #expect(fetched?.lastUpdated == updated)
+    #expect(fetched?.lastCompleted == completed)
+  }
+
+  @Test("isComplete needs every item checked, and at least one item")
+  func isCompleteRequiresItems() throws {
+    let context = try makeContext()
+    let checklist = Checklist(name: "Packing", sortKey: 1.0)
+    context.insert(checklist)
+    // An empty list reads 0%, not 100% — so it is never complete, which is what keeps deleting
+    // every item from counting as finishing the list.
+    #expect(checklist.isComplete == false)
+
+    let first = Item(name: "Passport", sortKey: 1.0)
+    let second = Item(name: "Tickets", sortKey: 2.0)
+    for item in [first, second] {
+      context.insert(item)
+      item.checklist = checklist
+    }
+    #expect(checklist.isComplete == false)
+
+    first.status = .checked
+    #expect(checklist.isComplete == false)
+
+    second.status = .checked
+    #expect(checklist.isComplete)
   }
 
   @Test("an item round-trips with its status and its parent link")
