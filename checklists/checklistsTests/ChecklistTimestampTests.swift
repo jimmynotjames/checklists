@@ -7,6 +7,7 @@
 import Foundation
 import SwiftData
 import Testing
+import UIKit
 
 /// Covers the two history stamps on `Checklist` and the rules behind them, which deliberately
 /// differ: `lastUpdated` records an *action* (an item's checked state changed, and nothing else),
@@ -298,6 +299,22 @@ struct ChecklistTimestampTests {
     let lines = ChecklistHistoryCaption.lines(for: checklist, isNewChecklist: false)
     #expect(lines.count == 1)
     #expect(lines.first?.hasPrefix("Updated ") == true)
+  }
+
+  @Test("the stated caption height covers what the label actually renders", arguments: [1, 2])
+  func captionHeightCoversRenderedLabel(lineCount: Int) {
+    // The header's height is a chain of constants — `height(forLineCount:)` is what the layout
+    // believes the caption needs, and the table reserves space from that. If it ever undershoots
+    // what `configure` renders, the table lays the first item underneath the header and the list
+    // looks clipped. Nothing in the UI tests can see that: XCUITest reports Auto Layout positions,
+    // not the height the table reserved.
+    let lines = Array(["Updated Today at 3:42 PM", "Last completed Yesterday at 9:15 AM"].prefix(lineCount))
+    let label = UILabel()
+    ChecklistHistoryCaption.configure(label, with: lines)
+
+    // Roughly the header's content width on the narrowest supported phone.
+    let rendered = label.sizeThatFits(CGSize(width: 327.0, height: .greatestFiniteMagnitude)).height
+    #expect(ChecklistHistoryCaption.height(forLineCount: lineCount) >= rendered)
   }
 
   @Test("a completed checklist shows both lines, updated first")

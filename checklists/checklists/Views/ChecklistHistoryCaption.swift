@@ -49,6 +49,17 @@ enum ChecklistHistoryCaption {
     return lines
   }
 
+  /// The exact height `lineCount` lines of the caption font occupy.
+  ///
+  /// The header that hosts this label measures itself once, from constraints, so its subviews'
+  /// heights have to be knowable up front — see the constraint that uses this in
+  /// `ChecklistViewController.setUpHeaderView`.
+  static func height(forLineCount lineCount: Int) -> CGFloat {
+    ceil(font.lineHeight) * CGFloat(lineCount)
+  }
+
+  private static let font: UIFont = .systemFont(ofSize: 14.0)
+
   /// Applies `lines` to the header's caption label.
   static func configure(_ label: UILabel, with lines: [String]) {
     label.numberOfLines = lines.count
@@ -56,7 +67,7 @@ enum ChecklistHistoryCaption {
     // the user's text size, and a lone label that did would outgrow its neighbours at accessibility
     // sizes — core-docs/accessibility-spec.md §2.3 tracks converting the screen as a whole. 14
     // rather than the scale's nearest step up keeps 2pt between this caption and the 16pt notes.
-    label.font = .systemFont(ofSize: 14.0)
+    label.font = font
     label.textColor = .secondaryLabel
     label.text = lines.joined(separator: "\n")
     // Read as two sentences rather than one run-on line.

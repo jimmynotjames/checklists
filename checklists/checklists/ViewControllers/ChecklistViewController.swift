@@ -124,6 +124,12 @@ class ChecklistViewController: UIViewController {
       metadataLabel.topAnchor.constraint(equalTo: checklistNameTextField.bottomAnchor, constant: 2.0),
       metadataLabel.leadingAnchor.constraint(equalTo: checklistInfoHeaderView.leadingAnchor, constant: 16.0),
       metadataLabel.trailingAnchor.constraint(equalTo: checklistInfoHeaderView.trailingAnchor, constant: -16.0),
+      // Stated rather than left to `intrinsicContentSize`, like every other height in this chain.
+      // `viewDidLoad`'s layout-and-reassign dance measures this header once, and at that moment a
+      // multi-line label still reports one line — leaving the table laying its first row underneath.
+      metadataLabel.heightAnchor.constraint(
+        equalToConstant: ChecklistHistoryCaption.height(forLineCount: captionLines.count)
+      ),
       checklistNotesTextView.topAnchor.constraint(equalTo: metadataLabel.bottomAnchor, constant: 6.0),
     ] : [
       checklistNotesTextView.topAnchor.constraint(equalTo: checklistNameTextField.bottomAnchor, constant: 4.0),
