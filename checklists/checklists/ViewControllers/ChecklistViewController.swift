@@ -259,13 +259,12 @@ class ChecklistViewController: UIViewController {
     // If user left some 'dangling' empty items at end of list, remove them, but don't worry if there's one lone empty item.
     // Snapshotted up front: deleting from the context does not re-sort this array, so walking a
     // stale copy backwards is both correct and cheaper than recomputing the sorted items each step.
-    let wasComplete = checklist.isComplete
     let items = checklist.items
     var didDelete = false
     var i = items.count - 1
     while i > 0 {
       let item = items[i]
-      if item.name.isEmpty, item.notes == nil || item.notes!.isEmpty {
+      if item.isBlank {
         context.delete(item)
         didDelete = true
       } else {
@@ -274,10 +273,9 @@ class ChecklistViewController: UIViewController {
       i -= 1
     }
     if didDelete {
-      // An abandoned empty row was never a task, but it does sit in `percentageComplete`'s
-      // denominator — so a list whose every real item is checked reads as incomplete until the trim
-      // removes it. Clearing it reveals that the final tick, moments earlier, finished the list.
-      context.saveDeletion(from: checklist, wasComplete: wasComplete)
+      // No completion to record: `isComplete` already ignores blank rows, so removing them cannot
+      // change it. Backing out of a finished list must not restamp when it was finished.
+      context.saveChangesIgnoringFailure(operation: .delete)
     }
     super.viewDidDisappear(animated)
   }
@@ -293,13 +291,13 @@ class ChecklistViewController: UIViewController {
   @objc func resetButtonTapped() {
     analytics.track(AnalyticsEvent.checklistReset)
 
-    // Reset is a mass uncheck, so it counts as an update. The completion half of `saveStatusChange`
-    // is inert here by construction: unchecking everything lands on 0%, never on complete.
+    // Nothing ticked means nothing to update: a Reset on an untouched list must not date it.
     let wasComplete = checklist.isComplete
-    checklist.uncheckAllItems()
-    context.saveStatusChange(to: checklist, wasComplete: wasComplete)
+    if checklist.uncheckAllItems() {
+      context.saveStatusChange(to: checklist, wasComplete: wasComplete)
+      refreshHistoryCaption()
+    }
     updateStatusIcon()
-    refreshHistoryCaption()
 
     if tableView.contentOffset.y == 0.0 {
       tableView.reloadData()
@@ -375,9 +373,6 @@ class ChecklistViewController: UIViewController {
   func deleteItem(at index: Int) {
     let items = checklist.items
     guard index >= 0, index < items.count else { assertionFailure(); return }
-    // Removing the one item still outstanding completes the list — the user decided it didn't need
-    // doing, and everything that remained is done. Deleting is an edit, so only the completion is
-    // recorded; `lastUpdated` stays where the last tick left it.
     let wasComplete = checklist.isComplete
     context.delete(items[index])
     context.saveDeletion(from: checklist, wasComplete: wasComplete)
@@ -390,8 +385,8 @@ class ChecklistViewController: UIViewController {
     statusIcon.percentageComplete = checklist.percentageComplete
   }
 
-  /// A text swap and nothing else: the caption is always two lines, so this cannot change the
-  /// header's height and needs none of the re-measuring `textViewDidChange` does for the notes.
+  /// A text swap: the fixed line count means this needs none of the header re-measuring
+  /// `textViewDidChange` does for the notes.
   private func refreshHistoryCaption() {
     guard showsHistoryCaption else { return }
     ChecklistHistoryCaption.refresh(metadataLabel, for: checklist)
@@ -672,14 +667,15 @@ extension ChecklistViewController: ItemContentViewDelegate {
   }
 
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView) {
+    guard let item = itemContentView.item else { return }
     let wasComplete = checklist.isComplete
-    itemContentView.item?.toggleStatus()
+    item.toggleStatus()
     context.saveStatusChange(to: checklist, wasComplete: wasComplete)
     itemContentView.updateCheckedStatus()
     updateStatusIcon()
     refreshHistoryCaption()
     // Only a check counts toward the review prompt; unchecking reads as a reset, not progress.
-    if itemContentView.item?.status == .checked {
+    if item.status == .checked {
       ratingPrompt?.recordItemChecked()
     }
   }

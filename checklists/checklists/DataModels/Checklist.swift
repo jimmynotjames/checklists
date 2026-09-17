@@ -57,15 +57,21 @@ final class Checklist {
     return CGFloat(items.count(where: { $0.status == .checked })) / CGFloat(items.count)
   }
 
-  /// Every item checked, and there is at least one. An empty list is *not* complete, matching
+  /// Every real item checked, and there is at least one. An empty list is *not* complete, matching
   /// `percentageComplete`'s 0.0 for that case — so deleting the last outstanding item completes a
   /// list, while deleting all of them does not.
+  ///
+  /// Blank rows are excluded (`Item.isBlank`). Counting them would mean a list stopped being
+  /// complete the moment the add button left a scratch row behind, and started again when the row
+  /// was trimmed on close — which would restamp `lastCompleted` for someone who only opened the
+  /// screen and backed out. `percentageComplete` still counts them, so the ring can read below 100%
+  /// on a list this considers complete; the ring describes what is on screen, this describes a run.
   ///
   /// Preferred over `percentageComplete == 1.0` at the call sites: it says what it means, and it
   /// is not a floating-point equality test.
   var isComplete: Bool {
-    let items = items
-    return !items.isEmpty && items.allSatisfy { $0.status == .checked }
+    let realItems = items.filter { !$0.isBlank }
+    return !realItems.isEmpty && realItems.allSatisfy { $0.status == .checked }
   }
 
   init(id: String = UUID().uuidString, name: String = "", notes: String? = nil, sortKey: Double = 0.0) {
@@ -75,16 +81,21 @@ final class Checklist {
     self.sortKey = sortKey
   }
 
-  func uncheckAllItems() {
-    for item in items {
+  /// Unchecks everything, reporting whether anything was actually checked.
+  ///
+  /// The return value is what keeps Reset from stamping `lastUpdated` on a list that had nothing
+  /// ticked — "Updated" has to mean something changed, or one Reset All would date every list in
+  /// the app.
+  @discardableResult
+  func uncheckAllItems() -> Bool {
+    var didUncheck = false
+    for item in items where item.status == .checked {
       item.status = .unchecked
+      didUncheck = true
     }
+    return didUncheck
   }
 
-  // The two stamps below stay single-purpose rather than having completion imply an update,
-  // because the rules behind them genuinely diverge: deleting the last outstanding item completes
-  // a list, but deleting is an edit, so it must not move `lastUpdated`. A final tick calls both.
-  //
   // `date` is injectable for the same reason `RatingPromptCoordinator` takes a `now` — it is the
   // only way to assert a stamp without sleeping.
 

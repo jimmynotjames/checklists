@@ -124,9 +124,6 @@ class checklistUITest: XCTestCase {
   }
 
   /// A checklist with no history still shows both caption lines, reading "Never".
-  ///
-  /// The fixed two-line shape is what lets the screen refresh the caption on every tick without
-  /// re-measuring the header, so "no history" has to mean "Never", not a missing line.
   func testHistoryCaptionReadsNeverOnFreshChecklist() {
     // Every UI-test launch gets a freshly seeded in-memory store, so nothing has been ticked yet.
     checklistsList.staticTexts["Morning Routine"].tap()
@@ -162,13 +159,12 @@ class checklistUITest: XCTestCase {
 
     // An expectation rather than reading `.label` straight after the tap: a bare read forces a
     // snapshot that blocks until the app goes idle, with no deadline of its own.
-    expectation(
+    let captionChanged = expectation(
       for: NSPredicate(format: "NOT (label BEGINSWITH %@)", "Updated: Never"),
       evaluatedWith: caption
     )
-    waitForExpectations(timeout: 5) { error in
-      XCTAssertNil(error, "The caption should track a tick live, not wait for the screen to reopen.")
-    }
+    captionChanged.expectationDescription = "the caption tracks a tick live, without reopening the screen"
+    wait(for: [captionChanged], timeout: 5)
   }
 
   /**

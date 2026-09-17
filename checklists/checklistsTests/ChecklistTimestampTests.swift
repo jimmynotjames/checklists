@@ -275,6 +275,69 @@ struct ChecklistTimestampTests {
     #expect(checklist.lastCompleted == nil)
   }
 
+  // MARK: - Blank rows
+
+  @Test("a blank scratch row does not make a finished list unfinished")
+  func blankRowDoesNotUncompleteAList() throws {
+    let context = try TestModelContainer.makeContext()
+    let checklist = try makeChecklist(itemCount: 2, checkedCount: 2, in: context)
+    checklist.recordCompletion(at: completedAt)
+
+    // What the add button leaves behind when the user types nothing into it.
+    try context.insert(item: Item(), at: 2, in: checklist)
+    #expect(checklist.isComplete)
+
+    // Backing out trims the row. Nothing was ticked, so the completion must not move.
+    let wasComplete = checklist.isComplete
+    context.delete(checklist.items[2])
+    context.saveDeletion(from: checklist, wasComplete: wasComplete, at: laterAt)
+
+    #expect(checklist.lastCompleted == completedAt)
+  }
+
+  @Test("the final tick still completes a list that has a blank row on screen")
+  func finalTickCompletesDespiteBlankRow() throws {
+    let context = try TestModelContainer.makeContext()
+    let checklist = try makeChecklist(itemCount: 2, checkedCount: 1, in: context)
+    try context.insert(item: Item(), at: 2, in: checklist)
+
+    // The moment the completion belongs to is this tick, not the later trim of the blank row.
+    let wasComplete = checklist.isComplete
+    checklist.items[1].toggleStatus()
+    context.saveStatusChange(to: checklist, wasComplete: wasComplete, at: completedAt)
+
+    #expect(checklist.lastCompleted == completedAt)
+  }
+
+  @Test("a list of only blank rows is not complete")
+  func blankOnlyListIsNotComplete() throws {
+    let context = try TestModelContainer.makeContext()
+    let checklist = Checklist(name: "Packing", sortKey: 1.0)
+    context.insert(checklist)
+    try context.insert(item: Item(), at: 0, in: checklist)
+
+    #expect(checklist.isComplete == false)
+  }
+
+  // MARK: - Reset on an untouched list
+
+  @Test("Reset stamps nothing when there was nothing checked")
+  func resetWithNothingCheckedStampsNothing() throws {
+    let context = try TestModelContainer.makeContext()
+    let checklist = try makeChecklist(itemCount: 3, in: context)
+
+    #expect(checklist.uncheckAllItems() == false)
+    #expect(checklist.lastUpdated == nil)
+  }
+
+  @Test("Reset reports a change when something was checked")
+  func resetReportsAChangeWhenChecked() throws {
+    let context = try TestModelContainer.makeContext()
+    let checklist = try makeChecklist(itemCount: 3, checkedCount: 1, in: context)
+
+    #expect(checklist.uncheckAllItems())
+  }
+
   // MARK: - Caption
 
   @Test("the stated caption height covers what the label actually renders")
@@ -298,8 +361,6 @@ struct ChecklistTimestampTests {
 
   @Test("a checklist with no history reads Never on both lines")
   func captionReadsNeverWithoutHistory() {
-    // Both lines are always present, so the header is a fixed height and the screen can refresh the
-    // text on every tick without re-measuring anything.
     let lines = ChecklistHistoryCaption.lines(for: Checklist(name: "Packing"))
     #expect(lines == ["Updated: Never", "Last completed: Never"])
   }

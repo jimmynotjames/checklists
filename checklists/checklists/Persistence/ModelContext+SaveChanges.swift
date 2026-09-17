@@ -13,9 +13,7 @@ import SwiftData
 enum PersistenceOperation: String, CaseIterable {
   case checklistEdit
   case itemEdit
-  /// An item's checked state changing — one checkbox, or every item at once via Reset. Distinct
-  /// from `itemEdit` because "update" means exactly this in the model layer, and `Checklist`
-  /// stamps `lastUpdated` for it and for nothing else.
+  /// An item's checked state changing — one checkbox, or every item at once via Reset.
   case itemUpdate
   case reorder
   case delete
@@ -80,9 +78,6 @@ extension ModelContext {
   // The two helpers below pair a timestamp stamp with the save, rather than leaving each call site
   // to remember both halves. Both take `wasComplete`, read by the caller *before* it mutates,
   // because "became complete" is a transition and there is no way to see one after the fact.
-  //
-  // Guarding on `!wasComplete` is what keeps a list that was already complete from being restamped
-  // by further ticking.
 
   /// A checkbox tap, or a Reset. Always an update; also a completion when this is the change that
   /// completed the list.
@@ -113,7 +108,9 @@ extension ModelContext {
     analytics: any AnalyticsClient = AppAnalytics.shared
   ) {
     saveChangesIgnoringFailure(operation: .delete, analytics: analytics)
-    guard !wasComplete, checklist.isComplete else { return }
+    // The checklist itself can be gone — deleted on another device while this screen was open — in
+    // which case there is nothing left to record a completion on.
+    guard !checklist.isDeleted, !wasComplete, checklist.isComplete else { return }
     checklist.recordCompletion(at: date)
     saveChangesIgnoringFailure(operation: .delete, analytics: analytics)
   }

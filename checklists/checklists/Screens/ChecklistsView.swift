@@ -230,11 +230,10 @@ struct ChecklistsView: View {
 
   private func resetAllChecklists() {
     // Stamped in the loop rather than through `saveStatusChange`, which saves per checklist: one
-    // batched save for the whole sweep is the point of doing it here. Unchecking lands on 0%, so
-    // there is no completion to record.
+    // batched save for the whole sweep is the point of doing it here. Only the lists that actually
+    // had something ticked are dated, or this would date every list in the app at once.
     let now = Date.now
-    for checklist in checklists {
-      checklist.uncheckAllItems()
+    for checklist in checklists where checklist.uncheckAllItems() {
       checklist.recordUpdate(at: now)
     }
     context.saveChangesIgnoringFailure(operation: .itemUpdate)

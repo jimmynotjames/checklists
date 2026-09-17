@@ -8,24 +8,16 @@ import UIKit
 
 /// The "Updated … / Last completed …" caption under the checklist name.
 ///
-/// Split out of `ChecklistViewController` so the string building is testable without standing up a
-/// view controller, and so the app's one date formatter has a single home. MainActor-isolated by
-/// the target default rather than `nonisolated` (AGENTS.md §Concurrency), because it touches
-/// `UILabel` and a cached `DateFormatter` and neither is `Sendable`.
+/// Not `nonisolated` (AGENTS.md §Concurrency): it touches `UILabel` and a cached `DateFormatter`,
+/// neither of which is `Sendable`.
 ///
-/// What each line means, and which actions move it, is in core-docs/persistence-design.md §Model.
+/// What each line means, which actions move it, and why the shape is fixed are in
+/// core-docs/persistence-design.md §"The two history stamps".
 enum ChecklistHistoryCaption {
   /// Always two lines, so the header is a fixed height wherever this caption is shown.
-  ///
-  /// That is what lets the checklist screen refresh it on every tick: the text changes, the layout
-  /// does not, so there is no `tableHeaderView` re-measure to run and no content to shift under the
-  /// reader's finger. It is also why a missing date reads as "Never" rather than dropping its line.
   static let lineCount = 2
 
   /// Cached because a `DateFormatter` is expensive to build and this one is read on every refresh.
-  ///
-  /// `doesRelativeDateFormatting` is what turns the common cases into "Today at 3:42 PM" and
-  /// "Yesterday at 9:15 AM"; anything older falls back to "Sep 12, 2026 at 4:00 PM".
   private static let dateFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateStyle = .medium
@@ -34,14 +26,9 @@ enum ChecklistHistoryCaption {
     return formatter
   }()
 
-  /// The caption's two lines.
+  /// The caption's two lines, both always present — "Never" on a list that has never been run.
   ///
-  /// Both are always present, including as "Never". On a list that has never been run that is a
-  /// fact worth stating — and keeping the shape fixed is what makes a live refresh cheap.
-  ///
-  /// Colons in both states because "Updated Never" is not a sentence, and because a caption that is
-  /// always on screen reads as a label/value pair: only the tail changes as the user ticks, so the
-  /// eye is not re-reading the whole line each time.
+  /// Colons in both states because "Updated Never" is not a sentence.
   static func lines(for checklist: Checklist) -> [String] {
     [
       "Updated: \(value(of: checklist.lastUpdated))",
@@ -57,11 +44,8 @@ enum ChecklistHistoryCaption {
     return dateFormatter.string(from: date)
   }
 
-  /// The exact height the caption occupies.
-  ///
-  /// The header that hosts this label measures itself once, from constraints, so its subviews'
-  /// heights have to be knowable up front — see the constraint that uses this in
-  /// `ChecklistViewController.setUpHeaderView`.
+  /// The exact height the caption occupies, stated because the header measures itself once from
+  /// constraints — see `install` below, which applies it.
   static var height: CGFloat {
     ceil(font.lineHeight) * CGFloat(lineCount)
   }
@@ -111,10 +95,7 @@ enum ChecklistHistoryCaption {
     ]
   }
 
-  /// Writes `checklist`'s current history into `label`.
-  ///
-  /// Safe to call as often as the screen likes: the line count never changes, so this never alters
-  /// the header's height.
+  /// Writes `checklist`'s current history into `label`. Safe to call as often as the screen likes.
   static func refresh(_ label: UILabel, for checklist: Checklist) {
     let lines = lines(for: checklist)
     label.text = lines.joined(separator: "\n")
