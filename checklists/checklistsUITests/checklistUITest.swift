@@ -123,25 +123,57 @@ class checklistUITest: XCTestCase {
     assertPercentComplete(checklistsList.cells.element(boundBy: 2), numCheckedItems: 2, numItems: 11)
   }
 
-  /// The history caption is absent until there is history to report.
+  /// A checklist with no history still shows both caption lines, reading "Never".
   ///
-  /// Covers the constraint swap in `ChecklistViewController.setUpHeaderView`, which collapses the
-  /// header rather than hiding the label — a unit test on `captionLines` returning `[]` says
-  /// nothing about whether the notes field repinned to the name field.
-  func testHistoryCaptionAbsentOnFreshChecklist() {
+  /// The fixed two-line shape is what lets the screen refresh the caption on every tick without
+  /// re-measuring the header, so "no history" has to mean "Never", not a missing line.
+  func testHistoryCaptionReadsNeverOnFreshChecklist() {
     // Every UI-test launch gets a freshly seeded in-memory store, so nothing has been ticked yet.
     checklistsList.staticTexts["Morning Routine"].tap()
     XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
 
+    let caption = app.staticTexts["checklistMetadataLabel"]
+    XCTAssertTrue(caption.waitForExistence(timeout: 5))
+    XCTAssertEqual(caption.label, "Updated: Never. Last completed: Never")
+  }
+
+  /// The create sheet shows no caption: there, both lines could only ever read "Never".
+  func testHistoryCaptionAbsentOnNewChecklistSheet() {
+    app.buttons["Add new checklist."].tap()
+    XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
+
     XCTAssertFalse(
       app.staticTexts["checklistMetadataLabel"].exists,
-      "A checklist with no history should show no caption at all."
+      "The create sheet should not carry a caption that can only say Never."
     )
+  }
+
+  /// Ticking an item rewrites the caption without leaving the screen.
+  func testHistoryCaptionUpdatesWhileOnScreen() {
+    checklistsList.staticTexts["Morning Routine"].tap()
+    let tablesQuery = app.tables
+    XCTAssertTrue(tablesQuery["ChecklistTableView"].waitForExistence(timeout: 5))
+
+    let caption = app.staticTexts["checklistMetadataLabel"]
+    XCTAssertTrue(caption.waitForExistence(timeout: 5))
+    XCTAssertTrue(caption.label.hasPrefix("Updated: Never"))
+
+    tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].tap()
+
+    // An expectation rather than reading `.label` straight after the tap: a bare read forces a
+    // snapshot that blocks until the app goes idle, with no deadline of its own.
+    expectation(
+      for: NSPredicate(format: "NOT (label BEGINSWITH %@)", "Updated: Never"),
+      evaluatedWith: caption
+    )
+    waitForExpectations(timeout: 5) { error in
+      XCTAssertNil(error, "The caption should track a tick live, not wait for the screen to reopen.")
+    }
   }
 
   /**
    1. Complete "Morning Routine" by checking its one remaining item.
-   2. Leave and come back — the caption is built in viewDidLoad, so this is what renders it.
+   2. Leave and come back, so the caption is rebuilt from the store rather than refreshed in place.
    3. Verify both lines are there.
    4. Reset, leave and come back again: the completion line outlives the reset.
    */
@@ -166,8 +198,9 @@ class checklistUITest: XCTestCase {
     XCTAssertTrue(caption.waitForExistence(timeout: 5), "A completed checklist should show a caption.")
     // The label reads as two sentences; the dates themselves follow the runner's locale, so only
     // the prefixes are asserted.
-    XCTAssertTrue(caption.label.hasPrefix("Updated "), "Unexpected caption: \(caption.label)")
-    XCTAssertTrue(caption.label.contains("Last completed "), "Unexpected caption: \(caption.label)")
+    XCTAssertTrue(caption.label.hasPrefix("Updated: "), "Unexpected caption: \(caption.label)")
+    XCTAssertTrue(caption.label.contains("Last completed: "), "Unexpected caption: \(caption.label)")
+    XCTAssertFalse(caption.label.hasSuffix("Never"), "Unexpected caption: \(caption.label)")
 
     app.navigationBars.buttons["Reset"].tap()
     detailBackButton.tap()
@@ -176,8 +209,12 @@ class checklistUITest: XCTestCase {
     let captionAfterReset = app.staticTexts["checklistMetadataLabel"]
     XCTAssertTrue(captionAfterReset.waitForExistence(timeout: 5))
     XCTAssertTrue(
-      captionAfterReset.label.contains("Last completed "),
+      captionAfterReset.label.contains("Last completed: "),
       "Reset clears the checkmarks, not the record that a run finished. Got: \(captionAfterReset.label)"
+    )
+    XCTAssertFalse(
+      captionAfterReset.label.hasSuffix("Never"),
+      "Reset must not erase the completion date. Got: \(captionAfterReset.label)"
     )
   }
 

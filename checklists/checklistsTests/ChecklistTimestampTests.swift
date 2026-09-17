@@ -277,56 +277,56 @@ struct ChecklistTimestampTests {
 
   // MARK: - Caption
 
-  @Test("a checklist with no history has no caption")
-  func captionIsEmptyWithoutHistory() {
-    let checklist = Checklist(name: "Packing")
-    #expect(ChecklistHistoryCaption.lines(for: checklist, isNewChecklist: false).isEmpty)
-  }
-
-  @Test("a checklist being created shows no caption even when it has dates")
-  func captionIsEmptyForNewChecklist() {
+  @Test("the stated caption height covers what the label actually renders")
+  func captionHeightCoversRenderedLabel() {
+    // The header's height is a chain of constants — `ChecklistHistoryCaption.height` is what the
+    // layout believes the caption needs, and the table reserves space from that. If it ever
+    // undershoots what the label renders, the table lays the first item underneath the header and
+    // the list looks clipped. Nothing in the UI tests can see that: XCUITest reports Auto Layout
+    // positions, not the height the table reserved.
     let checklist = Checklist(name: "Packing")
     checklist.recordUpdate(at: updatedAt)
     checklist.recordCompletion(at: completedAt)
-    #expect(ChecklistHistoryCaption.lines(for: checklist, isNewChecklist: true).isEmpty)
-  }
-
-  @Test("an updated but never completed checklist shows one line")
-  func captionShowsUpdatedOnly() {
-    let checklist = Checklist(name: "Packing")
-    checklist.recordUpdate(at: updatedAt)
-
-    let lines = ChecklistHistoryCaption.lines(for: checklist, isNewChecklist: false)
-    #expect(lines.count == 1)
-    #expect(lines.first?.hasPrefix("Updated ") == true)
-  }
-
-  @Test("the stated caption height covers what the label actually renders", arguments: [1, 2])
-  func captionHeightCoversRenderedLabel(lineCount: Int) {
-    // The header's height is a chain of constants — `height(forLineCount:)` is what the layout
-    // believes the caption needs, and the table reserves space from that. If it ever undershoots
-    // what `configure` renders, the table lays the first item underneath the header and the list
-    // looks clipped. Nothing in the UI tests can see that: XCUITest reports Auto Layout positions,
-    // not the height the table reserved.
-    let lines = Array(["Updated Today at 3:42 PM", "Last completed Yesterday at 9:15 AM"].prefix(lineCount))
     let label = UILabel()
-    ChecklistHistoryCaption.configure(label, with: lines)
+    ChecklistHistoryCaption.configure(label)
+    ChecklistHistoryCaption.refresh(label, for: checklist)
 
     // Roughly the header's content width on the narrowest supported phone.
     let rendered = label.sizeThatFits(CGSize(width: 327.0, height: .greatestFiniteMagnitude)).height
-    #expect(ChecklistHistoryCaption.height(forLineCount: lineCount) >= rendered)
+    #expect(ChecklistHistoryCaption.height >= rendered)
   }
 
-  @Test("a completed checklist shows both lines, updated first")
-  func captionShowsBothLinesInOrder() {
+  @Test("a checklist with no history reads Never on both lines")
+  func captionReadsNeverWithoutHistory() {
+    // Both lines are always present, so the header is a fixed height and the screen can refresh the
+    // text on every tick without re-measuring anything.
+    let lines = ChecklistHistoryCaption.lines(for: Checklist(name: "Packing"))
+    #expect(lines == ["Updated: Never", "Last completed: Never"])
+  }
+
+  @Test("an updated but never completed checklist keeps the second line")
+  func captionKeepsCompletedLineWhenNeverCompleted() {
+    let checklist = Checklist(name: "Packing")
+    checklist.recordUpdate(at: updatedAt)
+
+    let lines = ChecklistHistoryCaption.lines(for: checklist)
+    #expect(lines.count == ChecklistHistoryCaption.lineCount)
+    #expect(lines.first?.hasPrefix("Updated: ") == true)
+    #expect(lines.first != "Updated: Never")
+    #expect(lines.last == "Last completed: Never")
+  }
+
+  @Test("a completed checklist dates both lines, updated first")
+  func captionDatesBothLines() {
     let checklist = Checklist(name: "Packing")
     checklist.recordUpdate(at: updatedAt)
     checklist.recordCompletion(at: completedAt)
 
     // The prefixes are asserted, not the formatted dates, which follow the test runner's locale.
-    let lines = ChecklistHistoryCaption.lines(for: checklist, isNewChecklist: false)
-    #expect(lines.count == 2)
-    #expect(lines.first?.hasPrefix("Updated ") == true)
-    #expect(lines.last?.hasPrefix("Last completed ") == true)
+    let lines = ChecklistHistoryCaption.lines(for: checklist)
+    #expect(lines.count == ChecklistHistoryCaption.lineCount)
+    #expect(lines.first?.hasPrefix("Updated: ") == true)
+    #expect(lines.last?.hasPrefix("Last completed: ") == true)
+    #expect(lines.allSatisfy { !$0.hasSuffix("Never") })
   }
 }

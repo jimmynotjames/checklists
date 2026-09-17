@@ -43,6 +43,13 @@ Two `@Model` types, both in `checklists/checklists/DataModels/`:
 
 Nothing ever clears either stamp, and an already-complete list is not restamped.
 
+**Both read as "Never" rather than disappearing when unset.** The checklist screen's caption is
+always two lines, which fixes the header's height — that is what lets it rewrite the caption on
+every tick without re-measuring the `tableHeaderView` or shifting the rows under the reader's
+finger. The create sheet is the one screen that hides the caption, because there both lines could
+only ever say "Never"; `ChecklistViewController` decides that once at load rather than reading
+`isNewChecklist` live, which `viewDidAppear` clears.
+
 **A merge arriving at 100% must never stamp `lastCompleted`.** The device that actually completed
 the list already stamped it and that field syncs; a local restamp would win last-writer-wins and
 replace the true completion moment with the merge time. This is why `handleRemoteChange` records

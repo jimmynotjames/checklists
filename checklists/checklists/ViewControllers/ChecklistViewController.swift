@@ -50,6 +50,9 @@ class ChecklistViewController: UIViewController {
     PersistenceController.shared.mainContext
   }
 
+  /// False only on the create sheet, where both caption lines could only ever read "Never".
+  private var showsHistoryCaption = false
+
   var isNewChecklist: Bool = false
   var isJumpingToFirstItem: Bool = false
   var isResetting: Bool = false
@@ -89,11 +92,14 @@ class ChecklistViewController: UIViewController {
     checklistNameTextField.accessibilityLabel = "Checklist Name: "
     checklistNameTextField.text = checklist.name
 
-    // Safe to read `isNewChecklist` here: `viewDidAppear` only clears it after `viewDidLoad` has
-    // built this header.
-    let captionLines = ChecklistHistoryCaption.lines(for: checklist, isNewChecklist: isNewChecklist)
-    let hasCaption = !captionLines.isEmpty
-    ChecklistHistoryCaption.configure(metadataLabel, with: captionLines)
+    // Captured once, not read live. `viewDidAppear` clears `isNewChecklist`, so a caption keyed off
+    // the flag itself would appear partway through the create sheet the moment the first item was
+    // ticked — growing the header under the reader, which is the one thing the fixed height buys.
+    showsHistoryCaption = !isNewChecklist
+    if showsHistoryCaption {
+      ChecklistHistoryCaption.configure(metadataLabel)
+      ChecklistHistoryCaption.refresh(metadataLabel, for: checklist)
+    }
 
     checklistNotesTextView.delegate = self
     checklistNotesTextView.font = .systemFont(ofSize: 16.0)
@@ -109,31 +115,14 @@ class ChecklistViewController: UIViewController {
     statusIcon.translatesAutoresizingMaskIntoConstraints = false
     checklistNameTextField.translatesAutoresizingMaskIntoConstraints = false
     checklistNotesTextView.translatesAutoresizingMaskIntoConstraints = false
-    if hasCaption {
-      checklistInfoHeaderView.addSubview(metadataLabel)
-      metadataLabel.translatesAutoresizingMaskIntoConstraints = false
-    }
-
-    // With no caption the notes go straight under the name at the original 4pt gap, so the header
-    // collapses to exactly the height it has without this feature. Hiding the label instead would
-    // leave its two surrounding gaps behind.
-    let captionConstraints: [NSLayoutConstraint] = hasCaption ? [
-      // Flush with the header's own left margin rather than the name field's, which is indented
-      // past the status ring. 16pt is where the ring's leading edge and the notes text both already
-      // sit, so the caption, the ring and the notes share one edge.
-      metadataLabel.topAnchor.constraint(equalTo: checklistNameTextField.bottomAnchor, constant: 2.0),
-      metadataLabel.leadingAnchor.constraint(equalTo: checklistInfoHeaderView.leadingAnchor, constant: 16.0),
-      metadataLabel.trailingAnchor.constraint(equalTo: checklistInfoHeaderView.trailingAnchor, constant: -16.0),
-      // Stated rather than left to `intrinsicContentSize`, like every other height in this chain.
-      // `viewDidLoad`'s layout-and-reassign dance measures this header once, and at that moment a
-      // multi-line label still reports one line — leaving the table laying its first row underneath.
-      metadataLabel.heightAnchor.constraint(
-        equalToConstant: ChecklistHistoryCaption.height(forLineCount: captionLines.count)
-      ),
-      checklistNotesTextView.topAnchor.constraint(equalTo: metadataLabel.bottomAnchor, constant: 6.0),
-    ] : [
-      checklistNotesTextView.topAnchor.constraint(equalTo: checklistNameTextField.bottomAnchor, constant: 4.0),
-    ]
+    let captionConstraints: [NSLayoutConstraint] = showsHistoryCaption
+      ? ChecklistHistoryCaption.install(
+        metadataLabel,
+        in: checklistInfoHeaderView,
+        below: checklistNameTextField,
+        above: checklistNotesTextView
+      )
+      : [checklistNotesTextView.topAnchor.constraint(equalTo: checklistNameTextField.bottomAnchor, constant: 4.0)]
 
     NSLayoutConstraint.activate(captionConstraints + [
       statusIcon.leadingAnchor.constraint(equalTo: checklistInfoHeaderView.leadingAnchor, constant: 16.0),
@@ -238,6 +227,8 @@ class ChecklistViewController: UIViewController {
     checklistNameTextField.text = checklist.name
     checklistNotesTextView.text = checklist.notes
     updateStatusIcon()
+    // Cheap now the caption is a fixed height: another device's tick shows up without a reopen.
+    refreshHistoryCaption()
     tableView.reloadData()
   }
 
@@ -308,6 +299,7 @@ class ChecklistViewController: UIViewController {
     checklist.uncheckAllItems()
     context.saveStatusChange(to: checklist, wasComplete: wasComplete)
     updateStatusIcon()
+    refreshHistoryCaption()
 
     if tableView.contentOffset.y == 0.0 {
       tableView.reloadData()
@@ -391,10 +383,18 @@ class ChecklistViewController: UIViewController {
     context.saveDeletion(from: checklist, wasComplete: wasComplete)
     tableView.deleteRows(at: [IndexPath(item: index, section: itemsSection)], with: .fade)
     updateStatusIcon()
+    refreshHistoryCaption()
   }
 
   func updateStatusIcon() {
     statusIcon.percentageComplete = checklist.percentageComplete
+  }
+
+  /// A text swap and nothing else: the caption is always two lines, so this cannot change the
+  /// header's height and needs none of the re-measuring `textViewDidChange` does for the notes.
+  private func refreshHistoryCaption() {
+    guard showsHistoryCaption else { return }
+    ChecklistHistoryCaption.refresh(metadataLabel, for: checklist)
   }
 
   /// Saves an item's new position, reporting whether it stuck.
@@ -677,6 +677,7 @@ extension ChecklistViewController: ItemContentViewDelegate {
     context.saveStatusChange(to: checklist, wasComplete: wasComplete)
     itemContentView.updateCheckedStatus()
     updateStatusIcon()
+    refreshHistoryCaption()
     // Only a check counts toward the review prompt; unchecking reads as a reset, not progress.
     if itemContentView.item?.status == .checked {
       ratingPrompt?.recordItemChecked()
