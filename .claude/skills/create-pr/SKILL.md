@@ -16,7 +16,7 @@ Print this unchecked at the start; tick each step as it completes.
 1. **Branch** — confirm on a feature branch (create one if on `main`)
 2. **Initial commit** — uncommitted changes staged and committed so the diff is reviewable
 3. **Fresh-eye review** — full diff reviewed; findings processed
-4. **Cross-cutting concerns** — the four-item checklist audited against the diff
+4. **Cross-cutting concerns** — the five-item checklist audited against the diff
 5. **Gaps fixed** — review findings and any cross-cutting gaps addressed
 6. **Gate** — `make gate` passes clean
 7. **Commit fixes** — any post-review changes committed
@@ -82,7 +82,8 @@ severity as described there.
 ### 4. Cross-cutting concerns
 
 Audit the diff against `reference/review-and-gate.md` §"Cross-cutting concerns" (SwiftData schema
-migration, analytics events, accessibility, secrets inventory) and fix any gaps you find.
+migration, analytics events, accessibility, Reduce Motion, secrets inventory) and fix any gaps you
+find.
 
 ### 5. Run the gate
 

@@ -106,8 +106,19 @@ Check: new interactive controls have an `accessibilityLabel`; custom controls (`
 `CLButton`, `CircularPercentStatusIcon`) set appropriate `accessibilityTraits` and reflect state
 (a checkbox should expose selected/unselected); no fixed frame heights that clip text at large
 Dynamic Type — prefer `minHeight` over a fixed `height` on rows that contain text.
-If the change involved any accessibility work, read `core-docs/accessibility-spec.md` and update it
-in the same PR. Otherwise leave it unread.
+
+**Reduce Motion**
+Applies if: the diff adds or changes an animation — SwiftUI `.animation`/`withAnimation`/
+`.transition`, or UIKit `UIView.animate(withDuration:...)`/any `animated:` call (`setContentOffset`,
+`scrollToRow`, etc. obey `animated: true` regardless of the Reduce Motion setting — that's how one
+escaped the first audit pass).
+Check: gate it on Reduce Motion using the established pattern
+(`@Environment(\.accessibilityReduceMotion)` in SwiftUI, `UIAccessibility.isReduceMotionEnabled` in
+UIKit), or record a one-line rationale for leaving it ungated. Add the verdict to the animation
+inventory in `core-docs/accessibility-spec.md` §3.
+
+If the change involved any accessibility or Reduce Motion work, read `core-docs/accessibility-spec.md`
+and update it in the same PR. Otherwise leave it unread.
 
 **Secrets inventory**
 Applies if: the diff adds, removes, or renames a gitignored secret-bearing file; introduces a new
