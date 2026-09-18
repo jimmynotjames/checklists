@@ -472,19 +472,22 @@ extension ChecklistViewController: UIScrollViewDelegate {
     if scrollView.isDragging, scrollView.panGestureRecognizer.translation(in: scrollView).y > keyboardDismissDragThreshold {
       endEditingAfterDragDismiss()
     }
-    let currentY: CGFloat = scrollView.contentOffset.y
+    // Measured from the table's real top rather than a literal zero, so the threshold below means
+    // the distance actually scrolled: `52.0` clears the name field, which sits at 22-54 in the
+    // header (#145).
+    let scrolledY: CGFloat = scrollView.contentOffset.y + scrollView.adjustedContentInset.top
     let thresholdY: CGFloat = 52.0
 
     if isResetting == true, Self.isAtTop(scrollView) {
       isResetting = false
       tableView.reloadData()
     }
-    if currentY <= thresholdY, navigationItem.title != nil {
+    if scrolledY <= thresholdY, navigationItem.title != nil {
       UIView.animate(withDuration: 0.4, animations: {
         self.navigationItem.title = nil
       })
     }
-    if currentY > thresholdY, navigationItem.title == nil {
+    if scrolledY > thresholdY, navigationItem.title == nil {
       UIView.animate(withDuration: 0.4, animations: {
         self.navigationItem.title = self.checklist.name
       })
