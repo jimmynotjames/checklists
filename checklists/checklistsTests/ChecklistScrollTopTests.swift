@@ -7,8 +7,8 @@
 import Testing
 import UIKit
 
-/// Covers "is the list at the top?", which used to be an exact comparison against a content offset
-/// of `0.0` — right only for a table with nothing inset above it (#145).
+/// Covers `ChecklistViewController.isAtTop(_:)`: the top of an inset table is
+/// `-adjustedContentInset.top`, not a literal content offset of `0.0` (#145).
 @Suite("Recognising the top of the checklist list")
 struct ChecklistScrollTopTests {
   /// `adjustedContentInset` is read-only, so the navigation bar's inset has to be stubbed.
@@ -28,13 +28,14 @@ struct ChecklistScrollTopTests {
     return scrollView
   }
 
-  /// The resting position under a navigation bar, and the case the old comparison got wrong.
+  /// The table's resting position when laid out under a navigation bar.
   @Test("a table resting under the navigation bar is at the top")
   func restingUnderNavigationBarIsAtTop() {
     #expect(ChecklistViewController.isAtTop(makeScrollView(offsetY: -96.0, topInset: 96.0)))
   }
 
-  /// The offset Reset used to scroll to: a bar's height below the real top.
+  /// A content offset of zero sits a bar's height below the real top once the table carries a
+  /// navigation-bar inset.
   @Test("a literal zero offset under a navigation bar is not the top")
   func literalZeroUnderNavigationBarIsNotAtTop() {
     #expect(ChecklistViewController.isAtTop(makeScrollView(offsetY: 0.0, topInset: 96.0)) == false)
