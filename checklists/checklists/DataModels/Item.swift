@@ -45,9 +45,7 @@ final class Item {
   }
 
   /// A row with nothing typed into it: the scratch row the add button leaves behind, not a task.
-  ///
-  /// `ChecklistViewController` trims these when the screen closes, and `Checklist.isComplete`
-  /// ignores them — otherwise an abandoned row would make a finished list read as unfinished.
+  /// Excluded from `Checklist.isComplete`, or an abandoned row would un-finish a finished list.
   var isBlank: Bool {
     name.isEmpty && (notes?.isEmpty ?? true)
   }

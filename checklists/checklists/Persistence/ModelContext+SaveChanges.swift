@@ -97,10 +97,9 @@ extension ModelContext {
   /// An item deletion. Deleting is an edit, so this never touches `lastUpdated` — but removing the
   /// one item still outstanding does complete the list, and that is worth recording.
   ///
-  /// Completeness is re-read *after* the save, unlike `saveStatusChange` above. A deleted item is
-  /// still present in `checklist.items` until the context is saved, so checking first would read
-  /// the list as incomplete and silently miss every deletion that finishes one. The second save
-  /// only happens on that transition, which is rare.
+  /// Completeness is re-read *after* the save, unlike `saveStatusChange` above: a deleted item is
+  /// still present in `checklist.items` until the context is saved, so checking first would read the
+  /// list as incomplete and miss every deletion that finishes one.
   func saveDeletion(
     from checklist: Checklist,
     wasComplete: Bool,
@@ -112,6 +111,8 @@ extension ModelContext {
     // which case there is nothing left to record a completion on.
     guard !checklist.isDeleted, !wasComplete, checklist.isComplete else { return }
     checklist.recordCompletion(at: date)
-    saveChangesIgnoringFailure(operation: .delete, analytics: analytics)
+    // Tagged for what it writes — a checklist timestamp — so a failure here is not counted as a
+    // second failed deletion.
+    saveChangesIgnoringFailure(operation: .checklistEdit, analytics: analytics)
   }
 }

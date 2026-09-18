@@ -340,23 +340,37 @@ struct ChecklistTimestampTests {
 
   // MARK: - Caption
 
-  @Test("the stated caption height covers what the label actually renders")
-  func captionHeightCoversRenderedLabel() {
-    // The header's height is a chain of constants — `ChecklistHistoryCaption.height` is what the
-    // layout believes the caption needs, and the table reserves space from that. If it ever
-    // undershoots what the label renders, the table lays the first item underneath the header and
-    // the list looks clipped. Nothing in the UI tests can see that: XCUITest reports Auto Layout
-    // positions, not the height the table reserved.
+  @Test("the stated caption height covers what the caption actually renders")
+  func captionHeightCoversRenderedCaption() {
+    // `ChecklistHistoryCaption.height` is what the header's constraint chain reserves. If it ever
+    // undershoots, the table lays the first item underneath the header.
     let checklist = Checklist(name: "Packing")
     checklist.recordUpdate(at: updatedAt)
     checklist.recordCompletion(at: completedAt)
-    let label = UILabel()
-    ChecklistHistoryCaption.configure(label)
-    ChecklistHistoryCaption.refresh(label, for: checklist)
+    let view = ChecklistHistoryCaption.makeView()
+    ChecklistHistoryCaption.refresh(view, for: checklist)
 
     // Roughly the header's content width on the narrowest supported phone.
-    let rendered = label.sizeThatFits(CGSize(width: 327.0, height: .greatestFiniteMagnitude)).height
+    let rendered = view.systemLayoutSizeFitting(
+      CGSize(width: 327.0, height: UIView.layoutFittingCompressedSize.height),
+      withHorizontalFittingPriority: .required,
+      verticalFittingPriority: .fittingSizeLevel
+    ).height
     #expect(ChecklistHistoryCaption.height >= rendered)
+  }
+
+  @Test("neither caption line can be dropped, however long the other runs")
+  func captionKeepsBothLinesWhenOneIsLong() {
+    // One label per line, so a first line too wide to fit truncates itself rather than wrapping and
+    // pushing the second line out of a two-line clamp.
+    let checklist = Checklist(name: "Packing")
+    checklist.recordUpdate(at: updatedAt)
+    checklist.recordCompletion(at: completedAt)
+    let view = ChecklistHistoryCaption.makeView()
+    ChecklistHistoryCaption.refresh(view, for: checklist)
+
+    let rendered = view.arrangedSubviews.compactMap { ($0 as? UILabel)?.text }
+    #expect(rendered == ChecklistHistoryCaption.lines(for: checklist))
   }
 
   @Test("a checklist with no history reads Never on both lines")
@@ -371,7 +385,7 @@ struct ChecklistTimestampTests {
     checklist.recordUpdate(at: updatedAt)
 
     let lines = ChecklistHistoryCaption.lines(for: checklist)
-    #expect(lines.count == ChecklistHistoryCaption.lineCount)
+    #expect(lines.count == 2)
     #expect(lines.first?.hasPrefix("Last updated: ") == true)
     #expect(lines.first != "Last updated: Never")
     #expect(lines.last == "Last completed: Never")
@@ -385,7 +399,7 @@ struct ChecklistTimestampTests {
 
     // The prefixes are asserted, not the formatted dates, which follow the test runner's locale.
     let lines = ChecklistHistoryCaption.lines(for: checklist)
-    #expect(lines.count == ChecklistHistoryCaption.lineCount)
+    #expect(lines.count == 2)
     #expect(lines.first?.hasPrefix("Last updated: ") == true)
     #expect(lines.last?.hasPrefix("Last completed: ") == true)
     #expect(lines.allSatisfy { !$0.hasSuffix("Never") })

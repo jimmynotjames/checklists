@@ -56,7 +56,7 @@ swaps only the value (`Checked`/`Unchecked`). `CircularPercentStatusIcon` goes f
 
 SwiftUI screens use semantic font tokens and scale for free. UIKit views do **not**: they hardcode
 point sizes with no `adjustsFontForContentSizeCategory` (zero hits repo-wide). Known offenders —
-`ItemContentView` and `ChecklistViewController` (`CLTextView`'s hardcoded size is a fallback only
+`ItemContentView` and `ChecklistInfoHeaderView` (`CLTextView`'s hardcoded size is a fallback only
 reached when no caller sets `.font`). Fixed frames worth watching at large sizes: the FAB in
 `ChecklistsView` (60×60), `MainMenuView`'s close button (44×44), `CheckboxButton` (48×48), and the
 checklist screen's history caption, whose height is stated rather than intrinsic because the table

@@ -8,13 +8,13 @@ import UIKit
 /// The checklist screen's `tableHeaderView`: status ring, name, notes, and the history caption.
 ///
 /// Owns its subviews and their constraints; the view controller sets delegates and model text.
-/// Frame-driven at its top level like `AddItemButtonTableFooterView`, because the table positions
-/// both by frame — `resizeTableHeaderToFit` is what keeps that frame right.
+/// Frame-driven at its top level like `AddItemButtonTableFooterView` — the table positions both by
+/// frame, and `resizeTableHeaderToFit` keeps that frame right.
 final class ChecklistInfoHeaderView: UIView {
   let statusIcon = CircularPercentStatusIcon(iconType: .header)
   let nameTextField = CLTextField()
   let notesTextView = CLTextView()
-  let metadataLabel = UILabel()
+  let captionView = ChecklistHistoryCaption.makeView()
 
   /// - Parameter showsHistoryCaption: false on the create sheet, where both caption lines could
   ///   only ever read "Never". Fixed for the view's lifetime so the header cannot grow under the
@@ -37,25 +37,20 @@ final class ChecklistInfoHeaderView: UIView {
     notesTextView.placeholderText = "Notes"
     notesTextView.accessibilityIdentifier = "checklistNotesTextView"
     notesTextView.accessibilityLabel = "Checklist Notes: "
-    // Restores what the storyboard set before #123 dropped it: required on both sides pins this
-    // self-sizing text view, and so this header, to its content height.
+    // Required on both sides pins this self-sizing text view, and so this header, to its content
+    // height.
     notesTextView.setContentHuggingPriority(.required, for: .vertical)
     notesTextView.setContentCompressionResistancePriority(.required, for: .vertical)
-
-    if showsHistoryCaption {
-      ChecklistHistoryCaption.configure(metadataLabel)
-    }
 
     for subview in [statusIcon, nameTextField, notesTextView] as [UIView] {
       addSubview(subview)
       subview.translatesAutoresizingMaskIntoConstraints = false
     }
 
-    // The caption is the last subview, so it owns the bottom anchor that closes this view's height.
-    // With no caption the notes keep that anchor and the header collapses to the height it has
-    // without the feature.
+    // Whichever of the two closes the height owns the bottom anchor. With no caption that is the
+    // notes, and the header collapses to the height it has without the feature.
     let captionConstraints: [NSLayoutConstraint] = showsHistoryCaption
-      ? ChecklistHistoryCaption.install(metadataLabel, in: self, below: notesTextView)
+      ? ChecklistHistoryCaption.install(captionView, in: self, below: notesTextView)
       : [notesTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0)]
 
     NSLayoutConstraint.activate(captionConstraints + [

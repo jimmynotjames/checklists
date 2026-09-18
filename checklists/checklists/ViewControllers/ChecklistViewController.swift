@@ -35,7 +35,8 @@ class ChecklistViewController: UIViewController {
   /// previews, tests) means the prompt is simply never fed.
   var ratingPrompt: RatingPromptCoordinator?
 
-  /// Built in `setUpHeaderView`, once `isNewChecklist` is known.
+  /// Built in `setUpHeaderView`, once `isNewChecklist` is known. This and the four shortcuts below
+  /// are only safe after `viewDidLoad` — some suites drive this controller without loading the view.
   private var checklistInfoHeaderView: ChecklistInfoHeaderView!
   private var statusIcon: CircularPercentStatusIcon {
     checklistInfoHeaderView.statusIcon
@@ -45,8 +46,8 @@ class ChecklistViewController: UIViewController {
     checklistInfoHeaderView.nameTextField
   }
 
-  private var metadataLabel: UILabel {
-    checklistInfoHeaderView.metadataLabel
+  private var captionView: UIStackView {
+    checklistInfoHeaderView.captionView
   }
 
   private var checklistNotesTextView: CLTextView {
@@ -118,9 +119,8 @@ class ChecklistViewController: UIViewController {
     tableView.register(ItemTableViewCell.self, forCellReuseIdentifier: itemCellReuseIdentifier)
 
     tableView.separatorStyle = .none
-    // 8 rather than the 28 inherited from the storyboard scene. Nothing draws in it — no
-    // `viewForHeaderInSection` or `titleForHeaderInSection` exists — so it is pure spacing, and
-    // with a single section it is the one gap between the header's caption and the first row.
+    // Pure spacing: nothing draws in a section header here, and with one section this is the only
+    // gap between the header and the first row.
     tableView.sectionHeaderHeight = 8
     // Stated, because a plain-style table defaults this to an automatic non-zero pad that would
     // stack on top of the height above and put the real gap out of reach of either number.
@@ -186,7 +186,7 @@ class ChecklistViewController: UIViewController {
     checklistNameTextField.text = checklist.name
     checklistNotesTextView.text = checklist.notes
     // Notes from another device can be any length.
-    tableView.resizeTableHeaderToFit()
+    headerContentDidChange()
     updateStatusIcon()
     // Cheap now the caption is a fixed height: another device's tick shows up without a reopen.
     refreshHistoryCaption()
@@ -235,7 +235,7 @@ class ChecklistViewController: UIViewController {
     }
     if didDelete {
       // No completion to record: `isComplete` already ignores blank rows, so removing them cannot
-      // change it. Backing out of a finished list must not restamp when it was finished.
+      // change it.
       context.saveChangesIgnoringFailure(operation: .delete)
     }
     super.viewDidDisappear(animated)
@@ -342,8 +342,21 @@ class ChecklistViewController: UIViewController {
     refreshHistoryCaption()
   }
 
+  /// The width the header was last measured against. `view` is the table itself, so this runs on
+  /// every scroll frame — and measuring means a full layout plus TextKit pass over the notes.
+  private var lastHeaderWidth: CGFloat = 0.0
+
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    guard tableView.bounds.width != lastHeaderWidth else { return }
+    lastHeaderWidth = tableView.bounds.width
+    tableView.resizeTableHeaderToFit()
+  }
+
+  /// Re-measures the header after its content changes. Clearing the cached width also covers the
+  /// case where the table has no width yet: the next layout pass measures instead.
+  private func headerContentDidChange() {
+    lastHeaderWidth = 0.0
     tableView.resizeTableHeaderToFit()
   }
 
@@ -355,7 +368,7 @@ class ChecklistViewController: UIViewController {
   /// `textViewDidChange` does for the notes.
   private func refreshHistoryCaption() {
     guard showsHistoryCaption else { return }
-    ChecklistHistoryCaption.refresh(metadataLabel, for: checklist)
+    ChecklistHistoryCaption.refresh(captionView, for: checklist)
   }
 
   /// Saves an item's new position, reporting whether it stuck.
@@ -562,7 +575,7 @@ extension ChecklistViewController: UITextViewDelegate {
   }
 
   func textViewDidChange(_: UITextView) {
-    tableView.resizeTableHeaderToFit()
+    headerContentDidChange()
   }
 }
 
