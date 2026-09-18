@@ -35,11 +35,23 @@ class ChecklistViewController: UIViewController {
   /// previews, tests) means the prompt is simply never fed.
   var ratingPrompt: RatingPromptCoordinator?
 
-  private let checklistInfoHeaderView = UIView()
-  private let statusIcon = CircularPercentStatusIcon(iconType: .header)
-  private let checklistNameTextField = CLTextField()
-  private let metadataLabel = UILabel()
-  private let checklistNotesTextView = CLTextView()
+  /// Built in `setUpHeaderView`, once `isNewChecklist` is known.
+  private var checklistInfoHeaderView: ChecklistInfoHeaderView!
+  private var statusIcon: CircularPercentStatusIcon {
+    checklistInfoHeaderView.statusIcon
+  }
+
+  private var checklistNameTextField: CLTextField {
+    checklistInfoHeaderView.nameTextField
+  }
+
+  private var metadataLabel: UILabel {
+    checklistInfoHeaderView.metadataLabel
+  }
+
+  private var checklistNotesTextView: CLTextView {
+    checklistInfoHeaderView.notesTextView
+  }
 
   private var remoteChangeObserver: RemoteChangeObserver?
 
@@ -75,69 +87,18 @@ class ChecklistViewController: UIViewController {
     view = tableView
   }
 
-  /// Reproduces the "Checklist" storyboard scene's tableHeaderView: a status icon, a name field, and a notes view.
+  /// Builds the header and wires it to this controller. Layout lives in `ChecklistInfoHeaderView`.
   private func setUpHeaderView() {
-    // Required for the width-anchor + layoutIfNeeded() sizing dance below to compute this view's natural
-    // height from its subviews' constraints (mirrors a runtime attribute the old storyboard scene set explicitly).
-    checklistInfoHeaderView.translatesAutoresizingMaskIntoConstraints = false
-    checklistInfoHeaderView.backgroundColor = Colors.defaultBackground
+    // Captured once, not read live: `viewDidAppear` clears `isNewChecklist`, so a caption keyed off
+    // the flag would appear partway through the create sheet the moment an item was ticked.
+    showsHistoryCaption = !isNewChecklist
+    checklistInfoHeaderView = ChecklistInfoHeaderView(showsHistoryCaption: showsHistoryCaption)
 
     checklistNameTextField.delegate = self
-    checklistNameTextField.placeholder = "Name"
-    checklistNameTextField.font = .systemFont(ofSize: 24.0, weight: .semibold)
-    checklistNameTextField.returnKeyType = .done
-    checklistNameTextField.enablesReturnKeyAutomatically = true
-    checklistNameTextField.clearButtonMode = .whileEditing
-    checklistNameTextField.accessibilityIdentifier = "checklistNameField"
-    checklistNameTextField.accessibilityLabel = "Checklist Name: "
     checklistNameTextField.text = checklist.name
-
-    // Captured once, not read live. `viewDidAppear` clears `isNewChecklist`, so a caption keyed off
-    // the flag itself would appear partway through the create sheet the moment the first item was
-    // ticked — growing the header under the reader, which is the one thing the fixed height buys.
-    showsHistoryCaption = !isNewChecklist
-    if showsHistoryCaption {
-      ChecklistHistoryCaption.configure(metadataLabel)
-      ChecklistHistoryCaption.refresh(metadataLabel, for: checklist)
-    }
-
     checklistNotesTextView.delegate = self
-    checklistNotesTextView.font = .systemFont(ofSize: 16.0)
-    checklistNotesTextView.backgroundColor = .clear
-    checklistNotesTextView.placeholderText = "Notes"
-    checklistNotesTextView.accessibilityIdentifier = "checklistNotesTextView"
-    checklistNotesTextView.accessibilityLabel = "Checklist Notes: "
     checklistNotesTextView.text = checklist.notes
-
-    checklistInfoHeaderView.addSubview(statusIcon)
-    checklistInfoHeaderView.addSubview(checklistNameTextField)
-    checklistInfoHeaderView.addSubview(checklistNotesTextView)
-    statusIcon.translatesAutoresizingMaskIntoConstraints = false
-    checklistNameTextField.translatesAutoresizingMaskIntoConstraints = false
-    checklistNotesTextView.translatesAutoresizingMaskIntoConstraints = false
-    let captionConstraints: [NSLayoutConstraint] = showsHistoryCaption
-      ? ChecklistHistoryCaption.install(
-        metadataLabel,
-        in: checklistInfoHeaderView,
-        below: checklistNameTextField,
-        above: checklistNotesTextView
-      )
-      : [checklistNotesTextView.topAnchor.constraint(equalTo: checklistNameTextField.bottomAnchor, constant: 4.0)]
-
-    NSLayoutConstraint.activate(captionConstraints + [
-      statusIcon.leadingAnchor.constraint(equalTo: checklistInfoHeaderView.leadingAnchor, constant: 16.0),
-
-      checklistNameTextField.topAnchor.constraint(equalTo: checklistInfoHeaderView.topAnchor, constant: 22.0),
-      checklistNameTextField.leadingAnchor.constraint(equalTo: statusIcon.trailingAnchor, constant: 10.0),
-      checklistNameTextField.trailingAnchor.constraint(equalTo: checklistInfoHeaderView.trailingAnchor, constant: -16.0),
-      checklistNameTextField.centerYAnchor.constraint(equalTo: statusIcon.centerYAnchor),
-      checklistNameTextField.heightAnchor.constraint(equalToConstant: 32.0),
-
-      checklistNotesTextView.leadingAnchor.constraint(equalTo: checklistInfoHeaderView.layoutMarginsGuide.leadingAnchor, constant: 8.0),
-      checklistNotesTextView.trailingAnchor.constraint(equalTo: checklistInfoHeaderView.trailingAnchor, constant: -16.0),
-      checklistNotesTextView.bottomAnchor.constraint(equalTo: checklistInfoHeaderView.bottomAnchor, constant: -15.0),
-      checklistNotesTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 32.0),
-    ])
+    refreshHistoryCaption()
   }
 
   override func viewDidLoad() {
@@ -157,13 +118,17 @@ class ChecklistViewController: UIViewController {
     tableView.register(ItemTableViewCell.self, forCellReuseIdentifier: itemCellReuseIdentifier)
 
     tableView.separatorStyle = .none
-    tableView.sectionHeaderHeight = 28
+    // 8 rather than the 28 inherited from the storyboard scene. Nothing draws in it — no
+    // `viewForHeaderInSection` or `titleForHeaderInSection` exists — so it is pure spacing, and
+    // with a single section it is the one gap between the header's caption and the first row.
+    tableView.sectionHeaderHeight = 8
+    // Stated, because a plain-style table defaults this to an automatic non-zero pad that would
+    // stack on top of the height above and put the real gap out of reach of either number.
+    tableView.sectionHeaderTopPadding = 0
     tableView.sectionFooterHeight = 28
     tableView.backgroundColor = Colors.defaultBackground
 
     setUpHeaderView()
-    // Assign this early (before the width-anchor constraint below) so checklistInfoHeaderView shares an
-    // ancestor with tableView — it's reassigned again after layout, once its frame height is known.
     tableView.tableHeaderView = checklistInfoHeaderView
 
     checklistNotesTextView.inputAccessoryButtonTappedAction = { [weak self] in
@@ -176,14 +141,8 @@ class ChecklistViewController: UIViewController {
 
     updateStatusIcon()
 
-    // The header view's width isn't set automatically despite the docs; set it manually.
-    checklistInfoHeaderView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
+    // The footer's width isn't set automatically despite the docs; set it manually.
     tableFooterView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
-
-    // If I don't call this, the header view's frame's height isn't set and an extensive Notes section will overlap the top of the cells.
-    checklistInfoHeaderView.setNeedsLayout()
-    checklistInfoHeaderView.layoutIfNeeded()
-    tableView.tableHeaderView = checklistInfoHeaderView
 
     if isNewChecklist {
       navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
@@ -226,6 +185,8 @@ class ChecklistViewController: UIViewController {
 
     checklistNameTextField.text = checklist.name
     checklistNotesTextView.text = checklist.notes
+    // Notes from another device can be any length.
+    tableView.resizeTableHeaderToFit()
     updateStatusIcon()
     // Cheap now the caption is a fixed height: another device's tick shows up without a reopen.
     refreshHistoryCaption()
@@ -379,6 +340,11 @@ class ChecklistViewController: UIViewController {
     tableView.deleteRows(at: [IndexPath(item: index, section: itemsSection)], with: .fade)
     updateStatusIcon()
     refreshHistoryCaption()
+  }
+
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    tableView.resizeTableHeaderToFit()
   }
 
   func updateStatusIcon() {
@@ -596,10 +562,7 @@ extension ChecklistViewController: UITextViewDelegate {
   }
 
   func textViewDidChange(_: UITextView) {
-    // According to StackOverflow, this seems to be the accepted-yet-janky way of pushing the cells down as the header expands.
-    tableView.setNeedsLayout()
-    tableView.layoutIfNeeded()
-    tableView.tableHeaderView = checklistInfoHeaderView
+    tableView.resizeTableHeaderToFit()
   }
 }
 

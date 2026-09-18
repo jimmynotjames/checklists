@@ -362,7 +362,7 @@ struct ChecklistTimestampTests {
   @Test("a checklist with no history reads Never on both lines")
   func captionReadsNeverWithoutHistory() {
     let lines = ChecklistHistoryCaption.lines(for: Checklist(name: "Packing"))
-    #expect(lines == ["Updated: Never", "Last completed: Never"])
+    #expect(lines == ["Last updated: Never", "Last completed: Never"])
   }
 
   @Test("an updated but never completed checklist keeps the second line")
@@ -372,8 +372,8 @@ struct ChecklistTimestampTests {
 
     let lines = ChecklistHistoryCaption.lines(for: checklist)
     #expect(lines.count == ChecklistHistoryCaption.lineCount)
-    #expect(lines.first?.hasPrefix("Updated: ") == true)
-    #expect(lines.first != "Updated: Never")
+    #expect(lines.first?.hasPrefix("Last updated: ") == true)
+    #expect(lines.first != "Last updated: Never")
     #expect(lines.last == "Last completed: Never")
   }
 
@@ -386,7 +386,7 @@ struct ChecklistTimestampTests {
     // The prefixes are asserted, not the formatted dates, which follow the test runner's locale.
     let lines = ChecklistHistoryCaption.lines(for: checklist)
     #expect(lines.count == ChecklistHistoryCaption.lineCount)
-    #expect(lines.first?.hasPrefix("Updated: ") == true)
+    #expect(lines.first?.hasPrefix("Last updated: ") == true)
     #expect(lines.last?.hasPrefix("Last completed: ") == true)
     #expect(lines.allSatisfy { !$0.hasSuffix("Never") })
   }

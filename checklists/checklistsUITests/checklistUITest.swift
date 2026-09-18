@@ -131,7 +131,7 @@ class checklistUITest: XCTestCase {
 
     let caption = app.staticTexts["checklistMetadataLabel"]
     XCTAssertTrue(caption.waitForExistence(timeout: 5))
-    XCTAssertEqual(caption.label, "Updated: Never. Last completed: Never")
+    XCTAssertEqual(caption.label, "Last updated: Never. Last completed: Never")
   }
 
   /// The create sheet shows no caption: there, both lines could only ever read "Never".
@@ -153,14 +153,14 @@ class checklistUITest: XCTestCase {
 
     let caption = app.staticTexts["checklistMetadataLabel"]
     XCTAssertTrue(caption.waitForExistence(timeout: 5))
-    XCTAssertTrue(caption.label.hasPrefix("Updated: Never"))
+    XCTAssertTrue(caption.label.hasPrefix("Last updated: Never"))
 
     tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].tap()
 
     // An expectation rather than reading `.label` straight after the tap: a bare read forces a
     // snapshot that blocks until the app goes idle, with no deadline of its own.
     let captionChanged = expectation(
-      for: NSPredicate(format: "NOT (label BEGINSWITH %@)", "Updated: Never"),
+      for: NSPredicate(format: "NOT (label BEGINSWITH %@)", "Last updated: Never"),
       evaluatedWith: caption
     )
     captionChanged.expectationDescription = "the caption tracks a tick live, without reopening the screen"
@@ -194,7 +194,7 @@ class checklistUITest: XCTestCase {
     XCTAssertTrue(caption.waitForExistence(timeout: 5), "A completed checklist should show a caption.")
     // The label reads as two sentences; the dates themselves follow the runner's locale, so only
     // the prefixes are asserted.
-    XCTAssertTrue(caption.label.hasPrefix("Updated: "), "Unexpected caption: \(caption.label)")
+    XCTAssertTrue(caption.label.hasPrefix("Last updated: "), "Unexpected caption: \(caption.label)")
     XCTAssertTrue(caption.label.contains("Last completed: "), "Unexpected caption: \(caption.label)")
     XCTAssertFalse(caption.label.hasSuffix("Never"), "Unexpected caption: \(caption.label)")
 
@@ -315,6 +315,28 @@ class checklistUITest: XCTestCase {
     let weekendGetawayNotesLabel = checklistsList.cells.element(boundBy: 1).staticTexts["checklistNotesLabel"]
     XCTAssertTrue(weekendGetawayNotesLabel.waitForExistence(timeout: 5), "Notes label didn't appear on the main list after the pop-back animation.")
     XCTAssert(weekendGetawayNotesLabel.label.starts(with: notes.prefix(15)))
+  }
+
+  /// Long notes must not push the list underneath the header.
+  ///
+  /// Backing out and re-entering is the point: typing grows the header through `textViewDidChange`,
+  /// so this only shows on a screen that opens with long notes already saved.
+  func testLongNotesDoNotCoverTheFirstItem() {
+    checklistsList.staticTexts["Morning Routine"].tap()
+    let tablesQuery = app.tables
+    XCTAssertTrue(tablesQuery["ChecklistTableView"].waitForExistence(timeout: 5))
+
+    tablesQuery.textViews["checklistNotesTextView"].tap()
+    app.typeText((1 ... 6).map { "Notes line \($0)." }.joined(separator: "\n"))
+    app.toolbars["Toolbar"].buttons["Done"].tap()
+
+    detailBackButton.tap()
+    checklistsList.staticTexts["Morning Routine"].tap()
+    XCTAssertTrue(tablesQuery["ChecklistTableView"].waitForExistence(timeout: 5))
+
+    let firstCheckbox = tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"]
+    XCTAssertTrue(firstCheckbox.waitForExistence(timeout: 5))
+    XCTAssertTrue(firstCheckbox.isHittable, "The first item is sitting underneath the header.")
   }
 
   func testChecklistReordering1() throws {

@@ -28,10 +28,11 @@ enum ChecklistHistoryCaption {
 
   /// The caption's two lines, both always present — "Never" on a list that has never been run.
   ///
-  /// Colons in both states because "Updated Never" is not a sentence.
+  /// Colons in both states because "Last updated Never" is not a sentence. Both lines share the
+  /// "Last …" prefix so the pair scans as one block under the notes.
   static func lines(for checklist: Checklist) -> [String] {
     [
-      "Updated: \(value(of: checklist.lastUpdated))",
+      "Last updated: \(value(of: checklist.lastUpdated))",
       // "Last completed" rather than "Completed", which alone reads as a state rather than a time —
       // and this line outlives Reset, so it must not look like a claim about the list right now.
       // "Updated" needs no such qualifier, so the two prefixes are deliberately asymmetric.
@@ -65,22 +66,26 @@ enum ChecklistHistoryCaption {
     label.accessibilityIdentifier = "checklistMetadataLabel"
   }
 
-  /// Adds `label` to `header` and returns the constraints that place it, including the gap down to
-  /// `notesView` — the caption owns the space it occupies on both sides.
+  /// Adds `label` to `header` as its **last** subview and returns the constraints that place it.
   ///
-  /// Callers that do not show a caption pin `notesView` straight to `nameField` instead, which is
-  /// what collapses the header back to the height it has without this feature. Hiding the label
-  /// would leave these two gaps behind.
+  /// Below the notes rather than between them and the name: the caption describes the list, so it
+  /// belongs next to the list rather than wedged into the checklist's own text.
+  ///
+  /// Being last means the caption takes over the bottom anchor that closes the header's height —
+  /// leave that on `notesView` and the chain ends above the caption, so the caption draws outside
+  /// the measured height and the table lays its first row on top of it. Callers that show no
+  /// caption keep that anchor on the notes instead.
   static func install(
     _ label: UILabel,
     in header: UIView,
-    below nameField: UIView,
-    above notesView: UIView
+    below notesView: UIView
   ) -> [NSLayoutConstraint] {
     header.addSubview(label)
     label.translatesAutoresizingMaskIntoConstraints = false
     return [
-      label.topAnchor.constraint(equalTo: nameField.bottomAnchor, constant: 2.0),
+      // Wider than the 4pt between name and notes: sitting under a block of notes, a tighter gap
+      // reads as a third paragraph of them rather than as metadata.
+      label.topAnchor.constraint(equalTo: notesView.bottomAnchor, constant: 10.0),
       // Flush with the header's own left margin rather than the name field's, which is indented past
       // the status ring. 16pt is where the ring's leading edge and the notes text both already sit,
       // so the caption, the ring and the notes share one edge.
@@ -91,7 +96,9 @@ enum ChecklistHistoryCaption {
       // `ChecklistViewController.viewDidLoad`, and at that moment a multi-line label still reports a
       // single line — leaving the table to lay its first row underneath the header.
       label.heightAnchor.constraint(equalToConstant: height),
-      notesView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 6.0),
+      // Matches the table's `sectionHeaderHeight` below it: the two are halves of one gap between
+      // the caption and the first row, so they read best at the same value.
+      label.bottomAnchor.constraint(equalTo: header.bottomAnchor, constant: -8.0),
     ]
   }
 
