@@ -37,7 +37,7 @@ struct ChecklistScreen: View {
     // still laid out inside the container safe area — leaving the strips above and below it showing
     // the presenting background rather than the table's own `Colors.defaultBackground`. Not a full
     // `ignoresSafeArea()`: giving the table real safe-area insets would shift `scrollViewDidScroll`'s
-    // hardcoded title threshold and `scrollToTop()`'s `contentOffset.y == 0` assumptions.
+    // hardcoded title threshold.
     .background(Colors.defaultBackgroundColor.ignoresSafeArea())
     // First-run consent trigger (core-docs/analytics-spec.md §6.2): the moment right before
     // `checklist_name` could first be transmitted. `isNewChecklist` is load-bearing — in the
