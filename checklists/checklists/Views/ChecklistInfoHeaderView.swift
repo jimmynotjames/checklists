@@ -69,6 +69,29 @@ final class ChecklistInfoHeaderView: UIView {
     ])
   }
 
+  /// Sizes this header for `tableView` and reinstalls it as the table's header.
+  ///
+  /// A `tableHeaderView` is positioned by frame and its height is read once, at assignment — there
+  /// is no self-sizing equivalent of `estimatedRowHeight`. A view controller's `viewDidLoad` runs
+  /// while its table is still zero-wide, so a header measured there comes out too short and draws
+  /// over the first rows.
+  ///
+  /// Call from `viewDidLayoutSubviews`, and again whenever the content changes.
+  func resize(in tableView: UITableView) {
+    assert(translatesAutoresizingMaskIntoConstraints, "Measuring assumes this header owns its frame.")
+    guard tableView.bounds.width > 0.0 else { return }
+    let height = systemLayoutSizeFitting(
+      CGSize(width: tableView.bounds.width, height: UIView.layoutFittingCompressedSize.height),
+      withHorizontalFittingPriority: .required,
+      verticalFittingPriority: .fittingSizeLevel
+    ).height
+    // Reassigning is what makes the table re-read the height, and it triggers another layout pass,
+    // so only do it on a real change or this recurses. The width term covers rotation.
+    guard abs(height - frame.height) > 0.5 || abs(tableView.bounds.width - frame.width) > 0.5 else { return }
+    frame = CGRect(x: 0.0, y: 0.0, width: tableView.bounds.width, height: height)
+    tableView.tableHeaderView = self
+  }
+
   @available(*, unavailable)
   required init?(coder _: NSCoder) {
     fatalError()

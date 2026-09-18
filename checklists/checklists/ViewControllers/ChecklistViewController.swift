@@ -350,14 +350,14 @@ class ChecklistViewController: UIViewController {
     super.viewDidLayoutSubviews()
     guard tableView.bounds.width != lastHeaderWidth else { return }
     lastHeaderWidth = tableView.bounds.width
-    tableView.resizeTableHeaderToFit()
+    checklistInfoHeaderView?.resize(in: tableView)
   }
 
   /// Re-measures the header after its content changes. Clearing the cached width also covers the
   /// case where the table has no width yet: the next layout pass measures instead.
   private func headerContentDidChange() {
     lastHeaderWidth = 0.0
-    tableView.resizeTableHeaderToFit()
+    checklistInfoHeaderView?.resize(in: tableView)
   }
 
   func updateStatusIcon() {
