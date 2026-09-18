@@ -12,6 +12,10 @@ private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
 private let defaultChecklistName = "untitled checklist"
 
+/// How close to the top still counts as being at the top. An animated `setContentOffset` can land a
+/// hair off its target, and an exact comparison that misses leaves `isResetting` stuck.
+private let atTopTolerance: CGFloat = 0.5
+
 /// Not a UITableViewController: its keyboard handling halted the animate-above-keyboard scroll and
 /// jittered on long lists with lots of notes. Keyboard avoidance below is manual instead.
 class ChecklistViewController: UIViewController {
@@ -271,13 +275,13 @@ class ChecklistViewController: UIViewController {
     context.saveChangesIgnoringFailure(operation: .checklistEdit)
     updateStatusIcon()
 
-    if tableView.contentOffset.y == 0.0 {
+    if Self.isAtTop(tableView) {
       tableView.reloadData()
     } else if UIAccessibility.isReduceMotionEnabled {
       // The trip to the top is functional; gliding there is not. Jump, and reload directly rather
       // than waiting on the `isResetting` handoff in `scrollViewDidScroll`, which needs the
       // animation's intermediate offsets to land on.
-      tableView.setContentOffset(CGPoint(x: 0.0, y: 0.0), animated: false)
+      tableView.setContentOffset(topContentOffset, animated: false)
       tableView.reloadData()
     } else {
       isResetting = true
@@ -285,8 +289,22 @@ class ChecklistViewController: UIViewController {
     }
   }
 
+  /// The table's resting offset at the top. Zero only when nothing is inset above the content;
+  /// under the navigation bar the top is the negative of the adjusted inset (#145).
+  private var topContentOffset: CGPoint {
+    CGPoint(x: 0.0, y: -tableView.adjustedContentInset.top)
+  }
+
+  /// Whether a scroll view is resting at its top, inset included.
+  ///
+  /// Static and internal so tests can drive it without loading the view — loading it reaches
+  /// `PersistenceController.shared`, which is not installed in the test target.
+  static func isAtTop(_ scrollView: UIScrollView) -> Bool {
+    scrollView.contentOffset.y <= -scrollView.adjustedContentInset.top + atTopTolerance
+  }
+
   private func scrollToTop() {
-    tableView.setContentOffset(CGPoint(x: 0.0, y: 0.0), animated: true)
+    tableView.setContentOffset(topContentOffset, animated: true)
   }
 
   private func insertNewItem(becomeFirstResponder: Bool) {
@@ -457,7 +475,7 @@ extension ChecklistViewController: UIScrollViewDelegate {
     let currentY: CGFloat = scrollView.contentOffset.y
     let thresholdY: CGFloat = 52.0
 
-    if isResetting == true, currentY == 0.0 {
+    if isResetting == true, Self.isAtTop(scrollView) {
       isResetting = false
       tableView.reloadData()
     }
@@ -489,8 +507,15 @@ extension ChecklistViewController {
 
     keyboardHeight += 20.0 // On iPhone 8-style resolutions, it doesn't scroll up quite enough, so adding this in, even though iPhone X-style goes up a tad more than I'd like.
 
-    var visibleFrame = tableView.frame
-    visibleFrame.size.height -= keyboardHeight
+    // `cell.frame` below is in the table's content space; `tableView.frame` is in its superview's,
+    // and the two only line up at a content offset of zero (#145). `bounds` is content space, so
+    // inset it by the bar above and the keyboard below to get the genuinely visible slice.
+    let visibleFrame = tableView.bounds.inset(by: UIEdgeInsets(
+      top: tableView.adjustedContentInset.top,
+      left: 0.0,
+      bottom: keyboardHeight,
+      right: 0.0
+    ))
 
     let cellFrame = tableView.convert(cell.frame, from: cell.superview)
 
