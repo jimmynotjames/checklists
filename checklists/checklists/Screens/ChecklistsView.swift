@@ -229,10 +229,15 @@ struct ChecklistsView: View {
   // MARK: - Resetting
 
   private func resetAllChecklists() {
-    for checklist in checklists {
-      checklist.uncheckAllItems()
+    // Stamped in the loop rather than through `saveStatusChange`, which saves per checklist: one
+    // batched save for the whole sweep is the point of doing it here.
+    let now = Date.now
+    // The `where` call is the reset itself, not a filter — SwiftLint's `for_where` requires this
+    // shape. Its result says whether the list had anything to reset, and so whether to date it.
+    for checklist in checklists where checklist.uncheckAllItems() {
+      checklist.recordUpdate(at: now)
     }
-    context.saveChangesIgnoringFailure(operation: .checklistEdit)
+    context.saveChangesIgnoringFailure(operation: .itemUpdate)
     // No reload to follow: each row's status icon reads `percentageComplete` in its own body,
     // so Observation redraws the rings.
   }

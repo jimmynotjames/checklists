@@ -13,6 +13,8 @@ import SwiftData
 enum PersistenceOperation: String, CaseIterable {
   case checklistEdit
   case itemEdit
+  /// An item's checked state changing — one checkbox, or every item at once via Reset.
+  case itemUpdate
   case reorder
   case delete
   case legacyImport
@@ -71,5 +73,46 @@ extension ModelContext {
    */
   func saveChangesIgnoringFailure(operation: PersistenceOperation, analytics: any AnalyticsClient = AppAnalytics.shared) {
     try? saveChanges(operation: operation, analytics: analytics)
+  }
+
+  // The two helpers below pair a timestamp stamp with the save, rather than leaving each call site
+  // to remember both halves. Both take `wasComplete`, read by the caller *before* it mutates,
+  // because "became complete" is a transition and there is no way to see one after the fact.
+
+  /// A checkbox tap, or a Reset. Always an update; also a completion when this is the change that
+  /// completed the list.
+  func saveStatusChange(
+    to checklist: Checklist,
+    wasComplete: Bool,
+    at date: Date = .now,
+    analytics: any AnalyticsClient = AppAnalytics.shared
+  ) {
+    checklist.recordUpdate(at: date)
+    if !wasComplete, checklist.isComplete {
+      checklist.recordCompletion(at: date)
+    }
+    saveChangesIgnoringFailure(operation: .itemUpdate, analytics: analytics)
+  }
+
+  /// An item deletion. Deleting is an edit, so this never touches `lastUpdated` — but removing the
+  /// one item still outstanding does complete the list, and that is worth recording.
+  ///
+  /// Completeness is re-read *after* the save, unlike `saveStatusChange` above: a deleted item is
+  /// still present in `checklist.items` until the context is saved, so checking first would read the
+  /// list as incomplete and miss every deletion that finishes one.
+  func saveDeletion(
+    from checklist: Checklist,
+    wasComplete: Bool,
+    at date: Date = .now,
+    analytics: any AnalyticsClient = AppAnalytics.shared
+  ) {
+    saveChangesIgnoringFailure(operation: .delete, analytics: analytics)
+    // The checklist itself can be gone — deleted on another device while this screen was open — in
+    // which case there is nothing left to record a completion on.
+    guard !checklist.isDeleted, !wasComplete, checklist.isComplete else { return }
+    checklist.recordCompletion(at: date)
+    // Tagged for what it writes — a checklist timestamp — so a failure here is not counted as a
+    // second failed deletion.
+    saveChangesIgnoringFailure(operation: .checklistEdit, analytics: analytics)
   }
 }

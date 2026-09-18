@@ -25,6 +25,13 @@ final class Checklist {
   /// rather than renumbering the whole list, which keeps cross-device merges small.
   var sortKey: Double = 0.0
 
+  /// When an item here was last checked or unchecked. `nil` means nobody ever has.
+  var lastUpdated: Date?
+
+  /// When this list last *became* complete, by any local route: the final tick, or the deletion of
+  /// the one item still outstanding.
+  var lastCompleted: Date?
+
   /// Optional purely to satisfy CloudKit. **App code should never touch this** — use `items`,
   /// which is non-optional and correctly ordered.
   @Relationship(deleteRule: .cascade, inverse: \Item.checklist)
@@ -47,6 +54,18 @@ final class Checklist {
     return CGFloat(items.count(where: { $0.status == .checked })) / CGFloat(items.count)
   }
 
+  /// Every real item checked, and there is at least one. An empty list is *not* complete.
+  ///
+  /// Blank rows are excluded (`Item.isBlank`). Counting them would mean a list stopped being
+  /// complete the moment the add button left a scratch row behind and started again when the row
+  /// was trimmed on close — restamping `lastCompleted` for someone who only opened the screen and
+  /// backed out. `percentageComplete` still counts them: the ring describes what is on screen,
+  /// this describes a run.
+  var isComplete: Bool {
+    let realItems = items.filter { !$0.isBlank }
+    return !realItems.isEmpty && realItems.allSatisfy { $0.status == .checked }
+  }
+
   init(id: String = UUID().uuidString, name: String = "", notes: String? = nil, sortKey: Double = 0.0) {
     self.id = id
     self.name = name
@@ -54,10 +73,27 @@ final class Checklist {
     self.sortKey = sortKey
   }
 
-  func uncheckAllItems() {
-    for item in items {
+  /// Unchecks everything, reporting whether anything was actually checked — which is what keeps
+  /// Reset from stamping `lastUpdated` on a list that had nothing ticked.
+  @discardableResult
+  func uncheckAllItems() -> Bool {
+    var didUncheck = false
+    for item in items where item.status == .checked {
       item.status = .unchecked
+      didUncheck = true
     }
+    return didUncheck
+  }
+
+  // `date` is injectable for the same reason `RatingPromptCoordinator` takes a `now` — it is the
+  // only way to assert a stamp without sleeping.
+
+  func recordUpdate(at date: Date = .now) {
+    lastUpdated = date
+  }
+
+  func recordCompletion(at date: Date = .now) {
+    lastCompleted = date
   }
 
   /// `@MainActor` because `UIDragItem` is: SwiftData models are not actor-isolated, so this would
