@@ -23,7 +23,7 @@ struct ChecklistRowView: View {
           // Declared here, not just left to the wrapped `CircularPercentStatusIcon`: the row is a
           // `Button`, and SwiftUI folds a button's content into one element whose value is whatever
           // the merge happens to pick up from the hosted UIView. Stating the value on this side
-          // makes "Morning Routine, Checklist 83 percent complete" the row's contract instead of a
+          // makes "Morning Routine, Checklist 83% complete" the row's contract instead of a
           // by-product of the icon leaving its `accessibilityLabel` nil.
           //
           // Only the value is declared. The grouping is left exactly as it is: `checklistNotesLabel`

@@ -267,6 +267,55 @@
 			knownRegions = (
 				en,
 				Base,
+				ar,
+				bn,
+				ca,
+				cs,
+				da,
+				de,
+				el,
+				"en-AU",
+				"en-CA",
+				"en-GB",
+				es,
+				"es-MX",
+				fi,
+				fr,
+				"fr-CA",
+				gu,
+				he,
+				hi,
+				hr,
+				hu,
+				id,
+				it,
+				ja,
+				kn,
+				ko,
+				ml,
+				mr,
+				ms,
+				nb,
+				nl,
+				or,
+				pa,
+				pl,
+				"pt-BR",
+				"pt-PT",
+				ro,
+				ru,
+				sk,
+				sl,
+				sv,
+				ta,
+				te,
+				th,
+				tr,
+				uk,
+				ur,
+				vi,
+				"zh-Hans",
+				"zh-Hant",
 			);
 			mainGroup = 323ADC5E22828C0900644931;
 			packageReferences = (
@@ -491,6 +540,7 @@
 				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = checklists/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -518,6 +568,7 @@
 				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = checklists/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

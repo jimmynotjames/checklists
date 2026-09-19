@@ -10,7 +10,6 @@ import UIKit
 
 private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
-private let defaultChecklistName = "untitled checklist"
 
 /// How close to the top still counts as being at the top. An animated `setContentOffset` can land a
 /// hair off its target, and an exact comparison that misses leaves `isResetting` stuck.
@@ -170,7 +169,7 @@ class ChecklistViewController: UIViewController {
     } else {
       // Reset keeps the bar slot: in an app built around rerunning a list it is a per-run action,
       // while deleting the list is a once-ever one that can afford to sit a tap deeper.
-      let resetItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetButtonTapped))
+      let resetItem = UIBarButtonItem(title: Self.resetButtonTitle, style: .plain, target: self, action: #selector(resetButtonTapped))
       let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: makeMoreMenu())
       moreItem.accessibilityLabel = "More"
       // iOS 26 renders bar buttons in `labelColor` unless the item itself carries a tint.
@@ -600,7 +599,7 @@ extension ChecklistViewController: UITextFieldDelegate {
   }
 
   func textFieldDidEndEditing(_: UITextField) {
-    checklist.name = checklistNameTextField.hasText ? checklistNameTextField.text ?? defaultChecklistName : defaultChecklistName // Accounts for both nil and empty string.
+    checklist.name = checklistNameTextField.hasText ? checklistNameTextField.text ?? Self.defaultChecklistName : Self.defaultChecklistName // Accounts for both nil and empty string.
     context.saveChangesIgnoringFailure(operation: .checklistEdit)
   }
 

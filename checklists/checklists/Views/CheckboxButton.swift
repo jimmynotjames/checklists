@@ -15,7 +15,7 @@ class CheckboxButton: UIButton {
   override init(frame _: CGRect) {
     super.init(frame: .zero)
 
-    accessibilityLabel = "Checkbox"
+    accessibilityLabel = String(localized: "checkbox.accessibilityLabel", defaultValue: "Checkbox", comment: "VoiceOver label of the tick box on each checklist item row.")
 
     setImage(UIImage(named: "CheckboxUncheckedIcon"), for: .normal)
     setImage(UIImage(named: "CheckboxCheckedIcon"), for: .selected)
@@ -42,11 +42,11 @@ class CheckboxButton: UIButton {
     case .checked:
       isSelected = true
       tintColor = Colors.inactiveText
-      accessibilityValue = "Checked"
+      accessibilityValue = String(localized: "checkbox.value.checked", defaultValue: "Checked", comment: "VoiceOver value of a ticked checklist item's checkbox.")
     case .unchecked:
       isSelected = false
       tintColor = .tintColor
-      accessibilityValue = "Unchecked"
+      accessibilityValue = String(localized: "checkbox.value.unchecked", defaultValue: "Unchecked", comment: "VoiceOver value of an unticked checklist item's checkbox.")
     }
   }
 }

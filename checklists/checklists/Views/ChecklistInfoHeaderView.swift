@@ -24,19 +24,27 @@ final class ChecklistInfoHeaderView: UIView {
     translatesAutoresizingMaskIntoConstraints = true
     backgroundColor = Colors.defaultBackground
 
-    nameTextField.placeholder = "Name"
+    nameTextField.placeholder = String(localized: "checklist.name.placeholder", defaultValue: "Name", comment: "Placeholder of the checklist name field in the detail header.")
     nameTextField.font = .systemFont(ofSize: 24.0, weight: .semibold)
     nameTextField.returnKeyType = .done
     nameTextField.enablesReturnKeyAutomatically = true
     nameTextField.clearButtonMode = .whileEditing
     nameTextField.accessibilityIdentifier = "checklistNameField"
-    nameTextField.accessibilityLabel = "Checklist Name: "
+    nameTextField.accessibilityLabel = String(
+      localized: "checklist.name.accessibilityLabel",
+      defaultValue: "Checklist Name: ",
+      comment: "VoiceOver label read before the checklist name field. Keep the trailing space and colon."
+    )
 
     notesTextView.font = .systemFont(ofSize: 16.0)
     notesTextView.backgroundColor = .clear
-    notesTextView.placeholderText = "Notes"
+    notesTextView.placeholderText = String(localized: "common.notes.placeholder", defaultValue: "Notes", comment: "Placeholder of the optional notes field on an item and on a checklist header.")
     notesTextView.accessibilityIdentifier = "checklistNotesTextView"
-    notesTextView.accessibilityLabel = "Checklist Notes: "
+    notesTextView.accessibilityLabel = String(
+      localized: "checklist.notes.accessibilityLabel",
+      defaultValue: "Checklist Notes: ",
+      comment: "VoiceOver label read before the checklist notes field. Keep the trailing space and colon."
+    )
     // Required on both sides pins this self-sizing text view, and so this header, to its content
     // height.
     notesTextView.setContentHuggingPriority(.required, for: .vertical)

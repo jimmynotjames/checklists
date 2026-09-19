@@ -30,13 +30,27 @@ enum ChecklistHistoryCaption {
   /// The caption's two lines, both always present — "Never" on a list that has never been run.
   static func lines(for checklist: Checklist) -> [String] {
     [
-      "Last updated: \(value(of: checklist.lastUpdated))",
-      "Last completed: \(value(of: checklist.lastCompleted))",
+      String(
+        localized: "checklist.history.lastUpdated",
+        defaultValue: "Last updated: \(value(of: checklist.lastUpdated))",
+        comment: "Caption line under a checklist's notes; the placeholder is a formatted date and time, or the word for Never."
+      ),
+      String(
+        localized: "checklist.history.lastCompleted",
+        defaultValue: "Last completed: \(value(of: checklist.lastCompleted))",
+        comment: "Caption line under a checklist's notes; the placeholder is a formatted date and time, or the word for Never."
+      ),
     ]
   }
 
   private static func value(of date: Date?) -> String {
-    guard let date else { return "Never" }
+    guard let date else {
+      return String(
+        localized: "checklist.history.never",
+        defaultValue: "Never",
+        comment: "Stands in for the date in the Last updated / Last completed caption when the checklist has never been touched."
+      )
+    }
     return dateFormatter.string(from: date)
   }
 

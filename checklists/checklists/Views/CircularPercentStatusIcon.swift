@@ -36,7 +36,13 @@ class CircularPercentStatusIcon: UIView {
   /// `ChecklistRowView` declares the same text on the SwiftUI row that hosts the icon rather than
   /// restating the format there.
   static func accessibilityValueText(forPercentageComplete percentageComplete: CGFloat) -> String {
-    String(format: "Checklist %.0f percent complete", percentageComplete * 100)
+    // Locale-aware percent: "18%" in English, "18 %" in French, "%18" in Turkish.
+    let percent = Double(percentageComplete).formatted(.percent.precision(.fractionLength(0)))
+    return String(
+      localized: "checklist.progress.accessibilityValue",
+      defaultValue: "Checklist \(percent) complete",
+      comment: "VoiceOver value of the progress ring; the placeholder is an already-formatted percentage such as 18%."
+    )
   }
 
   private let color: CGColor = Colors.accent.cgColor
