@@ -114,6 +114,59 @@ class CaptureTests(unittest.TestCase):
             path = capture_progress.run_root(run_id) / "raw" / runtime / f"{device['capture_name']}-{shot}.png"
             write_png(path, 2, 3, alpha=alpha)
 
+    def test_seed_must_match_the_source_locale_shape(self) -> None:
+        """Only the words are localized; a shape change breaks locale comparison."""
+        import check_content
+
+        source = {
+            "locale": "en-US",
+            "checklists": [
+                {
+                    "id": "C4EC1157-0000-4000-A000-000000000001",
+                    "items": [
+                        {"name": "Coffee", "isChecked": True},
+                        {"name": "Toast", "notes": "Light.", "isChecked": False},
+                    ],
+                }
+            ],
+        }
+
+        def issues_for(checklists: list) -> list[str]:
+            collected: list[str] = []
+            check_content._check_source_parity(
+                {"locale": "de", "checklists": checklists}, source, collected
+            )
+            return collected
+
+        good = [
+            {
+                "id": "C4EC1157-0000-4000-A000-000000000001",
+                "items": [
+                    {"name": "Kaffee", "isChecked": True},
+                    {"name": "Toast", "notes": "Leicht.", "isChecked": False},
+                ],
+            }
+        ]
+        self.assertEqual(issues_for(good), [])
+
+        dropped = [dict(good[0], items=good[0]["items"][:1])]
+        self.assertTrue(any("item(s)" in issue for issue in issues_for(dropped)))
+
+        reordered = [dict(good[0], id="C4EC1157-0000-4000-A000-000000000009")]
+        self.assertTrue(any(".id is" in issue for issue in issues_for(reordered)))
+
+        reticked = [
+            dict(good[0], items=[dict(good[0]["items"][0], isChecked=False), good[0]["items"][1]])
+        ]
+        self.assertTrue(any("isChecked" in issue for issue in issues_for(reticked)))
+
+        note_added = [
+            dict(good[0], items=[dict(good[0]["items"][0], notes="Extra."), good[0]["items"][1]])
+        ]
+        self.assertTrue(any("notes presence" in issue for issue in issues_for(note_added)))
+
+        self.assertTrue(any("checklist(s)" in issue for issue in issues_for(good + good)))
+
     def test_missing_files_and_xctest_receipt_are_both_required(self) -> None:
         capture_progress.begin_run("run-one", ("en-US",), self.config)
         status = capture_progress.capture_status("run-one", ("en-US",), self.config)

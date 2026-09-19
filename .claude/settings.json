@@ -86,6 +86,8 @@
       "Bash(mkdir -p tmp/translate-prompts)",
       "Bash(mkdir -p tmp/translate-outputs)",
       "Bash(mkdir -p tmp/glossary)",
+      "Bash(python3 scripts/screenshot_content/generate_seeds.py:*)",
+      "Bash(python3 scripts/screenshot_content/check_content.py:*)",
       "Bash(python3 scripts/resolve_sim_spec.py:*)",
       "Bash(python3 scripts/resolve_booted_sim_udid.py:*)",
       "Bash(python3 scripts/sim_clean.py:*)",
