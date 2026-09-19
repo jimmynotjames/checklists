@@ -8,7 +8,7 @@ import UIKit
 
 /// SwiftUI host for the still-UIKit `ChecklistViewController`, embedded in its own `UINavigationController` because it drives a real UIKit nav bar directly:
 ///   - its scroll handler animates `navigationItem.title` in and out past a threshold,
-///   - it swaps `navigationItem.rightBarButtonItem` (Done vs. Reset) based on `isNewChecklist`,
+///   - it swaps the trailing bar items based on `isNewChecklist` (Done plus an overflow menu on the create sheet; Reset plus the same menu otherwise),
 ///   - the UI tests address `navigationBars["checklists.ChecklistView"]` and its buttons.
 /// When pushed, the caller hides SwiftUI's navigation bar for this destination so only the
 /// embedded bar shows.

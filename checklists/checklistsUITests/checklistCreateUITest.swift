@@ -288,4 +288,28 @@ class checklistCreateUITest: XCTestCase {
     XCTAssert(app.tables["ChecklistTableView"].children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String == itemName2)
     XCTAssert(app.tables["ChecklistTableView"].children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].value as? String == itemName3)
   }
+
+  /// The create sheet's checklist is already a real, saved row the moment this sheet appears
+  /// (ChecklistsView.addChecklist), so "discard" here has to remove it from the list rather than
+  /// merely closing the sheet.
+  func testDiscardNewChecklist() {
+    addChecklistButton.tap()
+    let checklistTable = app.tables["ChecklistTableView"]
+    XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))
+    app.typeText("Trip Prep")
+
+    let navigationBar = app.navigationBars["checklists.ChecklistView"]
+    XCTAssertTrue(navigationBar.buttons["More"].waitForExistence(timeout: 5), "Overflow menu button didn't appear.")
+    navigationBar.buttons["More"].tap()
+    let discardEntry = app.buttons["Discard Checklist"]
+    XCTAssertTrue(discardEntry.waitForExistence(timeout: 5), "Discard Checklist menu entry didn't appear.")
+    discardEntry.tap()
+
+    let confirmDiscard = app.alerts.buttons["Discard"]
+    XCTAssertTrue(confirmDiscard.waitForExistence(timeout: 5), "Discard confirmation alert didn't appear.")
+    confirmDiscard.tap()
+
+    XCTAssertTrue(checklistsList.staticTexts["Morning Routine"].waitForExistence(timeout: 5))
+    XCTAssertFalse(checklistsList.staticTexts["Trip Prep"].exists)
+  }
 }

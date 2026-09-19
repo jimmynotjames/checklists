@@ -221,6 +221,7 @@ struct ChecklistsView: View {
   private func confirmDelete(id checklistId: String) {
     // `nil` means it is already gone — deleted on another device while the alert was up.
     guard let checklist = context.checklist(id: checklistId) else { return }
+    analytics.track(AnalyticsEvent.checklistDeleted)
     // The items go with it: the relationship's cascade delete rule handles that automatically.
     context.delete(checklist)
     context.saveChangesIgnoringFailure(operation: .delete)

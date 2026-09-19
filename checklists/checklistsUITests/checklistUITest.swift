@@ -519,4 +519,68 @@ class checklistUITest: XCTestCase {
     lastItemName = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: numItems + 1).textViews["itemNameTextView"].value as? String)
     XCTAssert(lastItemName == newItemName2)
   }
+
+  // MARK: - Deleting from the overflow menu
+
+  /// Opens the detail screen's overflow menu and taps its one entry, leaving the confirmation up.
+  private func tapDeleteChecklistEntry() {
+    let moreButton = app.navigationBars.buttons["More"]
+    XCTAssertTrue(moreButton.waitForExistence(timeout: 5), "Overflow menu button didn't appear.")
+    moreButton.tap()
+    // A `UIMenu` entry surfaces as a loose button rather than inside the navigation bar.
+    let deleteEntry = app.buttons["Delete Checklist"]
+    XCTAssertTrue(deleteEntry.waitForExistence(timeout: 5), "Delete Checklist menu entry didn't appear.")
+    deleteEntry.tap()
+  }
+
+  func testDeleteChecklistFromDetailMenu() {
+    checklistsList.staticTexts["Morning Routine"].tap()
+    XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
+
+    tapDeleteChecklistEntry()
+    let confirmDelete = app.alerts.buttons["Delete"]
+    XCTAssertTrue(confirmDelete.waitForExistence(timeout: 5), "Delete confirmation alert didn't appear.")
+    confirmDelete.tap()
+
+    // Both halves of the delete: the screen goes away *and* the row is gone from the list behind it.
+    XCTAssertTrue(app.tables["ChecklistTableView"].waitForNonExistence(timeout: 5), "The detail screen didn't dismiss.")
+    XCTAssertTrue(checklistsList.staticTexts["Pre-Trip Checklist"].waitForExistence(timeout: 5))
+    XCTAssertFalse(checklistsList.staticTexts["Morning Routine"].exists)
+  }
+
+  func testCancellingDeleteKeepsTheChecklist() {
+    checklistsList.staticTexts["Morning Routine"].tap()
+    XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
+
+    tapDeleteChecklistEntry()
+    let cancel = app.alerts.buttons["Cancel"]
+    XCTAssertTrue(cancel.waitForExistence(timeout: 5), "Delete confirmation alert didn't appear.")
+    cancel.tap()
+
+    XCTAssertTrue(app.tables["ChecklistTableView"].exists, "Cancelling should leave the screen up.")
+    detailBackButton.tap()
+    XCTAssertTrue(checklistsList.staticTexts["Morning Routine"].waitForExistence(timeout: 5))
+  }
+
+  /// Deleting straight out of an active edit, with the keyboard still up. The name field's delegate
+  /// writes on resignation, so this is the case that catches a commit landing after the record is
+  /// gone — and the trailing-blank-item trim that runs once the screen has left.
+  func testDeleteChecklistWhileEditingItsName() {
+    checklistsList.staticTexts["Morning Routine"].tap()
+    let checklistTableView = app.tables["ChecklistTableView"]
+    XCTAssertTrue(checklistTableView.waitForExistence(timeout: 5))
+
+    let nameField = checklistTableView.textFields["checklistNameField"]
+    nameField.tap()
+    app.typeText(" edited")
+
+    tapDeleteChecklistEntry()
+    let confirmDelete = app.alerts.buttons["Delete"]
+    XCTAssertTrue(confirmDelete.waitForExistence(timeout: 5), "Delete confirmation alert didn't appear.")
+    confirmDelete.tap()
+
+    XCTAssertTrue(checklistsList.staticTexts["Pre-Trip Checklist"].waitForExistence(timeout: 5))
+    XCTAssertFalse(checklistsList.staticTexts["Morning Routine"].exists)
+    XCTAssertFalse(checklistsList.staticTexts["Morning Routine edited"].exists)
+  }
 }
