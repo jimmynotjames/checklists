@@ -97,6 +97,25 @@ def _validate_url(path: Path, value: str) -> None:
         raise MetadataError(f"{path}: URL must be a complete http:// or https:// URL")
 
 
+def _validate_copyright(path: Path, value: str) -> None:
+    """Require a four-digit year, or a year range, followed by the owner name.
+
+    A range is what a relicensing leaves behind ("2019-2026 Jimmy Ho"), so it is
+    accepted; a reversed one is a typo rather than a style, so it is not.
+    """
+    match = re.fullmatch(r"(?P<start>\d{4})(?:-(?P<end>\d{4}))?\s+\S(?:.*\S)?", value)
+    if not match:
+        raise MetadataError(
+            f"{path}: copyright must start with a four-digit year, or a "
+            f"hyphenated range of two, followed by the owner name"
+        )
+    end = match.group("end")
+    if end is not None and int(end) < int(match.group("start")):
+        raise MetadataError(
+            f"{path}: copyright year range ends before it starts: {match.group('start')}-{end}"
+        )
+
+
 def _validate_field(path: Path, field: Field) -> str:
     raw_value = _read_text(path)
     # Deliver strips values immediately before uploading. Validate the same
@@ -187,10 +206,7 @@ def validate_metadata(
     if not copyright_path.is_file():
         raise MetadataError(f"{copyright_path}: required root metadata file is missing")
     copyright_value = _read_text(copyright_path).strip()
-    if not re.fullmatch(r"\d{4}\s+\S(?:.*\S)?", copyright_value):
-        raise MetadataError(
-            f"{copyright_path}: copyright must start with a four-digit year and owner name"
-        )
+    _validate_copyright(copyright_path, copyright_value)
 
     resolved: dict[str, dict[str, str]] = {}
     for locale in locales:

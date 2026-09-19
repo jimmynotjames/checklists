@@ -132,6 +132,26 @@ class AppStoreMetadataTests(unittest.TestCase):
 
         self.assertEqual((output / "fr-FR" / "support_url.txt").read_text(), url)
 
+    def test_copyright_accepts_a_single_year_or_a_range(self) -> None:
+        # The repo relicensed to "2019-2026 Jimmy Ho", which a single-year-only
+        # pattern rejected and which blocked every upload (#204 vs #157).
+        copyright_file = self.source / "copyright.txt"
+        for accepted in ("2020 Jimmy Ho", "2019-2026 Jimmy Ho", "2026-2026 Jimmy Ho"):
+            copyright_file.write_text(accepted, encoding="utf-8")
+            metadata.validate_metadata(self.source, self.manifest)
+
+    def test_malformed_copyright_is_rejected(self) -> None:
+        copyright_file = self.source / "copyright.txt"
+        for rejected in ("Jimmy Ho", "20 Jimmy Ho", "2026", "2019-26 Jimmy Ho"):
+            copyright_file.write_text(rejected, encoding="utf-8")
+            with self.assertRaisesRegex(metadata.MetadataError, "four-digit year"):
+                metadata.validate_metadata(self.source, self.manifest)
+
+    def test_reversed_copyright_year_range_is_rejected(self) -> None:
+        (self.source / "copyright.txt").write_text("2026-2019 Jimmy Ho", encoding="utf-8")
+        with self.assertRaisesRegex(metadata.MetadataError, "ends before it starts"):
+            metadata.validate_metadata(self.source, self.manifest)
+
     def test_unknown_field_and_locale_are_rejected(self) -> None:
         (self.source / "en-US" / "surprise.txt").write_text("value", encoding="utf-8")
         with self.assertRaisesRegex(metadata.MetadataError, "unknown metadata field"):
