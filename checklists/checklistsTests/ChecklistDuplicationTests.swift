@@ -12,9 +12,8 @@ import Testing
 ///
 /// The names these produce are localized, and `make test-unit` does not pin a locale, so nothing
 /// here asserts English text. The rules are asserted structurally instead — that a copy's name is
-/// derived from the original's, that a clash resolves to something unused — which holds in all 50
-/// locales and does not break the day a translation is revised. See issue #213 for what asserting
-/// translated text costs.
+/// derived from the original's, that a clash resolves to something unused — which holds in every
+/// locale and does not break the day a translation is revised.
 ///
 /// No isolation annotation — AGENTS.md §"Concurrency".
 @Suite("Duplicating a checklist")
@@ -212,9 +211,7 @@ struct ChecklistDuplicationTests {
     #expect(first.name != source.name)
   }
 
-  /// The suffix is never parsed back out of a name, so a copy of a copy grows rather than being
-  /// renumbered. Matching translated text in 50 locales against a name the user can edit is the
-  /// alternative, and it is worse.
+  /// See `ChecklistCopyNaming` for why the suffix is never parsed back out of a name.
   @Test("a copy of a copy keeps the earlier name whole")
   func copyOfACopyKeepsTheEarlierNameWhole() {
     let first = ChecklistCopyNaming.name(forCopyOf: "Packing", existingNames: ["Packing"])

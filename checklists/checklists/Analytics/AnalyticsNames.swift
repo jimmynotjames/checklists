@@ -28,9 +28,6 @@ nonisolated enum AnalyticsEvent {
   // MARK: User actions
 
   static let checklistCreated = "checklist_created"
-  /// Kept apart from `checklistCreated` rather than folded into it: duplicating is a third route
-  /// alongside creating and resetting, and merging them would blur the reuse-vs-disposable split
-  /// those two exist to measure (spec §3.5).
   static let checklistDuplicated = "checklist_duplicated"
   static let checklistReset = "checklist_reset"
   static let checklistDeleted = "checklist_deleted"
@@ -77,8 +74,8 @@ nonisolated enum AnalyticsProperty {
 
   // MARK: checklist_duplicated
 
-  /// Which affordance started it: `menu` or `swipe`. The two entry points are far apart in effort,
-  /// so a single count would not say whether either is worth keeping.
+  /// The two entry points are far apart in effort, so a single count would not say whether either
+  /// is worth keeping.
   static let source = "source"
 
   // MARK: Errors and failures

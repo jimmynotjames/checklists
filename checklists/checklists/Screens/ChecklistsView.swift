@@ -268,9 +268,8 @@ struct ChecklistsView: View {
 
   // MARK: - Duplicating
 
-  /// No confirmation, no modal and no navigation: the copy appears in the row below the original,
-  /// where the result is already on screen. The detail screen's menu entry opens the copy instead,
-  /// because from in there it would not be.
+  /// The detail screen's menu entry opens the copy; this one does not, because here the result is
+  /// already on screen.
   private func duplicate(checklist: Checklist) {
     do {
       try context.duplicate(checklist: checklist, among: Array(checklists))

@@ -27,11 +27,10 @@ extension ModelContext {
     // order and leaves the copy evenly spaced room to reorder.
     var sortKey = SortKeyReorder.step
     for item in source.items where !item.isBlank {
-      // Status is deliberately not carried over — a duplicate has never been run. `Item.init`
-      // already leaves it unchecked, so that is the absence of a line rather than a line.
+      // Status is deliberately not carried over — a duplicate has never been run.
       let copiedItem = Item(name: item.name, notes: item.notes, sortKey: sortKey)
       insert(copiedItem)
-      // Child side only; SwiftData maintains `itemsStorage` as the inverse. See `Reordering`.
+      // Child side only; see `Reordering`.
       copiedItem.checklist = copy
       sortKey += SortKeyReorder.step
     }
@@ -46,8 +45,14 @@ extension ModelContext {
       }
     } catch {
       // `placeAndSave` puts the siblings' keys back; the half-built copy is this method's to undo.
-      // Left in, it would render in the list as a checklist that was never written to disk.
-      delete(copy) // The copied items go with it, by the cascade rule.
+      // Left in, it would render in the list as a checklist that was never written to disk. The
+      // items go one at a time rather than by the relationship's cascade rule: nothing is saved
+      // after this, so the rule never runs against the store, and orphans would surface on whatever
+      // unrelated save came next.
+      for copiedItem in copy.items {
+        delete(copiedItem)
+      }
+      delete(copy)
       throw error
     }
     return copy
@@ -78,7 +83,7 @@ nonisolated enum ChecklistCopyNaming {
     )
     // Only an exact clash is disambiguated. The suffix is never parsed back out of a name, so a
     // copy of a copy is "… copy copy" rather than "… copy 2" — recognising the suffix would mean
-    // matching translated text in 50 locales against names the user is free to edit.
+    // matching translated text against names the user is free to edit, in every locale.
     var number = 2
     while existingNames.contains(candidate) {
       candidate = String(

@@ -52,10 +52,6 @@ nonisolated enum CommonStrings {
     comment: "Title of the Settings screen and the main-menu row that opens it."
   )
 
-  /// Under the delete-checklist and reset-all confirmations on the list screen, and under the
-  /// delete confirmation reached from the detail screen's overflow menu. Keyed under `checklists.`
-  /// rather than `common.` because the list screen is where it first appeared and renaming a key
-  /// costs every locale a re-translation.
   /// Written into the store as a checklist's name, not shown as a label, so it stays in whatever
   /// language the device had when it was saved. Lives here rather than on the detail screen because
   /// `ChecklistCopyNaming` needs the same fallback and must not reach into a view controller for it.
@@ -65,6 +61,10 @@ nonisolated enum CommonStrings {
     comment: "Name stored for a checklist saved with an empty name field. Lowercase in English; it is data once saved."
   )
 
+  /// Under the delete-checklist and reset-all confirmations on the list screen, and under the
+  /// delete confirmation reached from the detail screen's overflow menu. Keyed under `checklists.`
+  /// rather than `common.` because the list screen is where it first appeared and renaming a key
+  /// costs every locale a re-translation.
   static let irreversibleConfirmation = String(
     localized: "checklists.confirm.irreversible",
     defaultValue: "Are you sure? This cannot be undone.",

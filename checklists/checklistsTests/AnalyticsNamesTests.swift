@@ -128,4 +128,12 @@ struct AnalyticsNamesTests {
       "dedupe",
     ])
   }
+
+  /// `source` transmits `ChecklistDuplicationSource.rawValue`, so the same rule as above applies:
+  /// the case names *are* the analytics vocabulary. Update analytics-spec.md §9.1 in the same change.
+  @Test("the duplication source values sent as source are pinned")
+  func duplicationSourceValuesArePinned() {
+    #expect(ChecklistDuplicationSource.menu.rawValue == "menu")
+    #expect(ChecklistDuplicationSource.swipe.rawValue == "swipe")
+  }
 }

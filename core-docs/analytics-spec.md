@@ -95,6 +95,7 @@ list is a spec change requiring a rationale recorded here — not a code review 
 | `notes_length` | Yes | A character count, never the characters. |
 | `checklist_name` | **Yes — accepted risk, see §4.4** | The only free-text field. Nothing else answers §3.2. |
 | `orientation` | Yes | `portrait` / `landscape`. |
+| `source` | Yes | `menu` / `swipe`. Names an affordance the app owns, never anything the person typed. |
 | `error_domain`, `error_code`, `error_operation` | Yes | A SwiftData/CloudKit error domain, its integer code, and which save failed. Structured, never an `NSError`'s `userInfo` — see §4.3. |
 | App version, build, locale, region, device class | Yes | Standard environment context (§9.2). |
 | A generated `distinct_id` UUID | Yes | Random, app-generated, not derived from any device or Apple identifier (§5). |
@@ -304,7 +305,7 @@ the `OSLog` channel (§11) remains the complete record. Do not "fix" it by exemp
 
 ## 8. Event catalog
 
-All names are flat `snake_case`, `noun_pastTenseVerb`. 19 events.
+All names are flat `snake_case`, `noun_pastTenseVerb`.
 
 | Event | Fires when | Properties | Answers |
 | --- | --- | --- | --- |
