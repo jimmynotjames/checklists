@@ -101,17 +101,25 @@ def clear_blank_source_fields(storefronts: list[str]) -> int:
 
 
 def copy_passthrough(storefront: str) -> int:
-    """Copy URL files verbatim from en-US into the storefront folder."""
+    """Copy URL files verbatim from en-US into the storefront folder.
+
+    Byte-for-byte, deliberately: a passthrough field is the English file, so a
+    storefront copy that differs from the source even by a trailing newline is a
+    divergence nobody asked for, and `appstore_metadata.py prepare` hands the
+    source bytes to deliver unchanged.
+    """
     copied = 0
     for field in PASSTHROUGH_FIELDS:
         src = METADATA_DIR / SOURCE_LOCALE / f"{field}.txt"
         if not src.exists():
             continue
-        value = src.read_text(encoding="utf-8").strip()
-        if not value:
+        raw = src.read_bytes()
+        if not raw.strip():
             continue
-        if write_field(storefront, field, value):
-            copied += 1
+        folder = METADATA_DIR / storefront
+        folder.mkdir(parents=True, exist_ok=True)
+        (folder / f"{field}.txt").write_bytes(raw)
+        copied += 1
     return copied
 
 

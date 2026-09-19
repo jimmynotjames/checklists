@@ -1,0 +1,1 @@
+Ahora cada lista muestra su porcentaje completado, para ver el avance de un vistazo.

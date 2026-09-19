@@ -1,0 +1,1 @@
+Added percentage-complete indicators, so you can see progress at a glance.

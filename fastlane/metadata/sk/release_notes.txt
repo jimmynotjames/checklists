@@ -1,0 +1,1 @@
+Pridali sme ukazovatele dokončenia v percentách, takže hneď vidíte, ako ste ďaleko.

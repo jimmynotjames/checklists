@@ -1,0 +1,1 @@
+Checklisten zeigen den Fortschritt jetzt in Prozent an, damit du auf einen Blick siehst, wie weit du bist.

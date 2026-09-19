@@ -62,6 +62,16 @@ higher-priority message and drop the lower one, never the reverse. In the tight
 English subtitle does. Do not let it drift to a lower-priority benefit just
 because that translates more neatly.
 
+**The subtitle is read by people and indexed by search, so it must work as
+both.** Two habits spoil it. The first is calquing "reusable": many languages
+have an adjective that formally means reusable but is reserved for physical
+goods, such as shopping bags or containers, and using it for a list reads
+oddly and earns nothing in search. Say the reuse idea the way people say it
+here, even if that takes a short phrase instead of one adjective. The second is
+dropping the category: a subtitle of pure modifiers with no word for *checklist*
+or *list* leaves the listing's strongest indexed field with nothing to match.
+Fit the category term in unless doing so would make the line unnatural.
+
 **Anti-positioning — what {BRAND} is NOT** (never imply these):
 - NOT a task manager, project tool, or team collaboration app
 - NOT a habit tracker with streaks, scores, or daily-goal pressure
@@ -140,12 +150,43 @@ where each key is the field name and each value is the transcreated string.
    including common English loanwords and accepted abbreviations where users
    actually use them.
 
+   **Two coverage requirements the byte budget does not excuse.** These are the
+   most common failure in this field, and a list that misses them is wrong even
+   when it is perfectly sized and perfectly idiomatic:
+   - **The reuse idea must be searchable.** Reuse is the product's whole
+     premise, not a nice-to-have, so the keyword set must carry at least one
+     term for *repeat / reuse / recurring / again* as locals phrase it. A list
+     made only of generic list-and-packing words describes a category the app
+     shares with dozens of others and wins nothing.
+   - **The category head noun must be reachable.** Include the head term for
+     "checklist" or "list" in the form this market searches — often the local
+     word *and* the Roman-script English loanword, where both are really typed.
+     Bare modifiers with no head noun match nothing.
+
+   **Do not spend the budget on the anti-positioning above.** Terms meaning
+   *to-do*, *task*, *chore*, or *habit* pull the listing toward the task
+   managers and habit trackers {BRAND} is explicitly not, and they compete in
+   the market's most crowded queries. Include such a term only when it is
+   genuinely how locals name a checklist, never as filler. When the budget is
+   tight, a to-do term is the first thing to cut and a reuse term is the last.
+
    **Treat `name`, `subtitle`, and `keywords` as one combined search index.**
    Apple indexes words from all three together and *recombines* them into
    multi-word queries. Two consequences:
    - **Never spend a keyword on a word already in `name` or `subtitle`.** It is
      already indexed; repeating it buys nothing. Subtract those words from your
      candidate list first, then fill the space with *new* terms.
+
+     **This rule is about the same form of a word, not the same lemma.** In a
+     heavily inflected language, the subtitle usually carries a word in some
+     inflected form — a plural, or a case the sentence demanded — while people
+     search the base form. Indexing does not reliably bridge those, so if the
+     subtitle has the head noun only in an inflected form, the base or singular
+     form still earns its own keyword slot. Treat the coverage requirement below
+     as the stronger rule: the head noun must be reachable, even if a relative of
+     it already appears in the subtitle. The same goes for a bare adjective —
+     it matches nothing on its own, so the noun it modifies must be present
+     somewhere for the pair to combine.
    - **Unbundle multi-word phrases into single comma-separated entries.** A
      phrase like "packing list" wastes a character on the space *and* prevents
      recombination. List `packing` and `list` separately — Apple still forms the

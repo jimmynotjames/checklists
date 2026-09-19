@@ -1,0 +1,1 @@
+Hver liste viser nu, hvor mange procent der er klaret, så du kan følge fremskridtet med et blik.

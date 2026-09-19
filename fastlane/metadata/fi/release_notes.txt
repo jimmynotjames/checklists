@@ -1,0 +1,1 @@
+Lisäsimme prosenttiosuudet, joista näet edistymisen yhdellä silmäyksellä.
