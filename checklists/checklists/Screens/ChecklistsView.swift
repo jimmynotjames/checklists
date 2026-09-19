@@ -100,6 +100,9 @@ struct ChecklistsView: View {
           defaultValue: "Miscellaneous Menu",
           comment: "VoiceOver label for the toolbar button that opens the main menu (feedback, rating, settings)."
         ))
+        // Locale-invariant handle for the localized large-type check, which
+        // cannot navigate by visible text across 13 languages.
+        .accessibilityIdentifier("toolbar.mainMenu")
       }
 
       ToolbarItem(placement: .topBarTrailing) {
@@ -114,6 +117,7 @@ struct ChecklistsView: View {
           defaultValue: "Checklists Menu",
           comment: "VoiceOver label for the toolbar button that opens the checklist actions popover (Reset All)."
         ))
+        .accessibilityIdentifier("toolbar.checklistsMenu")
         .popover(isPresented: $showsResetMenu) {
           Button(String(
             localized: "checklists.action.resetAll",
@@ -209,6 +213,7 @@ struct ChecklistsView: View {
       defaultValue: "Add new checklist.",
       comment: "VoiceOver label for the round floating button that creates a checklist."
     ))
+    .accessibilityIdentifier("toolbar.addChecklist")
     .padding(20)
   }
 

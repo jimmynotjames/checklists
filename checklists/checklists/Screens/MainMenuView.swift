@@ -74,6 +74,8 @@ struct MainMenuView: View {
         }
         router.sheet = .settings
       }
+      // Locale-invariant handle for the localized large-type check.
+      .accessibilityIdentifier("mainMenu.settings")
 
       Spacer()
     }
