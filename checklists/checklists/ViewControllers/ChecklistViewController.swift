@@ -63,12 +63,19 @@ class ChecklistViewController: UIViewController {
   /// How far down the list must be dragged before an in-progress edit is committed.
   private let keyboardDismissDragThreshold: CGFloat = 40.0
 
-  private var context: ModelContext {
+  /// Internal rather than private so `ChecklistViewController+Menu` can reach it.
+  var context: ModelContext {
     PersistenceController.shared.mainContext
   }
 
   /// False only on the create sheet, where both caption lines could only ever read "Never".
   private var showsHistoryCaption = false
+
+  /// Picks the overflow menu's wording: "Discard" on the create sheet, "Delete" otherwise.
+  /// Captured once, like `showsHistoryCaption`, rather than read from `isNewChecklist` live —
+  /// `viewDidAppear` clears that flag on every appearance, including the create sheet's own first
+  /// one, so by the time the menu can ever be opened it already reads false.
+  var showsDiscardWording = false
 
   var isNewChecklist: Bool = false
   var isJumpingToFirstItem: Bool = false
@@ -149,12 +156,29 @@ class ChecklistViewController: UIViewController {
     tableFooterView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
 
     if isNewChecklist {
-      navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+      showsDiscardWording = true
+      // The create sheet already inserted and saved a real row before this screen appeared
+      // (ChecklistsView.addChecklist), so it needs its own way out besides Done: the menu doubles
+      // as "cancel creation" here, worded as a discard rather than a delete.
+      let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+      let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: makeMoreMenu())
+      moreItem.accessibilityLabel = "More"
+      // iOS 26 renders bar buttons in `labelColor` unless the item itself carries a tint.
+      doneItem.tintColor = .tintColor
+      moreItem.tintColor = .tintColor
+      navigationItem.rightBarButtonItems = [moreItem, doneItem]
     } else {
-      navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetButtonTapped))
+      // Reset keeps the bar slot: in an app built around rerunning a list it is a per-run action,
+      // while deleting the list is a once-ever one that can afford to sit a tap deeper.
+      let resetItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetButtonTapped))
+      let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: makeMoreMenu())
+      moreItem.accessibilityLabel = "More"
+      // iOS 26 renders bar buttons in `labelColor` unless the item itself carries a tint.
+      resetItem.tintColor = .tintColor
+      moreItem.tintColor = .tintColor
+      // Trailing-first: the menu sits at the outer edge, Reset next to the title.
+      navigationItem.rightBarButtonItems = [moreItem, resetItem]
     }
-    // iOS 26 renders bar buttons in `labelColor` unless the item itself carries a tint.
-    navigationItem.rightBarButtonItem?.tintColor = .tintColor
     if checklist.items.isEmpty {
       try? context.insert(item: Item(), at: 0, in: checklist)
     }
@@ -170,13 +194,7 @@ class ChecklistViewController: UIViewController {
     guard !checklist.isDeleted, context.checklist(id: checklist.id) != nil else {
       // Deleted on another device while open here. Leaving the screen up would let the user keep
       // editing a record that no longer exists.
-      if let onRequestDismiss {
-        onRequestDismiss()
-      } else if let navigationController, navigationController.viewControllers.count > 1 {
-        navigationController.popViewController(animated: true)
-      } else {
-        dismiss(animated: true)
-      }
+      requestDismissal()
       return
     }
 
@@ -221,6 +239,12 @@ class ChecklistViewController: UIViewController {
   }
 
   override func viewDidDisappear(_ animated: Bool) {
+    // A deleted checklist has no trailing rows left to tidy, and reading the relationship off it
+    // would touch an invalidated model.
+    guard !checklist.isDeleted else {
+      super.viewDidDisappear(animated)
+      return
+    }
     // If user left some 'dangling' empty items at end of list, remove them, but don't worry if there's one lone empty item.
     // Snapshotted up front: deleting from the context does not re-sort this array, so walking a
     // stale copy backwards is both correct and cheaper than recomputing the sorted items each step.

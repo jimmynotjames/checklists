@@ -29,6 +29,7 @@ nonisolated enum AnalyticsEvent {
 
   static let checklistCreated = "checklist_created"
   static let checklistReset = "checklist_reset"
+  static let checklistDeleted = "checklist_deleted"
 
   // MARK: Errors
 

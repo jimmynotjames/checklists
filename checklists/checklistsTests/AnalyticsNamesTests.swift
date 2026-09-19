@@ -25,6 +25,7 @@ struct AnalyticsNamesTests {
     AnalyticsEvent.privacyPolicyTapped,
     AnalyticsEvent.checklistCreated,
     AnalyticsEvent.checklistReset,
+    AnalyticsEvent.checklistDeleted,
     AnalyticsEvent.persistenceFatalError,
     AnalyticsEvent.persistenceWriteFailed,
     AnalyticsEvent.startupFailed,
