@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "pa",
+  "primaryLocale": "pa_IN",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "ਸਵੇਰ ਦਾ ਰੁਟੀਨ",
+      "items": [
+        {
+          "name": "ਚਾਹ ਚੜ੍ਹਾਓ",
+          "isChecked": true
+        },
+        {
+          "name": "ਯੋਗਾ/ਸਿਮਰਨ",
+          "isChecked": true
+        },
+        {
+          "name": "ਟ੍ਰੈਫਿਕ ਤੇ ਮੌਸਮ ਦੀ ਖ਼ਬਰ",
+          "isChecked": true
+        },
+        {
+          "name": "ਨਾਸ਼ਤਾ",
+          "isChecked": true
+        },
+        {
+          "name": "ਡਾਇਰੀ ਲਿਖਣੀ",
+          "isChecked": false
+        },
+        {
+          "name": "ਵਟਸਐਪ ਗਰੁੱਪ 'ਤੇ ਸਿਆਸੀ ਬਹਿਸ",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "ਵੀਕੈਂਡ ਦੀ ਸੈਰ ਦਾ ਜ਼ਰੂਰੀ ਸਾਮਾਨ",
+      "items": [
+        {
+          "name": "ਫ਼ੋਨ ਦਾ ਚਾਰਜਰ",
+          "isChecked": false
+        },
+        {
+          "name": "ਬਟੂਆ/ਆਈ.ਡੀ.",
+          "notes": "ਹਵਾਈ ਸਫ਼ਰ ਲਈ ਆਧਾਰ ਕਾਰਡ, ਵਿਦੇਸ਼ ਲਈ ਪਾਸਪੋਰਟ, ਗੱਡੀ ਲਈ ਡਰਾਈਵਿੰਗ ਲਾਇਸੈਂਸ।",
+          "isChecked": false
+        },
+        {
+          "name": "ਪਰਚੀ, ਦਵਾਈਆਂ, ਸਪਲੀਮੈਂਟ",
+          "isChecked": true
+        },
+        {
+          "name": "ਨਹਾਉਣ-ਧੋਣ ਦਾ ਬੈਗ",
+          "notes": "ਜਹਾਜ਼ 'ਤੇ ਹੱਥ ਵਾਲੇ ਬੈਗ ਵਿੱਚ ਸਿਰਫ਼ ਛੋਟੀਆਂ ਸ਼ੀਸ਼ੀਆਂ, ਵੱਖਰੇ ਬੈਗ ਵਿੱਚ।",
+          "isChecked": true
+        },
+        {
+          "name": "ਸਨਸਕਰੀਨ",
+          "isChecked": false
+        },
+        {
+          "name": "ਹੈੱਡਫ਼ੋਨ",
+          "isChecked": false
+        },
+        {
+          "name": "ਕਿਤਾਬ, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "ਛਤਰੀ/ਰੇਨਕੋਟ",
+          "isChecked": false
+        },
+        {
+          "name": "ਧੁੱਪ ਦੀਆਂ ਐਨਕਾਂ",
+          "isChecked": true
+        },
+        {
+          "name": "ਧੁੱਪ ਵਾਲੀ ਟੋਪੀ",
+          "isChecked": true
+        },
+        {
+          "name": "ਸਵਿਮਸੂਟ",
+          "isChecked": false
+        },
+        {
+          "name": "ਪੂਲ ਵਾਲੀਆਂ ਚੱਪਲਾਂ",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "ਸਫ਼ਰ ਤੋਂ ਪਹਿਲਾਂ ਦੀ ਚੈੱਕਲਿਸਟ",
+      "items": [
+        {
+          "name": "ਈਮੇਲ 'ਤੇ ਆਟੋ-ਰਿਪਲਾਈ ਲਾਓ",
+          "isChecked": true
+        },
+        {
+          "name": "ਦੁੱਧ ਤੇ ਅਖ਼ਬਾਰ ਵਾਲੇ ਨੂੰ ਦੱਸੋ",
+          "isChecked": true
+        },
+        {
+          "name": "ਪਾਲਤੂ ਜਾਨਵਰ ਦਾ ਇੰਤਜ਼ਾਮ",
+          "isChecked": true
+        },
+        {
+          "name": "ਪੌਦਿਆਂ ਤੇ ਘਰ ਦੀ ਦੇਖ-ਭਾਲ ਦਾ ਇੰਤਜ਼ਾਮ",
+          "isChecked": false
+        },
+        {
+          "name": "ਸਕੂਲੋਂ ਛੁੱਟੀ ਦੀ ਅਰਜ਼ੀ",
+          "isChecked": false
+        },
+        {
+          "name": "ਸਫ਼ਰ ਦਾ ਪ੍ਰੋਗਰਾਮ ਕਿਸੇ ਆਪਣੇ ਨੂੰ ਭੇਜੋ",
+          "isChecked": false
+        },
+        {
+          "name": "ਬਿਜਲੀ ਦੇ ਸਾਮਾਨ ਦੇ ਪਲੱਗ ਕੱਢੋ",
+          "isChecked": false
+        },
+        {
+          "name": "ਕੀਮਤੀ ਸਾਮਾਨ ਸੰਭਾਲ ਕੇ ਰੱਖੋ",
+          "isChecked": false
+        },
+        {
+          "name": "ਏ.ਸੀ. ਜਾਂ ਹੀਟਰ ਬੰਦ ਕਰੋ",
+          "notes": "ਗੀਜ਼ਰ ਤੇ ਪੱਖੇ ਵੀ ਬੰਦ ਕਰ ਦਿਓ, ਬਿੱਲ ਬਚੇਗਾ।",
+          "isChecked": false
+        },
+        {
+          "name": "ਚੁੱਲ੍ਹਾ, ਗੈਸ ਰੈਗੂਲੇਟਰ ਬੰਦ ਕਰੋ",
+          "isChecked": false
+        },
+        {
+          "name": "ਦਰਵਾਜ਼ੇ ਤੇ ਖਿੜਕੀਆਂ ਲਾਕ ਕਰੋ",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

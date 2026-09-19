@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "primaryLocale": "de_DE",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Morgenroutine",
+      "items": [
+        {
+          "name": "KAFFEEMASCHINE AN",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/Meditation",
+          "isChecked": true
+        },
+        {
+          "name": "Verkehr und Wetter checken",
+          "isChecked": true
+        },
+        {
+          "name": "Frühstück",
+          "isChecked": true
+        },
+        {
+          "name": "Tagebuch schreiben",
+          "isChecked": false
+        },
+        {
+          "name": "Auf X über Politik streiten",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Packliste fürs Wochenende",
+      "items": [
+        {
+          "name": "Handy-Ladekabel",
+          "isChecked": false
+        },
+        {
+          "name": "Geldbörse/Ausweis",
+          "notes": "Personalausweis in der EU, Reisepass für Fernreisen, Führerschein fürs Auto.",
+          "isChecked": false
+        },
+        {
+          "name": "Medikamente, Rezepte, Vitamine",
+          "isChecked": true
+        },
+        {
+          "name": "Kulturbeutel",
+          "notes": "Im Handgepäck nur kleine Flüssigkeiten im extra Beutel.",
+          "isChecked": true
+        },
+        {
+          "name": "Sonnencreme",
+          "isChecked": false
+        },
+        {
+          "name": "Kopfhörer",
+          "isChecked": false
+        },
+        {
+          "name": "Buch, iPad, Kindle …",
+          "isChecked": false
+        },
+        {
+          "name": "Regenjacke, Schirm",
+          "isChecked": false
+        },
+        {
+          "name": "Sonnenbrille",
+          "isChecked": true
+        },
+        {
+          "name": "Sonnenhut",
+          "isChecked": true
+        },
+        {
+          "name": "Badesachen",
+          "isChecked": false
+        },
+        {
+          "name": "Badelatschen",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Checkliste vor der Reise",
+      "items": [
+        {
+          "name": "Abwesenheitsnotiz einrichten",
+          "isChecked": true
+        },
+        {
+          "name": "Nachbarn: Briefkasten leeren",
+          "isChecked": true
+        },
+        {
+          "name": "Tierbetreuung klären",
+          "isChecked": true
+        },
+        {
+          "name": "Pflanzen- und Wohnungsbetreuung klären",
+          "isChecked": false
+        },
+        {
+          "name": "Schule: Beurlaubung klären",
+          "isChecked": false
+        },
+        {
+          "name": "Reiseplan an Familie oder Freunde schicken",
+          "isChecked": false
+        },
+        {
+          "name": "Geräte vom Strom nehmen",
+          "isChecked": false
+        },
+        {
+          "name": "Wertsachen wegschließen",
+          "isChecked": false
+        },
+        {
+          "name": "Heizung runterdrehen",
+          "notes": "Oder auf Frostschutz stellen, damit keine Rohre einfrieren.",
+          "isChecked": false
+        },
+        {
+          "name": "Herd und Ofen ausgeschaltet?",
+          "isChecked": false
+        },
+        {
+          "name": "Türen und Fenster schließen",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

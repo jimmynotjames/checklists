@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 import os
 import struct
 import sys
@@ -16,6 +17,7 @@ sys.path.insert(0, str(SCREENSHOT_SCRIPTS))
 import capture_progress  # noqa: E402
 import prepare_output  # noqa: E402
 from config import (  # noqa: E402
+    SEEDS_DIR,
     ConfigError,
     DeviceConfig,
     LocaleConfig,
@@ -63,15 +65,29 @@ class ConfigTests(unittest.TestCase):
     def test_all_locale_mappings_are_self_contained(self) -> None:
         config = load_config()
         self.assertEqual(len(config.locales), 50)
-        self.assertEqual(config.active_locales, ("en-US",))
         mappings = config.locales_by_runtime
         self.assertEqual((mappings["de"].storefront, mappings["de"].region, mappings["de"].apple_locale), ("de-DE", "DE", "de_DE"))
         self.assertEqual((mappings["nb"].storefront, mappings["nb"].apple_locale), ("no", "nb_NO"))
         self.assertEqual((mappings["zh-Hans"].storefront, mappings["zh-Hans"].apple_locale), ("zh-Hans", "zh_Hans_CN"))
 
+    def test_every_locale_is_active_and_has_a_seed(self) -> None:
+        # Capture covers the whole registry now. A locale that is active without
+        # a seed fails at capture time, on a simulator, minutes in.
+        config = load_config()
+        self.assertEqual(set(config.active_locales), {locale.runtime for locale in config.locales})
+        missing = [
+            runtime for runtime in config.active_locales
+            if not (SEEDS_DIR / f"{runtime}.json").is_file()
+        ]
+        self.assertEqual(missing, [])
+
     def test_explicit_inactive_locale_is_rejected(self) -> None:
+        # Every registry locale is active, so the rejection path needs a config
+        # that still has an inactive one rather than the live file.
+        config = load_config()
+        pruned = replace(config, active_locales=("en-US",))
         with self.assertRaisesRegex(ConfigError, "inactive runtime locale"):
-            parse_locale_args(["de"], load_config())
+            parse_locale_args(["de"], pruned)
 
 
 class CaptureTests(unittest.TestCase):

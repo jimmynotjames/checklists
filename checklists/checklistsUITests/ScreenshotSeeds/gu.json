@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "gu",
+  "primaryLocale": "gu_IN",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "સવારની દિનચર્યા",
+      "items": [
+        {
+          "name": "ચા મૂકો",
+          "isChecked": true
+        },
+        {
+          "name": "યોગ/ધ્યાન",
+          "isChecked": true
+        },
+        {
+          "name": "ટ્રાફિક અને હવામાનના સમાચાર",
+          "isChecked": true
+        },
+        {
+          "name": "નાસ્તો",
+          "isChecked": true
+        },
+        {
+          "name": "ડાયરી લખવી",
+          "isChecked": false
+        },
+        {
+          "name": "વૉટ્સએપ પર રાજકારણની માથાકૂટ",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "વીકએન્ડ ટ્રિપની જરૂરી ચીજો",
+      "items": [
+        {
+          "name": "ફોનનું ચાર્જર",
+          "isChecked": false
+        },
+        {
+          "name": "પાકીટ/ઓળખપત્ર",
+          "notes": "હવાઈ મુસાફરી માટે આધાર કાર્ડ, વિદેશ માટે પાસપોર્ટ, રોડ ટ્રિપ માટે ડ્રાઇવિંગ લાઇસન્સ.",
+          "isChecked": false
+        },
+        {
+          "name": "દવાઓ, પ્રિસ્ક્રિપ્શન, સપ્લિમેન્ટ",
+          "isChecked": true
+        },
+        {
+          "name": "નાહવા-ધોવાની બેગ",
+          "notes": "ફ્લાઇટમાં હેન્ડબેગ લઈ જાઓ તો પ્રવાહી નાની બોટલમાં, અલગ થેલીમાં જ.",
+          "isChecked": true
+        },
+        {
+          "name": "સનસ્ક્રીન",
+          "isChecked": false
+        },
+        {
+          "name": "હેડફોન",
+          "isChecked": false
+        },
+        {
+          "name": "પુસ્તક, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "છત્રી, રેઇનકોટ",
+          "isChecked": false
+        },
+        {
+          "name": "ગોગલ્સ",
+          "isChecked": true
+        },
+        {
+          "name": "ટોપી",
+          "isChecked": true
+        },
+        {
+          "name": "સ્વિમસૂટ",
+          "isChecked": false
+        },
+        {
+          "name": "પૂલનાં ચંપલ",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "પ્રવાસ પહેલાંનું ચેકલિસ્ટ",
+      "items": [
+        {
+          "name": "ઈમેલમાં ઑટો-રિપ્લાય સેટ કરો",
+          "isChecked": true
+        },
+        {
+          "name": "દૂધ અને છાપું બંધ કરાવો",
+          "isChecked": true
+        },
+        {
+          "name": "પાળતુ પ્રાણીની સંભાળ ગોઠવો",
+          "isChecked": true
+        },
+        {
+          "name": "છોડને પાણી, ઘરની દેખરેખ ગોઠવો",
+          "isChecked": false
+        },
+        {
+          "name": "શાળામાં રજાની જાણ કરો",
+          "isChecked": false
+        },
+        {
+          "name": "પ્રવાસનો કાર્યક્રમ વિશ્વાસુ સગા-મિત્રને મોકલો",
+          "isChecked": false
+        },
+        {
+          "name": "ઉપકરણોના પ્લગ કાઢી લો",
+          "isChecked": false
+        },
+        {
+          "name": "કીમતી ચીજો સલામત મૂકો",
+          "isChecked": false
+        },
+        {
+          "name": "પંખા અને એ.સી. બંધ કરો",
+          "notes": "દરેક રૂમના પંખા, લાઇટ અને ગીઝરના સ્વિચ પણ તપાસી લો.",
+          "isChecked": false
+        },
+        {
+          "name": "ગેસ અને ઓવન બંધ છે તે જુઓ",
+          "isChecked": false
+        },
+        {
+          "name": "બારી-બારણાં બંધ કરી તાળું મારો",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

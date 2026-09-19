@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "da",
+  "primaryLocale": "da_DK",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Morgenrutine",
+      "items": [
+        {
+          "name": "START KAFFEMASKINEN",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditation",
+          "isChecked": true
+        },
+        {
+          "name": "Trafik og vejrudsigt",
+          "isChecked": true
+        },
+        {
+          "name": "Morgenmad",
+          "isChecked": true
+        },
+        {
+          "name": "Skrive dagbog",
+          "isChecked": false
+        },
+        {
+          "name": "Skændes om politik på Facebook",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Weekendtur – det vigtigste",
+      "items": [
+        {
+          "name": "Telefonoplader",
+          "isChecked": false
+        },
+        {
+          "name": "Pung og ID",
+          "notes": "Gyldig legitimation (pas til fly og udland, kørekort til biltur)",
+          "isChecked": false
+        },
+        {
+          "name": "Recepter, medicin og vitaminer",
+          "isChecked": true
+        },
+        {
+          "name": "Toilettaske",
+          "notes": "Kun små væsker i en separat pose, hvis du flyver med håndbagage.",
+          "isChecked": true
+        },
+        {
+          "name": "Solcreme",
+          "isChecked": false
+        },
+        {
+          "name": "Høretelefoner",
+          "isChecked": false
+        },
+        {
+          "name": "Bog, iPad, Kindle ...",
+          "isChecked": false
+        },
+        {
+          "name": "Regn- og vindtøj",
+          "isChecked": false
+        },
+        {
+          "name": "Solbriller",
+          "isChecked": true
+        },
+        {
+          "name": "Solhat",
+          "isChecked": true
+        },
+        {
+          "name": "Badetøj",
+          "isChecked": false
+        },
+        {
+          "name": "Badesko",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Tjekliste før afrejse",
+      "items": [
+        {
+          "name": "Slå autosvar til på mailen",
+          "isChecked": true
+        },
+        {
+          "name": "Bed naboen tømme postkassen",
+          "isChecked": true
+        },
+        {
+          "name": "Pasning af kæledyr",
+          "isChecked": true
+        },
+        {
+          "name": "Pasning af planter og hus",
+          "isChecked": false
+        },
+        {
+          "name": "Meld barnet fri i skolen",
+          "isChecked": false
+        },
+        {
+          "name": "Send rejseplanen til en nær ven eller familie",
+          "isChecked": false
+        },
+        {
+          "name": "Tag stikkene ud",
+          "isChecked": false
+        },
+        {
+          "name": "Gem værdigenstande væk",
+          "isChecked": false
+        },
+        {
+          "name": "Skru ned for varmen",
+          "notes": "Eller sæt en minimumstemperatur, så rørene ikke fryser.",
+          "isChecked": false
+        },
+        {
+          "name": "Tjek at komfur og ovn er slukket",
+          "isChecked": false
+        },
+        {
+          "name": "Lås døre og vinduer",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

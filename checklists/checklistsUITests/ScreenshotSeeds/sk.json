@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "sk",
+  "primaryLocale": "sk_SK",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Ranná rutina",
+      "items": [
+        {
+          "name": "ZAPNÚŤ KÁVOVAR",
+          "isChecked": true
+        },
+        {
+          "name": "Joga/meditácia",
+          "isChecked": true
+        },
+        {
+          "name": "Doprava a počasie",
+          "isChecked": true
+        },
+        {
+          "name": "Raňajky",
+          "isChecked": true
+        },
+        {
+          "name": "Písať denník",
+          "isChecked": false
+        },
+        {
+          "name": "Politické hádky na Facebooku",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Balenie na víkendovku",
+      "items": [
+        {
+          "name": "Nabíjačka na mobil",
+          "isChecked": false
+        },
+        {
+          "name": "Peňaženka, doklady",
+          "notes": "Občiansky preukaz stačí v rámci EÚ, mimo nej pas, na cestu autom vodičák.",
+          "isChecked": false
+        },
+        {
+          "name": "Lieky, recepty, výživové doplnky",
+          "isChecked": true
+        },
+        {
+          "name": "Toaletná taštička",
+          "notes": "Ak letíš, malé tekutiny v samostatnom vrecku v príručnej batožine.",
+          "isChecked": true
+        },
+        {
+          "name": "Opaľovací krém",
+          "isChecked": false
+        },
+        {
+          "name": "Slúchadlá",
+          "isChecked": false
+        },
+        {
+          "name": "Kniha, iPad, čítačka...",
+          "isChecked": false
+        },
+        {
+          "name": "Pršiplášť, vetrovka",
+          "isChecked": false
+        },
+        {
+          "name": "Slnečné okuliare",
+          "isChecked": true
+        },
+        {
+          "name": "Klobúk",
+          "isChecked": true
+        },
+        {
+          "name": "Plavky",
+          "isChecked": false
+        },
+        {
+          "name": "Šľapky",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Kontrolný zoznam pred cestou",
+      "items": [
+        {
+          "name": "Nastaviť automatickú odpoveď v e-maile",
+          "isChecked": true
+        },
+        {
+          "name": "Sused: vyberať poštovú schránku",
+          "isChecked": true
+        },
+        {
+          "name": "Dohodnúť opateru zvierat",
+          "isChecked": true
+        },
+        {
+          "name": "Polievanie kvetov, dozor nad bytom",
+          "isChecked": false
+        },
+        {
+          "name": "Ospravedlniť deti zo školy",
+          "isChecked": false
+        },
+        {
+          "name": "Poslať plán cesty niekomu blízkemu",
+          "isChecked": false
+        },
+        {
+          "name": "Odpojiť spotrebiče",
+          "isChecked": false
+        },
+        {
+          "name": "Odložiť cennosti",
+          "isChecked": false
+        },
+        {
+          "name": "Stiahnuť kúrenie",
+          "notes": "Alebo nastav minimum, nech nezamrznú rúry.",
+          "isChecked": false
+        },
+        {
+          "name": "Skontrolovať sporák a rúru",
+          "isChecked": false
+        },
+        {
+          "name": "Zamknúť dvere a okná",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

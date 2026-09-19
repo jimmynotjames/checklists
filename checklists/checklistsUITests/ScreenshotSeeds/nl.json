@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "nl",
+  "primaryLocale": "nl_NL",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Ochtendroutine",
+      "items": [
+        {
+          "name": "KOFFIE AANZETTEN",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditatie",
+          "isChecked": true
+        },
+        {
+          "name": "Verkeer en weerbericht",
+          "isChecked": true
+        },
+        {
+          "name": "Ontbijt",
+          "isChecked": true
+        },
+        {
+          "name": "Dagboek bijhouden",
+          "isChecked": false
+        },
+        {
+          "name": "Ruziën over politiek op X",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Weekendje weg: inpaklijst",
+      "items": [
+        {
+          "name": "Telefoonoplader",
+          "isChecked": false
+        },
+        {
+          "name": "Portemonnee/ID",
+          "notes": "Geldig ID: ID-kaart of paspoort voor het buitenland, rijbewijs voor de auto.",
+          "isChecked": false
+        },
+        {
+          "name": "Recepten, medicijnen, supplementen",
+          "isChecked": true
+        },
+        {
+          "name": "Toilettas",
+          "notes": "Vloeistoffen alleen klein en in een apart zakje in je handbagage.",
+          "isChecked": true
+        },
+        {
+          "name": "Zonnebrand",
+          "isChecked": false
+        },
+        {
+          "name": "Koptelefoon",
+          "isChecked": false
+        },
+        {
+          "name": "Boek, iPad, Kobo...",
+          "isChecked": false
+        },
+        {
+          "name": "Regenjas en paraplu",
+          "isChecked": false
+        },
+        {
+          "name": "Zonnebril",
+          "isChecked": true
+        },
+        {
+          "name": "Zonnehoed",
+          "isChecked": true
+        },
+        {
+          "name": "Zwemkleding",
+          "isChecked": false
+        },
+        {
+          "name": "Badslippers",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Checklist voor vertrek",
+      "items": [
+        {
+          "name": "Afwezigheidsmelding instellen",
+          "isChecked": true
+        },
+        {
+          "name": "Buren: post uit de bus halen",
+          "isChecked": true
+        },
+        {
+          "name": "Huisdieroppas regelen",
+          "isChecked": true
+        },
+        {
+          "name": "Plantenzorg en huisoppas regelen",
+          "isChecked": false
+        },
+        {
+          "name": "School: verlof aanvragen",
+          "isChecked": false
+        },
+        {
+          "name": "Reisschema naar vriend of familielid sturen",
+          "isChecked": false
+        },
+        {
+          "name": "Stekkers eruit halen",
+          "isChecked": false
+        },
+        {
+          "name": "Waardevolle spullen opbergen",
+          "isChecked": false
+        },
+        {
+          "name": "Verwarming uit",
+          "notes": "Of op de vorstvrije stand tegen bevroren leidingen.",
+          "isChecked": false
+        },
+        {
+          "name": "Fornuis en oven uit",
+          "isChecked": false
+        },
+        {
+          "name": "Deuren en ramen op slot",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

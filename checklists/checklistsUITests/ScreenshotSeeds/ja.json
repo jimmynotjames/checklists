@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "ja",
+  "primaryLocale": "ja_JP",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "朝のルーティン",
+      "items": [
+        {
+          "name": "【コーヒーメーカーをセット】",
+          "isChecked": true
+        },
+        {
+          "name": "ヨガ・瞑想",
+          "isChecked": true
+        },
+        {
+          "name": "交通情報と天気予報",
+          "isChecked": true
+        },
+        {
+          "name": "朝食",
+          "isChecked": true
+        },
+        {
+          "name": "日記を書く",
+          "isChecked": false
+        },
+        {
+          "name": "Xで政治論争に参戦",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "週末旅行の持ち物",
+      "items": [
+        {
+          "name": "スマホの充電器",
+          "isChecked": false
+        },
+        {
+          "name": "財布・身分証",
+          "notes": "国内線は身分証、海外はパスポート、車の旅なら運転免許証を忘れずに。",
+          "isChecked": false
+        },
+        {
+          "name": "処方薬・常備薬・サプリ",
+          "isChecked": true
+        },
+        {
+          "name": "洗面用具ポーチ",
+          "notes": "飛行機の機内持ち込みは、液体を小分けにして透明の袋にまとめます。",
+          "isChecked": true
+        },
+        {
+          "name": "日焼け止め",
+          "isChecked": false
+        },
+        {
+          "name": "イヤホン",
+          "isChecked": false
+        },
+        {
+          "name": "本、iPad、Kindleなど",
+          "isChecked": false
+        },
+        {
+          "name": "雨具・折りたたみ傘",
+          "isChecked": false
+        },
+        {
+          "name": "サングラス",
+          "isChecked": true
+        },
+        {
+          "name": "日よけの帽子",
+          "isChecked": true
+        },
+        {
+          "name": "水着",
+          "isChecked": false
+        },
+        {
+          "name": "ビーチサンダル",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "出発前のチェックリスト",
+      "items": [
+        {
+          "name": "メールの自動返信を設定",
+          "isChecked": true
+        },
+        {
+          "name": "郵便局に不在届を出す",
+          "isChecked": true
+        },
+        {
+          "name": "ペットの預け先を手配",
+          "isChecked": true
+        },
+        {
+          "name": "植物の水やりと留守番を手配",
+          "isChecked": false
+        },
+        {
+          "name": "学校に欠席の連絡",
+          "isChecked": false
+        },
+        {
+          "name": "旅程を家族や友人に共有",
+          "isChecked": false
+        },
+        {
+          "name": "家電のプラグを抜く",
+          "isChecked": false
+        },
+        {
+          "name": "貴重品をしまう",
+          "isChecked": false
+        },
+        {
+          "name": "暖房・冷房を切る",
+          "notes": "寒い時期は、凍結防止のため水道の水抜きをしておきます。",
+          "isChecked": false
+        },
+        {
+          "name": "コンロとオーブンの消し忘れを確認",
+          "isChecked": false
+        },
+        {
+          "name": "戸締まりを確認",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

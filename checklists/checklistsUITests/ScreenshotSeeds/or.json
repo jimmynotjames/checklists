@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "or",
+  "primaryLocale": "or_IN",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "ସକାଳର ରୁଟିନ୍",
+      "items": [
+        {
+          "name": "ଚା ଚଢ଼ାନ୍ତୁ",
+          "isChecked": true
+        },
+        {
+          "name": "ଯୋଗ/ଧ୍ୟାନ",
+          "isChecked": true
+        },
+        {
+          "name": "ଟ୍ରାଫିକ ଓ ପାଣିପାଗ ଖବର",
+          "isChecked": true
+        },
+        {
+          "name": "ଜଳଖିଆ",
+          "isChecked": true
+        },
+        {
+          "name": "ଡାଏରୀ ଲେଖା",
+          "isChecked": false
+        },
+        {
+          "name": "ହ୍ୱାଟ୍ସଆପରେ ରାଜନୀତି ତର୍କ",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "ୱିକେଣ୍ଡ ଯାତ୍ରାର ଜରୁରୀ ଜିନିଷ",
+      "items": [
+        {
+          "name": "ଫୋନ ଚାର୍ଜର",
+          "isChecked": false
+        },
+        {
+          "name": "ପର୍ସ/ପରିଚୟପତ୍ର",
+          "notes": "ଆଧାର କାର୍ଡ, ବିମାନ ଯାତ୍ରା ପାଇଁ ଫଟୋ ପରିଚୟପତ୍ର, ବିଦେଶ ଗଲେ ପାସପୋର୍ଟ, ଗାଡ଼ି ଚଳାଇଲେ ଡ୍ରାଇଭିଂ ଲାଇସେନ୍ସ।",
+          "isChecked": false
+        },
+        {
+          "name": "ଔଷଧ, ପ୍ରେସକ୍ରିପସନ, ସପ୍ଲିମେଣ୍ଟ",
+          "isChecked": true
+        },
+        {
+          "name": "ଟଏଲେଟ୍ରି ବ୍ୟାଗ",
+          "notes": "ବିମାନରେ ଯାଉଥିଲେ ଅଳ୍ପ ତରଳ ପଦାର୍ଥ ଅଲଗା ବ୍ୟାଗରେ ହ୍ୟାଣ୍ଡ ବ୍ୟାଗେଜରେ ରଖନ୍ତୁ।",
+          "isChecked": true
+        },
+        {
+          "name": "ସନସ୍କ୍ରିନ୍",
+          "isChecked": false
+        },
+        {
+          "name": "ହେଡଫୋନ",
+          "isChecked": false
+        },
+        {
+          "name": "ବହି, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "ଛତା ଓ ବର୍ଷାତି",
+          "isChecked": false
+        },
+        {
+          "name": "କଳା ଚଷମା",
+          "isChecked": true
+        },
+        {
+          "name": "ଖରା ଟୋପି",
+          "isChecked": true
+        },
+        {
+          "name": "ସ୍ୱିମସୁଟ୍",
+          "isChecked": false
+        },
+        {
+          "name": "ପୁଲ ଚପଲ",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "ଯାତ୍ରା ପୂର୍ବ ଚେକଲିଷ୍ଟ",
+      "items": [
+        {
+          "name": "ଇମେଲରେ ଅଟୋ-ରିପ୍ଲାଇ ଚାଲୁ କରନ୍ତୁ",
+          "isChecked": true
+        },
+        {
+          "name": "ଖବରକାଗଜ, କ୍ଷୀର ବନ୍ଦ କରନ୍ତୁ",
+          "isChecked": true
+        },
+        {
+          "name": "ପୋଷା ଜୀବଙ୍କ ଯତ୍ନର ବ୍ୟବସ୍ଥା",
+          "isChecked": true
+        },
+        {
+          "name": "ଗଛ ଓ ଘର ଦେଖାଶୁଣାର ବ୍ୟବସ୍ଥା",
+          "isChecked": false
+        },
+        {
+          "name": "ପିଲାଙ୍କ ସ୍କୁଲ ଛୁଟି ଆବେଦନ",
+          "isChecked": false
+        },
+        {
+          "name": "ଯାତ୍ରା ବିବରଣୀ ବିଶ୍ୱସ୍ତ ସାଙ୍ଗ/ସମ୍ପର୍କୀୟଙ୍କୁ ପଠାନ୍ତୁ",
+          "isChecked": false
+        },
+        {
+          "name": "ଉପକରଣର ପ୍ଲଗ୍ ଖୋଲନ୍ତୁ",
+          "isChecked": false
+        },
+        {
+          "name": "ମୂଲ୍ୟବାନ ଜିନିଷ ଲୁଚାଇ ରଖନ୍ତୁ",
+          "isChecked": false
+        },
+        {
+          "name": "ଏସି, ପଙ୍ଖା ବନ୍ଦ କରନ୍ତୁ",
+          "notes": "ଗିଜର ଓ ଇନଭର୍ଟରର ସୁଇଚ୍ ମଧ୍ୟ ବନ୍ଦ କରି ଦିଅନ୍ତୁ।",
+          "isChecked": false
+        },
+        {
+          "name": "ଗ୍ୟାସ ଚୁଲି, ରେଗୁଲେଟର ବନ୍ଦ ଅଛି ଦେଖନ୍ତୁ",
+          "isChecked": false
+        },
+        {
+          "name": "ଦ୍ୱାର, ଝରକାରେ ତାଲା ପକାନ୍ତୁ",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

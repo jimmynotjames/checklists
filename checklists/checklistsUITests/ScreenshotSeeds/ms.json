@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "ms",
+  "primaryLocale": "ms_MY",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Rutin Pagi",
+      "items": [
+        {
+          "name": "BANCUH KOPI DULU",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditasi",
+          "isChecked": true
+        },
+        {
+          "name": "Laporan trafik dan cuaca",
+          "isChecked": true
+        },
+        {
+          "name": "Sarapan",
+          "isChecked": true
+        },
+        {
+          "name": "Tulis jurnal",
+          "isChecked": false
+        },
+        {
+          "name": "Berbalah politik di Facebook",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Keperluan Cuti Hujung Minggu",
+      "items": [
+        {
+          "name": "Pengecas telefon",
+          "isChecked": false
+        },
+        {
+          "name": "Dompet/IC",
+          "notes": "MyKad untuk penerbangan domestik, pasport ke luar negara, lesen memandu untuk pemanduan jauh.",
+          "isChecked": false
+        },
+        {
+          "name": "Ubat preskripsi, ubat biasa, suplemen",
+          "isChecked": true
+        },
+        {
+          "name": "Beg barang mandian",
+          "notes": "Cecair kecil sahaja dalam beg berasingan jika naik kapal terbang dan bawa ke kabin.",
+          "isChecked": true
+        },
+        {
+          "name": "Pelindung matahari",
+          "isChecked": false
+        },
+        {
+          "name": "Fon kepala",
+          "isChecked": false
+        },
+        {
+          "name": "Buku, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Payung, baju hujan",
+          "isChecked": false
+        },
+        {
+          "name": "Cermin mata hitam",
+          "isChecked": true
+        },
+        {
+          "name": "Topi",
+          "isChecked": true
+        },
+        {
+          "name": "Baju renang",
+          "isChecked": false
+        },
+        {
+          "name": "Selipar kolam",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Senarai Semak Sebelum Bertolak",
+      "items": [
+        {
+          "name": "Pasang auto-balas untuk e-mel",
+          "isChecked": true
+        },
+        {
+          "name": "Minta jiran kutip surat",
+          "isChecked": true
+        },
+        {
+          "name": "Atur jagaan haiwan",
+          "isChecked": true
+        },
+        {
+          "name": "Atur jagaan pokok dan rumah",
+          "isChecked": false
+        },
+        {
+          "name": "Uruskan cuti sekolah anak",
+          "isChecked": false
+        },
+        {
+          "name": "Hantar jadual perjalanan kepada kawan/saudara",
+          "isChecked": false
+        },
+        {
+          "name": "Cabut plag perkakas",
+          "isChecked": false
+        },
+        {
+          "name": "Simpan barang berharga",
+          "isChecked": false
+        },
+        {
+          "name": "Tutup aircond dan kipas",
+          "notes": "Atau biarkan kipas ekzos hidup supaya rumah tak lembap.",
+          "isChecked": false
+        },
+        {
+          "name": "Pastikan dapur, ketuhar tutup",
+          "isChecked": false
+        },
+        {
+          "name": "Kunci pintu dan tingkap",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "el",
+  "primaryLocale": "el_GR",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Πρωινή ρουτίνα",
+      "items": [
+        {
+          "name": "ΒΑΖΩ ΤΟ ΜΠΡΙΚΙ",
+          "isChecked": true
+        },
+        {
+          "name": "Γιόγκα/διαλογισμός",
+          "isChecked": true
+        },
+        {
+          "name": "Κίνηση και καιρός",
+          "isChecked": true
+        },
+        {
+          "name": "Πρωινό",
+          "isChecked": true
+        },
+        {
+          "name": "Ημερολόγιο",
+          "isChecked": false
+        },
+        {
+          "name": "Πολιτικοί καβγάδες στο Facebook",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Απαραίτητα για Σαββατοκύριακο",
+      "items": [
+        {
+          "name": "Φορτιστής κινητού",
+          "isChecked": false
+        },
+        {
+          "name": "Πορτοφόλι/ταυτότητα",
+          "notes": "Ταυτότητα για πτήσεις και Σένγκεν, διαβατήριο εκτός ΕΕ, δίπλωμα για οδήγηση.",
+          "isChecked": false
+        },
+        {
+          "name": "Συνταγές, φάρμακα, συμπληρώματα",
+          "isChecked": true
+        },
+        {
+          "name": "Νεσεσέρ",
+          "notes": "Μόνο μικρά υγρά σε ξεχωριστό σακουλάκι αν πετάς με χειραποσκευή.",
+          "isChecked": true
+        },
+        {
+          "name": "Αντηλιακό",
+          "isChecked": false
+        },
+        {
+          "name": "Ακουστικά",
+          "isChecked": false
+        },
+        {
+          "name": "Βιβλίο, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Αντιανεμικό/ομπρέλα",
+          "isChecked": false
+        },
+        {
+          "name": "Γυαλιά ηλίου",
+          "isChecked": true
+        },
+        {
+          "name": "Καπέλο",
+          "isChecked": true
+        },
+        {
+          "name": "Μαγιό",
+          "isChecked": false
+        },
+        {
+          "name": "Παπούτσια θαλάσσης",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Λίστα ελέγχου πριν το ταξίδι",
+      "items": [
+        {
+          "name": "Αυτόματη απάντηση στα email",
+          "isChecked": true
+        },
+        {
+          "name": "Άδειασμα γραμματοκιβωτίου",
+          "isChecked": true
+        },
+        {
+          "name": "Φροντίδα κατοικιδίων",
+          "isChecked": true
+        },
+        {
+          "name": "Πότισμα φυτών, φύλαξη σπιτιού",
+          "isChecked": false
+        },
+        {
+          "name": "Δήλωση απουσιών στο σχολείο",
+          "isChecked": false
+        },
+        {
+          "name": "Πρόγραμμα ταξιδιού σε φίλο/συγγενή",
+          "isChecked": false
+        },
+        {
+          "name": "Συσκευές από την πρίζα",
+          "isChecked": false
+        },
+        {
+          "name": "Φύλαξη πολύτιμων",
+          "isChecked": false
+        },
+        {
+          "name": "Κλείσιμο θέρμανσης ή A/C",
+          "notes": "Τον χειμώνα άσε 15°C για να μην πιάσει υγρασία.",
+          "isChecked": false
+        },
+        {
+          "name": "Μάτια και φούρνος κλειστά",
+          "isChecked": false
+        },
+        {
+          "name": "Κλείδωμα πόρτας και παραθύρων",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

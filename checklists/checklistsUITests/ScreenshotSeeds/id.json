@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "id",
+  "primaryLocale": "id_ID",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Rutinitas Pagi",
+      "items": [
+        {
+          "name": "SEDUH KOPI",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditasi",
+          "isChecked": true
+        },
+        {
+          "name": "Cek lalu lintas dan cuaca",
+          "isChecked": true
+        },
+        {
+          "name": "Sarapan",
+          "isChecked": true
+        },
+        {
+          "name": "Menulis jurnal",
+          "isChecked": false
+        },
+        {
+          "name": "Debat politik di Facebook",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Bawaan Liburan Akhir Pekan",
+      "items": [
+        {
+          "name": "Charger HP",
+          "isChecked": false
+        },
+        {
+          "name": "Dompet/KTP",
+          "notes": "KTP untuk penerbangan domestik, paspor ke luar negeri, SIM kalau nyetir.",
+          "isChecked": false
+        },
+        {
+          "name": "Obat resep, obat bebas, vitamin",
+          "isChecked": true
+        },
+        {
+          "name": "Tas peralatan mandi",
+          "notes": "Kalau naik pesawat, cairan ukuran kecil di kantong terpisah untuk kabin.",
+          "isChecked": true
+        },
+        {
+          "name": "Sunscreen",
+          "isChecked": false
+        },
+        {
+          "name": "Headset",
+          "isChecked": false
+        },
+        {
+          "name": "Buku, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Payung/jas hujan",
+          "isChecked": false
+        },
+        {
+          "name": "Kacamata hitam",
+          "isChecked": true
+        },
+        {
+          "name": "Topi",
+          "isChecked": true
+        },
+        {
+          "name": "Baju renang",
+          "isChecked": false
+        },
+        {
+          "name": "Sandal jepit",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Daftar Periksa Sebelum Pergi",
+      "items": [
+        {
+          "name": "Atur balasan otomatis di email",
+          "isChecked": true
+        },
+        {
+          "name": "Titip paket ke tetangga",
+          "isChecked": true
+        },
+        {
+          "name": "Titip hewan peliharaan",
+          "isChecked": true
+        },
+        {
+          "name": "Titip tanaman dan rumah",
+          "isChecked": false
+        },
+        {
+          "name": "Urus izin sekolah anak",
+          "isChecked": false
+        },
+        {
+          "name": "Kirim itinerary ke keluarga atau teman",
+          "isChecked": false
+        },
+        {
+          "name": "Cabut semua colokan",
+          "isChecked": false
+        },
+        {
+          "name": "Simpan barang berharga",
+          "isChecked": false
+        },
+        {
+          "name": "Matikan AC dan kipas",
+          "notes": "Buka sedikit ventilasi supaya rumah tidak lembap.",
+          "isChecked": false
+        },
+        {
+          "name": "Pastikan kompor sudah mati",
+          "isChecked": false
+        },
+        {
+          "name": "Kunci pintu dan jendela",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

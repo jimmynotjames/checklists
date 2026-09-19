@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "ru",
+  "primaryLocale": "ru_RU",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Утренний ритуал",
+      "items": [
+        {
+          "name": "ПОСТАВИТЬ ЧАЙНИК",
+          "isChecked": true
+        },
+        {
+          "name": "Йога/медитация",
+          "isChecked": true
+        },
+        {
+          "name": "Пробки и погода",
+          "isChecked": true
+        },
+        {
+          "name": "Завтрак",
+          "isChecked": true
+        },
+        {
+          "name": "Дневник",
+          "isChecked": false
+        },
+        {
+          "name": "Спорить о политике в Telegram",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Сумка на выходные",
+      "items": [
+        {
+          "name": "Зарядка для телефона",
+          "isChecked": false
+        },
+        {
+          "name": "Кошелёк/паспорт",
+          "notes": "Паспорт (внутренний — на самолёт по России, загран — за границу, права — если за рулём).",
+          "isChecked": false
+        },
+        {
+          "name": "Лекарства, рецепты, витамины",
+          "isChecked": true
+        },
+        {
+          "name": "Косметичка",
+          "notes": "В ручную кладь — только маленькие флаконы в отдельном пакете.",
+          "isChecked": true
+        },
+        {
+          "name": "Крем от солнца",
+          "isChecked": false
+        },
+        {
+          "name": "Наушники",
+          "isChecked": false
+        },
+        {
+          "name": "Книга, iPad, читалка...",
+          "isChecked": false
+        },
+        {
+          "name": "Дождевик, ветровка",
+          "isChecked": false
+        },
+        {
+          "name": "Солнечные очки",
+          "isChecked": true
+        },
+        {
+          "name": "Панама",
+          "isChecked": true
+        },
+        {
+          "name": "Купальник",
+          "isChecked": false
+        },
+        {
+          "name": "Сланцы",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Чек-лист перед отъездом",
+      "items": [
+        {
+          "name": "Настроить автоответ на почте",
+          "isChecked": true
+        },
+        {
+          "name": "Сосед: забирать почту",
+          "isChecked": true
+        },
+        {
+          "name": "Договориться о питомце",
+          "isChecked": true
+        },
+        {
+          "name": "Цветы, присмотр за квартирой",
+          "isChecked": false
+        },
+        {
+          "name": "Предупредить школу",
+          "isChecked": false
+        },
+        {
+          "name": "Скинуть маршрут родным или другу",
+          "isChecked": false
+        },
+        {
+          "name": "Выдернуть технику из розеток",
+          "isChecked": false
+        },
+        {
+          "name": "Убрать ценные вещи",
+          "isChecked": false
+        },
+        {
+          "name": "Выключить обогреватель",
+          "notes": "Или оставь минимум, чтобы не разморозить трубы.",
+          "isChecked": false
+        },
+        {
+          "name": "Проверить плиту и духовку",
+          "isChecked": false
+        },
+        {
+          "name": "Закрыть окна и двери",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

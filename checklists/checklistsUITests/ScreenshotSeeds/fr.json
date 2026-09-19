@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "fr",
+  "primaryLocale": "fr_FR",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Routine du matin",
+      "items": [
+        {
+          "name": "LANCER LA CAFETIÈRE",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/méditation",
+          "isChecked": true
+        },
+        {
+          "name": "Infos trafic et météo",
+          "isChecked": true
+        },
+        {
+          "name": "Petit-déjeuner",
+          "isChecked": true
+        },
+        {
+          "name": "Tenir mon journal",
+          "isChecked": false
+        },
+        {
+          "name": "Débattre de politique sur X",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "L'essentiel du week-end",
+      "items": [
+        {
+          "name": "Chargeur de téléphone",
+          "isChecked": false
+        },
+        {
+          "name": "Portefeuille, papiers",
+          "notes": "Carte d'identité pour l'Europe, passeport hors UE, permis pour la route.",
+          "isChecked": false
+        },
+        {
+          "name": "Ordonnances, médicaments, compléments",
+          "isChecked": true
+        },
+        {
+          "name": "Trousse de toilette",
+          "notes": "En cabine, petits flacons de liquides dans un sac à part.",
+          "isChecked": true
+        },
+        {
+          "name": "Crème solaire",
+          "isChecked": false
+        },
+        {
+          "name": "Écouteurs",
+          "isChecked": false
+        },
+        {
+          "name": "Livre, iPad, liseuse...",
+          "isChecked": false
+        },
+        {
+          "name": "Coupe-vent, parapluie",
+          "isChecked": false
+        },
+        {
+          "name": "Lunettes de soleil",
+          "isChecked": true
+        },
+        {
+          "name": "Chapeau",
+          "isChecked": true
+        },
+        {
+          "name": "Maillot de bain",
+          "isChecked": false
+        },
+        {
+          "name": "Tongs",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Liste avant départ",
+      "items": [
+        {
+          "name": "Activer la réponse auto sur mes mails",
+          "isChecked": true
+        },
+        {
+          "name": "La Poste : garde du courrier",
+          "isChecked": true
+        },
+        {
+          "name": "Faire garder les animaux",
+          "isChecked": true
+        },
+        {
+          "name": "Plantes à arroser, maison à surveiller",
+          "isChecked": false
+        },
+        {
+          "name": "Prévenir l'école de l'absence",
+          "isChecked": false
+        },
+        {
+          "name": "Envoyer l'itinéraire à un proche de confiance",
+          "isChecked": false
+        },
+        {
+          "name": "Débrancher les appareils",
+          "isChecked": false
+        },
+        {
+          "name": "Ranger les objets de valeur",
+          "isChecked": false
+        },
+        {
+          "name": "Couper le chauffage",
+          "notes": "Ou laisse le mode hors-gel pour protéger les tuyaux.",
+          "isChecked": false
+        },
+        {
+          "name": "Vérifier gaz et four éteints",
+          "isChecked": false
+        },
+        {
+          "name": "Verrouiller portes et fenêtres",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

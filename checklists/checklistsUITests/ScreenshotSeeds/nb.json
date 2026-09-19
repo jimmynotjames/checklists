@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "nb",
+  "primaryLocale": "nb_NO",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Morgenrutine",
+      "items": [
+        {
+          "name": "SETT PÅ KAFFEN",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditasjon",
+          "isChecked": true
+        },
+        {
+          "name": "Trafikk- og værmelding",
+          "isChecked": true
+        },
+        {
+          "name": "Frokost",
+          "isChecked": true
+        },
+        {
+          "name": "Skrive dagbok",
+          "isChecked": false
+        },
+        {
+          "name": "Krangle om politikk på Facebook",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Helgetur: det viktigste",
+      "items": [
+        {
+          "name": "Mobillader",
+          "isChecked": false
+        },
+        {
+          "name": "Lommebok/ID",
+          "notes": "Pass til utenlandsreise, førerkort på biltur, bankkort.",
+          "isChecked": false
+        },
+        {
+          "name": "Resepter, medisiner, kosttilskudd",
+          "isChecked": true
+        },
+        {
+          "name": "Toalettmappe",
+          "notes": "Små væsker i egen pose hvis du flyr med håndbagasje.",
+          "isChecked": true
+        },
+        {
+          "name": "Solkrem",
+          "isChecked": false
+        },
+        {
+          "name": "Hodetelefoner",
+          "isChecked": false
+        },
+        {
+          "name": "Bok, iPad, Kindle ...",
+          "isChecked": false
+        },
+        {
+          "name": "Regn- og vindtøy",
+          "isChecked": false
+        },
+        {
+          "name": "Solbriller",
+          "isChecked": true
+        },
+        {
+          "name": "Solhatt",
+          "isChecked": true
+        },
+        {
+          "name": "Badetøy",
+          "isChecked": false
+        },
+        {
+          "name": "Badesko",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Sjekkliste før reise",
+      "items": [
+        {
+          "name": "Sett på autosvar på e-posten",
+          "isChecked": true
+        },
+        {
+          "name": "Posten: be om oppbevaring",
+          "isChecked": true
+        },
+        {
+          "name": "Ordne pass av kjæledyr",
+          "isChecked": true
+        },
+        {
+          "name": "Ordne plantevanning og tilsyn",
+          "isChecked": false
+        },
+        {
+          "name": "Søk om permisjon fra skolen",
+          "isChecked": false
+        },
+        {
+          "name": "Send reiseplanen til en du stoler på",
+          "isChecked": false
+        },
+        {
+          "name": "Trekk ut støpsler",
+          "isChecked": false
+        },
+        {
+          "name": "Lås inn verdisaker",
+          "isChecked": false
+        },
+        {
+          "name": "Skru ned varmen",
+          "notes": "Eller sett minimumstemperatur så ikke rørene fryser.",
+          "isChecked": false
+        },
+        {
+          "name": "Sjekk at komfyr og ovn er av",
+          "isChecked": false
+        },
+        {
+          "name": "Lås dører og vinduer",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

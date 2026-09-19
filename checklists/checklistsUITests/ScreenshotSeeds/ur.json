@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "ur",
+  "primaryLocale": "ur_PK",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "صبح کا معمول",
+      "items": [
+        {
+          "name": "چائے چڑھائیں",
+          "isChecked": true
+        },
+        {
+          "name": "یوگا/مراقبہ",
+          "isChecked": true
+        },
+        {
+          "name": "ٹریفک اور موسم کا حال",
+          "isChecked": true
+        },
+        {
+          "name": "ناشتہ",
+          "isChecked": true
+        },
+        {
+          "name": "ڈائری لکھنا",
+          "isChecked": false
+        },
+        {
+          "name": "فیس بک پر سیاست پر بحث",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "ویک اینڈ ٹرپ کا ضروری سامان",
+      "items": [
+        {
+          "name": "فون کا چارجر",
+          "isChecked": false
+        },
+        {
+          "name": "بٹوہ/شناختی کارڈ",
+          "notes": "اندرونِ ملک پرواز کے لیے شناختی کارڈ، بیرونِ ملک کے لیے پاسپورٹ، گاڑی کے سفر پر ڈرائیونگ لائسنس۔",
+          "isChecked": false
+        },
+        {
+          "name": "نسخے، دوائیں، سپلیمنٹس",
+          "isChecked": true
+        },
+        {
+          "name": "نہانے دھونے کا سامان",
+          "notes": "جہاز میں ہینڈ کیری ہو تو مائع اشیا چھوٹی بوتلوں میں الگ تھیلی میں رکھیں۔",
+          "isChecked": true
+        },
+        {
+          "name": "سن اسکرین",
+          "isChecked": false
+        },
+        {
+          "name": "ہیڈ فون",
+          "isChecked": false
+        },
+        {
+          "name": "کتاب، iPad، کنڈل…",
+          "isChecked": false
+        },
+        {
+          "name": "چھتری یا برساتی",
+          "isChecked": false
+        },
+        {
+          "name": "دھوپ کا چشمہ",
+          "isChecked": true
+        },
+        {
+          "name": "دھوپ والی ٹوپی",
+          "isChecked": true
+        },
+        {
+          "name": "سوئمنگ سوٹ",
+          "isChecked": false
+        },
+        {
+          "name": "پول والی چپل",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "سفر سے پہلے کی چیک لسٹ",
+      "items": [
+        {
+          "name": "ای میل پر آٹو ریپلائی لگائیں",
+          "isChecked": true
+        },
+        {
+          "name": "بجلی گیس کے بل جمع کرا دیں",
+          "isChecked": true
+        },
+        {
+          "name": "پالتو جانوروں کا انتظام",
+          "isChecked": true
+        },
+        {
+          "name": "پودوں اور گھر کی دیکھ بھال کا بندوبست",
+          "isChecked": false
+        },
+        {
+          "name": "اسکول سے چھٹی کی اطلاع",
+          "isChecked": false
+        },
+        {
+          "name": "سفر کی تفصیل کسی قریبی عزیز یا دوست کو بھیجیں",
+          "isChecked": false
+        },
+        {
+          "name": "بجلی کے آلات کے پلگ نکال دیں",
+          "isChecked": false
+        },
+        {
+          "name": "قیمتی سامان سنبھال کر رکھیں",
+          "isChecked": false
+        },
+        {
+          "name": "اے سی اور پنکھے بند کریں",
+          "notes": "سردیوں میں ہیٹر اور گیزر بھی بند کر دیں۔",
+          "isChecked": false
+        },
+        {
+          "name": "چولہا اور اوون بند ہیں؟",
+          "isChecked": false
+        },
+        {
+          "name": "دروازے اور کھڑکیاں لاک کریں",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

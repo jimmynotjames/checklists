@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "en-CA",
+  "primaryLocale": "en_CA",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Morning Routine",
+      "items": [
+        {
+          "name": "START COFFEE MAKER",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditation",
+          "isChecked": true
+        },
+        {
+          "name": "Traffic and weather reports",
+          "isChecked": true
+        },
+        {
+          "name": "Breakfast",
+          "isChecked": true
+        },
+        {
+          "name": "Journaling",
+          "isChecked": false
+        },
+        {
+          "name": "Argue politics on Facebook",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Weekend Getaway Essentials",
+      "items": [
+        {
+          "name": "Phone charger",
+          "isChecked": false
+        },
+        {
+          "name": "Wallet/ID",
+          "notes": "Proper ID (photo ID for flights, passport for the border, driver's licence for a road trip).",
+          "isChecked": false
+        },
+        {
+          "name": "Prescriptions, medicines, supplements",
+          "isChecked": true
+        },
+        {
+          "name": "Toiletries bag",
+          "notes": "Small liquids only, in a separate bag if flying carry-on.",
+          "isChecked": true
+        },
+        {
+          "name": "Sunscreen",
+          "isChecked": false
+        },
+        {
+          "name": "Headphones",
+          "isChecked": false
+        },
+        {
+          "name": "Book, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Rain/wind gear",
+          "isChecked": false
+        },
+        {
+          "name": "Sunglasses",
+          "isChecked": true
+        },
+        {
+          "name": "Sun hat",
+          "isChecked": true
+        },
+        {
+          "name": "Swimsuit",
+          "isChecked": false
+        },
+        {
+          "name": "Water shoes",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Pre-Trip Checklist",
+      "items": [
+        {
+          "name": "Set up auto-reply on email accounts",
+          "isChecked": true
+        },
+        {
+          "name": "Canada Post: hold mail",
+          "isChecked": true
+        },
+        {
+          "name": "Pet care arrangements",
+          "isChecked": true
+        },
+        {
+          "name": "Plant care, house-sitting arrangements",
+          "isChecked": false
+        },
+        {
+          "name": "School absence arrangements",
+          "isChecked": false
+        },
+        {
+          "name": "Send travel itineraries to trusted friend/relative",
+          "isChecked": false
+        },
+        {
+          "name": "Unplug appliances",
+          "isChecked": false
+        },
+        {
+          "name": "Stow away valuables",
+          "isChecked": false
+        },
+        {
+          "name": "Turn off furnace or A/C",
+          "notes": "Or set the thermostat low to keep pipes from freezing.",
+          "isChecked": false
+        },
+        {
+          "name": "Check stove and oven are off",
+          "isChecked": false
+        },
+        {
+          "name": "Lock doors and windows",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

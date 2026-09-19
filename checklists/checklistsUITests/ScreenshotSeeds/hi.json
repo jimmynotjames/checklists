@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "hi",
+  "primaryLocale": "hi_IN",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "सुबह का रूटीन",
+      "items": [
+        {
+          "name": "सबसे पहले चाय",
+          "isChecked": true
+        },
+        {
+          "name": "योग/ध्यान",
+          "isChecked": true
+        },
+        {
+          "name": "ट्रैफिक और मौसम का हाल",
+          "isChecked": true
+        },
+        {
+          "name": "नाश्ता",
+          "isChecked": true
+        },
+        {
+          "name": "डायरी लिखना",
+          "isChecked": false
+        },
+        {
+          "name": "व्हाट्सऐप पर राजनीति की बहस",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "वीकेंड ट्रिप का सामान",
+      "items": [
+        {
+          "name": "फ़ोन चार्जर",
+          "isChecked": false
+        },
+        {
+          "name": "बटुआ/आईडी",
+          "notes": "हवाई यात्रा के लिए आधार, विदेश के लिए पासपोर्ट, रोड ट्रिप के लिए ड्राइविंग लाइसेंस।",
+          "isChecked": false
+        },
+        {
+          "name": "दवाइयाँ, पर्चा, सप्लीमेंट",
+          "isChecked": true
+        },
+        {
+          "name": "टॉयलेटरी बैग",
+          "notes": "फ्लाइट के केबिन बैग में सिर्फ़ छोटी शीशियाँ, अलग पाउच में रखें।",
+          "isChecked": true
+        },
+        {
+          "name": "सनस्क्रीन",
+          "isChecked": false
+        },
+        {
+          "name": "हेडफ़ोन",
+          "isChecked": false
+        },
+        {
+          "name": "किताब, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "छाता और रेनकोट",
+          "isChecked": false
+        },
+        {
+          "name": "धूप का चश्मा",
+          "isChecked": true
+        },
+        {
+          "name": "टोपी",
+          "isChecked": true
+        },
+        {
+          "name": "स्विमसूट",
+          "isChecked": false
+        },
+        {
+          "name": "पूल की चप्पल",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "सफ़र से पहले की चेकलिस्ट",
+      "items": [
+        {
+          "name": "ईमेल पर ऑटो-रिप्लाई लगाना",
+          "isChecked": true
+        },
+        {
+          "name": "दूध-अख़बार वाले को मना करना",
+          "isChecked": true
+        },
+        {
+          "name": "पालतू जानवर का इंतज़ाम",
+          "isChecked": true
+        },
+        {
+          "name": "पौधों और घर की देखभाल का इंतज़ाम",
+          "isChecked": false
+        },
+        {
+          "name": "स्कूल में छुट्टी की अर्ज़ी",
+          "isChecked": false
+        },
+        {
+          "name": "यात्रा का प्लान किसी भरोसेमंद को भेजना",
+          "isChecked": false
+        },
+        {
+          "name": "सारे प्लग निकाल देना",
+          "isChecked": false
+        },
+        {
+          "name": "कीमती सामान संभालकर रखना",
+          "isChecked": false
+        },
+        {
+          "name": "पंखा-एसी बंद करना",
+          "notes": "गीज़र और मोटर का स्विच भी बंद करना न भूलें।",
+          "isChecked": false
+        },
+        {
+          "name": "गैस, ओवन बंद हैं या नहीं",
+          "isChecked": false
+        },
+        {
+          "name": "दरवाज़े-खिड़कियाँ लॉक करना",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

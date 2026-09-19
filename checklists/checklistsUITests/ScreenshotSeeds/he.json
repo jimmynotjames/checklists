@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "he",
+  "primaryLocale": "he_IL",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "שגרת בוקר",
+      "items": [
+        {
+          "name": "להדליק את מכונת הקפה",
+          "isChecked": true
+        },
+        {
+          "name": "יוגה/מדיטציה",
+          "isChecked": true
+        },
+        {
+          "name": "דיווחי תנועה ומזג אוויר",
+          "isChecked": true
+        },
+        {
+          "name": "ארוחת בוקר",
+          "isChecked": true
+        },
+        {
+          "name": "כתיבה ביומן",
+          "isChecked": false
+        },
+        {
+          "name": "להתווכח על פוליטיקה בפייסבוק",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "ציוד לחופשת סופ״ש",
+      "items": [
+        {
+          "name": "מטען לטלפון",
+          "isChecked": false
+        },
+        {
+          "name": "ארנק ותעודות",
+          "notes": "תעודת זהות לטיסות בארץ, דרכון לחו״ל, רישיון נהיגה לנסיעה ברכב.",
+          "isChecked": false
+        },
+        {
+          "name": "מרשמים, תרופות ותוספי תזונה",
+          "isChecked": true
+        },
+        {
+          "name": "תיק רחצה",
+          "notes": "נוזלים בכמות קטנה בשקית נפרדת אם טסים עם כבודת יד.",
+          "isChecked": true
+        },
+        {
+          "name": "קרם הגנה",
+          "isChecked": false
+        },
+        {
+          "name": "אוזניות",
+          "isChecked": false
+        },
+        {
+          "name": "ספר, iPad, קינדל...",
+          "isChecked": false
+        },
+        {
+          "name": "ציוד לגשם ורוח",
+          "isChecked": false
+        },
+        {
+          "name": "משקפי שמש",
+          "isChecked": true
+        },
+        {
+          "name": "כובע שמש",
+          "isChecked": true
+        },
+        {
+          "name": "בגד ים",
+          "isChecked": false
+        },
+        {
+          "name": "כפכפים",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "רשימת תיוג לפני נסיעה",
+      "items": [
+        {
+          "name": "להגדיר מענה אוטומטי במייל",
+          "isChecked": true
+        },
+        {
+          "name": "לבקש מהשכן לאסוף דואר",
+          "isChecked": true
+        },
+        {
+          "name": "סידור לחיות המחמד",
+          "isChecked": true
+        },
+        {
+          "name": "השקיית עציצים והשגחה על הבית",
+          "isChecked": false
+        },
+        {
+          "name": "להודיע לבית הספר על היעדרות",
+          "isChecked": false
+        },
+        {
+          "name": "לשלוח פרטי נסיעה לחבר או קרוב משפחה",
+          "isChecked": false
+        },
+        {
+          "name": "לנתק מכשירי חשמל",
+          "isChecked": false
+        },
+        {
+          "name": "להחביא דברי ערך",
+          "isChecked": false
+        },
+        {
+          "name": "לכבות את המזגן",
+          "notes": "לכבות גם את הדוד, אין טעם לחמם מים לריק.",
+          "isChecked": false
+        },
+        {
+          "name": "לבדוק שהכיריים והתנור כבויים",
+          "isChecked": false
+        },
+        {
+          "name": "לנעול דלתות וחלונות",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "pt-BR",
+  "primaryLocale": "pt_BR",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Rotina matinal",
+      "items": [
+        {
+          "name": "LIGAR A CAFETEIRA",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditação",
+          "isChecked": true
+        },
+        {
+          "name": "Trânsito e previsão do tempo",
+          "isChecked": true
+        },
+        {
+          "name": "Café da manhã",
+          "isChecked": true
+        },
+        {
+          "name": "Escrever no diário",
+          "isChecked": false
+        },
+        {
+          "name": "Discutir política no WhatsApp",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Essenciais do fim de semana",
+      "items": [
+        {
+          "name": "Carregador do celular",
+          "isChecked": false
+        },
+        {
+          "name": "Carteira/RG",
+          "notes": "Documento com foto (RG ou CNH na estrada, passaporte para viagem internacional).",
+          "isChecked": false
+        },
+        {
+          "name": "Receitas, remédios, suplementos",
+          "isChecked": true
+        },
+        {
+          "name": "Nécessaire",
+          "notes": "Só líquidos pequenos, em saco separado, se for de avião e na bagagem de mão.",
+          "isChecked": true
+        },
+        {
+          "name": "Protetor solar",
+          "isChecked": false
+        },
+        {
+          "name": "Fone de ouvido",
+          "isChecked": false
+        },
+        {
+          "name": "Livro, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Capa de chuva",
+          "isChecked": false
+        },
+        {
+          "name": "Óculos de sol",
+          "isChecked": true
+        },
+        {
+          "name": "Chapéu de sol",
+          "isChecked": true
+        },
+        {
+          "name": "Maiô/sunga",
+          "isChecked": false
+        },
+        {
+          "name": "Chinelo",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Checklist pré-viagem",
+      "items": [
+        {
+          "name": "Ativar resposta automática no e-mail",
+          "isChecked": true
+        },
+        {
+          "name": "Avisar o porteiro da viagem",
+          "isChecked": true
+        },
+        {
+          "name": "Combinar quem cuida do pet",
+          "isChecked": true
+        },
+        {
+          "name": "Quem rega as plantas e cuida da casa",
+          "isChecked": false
+        },
+        {
+          "name": "Avisar a escola sobre a falta",
+          "isChecked": false
+        },
+        {
+          "name": "Mandar o roteiro para alguém de confiança",
+          "isChecked": false
+        },
+        {
+          "name": "Tirar aparelhos da tomada",
+          "isChecked": false
+        },
+        {
+          "name": "Guardar objetos de valor",
+          "isChecked": false
+        },
+        {
+          "name": "Desligar o ar-condicionado",
+          "notes": "Confira também os ventiladores e o ar dos quartos.",
+          "isChecked": false
+        },
+        {
+          "name": "Conferir fogão e forno desligados",
+          "isChecked": false
+        },
+        {
+          "name": "Trancar portas e janelas",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

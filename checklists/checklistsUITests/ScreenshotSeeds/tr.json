@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "tr",
+  "primaryLocale": "tr_TR",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Sabah Rutini",
+      "items": [
+        {
+          "name": "ÇAYI DEMLE",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditasyon",
+          "isChecked": true
+        },
+        {
+          "name": "Trafik ve hava durumu",
+          "isChecked": true
+        },
+        {
+          "name": "Kahvaltı",
+          "isChecked": true
+        },
+        {
+          "name": "Günlük tutmak",
+          "isChecked": false
+        },
+        {
+          "name": "X'te siyaset tartışmak",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Hafta Sonu Çantası",
+      "items": [
+        {
+          "name": "Telefon şarj aleti",
+          "isChecked": false
+        },
+        {
+          "name": "Cüzdan/kimlik",
+          "notes": "Uçuş için kimlik, yurt dışı için pasaport, araba için ehliyet.",
+          "isChecked": false
+        },
+        {
+          "name": "Reçeteler, ilaçlar, vitaminler",
+          "isChecked": true
+        },
+        {
+          "name": "Bakım çantası",
+          "notes": "Uçakta el bagajındaysa sıvılar küçük ve ayrı poşette olsun.",
+          "isChecked": true
+        },
+        {
+          "name": "Güneş kremi",
+          "isChecked": false
+        },
+        {
+          "name": "Kulaklık",
+          "isChecked": false
+        },
+        {
+          "name": "Kitap, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Yağmurluk/rüzgarlık",
+          "isChecked": false
+        },
+        {
+          "name": "Güneş gözlüğü",
+          "isChecked": true
+        },
+        {
+          "name": "Şapka",
+          "isChecked": true
+        },
+        {
+          "name": "Mayo",
+          "isChecked": false
+        },
+        {
+          "name": "Deniz terliği",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Yolculuk Öncesi Kontrol Listesi",
+      "items": [
+        {
+          "name": "E-postalara otomatik yanıt kur",
+          "isChecked": true
+        },
+        {
+          "name": "Kapıcıya haber ver",
+          "isChecked": true
+        },
+        {
+          "name": "Evcil hayvan bakımı",
+          "isChecked": true
+        },
+        {
+          "name": "Çiçekleri sulama, ev bakımı",
+          "isChecked": false
+        },
+        {
+          "name": "Okul için izin al",
+          "isChecked": false
+        },
+        {
+          "name": "Seyahat planını bir yakınına gönder",
+          "isChecked": false
+        },
+        {
+          "name": "Fişleri çek",
+          "isChecked": false
+        },
+        {
+          "name": "Değerli eşyaları kaldır",
+          "isChecked": false
+        },
+        {
+          "name": "Kombiyi/klimayı kapat",
+          "notes": "Ya da kombiyi donma korumasına al.",
+          "isChecked": false
+        },
+        {
+          "name": "Ocak ve fırın kapalı mı",
+          "isChecked": false
+        },
+        {
+          "name": "Kapı ve pencereleri kilitle",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

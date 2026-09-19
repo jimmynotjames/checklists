@@ -5,7 +5,9 @@ description: "Capture and review App Store screenshots locally, inspect existing
 
 # Capture and publish screenshots
 
-The workflow captures two screens for an explicit active locale set. Run commands
+The workflow captures two screens per locale across the 50 active locales.
+A full run is serial and takes hours, so it is release-time work and is
+resumable by `run_id`; use a `locales:` subset while iterating. Run commands
 from the repository root. Read `fastlane/SETUP.md` and
 `fastlane/screenshot-config.json` first.
 
@@ -29,7 +31,7 @@ Do not infer success from old images or a final filename. Require successful tes
 validation of this run's complete expected image set. A failed capture preserves its logs and
 partial output. Use the lane's subset/retry support to retry only missing work, at most twice
 after diagnosis; stop on a repeated build/test failure. Resume with
-`fastlane ios screenshots run_id:RUN_ID locales:en-US` (enabled runtime locale codes); omit
+`fastlane ios screenshots run_id:RUN_ID locales:ar,ja,de` (runtime locale codes); omit
 `run_id` for a fresh capture, but a resumed run must still match its recorded
 source/configuration/seeds. Never clear good output to retry a subset. Do not use direct
 `fastlane snapshot`; it bypasses isolation.
@@ -46,8 +48,14 @@ Resolve the explicit app version and reviewed capture run from the user's reques
 or release record. If either is ambiguous, ask before changing ASC. Use the
 `push_screenshots` lane with `app_version:X.Y.Z` and the reviewed run ID; consult
 `fastlane/SETUP.md` for exact options. It validates local artifacts first, then
-requires the matching existing editable version and existing listing locales. This is English-only
-capture — it must not expand into the metadata pipeline's 50-locale set.
+requires the matching existing editable version and existing listing locales.
+
+A reviewed run covers every active locale, which is now all 50. `locales:` takes
+a subset of **runtime** codes, not storefront codes, for a spot check or a
+retry. Before any `push_screenshots`, open the run's `review.html` and look
+specifically at right-to-left layout in `ar`, `he`, and `ur`, at glyph rendering
+in the CJK locales, and at the longest translations, which are usually German
+and Finnish, for truncation.
 
 The lane bounds deletion and upload retries and checks asset processing. Retain
 the real exit status and log; a failure after deletion/upload may leave partial

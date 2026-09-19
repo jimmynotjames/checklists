@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "ko",
+  "primaryLocale": "ko_KR",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "아침 루틴",
+      "items": [
+        {
+          "name": "커피 내리기",
+          "isChecked": true
+        },
+        {
+          "name": "요가/명상",
+          "isChecked": true
+        },
+        {
+          "name": "교통·날씨 확인",
+          "isChecked": true
+        },
+        {
+          "name": "아침 식사",
+          "isChecked": true
+        },
+        {
+          "name": "일기 쓰기",
+          "isChecked": false
+        },
+        {
+          "name": "네이버 댓글로 정치 논쟁",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "주말 여행 필수품",
+      "items": [
+        {
+          "name": "휴대폰 충전기",
+          "isChecked": false
+        },
+        {
+          "name": "지갑/신분증",
+          "notes": "국내선은 신분증, 해외는 여권, 운전할 거면 운전면허증까지 챙겨요.",
+          "isChecked": false
+        },
+        {
+          "name": "처방약, 상비약, 영양제",
+          "isChecked": true
+        },
+        {
+          "name": "세면도구 파우치",
+          "notes": "기내에 들고 탈 땐 액체류를 100ml 이하로 소분해 따로 담아요.",
+          "isChecked": true
+        },
+        {
+          "name": "선크림",
+          "isChecked": false
+        },
+        {
+          "name": "이어폰",
+          "isChecked": false
+        },
+        {
+          "name": "책, iPad, 전자책 리더기…",
+          "isChecked": false
+        },
+        {
+          "name": "우산, 바람막이",
+          "isChecked": false
+        },
+        {
+          "name": "선글라스",
+          "isChecked": true
+        },
+        {
+          "name": "챙 넓은 모자",
+          "isChecked": true
+        },
+        {
+          "name": "수영복",
+          "isChecked": false
+        },
+        {
+          "name": "아쿠아슈즈",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "출발 전 체크리스트",
+      "items": [
+        {
+          "name": "이메일 자동 회신 설정",
+          "isChecked": true
+        },
+        {
+          "name": "택배·우편물 배송 미루기",
+          "isChecked": true
+        },
+        {
+          "name": "반려동물 돌봄 맡기기",
+          "isChecked": true
+        },
+        {
+          "name": "화분 관리, 집 봐줄 사람 부탁",
+          "isChecked": false
+        },
+        {
+          "name": "학교 교외체험학습 신청",
+          "isChecked": false
+        },
+        {
+          "name": "가족이나 친구에게 여행 일정 공유",
+          "isChecked": false
+        },
+        {
+          "name": "가전 플러그 뽑기",
+          "isChecked": false
+        },
+        {
+          "name": "귀중품 정리해 두기",
+          "isChecked": false
+        },
+        {
+          "name": "보일러·에어컨 끄기",
+          "notes": "겨울이면 보일러를 외출 모드로 두면 수도관 동파를 막을 수 있어요.",
+          "isChecked": false
+        },
+        {
+          "name": "가스레인지·오븐 껐는지 확인",
+          "isChecked": false
+        },
+        {
+          "name": "문·창문 잠그기",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

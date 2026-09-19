@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "ar",
+  "primaryLocale": "ar_SA",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "روتين الصباح",
+      "items": [
+        {
+          "name": "تشغيل غلاية الشاي",
+          "isChecked": true
+        },
+        {
+          "name": "يوغا أو تأمل",
+          "isChecked": true
+        },
+        {
+          "name": "نشرة المرور والطقس",
+          "isChecked": true
+        },
+        {
+          "name": "الفطور",
+          "isChecked": true
+        },
+        {
+          "name": "كتابة اليوميات",
+          "isChecked": false
+        },
+        {
+          "name": "جدال سياسي على فيسبوك",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "أساسيات عطلة الأسبوع",
+      "items": [
+        {
+          "name": "شاحن الهاتف",
+          "isChecked": false
+        },
+        {
+          "name": "المحفظة والهوية",
+          "notes": "الهوية للسفر الداخلي، وجواز السفر للسفر الخارجي، ورخصة القيادة لرحلة السيارة.",
+          "isChecked": false
+        },
+        {
+          "name": "الوصفات والأدوية والمكملات",
+          "isChecked": true
+        },
+        {
+          "name": "حقيبة أدوات النظافة",
+          "notes": "عبوات سوائل صغيرة في كيس منفصل إن كانت في حقيبة اليد بالطائرة.",
+          "isChecked": true
+        },
+        {
+          "name": "واقي الشمس",
+          "isChecked": false
+        },
+        {
+          "name": "سماعات الأذن",
+          "isChecked": false
+        },
+        {
+          "name": "كتاب، iPad، Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "سترة خفيفة للريح والغبار",
+          "isChecked": false
+        },
+        {
+          "name": "نظارة شمسية",
+          "isChecked": true
+        },
+        {
+          "name": "قبعة شمس",
+          "isChecked": true
+        },
+        {
+          "name": "ملابس السباحة",
+          "isChecked": false
+        },
+        {
+          "name": "نعال المسبح",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "قائمة التحقق قبل السفر",
+      "items": [
+        {
+          "name": "ضبط الرد التلقائي على البريد",
+          "isChecked": true
+        },
+        {
+          "name": "إبلاغ حارس العمارة بالسفر",
+          "isChecked": true
+        },
+        {
+          "name": "ترتيب رعاية الحيوان الأليف",
+          "isChecked": true
+        },
+        {
+          "name": "ترتيب سقاية النباتات ومتابعة البيت",
+          "isChecked": false
+        },
+        {
+          "name": "إبلاغ المدرسة بغياب الأولاد",
+          "isChecked": false
+        },
+        {
+          "name": "إرسال برنامج السفر لقريب موثوق",
+          "isChecked": false
+        },
+        {
+          "name": "فصل الأجهزة عن الكهرباء",
+          "isChecked": false
+        },
+        {
+          "name": "إخفاء الأغراض الثمينة",
+          "isChecked": false
+        },
+        {
+          "name": "إطفاء المكيف والمدفأة",
+          "notes": "أو اضبط المكيف على درجة مرتفعة وأغلق الستائر لتخفيف الحر.",
+          "isChecked": false
+        },
+        {
+          "name": "التأكد من إغلاق الغاز والفرن",
+          "isChecked": false
+        },
+        {
+          "name": "إغلاق الأبواب والنوافذ",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

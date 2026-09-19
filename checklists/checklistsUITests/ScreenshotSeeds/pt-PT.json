@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "pt-PT",
+  "primaryLocale": "pt_PT",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Rotina matinal",
+      "items": [
+        {
+          "name": "LIGAR A MÁQUINA DO CAFÉ",
+          "isChecked": true
+        },
+        {
+          "name": "Ioga/meditação",
+          "isChecked": true
+        },
+        {
+          "name": "Trânsito e meteorologia",
+          "isChecked": true
+        },
+        {
+          "name": "Pequeno-almoço",
+          "isChecked": true
+        },
+        {
+          "name": "Escrever no diário",
+          "isChecked": false
+        },
+        {
+          "name": "Discutir política no Facebook",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Essenciais da escapadinha",
+      "items": [
+        {
+          "name": "Carregador do telemóvel",
+          "isChecked": false
+        },
+        {
+          "name": "Carteira/CC",
+          "notes": "Cartão de Cidadão (passaporte fora da UE, carta de condução se fores de carro).",
+          "isChecked": false
+        },
+        {
+          "name": "Receitas, medicamentos, suplementos",
+          "isChecked": true
+        },
+        {
+          "name": "Necessaire",
+          "notes": "Se fores de avião, líquidos pequenos em saco à parte na bagagem de mão.",
+          "isChecked": true
+        },
+        {
+          "name": "Protetor solar",
+          "isChecked": false
+        },
+        {
+          "name": "Auscultadores",
+          "isChecked": false
+        },
+        {
+          "name": "Livro, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Impermeável/corta-vento",
+          "isChecked": false
+        },
+        {
+          "name": "Óculos de sol",
+          "isChecked": true
+        },
+        {
+          "name": "Chapéu de sol",
+          "isChecked": true
+        },
+        {
+          "name": "Fato de banho",
+          "isChecked": false
+        },
+        {
+          "name": "Chinelos",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Lista de verificação de viagem",
+      "items": [
+        {
+          "name": "Ativar resposta automática no email",
+          "isChecked": true
+        },
+        {
+          "name": "Vizinho: tirar o correio",
+          "isChecked": true
+        },
+        {
+          "name": "Quem fica com os animais",
+          "isChecked": true
+        },
+        {
+          "name": "Quem rega as plantas e vigia a casa",
+          "isChecked": false
+        },
+        {
+          "name": "Avisar a escola das faltas",
+          "isChecked": false
+        },
+        {
+          "name": "Enviar o itinerário a alguém de confiança",
+          "isChecked": false
+        },
+        {
+          "name": "Desligar aparelhos da tomada",
+          "isChecked": false
+        },
+        {
+          "name": "Guardar objetos de valor",
+          "isChecked": false
+        },
+        {
+          "name": "Desligar aquecimento/AC",
+          "notes": "Ou deixa no mínimo para a casa não ganhar humidade.",
+          "isChecked": false
+        },
+        {
+          "name": "Verificar fogão e forno desligados",
+          "isChecked": false
+        },
+        {
+          "name": "Trancar portas e janelas",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

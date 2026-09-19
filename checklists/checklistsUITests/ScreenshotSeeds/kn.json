@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "kn",
+  "primaryLocale": "kn_IN",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "ಬೆಳಗಿನ ದಿನಚರಿ",
+      "items": [
+        {
+          "name": "ಫಿಲ್ಟರ್ ಕಾಫಿ ಇಡಿ",
+          "isChecked": true
+        },
+        {
+          "name": "ಯೋಗ/ಧ್ಯಾನ",
+          "isChecked": true
+        },
+        {
+          "name": "ಟ್ರಾಫಿಕ್ ಮತ್ತು ಹವಾಮಾನ ಮಾಹಿತಿ",
+          "isChecked": true
+        },
+        {
+          "name": "ತಿಂಡಿ",
+          "isChecked": true
+        },
+        {
+          "name": "ಡೈರಿ ಬರೆಯುವುದು",
+          "isChecked": false
+        },
+        {
+          "name": "ವಾಟ್ಸಾಪ್ ಗುಂಪಿನಲ್ಲಿ ರಾಜಕೀಯ ಜಗಳ",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "ವಾರಾಂತ್ಯ ಪ್ರವಾಸದ ಸಾಮಾನು",
+      "items": [
+        {
+          "name": "ಫೋನ್ ಚಾರ್ಜರ್",
+          "isChecked": false
+        },
+        {
+          "name": "ಪರ್ಸ್/ಗುರುತಿನ ಚೀಟಿ",
+          "notes": "ಆಧಾರ್ (ದೇಶೀಯ ವಿಮಾನಕ್ಕೆ), ಪಾಸ್‌ಪೋರ್ಟ್ (ವಿದೇಶಕ್ಕೆ), ರಸ್ತೆ ಪ್ರಯಾಣಕ್ಕೆ ಡ್ರೈವಿಂಗ್ ಲೈಸೆನ್ಸ್.",
+          "isChecked": false
+        },
+        {
+          "name": "ಔಷಧಿ ಚೀಟಿ, ಮಾತ್ರೆ, ಸಪ್ಲಿಮೆಂಟ್",
+          "isChecked": true
+        },
+        {
+          "name": "ಸ್ನಾನದ ಸಾಮಾನುಗಳ ಬ್ಯಾಗ್",
+          "notes": "ವಿಮಾನದಲ್ಲಿ ಕೈಚೀಲ ಇದ್ದರೆ ಸಣ್ಣ ಬಾಟಲಿಯ ದ್ರವಗಳನ್ನು ಪ್ರತ್ಯೇಕ ಚೀಲದಲ್ಲಿ ಇಡಿ.",
+          "isChecked": true
+        },
+        {
+          "name": "ಸನ್‌ಸ್ಕ್ರೀನ್",
+          "isChecked": false
+        },
+        {
+          "name": "ಹೆಡ್‌ಫೋನ್",
+          "isChecked": false
+        },
+        {
+          "name": "ಪುಸ್ತಕ, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "ಛತ್ರಿ, ರೇನ್‌ಕೋಟ್",
+          "isChecked": false
+        },
+        {
+          "name": "ಸನ್‌ಗ್ಲಾಸ್",
+          "isChecked": true
+        },
+        {
+          "name": "ಟೋಪಿ",
+          "isChecked": true
+        },
+        {
+          "name": "ಈಜುಡುಗೆ",
+          "isChecked": false
+        },
+        {
+          "name": "ಪೂಲ್ ಚಪ್ಪಲಿ",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "ಪ್ರಯಾಣದ ಮುನ್ನ ಚೆಕ್‌ಲಿಸ್ಟ್",
+      "items": [
+        {
+          "name": "ಇಮೇಲ್‌ಗೆ ಆಟೋ-ರಿಪ್ಲೈ ಹೊಂದಿಸಿ",
+          "isChecked": true
+        },
+        {
+          "name": "ಹಾಲು, ಪೇಪರ್ ನಿಲ್ಲಿಸಲು ಹೇಳಿ",
+          "isChecked": true
+        },
+        {
+          "name": "ಸಾಕುಪ್ರಾಣಿ ಆರೈಕೆ ವ್ಯವಸ್ಥೆ",
+          "isChecked": true
+        },
+        {
+          "name": "ಗಿಡಗಳಿಗೆ ನೀರು, ಮನೆ ನೋಡಿಕೊಳ್ಳುವ ವ್ಯವಸ್ಥೆ",
+          "isChecked": false
+        },
+        {
+          "name": "ಶಾಲೆಗೆ ರಜೆ ತಿಳಿಸಿ",
+          "isChecked": false
+        },
+        {
+          "name": "ಪ್ರಯಾಣದ ವಿವರ ಆಪ್ತರಿಗೆ ಕಳಿಸಿ",
+          "isChecked": false
+        },
+        {
+          "name": "ಉಪಕರಣಗಳ ಪ್ಲಗ್ ತೆಗೆಯಿರಿ",
+          "isChecked": false
+        },
+        {
+          "name": "ಬೆಲೆಬಾಳುವ ವಸ್ತುಗಳನ್ನು ಭದ್ರಪಡಿಸಿ",
+          "isChecked": false
+        },
+        {
+          "name": "ಫ್ಯಾನ್, ಎ.ಸಿ. ಆಫ್ ಮಾಡಿ",
+          "notes": "ಗೀಸರ್ ಸ್ವಿಚ್ ಆಫ್ ಮಾಡಲು ಮರೆಯಬೇಡಿ.",
+          "isChecked": false
+        },
+        {
+          "name": "ಗ್ಯಾಸ್ ರೆಗ್ಯುಲೇಟರ್ ಆಫ್ ಮಾಡಿ",
+          "isChecked": false
+        },
+        {
+          "name": "ಬಾಗಿಲು, ಕಿಟಕಿ ಲಾಕ್ ಮಾಡಿ",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

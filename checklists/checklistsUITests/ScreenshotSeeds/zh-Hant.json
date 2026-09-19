@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "zh-Hant",
+  "primaryLocale": "zh_Hant_TW",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "晨間例行公事",
+      "items": [
+        {
+          "name": "開咖啡機",
+          "isChecked": true
+        },
+        {
+          "name": "瑜珈／冥想",
+          "isChecked": true
+        },
+        {
+          "name": "看路況與天氣預報",
+          "isChecked": true
+        },
+        {
+          "name": "早餐",
+          "isChecked": true
+        },
+        {
+          "name": "寫日記",
+          "isChecked": false
+        },
+        {
+          "name": "上臉書戰政治",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "週末小旅行必備",
+      "items": [
+        {
+          "name": "手機充電器",
+          "isChecked": false
+        },
+        {
+          "name": "錢包／證件",
+          "notes": "帶齊證件（國內搭機用身分證，出國帶護照，自駕帶駕照）。",
+          "isChecked": false
+        },
+        {
+          "name": "處方藥、常備藥、保健食品",
+          "isChecked": true
+        },
+        {
+          "name": "盥洗包",
+          "notes": "搭飛機帶手提行李時，液體分裝小瓶並裝在透明夾鏈袋。",
+          "isChecked": true
+        },
+        {
+          "name": "防曬乳",
+          "isChecked": false
+        },
+        {
+          "name": "耳機",
+          "isChecked": false
+        },
+        {
+          "name": "書、iPad、Kobo…",
+          "isChecked": false
+        },
+        {
+          "name": "雨具、薄外套",
+          "isChecked": false
+        },
+        {
+          "name": "太陽眼鏡",
+          "isChecked": true
+        },
+        {
+          "name": "遮陽帽",
+          "isChecked": true
+        },
+        {
+          "name": "泳衣",
+          "isChecked": false
+        },
+        {
+          "name": "泳池拖鞋",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "出發前檢查清單",
+      "items": [
+        {
+          "name": "設定信箱自動回覆",
+          "isChecked": true
+        },
+        {
+          "name": "請鄰居幫忙收信件",
+          "isChecked": true
+        },
+        {
+          "name": "安排寵物照顧",
+          "isChecked": true
+        },
+        {
+          "name": "請人澆花、看家",
+          "isChecked": false
+        },
+        {
+          "name": "幫孩子向學校請假",
+          "isChecked": false
+        },
+        {
+          "name": "行程表傳給信任的親友",
+          "isChecked": false
+        },
+        {
+          "name": "拔掉電器插頭",
+          "isChecked": false
+        },
+        {
+          "name": "貴重物品收好",
+          "isChecked": false
+        },
+        {
+          "name": "關掉冷氣、除濕機",
+          "notes": "長時間不在家，可設定除濕機定時，避免發霉。",
+          "isChecked": false
+        },
+        {
+          "name": "確認瓦斯爐、烤箱關閉",
+          "isChecked": false
+        },
+        {
+          "name": "門窗上鎖",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "en-AU",
+  "primaryLocale": "en_AU",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Morning Routine",
+      "items": [
+        {
+          "name": "GET THE COFFEE ON",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditation",
+          "isChecked": true
+        },
+        {
+          "name": "Traffic and weather reports",
+          "isChecked": true
+        },
+        {
+          "name": "Brekkie",
+          "isChecked": true
+        },
+        {
+          "name": "Journalling",
+          "isChecked": false
+        },
+        {
+          "name": "Argue politics on Facebook",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Weekend Away Essentials",
+      "items": [
+        {
+          "name": "Phone charger",
+          "isChecked": false
+        },
+        {
+          "name": "Wallet and licence",
+          "notes": "Photo ID for domestic flights, passport overseas, licence for the drive.",
+          "isChecked": false
+        },
+        {
+          "name": "Scripts, medicines, supplements",
+          "isChecked": true
+        },
+        {
+          "name": "Toiletries bag",
+          "notes": "Liquids under 100 ml in a clear bag if you're flying international with carry-on.",
+          "isChecked": true
+        },
+        {
+          "name": "Sunscreen",
+          "isChecked": false
+        },
+        {
+          "name": "Headphones",
+          "isChecked": false
+        },
+        {
+          "name": "Book, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Rain jacket, jumper",
+          "isChecked": false
+        },
+        {
+          "name": "Sunnies",
+          "isChecked": true
+        },
+        {
+          "name": "Sun hat",
+          "isChecked": true
+        },
+        {
+          "name": "Swimmers",
+          "isChecked": false
+        },
+        {
+          "name": "Thongs",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Pre-Trip Checklist",
+      "items": [
+        {
+          "name": "Set up auto-reply on email",
+          "isChecked": true
+        },
+        {
+          "name": "Australia Post: hold mail",
+          "isChecked": true
+        },
+        {
+          "name": "Pet care sorted",
+          "isChecked": true
+        },
+        {
+          "name": "Plant care, house sitting",
+          "isChecked": false
+        },
+        {
+          "name": "Tell school about absence",
+          "isChecked": false
+        },
+        {
+          "name": "Send itinerary to a mate or family",
+          "isChecked": false
+        },
+        {
+          "name": "Turn appliances off at the wall",
+          "isChecked": false
+        },
+        {
+          "name": "Put valuables away",
+          "isChecked": false
+        },
+        {
+          "name": "Turn off aircon or heater",
+          "notes": "Close the blinds as well to keep the heat out.",
+          "isChecked": false
+        },
+        {
+          "name": "Check stove and oven are off",
+          "isChecked": false
+        },
+        {
+          "name": "Lock doors and windows",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

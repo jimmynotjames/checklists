@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "ca",
+  "primaryLocale": "ca_ES",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Rutina del matí",
+      "items": [
+        {
+          "name": "POSAR LA CAFETERA",
+          "isChecked": true
+        },
+        {
+          "name": "Ioga/meditació",
+          "isChecked": true
+        },
+        {
+          "name": "Mirar el temps i el trànsit",
+          "isChecked": true
+        },
+        {
+          "name": "Esmorzar",
+          "isChecked": true
+        },
+        {
+          "name": "Escriure el diari",
+          "isChecked": false
+        },
+        {
+          "name": "Discutir de política a X",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Bàsics per al cap de setmana",
+      "items": [
+        {
+          "name": "Carregador del mòbil",
+          "isChecked": false
+        },
+        {
+          "name": "Cartera i DNI",
+          "notes": "DNI per volar, passaport si surts de la UE i carnet de conduir si vas amb cotxe.",
+          "isChecked": false
+        },
+        {
+          "name": "Receptes, medicaments, vitamines",
+          "isChecked": true
+        },
+        {
+          "name": "Necesser",
+          "notes": "Líquids petits, en una bossa a part si vas amb avió i equipatge de mà.",
+          "isChecked": true
+        },
+        {
+          "name": "Crema solar",
+          "isChecked": false
+        },
+        {
+          "name": "Auriculars",
+          "isChecked": false
+        },
+        {
+          "name": "Llibre, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Roba de pluja i vent",
+          "isChecked": false
+        },
+        {
+          "name": "Ulleres de sol",
+          "isChecked": true
+        },
+        {
+          "name": "Barret de sol",
+          "isChecked": true
+        },
+        {
+          "name": "Banyador",
+          "isChecked": false
+        },
+        {
+          "name": "Xancletes",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Llista de comprovació de viatge",
+      "items": [
+        {
+          "name": "Activar la resposta automàtica al correu",
+          "isChecked": true
+        },
+        {
+          "name": "Que un veí buidi la bústia",
+          "isChecked": true
+        },
+        {
+          "name": "Qui cuida els animals",
+          "isChecked": true
+        },
+        {
+          "name": "Qui rega les plantes i mira el pis",
+          "isChecked": false
+        },
+        {
+          "name": "Avisar l'escola de l'absència",
+          "isChecked": false
+        },
+        {
+          "name": "Enviar l'itinerari a algú de confiança",
+          "isChecked": false
+        },
+        {
+          "name": "Desendollar els aparells",
+          "isChecked": false
+        },
+        {
+          "name": "Guardar les coses de valor",
+          "isChecked": false
+        },
+        {
+          "name": "Apagar la calefacció o l'aire",
+          "notes": "O deixar la calefacció al mínim si marxes a l'hivern.",
+          "isChecked": false
+        },
+        {
+          "name": "Fogons i forn apagats",
+          "isChecked": false
+        },
+        {
+          "name": "Tancar portes i finestres",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

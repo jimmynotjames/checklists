@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "pl",
+  "primaryLocale": "pl_PL",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Poranna rutyna",
+      "items": [
+        {
+          "name": "WŁĄCZ EKSPRES",
+          "isChecked": true
+        },
+        {
+          "name": "Joga/medytacja",
+          "isChecked": true
+        },
+        {
+          "name": "Korki i prognoza pogody",
+          "isChecked": true
+        },
+        {
+          "name": "Śniadanie",
+          "isChecked": true
+        },
+        {
+          "name": "Pisanie dziennika",
+          "isChecked": false
+        },
+        {
+          "name": "Kłótnia o politykę na FB",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Niezbędnik na weekend",
+      "items": [
+        {
+          "name": "Ładowarka do telefonu",
+          "isChecked": false
+        },
+        {
+          "name": "Portfel/dowód",
+          "notes": "Dowód osobisty w UE, paszport poza UE, prawo jazdy na wyjazd autem.",
+          "isChecked": false
+        },
+        {
+          "name": "Recepty, leki, suplementy",
+          "isChecked": true
+        },
+        {
+          "name": "Kosmetyczka",
+          "notes": "Małe płyny w osobnej torebce, jeśli lecisz z bagażem podręcznym.",
+          "isChecked": true
+        },
+        {
+          "name": "Krem z filtrem",
+          "isChecked": false
+        },
+        {
+          "name": "Słuchawki",
+          "isChecked": false
+        },
+        {
+          "name": "Książka, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Kurtka i parasol",
+          "isChecked": false
+        },
+        {
+          "name": "Okulary słoneczne",
+          "isChecked": true
+        },
+        {
+          "name": "Kapelusz",
+          "isChecked": true
+        },
+        {
+          "name": "Strój kąpielowy",
+          "isChecked": false
+        },
+        {
+          "name": "Klapki na basen",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Lista przed wyjazdem",
+      "items": [
+        {
+          "name": "Ustaw autoodpowiedź w mailu",
+          "isChecked": true
+        },
+        {
+          "name": "Poproś sąsiada o pocztę",
+          "isChecked": true
+        },
+        {
+          "name": "Opieka nad zwierzakami",
+          "isChecked": true
+        },
+        {
+          "name": "Podlewanie kwiatów, opieka nad domem",
+          "isChecked": false
+        },
+        {
+          "name": "Zgłoś nieobecność w szkole",
+          "isChecked": false
+        },
+        {
+          "name": "Wyślij plan podróży bliskiej osobie",
+          "isChecked": false
+        },
+        {
+          "name": "Odłącz sprzęty od prądu",
+          "isChecked": false
+        },
+        {
+          "name": "Schowaj wartościowe rzeczy",
+          "isChecked": false
+        },
+        {
+          "name": "Wyłącz ogrzewanie lub klimę",
+          "notes": "Albo ustaw minimalną temperaturę, żeby rury nie zamarzły.",
+          "isChecked": false
+        },
+        {
+          "name": "Sprawdź kuchenkę i piekarnik",
+          "isChecked": false
+        },
+        {
+          "name": "Zamknij okna i drzwi",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

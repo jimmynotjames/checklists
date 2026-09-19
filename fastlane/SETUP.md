@@ -72,11 +72,19 @@ manually attaches the tested TestFlight build and submits the release in App Sto
 ## Screenshot content and capture
 
 `fastlane/screenshot-config.json` records the 50 runtime/storefront locale
-mappings independently of the translation pipeline. Only runtime `en-US` is
-active, with regional locale `en_US`. This list is separate from the metadata
-pipeline's all-locale English fallback. Enable additional screenshot locales
-only after supplying their catalogs and translated app strings. The remaining
-translation integration is tracked in [issue #161](https://github.com/jimmynotjames/checklists/issues/161).
+mappings and is the registry the Python pipelines derive from. All 50 are
+active: each has a translated seed catalog under
+`checklists/checklistsUITests/ScreenshotSeeds/`, generated from the string
+catalog by `scripts/screenshot_content/generate_seeds.py`.
+
+The seeds are generated, never hand-edited. `make gate` regenerates them and
+fails on drift, so a change to the app's `sample.*` strings cannot leave the
+screenshots showing stale or English content. See the
+`appstore-generate-screenshot-seeding` skill.
+
+A full 50-locale capture is release-time work and runs serially, so budget a
+couple of hours; it is resumable by `run_id`, and `locales:` takes a subset of
+runtime codes for a spot check.
 
 The English catalog under `checklists/checklistsUITests/ScreenshotSeeds/` mirrors
 the shipped sample data, except it checks the first three Pre-Trip items. Thus the
