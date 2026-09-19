@@ -40,6 +40,16 @@ platform :ios do
   lane :push_metadata do |options|
     requested = options[:app_version].to_s
     UI.user_error!("Pass app_version:<version> explicitly") if requested.strip.empty?
+    # Blocking: every storefront must be transcreated and within Apple's limits before
+    # anything is uploaded. Run the appstore-translate-metadata skill if this fails.
+    sh("python3", File.join(RELEASE_ROOT, "scripts/translate_metadata/check_metadata.py"))
+    # Advisory: flags exclamation marks, shouting, and superlatives in the en-US source,
+    # which would otherwise propagate to all 49 storefronts.
+    begin
+      sh("python3", File.join(RELEASE_ROOT, "scripts/translate_metadata/check_source_voice.py"))
+    rescue StandardError
+      UI.important("Source-voice check raised findings in the en-US copy — see above. Continuing.")
+    end
     sh("python3", File.join(RELEASE_ROOT, "scripts/appstore_metadata.py"), "prepare", "--output", File.join(RELEASE_ROOT, "tmp/appstore-metadata"))
     identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
     app = Spaceship::ConnectAPI::App.find(identifier)

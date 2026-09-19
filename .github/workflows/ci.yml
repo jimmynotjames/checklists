@@ -129,6 +129,8 @@ jobs:
         run: python3 scripts/ci/annotate.py --name check_translations -- python3 scripts/check_translations.py
       - name: check_source_strings.py
         run: python3 scripts/ci/annotate.py --name check_source_strings -- python3 scripts/check_source_strings.py
+      - name: check_metadata.py
+        run: python3 scripts/ci/annotate.py --name check_metadata -- python3 scripts/translate_metadata/check_metadata.py
       - name: plural_completeness.py
         run: python3 scripts/ci/annotate.py --name plural_completeness -- python3 scripts/translate_audit/plural_completeness.py
       - name: untranslated_copies.py
