@@ -75,6 +75,10 @@ struct ChecklistsView: View {
             .labelStyle(.iconOnly)
           }
           .tint(Colors.destructiveColor)
+          // Locale-invariant handle: the localized large-type check cannot match
+          // the label text across 13 languages, and positional lookup on the
+          // revealed buttons is not reliable straight after the swipe.
+          .accessibilityIdentifier("checklistRow.delete")
         }
       }
       .onMove(perform: move)

@@ -16,8 +16,8 @@ import XCTest
 /// - The `-UITests1` launch argument and its production sample fixture (three checklists), which is
 ///   what gives every locale the same rows to photograph.
 /// - Four `.accessibilityIdentifier(...)` handles this is currently the only consumer of:
-///   `toolbar.mainMenu`, `toolbar.checklistsMenu`, `toolbar.addChecklist` (ChecklistsView) and
-///   `mainMenu.settings` (MainMenuView). Renaming one silently breaks navigation here.
+///   `toolbar.mainMenu`, `toolbar.checklistsMenu`, `toolbar.addChecklist`, `checklistRow.delete`
+///   (ChecklistsView) and `mainMenu.settings` (MainMenuView). Renaming one breaks navigation here.
 /// - `analyticsConsentSheet.decline`, shared with `AnalyticsConsentUITest`.
 /// - `TestDynamicTypeOverride` (the `FORCE_DYNAMIC_TYPE` hook), applied at the app root and again on
 ///   `RootView`'s sheet, since a sheet does not inherit the root's `dynamicTypeSize`.
@@ -122,12 +122,18 @@ final class LocalizationScreenshotCapture: XCTestCase {
     capture("06-delete-confirm", lang) { app in
       let row = app.cells.firstMatch
       guard row.waitForExistence(timeout: 8) else { return false }
-      row.swipeLeft()
-      // The swipe action's own label is localized, so take the trailing button
-      // rather than matching text.
-      let deleteButton = row.buttons.element(boundBy: row.buttons.count - 1)
-      guard deleteButton.waitForExistence(timeout: 4) else { return false }
-      deleteButton.tap()
+      // The swipe is mirrored under right-to-left: `.trailing` swipe actions sit on
+      // the leading (left) edge there, so a hardcoded swipeLeft reveals nothing.
+      // This failed in exactly ar, he, and ur before the direction was made
+      // locale-aware.
+      if Self.rightToLeft.contains(lang) {
+        row.swipeRight()
+      } else {
+        row.swipeLeft()
+      }
+      // By identifier, not by position: the revealed swipe-action buttons are not
+      // reliably enumerable straight after the swipe.
+      guard self.tap(app, "checklistRow.delete") else { return false }
       return app.alerts.firstMatch.waitForExistence(timeout: 8)
     }
 
@@ -136,6 +142,9 @@ final class LocalizationScreenshotCapture: XCTestCase {
       return app.textFields["checklistNameField"].waitForExistence(timeout: 8)
     }
   }
+
+  /// Locales whose layout direction mirrors the swipe gesture.
+  private static let rightToLeft: Set<String> = ["ar", "he", "ur"]
 
   // MARK: - Helpers
 
