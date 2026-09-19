@@ -8,13 +8,6 @@ import Foundation
 /// The detail screen's localized copy, kept beside the controller rather than in it so the
 /// controller stays about behavior.
 extension ChecklistViewController {
-  /// Persisted as the checklist's name, so it stays in whatever language the device had when saved.
-  static let defaultChecklistName = String(
-    localized: "checklist.defaultName",
-    defaultValue: "untitled checklist",
-    comment: "Name stored for a checklist saved with an empty name field. Lowercase in English; it is data once saved."
-  )
-
   static let resetButtonTitle = String(
     localized: "checklist.action.reset",
     defaultValue: "Reset",
@@ -27,6 +20,16 @@ extension ChecklistViewController {
     localized: "checklist.menu.more.accessibilityLabel",
     defaultValue: "More",
     comment: "VoiceOver label for the ellipsis button in the checklist detail screen's navigation bar that opens the overflow menu."
+  )
+
+  static let duplicateChecklistMenuTitle = String(
+    localized: "checklist.menu.duplicateChecklist",
+    defaultValue: "Duplicate Checklist",
+    comment: """
+    Overflow-menu entry on an existing checklist's detail screen that makes a copy of it. \
+    Not destructive and not confirmed: it opens the copy straight away. It sits above the \
+    Delete Checklist entry, so the two must not read alike.
+    """
   )
 
   static let deleteChecklistMenuTitle = String(

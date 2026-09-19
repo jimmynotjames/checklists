@@ -28,7 +28,14 @@ struct ChecklistScreen: View {
     ChecklistControllerView(
       checklist: checklist,
       isNewChecklist: isNewChecklist,
-      onRequestDismiss: onRequestDismiss
+      onRequestDismiss: onRequestDismiss,
+      // A duplicate opens in the create sheet, not as a push. The route reads "new", and that is
+      // what a fresh copy is: `ChecklistsView.addChecklist` also inserts and saves its row before
+      // presenting, so both arrive as a checklist that exists in the store but has not been kept
+      // yet. Everything the sheet does about that is what a copy wants — Done instead of Reset, the
+      // name field focused for renaming, no history caption where both lines could only read
+      // "Never", and Discard as the way to undo an accidental duplicate.
+      onRequestOpenDuplicate: { id in router.sheet = .newChecklist(id: id) }
     )
     // The view controller does its own keyboard avoidance via contentInset (the reason it ditched
     // UITableViewController); opt out of SwiftUI's so they don't stack.
@@ -56,6 +63,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   let checklist: Checklist
   let isNewChecklist: Bool
   let onRequestDismiss: () -> Void
+  let onRequestOpenDuplicate: (String) -> Void
 
   @Environment(\.analytics) private var analytics
   /// Optional on purpose: previews and tests build this screen without the app around it, and a
@@ -71,6 +79,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
     viewController.checklist = checklist
     viewController.isNewChecklist = isNewChecklist
     viewController.onRequestDismiss = onRequestDismiss
+    viewController.onRequestOpenDuplicate = onRequestOpenDuplicate
     viewController.analytics = analytics
     viewController.ratingPrompt = ratingPrompt
     if !isNewChecklist {

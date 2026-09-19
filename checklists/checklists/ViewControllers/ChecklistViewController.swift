@@ -28,6 +28,13 @@ class ChecklistViewController: UIViewController {
   /// screen. When unset (pure-UIKit presentation), the original dismiss/pop paths still run.
   var onRequestDismiss: (() -> Void)?
 
+  /// Set by the SwiftUI host (`ChecklistScreen`). Called with the new checklist's `id` after a
+  /// duplication, for the host to present. The id rather than the model, like every other
+  /// cross-screen reference in the app (see `AppRoute`); the controller has no router and should
+  /// not acquire one. Unset (pure-UIKit presentation, previews, tests) means the copy is still
+  /// made and saved, just not opened.
+  var onRequestOpenDuplicate: ((String) -> Void)?
+
   /// Set by the SwiftUI host (`ChecklistScreen`), like `onRequestDismiss` above. There is no
   /// environment to read from here, so the client is pushed in. The console default keeps
   /// pure-UIKit construction and previews working without any setup, and means a missed
@@ -577,7 +584,7 @@ extension ChecklistViewController: UITextFieldDelegate {
   }
 
   func textFieldDidEndEditing(_: UITextField) {
-    checklist.name = checklistNameTextField.hasText ? checklistNameTextField.text ?? Self.defaultChecklistName : Self.defaultChecklistName // Accounts for both nil and empty string.
+    checklist.name = checklistNameTextField.hasText ? checklistNameTextField.text ?? CommonStrings.defaultChecklistName : CommonStrings.defaultChecklistName // Accounts for both nil and empty string.
     context.saveChangesIgnoringFailure(operation: .checklistEdit)
   }
 

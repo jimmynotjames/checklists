@@ -35,6 +35,16 @@ nonisolated func checklistsCountBucket(_ count: Int) -> String {
   }
 }
 
+/// Which affordance a duplication was started from — the `source` property on
+/// `checklist_duplicated`.
+///
+/// An enum rather than two string constants so a call site cannot invent a third value, and
+/// `nonisolated` for the same reason the helpers above are.
+nonisolated enum ChecklistDuplicationSource: String {
+  case menu
+  case swipe
+}
+
 extension Checklist {
   /// The properties `checklist_viewed` carries.
   ///

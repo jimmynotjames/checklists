@@ -46,6 +46,18 @@ DISTINCT_PAIRS: list[tuple[str, str, str]] = [
         "checklist.menu.deleteChecklist",
         "the overflow-menu entries for the two cases above",
     ),
+    (
+        "common.action.duplicate",
+        "common.action.delete",
+        "the two buttons one trailing swipe reveals on a checklist row, side by side and both "
+        "icon-only; the words are all VoiceOver has to tell them apart",
+    ),
+    (
+        "checklist.menu.duplicateChecklist",
+        "checklist.menu.deleteChecklist",
+        "the two entries of the detail screen's overflow menu; they share a noun, so only the "
+        "verb distinguishes a copy from a removal",
+    ),
 ]
 
 

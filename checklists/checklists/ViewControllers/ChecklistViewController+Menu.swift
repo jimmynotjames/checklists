@@ -5,8 +5,8 @@
 
 import UIKit
 
-/// The trailing navigation items, the overflow menu, the one action behind it, and the dismissal
-/// that action shares with the remote-deletion path.
+/// The trailing navigation items, the overflow menu, the actions behind it, and the dismissal
+/// the destructive one shares with the remote-deletion path.
 extension ChecklistViewController {
   /// Picks the menu's wording for this screen's mode and builds the trailing bar items. The create
   /// sheet gets Done, an existing checklist gets Reset; both get the overflow menu at the outer edge.
@@ -36,11 +36,45 @@ extension ChecklistViewController {
 
   func makeMoreMenu() -> UIMenu {
     let title = showsDiscardWording ? Self.discardChecklistMenuTitle : Self.deleteChecklistMenuTitle
-    // `.destructive` is what turns the row red, and it is the only colour this menu carries.
-    let deleteAction = UIAction(title: title, image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
-      self?.confirmDeleteChecklist()
+    // `.destructive` is what turns the row red, and it is the only colour this menu carries. Its
+    // own inline section keeps a gap above it, so a thumb reaching for the entry above cannot
+    // land on it.
+    let deleteSection = UIMenu(options: .displayInline, children: [
+      UIAction(title: title, image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
+        self?.confirmDeleteChecklist()
+      },
+    ])
+    // Nothing on the create sheet's checklist has been kept yet — copying a draft nobody has
+    // decided to keep is not an action that means anything.
+    guard !showsDiscardWording else { return UIMenu(children: [deleteSection]) }
+
+    let duplicateSection = UIMenu(options: .displayInline, children: [
+      UIAction(title: Self.duplicateChecklistMenuTitle, image: UIImage(systemName: "plus.square.on.square")) { [weak self] _ in
+        self?.duplicateChecklist()
+      },
+    ])
+    return UIMenu(children: [duplicateSection, deleteSection])
+  }
+
+  /// Copies the checklist and hands the copy to the host to open. Unconfirmed on purpose: nothing
+  /// is lost, and the sheet that follows offers Discard as the way back out.
+  private func duplicateChecklist() {
+    // Commits a name or note still being typed into the *source*, so the copy carries what is on
+    // screen rather than the last value that happened to be saved. Same first-responder hazard
+    // `deleteChecklist` documents below, for the opposite reason.
+    view.endEditing(true)
+    guard let siblings = try? context.fetchChecklistsSorted(),
+          let copy = try? context.duplicate(checklist: checklist, among: siblings)
+    else {
+      // Already logged and reported by `saveChanges`, and nothing was added; opening a sheet on a
+      // checklist that does not exist would be the worse failure.
+      return
     }
-    return UIMenu(children: [deleteAction])
+    analytics.track(
+      AnalyticsEvent.checklistDuplicated,
+      properties: [AnalyticsProperty.source: ChecklistDuplicationSource.menu.rawValue]
+    )
+    onRequestOpenDuplicate?(copy.id)
   }
 
   /// The existing-checklist wording matches the confirmation the checklists list puts behind a
