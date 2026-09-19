@@ -61,7 +61,11 @@ from locales import LOCALES  # noqa: E402
 # ALLOWLIST only carries the residue the glossary can't speak to: identical-to-English values that
 # aren't whole glossary terms (a phrase, a cognate on a key with no glossary term). Each is a
 # deliberate human call — add here, with the reason, when triage confirms a flag is fine.
-ALLOWLIST: set[tuple[str, str]] = set()
+ALLOWLIST: set[tuple[str, str]] = {
+    # "Yoga" and "meditation" are the ordinary Danish and Swedish words, spelled as in English.
+    ("sample.morningRoutine.item2", "da"),
+    ("sample.morningRoutine.item2", "sv"),
+}
 
 
 def load_glossary_kept_english() -> dict[str, set[str]]:
