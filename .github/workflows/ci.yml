@@ -1,7 +1,7 @@
 # CI — DISABLED (workflow_dispatch only; private repo, macOS minutes bill at 10x).
 # To enable: uncomment the pull_request/push triggers AND add these jobs as required
 # status checks. See AGENTS.md §"CI".
-# Not ported: i18n-gates (no localization here), test (opt-in locally), pr-summary.
+# Not ported: test (opt-in locally), pr-summary.
 name: CI
 
 on:
@@ -113,10 +113,33 @@ jobs:
         if: steps.diff.outputs.files != ''
         run: bash scripts/check-large-files.sh ${{ steps.diff.outputs.files }}
 
+  # --- Localization gates (ubuntu) --------------------------------------------
+  # The two the pre-push hook runs, plus the deterministic plural and
+  # untranslated-copy checks and a non-blocking consistency report. App Store
+  # metadata and screenshot-content checks stay release-time only — they run in
+  # their fastlane lanes, not here.
+  i18n-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: check_translations.py
+        run: python3 scripts/ci/annotate.py --name check_translations -- python3 scripts/check_translations.py
+      - name: check_source_strings.py
+        run: python3 scripts/ci/annotate.py --name check_source_strings -- python3 scripts/check_source_strings.py
+      - name: plural_completeness.py
+        run: python3 scripts/ci/annotate.py --name plural_completeness -- python3 scripts/translate_audit/plural_completeness.py
+      - name: untranslated_copies.py
+        run: python3 scripts/ci/annotate.py --name untranslated_copies -- python3 scripts/translate_audit/untranslated_copies.py
+      - name: consistency_check (informational, non-blocking)
+        run: python3 scripts/translate_audit/consistency_check.py --ignore-casing || true
+
   # --- Tier 2: compile check (macOS — 10× minute cost on a private repo) ------
   build:
     runs-on: macos-26
-    needs: [lint, secrets, check-large-files]
+    needs: [lint, secrets, check-large-files, i18n-gates]
     steps:
       - uses: actions/checkout@v7
       - name: Select Xcode 26.6

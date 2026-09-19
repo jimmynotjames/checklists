@@ -50,8 +50,9 @@ repo is `checklists` (`jimmynotjames/checklists`). Introduce both sibling names 
 ## Build and test
 
 ```bash
-make gate        # format-changed -> lint-changed -> build. Logs to tmp/gate.log.
+make gate        # format-changed -> lint-changed -> i18n-check -> build. Logs to tmp/gate.log.
 make build       # compile only (generic destination; never boots a simulator)
+make i18n-check  # catalog fully translated + no unkeyed user-facing strings
 make test-unit   # opt-in, not in the gate
 make test-ui     # opt-in; needs a prior `make test-unit` (simulator warm-up)
 make system      # once per clone: toolchain + git hooks
@@ -88,6 +89,13 @@ Don't read pass/fail from `tmp/gate.log` or a stale console tail.
 Gate and pre-commit format and strict-lint **changed Swift files only**
 (`scripts/changed-swift-files.sh`). Repo-wide `make format` / `make lint` are manual escape
 hatches — never wire them into a hook or gate.
+
+**`make i18n-check` is the one documented exception**, and it is not a lint:
+`check_translations.py` validates a single file (`Localizable.xcstrings`) and
+`check_source_strings.py` enforces a repo invariant — no user-facing string reaches a view
+without a catalog key. Neither scales with the diff, both finish in well under a second, and a
+changed-files scope would miss exactly the case they exist for: a key that stops being
+translated because some *other* file changed. `make gate` and `pre-push` both run them.
 
 ## Commit and PR style
 

@@ -39,6 +39,14 @@ pre-push:
             ;;
         esac
 
+    # Repo-wide by design — AGENTS.md §"Lint policy" records why these two are the
+    # exception to the changed-files rule.
+    check-translations:
+      run: python3 scripts/check_translations.py
+
+    check-source-strings:
+      run: python3 scripts/check_source_strings.py
+
     # Compile check only; tests are not run on push (AGENTS.md).
     build:
       run: bash scripts/build.sh

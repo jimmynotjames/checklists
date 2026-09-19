@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Single-command form of the gate (format-changed -> lint-changed -> build).
+# Single-command form of the gate (format-changed -> lint-changed -> i18n-check -> build).
 #
 # One script so the whole gate is a single allowlisted command (a subshell or trailing
 # ; echo splits into segments that prompt).
@@ -36,6 +36,9 @@ run_step() {
 
 run_step format-changed
 run_step lint-changed
+# Before the build: it is the cheapest step and catches an unkeyed or untranslated
+# string without waiting on a compile.
+run_step i18n-check
 run_step build
 
-printf '\nGATE PASSED (format-changed, lint-changed, build). Full log: %s\n' "$LOG"
+printf '\nGATE PASSED (format-changed, lint-changed, i18n-check, build). Full log: %s\n' "$LOG"
