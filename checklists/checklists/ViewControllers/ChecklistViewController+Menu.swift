@@ -38,7 +38,7 @@ extension ChecklistViewController {
 
   private func deleteChecklist() {
     // Fired for a discard too: the store operation is identical, and "created then immediately
-    // deleted" is itself a useful reading of checklist_created vs. checklist_deleted (§3.5).
+    // deleted" is itself a useful reading of checklist_created vs. checklist_deleted.
     analytics.track(AnalyticsEvent.checklistDeleted)
     // Clears the first responder while the record is still valid. Left to `viewWillDisappear`, the
     // field resigns during teardown instead and its delegate writes the committed text back into a
@@ -53,8 +53,8 @@ extension ChecklistViewController {
     context.saveChangesIgnoringFailure(operation: .delete)
   }
 
-  /// Leaves the screen the way the host wants it left — through the router when one is wired up,
-  /// and through UIKit only in a pure-UIKit presentation, where nothing else would.
+  /// Implements the contract on `onRequestDismiss`'s doc comment; also the fallback for the
+  /// pure-UIKit case that leaves it unset.
   func requestDismissal() {
     if let onRequestDismiss {
       onRequestDismiss()
