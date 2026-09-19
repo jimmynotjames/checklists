@@ -47,11 +47,11 @@ extension ChecklistViewController {
   /// swipe, so deleting a checklist reads the same wherever it is started from; the create sheet
   /// gets its own copy for the same reason its menu entry does.
   private func confirmDeleteChecklist() {
-    let message = showsDiscardWording ? Self.discardConfirmationMessage : Self.deleteConfirmationMessage
-    let confirmTitle = showsDiscardWording ? Self.discardActionTitle : Self.deleteActionTitle
+    let message = showsDiscardWording ? Self.discardConfirmationMessage : CommonStrings.irreversibleConfirmation
+    let confirmTitle = showsDiscardWording ? Self.discardActionTitle : CommonStrings.delete
     let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
     // Cancel added first so it sits on the left, matching the list screen's alert.
-    alert.addAction(UIAlertAction(title: Self.cancelActionTitle, style: .cancel))
+    alert.addAction(UIAlertAction(title: CommonStrings.cancel, style: .cancel))
     alert.addAction(UIAlertAction(title: confirmTitle, style: .destructive) { [weak self] _ in
       self?.deleteChecklist()
     })

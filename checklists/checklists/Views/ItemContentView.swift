@@ -73,7 +73,7 @@ class ItemContentView: UIView {
 
   private lazy var notesTextView: CLTextView = {
     let textView = CLTextView()
-    textView.placeholderText = String(localized: "common.notes.placeholder", defaultValue: "Notes", comment: "Placeholder of the optional notes field on an item and on a checklist header.")
+    textView.placeholderText = CommonStrings.notesPlaceholder
     textView.font = UIFont.systemFont(ofSize: 15.0)
     textView.inputAccessoryButtonTappedAction = {
       textView.resignFirstResponder()

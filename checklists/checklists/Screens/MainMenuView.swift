@@ -62,7 +62,7 @@ struct MainMenuView: View {
       }
 
       MainMenuRow(
-        title: String(localized: "common.settings.title", defaultValue: "Settings", comment: "Title of the Settings screen and the main-menu row that opens it."),
+        title: CommonStrings.settingsTitle,
         iconName: "MainMenuSettingsIcon"
       ) {
         // The menu must vanish instantly here so it isn't still animating out behind the

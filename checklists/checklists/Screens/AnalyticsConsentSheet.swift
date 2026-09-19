@@ -20,6 +20,18 @@ struct AnalyticsConsentSheet: View {
     AnalyticsConsentController(settings: settings, analytics: analytics)
   }
 
+  private static let acceptTitle = String(
+    localized: "consent.action.accept",
+    defaultValue: "Share Anonymous Usage Data",
+    comment: "Accept button on the analytics consent sheet; turns anonymous usage data on."
+  )
+
+  private static let declineTitle = String(
+    localized: "consent.action.decline",
+    defaultValue: "Not Now",
+    comment: "Decline button on the analytics consent sheet; keeps usage data off."
+  )
+
   var body: some View {
     NavigationStack {
       VStack(spacing: 24) {
@@ -56,18 +68,14 @@ struct AnalyticsConsentSheet: View {
             controller.accept()
             dismiss()
           } label: {
-            Text(String(localized: "consent.action.accept", defaultValue: "Share Anonymous Usage Data", comment: "Accept button on the analytics consent sheet; turns anonymous usage data on."))
+            Text(Self.acceptTitle)
               .frame(maxWidth: .infinity)
           }
           .buttonStyle(.glass)
           .controlSize(.large)
           .tint(Color.accentColor)
           .accessibilityIdentifier("analyticsConsentSheet.accept")
-          .accessibilityLabel(String(
-            localized: "consent.action.accept",
-            defaultValue: "Share Anonymous Usage Data",
-            comment: "Accept button on the analytics consent sheet; turns anonymous usage data on."
-          ))
+          .accessibilityLabel(Self.acceptTitle)
           .accessibilityHint(String(
             localized: "consent.action.accept.hint",
             defaultValue: "Turns on anonymous usage data to help improve the app. No checklist item names, item notes, or Apple or iCloud identifiers are ever included.",
@@ -78,13 +86,13 @@ struct AnalyticsConsentSheet: View {
             controller.decline()
             dismiss()
           } label: {
-            Text(String(localized: "consent.action.decline", defaultValue: "Not Now", comment: "Decline button on the analytics consent sheet; keeps usage data off."))
+            Text(Self.declineTitle)
               .frame(maxWidth: .infinity)
           }
           .buttonStyle(.glass)
           .controlSize(.large)
           .accessibilityIdentifier("analyticsConsentSheet.decline")
-          .accessibilityLabel(String(localized: "consent.action.decline", defaultValue: "Not Now", comment: "Decline button on the analytics consent sheet; keeps usage data off."))
+          .accessibilityLabel(Self.declineTitle)
           .accessibilityHint(String(
             localized: "consent.action.decline.hint",
             defaultValue: "Keeps anonymous usage data off. This can be changed later in Settings.",

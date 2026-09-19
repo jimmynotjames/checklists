@@ -49,17 +49,13 @@ struct ContainerFailureView: View {
         Button {
           sendFeedbackTapped()
         } label: {
-          Text(String(localized: "containerFailure.action.sendFeedback", defaultValue: "Send Feedback", comment: "Button on the database-failure screen that opens a pre-filled support email."))
+          Text(Self.sendFeedbackTitle)
             .frame(maxWidth: .infinity)
         }
         // Approximates the UIKit CLButton's glass UIButtonConfiguration.
         .buttonStyle(.glass)
         .controlSize(.large)
-        .accessibilityLabel(String(
-          localized: "containerFailure.action.sendFeedback",
-          defaultValue: "Send Feedback",
-          comment: "Button on the database-failure screen that opens a pre-filled support email."
-        ))
+        .accessibilityLabel(Self.sendFeedbackTitle)
         .accessibilityHint(String(
           localized: "containerFailure.action.sendFeedback.hint",
           defaultValue: "Opens an email with the error details. No personal data is included.",
@@ -72,21 +68,13 @@ struct ContainerFailureView: View {
           // sure?".
           isShowingStartOverConfirmation = true
         } label: {
-          Text(String(
-            localized: "containerFailure.action.startOver",
-            defaultValue: "Start over fresh",
-            comment: "Destructive button on the database-failure screen: deletes the local data and relaunches as a new install."
-          ))
-          .frame(maxWidth: .infinity)
+          Text(Self.startOverTitle)
+            .frame(maxWidth: .infinity)
         }
         .buttonStyle(.glass)
         .controlSize(.large)
         .tint(Colors.destructiveColor)
-        .accessibilityLabel(String(
-          localized: "containerFailure.action.startOver",
-          defaultValue: "Start over fresh",
-          comment: "Destructive button on the database-failure screen: deletes the local data and relaunches as a new install."
-        ))
+        .accessibilityLabel(Self.startOverTitle)
         .accessibilityHint(String(
           localized: "containerFailure.action.startOver.hint",
           defaultValue: "Starts the app as if it were newly installed. Any data on this device will be lost.",
@@ -101,7 +89,7 @@ struct ContainerFailureView: View {
       String(localized: "containerFailure.confirm.title", defaultValue: "Start over fresh?", comment: "Title of the confirmation alert before deleting local data on the database-failure screen."),
       isPresented: $isShowingStartOverConfirmation
     ) {
-      Button(String(localized: "common.action.cancel", defaultValue: "Cancel", comment: "Dismisses a confirmation alert without doing anything."), role: .cancel) {}
+      Button(CommonStrings.cancel, role: .cancel) {}
       Button(
         String(localized: "containerFailure.confirm.action", defaultValue: "Start Over", comment: "Destructive confirmation button: deletes local data and relaunches as a new install."),
         role: .destructive
@@ -118,6 +106,18 @@ struct ContainerFailureView: View {
       ))
     }
   }
+
+  private static let sendFeedbackTitle = String(
+    localized: "containerFailure.action.sendFeedback",
+    defaultValue: "Send Feedback",
+    comment: "Button on the database-failure screen that opens a pre-filled support email."
+  )
+
+  private static let startOverTitle = String(
+    localized: "containerFailure.action.startOver",
+    defaultValue: "Start over fresh",
+    comment: "Destructive button on the database-failure screen: deletes the local data and relaunches as a new install."
+  )
 
   private func sendFeedbackTapped() {
     analytics.track(AnalyticsEvent.feedbackTapped)

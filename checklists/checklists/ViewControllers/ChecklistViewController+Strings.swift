@@ -61,22 +61,4 @@ extension ChecklistViewController {
     either: this checklist was never kept. Prefer the sense of abandon or throw away. Keep it short.
     """
   )
-
-  static let deleteConfirmationMessage = String(
-    localized: "checklists.confirm.irreversible",
-    defaultValue: "Are you sure? This cannot be undone.",
-    comment: "Alert message under both the delete-checklist and the reset-all confirmations."
-  )
-
-  static let deleteActionTitle = String(
-    localized: "common.action.delete",
-    defaultValue: "Delete",
-    comment: "Destructive action: removes a checklist. Swipe action and confirmation button."
-  )
-
-  static let cancelActionTitle = String(
-    localized: "common.action.cancel",
-    defaultValue: "Cancel",
-    comment: "Dismisses a confirmation alert without doing anything."
-  )
 }

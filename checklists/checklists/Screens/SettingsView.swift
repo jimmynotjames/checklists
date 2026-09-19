@@ -23,7 +23,7 @@ struct SettingsView: View {
         aboutSection
       }
       .appBackground()
-      .navigationTitle(String(localized: "common.settings.title", defaultValue: "Settings", comment: "Title of the Settings screen and the main-menu row that opens it."))
+      .navigationTitle(CommonStrings.settingsTitle)
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
         ToolbarItem(placement: .topBarTrailing) {

@@ -68,11 +68,8 @@ struct ChecklistsView: View {
           } label: {
             // Icon-only for the visible button, but the title is what VoiceOver reads and what
             // the UI tests match on, so it stays part of the label rather than being dropped.
-            Label(
-              String(localized: "common.action.delete", defaultValue: "Delete", comment: "Destructive action: removes a checklist. Swipe action and confirmation button."),
-              systemImage: "trash"
-            )
-            .labelStyle(.iconOnly)
+            Label(CommonStrings.delete, systemImage: "trash")
+              .labelStyle(.iconOnly)
           }
           .tint(Colors.destructiveColor)
           // Locale-invariant handle: the localized large-type check cannot match
@@ -123,11 +120,7 @@ struct ChecklistsView: View {
         ))
         .accessibilityIdentifier("toolbar.checklistsMenu")
         .popover(isPresented: $showsResetMenu) {
-          Button(String(
-            localized: "checklists.action.resetAll",
-            defaultValue: "Reset All",
-            comment: "Unchecks every item in every checklist. Popover row and confirmation button; clears progress, never deletes lists."
-          )) {
+          Button(Self.resetAllTitle) {
             isResetAllPending = true
             showsResetMenu = false
           }
@@ -149,35 +142,20 @@ struct ChecklistsView: View {
       }
     }
     .alert(Text(verbatim: ""), isPresented: isPresentingDeleteConfirmation, presenting: pendingDeleteID) { checklistId in
-      Button(String(localized: "common.action.delete", defaultValue: "Delete", comment: "Destructive action: removes a checklist. Swipe action and confirmation button."), role: .destructive) {
+      Button(CommonStrings.delete, role: .destructive) {
         confirmDelete(id: checklistId)
       }
-      Button(String(localized: "common.action.cancel", defaultValue: "Cancel", comment: "Dismisses a confirmation alert without doing anything."), role: .cancel) {}
+      Button(CommonStrings.cancel, role: .cancel) {}
     } message: { _ in
-      Text(String(
-        localized: "checklists.confirm.irreversible",
-        defaultValue: "Are you sure? This cannot be undone.",
-        comment: "Alert message under both the delete-checklist and the reset-all confirmations."
-      ))
+      Text(CommonStrings.irreversibleConfirmation)
     }
     .alert(Text(verbatim: ""), isPresented: $showsResetAllConfirmation) {
-      Button(
-        String(
-          localized: "checklists.action.resetAll",
-          defaultValue: "Reset All",
-          comment: "Unchecks every item in every checklist. Popover row and confirmation button; clears progress, never deletes lists."
-        ),
-        role: .destructive
-      ) {
+      Button(Self.resetAllTitle, role: .destructive) {
         resetAllChecklists()
       }
-      Button(String(localized: "common.action.cancel", defaultValue: "Cancel", comment: "Dismisses a confirmation alert without doing anything."), role: .cancel) {}
+      Button(CommonStrings.cancel, role: .cancel) {}
     } message: {
-      Text(String(
-        localized: "checklists.confirm.irreversible",
-        defaultValue: "Are you sure? This cannot be undone.",
-        comment: "Alert message under both the delete-checklist and the reset-all confirmations."
-      ))
+      Text(CommonStrings.irreversibleConfirmation)
     }
     .task {
       guard remoteChangeObserver == nil else { return }
@@ -261,6 +239,12 @@ struct ChecklistsView: View {
   /// Resolves the pending delete by `id`, not by row. The alert is answered asynchronously, and
   /// once sync is on a merge can reorder the list while it is up — at which point a captured
   /// index would name a different checklist and this would silently delete the wrong one.
+  private static let resetAllTitle = String(
+    localized: "checklists.action.resetAll",
+    defaultValue: "Reset All",
+    comment: "Unchecks every item in every checklist. Popover row and confirmation button; clears progress, never deletes lists."
+  )
+
   private func confirmDelete(id checklistId: String) {
     // `nil` means it is already gone — deleted on another device while the alert was up.
     guard let checklist = context.checklist(id: checklistId) else { return }

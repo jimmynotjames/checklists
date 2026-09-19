@@ -38,7 +38,7 @@ final class ChecklistInfoHeaderView: UIView {
 
     notesTextView.font = .systemFont(ofSize: 16.0)
     notesTextView.backgroundColor = .clear
-    notesTextView.placeholderText = String(localized: "common.notes.placeholder", defaultValue: "Notes", comment: "Placeholder of the optional notes field on an item and on a checklist header.")
+    notesTextView.placeholderText = CommonStrings.notesPlaceholder
     notesTextView.accessibilityIdentifier = "checklistNotesTextView"
     notesTextView.accessibilityLabel = String(
       localized: "checklist.notes.accessibilityLabel",
