@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "it",
+  "primaryLocale": "it_IT",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Routine mattutina",
+      "items": [
+        {
+          "name": "ACCENDI LA MOKA",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditazione",
+          "isChecked": true
+        },
+        {
+          "name": "Traffico e meteo",
+          "isChecked": true
+        },
+        {
+          "name": "Colazione",
+          "isChecked": true
+        },
+        {
+          "name": "Diario",
+          "isChecked": false
+        },
+        {
+          "name": "Litigare di politica su Facebook",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "L'essenziale per il weekend",
+      "items": [
+        {
+          "name": "Caricabatterie",
+          "isChecked": false
+        },
+        {
+          "name": "Portafoglio/documenti",
+          "notes": "Carta d'identità per volare in UE, passaporto fuori UE, patente per l'auto.",
+          "isChecked": false
+        },
+        {
+          "name": "Ricette, medicine, integratori",
+          "isChecked": true
+        },
+        {
+          "name": "Beauty case",
+          "notes": "Liquidi piccoli in busta trasparente se voli con il bagaglio a mano.",
+          "isChecked": true
+        },
+        {
+          "name": "Crema solare",
+          "isChecked": false
+        },
+        {
+          "name": "Cuffie",
+          "isChecked": false
+        },
+        {
+          "name": "Libro, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Antipioggia e antivento",
+          "isChecked": false
+        },
+        {
+          "name": "Occhiali da sole",
+          "isChecked": true
+        },
+        {
+          "name": "Cappello da sole",
+          "isChecked": true
+        },
+        {
+          "name": "Costume da bagno",
+          "isChecked": false
+        },
+        {
+          "name": "Ciabatte da piscina",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Elenco pre-partenza",
+      "items": [
+        {
+          "name": "Risposta automatica alle email",
+          "isChecked": true
+        },
+        {
+          "name": "Posta: chiedere al vicino",
+          "isChecked": true
+        },
+        {
+          "name": "Chi tiene gli animali",
+          "isChecked": true
+        },
+        {
+          "name": "Chi innaffia le piante e bada a casa",
+          "isChecked": false
+        },
+        {
+          "name": "Avvisare la scuola dell'assenza",
+          "isChecked": false
+        },
+        {
+          "name": "Mandare l'itinerario a un amico o parente fidato",
+          "isChecked": false
+        },
+        {
+          "name": "Staccare le spine",
+          "isChecked": false
+        },
+        {
+          "name": "Mettere via le cose di valore",
+          "isChecked": false
+        },
+        {
+          "name": "Spegnere riscaldamento o clima",
+          "notes": "Oppure imposta il minimo per non far gelare i tubi.",
+          "isChecked": false
+        },
+        {
+          "name": "Controllare fornelli e forno spenti",
+          "isChecked": false
+        },
+        {
+          "name": "Chiudere porte e finestre",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

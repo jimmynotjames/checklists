@@ -82,7 +82,11 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
       )
       // iOS 26 renders bar buttons in `labelColor` unless the item itself carries a tint.
       backButton.tintColor = .tintColor
-      backButton.accessibilityLabel = "Back"
+      backButton.accessibilityLabel = String(
+        localized: "checklist.back.accessibilityLabel",
+        defaultValue: "Back",
+        comment: "VoiceOver label for the chevron-only back button on the checklist detail screen."
+      )
       viewController.navigationItem.leftBarButtonItem = backButton
     }
     let navigationController = UINavigationController(rootViewController: viewController)

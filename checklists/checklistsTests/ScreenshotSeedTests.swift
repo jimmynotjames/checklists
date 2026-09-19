@@ -101,8 +101,49 @@
       }
     }
 
+    @Test("every seed decodes and matches the English structure")
+    func everySeedDecodesAndMatchesEnglishStructure() throws {
+      let english = try englishSeed()
+      let catalogs = try FileManager.default
+        .contentsOfDirectory(at: seedsDirectory(), includingPropertiesForKeys: nil)
+        .filter { $0.pathExtension == "json" }
+        .sorted { $0.lastPathComponent < $1.lastPathComponent }
+
+      #expect(!catalogs.isEmpty)
+
+      for url in catalogs {
+        let locale = url.deletingPathExtension().lastPathComponent
+        let json = try String(contentsOf: url, encoding: .utf8)
+        let seed = try ScreenshotSeed.decode(from: json, expectedLocale: locale)
+
+        #expect(seed.schemaVersion == 1, "\(locale): schemaVersion")
+        // Seeding overrides -AppleLocale, so an empty value would silently leave
+        // the simulator formatting dates and numbers as the source locale.
+        #expect(!seed.primaryLocale.isEmpty, "\(locale): primaryLocale")
+
+        // Only the words are localized. Everything structural is copied from
+        // English so a reviewer comparing two locales sees the same lists.
+        #expect(seed.checklists.map(\.id) == english.checklists.map(\.id), "\(locale): ids")
+        #expect(
+          seed.checklists.map(\.items.count) == english.checklists.map(\.items.count),
+          "\(locale): item counts"
+        )
+        #expect(
+          seed.checklists.map(checkedCount) == english.checklists.map(checkedCount),
+          "\(locale): checked pattern"
+        )
+      }
+    }
+
     private func englishSeed() throws -> ScreenshotSeed {
       try ScreenshotSeed.decode(from: englishCatalogJSON(), expectedLocale: "en-US")
+    }
+
+    private func seedsDirectory() -> URL {
+      URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent()
+        .appendingPathComponent("../checklistsUITests/ScreenshotSeeds")
+        .standardizedFileURL
     }
 
     private func englishCatalogJSON() throws -> String {

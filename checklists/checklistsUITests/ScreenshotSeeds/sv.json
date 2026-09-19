@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "sv",
+  "primaryLocale": "sv_SE",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Morgonrutin",
+      "items": [
+        {
+          "name": "STARTA KAFFEBRYGGAREN",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditation",
+          "isChecked": true
+        },
+        {
+          "name": "Trafik och väder",
+          "isChecked": true
+        },
+        {
+          "name": "Frukost",
+          "isChecked": true
+        },
+        {
+          "name": "Skriva dagbok",
+          "isChecked": false
+        },
+        {
+          "name": "Bråka om politik på Facebook",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Packlista för helgresan",
+      "items": [
+        {
+          "name": "Mobilladdare",
+          "isChecked": false
+        },
+        {
+          "name": "Plånbok/ID",
+          "notes": "Giltig legitimation (ID-kort, pass utrikes, körkort om du kör).",
+          "isChecked": false
+        },
+        {
+          "name": "Recept, mediciner, kosttillskott",
+          "isChecked": true
+        },
+        {
+          "name": "Necessär",
+          "notes": "Bara små flaskor i separat påse om du flyger med handbagage.",
+          "isChecked": true
+        },
+        {
+          "name": "Solkräm",
+          "isChecked": false
+        },
+        {
+          "name": "Hörlurar",
+          "isChecked": false
+        },
+        {
+          "name": "Bok, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Regn- och vindkläder",
+          "isChecked": false
+        },
+        {
+          "name": "Solglasögon",
+          "isChecked": true
+        },
+        {
+          "name": "Solhatt",
+          "isChecked": true
+        },
+        {
+          "name": "Badkläder",
+          "isChecked": false
+        },
+        {
+          "name": "Badtofflor",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Checklista före resan",
+      "items": [
+        {
+          "name": "Slå på autosvar på mejlen",
+          "isChecked": true
+        },
+        {
+          "name": "Pausa posten hos PostNord",
+          "isChecked": true
+        },
+        {
+          "name": "Ordna djurpassning",
+          "isChecked": true
+        },
+        {
+          "name": "Ordna blomvattning och husvakt",
+          "isChecked": false
+        },
+        {
+          "name": "Anmäl ledighet i skolan",
+          "isChecked": false
+        },
+        {
+          "name": "Skicka resplanen till någon du litar på",
+          "isChecked": false
+        },
+        {
+          "name": "Dra ur kontakterna",
+          "isChecked": false
+        },
+        {
+          "name": "Lås in värdesaker",
+          "isChecked": false
+        },
+        {
+          "name": "Stäng av värmen",
+          "notes": "Eller ställ in lägsta värmen så rören inte fryser.",
+          "isChecked": false
+        },
+        {
+          "name": "Kolla att spis och ugn är av",
+          "isChecked": false
+        },
+        {
+          "name": "Lås dörrar och fönster",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

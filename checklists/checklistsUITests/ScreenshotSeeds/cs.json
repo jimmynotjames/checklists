@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "cs",
+  "primaryLocale": "cs_CZ",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Ranní rutina",
+      "items": [
+        {
+          "name": "UVAŘIT KÁVU",
+          "isChecked": true
+        },
+        {
+          "name": "Jóga/meditace",
+          "isChecked": true
+        },
+        {
+          "name": "Doprava a počasí",
+          "isChecked": true
+        },
+        {
+          "name": "Snídaně",
+          "isChecked": true
+        },
+        {
+          "name": "Psát si deník",
+          "isChecked": false
+        },
+        {
+          "name": "Politické hádky na Facebooku",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Balení na víkend",
+      "items": [
+        {
+          "name": "Nabíječka na mobil",
+          "isChecked": false
+        },
+        {
+          "name": "Peněženka/doklady",
+          "notes": "Občanka do EU, pas mimo Schengen, řidičák na cestu autem.",
+          "isChecked": false
+        },
+        {
+          "name": "Léky, recepty, doplňky stravy",
+          "isChecked": true
+        },
+        {
+          "name": "Kosmetická taštička",
+          "notes": "Při letu jen malé tekutiny v sáčku v příručním zavazadle.",
+          "isChecked": true
+        },
+        {
+          "name": "Opalovací krém",
+          "isChecked": false
+        },
+        {
+          "name": "Sluchátka",
+          "isChecked": false
+        },
+        {
+          "name": "Kniha, iPad, čtečka…",
+          "isChecked": false
+        },
+        {
+          "name": "Do deště a větru",
+          "isChecked": false
+        },
+        {
+          "name": "Sluneční brýle",
+          "isChecked": true
+        },
+        {
+          "name": "Kšiltovka",
+          "isChecked": true
+        },
+        {
+          "name": "Plavky",
+          "isChecked": false
+        },
+        {
+          "name": "Žabky k bazénu",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Kontrolní seznam před odjezdem",
+      "items": [
+        {
+          "name": "Zapnout automatickou odpověď v mailu",
+          "isChecked": true
+        },
+        {
+          "name": "Zařídit vybírání schránky",
+          "isChecked": true
+        },
+        {
+          "name": "Zajistit hlídání zvířat",
+          "isChecked": true
+        },
+        {
+          "name": "Zalévání květin, dohled nad bytem",
+          "isChecked": false
+        },
+        {
+          "name": "Omluvit děti ze školy",
+          "isChecked": false
+        },
+        {
+          "name": "Poslat itinerář někomu blízkému",
+          "isChecked": false
+        },
+        {
+          "name": "Odpojit spotřebiče",
+          "isChecked": false
+        },
+        {
+          "name": "Uklidit cennosti",
+          "isChecked": false
+        },
+        {
+          "name": "Stáhnout topení",
+          "notes": "Nebo nastavit nízkou teplotu, ať nezamrznou trubky.",
+          "isChecked": false
+        },
+        {
+          "name": "Zkontrolovat sporák a troubu",
+          "isChecked": false
+        },
+        {
+          "name": "Zavřít okna a zamknout",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

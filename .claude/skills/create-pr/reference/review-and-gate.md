@@ -120,6 +120,18 @@ inventory in `core-docs/accessibility-spec.md` §3.
 If the change involved any accessibility or Reduce Motion work, read `core-docs/accessibility-spec.md`
 and update it in the same PR. Otherwise leave it unread.
 
+**Localization**
+Applies if: the diff adds or changes any user-facing string, the string catalog, the app's sample
+data, or a screenshot seed.
+Check: every new string is a dotted key with a real translator comment, read through
+`String(localized:defaultValue:comment:)`; locale-invariant text uses `Text(verbatim:)`; genuinely
+shared copy reuses a `common.*` key instead of adding a near-duplicate; and
+`translate-new-strings` has been run so `check_translations.py` passes. A bare `Text("English")` is
+a gate failure, not a review note — `check_source_strings.py` will catch it, so find it first.
+Sample-data changes also need the transcreation fan-out and `generate_seeds.py`, since the
+screenshot seeds derive from those keys. Never hand-edit `Localizable.xcstrings` or a seed file.
+Details: `core-docs/localization-spec.md`.
+
 **Secrets inventory**
 Applies if: the diff adds, removes, or renames a gitignored secret-bearing file; introduces a new
 API token, private key, credential variable, or external secret location; or changes a machine-local

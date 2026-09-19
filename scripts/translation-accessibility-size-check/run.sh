@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+cd "$ROOT"
+
+# ────────────────────────────────────────────────────────────────────────────────────────────────
+# Ad-hoc localized large-type screenshot capture. NOT part of `make test`, `make gate`, or any hook.
+#
+# Runs LocalizationScreenshotCapture across 13 locales at forced .xxxLarge, exports the screenshots
+# to tmp/loc-size-check/, downscales them, and leaves them for visual inspection. There are no
+# assertions: the check IS the reading. Record what you find in AUDIT_LOG.md.
+#
+# Heavy and slow: a serial run is roughly 20-30 minutes. Requires explicit confirmation: pass --yes.
+#
+# Knobs (env):
+#   WORKERS         parallel simulator clones (default 1, i.e. serial). This repo runs tests in a
+#                   per-repo simulator sandbox, so cloning is opt-in rather than the default: raise
+#                   it only with RAM to spare, since each clone is a full simulator (~1.5-2 GB) plus
+#                   the app and runner. On 16 GB, 6-7 is the practical ceiling; higher swaps.
+#   SIMULATOR_NAME  base device (default: the repo default from _destination.sh). A narrow device is
+#                   the worst case for truncation — try SIMULATOR_NAME="iPhone SE (3rd generation)".
+#   MAX_PX          downscale longest screenshot edge to this many px (default 1000), to cut the
+#                   cost of reading ~100 images.
+# ────────────────────────────────────────────────────────────────────────────────────────────────
+
+WORKERS="${WORKERS:-1}"
+MAX_PX="${MAX_PX:-1000}"
+OUT="${ROOT}/tmp/loc-size-check"
+
+if [[ "${1:-}" != "--yes" ]]; then
+  cat <<USAGE
+⚠  Localized large-type screenshot capture — RESOURCE WARNING
+   This drives 13 locales through 7 screens each on the simulator and takes roughly
+   20-30 minutes serially. Close other heavy apps first, then re-run to proceed:
+
+       bash scripts/translation-accessibility-size-check/run.sh --yes
+
+   (Override WORKERS / SIMULATOR_NAME / MAX_PX via env — see the header of this script.)
+USAGE
+  exit 2
+fi
+
+for tool in jq sips; do
+  command -v "$tool" >/dev/null 2>&1 || { echo "✗ missing required tool: $tool" >&2; exit 1; }
+done
+
+source "${ROOT}/scripts/_destination.sh"   # sets DESTINATION, SIM_DERIVED, SIM_RESULTS_DIR
+
+echo "→ Warming the simulator (build) …"
+bash scripts/build.sh >/dev/null
+
+TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
+RESULT="${SIM_RESULTS_DIR}/${TIMESTAMP}-loc-size.xcresult"
+
+PARALLEL_ARGS=(-parallel-testing-enabled NO)
+if [[ "${WORKERS}" -gt 1 ]]; then
+  PARALLEL_ARGS=(-parallel-testing-enabled YES -parallel-testing-worker-count "${WORKERS}")
+fi
+
+echo "→ Capturing 13 locales @ xxxLarge (WORKERS=${WORKERS}) …"
+xcodebuild test \
+  -project checklists/checklists.xcodeproj \
+  -scheme checklists \
+  -destination "${DESTINATION}" \
+  -destination-timeout 300 \
+  -derivedDataPath "${SIM_DERIVED}" \
+  -resultBundlePath "${RESULT}" \
+  "${PARALLEL_ARGS[@]}" \
+  -only-testing:checklistsUITests/LocalizationScreenshotCapture
+
+echo "→ Exporting and downscaling screenshots into ${OUT} …"
+rm -rf "${OUT}" && mkdir -p "${OUT}"
+RAW="$(mktemp -d)"
+xcrun xcresulttool export attachments --path "${RESULT}" --output-path "${RAW}" >/dev/null 2>&1
+
+# Rename exported UUID files to <lang>__<screen>.png using the manifest, then downscale.
+# The exporter appends `_<index>_<UUID>.png` to the attachment name we set (e.g.
+# `de__01-list_0_<UUID>.png`); strip that suffix back to our `<lang>__<screen>` name.
+jq -r '.[] | .attachments[]? | select((.suggestedHumanReadableName // "") | test("__"))
+        | "\(.exportedFileName)\t\(.suggestedHumanReadableName | sub("_[0-9]+_[0-9A-Fa-f-]+\\.png$"; ""))"' \
+        "${RAW}/manifest.json" \
+| while IFS=$'\t' read -r file name; do
+    [[ -f "${RAW}/${file}" ]] || continue
+    cp "${RAW}/${file}" "${OUT}/${name}.png"
+    sips -Z "${MAX_PX}" "${OUT}/${name}.png" >/dev/null 2>&1 || true
+  done
+rm -rf "${RAW}"
+
+COUNT="$(find "${OUT}" -name '*.png' | wc -l | tr -d ' ')"
+echo "✓ ${COUNT} screenshot(s) → ${OUT}/ (downscaled to ${MAX_PX}px max edge)"
+echo "  Next: read them — the visual review IS the check — and record findings in"
+echo "  scripts/translation-accessibility-size-check/AUDIT_LOG.md."
+echo "  They are left in place; delete with: rm -rf ${OUT}"

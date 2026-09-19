@@ -32,11 +32,15 @@ struct ContainerFailureView: View {
           .foregroundStyle(Colors.inactiveTextColor)
           .accessibilityHidden(true)
 
-        Text("Couldn't open your checklists")
+        Text(String(localized: "containerFailure.title", defaultValue: "Couldn't open your checklists", comment: "Title of the full-screen error shown when the local database cannot be opened."))
           .font(.title2.bold())
 
-        Text("Something went wrong. Try restarting the app? Also check if your storage is full?")
-          .font(.body)
+        Text(String(
+          localized: "containerFailure.message",
+          defaultValue: "Something went wrong. Try restarting the app? Also check if your storage is full?",
+          comment: "Body of the database-failure screen; suggests a restart and checking free storage."
+        ))
+        .font(.body)
       }
       .multilineTextAlignment(.center)
       .accessibilityElement(children: .combine)
@@ -45,14 +49,18 @@ struct ContainerFailureView: View {
         Button {
           sendFeedbackTapped()
         } label: {
-          Text("Send Feedback")
+          Text(Self.sendFeedbackTitle)
             .frame(maxWidth: .infinity)
         }
         // Approximates the UIKit CLButton's glass UIButtonConfiguration.
         .buttonStyle(.glass)
         .controlSize(.large)
-        .accessibilityLabel("Send Feedback")
-        .accessibilityHint("Opens an email with the error details. No personal data is included.")
+        .accessibilityLabel(Self.sendFeedbackTitle)
+        .accessibilityHint(String(
+          localized: "containerFailure.action.sendFeedback.hint",
+          defaultValue: "Opens an email with the error details. No personal data is included.",
+          comment: "VoiceOver hint for the Send Feedback button on the database-failure screen."
+        ))
 
         Button {
           // Destructive and irreversible, on a screen the user reaches while already alarmed — so
@@ -60,33 +68,56 @@ struct ContainerFailureView: View {
           // sure?".
           isShowingStartOverConfirmation = true
         } label: {
-          Text("Start over fresh")
+          Text(Self.startOverTitle)
             .frame(maxWidth: .infinity)
         }
         .buttonStyle(.glass)
         .controlSize(.large)
         .tint(Colors.destructiveColor)
-        .accessibilityLabel("Start over fresh")
-        .accessibilityHint("Starts the app as if it were newly installed. Any data on this device will be lost.")
+        .accessibilityLabel(Self.startOverTitle)
+        .accessibilityHint(String(
+          localized: "containerFailure.action.startOver.hint",
+          defaultValue: "Starts the app as if it were newly installed. Any data on this device will be lost.",
+          comment: "VoiceOver hint for the Start over fresh button."
+        ))
       }
     }
     .padding(.horizontal, 16)
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(Colors.defaultBackgroundColor.ignoresSafeArea())
     .alert(
-      "Start over fresh?",
+      String(localized: "containerFailure.confirm.title", defaultValue: "Start over fresh?", comment: "Title of the confirmation alert before deleting local data on the database-failure screen."),
       isPresented: $isShowingStartOverConfirmation
     ) {
-      Button("Cancel", role: .cancel) {}
-      Button("Start Over", role: .destructive) {
+      Button(CommonStrings.cancel, role: .cancel) {}
+      Button(
+        String(localized: "containerFailure.confirm.action", defaultValue: "Start Over", comment: "Destructive confirmation button: deletes local data and relaunches as a new install."),
+        role: .destructive
+      ) {
         analytics.track(AnalyticsEvent.startupStoreReset)
         StoreReset.startOverFresh()
         onStoreReset()
       }
     } message: {
-      Text("This starts the app as if it were newly installed. Any data on this device will be lost. This cannot be undone.")
+      Text(String(
+        localized: "containerFailure.confirm.message",
+        defaultValue: "This starts the app as if it were newly installed. Any data on this device will be lost. This cannot be undone.",
+        comment: "Message of the confirmation alert before deleting local data."
+      ))
     }
   }
+
+  private static let sendFeedbackTitle = String(
+    localized: "containerFailure.action.sendFeedback",
+    defaultValue: "Send Feedback",
+    comment: "Button on the database-failure screen that opens a pre-filled support email."
+  )
+
+  private static let startOverTitle = String(
+    localized: "containerFailure.action.startOver",
+    defaultValue: "Start over fresh",
+    comment: "Destructive button on the database-failure screen: deletes the local data and relaunches as a new install."
+  )
 
   private func sendFeedbackTapped() {
     analytics.track(AnalyticsEvent.feedbackTapped)
@@ -95,7 +126,10 @@ struct ContainerFailureView: View {
     components.scheme = "mailto"
     components.path = "jimmyho.appfeedback@gmail.com"
     components.queryItems = [
-      URLQueryItem(name: "subject", value: "Checklists data error"),
+      URLQueryItem(
+        name: "subject",
+        value: String(localized: "containerFailure.mail.subject", defaultValue: "Checklists data error", comment: "Subject line of the support email opened from the database-failure screen.")
+      ),
       URLQueryItem(name: "body", value: "Error: \(failure.diagnosticDescription)"),
     ]
     guard let url = components.url else { assertionFailure(); return }

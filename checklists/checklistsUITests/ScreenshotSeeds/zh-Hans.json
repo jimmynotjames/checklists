@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "zh-Hans",
+  "primaryLocale": "zh_Hans_CN",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "晨间日常",
+      "items": [
+        {
+          "name": "烧水泡茶",
+          "isChecked": true
+        },
+        {
+          "name": "瑜伽/冥想",
+          "isChecked": true
+        },
+        {
+          "name": "看路况和天气",
+          "isChecked": true
+        },
+        {
+          "name": "吃早饭",
+          "isChecked": true
+        },
+        {
+          "name": "写日记",
+          "isChecked": false
+        },
+        {
+          "name": "在微博上跟人吵架",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "周末出游必备",
+      "items": [
+        {
+          "name": "手机充电器",
+          "isChecked": false
+        },
+        {
+          "name": "钱包和证件",
+          "notes": "身份证（飞机、高铁）、护照或通行证（出境）、驾照（自驾）。",
+          "isChecked": false
+        },
+        {
+          "name": "处方药、常备药、保健品",
+          "isChecked": true
+        },
+        {
+          "name": "洗漱包",
+          "notes": "坐飞机随身带时，液体单瓶不超100毫升，装在透明袋里。",
+          "isChecked": true
+        },
+        {
+          "name": "防晒霜",
+          "isChecked": false
+        },
+        {
+          "name": "耳机",
+          "isChecked": false
+        },
+        {
+          "name": "书、iPad、电纸书…",
+          "isChecked": false
+        },
+        {
+          "name": "雨具、防风外套",
+          "isChecked": false
+        },
+        {
+          "name": "墨镜",
+          "isChecked": true
+        },
+        {
+          "name": "遮阳帽",
+          "isChecked": true
+        },
+        {
+          "name": "泳衣",
+          "isChecked": false
+        },
+        {
+          "name": "泳池拖鞋",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "出发前清单",
+      "items": [
+        {
+          "name": "设置邮箱自动回复",
+          "isChecked": true
+        },
+        {
+          "name": "暂停快递或托人代收",
+          "isChecked": true
+        },
+        {
+          "name": "安排宠物寄养",
+          "isChecked": true
+        },
+        {
+          "name": "安排浇花、看家",
+          "isChecked": false
+        },
+        {
+          "name": "给孩子请好假",
+          "isChecked": false
+        },
+        {
+          "name": "把行程发给家人或信得过的朋友",
+          "isChecked": false
+        },
+        {
+          "name": "拔掉电器插头",
+          "isChecked": false
+        },
+        {
+          "name": "收好贵重物品",
+          "isChecked": false
+        },
+        {
+          "name": "关掉空调和暖气",
+          "notes": "或留最低温度，防止水管冻裂。",
+          "isChecked": false
+        },
+        {
+          "name": "确认燃气灶、烤箱已关",
+          "isChecked": false
+        },
+        {
+          "name": "锁好门窗",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

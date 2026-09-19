@@ -68,17 +68,21 @@ struct ChecklistsView: View {
           } label: {
             // Icon-only for the visible button, but the title is what VoiceOver reads and what
             // the UI tests match on, so it stays part of the label rather than being dropped.
-            Label("Delete", systemImage: "trash")
+            Label(CommonStrings.delete, systemImage: "trash")
               .labelStyle(.iconOnly)
           }
           .tint(Colors.destructiveColor)
+          // Locale-invariant handle: the localized large-type check cannot match
+          // the label text across 13 languages, and positional lookup on the
+          // revealed buttons is not reliable straight after the swipe.
+          .accessibilityIdentifier("checklistRow.delete")
         }
       }
       .onMove(perform: move)
     }
     .listStyle(.plain)
     .appBackground()
-    .navigationTitle("")
+    .navigationTitle(Text(verbatim: ""))
     .navigationBarTitleDisplayMode(.inline)
     .overlay(alignment: .bottomTrailing) {
       addChecklistButton
@@ -92,7 +96,14 @@ struct ChecklistsView: View {
         }
         // iOS 26 renders bar buttons in `labelColor` unless the button itself carries a tint.
         .tint(Color.accentColor)
-        .accessibilityLabel("Miscellaneous Menu")
+        .accessibilityLabel(String(
+          localized: "checklists.menu.misc.accessibilityLabel",
+          defaultValue: "Miscellaneous Menu",
+          comment: "VoiceOver label for the toolbar button that opens the main menu (feedback, rating, settings)."
+        ))
+        // Locale-invariant handle for the localized large-type check, which
+        // cannot navigate by visible text across 13 languages.
+        .accessibilityIdentifier("toolbar.mainMenu")
       }
 
       ToolbarItem(placement: .topBarTrailing) {
@@ -102,9 +113,14 @@ struct ChecklistsView: View {
           Image("MoreMenuIcon32x32")
         }
         .tint(Color.accentColor)
-        .accessibilityLabel("Checklists Menu")
+        .accessibilityLabel(String(
+          localized: "checklists.menu.actions.accessibilityLabel",
+          defaultValue: "Checklists Menu",
+          comment: "VoiceOver label for the toolbar button that opens the checklist actions popover (Reset All)."
+        ))
+        .accessibilityIdentifier("toolbar.checklistsMenu")
         .popover(isPresented: $showsResetMenu) {
-          Button("Reset All") {
+          Button(Self.resetAllTitle) {
             isResetAllPending = true
             showsResetMenu = false
           }
@@ -125,21 +141,21 @@ struct ChecklistsView: View {
         }
       }
     }
-    .alert("", isPresented: isPresentingDeleteConfirmation, presenting: pendingDeleteID) { checklistId in
-      Button("Delete", role: .destructive) {
+    .alert(Text(verbatim: ""), isPresented: isPresentingDeleteConfirmation, presenting: pendingDeleteID) { checklistId in
+      Button(CommonStrings.delete, role: .destructive) {
         confirmDelete(id: checklistId)
       }
-      Button("Cancel", role: .cancel) {}
+      Button(CommonStrings.cancel, role: .cancel) {}
     } message: { _ in
-      Text("Are you sure? This cannot be undone.")
+      Text(CommonStrings.irreversibleConfirmation)
     }
-    .alert("", isPresented: $showsResetAllConfirmation) {
-      Button("Reset All", role: .destructive) {
+    .alert(Text(verbatim: ""), isPresented: $showsResetAllConfirmation) {
+      Button(Self.resetAllTitle, role: .destructive) {
         resetAllChecklists()
       }
-      Button("Cancel", role: .cancel) {}
+      Button(CommonStrings.cancel, role: .cancel) {}
     } message: {
-      Text("Are you sure? This cannot be undone.")
+      Text(CommonStrings.irreversibleConfirmation)
     }
     .task {
       guard remoteChangeObserver == nil else { return }
@@ -174,7 +190,12 @@ struct ChecklistsView: View {
         .background(Circle().fill(Colors.defaultBackgroundColor))
         .shadow(color: Colors.shadowColor.opacity(0.4), radius: 3, x: 0, y: 2)
     }
-    .accessibilityLabel("Add new checklist.")
+    .accessibilityLabel(String(
+      localized: "checklists.add.accessibilityLabel",
+      defaultValue: "Add new checklist.",
+      comment: "VoiceOver label for the round floating button that creates a checklist."
+    ))
+    .accessibilityIdentifier("toolbar.addChecklist")
     .padding(20)
   }
 
@@ -218,6 +239,12 @@ struct ChecklistsView: View {
   /// Resolves the pending delete by `id`, not by row. The alert is answered asynchronously, and
   /// once sync is on a merge can reorder the list while it is up — at which point a captured
   /// index would name a different checklist and this would silently delete the wrong one.
+  private static let resetAllTitle = String(
+    localized: "checklists.action.resetAll",
+    defaultValue: "Reset All",
+    comment: "Unchecks every item in every checklist. Popover row and confirmation button; clears progress, never deletes lists."
+  )
+
   private func confirmDelete(id checklistId: String) {
     // `nil` means it is already gone — deleted on another device while the alert was up.
     guard let checklist = context.checklist(id: checklistId) else { return }

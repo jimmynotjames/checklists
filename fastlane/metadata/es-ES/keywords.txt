@@ -1,0 +1,1 @@
+checklist,reutilizable,recurrente,plantilla,equipaje,maleta,viaje,compra,rutina,repetir,control

@@ -25,5 +25,12 @@ Drive one release across sessions using a small record under `releases/`. Conver
 For screenshots, route per AGENTS.md; record the reviewed run and, after an authorized upload,
 its target version and result.
 
-Do not add translation generation, CloudKit deployment, automated submission, or monitoring
-work to this workflow unless the user separately requests and scopes it.
+Translation is a separate workflow with its own skills, not a step here. If a release needs new or
+changed copy, route it before the release rather than inside it: `translate-new-strings` for in-app
+strings, `appstore-translate-metadata` for the listing, and
+`appstore-generate-screenshot-seeding` when the demo content changed. `check_translations.py` and
+`check_metadata.py` already gate the release paths, so a missed translation fails the gate or the
+upload lane rather than shipping.
+
+Do not add CloudKit deployment, automated submission, or monitoring work to this workflow unless
+the user separately requests and scopes it.

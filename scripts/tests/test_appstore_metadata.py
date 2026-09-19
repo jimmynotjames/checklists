@@ -43,9 +43,12 @@ class AppStoreMetadataTests(unittest.TestCase):
         self.assertIn("50 App Store locales", result.stdout)
 
     def test_prepare_expands_fallback_and_per_field_override(self) -> None:
+        # fr-FR ships transcreated overrides, so the fixture already has the
+        # directory; this test only cares that an override beats the fallback.
         french = self.source / "fr-FR"
-        french.mkdir()
+        french.mkdir(exist_ok=True)
         (french / "name.txt").write_text("reListe", encoding="utf-8")
+        (french / "description.txt").unlink(missing_ok=True)
         output = self.root / "stage"
 
         prepared, count = metadata.prepare_metadata(output, self.source, self.manifest)
@@ -70,7 +73,11 @@ class AppStoreMetadataTests(unittest.TestCase):
         )
 
     def test_missing_optional_field_is_omitted_from_every_fallback_locale(self) -> None:
-        (self.source / "en-US" / "subtitle.txt").unlink()
+        # An optional field absent from the source must not be invented anywhere
+        # that falls back to it. Every storefront now ships its own subtitle, so
+        # clear them all to leave the fallback path actually under test.
+        for existing in self.source.glob("*/subtitle.txt"):
+            existing.unlink()
         output = self.root / "stage"
 
         metadata.prepare_metadata(output, self.source, self.manifest)
@@ -80,7 +87,7 @@ class AppStoreMetadataTests(unittest.TestCase):
 
     def test_explicit_empty_optional_value_is_rejected(self) -> None:
         french = self.source / "fr-FR"
-        french.mkdir()
+        french.mkdir(exist_ok=True)
         (french / "marketing_url.txt").write_text("  \n", encoding="utf-8")
 
         with self.assertRaisesRegex(metadata.MetadataError, "explicit empty values"):
@@ -111,13 +118,39 @@ class AppStoreMetadataTests(unittest.TestCase):
             metadata.validate_metadata(self.source, self.manifest)
 
     def test_validation_matches_deliver_stripping_but_staging_preserves_source(self) -> None:
+        # Staging must hand deliver the source bytes, trailing newline included,
+        # rather than the stripped form validation compares. Drop the per-locale
+        # copies so fr-FR resolves through the fallback this test is about.
         url = "https://example.com/support\n"
         (self.source / "en-US" / "support_url.txt").write_text(url, encoding="utf-8")
+        for override in self.source.glob("*/support_url.txt"):
+            if override.parent.name != "en-US":
+                override.unlink()
         output = self.root / "stage"
 
         metadata.prepare_metadata(output, self.source, self.manifest)
 
         self.assertEqual((output / "fr-FR" / "support_url.txt").read_text(), url)
+
+    def test_copyright_accepts_a_single_year_or_a_range(self) -> None:
+        # The repo relicensed to "2019-2026 Jimmy Ho", which a single-year-only
+        # pattern rejected and which blocked every upload (#204 vs #157).
+        copyright_file = self.source / "copyright.txt"
+        for accepted in ("2020 Jimmy Ho", "2019-2026 Jimmy Ho", "2026-2026 Jimmy Ho"):
+            copyright_file.write_text(accepted, encoding="utf-8")
+            metadata.validate_metadata(self.source, self.manifest)
+
+    def test_malformed_copyright_is_rejected(self) -> None:
+        copyright_file = self.source / "copyright.txt"
+        for rejected in ("Jimmy Ho", "20 Jimmy Ho", "2026", "2019-26 Jimmy Ho"):
+            copyright_file.write_text(rejected, encoding="utf-8")
+            with self.assertRaisesRegex(metadata.MetadataError, "four-digit year"):
+                metadata.validate_metadata(self.source, self.manifest)
+
+    def test_reversed_copyright_year_range_is_rejected(self) -> None:
+        (self.source / "copyright.txt").write_text("2026-2019 Jimmy Ho", encoding="utf-8")
+        with self.assertRaisesRegex(metadata.MetadataError, "ends before it starts"):
+            metadata.validate_metadata(self.source, self.manifest)
 
     def test_unknown_field_and_locale_are_rejected(self) -> None:
         (self.source / "en-US" / "surprise.txt").write_text("value", encoding="utf-8")

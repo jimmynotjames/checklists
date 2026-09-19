@@ -63,13 +63,17 @@ class ItemContentView: UIView {
     }
     textView.returnKeyType = .next
     textView.accessibilityIdentifier = "itemNameTextView"
-    textView.accessibilityLabel = "checklist item: "
+    textView.accessibilityLabel = String(
+      localized: "item.name.accessibilityLabel",
+      defaultValue: "checklist item: ",
+      comment: "VoiceOver label read before an item's name in the editable item row. Keep the trailing space and colon."
+    )
     return textView
   }()
 
   private lazy var notesTextView: CLTextView = {
     let textView = CLTextView()
-    textView.placeholderText = "Notes"
+    textView.placeholderText = CommonStrings.notesPlaceholder
     textView.font = UIFont.systemFont(ofSize: 15.0)
     textView.inputAccessoryButtonTappedAction = {
       textView.resignFirstResponder()
@@ -77,7 +81,11 @@ class ItemContentView: UIView {
     textView.returnKeyType = .default
     textView.delegate = self
     textView.accessibilityIdentifier = "itemNotesTextView"
-    textView.accessibilityLabel = "optional notes: "
+    textView.accessibilityLabel = String(
+      localized: "item.notes.accessibilityLabel",
+      defaultValue: "optional notes: ",
+      comment: "VoiceOver label read before an item's notes in the editable item row. Keep the trailing space and colon."
+    )
     return textView
   }()
 

@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "bn",
+  "primaryLocale": "bn_BD",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "সকালের রুটিন",
+      "items": [
+        {
+          "name": "চায়ের জল বসান",
+          "isChecked": true
+        },
+        {
+          "name": "যোগব্যায়াম/ধ্যান",
+          "isChecked": true
+        },
+        {
+          "name": "ট্রাফিক আর আবহাওয়ার খবর",
+          "isChecked": true
+        },
+        {
+          "name": "সকালের নাশতা",
+          "isChecked": true
+        },
+        {
+          "name": "ডায়েরি লেখা",
+          "isChecked": false
+        },
+        {
+          "name": "ফেসবুকে রাজনীতি নিয়ে তর্ক",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "উইকএন্ড ভ্রমণের জিনিসপত্র",
+      "items": [
+        {
+          "name": "ফোনের চার্জার",
+          "isChecked": false
+        },
+        {
+          "name": "মানিব্যাগ/পরিচয়পত্র",
+          "notes": "উড়োজাহাজে পরিচয়পত্র, বিদেশে পাসপোর্ট, গাড়ি চালালে লাইসেন্স।",
+          "isChecked": false
+        },
+        {
+          "name": "প্রেসক্রিপশন, ওষুধ, ভিটামিন",
+          "isChecked": true
+        },
+        {
+          "name": "প্রসাধনীর ব্যাগ",
+          "notes": "ফ্লাইটে হ্যান্ড ব্যাগে তরল ছোট বোতলে, আলাদা ব্যাগে রাখুন।",
+          "isChecked": true
+        },
+        {
+          "name": "সানস্ক্রিন",
+          "isChecked": false
+        },
+        {
+          "name": "হেডফোন",
+          "isChecked": false
+        },
+        {
+          "name": "বই, iPad, Kindle…",
+          "isChecked": false
+        },
+        {
+          "name": "ছাতা-রেইনকোট",
+          "isChecked": false
+        },
+        {
+          "name": "রোদচশমা",
+          "isChecked": true
+        },
+        {
+          "name": "রোদের টুপি",
+          "isChecked": true
+        },
+        {
+          "name": "সাঁতারের পোশাক",
+          "isChecked": false
+        },
+        {
+          "name": "পুলের স্লিপার",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "যাত্রার আগের চেকলিস্ট",
+      "items": [
+        {
+          "name": "ইমেইলে অটো-রিপ্লাই চালু করুন",
+          "isChecked": true
+        },
+        {
+          "name": "খবরের কাগজ-দুধ বন্ধ করতে বলুন",
+          "isChecked": true
+        },
+        {
+          "name": "পোষা প্রাণীর দেখাশোনার ব্যবস্থা",
+          "isChecked": true
+        },
+        {
+          "name": "গাছে জল আর বাড়ি দেখার ব্যবস্থা",
+          "isChecked": false
+        },
+        {
+          "name": "স্কুলে ছুটির আবেদন",
+          "isChecked": false
+        },
+        {
+          "name": "ভ্রমণের পরিকল্পনা ঘনিষ্ঠ কাউকে পাঠান",
+          "isChecked": false
+        },
+        {
+          "name": "যন্ত্রপাতির প্লাগ খুলে রাখুন",
+          "isChecked": false
+        },
+        {
+          "name": "দামি জিনিস তুলে রাখুন",
+          "isChecked": false
+        },
+        {
+          "name": "এসি-ফ্যান বন্ধ করুন",
+          "notes": "গিজারের সুইচও বন্ধ আছে কি না দেখে নিন।",
+          "isChecked": false
+        },
+        {
+          "name": "চুলা আর গ্যাস বন্ধ আছে দেখে নিন",
+          "isChecked": false
+        },
+        {
+          "name": "দরজা-জানালা বন্ধ করে তালা দিন",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

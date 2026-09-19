@@ -1,0 +1,1 @@
+Les listes affichent désormais leur pourcentage d'avancement, pour voir où tu en es d'un coup d'œil.

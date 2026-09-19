@@ -1,0 +1,1 @@
+Aggiunti gli indicatori di completamento in percentuale, per vedere i progressi a colpo d'occhio.

@@ -1,0 +1,1 @@
+Přidali jsme ukazatel dokončení v procentech, takže na první pohled vidíte, jak daleko jste.

@@ -22,28 +22,49 @@ struct MainMenuView: View {
         Image("StopIcon")
           .foregroundStyle(Colors.defaultBackgroundColor)
       }
-      .accessibilityLabel("Close menu")
+      .accessibilityLabel(String(localized: "mainMenu.close.accessibilityLabel", defaultValue: "Close menu", comment: "VoiceOver label for the X button that dismisses the main menu."))
       .padding(.top, 8)
       .padding(.leading, 16)
       // On top of the stack's own 16, so the close button reads as separate from the menu
       // rows rather than as a fourth item.
       .padding(.bottom, 8)
 
-      MainMenuRow(title: "Feedback", iconName: "MainMenuFeedbackIcon") {
+      MainMenuRow(
+        title: String(localized: "mainMenu.feedback", defaultValue: "Feedback", comment: "Main-menu row that opens a pre-addressed feedback email."),
+        iconName: "MainMenuFeedbackIcon"
+      ) {
         analytics.track(AnalyticsEvent.feedbackTapped)
-        guard let url = URL(string: "mailto:jimmyho.appfeedback@gmail.com?subject=Feedback%20for%20reChecklist%20App")
-        else { assertionFailure(); return }
+        var components = URLComponents()
+        components.scheme = "mailto"
+        components.path = "jimmyho.appfeedback@gmail.com"
+        components.queryItems = [
+          URLQueryItem(
+            name: "subject",
+            value: String(
+              localized: "mainMenu.feedback.mail.subject",
+              defaultValue: "Feedback for reChecklist App",
+              comment: "Subject line of the feedback email opened from the main menu. Keep the app name reChecklist verbatim."
+            )
+          ),
+        ]
+        guard let url = components.url else { assertionFailure(); return }
         openURL(url)
       }
 
-      MainMenuRow(title: "Rate in App Store", iconName: "MainMenuRateInAppStoreIcon") {
+      MainMenuRow(
+        title: String(localized: "mainMenu.rateInAppStore", defaultValue: "Rate in App Store", comment: "Main-menu row that opens the App Store review page."),
+        iconName: "MainMenuRateInAppStoreIcon"
+      ) {
         analytics.track(AnalyticsEvent.rateAppTapped)
         guard let url = URL(string: "https://itunes.apple.com/app/id1475724536?action=write-review")
         else { assertionFailure(); return }
         openURL(url)
       }
 
-      MainMenuRow(title: "Settings", iconName: "MainMenuSettingsIcon") {
+      MainMenuRow(
+        title: CommonStrings.settingsTitle,
+        iconName: "MainMenuSettingsIcon"
+      ) {
         // The menu must vanish instantly here so it isn't still animating out behind the
         // Settings sheet coming up.
         var transaction = Transaction()
@@ -53,6 +74,8 @@ struct MainMenuView: View {
         }
         router.sheet = .settings
       }
+      // Locale-invariant handle for the localized large-type check.
+      .accessibilityIdentifier("mainMenu.settings")
 
       Spacer()
     }

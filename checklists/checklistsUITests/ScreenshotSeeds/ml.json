@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "ml",
+  "primaryLocale": "ml_IN",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "പ്രഭാത ദിനചര്യ",
+      "items": [
+        {
+          "name": "ആദ്യം ചായ വെക്കുക",
+          "isChecked": true
+        },
+        {
+          "name": "യോഗ/ധ്യാനം",
+          "isChecked": true
+        },
+        {
+          "name": "ട്രാഫിക്കും കാലാവസ്ഥയും",
+          "isChecked": true
+        },
+        {
+          "name": "പ്രാതൽ",
+          "isChecked": true
+        },
+        {
+          "name": "ഡയറി എഴുതുക",
+          "isChecked": false
+        },
+        {
+          "name": "ഫേസ്ബുക്കിൽ രാഷ്ട്രീയ തർക്കം",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "വീക്കെൻഡ് യാത്രയ്ക്കുള്ളവ",
+      "items": [
+        {
+          "name": "ഫോൺ ചാർജർ",
+          "isChecked": false
+        },
+        {
+          "name": "പഴ്സ്, ഐഡി",
+          "notes": "ആധാർ, ഡ്രൈവിങ് ലൈസൻസ്, വിദേശയാത്രയ്ക്ക് പാസ്പോർട്ട്.",
+          "isChecked": false
+        },
+        {
+          "name": "കുറിപ്പടി, മരുന്നുകൾ, സപ്ലിമെന്റുകൾ",
+          "isChecked": true
+        },
+        {
+          "name": "ടോയ്‌ലറ്ററി ബാഗ്",
+          "notes": "വിമാനയാത്രയാണെങ്കിൽ ദ്രാവകങ്ങൾ ചെറിയ കുപ്പിയിൽ, പ്രത്യേക ബാഗിൽ.",
+          "isChecked": true
+        },
+        {
+          "name": "സൺസ്ക്രീൻ",
+          "isChecked": false
+        },
+        {
+          "name": "ഹെഡ്‌ഫോൺ",
+          "isChecked": false
+        },
+        {
+          "name": "പുസ്തകം, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "കുട, റെയിൻകോട്ട്",
+          "isChecked": false
+        },
+        {
+          "name": "കൂളിങ് ഗ്ലാസ്",
+          "isChecked": true
+        },
+        {
+          "name": "തൊപ്പി",
+          "isChecked": true
+        },
+        {
+          "name": "നീന്തൽ വസ്ത്രം",
+          "isChecked": false
+        },
+        {
+          "name": "റബ്ബർ ചെരിപ്പ്",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "യാത്രയ്ക്കു മുമ്പുള്ള ചെക്ക്‌ലിസ്റ്റ്",
+      "items": [
+        {
+          "name": "ഇമെയിലിൽ ഓട്ടോ-റിപ്ലൈ സെറ്റ് ചെയ്യുക",
+          "isChecked": true
+        },
+        {
+          "name": "പാലും പത്രവും നിർത്താൻ പറയുക",
+          "isChecked": true
+        },
+        {
+          "name": "വളർത്തുമൃഗങ്ങൾക്ക് ഏർപ്പാട്",
+          "isChecked": true
+        },
+        {
+          "name": "ചെടി നനയ്ക്കാൻ, വീട് നോക്കാൻ ആളെ ഏർപ്പാട്",
+          "isChecked": false
+        },
+        {
+          "name": "സ്കൂളിൽ അവധി അറിയിക്കുക",
+          "isChecked": false
+        },
+        {
+          "name": "യാത്രാ വിവരങ്ങൾ വിശ്വസ്തരായ ബന്ധുവിന്/സുഹൃത്തിന് അയക്കുക",
+          "isChecked": false
+        },
+        {
+          "name": "ഉപകരണങ്ങളുടെ പ്ലഗ് ഊരുക",
+          "isChecked": false
+        },
+        {
+          "name": "വിലപിടിപ്പുള്ളവ പൂട്ടിവെക്കുക",
+          "isChecked": false
+        },
+        {
+          "name": "എ.സി., ഫാൻ ഓഫാക്കുക",
+          "notes": "ഫ്രിഡ്ജ് മാത്രം ഓണാക്കി വെച്ചാൽ മതി.",
+          "isChecked": false
+        },
+        {
+          "name": "ഗ്യാസ്, റെഗുലേറ്റർ ഓഫാക്കിയോ",
+          "isChecked": false
+        },
+        {
+          "name": "വാതിലുകളും ജനലുകളും പൂട്ടുക",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

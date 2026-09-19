@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "es-MX",
+  "primaryLocale": "es_MX",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Rutina matutina",
+      "items": [
+        {
+          "name": "PRENDER LA CAFETERA",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditación",
+          "isChecked": true
+        },
+        {
+          "name": "Ver tráfico y clima",
+          "isChecked": true
+        },
+        {
+          "name": "Desayunar",
+          "isChecked": true
+        },
+        {
+          "name": "Escribir mi diario",
+          "isChecked": false
+        },
+        {
+          "name": "Discutir política en Facebook",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Maleta de fin de semana",
+      "items": [
+        {
+          "name": "Cargador del celular",
+          "isChecked": false
+        },
+        {
+          "name": "Cartera/INE",
+          "notes": "INE para vuelos nacionales, pasaporte al extranjero, licencia si vas a manejar.",
+          "isChecked": false
+        },
+        {
+          "name": "Recetas, medicinas y suplementos",
+          "isChecked": true
+        },
+        {
+          "name": "Bolsa de aseo personal",
+          "notes": "Si vuelas con equipaje de mano, líquidos pequeños en bolsa aparte.",
+          "isChecked": true
+        },
+        {
+          "name": "Bloqueador solar",
+          "isChecked": false
+        },
+        {
+          "name": "Audífonos",
+          "isChecked": false
+        },
+        {
+          "name": "Libro, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Impermeable o paraguas",
+          "isChecked": false
+        },
+        {
+          "name": "Lentes de sol",
+          "isChecked": true
+        },
+        {
+          "name": "Sombrero",
+          "isChecked": true
+        },
+        {
+          "name": "Traje de baño",
+          "isChecked": false
+        },
+        {
+          "name": "Sandalias de alberca",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Lista antes del viaje",
+      "items": [
+        {
+          "name": "Poner respuesta automática en el correo",
+          "isChecked": true
+        },
+        {
+          "name": "Vecino: recibir paquetes",
+          "isChecked": true
+        },
+        {
+          "name": "Cuidado de mascotas",
+          "isChecked": true
+        },
+        {
+          "name": "Riego de plantas y cuidado de la casa",
+          "isChecked": false
+        },
+        {
+          "name": "Avisar en la escuela",
+          "isChecked": false
+        },
+        {
+          "name": "Mandar el itinerario a un familiar de confianza",
+          "isChecked": false
+        },
+        {
+          "name": "Desconectar aparatos",
+          "isChecked": false
+        },
+        {
+          "name": "Guardar cosas de valor",
+          "isChecked": false
+        },
+        {
+          "name": "Apagar el aire acondicionado",
+          "notes": "O déjalo en temperatura alta para que gaste menos luz.",
+          "isChecked": false
+        },
+        {
+          "name": "Revisar estufa y horno apagados",
+          "isChecked": false
+        },
+        {
+          "name": "Cerrar bien puertas y ventanas",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

@@ -20,6 +20,7 @@ its area:
 - `persistence-design.md` — model, CloudKit constraints, legacy import, sort keys, sync status
 - `analytics-spec.md` — event and property catalogs, privacy contract, consent model
 - `accessibility-spec.md` — status and conventions; update it only when a change involved accessibility work
+- `localization-spec.md` — key convention, locale registry, the four translation pipelines, the gates
 - `secrets-list.md` — restoring gitignored Mixpanel and App Store Connect credentials after a fresh clone
 
 The public support site is `index.html` on the orphan `gh-pages` branch
@@ -50,8 +51,9 @@ repo is `checklists` (`jimmynotjames/checklists`). Introduce both sibling names 
 ## Build and test
 
 ```bash
-make gate        # format-changed -> lint-changed -> build. Logs to tmp/gate.log.
+make gate        # format-changed -> lint-changed -> i18n-check -> build. Logs to tmp/gate.log.
 make build       # compile only (generic destination; never boots a simulator)
+make i18n-check  # catalog fully translated + no unkeyed user-facing strings
 make test-unit   # opt-in, not in the gate
 make test-ui     # opt-in; needs a prior `make test-unit` (simulator warm-up)
 make system      # once per clone: toolchain + git hooks
@@ -88,6 +90,13 @@ Don't read pass/fail from `tmp/gate.log` or a stale console tail.
 Gate and pre-commit format and strict-lint **changed Swift files only**
 (`scripts/changed-swift-files.sh`). Repo-wide `make format` / `make lint` are manual escape
 hatches — never wire them into a hook or gate.
+
+**`make i18n-check` is the one documented exception**, and it is not a lint:
+`check_translations.py` validates a single file (`Localizable.xcstrings`) and
+`check_source_strings.py` enforces a repo invariant — no user-facing string reaches a view
+without a catalog key. Neither scales with the diff, both finish in well under a second, and a
+changed-files scope would miss exactly the case they exist for: a key that stops being
+translated because some *other* file changed. `make gate` and `pre-push` both run them.
 
 ## Commit and PR style
 
@@ -141,6 +150,32 @@ All targets set `SWIFT_APPROACHABLE_CONCURRENCY = YES`; the app and `checklistsT
   `AppAnalytics`).
 - Never add the isolation default to `checklistsUITests` (#154): a main-actor-isolated
   `XCTestCase` conflicts with its nonisolated designated initializers.
+
+## Running the translation pipelines
+
+Full rules: `core-docs/localization-spec.md`. What bites in practice:
+
+- **Never hand-edit `Localizable.xcstrings` or a screenshot seed.** Both are generated. Use the
+  scripts in `scripts/translate_catalog/`, and `generate_seeds.py` for seeds; `make gate`
+  regenerates the seeds and fails on drift, so a manual edit cannot survive anyway.
+- **Clean `tmp/` between runs.** `pipeline_tmp.py clean <group>` exists because a stale
+  `tmp/translate-outputs/de.json` from a previous run merges silently and you get last week's
+  translation with this week's keys.
+- **The per-locale notes are duplicated on purpose.** `REGIONAL_NOTES` in
+  `translate_catalog/dispatch_prompts.py` and `CULTURAL_NOTES` in
+  `translate_metadata/dispatch_prompts.py` are separate maps because in-app register and marketing
+  register are different decisions. They are not a DRY violation to fix — but if you change the
+  formality call for a locale in one, change it in the other or the app and its listing will
+  address the same person two different ways.
+- **Model pinning is deliberate.** Haiku for ordinary UI strings, Opus for the glossary, audits,
+  App Store metadata, and `sample.*` transcreation. Do not "upgrade" or "downgrade" an agent to
+  trade cost against a deadline.
+- **Keys that share a screen are declared as pairs.** If a new string is only meaningful in
+  contrast with a neighbour (Discard beside Cancel, Delete beside Discard), name the neighbour in
+  the translator comment and add the pair to `scripts/translate_audit/distinct_pairs.py`. The
+  translator sees one key at a time; the gate is what knows they meet.
+- **A fan-out is one message.** Dispatch all locales in a single message with
+  `run_in_background: true`, never `nohup`, and never a shell loop that blocks the session.
 
 ## Bash command hygiene
 

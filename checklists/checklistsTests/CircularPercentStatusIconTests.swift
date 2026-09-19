@@ -17,21 +17,21 @@ struct CircularPercentStatusIconTests {
   func accessibilityValueAtZeroPercent() {
     let icon = CircularPercentStatusIcon(iconType: .header)
     icon.percentageComplete = 0.0
-    #expect(icon.accessibilityValue == "Checklist 0 percent complete")
+    #expect(icon.accessibilityValue == "Checklist 0% complete")
   }
 
   @Test("a fractional percent complete rounds to the nearest whole percent")
   func accessibilityValueAtFractionalPercentRoundsToNearestWhole() {
     let icon = CircularPercentStatusIcon(iconType: .header)
     icon.percentageComplete = 2.0 / 11.0 // 18.18...%
-    #expect(icon.accessibilityValue == "Checklist 18 percent complete")
+    #expect(icon.accessibilityValue == "Checklist 18% complete")
   }
 
   @Test("100% progress reports as 100 percent complete")
   func accessibilityValueAtFullPercent() {
     let icon = CircularPercentStatusIcon(iconType: .header)
     icon.percentageComplete = 1.0
-    #expect(icon.accessibilityValue == "Checklist 100 percent complete")
+    #expect(icon.accessibilityValue == "Checklist 100% complete")
   }
 
   /// The `didSet` that derives `accessibilityValue` does not run for `percentageComplete`'s own
@@ -40,7 +40,7 @@ struct CircularPercentStatusIconTests {
   @Test("picks up its accessibility value from commonInit before any assignment")
   func accessibilityValueIsPopulatedBeforeAnyAssignment() {
     let icon = CircularPercentStatusIcon(iconType: .header)
-    #expect(icon.accessibilityValue == "Checklist 0 percent complete")
+    #expect(icon.accessibilityValue == "Checklist 0% complete")
   }
 
   @Test("the icon is its own accessibility element")
@@ -67,11 +67,11 @@ struct CircularPercentStatusIconTests {
   func accessibilityValueTextRoundsToNearestWhole() {
     #expect(
       CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: 2.0 / 11.0) ==
-        "Checklist 18 percent complete"
+        "Checklist 18% complete"
     )
     #expect(
       CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: 1.0) ==
-        "Checklist 100 percent complete"
+        "Checklist 100% complete"
     )
   }
 

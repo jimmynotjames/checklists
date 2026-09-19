@@ -20,7 +20,56 @@ def _string(value: object, location: str, issues: list[str], *, optional: bool =
         issues.append(f"{location} must be a non-empty string")
 
 
-def validate_seed(path: Path, runtime: str, primary_locale: str) -> list[str]:
+def _check_source_parity(data: dict, source: dict, issues: list[str]) -> None:
+    """Require this seed to have the same shape as the source-locale seed.
+
+    Only the words are localized. If a locale gains a checklist, loses an item,
+    reorders ids, or flips which items read as done, its screenshots stop being
+    comparable with every other locale's and the reviewer cannot tell a
+    translation problem from a seeding one.
+    """
+    source_lists = source.get("checklists", [])
+    checklists = data.get("checklists", [])
+    if len(checklists) != len(source_lists):
+        issues.append(
+            f"has {len(checklists)} checklist(s); the source locale has {len(source_lists)}"
+        )
+        return
+    for index, (checklist, expected) in enumerate(zip(checklists, source_lists)):
+        location = f"checklists[{index}]"
+        if not isinstance(checklist, dict):
+            continue
+        if checklist.get("id") != expected.get("id"):
+            issues.append(
+                f"{location}.id is {checklist.get('id')!r}; the source locale has "
+                f"{expected.get('id')!r} in this position"
+            )
+        items = checklist.get("items", [])
+        expected_items = expected.get("items", [])
+        if len(items) != len(expected_items):
+            issues.append(
+                f"{location} has {len(items)} item(s); the source locale has "
+                f"{len(expected_items)}"
+            )
+            continue
+        for offset, (item, expected_item) in enumerate(zip(items, expected_items)):
+            item_location = f"{location}.items[{offset}]"
+            if not isinstance(item, dict):
+                continue
+            if item.get("isChecked") != expected_item.get("isChecked"):
+                issues.append(
+                    f"{item_location}.isChecked is {item.get('isChecked')!r}; the source "
+                    f"locale has {expected_item.get('isChecked')!r}"
+                )
+            if ("notes" in item) != ("notes" in expected_item):
+                issues.append(
+                    f"{item_location} notes presence differs from the source locale"
+                )
+
+
+def validate_seed(
+    path: Path, runtime: str, primary_locale: str, source: dict | None = None
+) -> list[str]:
     issues: list[str] = []
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
@@ -78,6 +127,9 @@ def validate_seed(path: Path, runtime: str, primary_locale: str) -> list[str]:
             if not isinstance(item.get("isChecked"), bool):
                 issues.append(f"{item_location}.isChecked must be a boolean")
 
+    if source is not None and data.get("locale") != source.get("locale"):
+        _check_source_parity(data, source, issues)
+
     return [f"{path.name}: {issue}" for issue in issues]
 
 
@@ -97,10 +149,18 @@ def main(argv: list[str] | None = None) -> int:
         print(f"check_content: {exc}", file=sys.stderr)
         return 2
 
+    source_path = SEEDS_DIR / f"{config.source_locale}.json"
+    try:
+        source = json.loads(source_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        source = None  # validate_seed reports the source's own problems on its turn.
+
     issues: list[str] = []
     for runtime in runtimes:
         locale = config.locales_by_runtime[runtime]
-        issues.extend(validate_seed(SEEDS_DIR / f"{runtime}.json", runtime, locale.apple_locale))
+        issues.extend(
+            validate_seed(SEEDS_DIR / f"{runtime}.json", runtime, locale.apple_locale, source)
+        )
 
     if issues:
         print(f"check_content: {len(issues)} issue(s)", file=sys.stderr)

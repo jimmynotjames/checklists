@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "sl",
+  "primaryLocale": "sl_SI",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Jutranja rutina",
+      "items": [
+        {
+          "name": "PRIŽGI KAVNI APARAT",
+          "isChecked": true
+        },
+        {
+          "name": "Joga/meditacija",
+          "isChecked": true
+        },
+        {
+          "name": "Promet in vreme",
+          "isChecked": true
+        },
+        {
+          "name": "Zajtrk",
+          "isChecked": true
+        },
+        {
+          "name": "Pisanje dnevnika",
+          "isChecked": false
+        },
+        {
+          "name": "Prepir o politiki na Facebooku",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Nujno za vikend izlet",
+      "items": [
+        {
+          "name": "Polnilec za telefon",
+          "isChecked": false
+        },
+        {
+          "name": "Denarnica, dokumenti",
+          "notes": "Osebna izkaznica za EU, potni list za dlje, vozniško dovoljenje za vožnjo.",
+          "isChecked": false
+        },
+        {
+          "name": "Recepti, zdravila, dopolnila",
+          "isChecked": true
+        },
+        {
+          "name": "Toaletna torbica",
+          "notes": "Če letiš: tekočine do 100 ml v prozorni vrečki v ročni prtljagi.",
+          "isChecked": true
+        },
+        {
+          "name": "Krema za sončenje",
+          "isChecked": false
+        },
+        {
+          "name": "Slušalke",
+          "isChecked": false
+        },
+        {
+          "name": "Knjiga, iPad, e-bralnik ...",
+          "isChecked": false
+        },
+        {
+          "name": "Dežnik in vetrovka",
+          "isChecked": false
+        },
+        {
+          "name": "Sončna očala",
+          "isChecked": true
+        },
+        {
+          "name": "Klobuk za sonce",
+          "isChecked": true
+        },
+        {
+          "name": "Kopalke",
+          "isChecked": false
+        },
+        {
+          "name": "Natikači",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Kontrolni seznam pred potjo",
+      "items": [
+        {
+          "name": "Nastavi samodejni odgovor na e-pošti",
+          "isChecked": true
+        },
+        {
+          "name": "Pošta: zadrži pošiljke",
+          "isChecked": true
+        },
+        {
+          "name": "Uredi varstvo za žival",
+          "isChecked": true
+        },
+        {
+          "name": "Zalivanje rož, varstvo stanovanja",
+          "isChecked": false
+        },
+        {
+          "name": "Javi odsotnost v šoli",
+          "isChecked": false
+        },
+        {
+          "name": "Pošlji načrt poti prijatelju ali sorodniku",
+          "isChecked": false
+        },
+        {
+          "name": "Izklopi naprave iz vtičnic",
+          "isChecked": false
+        },
+        {
+          "name": "Pospravi dragocenosti",
+          "isChecked": false
+        },
+        {
+          "name": "Ugasni gretje ali klimo",
+          "notes": "Ali nastavi minimalno temperaturo, da cevi ne zmrznejo.",
+          "isChecked": false
+        },
+        {
+          "name": "Preveri štedilnik in pečico",
+          "isChecked": false
+        },
+        {
+          "name": "Zakleni vrata in okna",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

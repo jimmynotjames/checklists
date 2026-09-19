@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "mr",
+  "primaryLocale": "mr_IN",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "सकाळची दिनचर्या",
+      "items": [
+        {
+          "name": "चहाचं आधण ठेवा",
+          "isChecked": true
+        },
+        {
+          "name": "योग/ध्यान",
+          "isChecked": true
+        },
+        {
+          "name": "ट्रॅफिक आणि हवामानाचा अंदाज",
+          "isChecked": true
+        },
+        {
+          "name": "नाश्ता",
+          "isChecked": true
+        },
+        {
+          "name": "डायरी लिहिणे",
+          "isChecked": false
+        },
+        {
+          "name": "व्हॉट्सअॅपवर राजकीय वाद",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "वीकेंड ट्रिपचं सामान",
+      "items": [
+        {
+          "name": "फोनचा चार्जर",
+          "isChecked": false
+        },
+        {
+          "name": "पाकीट/ओळखपत्र",
+          "notes": "विमान प्रवासासाठी आधार कार्ड, गाडी चालवणार असाल तर ड्रायव्हिंग लायसन्स.",
+          "isChecked": false
+        },
+        {
+          "name": "औषधं, प्रिस्क्रिप्शन, सप्लिमेंट्स",
+          "isChecked": true
+        },
+        {
+          "name": "टॉयलेटरीजची बॅग",
+          "notes": "विमानाने जाणार असाल तर छोट्या बाटल्या वेगळ्या पिशवीत ठेवा.",
+          "isChecked": true
+        },
+        {
+          "name": "सनस्क्रीन",
+          "isChecked": false
+        },
+        {
+          "name": "हेडफोन",
+          "isChecked": false
+        },
+        {
+          "name": "पुस्तक, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "छत्री, रेनकोट",
+          "isChecked": false
+        },
+        {
+          "name": "गॉगल",
+          "isChecked": true
+        },
+        {
+          "name": "टोपी",
+          "isChecked": true
+        },
+        {
+          "name": "स्विमसूट",
+          "isChecked": false
+        },
+        {
+          "name": "पूलसाठी स्लिपर",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "प्रवासापूर्वीची चेकलिस्ट",
+      "items": [
+        {
+          "name": "ईमेलवर ऑटो-रिप्लाय सेट करा",
+          "isChecked": true
+        },
+        {
+          "name": "दूध-पेपर बंद करायला सांगा",
+          "isChecked": true
+        },
+        {
+          "name": "पाळीव प्राण्यांची सोय",
+          "isChecked": true
+        },
+        {
+          "name": "झाडांची आणि घराची देखभाल ठरवा",
+          "isChecked": false
+        },
+        {
+          "name": "शाळेत सुट्टीचं कळवा",
+          "isChecked": false
+        },
+        {
+          "name": "प्रवासाचा तपशील जवळच्या मित्राला/नातेवाईकाला पाठवा",
+          "isChecked": false
+        },
+        {
+          "name": "उपकरणांचे प्लग काढा",
+          "isChecked": false
+        },
+        {
+          "name": "मौल्यवान वस्तू कपाटात ठेवा",
+          "isChecked": false
+        },
+        {
+          "name": "पंखा, एसी बंद करा",
+          "notes": "फ्रिज सोडून बाकी सगळे स्विच बंद करा.",
+          "isChecked": false
+        },
+        {
+          "name": "गॅस, रेग्युलेटर बंद आहे का बघा",
+          "isChecked": false
+        },
+        {
+          "name": "दारं-खिडक्या नीट बंद करा",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

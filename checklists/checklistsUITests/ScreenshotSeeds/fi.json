@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "fi",
+  "primaryLocale": "fi_FI",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Aamurutiinit",
+      "items": [
+        {
+          "name": "KEITÄ KAHVIT",
+          "isChecked": true
+        },
+        {
+          "name": "Jooga/meditaatio",
+          "isChecked": true
+        },
+        {
+          "name": "Liikenne- ja säätiedot",
+          "isChecked": true
+        },
+        {
+          "name": "Aamiainen",
+          "isChecked": true
+        },
+        {
+          "name": "Päiväkirja",
+          "isChecked": false
+        },
+        {
+          "name": "Riitele politiikasta Suomi24:ssä",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Viikonloppureissun pakkauslista",
+      "items": [
+        {
+          "name": "Puhelimen laturi",
+          "isChecked": false
+        },
+        {
+          "name": "Lompakko/henkilökortti",
+          "notes": "Henkilökortti tai passi (passi EU:n ulkopuolelle), ajokortti automatkalle.",
+          "isChecked": false
+        },
+        {
+          "name": "Reseptit, lääkkeet, vitamiinit",
+          "isChecked": true
+        },
+        {
+          "name": "Pesuvälineet",
+          "notes": "Lennolla nesteet pikkupulloissa omassa pussissa käsimatkatavarassa.",
+          "isChecked": true
+        },
+        {
+          "name": "Aurinkorasva",
+          "isChecked": false
+        },
+        {
+          "name": "Kuulokkeet",
+          "isChecked": false
+        },
+        {
+          "name": "Kirja, iPad, lukulaite...",
+          "isChecked": false
+        },
+        {
+          "name": "Sade- ja tuulivaatteet",
+          "isChecked": false
+        },
+        {
+          "name": "Aurinkolasit",
+          "isChecked": true
+        },
+        {
+          "name": "Lippalakki",
+          "isChecked": true
+        },
+        {
+          "name": "Uimapuku",
+          "isChecked": false
+        },
+        {
+          "name": "Uimatossut",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Lähtötarkistuslista",
+      "items": [
+        {
+          "name": "Laita automaattivastaus sähköpostiin",
+          "isChecked": true
+        },
+        {
+          "name": "Tilaa postin säilytys",
+          "isChecked": true
+        },
+        {
+          "name": "Järjestä lemmikinhoito",
+          "isChecked": true
+        },
+        {
+          "name": "Järjestä kukkien kastelu ja kodinvahti",
+          "isChecked": false
+        },
+        {
+          "name": "Ilmoita poissaolo Wilmassa",
+          "isChecked": false
+        },
+        {
+          "name": "Lähetä matkasuunnitelma läheiselle",
+          "isChecked": false
+        },
+        {
+          "name": "Irrota laitteet pistorasiasta",
+          "isChecked": false
+        },
+        {
+          "name": "Piilota arvoesineet",
+          "isChecked": false
+        },
+        {
+          "name": "Sammuta lämmitys",
+          "notes": "Tai jätä peruslämpö päälle, etteivät putket jäädy.",
+          "isChecked": false
+        },
+        {
+          "name": "Tarkista liesi ja uuni",
+          "isChecked": false
+        },
+        {
+          "name": "Lukitse ovet, sulje ikkunat",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

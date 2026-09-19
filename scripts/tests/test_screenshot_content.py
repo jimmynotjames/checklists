@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 import os
 import struct
 import sys
@@ -16,6 +17,7 @@ sys.path.insert(0, str(SCREENSHOT_SCRIPTS))
 import capture_progress  # noqa: E402
 import prepare_output  # noqa: E402
 from config import (  # noqa: E402
+    SEEDS_DIR,
     ConfigError,
     DeviceConfig,
     LocaleConfig,
@@ -63,15 +65,29 @@ class ConfigTests(unittest.TestCase):
     def test_all_locale_mappings_are_self_contained(self) -> None:
         config = load_config()
         self.assertEqual(len(config.locales), 50)
-        self.assertEqual(config.active_locales, ("en-US",))
         mappings = config.locales_by_runtime
         self.assertEqual((mappings["de"].storefront, mappings["de"].region, mappings["de"].apple_locale), ("de-DE", "DE", "de_DE"))
         self.assertEqual((mappings["nb"].storefront, mappings["nb"].apple_locale), ("no", "nb_NO"))
         self.assertEqual((mappings["zh-Hans"].storefront, mappings["zh-Hans"].apple_locale), ("zh-Hans", "zh_Hans_CN"))
 
+    def test_every_locale_is_active_and_has_a_seed(self) -> None:
+        # Capture covers the whole registry now. A locale that is active without
+        # a seed fails at capture time, on a simulator, minutes in.
+        config = load_config()
+        self.assertEqual(set(config.active_locales), {locale.runtime for locale in config.locales})
+        missing = [
+            runtime for runtime in config.active_locales
+            if not (SEEDS_DIR / f"{runtime}.json").is_file()
+        ]
+        self.assertEqual(missing, [])
+
     def test_explicit_inactive_locale_is_rejected(self) -> None:
+        # Every registry locale is active, so the rejection path needs a config
+        # that still has an inactive one rather than the live file.
+        config = load_config()
+        pruned = replace(config, active_locales=("en-US",))
         with self.assertRaisesRegex(ConfigError, "inactive runtime locale"):
-            parse_locale_args(["de"], load_config())
+            parse_locale_args(["de"], pruned)
 
 
 class CaptureTests(unittest.TestCase):
@@ -113,6 +129,59 @@ class CaptureTests(unittest.TestCase):
         for shot in manifest["shots"]:
             path = capture_progress.run_root(run_id) / "raw" / runtime / f"{device['capture_name']}-{shot}.png"
             write_png(path, 2, 3, alpha=alpha)
+
+    def test_seed_must_match_the_source_locale_shape(self) -> None:
+        """Only the words are localized; a shape change breaks locale comparison."""
+        import check_content
+
+        source = {
+            "locale": "en-US",
+            "checklists": [
+                {
+                    "id": "C4EC1157-0000-4000-A000-000000000001",
+                    "items": [
+                        {"name": "Coffee", "isChecked": True},
+                        {"name": "Toast", "notes": "Light.", "isChecked": False},
+                    ],
+                }
+            ],
+        }
+
+        def issues_for(checklists: list) -> list[str]:
+            collected: list[str] = []
+            check_content._check_source_parity(
+                {"locale": "de", "checklists": checklists}, source, collected
+            )
+            return collected
+
+        good = [
+            {
+                "id": "C4EC1157-0000-4000-A000-000000000001",
+                "items": [
+                    {"name": "Kaffee", "isChecked": True},
+                    {"name": "Toast", "notes": "Leicht.", "isChecked": False},
+                ],
+            }
+        ]
+        self.assertEqual(issues_for(good), [])
+
+        dropped = [dict(good[0], items=good[0]["items"][:1])]
+        self.assertTrue(any("item(s)" in issue for issue in issues_for(dropped)))
+
+        reordered = [dict(good[0], id="C4EC1157-0000-4000-A000-000000000009")]
+        self.assertTrue(any(".id is" in issue for issue in issues_for(reordered)))
+
+        reticked = [
+            dict(good[0], items=[dict(good[0]["items"][0], isChecked=False), good[0]["items"][1]])
+        ]
+        self.assertTrue(any("isChecked" in issue for issue in issues_for(reticked)))
+
+        note_added = [
+            dict(good[0], items=[dict(good[0]["items"][0], notes="Extra."), good[0]["items"][1]])
+        ]
+        self.assertTrue(any("notes presence" in issue for issue in issues_for(note_added)))
+
+        self.assertTrue(any("checklist(s)" in issue for issue in issues_for(good + good)))
 
     def test_missing_files_and_xctest_receipt_are_both_required(self) -> None:
         capture_progress.begin_run("run-one", ("en-US",), self.config)

@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "en-GB",
+  "primaryLocale": "en_GB",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Morning Routine",
+      "items": [
+        {
+          "name": "PUT THE KETTLE ON",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditation",
+          "isChecked": true
+        },
+        {
+          "name": "Check traffic and weather",
+          "isChecked": true
+        },
+        {
+          "name": "Breakfast",
+          "isChecked": true
+        },
+        {
+          "name": "Journalling",
+          "isChecked": false
+        },
+        {
+          "name": "Argue politics on Facebook",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Weekend Away Essentials",
+      "items": [
+        {
+          "name": "Phone charger",
+          "isChecked": false
+        },
+        {
+          "name": "Wallet/passport",
+          "notes": "Passport for flights and going abroad, driving licence for a road trip.",
+          "isChecked": false
+        },
+        {
+          "name": "Prescriptions, medicines, supplements",
+          "isChecked": true
+        },
+        {
+          "name": "Wash bag",
+          "notes": "Liquids in a small clear bag if they're going in your hand luggage.",
+          "isChecked": true
+        },
+        {
+          "name": "Suncream",
+          "isChecked": false
+        },
+        {
+          "name": "Headphones",
+          "isChecked": false
+        },
+        {
+          "name": "Book, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Waterproofs",
+          "isChecked": false
+        },
+        {
+          "name": "Sunglasses",
+          "isChecked": true
+        },
+        {
+          "name": "Sun hat",
+          "isChecked": true
+        },
+        {
+          "name": "Swimwear",
+          "isChecked": false
+        },
+        {
+          "name": "Flip-flops",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Pre-Trip Checklist",
+      "items": [
+        {
+          "name": "Set out-of-office on email accounts",
+          "isChecked": true
+        },
+        {
+          "name": "Royal Mail: hold post",
+          "isChecked": true
+        },
+        {
+          "name": "Pet care arrangements",
+          "isChecked": true
+        },
+        {
+          "name": "Plants, house-sitting arrangements",
+          "isChecked": false
+        },
+        {
+          "name": "School absence arrangements",
+          "isChecked": false
+        },
+        {
+          "name": "Send itinerary to a trusted friend or relative",
+          "isChecked": false
+        },
+        {
+          "name": "Unplug appliances",
+          "isChecked": false
+        },
+        {
+          "name": "Put valuables away",
+          "isChecked": false
+        },
+        {
+          "name": "Turn off the heating",
+          "notes": "Or leave it on frost protection so the pipes don't freeze.",
+          "isChecked": false
+        },
+        {
+          "name": "Check the hob and oven are off",
+          "isChecked": false
+        },
+        {
+          "name": "Lock doors and windows",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

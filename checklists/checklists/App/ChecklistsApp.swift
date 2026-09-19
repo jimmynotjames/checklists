@@ -84,6 +84,12 @@ struct ChecklistsApp: App {
       // On the Group, not one switch branch: attaching to `.ready` would drop `app_opened` entirely
       // for anyone stuck on the failure screen. Keeping modifiers outside the switch also stops them
       // remounting on phase changes, which would reset the tracker and let a duplicate open through.
+      #if DEBUG
+        // Inert unless launched with both IS_TESTING and FORCE_DYNAMIC_TYPE, which
+        // only the localized large-type check does. On the Group so the loading and
+        // failure screens scale too — those have text worth checking as well.
+      .modifier(TestDynamicTypeOverride())
+      #endif
       .environment(\.analytics, analytics)
       .environment(analyticsSettings)
       .task {

@@ -299,8 +299,8 @@ class checklistCreateUITest: XCTestCase {
     app.typeText("Trip Prep")
 
     let navigationBar = app.navigationBars["checklists.ChecklistView"]
-    XCTAssertTrue(navigationBar.buttons["More"].waitForExistence(timeout: 5), "Overflow menu button didn't appear.")
-    navigationBar.buttons["More"].tap()
+    XCTAssertTrue(navigationBar.buttons["checklist.more"].waitForExistence(timeout: 5), "Overflow menu button didn't appear.")
+    navigationBar.buttons["checklist.more"].tap()
     let discardEntry = app.buttons["Discard Checklist"]
     XCTAssertTrue(discardEntry.waitForExistence(timeout: 5), "Discard Checklist menu entry didn't appear.")
     discardEntry.tap()

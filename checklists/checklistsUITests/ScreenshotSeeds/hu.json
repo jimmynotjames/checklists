@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "hu",
+  "primaryLocale": "hu_HU",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Reggeli rutin",
+      "items": [
+        {
+          "name": "KÁVÉT FELTENNI",
+          "isChecked": true
+        },
+        {
+          "name": "Jóga/meditáció",
+          "isChecked": true
+        },
+        {
+          "name": "Forgalom és időjárás",
+          "isChecked": true
+        },
+        {
+          "name": "Reggeli",
+          "isChecked": true
+        },
+        {
+          "name": "Naplóírás",
+          "isChecked": false
+        },
+        {
+          "name": "Politikai vita a Facebookon",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Hétvégi kiruccanás alapjai",
+      "items": [
+        {
+          "name": "Telefontöltő",
+          "isChecked": false
+        },
+        {
+          "name": "Pénztárca, iratok",
+          "notes": "Személyi vagy útlevél (EU-n kívülre útlevél), autóhoz jogosítvány és forgalmi.",
+          "isChecked": false
+        },
+        {
+          "name": "Receptek, gyógyszerek, vitaminok",
+          "isChecked": true
+        },
+        {
+          "name": "Piperetáska",
+          "notes": "Repülőn kézipoggyászban csak kis flakonok, külön zacskóban.",
+          "isChecked": true
+        },
+        {
+          "name": "Naptej",
+          "isChecked": false
+        },
+        {
+          "name": "Fülhallgató",
+          "isChecked": false
+        },
+        {
+          "name": "Könyv, iPad, Kindle…",
+          "isChecked": false
+        },
+        {
+          "name": "Esőkabát, esernyő",
+          "isChecked": false
+        },
+        {
+          "name": "Napszemüveg",
+          "isChecked": true
+        },
+        {
+          "name": "Szalmakalap",
+          "isChecked": true
+        },
+        {
+          "name": "Fürdőruha",
+          "isChecked": false
+        },
+        {
+          "name": "Strandpapucs",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Indulás előtti ellenőrzőlista",
+      "items": [
+        {
+          "name": "Automatikus válasz beállítása",
+          "isChecked": true
+        },
+        {
+          "name": "Szomszéd üríti a postaládát",
+          "isChecked": true
+        },
+        {
+          "name": "Állatfelügyelet intézése",
+          "isChecked": true
+        },
+        {
+          "name": "Virágöntözés, lakásfelügyelet",
+          "isChecked": false
+        },
+        {
+          "name": "Iskolai hiányzás bejelentése",
+          "isChecked": false
+        },
+        {
+          "name": "Útiterv elküldése rokonnak, barátnak",
+          "isChecked": false
+        },
+        {
+          "name": "Készülékek kihúzása",
+          "isChecked": false
+        },
+        {
+          "name": "Értékek elpakolása",
+          "isChecked": false
+        },
+        {
+          "name": "Fűtés/klíma kikapcsolása",
+          "notes": "Vagy fagyvédelemre állítani, hogy ne fagyjanak be a csövek.",
+          "isChecked": false
+        },
+        {
+          "name": "Tűzhely, sütő kikapcsolva",
+          "isChecked": false
+        },
+        {
+          "name": "Ajtók, ablakok bezárása",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

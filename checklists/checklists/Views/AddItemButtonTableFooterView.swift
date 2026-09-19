@@ -19,7 +19,7 @@ class AddItemButtonTableFooterView: UIView {
 
   let addButton: CLButton = {
     let button = CLButton(frame: .zero)
-    button.configuration?.title = "Add"
+    button.configuration?.title = String(localized: "checklist.item.add", defaultValue: "Add", comment: "Button under the last item row that appends a new item to the checklist.")
     return button
   }()
 

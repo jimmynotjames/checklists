@@ -605,7 +605,7 @@ with a reason.
 | `NSUbiquitousKeyValueStore` for opt-in, `distinct_id` and the rating-prompt counters | `UserDefaults.standard` behind a `KeyValueStore` seam | No `ubiquity-kvstore-identifier` entitlement (§5) |
 | Rating prompt fed by an Add-mode expense log at a non-deficit moment; requested after the Add Expense sheet dismisses | Fed by an item check-off; requested once the person is back on the checklists list | Checking an item is this app's one core action, and the checklist screen is a push, not a sheet (§8) |
 | `time_since_first_eligible_bucket` top value `≥30d` | `30d+` | ASCII, so it can be typed into a Mixpanel filter without hunting for the glyph |
-| All consent copy in `Localizable.xcstrings` | English string literals | No localization infrastructure at all; five keyed strings among ~200 literals is worse than either standard. Follow-up issue. |
+| All consent copy in `Localizable.xcstrings` | Same | Both keep consent copy in the catalog; it is translated into all 50 locales and carries translator comments (`core-docs/localization-spec.md`) |
 | Sheet triggered after the first `budget_created` | After the first `checklist_viewed` on an existing checklist | Sample checklists are seeded, so creation may never happen (§6.2) |
 | `IS_TESTING` env var only | `-UITests1` **or** `IS_TESTING` | The XCUITest bundle passes only the launch argument (§7.1) |
 | Analytics and `OSLog` both in `Logging/` | Analytics in `Analytics/`, `OSLog` in `Logging/` | Both docs insist the channels are independent — let the directories say so (§11) |

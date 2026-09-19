@@ -1,0 +1,1 @@
+repeat,recurring,list,check list,packing,shopping,grocery,routine,travel,reset,camping,trip,errand

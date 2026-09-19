@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "hr",
+  "primaryLocale": "hr_HR",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Jutarnja rutina",
+      "items": [
+        {
+          "name": "SKUHAJ KAVU",
+          "isChecked": true
+        },
+        {
+          "name": "Joga/meditacija",
+          "isChecked": true
+        },
+        {
+          "name": "Stanje na cestama i vrijeme",
+          "isChecked": true
+        },
+        {
+          "name": "Doručak",
+          "isChecked": true
+        },
+        {
+          "name": "Pisanje dnevnika",
+          "isChecked": false
+        },
+        {
+          "name": "Svađa o politici na Facebooku",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Osnovno za vikend putovanje",
+      "items": [
+        {
+          "name": "Punjač za mobitel",
+          "isChecked": false
+        },
+        {
+          "name": "Novčanik/osobna",
+          "notes": "Osobna iskaznica za EU, putovnica izvan EU, vozačka za put autom.",
+          "isChecked": false
+        },
+        {
+          "name": "Recepti, lijekovi, dodaci prehrani",
+          "isChecked": true
+        },
+        {
+          "name": "Toaletna torbica",
+          "notes": "U ručnoj prtljazi samo male bočice tekućine u prozirnoj vrećici.",
+          "isChecked": true
+        },
+        {
+          "name": "Krema za sunčanje",
+          "isChecked": false
+        },
+        {
+          "name": "Slušalice",
+          "isChecked": false
+        },
+        {
+          "name": "Knjiga, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Kišobran i vjetrovka",
+          "isChecked": false
+        },
+        {
+          "name": "Sunčane naočale",
+          "isChecked": true
+        },
+        {
+          "name": "Šešir za sunce",
+          "isChecked": true
+        },
+        {
+          "name": "Kupaći kostim",
+          "isChecked": false
+        },
+        {
+          "name": "Cipelice za more",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Kontrolni popis prije puta",
+      "items": [
+        {
+          "name": "Postavi automatski odgovor na mailu",
+          "isChecked": true
+        },
+        {
+          "name": "Susjed: prazni sandučić",
+          "isChecked": true
+        },
+        {
+          "name": "Dogovor za čuvanje ljubimaca",
+          "isChecked": true
+        },
+        {
+          "name": "Dogovor za biljke i čuvanje stana",
+          "isChecked": false
+        },
+        {
+          "name": "Najavi izostanak iz škole",
+          "isChecked": false
+        },
+        {
+          "name": "Pošalji plan puta osobi od povjerenja",
+          "isChecked": false
+        },
+        {
+          "name": "Isključi uređaje iz struje",
+          "isChecked": false
+        },
+        {
+          "name": "Skloniti dragocjenosti",
+          "isChecked": false
+        },
+        {
+          "name": "Isključi grijanje ili klimu",
+          "notes": "Ili postavi minimalnu temperaturu da cijevi ne puknu.",
+          "isChecked": false
+        },
+        {
+          "name": "Provjeri štednjak i pećnicu",
+          "isChecked": false
+        },
+        {
+          "name": "Zaključaj vrata i prozore",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

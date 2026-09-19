@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "ro",
+  "primaryLocale": "ro_RO",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Rutina de dimineață",
+      "items": [
+        {
+          "name": "PORNEȘTE CAFETIERA",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditație",
+          "isChecked": true
+        },
+        {
+          "name": "Trafic și prognoza meteo",
+          "isChecked": true
+        },
+        {
+          "name": "Micul dejun",
+          "isChecked": true
+        },
+        {
+          "name": "Scris în jurnal",
+          "isChecked": false
+        },
+        {
+          "name": "Ceartă politică pe Facebook",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Esențiale pentru weekend",
+      "items": [
+        {
+          "name": "Încărcător de telefon",
+          "isChecked": false
+        },
+        {
+          "name": "Portofel/acte",
+          "notes": "Acte valabile (buletin în UE, pașaport în afara ei, permis dacă mergi cu mașina).",
+          "isChecked": false
+        },
+        {
+          "name": "Rețete, medicamente, suplimente",
+          "isChecked": true
+        },
+        {
+          "name": "Trusa de toaletă",
+          "notes": "Lichide mici, în pungă separată, dacă zbori cu bagaj de mână.",
+          "isChecked": true
+        },
+        {
+          "name": "Cremă de soare",
+          "isChecked": false
+        },
+        {
+          "name": "Căști",
+          "isChecked": false
+        },
+        {
+          "name": "Carte, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Haine de ploaie/vânt",
+          "isChecked": false
+        },
+        {
+          "name": "Ochelari de soare",
+          "isChecked": true
+        },
+        {
+          "name": "Pălărie de soare",
+          "isChecked": true
+        },
+        {
+          "name": "Costum de baie",
+          "isChecked": false
+        },
+        {
+          "name": "Papuci de plajă",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Listă de verificare la plecare",
+      "items": [
+        {
+          "name": "Setează răspuns automat pe e-mail",
+          "isChecked": true
+        },
+        {
+          "name": "Vecinul ia corespondența",
+          "isChecked": true
+        },
+        {
+          "name": "Cine are grijă de animale",
+          "isChecked": true
+        },
+        {
+          "name": "Cine udă plantele și vede de casă",
+          "isChecked": false
+        },
+        {
+          "name": "Anunță absența la școală",
+          "isChecked": false
+        },
+        {
+          "name": "Trimite itinerarul unei rude sau unui prieten",
+          "isChecked": false
+        },
+        {
+          "name": "Scoate aparatele din priză",
+          "isChecked": false
+        },
+        {
+          "name": "Ascunde lucrurile de valoare",
+          "isChecked": false
+        },
+        {
+          "name": "Oprește centrala sau aerul",
+          "notes": "Sau lasă temperatura minimă, ca să nu înghețe țevile.",
+          "isChecked": false
+        },
+        {
+          "name": "Verifică aragazul și cuptorul",
+          "isChecked": false
+        },
+        {
+          "name": "Încuie ușile și ferestrele",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

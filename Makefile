@@ -1,4 +1,4 @@
-.PHONY: system format format-changed lint lint-changed build test-unit test-ui gate verify-secrets hooks-install initialize-sims sim-status sim-shutdown sim-clean
+.PHONY: system format format-changed lint lint-changed i18n-check build test-unit test-ui gate verify-secrets hooks-install initialize-sims sim-status sim-shutdown sim-clean
 
 system:
 	bash scripts/system-setup.sh
@@ -24,6 +24,17 @@ lint-changed:
 	if [ -z "$$files" ]; then echo "lint-changed: no changed Swift files"; else \
 	  echo "$$files" | tr '\n' ' ' | xargs swiftlint --fix --quiet && \
 	  echo "$$files" | tr '\n' ' ' | xargs swiftlint lint --strict --quiet; fi
+
+# -- Localization -------------------------------------------------------------
+# Repo-wide on purpose, and the documented exception to AGENTS.md §"Lint policy":
+# check_translations validates one catalog file, and check_source_strings enforces a
+# repo invariant (no unkeyed user-facing copy). Neither is a style lint of Swift files,
+# and both finish in well under a second.
+i18n-check:
+	python3 scripts/check_translations.py
+	python3 scripts/check_source_strings.py
+	python3 scripts/translate_audit/distinct_pairs.py
+	python3 scripts/screenshot_content/generate_seeds.py --check
 
 # -- Build and test -----------------------------------------------------------
 build:

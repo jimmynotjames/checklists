@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "locale": "es",
+  "primaryLocale": "es_ES",
+  "checklists": [
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000001",
+      "name": "Rutina de mañana",
+      "items": [
+        {
+          "name": "PONER LA CAFETERA",
+          "isChecked": true
+        },
+        {
+          "name": "Yoga/meditación",
+          "isChecked": true
+        },
+        {
+          "name": "Ver el tráfico y el tiempo",
+          "isChecked": true
+        },
+        {
+          "name": "Desayunar",
+          "isChecked": true
+        },
+        {
+          "name": "Escribir el diario",
+          "isChecked": false
+        },
+        {
+          "name": "Discutir de política en X",
+          "isChecked": true
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000002",
+      "name": "Básicos para una escapada",
+      "items": [
+        {
+          "name": "Cargador del móvil",
+          "isChecked": false
+        },
+        {
+          "name": "Cartera/DNI",
+          "notes": "DNI para volar por Europa, pasaporte fuera y carnet de conducir si vas en coche.",
+          "isChecked": false
+        },
+        {
+          "name": "Recetas, medicamentos y vitaminas",
+          "isChecked": true
+        },
+        {
+          "name": "Neceser",
+          "notes": "Líquidos pequeños en bolsa aparte si vuelas con equipaje de mano.",
+          "isChecked": true
+        },
+        {
+          "name": "Crema solar",
+          "isChecked": false
+        },
+        {
+          "name": "Auriculares",
+          "isChecked": false
+        },
+        {
+          "name": "Libro, iPad, Kindle...",
+          "isChecked": false
+        },
+        {
+          "name": "Chubasquero/paraguas",
+          "isChecked": false
+        },
+        {
+          "name": "Gafas de sol",
+          "isChecked": true
+        },
+        {
+          "name": "Sombrero",
+          "isChecked": true
+        },
+        {
+          "name": "Bañador",
+          "isChecked": false
+        },
+        {
+          "name": "Chanclas",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "id": "C4EC1157-0000-4000-A000-000000000003",
+      "name": "Antes de viajar",
+      "items": [
+        {
+          "name": "Poner respuesta automática en el correo",
+          "isChecked": true
+        },
+        {
+          "name": "Vecino: recoger el correo",
+          "isChecked": true
+        },
+        {
+          "name": "Cuidado de las mascotas",
+          "isChecked": true
+        },
+        {
+          "name": "Riego de plantas y cuidado de la casa",
+          "isChecked": false
+        },
+        {
+          "name": "Avisar al colegio de las faltas",
+          "isChecked": false
+        },
+        {
+          "name": "Enviar el itinerario a alguien de confianza",
+          "isChecked": false
+        },
+        {
+          "name": "Desenchufar aparatos",
+          "isChecked": false
+        },
+        {
+          "name": "Guardar objetos de valor",
+          "isChecked": false
+        },
+        {
+          "name": "Apagar calefacción o aire",
+          "notes": "O déjala al mínimo si hace mucho frío fuera.",
+          "isChecked": false
+        },
+        {
+          "name": "Comprobar fuegos y horno",
+          "isChecked": false
+        },
+        {
+          "name": "Cerrar puertas y ventanas",
+          "isChecked": false
+        }
+      ]
+    }
+  ]
+}

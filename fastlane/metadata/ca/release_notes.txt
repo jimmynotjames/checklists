@@ -1,0 +1,1 @@
+Hem afegit indicadors de percentatge completat, per veure el progrés d'un cop d'ull.

@@ -23,7 +23,7 @@ struct SettingsView: View {
         aboutSection
       }
       .appBackground()
-      .navigationTitle("Settings")
+      .navigationTitle(CommonStrings.settingsTitle)
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
         ToolbarItem(placement: .topBarTrailing) {
@@ -53,7 +53,7 @@ struct SettingsView: View {
     Section {
       iCloudStatusRow
     } header: {
-      Text("iCloud Sync")
+      Text(String(localized: "settings.icloud.header", defaultValue: "iCloud Sync", comment: "Section header above the iCloud sync status row in Settings."))
     } footer: {
       iCloudFooter
     }
@@ -64,7 +64,7 @@ struct SettingsView: View {
     switch syncStatus.rowState {
     case .checking:
       HStack {
-        Text("Checking…")
+        Text(String(localized: "settings.icloud.checking", defaultValue: "Checking…", comment: "iCloud status row while the account status is still being looked up; shown next to a spinner."))
         Spacer()
         ProgressView()
       }
@@ -72,7 +72,7 @@ struct SettingsView: View {
 
     case .available:
       Label {
-        Text("iCloud Sync is Active")
+        Text(String(localized: "settings.icloud.active", defaultValue: "iCloud Sync is Active", comment: "iCloud status row: checklists are syncing through iCloud."))
       } icon: {
         Image(systemName: "checkmark.icloud")
           .foregroundStyle(Colors.successColor)
@@ -81,7 +81,7 @@ struct SettingsView: View {
 
     case .paused:
       Label {
-        Text("iCloud Sync Paused")
+        Text(String(localized: "settings.icloud.paused", defaultValue: "iCloud Sync Paused", comment: "iCloud status row: the app fell back to a local-only store this launch."))
       } icon: {
         Image(systemName: "exclamationmark.icloud")
           .foregroundStyle(Colors.warningColor)
@@ -90,7 +90,7 @@ struct SettingsView: View {
 
     case .unavailable:
       Label {
-        Text("iCloud Not Available")
+        Text(String(localized: "settings.icloud.unavailable", defaultValue: "iCloud Not Available", comment: "iCloud status row: no iCloud account is signed in on this device."))
       } icon: {
         Image(systemName: "xmark.icloud")
           .foregroundStyle(Colors.warningColor)
@@ -103,11 +103,19 @@ struct SettingsView: View {
   private var iCloudFooter: some View {
     switch syncStatus.rowState {
     case .unavailable:
-      Text("Sign in to iCloud in Settings to sync your checklists across devices.")
-        .foregroundStyle(Colors.inactiveTextColor)
+      Text(String(
+        localized: "settings.icloud.footer.unavailable",
+        defaultValue: "Sign in to iCloud in Settings to sync your checklists across devices.",
+        comment: "Footer under the iCloud section when no iCloud account is signed in. 'Settings' here means the iOS Settings app."
+      ))
+      .foregroundStyle(Colors.inactiveTextColor)
     case .paused:
-      Text("Your checklists are saved on this device only. Restart the app to retry iCloud sync.")
-        .foregroundStyle(Colors.inactiveTextColor)
+      Text(String(
+        localized: "settings.icloud.footer.paused",
+        defaultValue: "Your checklists are saved on this device only. Restart the app to retry iCloud sync.",
+        comment: "Footer under the iCloud section when sync is paused for this launch."
+      ))
+      .foregroundStyle(Colors.inactiveTextColor)
     case .checking, .available:
       EmptyView()
     }
@@ -142,17 +150,22 @@ struct SettingsView: View {
           AnalyticsConsentController(settings: settings, analytics: analytics).setOptIn(newValue)
         }
       )) {
-        Text("Share Anonymous Usage Data")
+        Text(String(localized: "settings.analytics.toggle", defaultValue: "Share Anonymous Usage Data", comment: "Label of the analytics opt-in toggle in Settings."))
       }
       .tint(Color.accentColor)
-      .accessibilityHint("Allows the app to send anonymous usage data to help improve the app. No checklist item names, item notes, or Apple or iCloud identifiers are ever included.")
+      .accessibilityHint(String(
+        localized: "settings.analytics.toggle.hint",
+        defaultValue: "Allows the app to send anonymous usage data to help improve the app. No checklist item names, item notes, or Apple or iCloud identifiers are ever included.",
+        comment: "VoiceOver hint for the analytics opt-in toggle."
+      ))
     } header: {
-      Text("Diagnostics & Analytics")
+      Text(String(localized: "settings.analytics.header", defaultValue: "Diagnostics & Analytics", comment: "Section header above the analytics opt-in toggle in Settings."))
     } footer: {
-      Text("""
-      Anonymous usage data helps troubleshoot issues and understand usage. Data is never linked to your \
-      Apple Account. Never included: checklist item names, item notes, or any Apple or iCloud identifiers.
-      """)
+      Text(String(
+        localized: "settings.analytics.footer",
+        defaultValue: "Anonymous usage data helps troubleshoot issues and understand usage. Data is never linked to your Apple Account. Never included: checklist item names, item notes, or any Apple or iCloud identifiers.",
+        comment: "Footer under the analytics section explaining what usage data is and is not collected."
+      ))
       .foregroundStyle(Colors.inactiveTextColor)
     }
   }
@@ -170,7 +183,7 @@ struct SettingsView: View {
         openURL(url)
       } label: {
         Label {
-          Text("Privacy Policy")
+          Text(String(localized: "settings.info.privacyPolicy", defaultValue: "Privacy Policy", comment: "Row in Settings that opens the app's privacy policy web page."))
             .foregroundStyle(.primary)
         } icon: {
           Image("PrivacyPolicyIcon25x25")
@@ -183,7 +196,7 @@ struct SettingsView: View {
       }
     } header: {
       // Title case, matching how the other Form headers here are written.
-      Text("Info")
+      Text(String(localized: "settings.info.header", defaultValue: "Info", comment: "Section header above the Privacy Policy row in Settings."))
     }
   }
 
@@ -192,7 +205,7 @@ struct SettingsView: View {
   private var aboutSection: some View {
     Section {
       HStack {
-        Text("Version")
+        Text(String(localized: "settings.about.version", defaultValue: "Version", comment: "Label next to the app's version and build number in Settings."))
         Spacer()
         Text(verbatim: SettingsManager.versionBuildString)
           .foregroundStyle(.secondary)

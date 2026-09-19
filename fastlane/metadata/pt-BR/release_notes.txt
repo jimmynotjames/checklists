@@ -1,0 +1,1 @@
+Agora as listas mostram a porcentagem concluída, para você ver o progresso num relance.

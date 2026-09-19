@@ -4,13 +4,13 @@
 //
 //  Created by Jimmy Ho on 6/8/19.
 //
+// swiftlint:disable file_length
 
 import SwiftData
 import UIKit
 
 private let itemsSection = 0
 private let itemCellReuseIdentifier = "ItemCell"
-private let defaultChecklistName = "untitled checklist"
 
 /// How close to the top still counts as being at the top. An animated `setContentOffset` can land a
 /// hair off its target, and an exact comparison that misses leaves `isResetting` stuck.
@@ -155,30 +155,7 @@ class ChecklistViewController: UIViewController {
     // The footer's width isn't set automatically despite the docs; set it manually.
     tableFooterView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
 
-    if isNewChecklist {
-      showsDiscardWording = true
-      // The create sheet already inserted and saved a real row before this screen appeared
-      // (ChecklistsView.addChecklist), so it needs its own way out besides Done: the menu doubles
-      // as "cancel creation" here, worded as a discard rather than a delete.
-      let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
-      let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: makeMoreMenu())
-      moreItem.accessibilityLabel = "More"
-      // iOS 26 renders bar buttons in `labelColor` unless the item itself carries a tint.
-      doneItem.tintColor = .tintColor
-      moreItem.tintColor = .tintColor
-      navigationItem.rightBarButtonItems = [moreItem, doneItem]
-    } else {
-      // Reset keeps the bar slot: in an app built around rerunning a list it is a per-run action,
-      // while deleting the list is a once-ever one that can afford to sit a tap deeper.
-      let resetItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetButtonTapped))
-      let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: makeMoreMenu())
-      moreItem.accessibilityLabel = "More"
-      // iOS 26 renders bar buttons in `labelColor` unless the item itself carries a tint.
-      resetItem.tintColor = .tintColor
-      moreItem.tintColor = .tintColor
-      // Trailing-first: the menu sits at the outer edge, Reset next to the title.
-      navigationItem.rightBarButtonItems = [moreItem, resetItem]
-    }
+    configureNavigationBar()
     if checklist.items.isEmpty {
       try? context.insert(item: Item(), at: 0, in: checklist)
     }
@@ -600,7 +577,7 @@ extension ChecklistViewController: UITextFieldDelegate {
   }
 
   func textFieldDidEndEditing(_: UITextField) {
-    checklist.name = checklistNameTextField.hasText ? checklistNameTextField.text ?? defaultChecklistName : defaultChecklistName // Accounts for both nil and empty string.
+    checklist.name = checklistNameTextField.hasText ? checklistNameTextField.text ?? Self.defaultChecklistName : Self.defaultChecklistName // Accounts for both nil and empty string.
     context.saveChangesIgnoringFailure(operation: .checklistEdit)
   }
 
