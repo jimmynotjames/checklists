@@ -28,6 +28,8 @@
       "Skill(appstore-generate-push-screenshots)",
       "Skill(appstore-generate-screenshot-seeding)",
       "Skill(translate-new-strings)",
+      "Skill(ios-localization)",
+      "Skill(translation-accessibility-size-check)",
       "Agent(general-purpose)",
       "Agent(translation-locale)",
       "Agent(sample-content-locale)",
