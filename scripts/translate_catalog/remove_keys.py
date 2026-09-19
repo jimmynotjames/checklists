@@ -1,0 +1,109 @@
+#!/usr/bin/env python3
+"""
+Remove one or more keys (with all locale entries) from Localizable.xcstrings.
+
+Use this when Swift code drops a `String(localized: ...)` call and the catalog
+key becomes orphaned. The script removes the named keys cleanly so the catalog
+stays in sync with the source.
+
+Preserves JSON ordering (sorted keys) and trailing newline so the diff is the
+removal only.
+
+Usage:
+  python3 scripts/translate_catalog/remove_keys.py --keys k1,k2,...
+  python3 scripts/translate_catalog/remove_keys.py --keys-file PATH
+  python3 scripts/translate_catalog/remove_keys.py --keys k1,k2 --dry-run
+  python3 scripts/translate_catalog/remove_keys.py --literal-keys-json PATH
+
+Exits non-zero if any requested key is not present in the catalog (so typos
+surface loudly).
+
+--literal-keys-json takes a path to a JSON array of strings and treats each
+entry as an exact key (no comma-splitting, no whitespace stripping). Use this
+when a key contains commas, leading/trailing whitespace, or is whitespace-only
+(e.g. orphaned auto-extracted Text(" ") keys).
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(Path(__file__).parent))
+from paths import CATALOG_PATH  # noqa: E402
+from xcstrings_io import write_xcstrings  # noqa: E402
+
+
+def parse_keys(arg: str | None, path: Path | None, literal_json: Path | None) -> set[str]:
+    keys: list[str] = []
+    if arg:
+        keys.extend(k.strip() for k in arg.split(",") if k.strip())
+    if path:
+        with path.open(encoding="utf-8") as f:
+            keys.extend(line.strip() for line in f if line.strip() and not line.startswith("#"))
+    if literal_json:
+        with literal_json.open(encoding="utf-8") as f:
+            data = json.load(f)
+        if not isinstance(data, list) or not all(isinstance(k, str) for k in data):
+            raise ValueError(f"{literal_json}: expected a JSON array of strings")
+        keys.extend(data)
+    return set(keys)
+
+
+def main(argv: list[str]) -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--keys", help="Comma-separated list of keys to remove.")
+    parser.add_argument("--keys-file", type=Path, help="Path to a file with one key per line.")
+    parser.add_argument(
+        "--literal-keys-json",
+        type=Path,
+        help="Path to a JSON array of strings; each entry is treated as a literal key (no stripping, no comma-splitting).",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print what would be removed; do not write the catalog.",
+    )
+    args = parser.parse_args(argv)
+
+    keys = parse_keys(args.keys, args.keys_file, args.literal_keys_json)
+    if not keys:
+        parser.error("must pass --keys, --keys-file, or --literal-keys-json with at least one key")
+
+    if not CATALOG_PATH.exists():
+        print(f"ERROR: catalog not found at {CATALOG_PATH}", file=sys.stderr)
+        return 1
+
+    with CATALOG_PATH.open(encoding="utf-8") as f:
+        catalog: dict = json.load(f)
+    strings: dict = catalog.get("strings", {})
+
+    missing = sorted(k for k in keys if k not in strings)
+    present = sorted(k for k in keys if k in strings)
+
+    if missing:
+        print(f"ERROR: {len(missing)} key(s) not in catalog:", file=sys.stderr)
+        for k in missing:
+            print(f"  - {k}", file=sys.stderr)
+        return 1
+
+    for k in present:
+        print(f"  remove {k}")
+        if not args.dry_run:
+            del strings[k]
+
+    if args.dry_run:
+        print(f"\nDry run: would remove {len(present)} key(s). Catalog unchanged.")
+        return 0
+
+    write_xcstrings(catalog, CATALOG_PATH)
+
+    print(f"\nRemoved {len(present)} key(s). Catalog now has {len(strings)} keys.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
