@@ -33,6 +33,7 @@ lint-changed:
 i18n-check:
 	python3 scripts/check_translations.py
 	python3 scripts/check_source_strings.py
+	python3 scripts/translate_audit/distinct_pairs.py
 	python3 scripts/screenshot_content/generate_seeds.py --check
 
 # -- Build and test -----------------------------------------------------------

@@ -51,6 +51,11 @@ Rules:
   `invalidate_keys.py`, `pluralize_keys.py`.
 - **Formatting is locale-aware by construction.** Dates go through `DateFormatter`, percentages
   through `.formatted(.percent)`. Never interpolate a number and a symbol by hand.
+- **A key that only makes sense next to another is declared as a pair.** "Discard" sits beside
+  "Cancel" on one alert; in eight languages the natural word for discard *is* the word for cancel,
+  and a translator who sees one key at a time cannot know they will meet. Name the neighbour in the
+  translator comment, and add the pair to `DISTINCT_PAIRS` in
+  `scripts/translate_audit/distinct_pairs.py` so the gate fails if a locale ever collapses them.
 
 ### Strings that are also data
 
@@ -142,12 +147,18 @@ the transcreation fan-out, then `generate_seeds.py`.
 | `check_metadata.py` | CI, `push_metadata` lane | Yes |
 | `plural_completeness.py` | CI | Yes |
 | `untranslated_copies.py` | CI | Yes |
+| `distinct_pairs.py` | `make i18n-check`, CI | Yes |
 | `consistency_check.py` | CI | No, informational |
 | `check_source_voice.py` | `push_metadata` lane | No, advisory |
 | `check_content.py` | Screenshot lanes | Yes |
 
 `check_source_strings.py` is the one that catches the common mistake: a bare `Text("English")` added
-to a view. It is a gate failure, not a review note.
+to a view, or a pair of capitalized literals in a ternary parked in a local before they reach a UI
+call. It is a gate failure, not a review note.
+
+`distinct_pairs.py` catches the mistake no reviewer can see in a diff: two strings that share a
+screen and read identically in some locale. It exists because the first overflow-menu translation
+shipped an alert whose two buttons both said "Cancel" in eight languages.
 
 `make i18n-check` runs repo-wide rather than on changed files only, which is an explicit exception to
 the lint policy in `AGENTS.md`. It validates one file and one repo invariant, neither of which is a

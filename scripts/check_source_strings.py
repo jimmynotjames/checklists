@@ -48,6 +48,9 @@ SUPPRESS_MARKER = "check-strings:ignore"
 SKIPPED_DIRS = {"DesignExplorations"}
 
 _QUOTED = r'"([^"\\]*(?:\\.[^"\\]*)*)"'
+# Same, but only when the literal opens with a capital letter: the ternary patterns below
+# would otherwise fire on every `flag ? "a" : "b"` identifier switch in the tree.
+_QUOTED_PROSE = r'"([A-Z][^"\\]*(?:\\.[^"\\]*)*)"'
 
 # Each pattern's group 1 is the literal. `Text(verbatim: "…")` never matches because
 # `verbatim:` precedes the quote; `Text(String(localized: …))` never matches because
@@ -65,6 +68,14 @@ _LITERAL_PATTERNS = [
     re.compile(r"\bUIBarButtonItem\s*\(\s*title:\s*" + _QUOTED),
     re.compile(r"\bUIAlertAction\s*\(\s*title:\s*" + _QUOTED),
     re.compile(r"\bString\s*\(\s*format:\s*" + _QUOTED),
+    # A ternary choosing between two capitalized literals is user-facing copy parked in a
+    # local before it reaches a UI call, which the call-site patterns above cannot see.
+    # Both branches are captured. The two continuation forms cover a ternary split across
+    # lines, since this check is line-based; the leading `?`/`:` keeps a dictionary entry
+    # (`"key": "Value"`) or a `case "x":` from matching.
+    re.compile(r"\?\s+" + _QUOTED_PROSE + r"\s*:\s*" + _QUOTED_PROSE),
+    re.compile(r"^\s*\?\s+" + _QUOTED_PROSE),
+    re.compile(r"^\s*:\s+" + _QUOTED_PROSE),
 ]
 
 # A dotted localization key: `screen.purpose.detail`. Anything else is prose.
@@ -117,15 +128,16 @@ def check(files: list[Path]) -> tuple[list[dict], list[dict]]:
                 seen: set[str] = set()
                 for pattern in _LITERAL_PATTERNS:
                     for m in pattern.finditer(line):
-                        s = m.group(1)
-                        if s in seen or not _is_unkeyed(s):
-                            continue
-                        seen.add(s)
-                        errors.append({
-                            "file": rel, "line": lineno,
-                            "message": f"{s!r} — key it with String(localized:\"dotted.key\", defaultValue:, comment:) "
-                                       "or use Text(verbatim:\"...\") for locale-invariant text",
-                        })
+                        # Every group is a literal; the ternary pattern captures two.
+                        for s in m.groups():
+                            if s is None or s in seen or not _is_unkeyed(s):
+                                continue
+                            seen.add(s)
+                            errors.append({
+                                "file": rel, "line": lineno,
+                                "message": f"{s!r} — key it with String(localized:\"dotted.key\", defaultValue:, comment:) "
+                                           "or use Text(verbatim:\"...\") for locale-invariant text",
+                            })
 
             # --- Warning: print() call ---
             if _PRINT_RE.search(line) and not suppressed:

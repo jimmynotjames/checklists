@@ -524,7 +524,7 @@ class checklistUITest: XCTestCase {
 
   /// Opens the detail screen's overflow menu and taps its one entry, leaving the confirmation up.
   private func tapDeleteChecklistEntry() {
-    let moreButton = app.navigationBars.buttons["More"]
+    let moreButton = app.navigationBars.buttons["checklist.more"]
     XCTAssertTrue(moreButton.waitForExistence(timeout: 5), "Overflow menu button didn't appear.")
     moreButton.tap()
     // A `UIMenu` entry surfaces as a loose button rather than inside the navigation bar.

@@ -5,13 +5,37 @@
 
 import UIKit
 
-/// The trailing overflow menu, the one action behind it, and the dismissal that action shares with
-/// the remote-deletion path.
+/// The trailing navigation items, the overflow menu, the one action behind it, and the dismissal
+/// that action shares with the remote-deletion path.
 extension ChecklistViewController {
+  /// Picks the menu's wording for this screen's mode and builds the trailing bar items. The create
+  /// sheet gets Done, an existing checklist gets Reset; both get the overflow menu at the outer edge.
+  func configureNavigationBar() {
+    showsDiscardWording = isNewChecklist
+    let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: makeMoreMenu())
+    moreItem.accessibilityLabel = Self.moreMenuAccessibilityLabel
+    // Locale-invariant handle for UI tests; the label above is what VoiceOver reads.
+    moreItem.accessibilityIdentifier = "checklist.more"
+    // iOS 26 renders bar buttons in `labelColor` unless the item itself carries a tint.
+    moreItem.tintColor = .tintColor
+
+    let primaryItem = if isNewChecklist {
+      // The create sheet already inserted and saved a real row before this screen appeared
+      // (ChecklistsView.addChecklist), so it needs its own way out besides Done: the menu doubles
+      // as "cancel creation" here, worded as a discard rather than a delete.
+      UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+    } else {
+      // Reset keeps the bar slot: in an app built around rerunning a list it is a per-run action,
+      // while deleting the list is a once-ever one that can afford to sit a tap deeper.
+      UIBarButtonItem(title: Self.resetButtonTitle, style: .plain, target: self, action: #selector(resetButtonTapped))
+    }
+    primaryItem.tintColor = .tintColor
+    // Trailing-first: the menu sits at the outer edge, Done or Reset next to the title.
+    navigationItem.rightBarButtonItems = [moreItem, primaryItem]
+  }
+
   func makeMoreMenu() -> UIMenu {
-    // The create sheet's checklist already exists in the store (ChecklistsView.addChecklist), but
-    // nothing about it has been kept yet — "Discard" names that, where "Delete" would not.
-    let title = showsDiscardWording ? "Discard Checklist" : "Delete Checklist"
+    let title = showsDiscardWording ? Self.discardChecklistMenuTitle : Self.deleteChecklistMenuTitle
     // `.destructive` is what turns the row red, and it is the only colour this menu carries.
     let deleteAction = UIAction(title: title, image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
       self?.confirmDeleteChecklist()
@@ -23,13 +47,11 @@ extension ChecklistViewController {
   /// swipe, so deleting a checklist reads the same wherever it is started from; the create sheet
   /// gets its own copy for the same reason its menu entry does.
   private func confirmDeleteChecklist() {
-    let message = showsDiscardWording
-      ? "Discard this checklist? This cannot be undone."
-      : "Are you sure? This cannot be undone."
-    let confirmTitle = showsDiscardWording ? "Discard" : "Delete"
+    let message = showsDiscardWording ? Self.discardConfirmationMessage : Self.deleteConfirmationMessage
+    let confirmTitle = showsDiscardWording ? Self.discardActionTitle : Self.deleteActionTitle
     let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
     // Cancel added first so it sits on the left, matching the list screen's alert.
-    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+    alert.addAction(UIAlertAction(title: Self.cancelActionTitle, style: .cancel))
     alert.addAction(UIAlertAction(title: confirmTitle, style: .destructive) { [weak self] _ in
       self?.deleteChecklist()
     })

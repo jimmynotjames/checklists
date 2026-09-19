@@ -170,6 +170,10 @@ Full rules: `core-docs/localization-spec.md`. What bites in practice:
 - **Model pinning is deliberate.** Haiku for ordinary UI strings, Opus for the glossary, audits,
   App Store metadata, and `sample.*` transcreation. Do not "upgrade" or "downgrade" an agent to
   trade cost against a deadline.
+- **Keys that share a screen are declared as pairs.** If a new string is only meaningful in
+  contrast with a neighbour (Discard beside Cancel, Delete beside Discard), name the neighbour in
+  the translator comment and add the pair to `scripts/translate_audit/distinct_pairs.py`. The
+  translator sees one key at a time; the gate is what knows they meet.
 - **A fan-out is one message.** Dispatch all locales in a single message with
   `run_in_background: true`, never `nohup`, and never a shell loop that blocks the session.
 
