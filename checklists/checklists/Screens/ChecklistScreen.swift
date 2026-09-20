@@ -66,6 +66,9 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   let onRequestOpenDuplicate: (String) -> Void
 
   @Environment(\.analytics) private var analytics
+  /// Named `modelContext` rather than `context`: `makeUIViewController(context:)` already binds
+  /// that name.
+  @Environment(\.modelContext) private var modelContext
   /// Optional on purpose: previews and tests build this screen without the app around it, and a
   /// missing coordinator should mean "no prompt", never a crash. `ChecklistsApp` always injects it.
   @Environment(RatingPromptCoordinator.self) private var ratingPrompt: RatingPromptCoordinator?
@@ -77,6 +80,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   func makeUIViewController(context: Context) -> UINavigationController {
     let viewController = ChecklistViewController()
     viewController.checklist = checklist
+    viewController.context = modelContext
     viewController.isNewChecklist = isNewChecklist
     viewController.onRequestDismiss = onRequestDismiss
     viewController.onRequestOpenDuplicate = onRequestOpenDuplicate
@@ -131,7 +135,11 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
 
   /// The checklist itself is deliberately not re-applied: ChecklistViewController documents that
   /// resetting `checklist` after viewDidLoad is undefined behavior, and the SwiftUI host never
-  /// changes it in place.
+  /// changes it in place. The context is not re-applied for the same reason, and a stronger one:
+  /// by now the controller has inserted a blank row into it and registered a remote-change
+  /// observer, and `checklist` is a live object that context owns, so swapping it underneath would
+  /// leave the two disagreeing. It cannot drift in practice — `\.modelContext` only changes when an
+  /// ancestor `.modelContainer()` does, which rebuilds this whole subtree.
   ///
   /// The analytics client *is* re-applied. It never changes today — one process-wide instance —
   /// but if a future change swaps the client rather than gating inside it, a checklist already on
