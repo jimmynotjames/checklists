@@ -80,14 +80,13 @@ struct ChecklistReorderFailureTests {
     #expect(viewController.resyncCount == 0, "A save that succeeded leaves the table agreeing with the store already.")
   }
 
-  /// With no override, the write has to be *saved through* the context this controller was given.
+  /// With no override, the reorder has to reach the store behind the context this controller was
+  /// given.
   ///
-  /// The regression net for the injection itself: the old default saved through
-  /// `PersistenceController.shared`, which in this hosted test process resolves to the app's own
-  /// seeded container. Asserting the resulting order does not catch that — `move` mutates `sortKey`
-  /// on these objects either way, and a fetch sees the context's own pending changes. `hasChanges`
-  /// is the discriminator: it is only cleared by a save on *this* context, so it stays true when
-  /// the save went somewhere else.
+  /// Read back through a second context over the same container, rather than asserting the order
+  /// on `checklist`: `move` reassigns `sortKey` on these objects whichever context saves, and a
+  /// fetch on the context that owns them sees its own pending changes either way. Only a separate
+  /// context distinguishes "saved" from "dirtied and saved somewhere else".
   @Test("the default save path saves through the injected context")
   func defaultSavePathUsesTheInjectedContext() throws {
     let (checklist, context) = try makeChecklist()
@@ -97,7 +96,9 @@ struct ChecklistReorderFailureTests {
 
     #expect(viewController.resyncCount == 0)
     #expect(checklist.items.map(\.name) == ["second", "third", "first"])
-    #expect(!context.hasChanges, "The reorder was saved through some other context.")
+    let verification = ModelContext(context.container)
+    let saved = try verification.fetch(FetchDescriptor<Item>()).sorted { $0.sortKey < $1.sortKey }
+    #expect(saved.map(\.name) == ["second", "third", "first"], "The reorder never reached the store.")
   }
 
   /// `saveMove` reports the outcome so the drop path can decline to move a row it failed to save;

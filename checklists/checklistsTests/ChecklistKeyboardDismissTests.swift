@@ -10,9 +10,9 @@ import UIKit
 
 /// Covers dragging the list down to dismiss the keyboard.
 ///
-/// The dismissal is observed through `endEditingAfterDragDismiss` rather than a real resign: these
-/// tests drive `scrollViewDidScroll` directly and never load the view, so there is no first
-/// responder to resign.
+/// The dismissal is observed through `endEditingAfterDragDismiss` rather than a real resign so
+/// that it is observable at all: the real path ends in `view.endEditing(true)`, which reports
+/// nothing a test can assert on.
 @Suite("Dismissing the keyboard by dragging the list")
 struct ChecklistKeyboardDismissTests {
   /// Records dismissals instead of ending editing on a view that was never loaded.

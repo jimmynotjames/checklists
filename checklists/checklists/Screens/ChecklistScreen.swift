@@ -138,14 +138,21 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   /// changes it in place. The context is not re-applied for the same reason, and a stronger one:
   /// by now the controller has inserted a blank row into it and registered a remote-change
   /// observer, and `checklist` is a live object that context owns, so swapping it underneath would
-  /// leave the two disagreeing. It cannot drift in practice — `\.modelContext` only changes when an
-  /// ancestor `.modelContainer()` does, which rebuilds this whole subtree.
+  /// leave the two disagreeing.
+  ///
+  /// It cannot drift, but not because a new `\.modelContext` would rebuild this subtree — applied
+  /// at the same view identity it would arrive here as an update, not a fresh
+  /// `makeUIViewController`. What rules it out is that `ChecklistsApp` applies `.modelContainer`
+  /// inside its `.ready` branch, and `AppStartupModel` only ever produces a second container by way
+  /// of the `.failed` screen — so reaching one crosses a switch branch and rebuilds this anyway.
+  /// The assertion below is the tripwire if that ever stops being true.
   ///
   /// The analytics client *is* re-applied. It never changes today — one process-wide instance —
   /// but if a future change swaps the client rather than gating inside it, a checklist already on
   /// screen would otherwise keep sending through the old one.
   func updateUIViewController(_ navigationController: UINavigationController, context _: Context) {
     guard let viewController = navigationController.viewControllers.first as? ChecklistViewController else { return }
+    assert(viewController.context === modelContext, "The screen's context changed under a live controller.")
     viewController.analytics = analytics
     viewController.ratingPrompt = ratingPrompt
   }

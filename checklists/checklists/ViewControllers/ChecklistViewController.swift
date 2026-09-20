@@ -31,14 +31,13 @@ class ChecklistViewController: UIViewController {
   /// Set by the SwiftUI host (`ChecklistScreen`). Called with the new checklist's `id` after a
   /// duplication, for the host to present. The id rather than the model, like every other
   /// cross-screen reference in the app (see `AppRoute`); the controller has no router and should
-  /// not acquire one. Unset (pure-UIKit presentation, previews, tests) means the copy is still
-  /// made and saved, just not opened.
+  /// not acquire one. Unset means the copy is still made and saved, just not opened.
   var onRequestOpenDuplicate: ((String) -> Void)?
 
   /// Set by the SwiftUI host (`ChecklistScreen`), like `onRequestDismiss` above. There is no
-  /// environment to read from here, so the client is pushed in. The console default keeps
-  /// pure-UIKit construction and previews working without any setup, and means a missed
-  /// injection degrades to "no events" rather than a crash.
+  /// environment to read from here, so the client is pushed in. The console default means a missed
+  /// injection degrades to "no events" rather than a crash — unlike `context` below, which has no
+  /// safe default and must be set.
   var analytics: any AnalyticsClient = ConsoleAnalyticsClient()
 
   /// Set by the SwiftUI host, like `analytics` above. Fed one call per item checked off — the
@@ -74,10 +73,9 @@ class ChecklistViewController: UIViewController {
   /// `\.modelContext` — the same context it resolved `checklist` out of, which the two must always
   /// share.
   ///
-  /// Implicitly unwrapped for the same reason `checklist` is: there is no safe default. The old
-  /// default read `PersistenceController.shared`, which in a hosted test process resolves to the
-  /// app's own seeded container — so a controller under test wrote its items into a store nothing
-  /// displayed, silently, instead of failing. Expected to be set right after `init()`; behavior
+  /// Implicitly unwrapped because there is no safe default, and unlike `checklist` its first use
+  /// is conditional — a screen whose checklist already has items renders fine without it and traps
+  /// later, on the first edit. Set it right after `init()`, alongside `checklist`; behavior is
   /// undefined if it is set or reset after `viewDidLoad()`.
   ///
   /// Internal rather than private so `ChecklistViewController+Menu` can reach it.
@@ -303,8 +301,7 @@ class ChecklistViewController: UIViewController {
 
   /// Whether a scroll view is resting at its top, inset included.
   ///
-  /// Static and internal because it needs nothing from this controller: it answers the question for
-  /// any scroll view, so a test can drive it with a stub whose `adjustedContentInset` it chose.
+  /// Static and internal so a test can drive it with a stub whose `adjustedContentInset` it chose.
   static func isAtTop(_ scrollView: UIScrollView) -> Bool {
     scrollView.contentOffset.y <= -scrollView.adjustedContentInset.top + atTopTolerance
   }
