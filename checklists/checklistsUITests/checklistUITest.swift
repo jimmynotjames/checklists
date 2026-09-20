@@ -266,7 +266,7 @@ class checklistUITest: XCTestCase {
     // Nothing is confirmed and nothing is presented — the copy is simply there.
     XCTAssertFalse(app.alerts.firstMatch.exists, "Duplicating shouldn't raise a confirmation.")
 
-    // The copy lands directly below the original, at the same index the original was at.
+    // The copy lands directly below the original, one row further down.
     guard let copiedName = tablesQuery.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].value as? String else {
       XCTFail("Item name text view value was not a String"); return
     }

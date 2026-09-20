@@ -17,9 +17,10 @@ class Colors {
 
   /// The app's accent color, also wired up as the global tint via
   /// `ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME`. Prefer `UIColor.tintColor` at call sites.
-  /// Two callers can't: `CircularPercentStatusIcon` needs a concrete `CGColor` for a `CALayer`,
-  /// and `CLButton` resolves its colors through a `UIButton.Configuration`, which runs before the
-  /// button has a window to inherit a tint from.
+  /// Some callers can't: `CircularPercentStatusIcon` needs a concrete `CGColor` for a `CALayer`,
+  /// `CLButton` resolves its colors through a `UIButton.Configuration`, which runs before the
+  /// button has a window to inherit a tint from, and `UIContextualAction` has no tint to inherit
+  /// at all.
   static let accent = UIColor(resource: .accent)
   static let salmonRed = UIColor(resource: .salmonRed)
   static let darkPurple = UIColor(resource: .darkPurple)
