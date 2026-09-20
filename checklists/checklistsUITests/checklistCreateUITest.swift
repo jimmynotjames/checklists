@@ -21,6 +21,9 @@ class checklistCreateUITest: XCTestCase {
 
   override func tearDownWithError() throws {}
 
+  /// Navigation-bar buttons here are matched without naming the bar — see
+  /// checklistUITest.detailBackButton for why naming it makes a query depend on scroll position.
+  ///
   /// See checklistUITest.checklistsList.
   private var checklistsList: XCUIElementQuery {
     app.collectionViews
@@ -85,7 +88,7 @@ class checklistCreateUITest: XCTestCase {
     app.typeText(checklistNotes)
 
     // Finish and dismiss modal
-    app.navigationBars["checklists.ChecklistView"].buttons["Done"].tap()
+    app.navigationBars.buttons["Done"].tap()
 
     // Go back in to Checklist to check stuff.
     let mindfulnessRow = checklistsList.staticTexts["Mindfulness Checklist"]
@@ -121,7 +124,7 @@ class checklistCreateUITest: XCTestCase {
     XCTAssert((cell.textViews["itemNameTextView"].value as? String ?? "") == item4Name)
 
     // Go back to main page.
-    app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
+    app.navigationBars.buttons["Back"].tap()
   }
 
   func testCreateChecklist2() {
@@ -172,7 +175,7 @@ class checklistCreateUITest: XCTestCase {
     XCTAssert((cell.textViews["itemNameTextView"].value as? String ?? "") == item4Name)
 
     // Finish and dismiss modal
-    app.navigationBars["checklists.ChecklistView"].buttons["Done"].tap()
+    app.navigationBars.buttons["Done"].tap()
   }
 
   /// Trailing empty Items should be auto-deleted.
@@ -200,7 +203,7 @@ class checklistCreateUITest: XCTestCase {
     XCTAssert(checklistTable.children(matching: .cell).count == 4)
 
     // Finish and dismiss modal, go back to check stuff
-    app.navigationBars["checklists.ChecklistView"].buttons["Done"].tap()
+    app.navigationBars.buttons["Done"].tap()
     let mindfulnessRow = checklistsList.staticTexts["Mindfulness Checklist"]
     XCTAssertTrue(mindfulnessRow.waitForExistence(timeout: 5))
     mindfulnessRow.tap()
@@ -220,7 +223,7 @@ class checklistCreateUITest: XCTestCase {
     app.toolbars["Toolbar"].buttons["Done"].tap()
 
     // Finish and dismiss modal, go back to check stuff
-    app.navigationBars["checklists.ChecklistView"].buttons["Back"].tap()
+    app.navigationBars.buttons["Back"].tap()
     let mindfulnessRowAgain = checklistsList.staticTexts["Mindfulness Checklist"]
     XCTAssertTrue(mindfulnessRowAgain.waitForExistence(timeout: 5))
     mindfulnessRowAgain.tap()
@@ -230,7 +233,7 @@ class checklistCreateUITest: XCTestCase {
 
   func testCreateBlankChecklist() {
     addChecklistButton.tap()
-    app.navigationBars["checklists.ChecklistView"].buttons["Done"].tap()
+    app.navigationBars.buttons["Done"].tap()
 
     let untitled = checklistsList.cells.element(boundBy: 0).staticTexts["untitled checklist"]
     XCTAssertTrue(untitled.waitForExistence(timeout: 5))
@@ -252,7 +255,7 @@ class checklistCreateUITest: XCTestCase {
     for _ in 1 ... 8 {
       deleteKey.tap()
     }
-    app.navigationBars["checklists.ChecklistView"].buttons["Done"].tap()
+    app.navigationBars.buttons["Done"].tap()
 
     XCTAssertTrue(app.staticTexts[checklistName].waitForExistence(timeout: 5))
     app.staticTexts[checklistName].tap()
@@ -278,7 +281,7 @@ class checklistCreateUITest: XCTestCase {
     app/*@START_MENU_TOKEN@*/ .buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/ .tap()
     app.typeText(itemName3)
 
-    app.navigationBars["checklists.ChecklistView"].buttons["Done"].tap()
+    app.navigationBars.buttons["Done"].tap()
     XCTAssertTrue(app.staticTexts[checklistName].waitForExistence(timeout: 5))
     app.staticTexts[checklistName].tap()
 
@@ -298,9 +301,9 @@ class checklistCreateUITest: XCTestCase {
     XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))
     app.typeText("Trip Prep")
 
-    let navigationBar = app.navigationBars["checklists.ChecklistView"]
-    XCTAssertTrue(navigationBar.buttons["checklist.more"].waitForExistence(timeout: 5), "Overflow menu button didn't appear.")
-    navigationBar.buttons["checklist.more"].tap()
+    let moreButton = app.navigationBars.buttons["checklist.more"]
+    XCTAssertTrue(moreButton.waitForExistence(timeout: 5), "Overflow menu button didn't appear.")
+    moreButton.tap()
     let discardEntry = app.buttons["Discard Checklist"]
     XCTAssertTrue(discardEntry.waitForExistence(timeout: 5), "Discard Checklist menu entry didn't appear.")
     discardEntry.tap()
