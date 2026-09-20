@@ -14,12 +14,8 @@ import Foundation
 /// Conforms to `Error` so each startup stage can rethrow its own failure tagged with its stage, and
 /// the coordinator's single `catch` can bind it back.
 struct ContainerCreationFailure: Error, Equatable, Hashable {
-  /// Which startup stage threw.
-  ///
-  /// Set explicitly per `try` in `AppStartupCoordinator.run()` rather than inferred from the error:
-  /// the legacy import throws Realm's errors and its own `ImportError`, neither of which says
-  /// anything about the stage, and a `PersistenceError`'s `PersistenceOperation` answers "which
-  /// save" rather than "how far did launch get".
+  /// Which startup stage threw. Set explicitly per `try` in `AppStartupCoordinator.run()` rather
+  /// than inferred from the error — see core-docs/persistence-design.md §The failure screen.
   ///
   /// Raw values are sent as `startup_stage`, so these case names are analytics vocabulary — see
   /// core-docs/analytics-spec.md §9.1.
@@ -53,6 +49,14 @@ struct ContainerCreationFailure: Error, Equatable, Hashable {
   /// failure into one bucket while the real domain and code sit in its own fields.
   init(underlying: any Error, stage: Stage) {
     self.stage = stage
+    // Both unwraps exist for one reason: these are Swift structs, so `as NSError` would bridge them
+    // to their own type name and code 1, discarding the real domain and code sitting in their
+    // fields. This type is `Error` now, so it can be nested in itself the same way.
+    if let nested = underlying as? ContainerCreationFailure {
+      errorDomain = nested.errorDomain
+      errorCode = nested.errorCode
+      return
+    }
     if let persistenceError = underlying as? PersistenceError {
       errorDomain = persistenceError.errorDomain
       errorCode = persistenceError.errorCode

@@ -221,6 +221,9 @@ struct PersistenceAnalyticsTests {
     let stubContainer = try TestModelContainer.make()
     let coordinator = AppStartupCoordinator(
       makeContainer: { (container: stubContainer, backing: .localFallback) },
+      // Injected even though it cannot fail here: the default would run the real importer against
+      // `UserDefaults.standard` and the host's Realm path.
+      importLegacyData: { _ in },
       seedFirstLaunchData: { _ in
         throw PersistenceError(operation: .sampleSeed, errorDomain: "NSCocoaErrorDomain", errorCode: 134_030)
       },

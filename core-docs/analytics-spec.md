@@ -66,6 +66,7 @@ by what happens to be easy to chart.
 | 3.7 | Does anyone rotate the device? (The orientation-notification cost is only worth paying if so.) | `orientation_changed` |
 | 3.8 | What share of installs opt out, and how does that differ by jurisdiction? | `analytics_consent_changed`, `consent_jurisdiction` |
 | 3.9 | When do people reach the bar for the automatic App Store review prompt, and how soon after does the app actually ask? | `rating_prompt_eligible` → `rating_prompt_requested`, `time_since_first_eligible_bucket` |
+| 3.10 | How often does an upgrading user's old data end up permanently out of reach? | `startup_failed` filtered to `startup_stage = legacy_import`, and `legacy_import_abandoned` |
 
 Question 3.9 stops at the request, deliberately. The prompt is Apple's native `requestReview`,
 which reports neither whether StoreKit showed the dialog nor what the person chose — there is no
@@ -96,7 +97,7 @@ list is a spec change requiring a rationale recorded here — not a code review 
 | `checklist_name` | **Yes — accepted risk, see §4.4** | The only free-text field. Nothing else answers §3.2. |
 | `orientation` | Yes | `portrait` / `landscape`. |
 | `source` | Yes | `menu` / `swipe`. Names an affordance the app owns, never anything the person typed. |
-| `error_domain`, `error_code`, `error_operation`, `startup_stage` | Yes | A SwiftData/CloudKit error domain, its integer code, which save failed, and how far launch got. App-authored and enumerated, never an `NSError`'s `userInfo` — see §4.3. |
+| `error_domain`, `error_code`, `error_operation`, `startup_stage` | Yes | A SwiftData/CloudKit error domain, its integer code, which save failed, and how far launch got. Structured — the last two are app-authored and enumerated — never an `NSError`'s `userInfo`, see §4.3. |
 | App version, build, locale, region, device class | Yes | Standard environment context (§9.2). |
 | A generated `distinct_id` UUID | Yes | Random, app-generated, not derived from any device or Apple identifier (§5). |
 
@@ -326,6 +327,7 @@ All names are flat `snake_case`, `noun_pastTenseVerb`.
 | `persistence_write_failed` | A SwiftData save throws | `error_domain`, `error_code`, `error_operation` | §3.6 |
 | `startup_failed` | Launch could not produce a usable store, so the failure screen was shown | `error_domain`, `error_code`, `startup_stage` | §3.6 |
 | `startup_store_reset` | "Start over fresh" chosen on that screen, deleting this device's stores. Only offered when `startup_stage` was `store_open` | — | §3.6 |
+| `legacy_import_abandoned` | The Realm import failed `LegacyRealmImporter.maximumAttempts` times and was given up on. The file is kept, but this release stops trying | `error_domain`, `error_code` | §3.10 |
 | `analytics_consent_changed` | The consent toggle or first-run sheet changes the setting | `new_value`, `old_value` | §3.8 |
 | `rating_prompt_eligible` | The install first meets every review-prompt threshold. **Once per install**, gated by the persisted `firstEligibleAt` | — | §3.9 |
 | `rating_prompt_requested` | The app calls Apple's native `requestReview`. De-duplicated per app version by the local once-per-version guard | `time_since_first_eligible_bucket` | §3.9 |

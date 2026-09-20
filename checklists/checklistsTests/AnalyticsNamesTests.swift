@@ -31,6 +31,7 @@ struct AnalyticsNamesTests {
     AnalyticsEvent.persistenceWriteFailed,
     AnalyticsEvent.startupFailed,
     AnalyticsEvent.startupStoreReset,
+    AnalyticsEvent.legacyImportAbandoned,
     AnalyticsEvent.orientationChanged,
     AnalyticsEvent.analyticsConsentChanged,
     AnalyticsEvent.ratingPromptEligible,

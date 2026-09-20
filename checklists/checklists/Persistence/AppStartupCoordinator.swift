@@ -76,11 +76,10 @@ final class AppStartupCoordinator {
       )
       AppLog.bootstrap.info("bootstrap.ready: backing=\(String(describing: backing), privacy: .public)")
       return .ready(container: container, backing: backing)
-    } catch let failure as ContainerCreationFailure {
-      // All three stages land here on purpose, because the user-facing answer to all three starts
-      // the same: do not continue into a screen that would look like their data is gone. What
-      // differs is the recovery — `failure.stage` decides whether the destructive reset is even
-      // offered, since only a store that would not open has nothing left to lose.
+    } catch let failure {
+      // All three stages land here on purpose: the user-facing answer to all three starts the same,
+      // which is to not continue into a screen that would look like their data is gone. What
+      // differs is the recovery, which `failure.stage` decides.
       AppLog.bootstrap.error("bootstrap.failed: \(failure.diagnosticDescription, privacy: .public)")
       analytics.track(
         AnalyticsEvent.startupFailed,
@@ -91,14 +90,19 @@ final class AppStartupCoordinator {
         ]
       )
       return .failed(failure)
-    } catch {
-      preconditionFailure("Every throwing startup stage is wrapped in `tagging`, so this is unreachable.")
     }
   }
 
   /// Tags whatever `work` throws with the stage it threw in, so the catch above can tell "the store
   /// would not open" from "the store opened and a later stage failed".
-  private func tagging<T>(_ stage: ContainerCreationFailure.Stage, _ work: () throws -> T) throws -> T {
+  ///
+  /// The typed `throws(ContainerCreationFailure)` is what makes the caller's single `catch`
+  /// exhaustive: adding a `try` that bypasses this helper becomes a compile error rather than an
+  /// untagged failure reaching a screen whose whole purpose is that startup never crashes.
+  private func tagging<T>(
+    _ stage: ContainerCreationFailure.Stage,
+    _ work: () throws -> T
+  ) throws(ContainerCreationFailure) -> T {
     do {
       return try work()
     } catch {

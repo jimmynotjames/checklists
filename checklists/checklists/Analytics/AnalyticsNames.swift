@@ -38,6 +38,9 @@ nonisolated enum AnalyticsEvent {
   static let persistenceWriteFailed = "persistence_write_failed"
   static let startupFailed = "startup_failed"
   static let startupStoreReset = "startup_store_reset"
+  /// The legacy Realm import was given up on after repeated failures. The file is kept, but this
+  /// release will not try again — so this counts users whose old data is now out of reach.
+  static let legacyImportAbandoned = "legacy_import_abandoned"
 
   // MARK: Rating prompt
 
