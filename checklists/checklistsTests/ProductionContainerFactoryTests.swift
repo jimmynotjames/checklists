@@ -38,8 +38,8 @@ struct ProductionContainerFactoryTests {
     #expect(configurationOfferedToCloud?.url == ProductionContainerFactory.storeURL())
   }
 
-  /// iCloud being unavailable is an ordinary state — no account, no network on a first launch, a
-  /// simulator that has never signed in — and must degrade to the local store rather than failing.
+  /// A CloudKit-backed container that will not initialize must degrade to the local store rather
+  /// than failing the launch: an unsynced app is a working app.
   @Test("an unavailable CloudKit falls back to the local store")
   func fallsBackToLocalWhenCloudKitIsUnavailable() throws {
     let stubContainer = try TestModelContainer.make()

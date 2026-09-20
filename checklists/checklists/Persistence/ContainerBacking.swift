@@ -5,8 +5,9 @@
 
 import Foundation
 
-/// Which store the app actually ended up running on, decided once at launch by
-/// `ProductionContainerFactory` and never mutated afterwards.
+/// Which store the app actually ended up running on, decided once at launch and never mutated
+/// afterwards. `ProductionContainerFactory` decides it on a real launch; a test or screenshot run
+/// is handed `.localFallback` by `LaunchModeContainerFactory` without the factory being consulted.
 ///
 /// This is deliberately *not* "is the user signed into iCloud" — that is a separate, live signal.
 /// The two combine into a single user-facing status in `SyncStatus`; keeping them apart is what

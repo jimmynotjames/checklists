@@ -312,7 +312,12 @@ class ChecklistViewController: UIViewController {
     do {
       try context.insert(item: Item(), at: index, in: checklist)
     } catch {
-      return // Already logged and reported by `saveChanges`; nothing was inserted.
+      // Already logged and reported by `saveChanges`. The item is still in `checklist.items`,
+      // though — `insert(item:at:in:)` stages it before saving and has no rollback — so the data
+      // source now counts one more row than the table was told about, and the next batch update
+      // can raise. The sibling sort keys `place` may have renormalized are staged the same way.
+      // See issue #219.
+      return
     }
 
     let updates = {

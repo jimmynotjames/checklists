@@ -217,7 +217,12 @@ struct ChecklistsView: View {
     do {
       try context.insert(checklist: checklist, at: 0, among: Array(checklists))
     } catch {
-      return // Already logged and reported by `saveChanges`; nothing was added.
+      // Already logged and reported by `saveChanges`. The checklist is still registered in the
+      // context, though — `insert(checklist:at:among:)` stages it before saving and has no
+      // rollback — so `@Query` shows a blank row that was never written, and autosave may yet
+      // write it — as it may the sibling sort keys `place` renormalized on the way. Returning
+      // here at least avoids opening the naming sheet on top of that. See issue #219.
+      return
     }
     router.sheet = .newChecklist(id: checklist.id)
   }
@@ -248,15 +253,15 @@ struct ChecklistsView: View {
     )
   }
 
-  /// Resolves the pending delete by `id`, not by row. The alert is answered asynchronously, and
-  /// once sync is on a merge can reorder the list while it is up — at which point a captured
-  /// index would name a different checklist and this would silently delete the wrong one.
   private static let resetAllTitle = String(
     localized: "checklists.action.resetAll",
     defaultValue: "Reset All",
     comment: "Unchecks every item in every checklist. Popover row and confirmation button; clears progress, never deletes lists."
   )
 
+  /// Resolves the pending delete by `id`, not by row. The alert is answered asynchronously, and
+  /// once sync is on a merge can reorder the list while it is up — at which point a captured
+  /// index would name a different checklist and this would silently delete the wrong one.
   private func confirmDelete(id checklistId: String) {
     // `nil` means it is already gone — deleted on another device while the alert was up.
     guard let checklist = context.checklist(id: checklistId) else { return }

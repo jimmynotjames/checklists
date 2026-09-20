@@ -9,8 +9,8 @@ import Observation
 /// Tracks the app's iCloud sync availability and exposes a derived view-state
 /// for the Settings screen's iCloud row.
 ///
-/// `containerBacking` is determined at app launch from the outcome of
-/// `ProductionContainerFactory.make` and is not expected to change afterwards.
+/// `containerBacking` is fixed at app launch — from `ProductionContainerFactory.make` on a real
+/// launch, and hardcoded to `.localFallback` under test and screenshot runs.
 /// `accountStatus` is updated asynchronously by `SettingsView` via
 /// `ICloudStatusLoader` and `CKAccountChangedNotification`/`NSUbiquityIdentityDidChange`
 /// observers.
