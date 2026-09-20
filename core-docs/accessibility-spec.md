@@ -79,6 +79,7 @@ full two-family sweep, and the reasoning behind each verdict.
 | Site | Verdict |
 | --- | --- |
 | `RootView` main-menu transition | **Gated** — cross-fades instead of sliding in from the leading edge |
+| `ToastPresenterModifier` toast transition | **Gated** — cross-fades instead of sliding up from the bottom edge |
 | `ChecklistViewController.resetButtonTapped` scroll-to-top | **Gated** — jumps instead of gliding, and reloads directly, because the animated path defers its reload to `scrollViewDidScroll` |
 | `NavigationStack` push/pop, `.sheet`, `.popover`, `.alert`, `Toggle`, `.onMove`, `UIDragInteraction` reorder, `popViewController`/`dismiss` | System-owned. No app code specifies motion |
 | `ChecklistViewController` keyboard-inset, item-insert, and scroll-into-view animations (all ≤ 0.1s) | **Functional, left alone.** They keep the edited field clear of the keyboard and the target row on screen; suppressing them trades an a11y win for an a11y regression |

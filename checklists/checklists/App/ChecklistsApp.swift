@@ -16,6 +16,9 @@ struct ChecklistsApp: App {
   @State private var startup: AppStartupModel
   @State private var router = Router()
   @State private var appOpenTracker = AppOpenTracker()
+  /// Inline is safe here, unlike the two below: it takes no dependencies and emits nothing.
+  /// Instrumenting toasts later would mean moving it into `init()` for the gated client.
+  @State private var toasts = ToastPresenter()
   /// Not inline either, for a related reason: `init()` needs this exact instance — not a second
   /// one — to build the consent gate's `isOptedIn` closure before injecting it into the
   /// environment below.
@@ -55,11 +58,13 @@ struct ChecklistsApp: App {
         case let .ready(container, _):
           RootView()
             // Innermost on purpose: a modifier reads the environment of its *ancestors*, and every
-            // `.environment(...)` below is applied outside this one, so this is the only position
-            // from which the presenter can see `Router` and the coordinator. Put it after them and
-            // the app traps at launch on the missing observable. Only the ready branch has it: the
-            // prompt is fed by check-offs, which only happen here.
+            // `.environment(...)` below is applied outside these two, so this is the only position
+            // from which either presenter can see `Router`, the coordinator and the toast
+            // presenter. Put them after those and the app traps at launch on the missing
+            // observable. Only the ready branch has the rating prompt: it is fed by check-offs,
+            // which only happen here.
             .ratingPromptPresenter()
+            .toastPresenter()
             .modelContainer(container)
             .environment(router)
             // Reuse the instance PersistenceController installed at startup rather than building
@@ -67,6 +72,7 @@ struct ChecklistsApp: App {
             // only the coordinator knows.
             .environment(PersistenceController.shared.syncStatus)
             .environment(ratingPrompt)
+            .environment(toasts)
             .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
               guard let value = orientationAnalyticsValue(UIDevice.current.orientation) else { return }
               analytics.track(AnalyticsEvent.orientationChanged, properties: [AnalyticsProperty.orientation: value])
