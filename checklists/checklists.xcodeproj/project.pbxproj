@@ -540,11 +540,11 @@
 				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = checklists/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jimmyho.checklists;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -568,11 +568,11 @@
 				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = checklists/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jimmyho.checklists;
 				PRODUCT_NAME = "$(TARGET_NAME)";
