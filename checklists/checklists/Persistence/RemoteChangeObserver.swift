@@ -15,19 +15,14 @@ import Foundation
  changed*. Observing the model objects instead (`withObservationTracking`) cannot tell our own edit
  from a merged one, so it would fire during an in-flight table view animation and fight it.
 
- Registration passes `object: nil`, so there is no filtering by coordinator or by store: every
- remote-change notification posted anywhere in the process arrives here, including from a container
- this observer's owner knows nothing about. Harmless for a screen that reloads from its own context,
- but it is not the narrow subscription the argument list suggests.
+ Nothing filters by coordinator or by store, so every remote-change notification posted anywhere in
+ the process arrives here, including from a container this observer's owner knows nothing about.
 
  Changes arrive in bursts — a merge writes many records in quick succession — so the callback is
  debounced: each notification restarts a `coalescingDelay` wait, and the callback runs once the
  burst goes quiet. `maximumDelay` bounds that wait. An initial CloudKit import, whose notifications
  arrive faster than the debounce window for seconds at a time, would otherwise restart the wait
- forever and never refresh the screen at all. The callback therefore runs at the earlier of "quiet
- for `coalescingDelay`" and "`maximumDelay` since this burst's first notification".
-
- The notification is delivered on whichever queue posted it, hence the deliberate hop.
+ forever and never refresh the screen at all.
  */
 @MainActor
 final class RemoteChangeObserver: NSObject {
@@ -35,7 +30,8 @@ final class RemoteChangeObserver: NSObject {
   private let coalescingDelay: Duration
   private let maximumDelay: Duration
   private var pendingCallback: Task<Void, Never>?
-  /// When the current burst's first notification arrived, or `nil` between bursts.
+  /// `nil` between bursts; otherwise when this burst's first notification reached the main actor,
+  /// which is what the deadline below is measured from.
   private var burstStart: ContinuousClock.Instant?
 
   /// - Parameters:
@@ -65,11 +61,11 @@ final class RemoteChangeObserver: NSObject {
   /// `nonisolated` because the notification is delivered on whichever queue posted it.
   @objc nonisolated private func storeChangedRemotely() {
     Task { @MainActor [weak self] in
-      self?.scheduleCallback()
+      self?.scheduleCoalescedCallback()
     }
   }
 
-  private func scheduleCallback() {
+  private func scheduleCoalescedCallback() {
     let now = ContinuousClock.now
     let start = burstStart ?? now
     burstStart = start
@@ -80,8 +76,8 @@ final class RemoteChangeObserver: NSObject {
     pendingCallback = Task { @MainActor [weak self] in
       try? await Task.sleep(until: fireAt, clock: .continuous)
       guard !Task.isCancelled, let self else { return }
-      // Clearing the start opens a fresh window, so a sustained import fires once per
-      // `maximumDelay` and an ordinary burst still gets the full trailing wait.
+      // A fresh window, so a sustained import fires once per `maximumDelay` while an ordinary
+      // burst still gets its full trailing wait.
       burstStart = nil
       pendingCallback = nil
       onChange()
