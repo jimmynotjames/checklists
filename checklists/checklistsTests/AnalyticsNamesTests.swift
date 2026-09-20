@@ -24,6 +24,7 @@ struct AnalyticsNamesTests {
     AnalyticsEvent.feedbackTapped,
     AnalyticsEvent.privacyPolicyTapped,
     AnalyticsEvent.checklistCreated,
+    AnalyticsEvent.checklistDuplicated,
     AnalyticsEvent.checklistReset,
     AnalyticsEvent.checklistDeleted,
     AnalyticsEvent.persistenceFatalError,
@@ -42,6 +43,7 @@ struct AnalyticsNamesTests {
     AnalyticsProperty.notesLength,
     AnalyticsProperty.itemsCount,
     AnalyticsProperty.itemsWithNotesCount,
+    AnalyticsProperty.source,
     AnalyticsProperty.errorDomain,
     AnalyticsProperty.errorCode,
     AnalyticsProperty.errorOperation,
@@ -125,5 +127,13 @@ struct AnalyticsNamesTests {
       "checklistEdit", "itemEdit", "itemUpdate", "reorder", "delete", "legacyImport", "sampleSeed",
       "dedupe",
     ])
+  }
+
+  /// `source` transmits `ChecklistDuplicationSource.rawValue`, so the same rule as above applies:
+  /// the case names *are* the analytics vocabulary. Update analytics-spec.md §9.1 in the same change.
+  @Test("the duplication source values sent as source are pinned")
+  func duplicationSourceValuesArePinned() {
+    #expect(ChecklistDuplicationSource.menu.rawValue == "menu")
+    #expect(ChecklistDuplicationSource.swipe.rawValue == "swipe")
   }
 }

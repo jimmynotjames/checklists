@@ -61,7 +61,7 @@ by what happens to be easy to chart.
 | 3.2 | What do people actually make checklists *for*? | `checklist_name` (§4.4) |
 | 3.3 | How big do checklists get — items, notes, how many lists per person? | `checklists_count`, `items_count`, `notes_length` |
 | 3.4 | Is the notes feature used at all, or is it dead weight? | `items_with_notes_count`, `notes_length` |
-| 3.5 | Do people reset checklists (reuse) or just make new ones (disposable)? | `checklist_reset` vs `checklist_created` vs `checklist_deleted` |
+| 3.5 | Do people reset checklists (reuse), duplicate them (template), or just make new ones (disposable)? | `checklist_reset` vs `checklist_duplicated` vs `checklist_created` vs `checklist_deleted` |
 | 3.6 | How often does the store fail to open in the field, and how often is that unrecoverable? | `startup_failed` / `startup_store_reset` |
 | 3.7 | Does anyone rotate the device? (The orientation-notification cost is only worth paying if so.) | `orientation_changed` |
 | 3.8 | What share of installs opt out, and how does that differ by jurisdiction? | `analytics_consent_changed`, `consent_jurisdiction` |
@@ -95,6 +95,7 @@ list is a spec change requiring a rationale recorded here — not a code review 
 | `notes_length` | Yes | A character count, never the characters. |
 | `checklist_name` | **Yes — accepted risk, see §4.4** | The only free-text field. Nothing else answers §3.2. |
 | `orientation` | Yes | `portrait` / `landscape`. |
+| `source` | Yes | `menu` / `swipe`. Names an affordance the app owns, never anything the person typed. |
 | `error_domain`, `error_code`, `error_operation` | Yes | A SwiftData/CloudKit error domain, its integer code, and which save failed. Structured, never an `NSError`'s `userInfo` — see §4.3. |
 | App version, build, locale, region, device class | Yes | Standard environment context (§9.2). |
 | A generated `distinct_id` UUID | Yes | Random, app-generated, not derived from any device or Apple identifier (§5). |
@@ -304,7 +305,7 @@ the `OSLog` channel (§11) remains the complete record. Do not "fix" it by exemp
 
 ## 8. Event catalog
 
-All names are flat `snake_case`, `noun_pastTenseVerb`. 19 events.
+All names are flat `snake_case`, `noun_pastTenseVerb`.
 
 | Event | Fires when | Properties | Answers |
 | --- | --- | --- | --- |
@@ -314,6 +315,7 @@ All names are flat `snake_case`, `noun_pastTenseVerb`. 19 events.
 | `settings_viewed` | Settings appears | — | §3.1 |
 | `main_menu_viewed` | The main menu appears | — | §3.1 |
 | `checklist_created` | A checklist is created | — | §3.5 |
+| `checklist_duplicated` | A checklist is copied, from the list's swipe action or the checklist screen's menu | `source` | §3.5 |
 | `checklist_reset` | All items in a checklist are unchecked | — | §3.5 |
 | `checklist_deleted` | A checklist is deleted, from the list's swipe action or the checklist screen's menu | — | §3.5 |
 | `rate_app_tapped` | "Rate in App Store" tapped | — | §3.1 |
@@ -342,6 +344,7 @@ comment for the check-off, eligibility, and presentation-gating mechanics.
 | `notes_length` | Int | Character count of the checklist's notes. 0 when absent. |
 | `items_count` | Int | |
 | `items_with_notes_count` | Int | Counts items whose notes are non-nil *and* non-empty. |
+| `source` | String | `menu` / `swipe`. Which affordance started a duplication. `checklist_duplicated` only. |
 | `error_domain` | String | An `NSError` `domain`, e.g. `NSCocoaErrorDomain`. Framework-authored. |
 | `error_code` | Int | An `NSError` `code`. Sent as an Int, not a string. |
 | `error_operation` | String | `PersistenceOperation.rawValue`: `checklistEdit`, `itemEdit`, `itemUpdate`, `reorder`, `delete`, `legacyImport`, `sampleSeed`, `dedupe`. `persistence_write_failed` only. The one camelCase *value* this app sends — it is a Swift case name, so renaming a case changes the analytics vocabulary. `AnalyticsNamesTests` pins the set. |

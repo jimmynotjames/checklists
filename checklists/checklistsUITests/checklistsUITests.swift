@@ -41,6 +41,37 @@ class checklistsUITests: XCTestCase {
     XCTAssert(staticText3.exists)
   }
 
+  /// The list screen's other swipe action. Delete keeps the outer edge, so both must be reachable
+  /// after one swipe, and this one must act without a confirmation.
+  func testChecklistDuplicationFromSwipe() {
+    let listQuery = app.collectionViews
+    let sourceName = "Weekend Getaway Essentials"
+    listQuery.staticTexts[sourceName].swipeLeft()
+
+    // By identifier rather than by label: Delete sits beside this one, and the revealed buttons are
+    // not reliably enumerable by position straight after a swipe.
+    let duplicateAction = app.buttons["checklistRow.duplicate"]
+    XCTAssertTrue(duplicateAction.waitForExistence(timeout: 5), "Swipe-to-duplicate action didn't appear.")
+    duplicateAction.tap()
+
+    let copy = listQuery.staticTexts["\(sourceName) copy"]
+    XCTAssertTrue(copy.waitForExistence(timeout: 5), "The copy didn't appear in the list.")
+    // Nothing is confirmed and nothing is presented — the copy is simply there.
+    XCTAssertFalse(app.alerts.firstMatch.exists, "Duplicating shouldn't raise a confirmation.")
+    let source = listQuery.staticTexts[sourceName]
+    XCTAssertTrue(source.exists, "The original should still be in the list.")
+    XCTAssertGreaterThan(copy.frame.origin.y, source.frame.origin.y, "The copy should sit directly below the original.")
+
+    // A second copy has to resolve its clash with the first rather than repeating the name.
+    source.swipeLeft()
+    XCTAssertTrue(duplicateAction.waitForExistence(timeout: 5), "Swipe-to-duplicate action didn't reappear.")
+    duplicateAction.tap()
+    XCTAssertTrue(
+      listQuery.staticTexts["\(sourceName) copy 2"].waitForExistence(timeout: 5),
+      "The second copy didn't get a name of its own."
+    )
+  }
+
   func testChecklistReordering() {
     let text1 = app.staticTexts["Morning Routine"]
     let text2 = app.staticTexts["Weekend Getaway Essentials"]

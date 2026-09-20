@@ -534,9 +534,83 @@ class checklistUITest: XCTestCase {
     XCTAssert(lastItemName == newItemName2)
   }
 
+  // MARK: - Duplicating from the overflow menu
+
+  /// The sheet the copy opens in. Two navigation bars are in the tree once it is up, and only this
+  /// one carries Done — the pushed screen behind it carries Reset.
+  private var duplicateSheetNavigationBar: XCUIElement {
+    app.navigationBars.containing(.button, identifier: "Done").firstMatch
+  }
+
+  private func tapDuplicateChecklistEntry() {
+    let moreButton = app.navigationBars.buttons["checklist.more"]
+    XCTAssertTrue(moreButton.waitForExistence(timeout: 5), "Overflow menu button didn't appear.")
+    moreButton.tap()
+    // A `UIMenu` entry surfaces as a loose button rather than inside the navigation bar.
+    let duplicateEntry = app.buttons["Duplicate Checklist"]
+    XCTAssertTrue(duplicateEntry.waitForExistence(timeout: 5), "Duplicate Checklist menu entry didn't appear.")
+    duplicateEntry.tap()
+  }
+
+  /// The name the open sheet is showing, read across both `checklistNameField`s in the tree: the
+  /// pushed screen behind the sheet still has one.
+  private func visibleChecklistNames() -> [String] {
+    let fields = app.textFields.matching(identifier: "checklistNameField")
+    return (0 ..< fields.count).compactMap { fields.element(boundBy: $0).value as? String }
+  }
+
+  /// Duplicating opens the copy in the create sheet rather than navigating, so that renaming it is
+  /// the next thing the keyboard is already waiting for.
+  func testDuplicateChecklistFromDetailMenu() {
+    checklistsList.staticTexts["Morning Routine"].tap()
+    XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
+
+    tapDuplicateChecklistEntry()
+
+    XCTAssertTrue(duplicateSheetNavigationBar.waitForExistence(timeout: 5), "The copy's sheet didn't appear.")
+    // Unconfirmed: the sheet is the only thing between the tap and the copy.
+    XCTAssertFalse(app.alerts.firstMatch.exists, "Duplicating shouldn't raise a confirmation.")
+    XCTAssertTrue(
+      visibleChecklistNames().contains("Morning Routine copy"),
+      "The sheet should be showing the copy, named after the original."
+    )
+
+    duplicateSheetNavigationBar.buttons["Done"].tap()
+
+    // Done lands back on the original, which is where the duplication was started from.
+    XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
+    detailBackButton.tap()
+    XCTAssertTrue(checklistsList.staticTexts["Morning Routine copy"].waitForExistence(timeout: 5))
+    XCTAssertTrue(checklistsList.staticTexts["Morning Routine"].exists, "The original should still be in the list.")
+  }
+
+  /// Discard is the way back out of an accidental duplicate, and the reason the copy opens in the
+  /// create sheet rather than as a push.
+  func testDiscardingADuplicateRemovesIt() {
+    checklistsList.staticTexts["Morning Routine"].tap()
+    XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
+
+    tapDuplicateChecklistEntry()
+    XCTAssertTrue(duplicateSheetNavigationBar.waitForExistence(timeout: 5), "The copy's sheet didn't appear.")
+
+    duplicateSheetNavigationBar.buttons["checklist.more"].tap()
+    let discardEntry = app.buttons["Discard Checklist"]
+    XCTAssertTrue(discardEntry.waitForExistence(timeout: 5), "Discard Checklist menu entry didn't appear.")
+    discardEntry.tap()
+    let confirmDiscard = app.alerts.buttons["Discard"]
+    XCTAssertTrue(confirmDiscard.waitForExistence(timeout: 5), "Discard confirmation alert didn't appear.")
+    confirmDiscard.tap()
+
+    XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
+    detailBackButton.tap()
+    XCTAssertTrue(checklistsList.staticTexts["Morning Routine"].waitForExistence(timeout: 5))
+    XCTAssertFalse(checklistsList.staticTexts["Morning Routine copy"].exists, "The discarded copy should be gone.")
+  }
+
   // MARK: - Deleting from the overflow menu
 
-  /// Opens the detail screen's overflow menu and taps its one entry, leaving the confirmation up.
+  /// Opens the detail screen's overflow menu and taps its destructive entry, leaving the
+  /// confirmation up.
   private func tapDeleteChecklistEntry() {
     let moreButton = app.navigationBars.buttons["checklist.more"]
     XCTAssertTrue(moreButton.waitForExistence(timeout: 5), "Overflow menu button didn't appear.")

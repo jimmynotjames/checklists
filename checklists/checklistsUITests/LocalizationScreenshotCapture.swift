@@ -18,6 +18,8 @@ import XCTest
 /// - Four `.accessibilityIdentifier(...)` handles this is currently the only consumer of:
 ///   `toolbar.mainMenu`, `toolbar.checklistsMenu`, `toolbar.addChecklist`, `checklistRow.delete`
 ///   (ChecklistsView) and `mainMenu.settings` (MainMenuView). Renaming one breaks navigation here.
+/// - The row's trailing swipe reveals two buttons: `checklistRow.duplicate` beside
+///   `checklistRow.delete`.
 /// - `analyticsConsentSheet.decline`, shared with `AnalyticsConsentUITest`.
 /// - `TestDynamicTypeOverride` (the `FORCE_DYNAMIC_TYPE` hook), applied at the app root and again on
 ///   `RootView`'s sheet, since a sheet does not inherit the root's `dynamicTypeSize`.

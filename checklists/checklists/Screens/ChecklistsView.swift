@@ -76,6 +76,18 @@ struct ChecklistsView: View {
           // the label text across 13 languages, and positional lookup on the
           // revealed buttons is not reliable straight after the swipe.
           .accessibilityIdentifier("checklistRow.delete")
+
+          // Declared after Delete, so Delete keeps the outer edge and the full-swipe slot it has
+          // today. Unconfirmed, unlike its neighbour: a copy takes nothing away, and the way to
+          // undo one is to delete it.
+          Button {
+            duplicate(checklist: checklist)
+          } label: {
+            Label(CommonStrings.duplicate, systemImage: "plus.square.on.square")
+              .labelStyle(.iconOnly)
+          }
+          .tint(Color.accentColor)
+          .accessibilityIdentifier("checklistRow.duplicate")
         }
       }
       .onMove(perform: move)
@@ -252,6 +264,22 @@ struct ChecklistsView: View {
     // The items go with it: the relationship's cascade delete rule handles that automatically.
     context.delete(checklist)
     context.saveChangesIgnoringFailure(operation: .delete)
+  }
+
+  // MARK: - Duplicating
+
+  /// The detail screen's menu entry opens the copy; this one does not, because here the result is
+  /// already on screen.
+  private func duplicate(checklist: Checklist) {
+    do {
+      try context.duplicate(checklist: checklist, among: Array(checklists))
+    } catch {
+      return // Already logged and reported by `saveChanges`; nothing was added, so nothing is tracked.
+    }
+    analytics.track(
+      AnalyticsEvent.checklistDuplicated,
+      properties: [AnalyticsProperty.source: ChecklistDuplicationSource.swipe.rawValue]
+    )
   }
 
   // MARK: - Resetting

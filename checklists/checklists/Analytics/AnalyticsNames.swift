@@ -28,6 +28,7 @@ nonisolated enum AnalyticsEvent {
   // MARK: User actions
 
   static let checklistCreated = "checklist_created"
+  static let checklistDuplicated = "checklist_duplicated"
   static let checklistReset = "checklist_reset"
   static let checklistDeleted = "checklist_deleted"
 
@@ -70,6 +71,12 @@ nonisolated enum AnalyticsProperty {
   static let notesLength = "notes_length"
   static let itemsCount = "items_count"
   static let itemsWithNotesCount = "items_with_notes_count"
+
+  // MARK: checklist_duplicated
+
+  /// The two entry points are far apart in effort, so a single count would not say whether either
+  /// is worth keeping.
+  static let source = "source"
 
   // MARK: Errors and failures
 

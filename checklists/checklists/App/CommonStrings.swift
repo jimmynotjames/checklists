@@ -34,6 +34,12 @@ nonisolated enum CommonStrings {
     comment: "Keyboard accessory button that ends editing."
   )
 
+  static let duplicate = String(
+    localized: "common.action.duplicate",
+    defaultValue: "Duplicate",
+    comment: "Makes a copy of a checklist. Swipe action on the list screen; VoiceOver reads it as the button's name."
+  )
+
   static let notesPlaceholder = String(
     localized: "common.notes.placeholder",
     defaultValue: "Notes",
@@ -44,6 +50,15 @@ nonisolated enum CommonStrings {
     localized: "common.settings.title",
     defaultValue: "Settings",
     comment: "Title of the Settings screen and the main-menu row that opens it."
+  )
+
+  /// Written into the store as a checklist's name, not shown as a label, so it stays in whatever
+  /// language the device had when it was saved. Lives here rather than on the detail screen because
+  /// `ChecklistCopyNaming` needs the same fallback and must not reach into a view controller for it.
+  static let defaultChecklistName = String(
+    localized: "checklist.defaultName",
+    defaultValue: "untitled checklist",
+    comment: "Name stored for a checklist saved with an empty name field. Lowercase in English; it is data once saved."
   )
 
   /// Under the delete-checklist and reset-all confirmations on the list screen, and under the

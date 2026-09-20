@@ -5,8 +5,8 @@
 
 import UIKit
 
-/// The trailing navigation items, the overflow menu, the one action behind it, and the dismissal
-/// that action shares with the remote-deletion path.
+/// The trailing navigation items, the overflow menu, the actions behind it, and the dismissal
+/// the destructive one shares with the remote-deletion path.
 extension ChecklistViewController {
   /// Picks the menu's wording for this screen's mode and builds the trailing bar items. The create
   /// sheet gets Done, an existing checklist gets Reset; both get the overflow menu at the outer edge.
@@ -40,7 +40,42 @@ extension ChecklistViewController {
     let deleteAction = UIAction(title: title, image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
       self?.confirmDeleteChecklist()
     }
-    return UIMenu(children: [deleteAction])
+    // Nothing on the create sheet's checklist has been kept yet — copying a draft nobody has
+    // decided to keep is not an action that means anything.
+    guard !showsDiscardWording else { return UIMenu(children: [deleteAction]) }
+
+    let duplicateAction = UIAction(title: Self.duplicateChecklistMenuTitle, image: UIImage(systemName: "plus.square.on.square")) { [weak self] _ in
+      self?.duplicateChecklist()
+    }
+    // Inline sections, so the destructive entry keeps a gap above it and a thumb reaching for
+    // Duplicate cannot land on Delete.
+    return UIMenu(children: [
+      UIMenu(options: .displayInline, children: [duplicateAction]),
+      UIMenu(options: .displayInline, children: [deleteAction]),
+    ])
+  }
+
+  /// Unconfirmed on purpose: nothing is lost, and the sheet that follows offers Discard as the way
+  /// back out.
+  private func duplicateChecklist() {
+    // Commits a name or note still being typed into the *source*, so the copy carries what is on
+    // screen rather than the last value that happened to be saved. Same first-responder hazard
+    // `deleteChecklist` documents below, for the opposite reason.
+    view.endEditing(true)
+    guard let siblings = try? context.fetchChecklistsSorted() else {
+      AppLog.persistence.error("Could not read the checklists to place a duplicate among.")
+      return
+    }
+    guard let copy = try? context.duplicate(checklist: checklist, among: siblings) else {
+      // Already logged and reported by `saveChanges`, and nothing was added; opening a sheet on a
+      // checklist that does not exist would be the worse failure.
+      return
+    }
+    analytics.track(
+      AnalyticsEvent.checklistDuplicated,
+      properties: [AnalyticsProperty.source: ChecklistDuplicationSource.menu.rawValue]
+    )
+    onRequestOpenDuplicate?(copy.id)
   }
 
   /// The existing-checklist wording matches the confirmation the checklists list puts behind a
