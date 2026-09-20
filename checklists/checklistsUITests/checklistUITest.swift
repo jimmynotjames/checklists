@@ -35,13 +35,18 @@ class checklistUITest: XCTestCase {
 
   /// The detail screen's Back button, found without naming its navigation bar.
   ///
-  /// The bar's identifier is whichever of the checklist name / the view controller's default
-  /// ("checklists.ChecklistView") happens to apply: `ChecklistViewController.scrollViewDidScroll`
-  /// only shows the title once the table is scrolled past a threshold, so the identifier flips
-  /// between the two depending on scroll position — and under the SwiftUI `NavigationStack` the
-  /// title now survives a reorder drag / row insertion where it used to be cleared. Only one
-  /// navigation bar is in the tree while the detail screen is up, so matching on the button alone
-  /// is both simpler and immune to that.
+  /// **Never name the detail screen's navigation bar in a query.** Its identifier is whichever of
+  /// the checklist name / the view controller's default ("checklists.ChecklistView") happens to
+  /// apply: `ChecklistViewController.scrollViewDidScroll` only shows the title once the table is
+  /// scrolled past a threshold, so the identifier flips between the two depending on scroll
+  /// position — and under the SwiftUI `NavigationStack` the title now survives a reorder drag /
+  /// row insertion where it used to be cleared. A query naming the bar therefore passes or fails
+  /// on how far the table happened to scroll, which is the difference between a green suite and an
+  /// intermittent "No matches found for … IN identifiers".
+  ///
+  /// Matching on the button alone is immune to that, and stays unambiguous even with a sheet's bar
+  /// in the tree beside the list screen's: Back, Reset, Done and `checklist.more` each exist on
+  /// exactly one bar at a time. `checklistCreateUITest` follows the same rule.
   private var detailBackButton: XCUIElement {
     app.navigationBars.buttons["Back"]
   }
@@ -105,7 +110,7 @@ class checklistUITest: XCTestCase {
     assertPercentComplete(tablesQuery["ChecklistTableView"], numCheckedItems: 2, numItems: 11) // Check that circular status icon updated. 2/11 -> 18%
 
     // Reset checklist. Verify again.
-    app.navigationBars["checklists.ChecklistView"].buttons["Reset"].tap()
+    app.navigationBars.buttons["Reset"].tap()
 
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].isSelected == false)
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["Checkbox"].isSelected == false)
@@ -427,8 +432,17 @@ class checklistUITest: XCTestCase {
     XCTAssert(item2Name.prefix(item2Name.count - n) == trimmedName)
   }
 
+  /// Mirrors `CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete:)`, which the
+  /// UI test target cannot call — it runs in its own process and does not link the app module.
+  ///
+  /// The percentage goes through the same `.percent` format style rather than being interpolated
+  /// with a literal `%`: the separator and the symbol's side are locale-dependent ("18%", "18 %",
+  /// "%18"), and hardcoding English here is what let this expectation drift from the app in the
+  /// first place.
   private func percentCompleteString(numCheckedItems: Int, numItems: Int) -> String {
-    String(format: "Checklist %.0f percent complete", 100.0 * Double(numCheckedItems) / Double(numItems))
+    let percent = (Double(numCheckedItems) / Double(numItems))
+      .formatted(.percent.precision(.fractionLength(0)))
+    return "Checklist \(percent) complete"
   }
 
   /// Asserts that `parentElement` contains the circular status icon's accessibility element with the
