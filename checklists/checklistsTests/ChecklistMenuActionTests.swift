@@ -32,15 +32,17 @@ struct ChecklistMenuActionTests {
     }
   }
 
-  /// The order is load-bearing: the screen leaves *before* the record goes, so the route is off the
-  /// router's path before SwiftUI's next update and the push destination is never re-resolved
-  /// against a checklist that has gone.
+  /// The order is load-bearing, for the reason `deleteChecklist` gives: the screen leaves before
+  /// the record does.
   @Test("the screen is dismissed before the checklist is deleted")
   func dismissalPrecedesDeletion() throws {
     try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
       var wasDeletedAtDismissal: Bool?
+      // Captures the checklist, not the harness: the harness holds the controller, which holds
+      // this closure, and that cycle would outlive the `defer` that is meant to release it.
+      let checklist = harness.checklist
       harness.viewController.onRequestDismiss = {
-        wasDeletedAtDismissal = harness.checklist.isDeleted
+        wasDeletedAtDismissal = checklist.isDeleted
       }
 
       harness.viewController.deleteChecklist()
@@ -76,8 +78,7 @@ struct ChecklistMenuActionTests {
     }
   }
 
-  /// The source's uncommitted name is committed before the copy is taken, or the copy would be
-  /// named from the last value that happened to be saved rather than what is on screen.
+  /// The copy carries what is on screen, not the last value that happened to be saved.
   @Test("an uncommitted name is committed into the source before copying")
   func uncommittedNameIsCommittedBeforeCopying() throws {
     try ChecklistScreenHarness.withController(

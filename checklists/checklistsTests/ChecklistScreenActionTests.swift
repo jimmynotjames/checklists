@@ -9,8 +9,8 @@ import SwiftData
 import Testing
 import UIKit
 
-/// Covers the checklist screen's own actions — reset, the overflow menu's delete and duplicate, and
-/// the remote-change handler — all of which write through the injected context.
+/// Covers the checklist screen's own actions — reset, the checkbox, item duplication and the
+/// remote-change handler. The overflow menu's actions are in `ChecklistMenuActionTests`.
 @Suite("Checklist screen actions")
 struct ChecklistScreenActionTests {
   // MARK: - Reset
@@ -25,6 +25,10 @@ struct ChecklistScreenActionTests {
       #expect(harness.checklist.items.allSatisfy { $0.status == .unchecked })
       #expect(harness.checklist.lastUpdated != nil)
       #expect(harness.analytics.count(of: AnalyticsEvent.checklistReset) == 1)
+
+      let verification = ModelContext(harness.modelContext.container)
+      let saved = try verification.fetch(FetchDescriptor<Item>())
+      #expect(saved.allSatisfy { $0.status == .unchecked }, "The reset is saved, not just staged.")
     }
   }
 
@@ -124,8 +128,8 @@ struct ChecklistScreenActionTests {
 
   // MARK: - Remote changes
 
-  /// The checklist was deleted on another device while this screen was open. Leaving it up would
-  /// let the user go on editing a record that no longer exists.
+  /// Deleted on another device while this screen was open, for the reason `handleRemoteChange`
+  /// gives.
   @Test("a checklist deleted elsewhere dismisses the screen")
   func remoteDeletionDismissesTheScreen() throws {
     try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
@@ -162,6 +166,22 @@ struct ChecklistScreenActionTests {
       harness.viewController.handleRemoteChange()
 
       #expect(harness.header.nameTextField.text == "Weekly shop")
+    }
+  }
+
+  /// A merge must never yank the table out from under an active edit. The merged values are
+  /// already in the model, so the cost of waiting is nothing; the cost of not waiting is the user's
+  /// half-typed text disappearing.
+  @Test("a merge arriving mid-edit leaves the field alone")
+  func mergeDuringAnEditLeavesTheFieldAlone() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
+      harness.header.nameTextField.text = "half-typed"
+      #expect(harness.header.nameTextField.becomeFirstResponder(), "The guard under test needs a real first responder.")
+      harness.checklist.name = "Merged from elsewhere"
+
+      harness.viewController.handleRemoteChange()
+
+      #expect(harness.header.nameTextField.text == "half-typed")
     }
   }
 

@@ -11,10 +11,9 @@ import UIKit
 /// A `ChecklistViewController` with its view loaded, in a real window, over a disposable store.
 ///
 /// Loading the view is what most of this controller's behavior needs: the header fields, the status
-/// icon and the table all come from `viewDidLoad`, and a first responder needs a key window. It
-/// became testable once the controller took an injected `ModelContext` — before that it wrote
-/// through `PersistenceController.shared`, which in this hosted process resolves to the app's own
-/// seeded container.
+/// icon and the table all come from `viewDidLoad`. The window is needed too — `becomeFirstResponder`
+/// and `view.endEditing` are both no-ops without one — and the controller's injected `ModelContext`
+/// is what lets a test see what any of it wrote.
 ///
 /// Closure-scoped like `TestScope`, so teardown is not optional: the controller registers a
 /// `RemoteChangeObserver` on `NotificationCenter.default`, and one left alive would keep answering
@@ -46,23 +45,23 @@ enum ChecklistScreenHarness {
       checklist.items.map(\.name)
     }
 
-    /// Re-reads the checklist through a second context over the same container, to tell "saved"
-    /// from "staged in the context the assertion is already looking at".
+    /// This checklist's item names, read through a second context over the same container, to tell
+    /// "saved" from "staged in the context the assertion is already looking at".
     func persistedItemNames() throws -> [String] {
       let verification = ModelContext(modelContext.container)
+      let checklistId = checklist.id
       return try verification.fetch(FetchDescriptor<Item>())
+        .filter { $0.checklist?.id == checklistId }
         .sorted { $0.sortKey < $1.sortKey }
         .map(\.name)
     }
   }
 
-  /// - Parameters:
-  ///   - items: each item's name and whether it is checked, in the order they should appear.
-  ///   - isNewChecklist: drives the create-sheet wording and the history caption.
+  /// - Parameter items: each item's name and whether it is checked, in the order they should
+  ///   appear.
   static func withController<T>(
     name: String = "Groceries",
     items: [(name: String, isChecked: Bool)] = [],
-    isNewChecklist: Bool = false,
     _ body: (Context) throws -> T
   ) throws -> T {
     let container = try TestModelContainer.make()
@@ -85,17 +84,20 @@ enum ChecklistScreenHarness {
     let viewController = ChecklistViewController()
     viewController.checklist = checklist
     viewController.context = modelContext
-    viewController.isNewChecklist = isNewChecklist
     viewController.analytics = analytics
 
     let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
     defer {
-      // Releases the controller, and with it the remote-change observer it registered.
+      // Drops the last reference this helper holds to the controller, and with it the
+      // remote-change observer the controller registered. Anything the closure captured that
+      // reaches the controller will outlive this, so don't capture the harness in a callback.
       window.rootViewController = nil
       window.isHidden = true
     }
     window.rootViewController = viewController
-    window.makeKeyAndVisible()
+    // Visible, not key: the window has no scene here, so it cannot take key status from the test
+    // host — but being unhidden is what makes first-responder changes work.
+    window.isHidden = false
     viewController.loadViewIfNeeded()
     viewController.view.layoutIfNeeded()
 

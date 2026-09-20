@@ -10,9 +10,6 @@ import Testing
 import UIKit
 
 /// Covers what loading and leaving the checklist screen writes to the store.
-///
-/// All of this became reachable when the controller took an injected `ModelContext`: it was
-/// previously writing through the app's own container, so a test could not see what it did.
 @Suite("Checklist screen lifecycle")
 struct ChecklistViewLifecycleTests {
   // MARK: - The blank scratch row
@@ -54,8 +51,8 @@ struct ChecklistViewLifecycleTests {
     }
   }
 
-  /// The trim stops at index 0 (`while i > 0`), so the scratch row an empty checklist was seeded
-  /// with survives. Leaving one blank row is the point: the screen would otherwise be reopened with
+  /// The trim stops at index 0 (`while i > 0`), so whatever sits there survives regardless of how
+  /// it got there. Keeping one blank row is the point: the screen would otherwise reopen with
   /// nowhere to type.
   @Test("a lone blank row is kept")
   func loneBlankRowIsKept() throws {
@@ -82,12 +79,29 @@ struct ChecklistViewLifecycleTests {
     }
   }
 
-  @Test("a real item is never trimmed")
-  func realItemIsNotTrimmed() throws {
-    try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
+  /// Two items, so the loop actually runs and has to stop at the last one rather than falling out
+  /// of its `while i > 0` bound.
+  @Test("a trailing real item stops the trim")
+  func trailingRealItemStopsTheTrim() throws {
+    try ChecklistScreenHarness.withController(
+      items: [("Milk", false), ("Bread", false)]
+    ) { harness in
       harness.viewController.viewDidDisappear(false)
 
-      #expect(harness.itemNames == ["Milk"])
+      #expect(harness.itemNames == ["Milk", "Bread"])
+    }
+  }
+
+  /// The case that separates `while i > 0` from "delete every blank": an all-blank list collapses
+  /// to one row, not none.
+  @Test("an all-blank checklist keeps exactly one row")
+  func allBlankChecklistKeepsOneRow() throws {
+    try ChecklistScreenHarness.withController(
+      items: [("", false), ("", false), ("", false)]
+    ) { harness in
+      harness.viewController.viewDidDisappear(false)
+
+      #expect(harness.checklist.items.count == 1)
     }
   }
 
@@ -128,6 +142,9 @@ struct ChecklistViewLifecycleTests {
       harness.viewController.textViewDidEndEditing(harness.header.notesTextView)
 
       #expect(harness.checklist.notes == "before Friday")
+      let verification = ModelContext(harness.modelContext.container)
+      let saved = try verification.fetchChecklistsSorted().first?.notes
+      #expect(saved == "before Friday")
     }
   }
 }
