@@ -23,4 +23,7 @@ class Colors {
   static let accent = UIColor(resource: .accent)
   static let salmonRed = UIColor(resource: .salmonRed)
   static let darkPurple = UIColor(resource: .darkPurple)
+
+  /// The destructive-action color, matching `Colors.destructiveColor` on the SwiftUI side.
+  static let destructive = UIColor(resource: .salmonRed)
 }

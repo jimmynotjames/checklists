@@ -244,6 +244,36 @@ class checklistUITest: XCTestCase {
     assertPercentComplete(tablesQuery["ChecklistTableView"], numCheckedItems: 4, numItems: 5) // Check that circular status icon updated. 4/5
   }
 
+  /// The item swipe's other action. Delete keeps the outer edge, so both must be reachable after
+  /// one swipe, and this one must act without a confirmation.
+  func testItemDuplication() {
+    checklistsList.staticTexts["Morning Routine"].tap()
+
+    let tablesQuery = app.tables
+    XCTAssertTrue(tablesQuery["ChecklistTableView"].waitForExistence(timeout: 5))
+
+    guard let itemName = tablesQuery.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String else {
+      XCTFail("Item name text view value was not a String"); return
+    }
+
+    assertPercentComplete(tablesQuery["ChecklistTableView"], numCheckedItems: 5, numItems: 6) // Check circular status icon initial status. 5/6
+
+    let cell = tablesQuery.children(matching: .cell).element(boundBy: 1)
+    cell.swipeLeft() // "Yoga/meditation"
+    let duplicateAction = tablesQuery.buttons["Duplicate"]
+    XCTAssertTrue(duplicateAction.waitForExistence(timeout: 5), "Swipe-to-duplicate action didn't appear.")
+    duplicateAction.tap()
+    // Nothing is confirmed and nothing is presented — the copy is simply there.
+    XCTAssertFalse(app.alerts.firstMatch.exists, "Duplicating shouldn't raise a confirmation.")
+
+    // The copy lands directly below the original, at the same index the original was at.
+    guard let copiedName = tablesQuery.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].value as? String else {
+      XCTFail("Item name text view value was not a String"); return
+    }
+    XCTAssertEqual(copiedName, itemName, "The copy should carry the original's name, unchanged.")
+    assertPercentComplete(tablesQuery["ChecklistTableView"], numCheckedItems: 5, numItems: 7) // Check circular status icon updated. 5/7
+  }
+
   /**
    You can create an Item by tapping Next on keyboard and remove one by tapping Delete
    on an empty Item.

@@ -368,6 +368,23 @@ class ChecklistViewController: UIViewController {
     refreshHistoryCaption()
   }
 
+  /// Copies the item at `index` and places the copy directly beneath it. See
+  /// `ModelContext.duplicate(item:in:)` — unlike checklist duplication, the name carries over
+  /// unchanged.
+  func duplicateItem(at index: Int) {
+    // Commits any in-progress edit first, or the copy would be taken from stale, uncommitted
+    // text — the same reason `duplicateChecklist()` ends editing before copying.
+    view.endEditing(true)
+    let items = checklist.items
+    guard index >= 0, index < items.count else { assertionFailure(); return }
+    guard (try? context.duplicate(item: items[index], in: checklist)) != nil else { return }
+    tableView.insertRows(at: [IndexPath(row: index + 1, section: itemsSection)], with: .automatic)
+    // Not a status change: no timestamp write, no history-caption refresh — matches
+    // `insertNewItem`. The new unchecked row can still move `percentageComplete` and flip
+    // `isComplete`, which is why the status icon alone needs a refresh.
+    updateStatusIcon()
+  }
+
   /// The width the header was last measured against. `view` is the table itself, so this runs on
   /// every scroll frame — and measuring means a full layout plus TextKit pass over the notes.
   private var lastHeaderWidth: CGFloat = 0.0
@@ -466,22 +483,34 @@ extension ChecklistViewController: UITableViewDataSource {
 }
 
 extension ChecklistViewController: UITableViewDelegate {
-  func tableView(_: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-    guard indexPath.section == itemsSection else { assertionFailure(); return }
-    if editingStyle == .delete {
-      deleteItem(at: indexPath.row)
-    } else if editingStyle == .insert {
-      assertionFailure()
-    }
-  }
-
   func tableView(_: UITableView, shouldHighlightRowAt _: IndexPath) -> Bool {
     false
   }
 
-  func tableView(_: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-    guard indexPath.section == itemsSection else { assertionFailure(); return .none }
-    return .delete
+  /// Delete keeps the outermost slot and the full-swipe gesture; Duplicate sits beside it,
+  /// matching the list screen's ordering (`ChecklistsView.swift`).
+  func tableView(_: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    guard indexPath.section == itemsSection, indexPath.row < checklist.items.count else { assertionFailure(); return nil }
+
+    let deleteAction = UIContextualAction(style: .destructive, title: nil) { [weak self] _, _, completion in
+      self?.deleteItem(at: indexPath.row)
+      completion(true)
+    }
+    deleteAction.image = UIImage(systemName: "trash")
+    deleteAction.backgroundColor = Colors.destructive
+    deleteAction.accessibilityLabel = CommonStrings.delete
+
+    let duplicateAction = UIContextualAction(style: .normal, title: nil) { [weak self] _, _, completion in
+      self?.duplicateItem(at: indexPath.row)
+      completion(true)
+    }
+    duplicateAction.image = UIImage(systemName: "plus.square.on.square")
+    duplicateAction.backgroundColor = Colors.accent
+    duplicateAction.accessibilityLabel = CommonStrings.duplicate
+
+    let configuration = UISwipeActionsConfiguration(actions: [deleteAction, duplicateAction])
+    configuration.performsFirstActionWithFullSwipe = true
+    return configuration
   }
 }
 
