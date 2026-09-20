@@ -22,7 +22,6 @@ final class PersistenceController {
   }
 
   let modelContainer: ModelContainer
-  let containerBacking: ContainerBacking
   let syncStatus: SyncStatus
 
   var mainContext: ModelContext {
@@ -31,7 +30,6 @@ final class PersistenceController {
 
   init(modelContainer: ModelContainer, containerBacking: ContainerBacking) {
     self.modelContainer = modelContainer
-    self.containerBacking = containerBacking
     syncStatus = SyncStatus(containerBacking: containerBacking)
   }
 
