@@ -8,7 +8,7 @@ hypothetical** — in particular, an App Store build talks only to the CloudKit 
 environment, so the schema must be deployed there before 1.2 ships.
 
 This document is canonical for the data model, the constraints it was designed against, the
-one-time legacy import, sort-key ordering, and the startup/failure UX. The sibling
+one-time legacy import, sort-key ordering, duplication, autosave, and the startup/failure UX. The sibling
 [`analytics-spec.md`](analytics-spec.md) is canonical for analytics; this file does not repeat
 it.
 
@@ -67,8 +67,11 @@ within SwiftData yet. See "CloudKit rules" below for what changing either model 
 - **No unique constraints** (`@Attribute(.unique)`) anywhere. CloudKit has no way to enforce
   uniqueness across devices that write while offline, so a unique attribute in SwiftData's schema
   makes `ModelContainer` creation with a CloudKit configuration throw outright.
-- **Every relationship is optional, with an explicit inverse.** `Checklist.itemsStorage` and
-  `Item.checklist` are both optional `@Relationship` properties. CloudKit syncs a record graph in
+- **Every relationship is optional, and the inverse is declared once.** `Checklist.itemsStorage`
+  carries the `@Relationship(deleteRule:inverse:)`; `Item.checklist` is a plain optional property
+  with no macro, which is the correct SwiftData idiom — annotating both sides risks two
+  relationships instead of one reciprocal pair, and is why `Reordering` sets only the child side
+  and lets SwiftData maintain the other. Both are optional because CloudKit syncs a record graph in
   pieces, so a child record can legitimately arrive before its parent (or vice versa); a
   non-optional relationship would be unsatisfiable during that window.
 - **Every non-optional attribute has a default value** (`= ""`, `= UUID().uuidString`, `= 0.0`, …).
@@ -127,20 +130,51 @@ CloudKit relationships are unordered sets (see "CloudKit rules"), so "the order 
 arranged things in" has to be stored as data on each record rather than inferred from array
 position — `Checklist.sortKey` and `Item.sortKey`, both `Double`s, ascending.
 
-**Midpoint insertion, not renumbering.** Moving or inserting a record assigns it the key exactly
-between its two new neighbours (`SortKeyReorder.key(forInsertingAt:in:)`), so a reorder rewrites the
-one record that moved rather than renumbering everyone after it. That matters once sync is on: a
-renumber would turn every reorder into a diff across the whole list instead of one changed record.
-The cost is that repeated insertions at the same spot keep halving the available gap; once a gap
-shrinks below `SortKeyReorder.epsilon` (`1e-6`), the key function returns `nil` and the caller
-(`Persistence/Reordering.swift`) renormalizes the whole list back to evenly spaced integers
-(`1, 2, 3, …`, via `SortKeyReorder.renormalize`) and asks again — always splittable immediately
-afterwards, since a fresh `step`-sized (`1.0`) gap is not exhausted.
+**Midpoint insertion, not renumbering on every reorder.** A record dropped between two others
+takes their midpoint (`SortKeyReorder.key(forInsertingAt:in:)`); at the head it halves the leading
+key, and at the tail it adds `step`. So a reorder rewrites the one record that moved rather than
+renumbering everyone after it. That matters once sync is on: a renumber turns a reorder into a diff
+across the whole list instead of one changed record.
+
+**Renormalization is that renumber, kept rare rather than avoided.** Repeated insertions at the
+same interior spot halve the available gap each time; once it falls below `SortKeyReorder.epsilon`
+(`1e-6`) the key function returns `nil` and the caller (`Persistence/Reordering.swift`) rewrites the
+whole list to evenly spaced integers (`1, 2, 3, …`, via `SortKeyReorder.renormalize`) and asks again
+— always splittable immediately afterwards, since a fresh `step`-sized (`1.0`) gap is not exhausted.
+That rewrite is every record in the list, which on a synced store is exactly the whole-list diff the
+scheme exists to avoid, so it is worth knowing how close it is: **twenty** insertions at one spot,
+since the gap after *n* of them is 2⁻ⁿ. `epsilon` is a policy floor rather than a `Double` limit —
+the mantissa would allow roughly fifty — chosen to stay well clear of the coarsest keys in play,
+which are the legacy import's.
+
+**Imported checklists do not start at 1.** `LegacyRealmImporter` gives each device's import a
+random base — `Int.random(in: 0..<10_000) * 1000.0` — and numbers that device's checklists upward
+from there, so keys run as high as ~1e7. The point is the two-device case: both devices import the
+same Realm file independently, and identical keys would interleave the two copies into one
+scrambled list. Separate random blocks keep each device's ordering intact, with a 1-in-10,000
+chance of collision that degrades to the old interleaved order rather than to data loss. Item keys
+are unaffected and still start at `step`, since they are scoped to one checklist from one device.
+A block is 1000 wide against a realistic ceiling of a couple of hundred checklists.
 
 **Why not array indices**, which would be simpler: an index is a property of the collection, and
 CloudKit's relationships don't preserve collection order at all — see "No ordered relationships"
 above. A `sortKey` field is just another synced attribute, so it survives the trip through CloudKit
 the way an implicit array position cannot.
+
+## Duplication
+
+`Persistence/ChecklistDuplication.swift` deep-copies a checklist; `ItemDuplication.swift` copies one
+item within its checklist. Three decisions worth knowing:
+
+- **Item sort keys are re-issued, not copied.** `source.items` is already sorted, so spacing the
+  copies afresh from `step` preserves the order and leaves the copy evenly spaced room to reorder.
+  The same reasoning as the legacy import's.
+- **A copy inherits neither status nor history.** Items come across unchecked and `lastUpdated` /
+  `lastCompleted` stay nil, because both record something that happened to the original. Blank rows
+  are skipped: they are the detail screen's scratch row, not a task.
+- **The whole graph is one save**, and the catch undoes the half-built copy — items first, then the
+  checklist, rather than relying on the cascade rule, since nothing saves afterwards for the rule to
+  run against. This is the shape the plain insert paths lack (issue #219).
 
 ## Startup and failure UX
 
@@ -201,6 +235,30 @@ instead of propagating the error, and `ChecklistsApp` shows `ContainerFailureVie
 "Start over fresh" path re-runs `AppStartupCoordinator().run()`. Nothing has been deleted at that point —
 in particular the Realm file, per "Legacy import" above — so retrying is a real chance of recovery.
 
+## Autosave
+
+**Nothing in this repo ever sets `autosaveEnabled`**, which means the app and its tests do not agree
+about when a write reaches disk:
+
+- **The app autosaves.** `PersistenceController.mainContext` returns `modelContainer.mainContext`,
+  and `.modelContainer(container)` publishes that same context as `\.modelContext`. A container's
+  main context has `autosaveEnabled == true` by default.
+- **Unit tests do not.** `TestModelContainer.makeContext()` builds `ModelContext(container)`
+  directly, and a hand-built context defaults to `false`.
+
+The explicit `saveChanges(operation:)` calls are therefore not the only thing that persists a
+change; they are what gives a write an ordering point and a failure report. Two consequences worth
+holding onto:
+
+- `saveChangesIgnoringFailure` dropping an error does not reliably drop the write. Autosave will
+  usually commit the same pending changes shortly afterwards, reporting nothing either way.
+- A test asserting "the save failed, so nothing was persisted" is asserting against different
+  durability semantics than the app has. Nothing currently depends on that, but it is the kind of
+  gap that makes a green suite misleading.
+
+Neither is a reason to change the behaviour on its own; they are a reason not to reason about
+failed saves as though the explicit call were the only writer.
+
 ## File protection
 
 The app sets **no** `com.apple.developer.default-data-protection` entitlement, and the Xcode
@@ -238,7 +296,9 @@ rather than redeclaring one.
 **Two signals, because they answer different questions and can disagree:**
 
 - `containerBacking` (`ContainerBacking`, `.cloudKit` / `.localFallback`) — which store *this
-  launch* ended up on, decided once by `ProductionContainerFactory` and never mutated afterwards.
+  launch* ended up on, fixed once and never mutated afterwards. `ProductionContainerFactory` decides
+  it on a real launch; test and screenshot runs are handed `.localFallback` directly by
+  `LaunchModeContainerFactory`.
 - `accountStatus` (`SyncStatus.AccountStatus`, `.checking` / `.available` / `.unavailable`) — whether
   the user is *currently* signed in to iCloud, a live signal that can change while the app is
   running (sign-in, sign-out, account switch) independently of which store this launch picked.

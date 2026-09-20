@@ -35,12 +35,14 @@ struct PersistenceError: Error, Equatable {
 
 extension ModelContext {
   /**
-   Saves, and on failure logs a diagnostic and reports an analytics event before rethrowing.
+   Saves, and on failure logs a diagnostic, reports an analytics event, and throws.
 
-   Unlike the old `DBManager.write` wrapper, which called `fatalError` on a failed write, the error
-   is surfaced instead — each call site decides what to do (see `saveChangesIgnoringFailure`).
+   It throws a `PersistenceError` rather than rethrowing what `save()` gave it. That substitution is
+   the point: the original `NSError` carries `userInfo`, and a typed value with only the operation,
+   domain and code can be logged, mailed and re-thrown without anyone downstream having to remember
+   that. `ContainerCreationFailure.init(underlying:stage:)` exists to unwrap it again.
 
-   The public/private split in the log line is inherited from `DBManager`: domain, code and
+   The public/private split in the log line follows from the same rule: domain, code and
    `localizedDescription` are bounded, framework-authored strings and are what make a sysdiagnose
    actionable; the full error description can serialise `userInfo`, which is not bounded and not
    ours to promise is free of the user's own content.
@@ -69,7 +71,13 @@ extension ModelContext {
 
    For incidental edits — a renamed checklist, a toggled checkbox — where there is no useful
    recovery and no sensible place to put an alert; the bet is that these saves do not fail in
-   practice. Startup and import paths do **not** use this.
+   practice. The stages that can fail startup use the throwing form instead, so a failure there
+   reaches the failure screen rather than being dropped. `AppStartupCoordinator`'s dedupe is the one
+   startup call that swallows a failure, which it does with its own `try?` and for its own reason.
+
+   Note that dropping the error is not the same as dropping the write: the main context autosaves
+   (see core-docs/persistence-design.md §Autosave), so the pending changes usually reach disk
+   shortly afterwards, with nothing reported either way.
    */
   func saveChangesIgnoringFailure(operation: PersistenceOperation, analytics: any AnalyticsClient = AppAnalytics.shared) {
     try? saveChanges(operation: operation, analytics: analytics)

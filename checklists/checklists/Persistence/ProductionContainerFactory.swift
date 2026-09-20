@@ -20,8 +20,12 @@ enum ProductionContainerFactory {
   ///
   /// On: the iCloud capability, the `iCloud.com.jimmyho.checklists` container and the
   /// remote-notification background mode are all in place. The local-only path below is still the
-  /// fallback, not dead code — it runs whenever iCloud is unavailable, which is a normal state
-  /// (no account, a simulator that has never signed in, a first launch with no network).
+  /// fallback, not dead code — but note what actually selects it: *any* throw from the
+  /// CloudKit-configured `ModelContainer` initializer, not an iCloud account check. A schema that
+  /// violates a CloudKit constraint, a migration failure and a corrupt store all land there too,
+  /// and `try?` discards which it was. A missing account is not usually among them —
+  /// `cloudKitDatabase: .automatic` generally initializes fine with nobody signed in, and simply
+  /// does not sync.
   static let cloudKitEnabled = true
 
   /// The one on-disk location both configurations use.
@@ -59,8 +63,9 @@ enum ProductionContainerFactory {
         AppLog.cloudKit.info("cloudkit.container.backed")
         return (container, .cloudKit)
       }
-      // Expected whenever iCloud is unavailable: no account, no network on a first launch, or a
-      // simulator that has never been signed in. Not an error.
+      // Not treated as an error: the local store is a working app, just an unsynced one. The
+      // cost of `try?` is that this line cannot say *why*, which is worth remembering when this
+      // is the only evidence a fleet of installs stopped syncing.
       AppLog.cloudKit.notice("cloudkit.container.localFallback")
     }
 
