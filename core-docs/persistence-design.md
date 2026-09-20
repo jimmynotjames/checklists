@@ -180,16 +180,27 @@ what a user in trouble is looking at.
 |---|---|
 | ![The container failure screen](images/container-failure-screen.png) | ![The start-over confirmation](images/container-failure-confirmation.png) |
 
-It appears only when the **local** store fails: the container could not be created, the one-time
-Realm import did not complete, or first-launch seeding could not save. A CloudKit-backed store that
-will not open is not a cause — `ProductionContainerFactory` attempts it with `try?` and falls
-through to the local one, so that degrades sync, never startup. In practice the realistic causes
-are a full disk and a corrupt store.
+It appears when any of three stages fails: the container could not be created, the one-time Realm
+import did not complete, or first-launch seeding could not save. A CloudKit-backed store that will
+not open is not a cause of the first — `ProductionContainerFactory` attempts it with `try?` and
+falls through to the local one, so that degrades sync, never startup. The seed and import saves do
+go to a possibly CloudKit-backed context, so they are not equally insulated. In practice the
+realistic causes are a full disk and a corrupt store.
+
+**Which stage failed decides what the screen offers**, because the three are not equally
+recoverable. `ContainerCreationFailure.stage` records it, set per `try` rather than inferred from
+the error — the import throws Realm's errors and its own `ImportError`, neither of which carries a
+stage, and a `PersistenceError`'s `PersistenceOperation` answers "which save" rather than "how far
+did launch get".
 
 "Start over fresh" is the escape hatch of last resort — see `StoreReset` — because a corrupt store
-cannot be repaired in place, and without it the app is permanently unusable. It deletes only local
-stores, so a CloudKit-backed account repopulates on the next launch; for a corrupt local store that
-is the best available outcome.
+cannot be repaired in place, and without it the app is permanently unusable. It is offered **only
+for `.storeOpen`** (`ContainerCreationFailure.allowsStoreReset`). The other two stages mean the
+store opened and may hold the user's real checklists, and the reset would delete those along with
+the Realm file to fix a problem that involved neither; those stages get the feedback path alone,
+and the body copy's suggestion to relaunch. It deletes only local stores, so a CloudKit-backed
+account repopulates on the next launch; for a corrupt local store that is the best available
+outcome.
 
 
 `Persistence/AppStartupCoordinator.swift` owns everything between process start and the first
@@ -200,15 +211,20 @@ so the whole sequence is one testable, retryable unit rather than scattered init
 **Coordinator order**, inside `AppStartupCoordinator.run()`:
 
 1. Build the `ModelContainer` (`LaunchModeContainerFactory.make`, defaulting to
-   `ProductionContainerFactory.make` outside of tests — see below).
-2. `LegacyRealmImporter.importIfNeeded(into:)`.
+   `ProductionContainerFactory.make` outside of tests — see below). Tagged `.storeOpen`.
+2. `LegacyRealmImporter.importIfNeeded(into:)`. Tagged `.legacyImport`.
 3. `SampleData.insertFirstTimeLaunchDataIfNeeded(into:)` — a no-op if the import (or a prior launch)
-   already populated the store.
-4. Install the result as `PersistenceController.shared`.
+   already populated the store. Tagged `.firstLaunchSeed`.
+4. `SampleData.dedupeChecklists(in:)`. Swallowed rather than propagated, so it can never be the
+   stage that failed: duplicate untouched samples are cosmetic, and failing to tidy them is no
+   reason to show the failure screen instead of the user's checklists.
+5. Install the result as `PersistenceController.shared`.
 
-Steps 2–3 are skipped entirely under `LaunchModeContainerFactory.isRunningTests` — automated tests
+Steps 2–4 are skipped entirely under `LaunchModeContainerFactory.isRunningTests` — automated tests
 get an already-seeded in-memory container (`InMemoryModelContainer.makeSeeded()`), where running the
-Realm importer would be both wrong (there is no Realm file) and slow.
+Realm importer would be both wrong (there is no Realm file) and slow. That is also why the
+coordinator takes the two stage closures as injectable parameters: with the real stages skipped,
+they are otherwise unreachable and nothing would prove a later stage is tagged as itself.
 
 **The migration screen appears only on the launch that actually imports.** `AppStartupModel.init()`
 checks `AppStartupCoordinator.willImportLegacyData` *before* running startup, and only then enters
@@ -221,11 +237,15 @@ itself takes a small fraction of that for any realistic amount of data, so witho
 screen would flash by unread; the floor exists purely so a user who is about to see the app's
 launch experience change actually gets to read the message.
 
-**A retryable failure screen, never `fatalError`.** If container creation, the legacy import, or the
+**A failure screen, never `fatalError`.** If container creation, the legacy import, or the
 first-launch seed throws, `AppStartupCoordinator.run()` returns `.failed(ContainerCreationFailure)`
-instead of propagating the error, and `ChecklistsApp` shows `ContainerFailureView`, whose
-"Start over fresh" path re-runs `AppStartupCoordinator().run()`. Nothing has been deleted at that point —
-in particular the Realm file, per "Legacy import" above — so retrying is a real chance of recovery.
+instead of propagating the error, and `ChecklistsApp` shows `ContainerFailureView`.
+
+**Nothing is deleted by reaching that screen** — in particular the Realm file, per "Legacy import"
+above — so a relaunch is a real chance of recovery, which is what the body copy suggests. There is
+no Retry control; the only in-app re-run is `AppStartupModel.rerunAfterStoreReset()`, and it is
+reached *after* "Start over fresh" has already deleted every local store. That path is destructive
+by the time it re-runs, which is why it is offered for `.storeOpen` alone.
 
 ## Autosave
 

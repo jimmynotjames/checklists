@@ -7,7 +7,7 @@ import Foundation
 import SwiftData
 
 /// Process-wide handle on the live persistence stack. Installed at launch rather than lazily
-/// created, so a failed store shows a retryable screen instead of crashing; tests install their own in-memory stack.
+/// created, so a failed store shows the failure screen instead of crashing; tests install their own in-memory stack.
 @MainActor
 final class PersistenceController {
   private static var installed: PersistenceController?

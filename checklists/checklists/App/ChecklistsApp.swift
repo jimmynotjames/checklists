@@ -62,8 +62,9 @@ struct ChecklistsApp: App {
             .ratingPromptPresenter()
             .modelContainer(container)
             .environment(router)
-            // Reuse the instance PersistenceController installed at startup — the failure-retry path
-            // patches it in place, so creating a second SyncStatus would split the source of truth.
+            // Reuse the instance PersistenceController installed at startup rather than building
+            // one here: `SyncStatus` is derived from which store that run actually opened, which
+            // only the coordinator knows.
             .environment(PersistenceController.shared.syncStatus)
             .environment(ratingPrompt)
             .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
@@ -72,7 +73,8 @@ struct ChecklistsApp: App {
             }
         case let .failed(failure):
           // Deliberately gets none of the *data* environment: the store may be unsafe, and this
-          // screen only reports the failure and offers the fresh-start reset. It does get the
+          // screen only reports the failure and, for a store that would not open, offers the
+          // fresh-start reset. It does get the
           // analytics client (injected below, for every phase) — that is a plain object built in
           // `init()` with no dependence on the wedged store, and `startup_store_reset` paired with
           // `startup_failed` is the most useful ratio in this app's catalog.

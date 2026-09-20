@@ -47,6 +47,7 @@ struct AnalyticsNamesTests {
     AnalyticsProperty.errorDomain,
     AnalyticsProperty.errorCode,
     AnalyticsProperty.errorOperation,
+    AnalyticsProperty.startupStage,
     AnalyticsProperty.orientation,
     AnalyticsProperty.newValue,
     AnalyticsProperty.oldValue,
@@ -127,6 +128,15 @@ struct AnalyticsNamesTests {
       "checklistEdit", "itemEdit", "itemUpdate", "reorder", "delete", "legacyImport", "sampleSeed",
       "dedupe",
     ])
+  }
+
+  /// `startup_stage` transmits `ContainerCreationFailure.Stage.rawValue`, so the same rule as above
+  /// applies: the case names *are* the analytics vocabulary. Update analytics-spec.md §9.1 in the
+  /// same change.
+  @Test("the startup stage values sent as startup_stage are pinned")
+  func startupStageValuesArePinned() {
+    let sent = Set(ContainerCreationFailure.Stage.allCases.map(\.rawValue))
+    #expect(sent == ["store_open", "legacy_import", "first_launch_seed"])
   }
 
   /// `source` transmits `ChecklistDuplicationSource.rawValue`, so the same rule as above applies:

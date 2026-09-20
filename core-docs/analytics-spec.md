@@ -62,7 +62,7 @@ by what happens to be easy to chart.
 | 3.3 | How big do checklists get — items, notes, how many lists per person? | `checklists_count`, `items_count`, `notes_length` |
 | 3.4 | Is the notes feature used at all, or is it dead weight? | `items_with_notes_count`, `notes_length` |
 | 3.5 | Do people reset checklists (reuse), duplicate them (template), or just make new ones (disposable)? | `checklist_reset` vs `checklist_duplicated` vs `checklist_created` vs `checklist_deleted` |
-| 3.6 | How often does the store fail to open in the field, and how often is that unrecoverable? | `startup_failed` / `startup_store_reset` |
+| 3.6 | How often does the store fail to open in the field, and how often is that unrecoverable? | `startup_failed` / `startup_store_reset`, filtered to `startup_stage = store_open` |
 | 3.7 | Does anyone rotate the device? (The orientation-notification cost is only worth paying if so.) | `orientation_changed` |
 | 3.8 | What share of installs opt out, and how does that differ by jurisdiction? | `analytics_consent_changed`, `consent_jurisdiction` |
 | 3.9 | When do people reach the bar for the automatic App Store review prompt, and how soon after does the app actually ask? | `rating_prompt_eligible` → `rating_prompt_requested`, `time_since_first_eligible_bucket` |
@@ -96,7 +96,7 @@ list is a spec change requiring a rationale recorded here — not a code review 
 | `checklist_name` | **Yes — accepted risk, see §4.4** | The only free-text field. Nothing else answers §3.2. |
 | `orientation` | Yes | `portrait` / `landscape`. |
 | `source` | Yes | `menu` / `swipe`. Names an affordance the app owns, never anything the person typed. |
-| `error_domain`, `error_code`, `error_operation` | Yes | A SwiftData/CloudKit error domain, its integer code, and which save failed. Structured, never an `NSError`'s `userInfo` — see §4.3. |
+| `error_domain`, `error_code`, `error_operation`, `startup_stage` | Yes | A SwiftData/CloudKit error domain, its integer code, which save failed, and how far launch got. App-authored and enumerated, never an `NSError`'s `userInfo` — see §4.3. |
 | App version, build, locale, region, device class | Yes | Standard environment context (§9.2). |
 | A generated `distinct_id` UUID | Yes | Random, app-generated, not derived from any device or Apple identifier (§5). |
 
@@ -324,8 +324,8 @@ All names are flat `snake_case`, `noun_pastTenseVerb`.
 | `orientation_changed` | Device rotates portrait ↔ landscape | `orientation` | §3.7 |
 | `persistence_fatal_error` | The store cannot be opened at all | `error_domain`, `error_code` | §3.6 |
 | `persistence_write_failed` | A SwiftData save throws | `error_domain`, `error_code`, `error_operation` | §3.6 |
-| `startup_failed` | Launch could not produce a usable store, so the retry screen was shown | `error_domain`, `error_code` | §3.6 |
-| `startup_store_reset` | "Start over fresh" chosen on that screen, deleting this device's stores | — | §3.6 |
+| `startup_failed` | Launch could not produce a usable store, so the failure screen was shown | `error_domain`, `error_code`, `startup_stage` | §3.6 |
+| `startup_store_reset` | "Start over fresh" chosen on that screen, deleting this device's stores. Only offered when `startup_stage` was `store_open` | — | §3.6 |
 | `analytics_consent_changed` | The consent toggle or first-run sheet changes the setting | `new_value`, `old_value` | §3.8 |
 | `rating_prompt_eligible` | The install first meets every review-prompt threshold. **Once per install**, gated by the persisted `firstEligibleAt` | — | §3.9 |
 | `rating_prompt_requested` | The app calls Apple's native `requestReview`. De-duplicated per app version by the local once-per-version guard | `time_since_first_eligible_bucket` | §3.9 |
@@ -348,6 +348,7 @@ comment for the check-off, eligibility, and presentation-gating mechanics.
 | `error_domain` | String | An `NSError` `domain`, e.g. `NSCocoaErrorDomain`. Framework-authored. |
 | `error_code` | Int | An `NSError` `code`. Sent as an Int, not a string. |
 | `error_operation` | String | `PersistenceOperation.rawValue`: `checklistEdit`, `itemEdit`, `itemUpdate`, `reorder`, `delete`, `legacyImport`, `sampleSeed`, `dedupe`. `persistence_write_failed` only. The one camelCase *value* this app sends — it is a Swift case name, so renaming a case changes the analytics vocabulary. `AnalyticsNamesTests` pins the set. |
+| `startup_stage` | String | `ContainerCreationFailure.Stage.rawValue`: `store_open`, `legacy_import`, `first_launch_seed`. `startup_failed` only. Says how far launch got, which is what separates "the store would not open" from "the store opened and a later stage failed" — only the first offers the destructive reset, so §3.6's ratio is meaningless unless filtered by it. As with `error_operation`, the Swift case names *are* the vocabulary; `AnalyticsNamesTests` pins the set. |
 | `orientation` | String | `portrait` / `landscape`. Face-up/face-down are filtered out, not reported. |
 | `new_value` / `old_value` | Bool | `analytics_consent_changed` only. |
 | `time_since_first_eligible_bucket` | String | `<1d` / `<7d` / `<30d` / `30d+` between first eligibility and the request. `rating_prompt_requested` only. Bucketed: an exact interval on an event answers nothing the bucket does not, and the exact moments are on the profile (§9.3). |

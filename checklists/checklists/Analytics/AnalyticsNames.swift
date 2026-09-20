@@ -84,6 +84,8 @@ nonisolated enum AnalyticsProperty {
   static let errorCode = "error_code"
   /// Which save failed: `PersistenceOperation.rawValue`. `persistence_write_failed` only.
   static let errorOperation = "error_operation"
+  /// How far launch got: `ContainerCreationFailure.Stage.rawValue`. `startup_failed` only.
+  static let startupStage = "startup_stage"
 
   static let orientation = "orientation"
 
