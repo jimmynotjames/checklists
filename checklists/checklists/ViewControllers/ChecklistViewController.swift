@@ -315,7 +315,8 @@ class ChecklistViewController: UIViewController {
       // Already logged and reported by `saveChanges`. The item is still in `checklist.items`,
       // though — `insert(item:at:in:)` stages it before saving and has no rollback — so the data
       // source now counts one more row than the table was told about, and the next batch update
-      // can raise. Returning is the least bad option available here. See issue #219.
+      // can raise. The sibling sort keys `place` may have renormalized are staged the same way.
+      // See issue #219.
       return
     }
 

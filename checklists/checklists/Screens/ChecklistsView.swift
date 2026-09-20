@@ -220,8 +220,8 @@ struct ChecklistsView: View {
       // Already logged and reported by `saveChanges`. The checklist is still registered in the
       // context, though — `insert(checklist:at:among:)` stages it before saving and has no
       // rollback — so `@Query` shows a blank row that was never written, and autosave may yet
-      // write it. Returning here at least avoids opening the naming sheet on top of that. See
-      // issue #219.
+      // write it — as it may the sibling sort keys `place` renormalized on the way. Returning
+      // here at least avoids opening the naming sheet on top of that. See issue #219.
       return
     }
     router.sheet = .newChecklist(id: checklist.id)

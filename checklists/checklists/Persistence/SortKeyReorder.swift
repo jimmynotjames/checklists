@@ -17,8 +17,7 @@ import Foundation
  the tail it adds `step`. So the ordinary case rewrites exactly one record instead of renumbering
  everything after it, which matters for sync: a renumber pushes the whole list into a merge. The
  cost is that repeated insertions at the same interior spot halve the available gap each time, so
- once a gap gets too small to split, the caller renormalizes the list back to 1, 2, 3… and retries
- — and that retry *is* the whole-list rewrite the scheme otherwise avoids.
+ once a gap gets too small to split, the caller renormalizes the list back to 1, 2, 3… and retries.
  */
 enum SortKeyReorder {
   /// The smallest gap still considered splittable.
@@ -26,10 +25,8 @@ enum SortKeyReorder {
   /// A policy floor, not a representability limit — `Double` has 52 bits of mantissa, so keys near
   /// 1.0 could be subdivided some fifty times before they stopped being distinct. This stops at
   /// **twenty**: the gap after *n* insertions at one spot is 2⁻ⁿ, and 2⁻²⁰ is the first below this.
-  /// The conservatism is deliberate — it keeps a wide margin over the coarsest keys in play, which
-  /// are the legacy import's (`LegacyRealmImporter`, up to ~1e7, where a ULP is ~1.9e-9) — but it
-  /// does mean renormalization is reached by twenty additions at the same position rather than by
-  /// anything exotic.
+  /// The conservatism is deliberate: it keeps a wide margin over the coarsest keys in play, which
+  /// are the legacy import's.
   nonisolated static let epsilon: Double = 1e-6
 
   /// Spacing used by `renormalize` and by the first key in an empty list.

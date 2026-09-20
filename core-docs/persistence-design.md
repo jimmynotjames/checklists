@@ -70,8 +70,8 @@ within SwiftData yet. See "CloudKit rules" below for what changing either model 
 - **Every relationship is optional, and the inverse is declared once.** `Checklist.itemsStorage`
   carries the `@Relationship(deleteRule:inverse:)`; `Item.checklist` is a plain optional property
   with no macro, which is the correct SwiftData idiom — annotating both sides risks two
-  relationships instead of one reciprocal pair, and is why `Reordering` sets only the child side
-  and lets SwiftData maintain the other. Both are optional because CloudKit syncs a record graph in
+  relationships instead of one reciprocal pair. Separately, and for its own reason, `Reordering`
+  assigns only the child side at runtime. Both are optional because CloudKit syncs a record graph in
   pieces, so a child record can legitimately arrive before its parent (or vice versa); a
   non-optional relationship would be unsatisfiable during that window.
 - **Every non-optional attribute has a default value** (`= ""`, `= UUID().uuidString`, `= 0.0`, …).
@@ -148,13 +148,10 @@ the mantissa would allow roughly fifty — chosen to stay well clear of the coar
 which are the legacy import's.
 
 **Imported checklists do not start at 1.** `LegacyRealmImporter` gives each device's import a
-random base — `Int.random(in: 0..<10_000) * 1000.0` — and numbers that device's checklists upward
-from there, so keys run as high as ~1e7. The point is the two-device case: both devices import the
-same Realm file independently, and identical keys would interleave the two copies into one
-scrambled list. Separate random blocks keep each device's ordering intact, with a 1-in-10,000
-chance of collision that degrades to the old interleaved order rather than to data loss. Item keys
-are unaffected and still start at `step`, since they are scoped to one checklist from one device.
-A block is 1000 wide against a realistic ceiling of a couple of hundred checklists.
+random block of keys rather than numbering from `step`, so two devices importing the same Realm
+file independently keep their orderings separate instead of interleaving into one scrambled list.
+The block arithmetic and the collision odds are on `LegacyRealmImporter`'s own constants; item keys
+are unaffected and still start at `step`.
 
 **Why not array indices**, which would be simpler: an index is a property of the collection, and
 CloudKit's relationships don't preserve collection order at all — see "No ordered relationships"
@@ -164,17 +161,12 @@ the way an implicit array position cannot.
 ## Duplication
 
 `Persistence/ChecklistDuplication.swift` deep-copies a checklist; `ItemDuplication.swift` copies one
-item within its checklist. Three decisions worth knowing:
+item within its checklist. Both re-issue sort keys rather than copying them, and carry over neither
+status nor the two history stamps, since all three describe something that happened to the
+original — the reasoning is on the types themselves.
 
-- **Item sort keys are re-issued, not copied.** `source.items` is already sorted, so spacing the
-  copies afresh from `step` preserves the order and leaves the copy evenly spaced room to reorder.
-  The same reasoning as the legacy import's.
-- **A copy inherits neither status nor history.** Items come across unchecked and `lastUpdated` /
-  `lastCompleted` stay nil, because both record something that happened to the original. Blank rows
-  are skipped: they are the detail screen's scratch row, not a task.
-- **The whole graph is one save**, and the catch undoes the half-built copy — items first, then the
-  checklist, rather than relying on the cascade rule, since nothing saves afterwards for the rule to
-  run against. This is the shape the plain insert paths lack (issue #219).
+Worth knowing from here: checklist duplication saves the whole graph once and undoes the half-built
+copy if that save fails. That is the shape the plain insert paths lack (issue #219).
 
 ## Startup and failure UX
 
@@ -189,9 +181,9 @@ what a user in trouble is looking at.
 | ![The container failure screen](images/container-failure-screen.png) | ![The start-over confirmation](images/container-failure-confirmation.png) |
 
 It appears only when the **local** store fails: the container could not be created, the one-time
-Realm import did not complete, or first-launch seeding could not save. iCloud is never a cause —
-`ProductionContainerFactory` attempts the CloudKit-backed store with `try?` and falls through to the
-local one, so an unavailable account degrades sync, never startup. In practice the realistic causes
+Realm import did not complete, or first-launch seeding could not save. A CloudKit-backed store that
+will not open is not a cause — `ProductionContainerFactory` attempts it with `try?` and falls
+through to the local one, so that degrades sync, never startup. In practice the realistic causes
 are a full disk and a corrupt store.
 
 "Start over fresh" is the escape hatch of last resort — see `StoreReset` — because a corrupt store
@@ -237,27 +229,25 @@ in particular the Realm file, per "Legacy import" above — so retrying is a rea
 
 ## Autosave
 
-**Nothing in this repo ever sets `autosaveEnabled`**, which means the app and its tests do not agree
-about when a write reaches disk:
+**Nothing in this repo ever sets `autosaveEnabled`**, and SwiftData's default is on — for the app's
+`container.mainContext` (which is both `PersistenceController.mainContext` and the `\.modelContext`
+that `.modelContainer(_:)` publishes) *and* for the hand-built `ModelContext(container)` every unit
+test writes through. `AutosaveDefaultsTests` pins both, because they are a framework's defaults
+rather than ours and the rest of this section reasons from them.
 
-- **The app autosaves.** `PersistenceController.mainContext` returns `modelContainer.mainContext`,
-  and `.modelContainer(container)` publishes that same context as `\.modelContext`. A container's
-  main context has `autosaveEnabled == true` by default.
-- **Unit tests do not.** `TestModelContainer.makeContext()` builds `ModelContext(container)`
-  directly, and a hand-built context defaults to `false`.
+So the explicit `saveChanges(operation:)` calls are not the only thing that persists a change. What
+they add is an ordering point and a failure report — which is most of their value, but not all of
+what a reader tends to assume they are.
 
-The explicit `saveChanges(operation:)` calls are therefore not the only thing that persists a
-change; they are what gives a write an ordering point and a failure report. Two consequences worth
-holding onto:
+Two consequences:
 
-- `saveChangesIgnoringFailure` dropping an error does not reliably drop the write. Autosave will
-  usually commit the same pending changes shortly afterwards, reporting nothing either way.
-- A test asserting "the save failed, so nothing was persisted" is asserting against different
-  durability semantics than the app has. Nothing currently depends on that, but it is the kind of
-  gap that makes a green suite misleading.
-
-Neither is a reason to change the behaviour on its own; they are a reason not to reason about
-failed saves as though the explicit call were the only writer.
+- `saveChangesIgnoringFailure` dropping an error does not by itself decide the write is lost; a
+  later autosave may commit the same pending changes with nothing reported either way. It equally
+  may not: the failures that reach it are usually store-level and persistent, so the next attempt
+  tends to fail identically. Neither outcome is observable from the call site, which is the real
+  point.
+- A test that means to prove a failed save persisted nothing cannot get that from its context
+  holding changes back, since it does not.
 
 ## File protection
 

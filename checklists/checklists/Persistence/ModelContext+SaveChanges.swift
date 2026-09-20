@@ -37,10 +37,10 @@ extension ModelContext {
   /**
    Saves, and on failure logs a diagnostic, reports an analytics event, and throws.
 
-   It throws a `PersistenceError` rather than rethrowing what `save()` gave it. That substitution is
-   the point: the original `NSError` carries `userInfo`, and a typed value with only the operation,
-   domain and code can be logged, mailed and re-thrown without anyone downstream having to remember
-   that. `ContainerCreationFailure.init(underlying:stage:)` exists to unwrap it again.
+   What it throws is a `PersistenceError`, not what `save()` gave it. The original `NSError` carries
+   `userInfo`; a typed value holding only the operation, domain and code can be logged, mailed and
+   re-thrown without anyone downstream having to remember that. `ContainerCreationFailure` unwraps
+   it again rather than bridging, for the same reason.
 
    The public/private split in the log line follows from the same rule: domain, code and
    `localizedDescription` are bounded, framework-authored strings and are what make a sysdiagnose
@@ -75,9 +75,11 @@ extension ModelContext {
    reaches the failure screen rather than being dropped. `AppStartupCoordinator`'s dedupe is the one
    startup call that swallows a failure, which it does with its own `try?` and for its own reason.
 
-   Note that dropping the error is not the same as dropping the write: the main context autosaves
-   (see core-docs/persistence-design.md §Autosave), so the pending changes usually reach disk
-   shortly afterwards, with nothing reported either way.
+   Note that dropping the error is not the same as deciding the write is lost: the main context
+   autosaves (see core-docs/persistence-design.md §Autosave), so the pending changes may still
+   reach disk on a later tick, with nothing reported either way. They equally may not — the
+   failures that get here are usually store-level and persistent, and the next attempt fails the
+   same way.
    */
   func saveChangesIgnoringFailure(operation: PersistenceOperation, analytics: any AnalyticsClient = AppAnalytics.shared) {
     try? saveChanges(operation: operation, analytics: analytics)
