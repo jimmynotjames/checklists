@@ -25,7 +25,7 @@ nonisolated enum CommonStrings {
   static let delete = String(
     localized: "common.action.delete",
     defaultValue: "Delete",
-    comment: "Destructive action: removes a checklist. Swipe action and confirmation button."
+    comment: "Destructive action: removes a checklist or an item. Swipe action and confirmation button."
   )
 
   static let done = String(
@@ -37,7 +37,7 @@ nonisolated enum CommonStrings {
   static let duplicate = String(
     localized: "common.action.duplicate",
     defaultValue: "Duplicate",
-    comment: "Makes a copy of a checklist. Swipe action on the list screen; VoiceOver reads it as the button's name."
+    comment: "Makes a copy of a checklist or an item. Swipe action; VoiceOver reads it as the button's name."
   )
 
   static let notesPlaceholder = String(
