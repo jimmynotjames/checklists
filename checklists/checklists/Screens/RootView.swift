@@ -67,6 +67,10 @@ struct RootView: View {
         // large-type check would silently photograph settings at the default size.
       .modifier(TestDynamicTypeOverride())
       #endif
+      // A sheet is presented outside the root overlay's hierarchy, so a toast raised while one
+      // is up can only be drawn from in here. The root layer stands down for the duration, so
+      // only one of the two ever draws.
+      .toastOverlay()
     }
   }
 
