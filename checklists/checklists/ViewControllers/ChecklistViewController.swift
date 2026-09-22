@@ -42,6 +42,19 @@ class ChecklistViewController: UIViewController {
   /// the entry does nothing, which is what a pure-UIKit presentation gets.
   var onRequestCopyCheckedItems: ((String) -> Void)?
 
+  /// The overflow menu's bar item, kept so its menu can be rebuilt while it is on screen — the one
+  /// way UIKit offers to change a menu that is already presented.
+  var moreBarButtonItem: UIBarButtonItem?
+
+  /// Whether the overflow menu is currently showing "No checked items." under the copy entry.
+  ///
+  /// Retired on a timer rather than when the menu closes, which a bar-button menu does not report.
+  /// See `showNoItemsCheckedNotice`.
+  var showsNoItemsCheckedNotice = false
+
+  /// The one scheduled retirement of that notice, held so a second tap can restart it.
+  var noItemsCheckedNoticeDismissal: Task<Void, Never>?
+
   /// Set by the SwiftUI host (`ChecklistScreen`), like `onRequestDismiss` above. There is no
   /// environment to read from here, so the client is pushed in. The console default means a missed
   /// injection degrades to "no events" rather than a crash — unlike `context` below, which has no

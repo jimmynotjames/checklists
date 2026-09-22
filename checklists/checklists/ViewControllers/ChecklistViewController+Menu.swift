@@ -13,6 +13,8 @@ extension ChecklistViewController {
   func configureNavigationBar() {
     showsDiscardWording = isNewChecklist
     let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: makeMoreMenu())
+    // Held on to so the menu can be rebuilt while it is on screen; see `copyCheckedItems`.
+    moreBarButtonItem = moreItem
     moreItem.accessibilityLabel = Self.moreMenuAccessibilityLabel
     // Locale-invariant handle for UI tests; the label above is what VoiceOver reads.
     moreItem.accessibilityIdentifier = "checklist.more"
@@ -55,7 +57,13 @@ extension ChecklistViewController {
     ])
   }
 
-  /// The copy entry, or nothing when there is nothing ticked to copy.
+  /// The copy entry, and the notice explaining why a tap did nothing.
+  ///
+  /// The entry stays in the menu whether or not anything is ticked, and stays *live*. Omitting it
+  /// hid the feature from the people who most need to find it — someone who has never ticked an
+  /// item has never seen it — and dimming it would say "not now" without saying why. What is
+  /// genuinely unobvious here is the rule that ticking items *is* the selection, and only the
+  /// notice teaches that.
   ///
   /// Deferred rather than resolved up front because the menu is assembled once, in
   /// `configureNavigationBar`, while what this depends on changes with every check-off, Reset and
@@ -64,23 +72,40 @@ extension ChecklistViewController {
   private var copyCheckedItemsElement: UIDeferredMenuElement {
     // `uncached`, so the provider runs each time the menu opens rather than once per menu.
     UIDeferredMenuElement.uncached { [weak self] completion in
-      // Omitted, not disabled, when nothing is ticked — the same call the create sheet's missing
-      // section makes above, and the only one this menu has precedent for.
-      guard let self, !checklist.checkedItems.isEmpty else {
+      guard let self else {
         completion([])
         return
       }
+      let hasCheckedItems = !checklist.checkedItems.isEmpty
       let action = UIAction(
         title: Self.copyCheckedItemsMenuTitle,
         // Distinct from Duplicate's `plus.square.on.square` directly above it: these two sit
         // adjacent and a shared glyph would make one read as the other.
-        image: UIImage(systemName: "doc.on.doc")
+        image: UIImage(systemName: "doc.on.doc"),
+        // Held open only in the case that has something to say in place. With something to copy,
+        // the tap opens the picker and the menu should get out of the way as any other entry does.
+        attributes: hasCheckedItems ? [] : .keepsMenuPresented
       ) { [weak self] _ in
         self?.copyCheckedItems()
       }
-      completion([action])
+      guard !hasCheckedItems, showsNoItemsCheckedNotice else {
+        completion([action])
+        return
+      }
+      // A disabled action is the closest a `UIMenu` comes to a caption: it draws as a plain row
+      // rather than as something to press, which is what this is.
+      let notice = UIAction(title: Self.noItemsCheckedNotice, attributes: .disabled) { _ in }
+      completion([action, notice])
     }
   }
+
+  /// How long "No checked items." stays up.
+  ///
+  /// The same dwell a toast gets, so the two transient messages this flow can produce feel alike.
+  /// Copied rather than read from `ToastPresenter`, whose dwell is an injectable initializer
+  /// parameter rather than a shared constant — a UIKit menu reaching into it would be a
+  /// dependency neither type wants.
+  private static let noItemsCheckedNoticeDuration: Duration = .seconds(2)
 
   /// Internal so a test can invoke it: it is reached from a `UIAction` handler, which cannot be
   /// fired directly.
@@ -88,7 +113,37 @@ extension ChecklistViewController {
     // Commits a name or note still being typed, so a half-edited item is copied as it reads on
     // screen rather than as it was last saved — the same reason `duplicateChecklist` does it.
     view.endEditing(true)
+    guard !checklist.checkedItems.isEmpty else {
+      showNoItemsCheckedNotice()
+      return
+    }
+    noItemsCheckedNoticeDismissal?.cancel()
+    showsNoItemsCheckedNotice = false
     onRequestCopyCheckedItems?(checklist.id)
+  }
+
+  /// Puts "No checked items." under the copy entry and takes it away again a moment later.
+  ///
+  /// Timed like a toast because the menu it lives in offers nothing else to retire it: it is not
+  /// a row anyone can dismiss, and a bar-button menu does not report being closed. Tapping the
+  /// entry again while it is up is a no-op that restarts the dwell — the notice is already the
+  /// whole answer, so the only thing left to do is give it another two seconds to be read.
+  private func showNoItemsCheckedNotice() {
+    noItemsCheckedNoticeDismissal?.cancel()
+    showsNoItemsCheckedNotice = true
+    refreshMoreMenu()
+    noItemsCheckedNoticeDismissal = Task { [weak self] in
+      try? await Task.sleep(for: Self.noItemsCheckedNoticeDuration)
+      guard !Task.isCancelled, let self, showsNoItemsCheckedNotice else { return }
+      showsNoItemsCheckedNotice = false
+      refreshMoreMenu()
+    }
+  }
+
+  /// Rebuilds the overflow menu in place. Reassigning the bar item's menu is what makes one that
+  /// is already on screen pick up a change; `.keepsMenuPresented` is what left it there to update.
+  private func refreshMoreMenu() {
+    moreBarButtonItem?.menu = makeMoreMenu()
   }
 
   /// Unconfirmed on purpose: nothing is lost, and the sheet that follows offers Discard as the way

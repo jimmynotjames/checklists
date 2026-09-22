@@ -44,6 +44,18 @@ extension ChecklistViewController {
     """
   )
 
+  static let noItemsCheckedNotice = String(
+    localized: "checklist.menu.copyCheckedItems.noCheckedItems",
+    defaultValue: "No checked items.",
+    comment: """
+    Appears inside the overflow menu, directly under the Copy Checked Items to… entry, when that \
+    entry is tapped with nothing ticked, and fades again after a moment. Not a button — it says \
+    why nothing happened. Echo the wording of checklist.menu.copyCheckedItems: it should read as \
+    "there are none of the thing that entry copies", so reuse that key's word for checked items \
+    rather than picking a synonym. Keep it to a few words.
+    """
+  )
+
   static let deleteChecklistMenuTitle = String(
     localized: "checklist.menu.deleteChecklist",
     defaultValue: "Delete Checklist",
