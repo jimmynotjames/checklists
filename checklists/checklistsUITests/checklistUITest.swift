@@ -290,23 +290,19 @@ class checklistUITest: XCTestCase {
     let itemNameTextView2aValue = try XCTUnwrap(checklisttableviewTable.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].value as? String)
 
     // Add some items with Next key
-    let nextButton = app/*@START_MENU_TOKEN@*/ .buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
-    nextButton.tap()
+    app.pressReturnKey()
     app.typeText("X")
 
-    nextButton.tap()
+    app.pressReturnKey()
     app.typeText("Y")
 
-    nextButton.tap()
+    app.pressReturnKey()
     app.typeText("Z")
 
-    nextButton.tap()
+    app.pressReturnKey()
 
     // Remove those items with Delete key and nothing else.
-    let deleteKey = app/*@START_MENU_TOKEN@*/ .keys["delete"]/*[[".keyboards.keys[\"delete\"]",".keys[\"delete\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
-    for _ in 1 ... 7 {
-      deleteKey.tap()
-    }
+    app.pressDeleteKey(7)
     app.toolbars["Toolbar"].buttons["Done"].tap()
 
     // Test that original state was restored.
@@ -318,11 +314,10 @@ class checklistUITest: XCTestCase {
 
     // Add notes to an Item, then delete the notes and keep tapping Delete. Should not spill into Name field.
     checklisttableviewTable.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].tap()
-    checklisttableviewTable.children(matching: .cell).element(boundBy: 2).textViews["itemNotesTextView"].tap()
+    let itemNotesTextView2 = checklisttableviewTable.children(matching: .cell).element(boundBy: 2).textViews["itemNotesTextView"]
+    itemNotesTextView2.tap()
     app.typeText("Make sure key in planter.")
-    for _ in 1 ... 30 {
-      deleteKey.tap()
-    }
+    itemNotesTextView2.pressDeleteKey(30)
     app.toolbars["Toolbar"].buttons["Done"].tap()
 
     // Check that Name field still preserved.
@@ -447,10 +442,7 @@ class checklistUITest: XCTestCase {
     item2NameTextView.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.9)).tap()
 
     let n = 11
-    let deleteKey = app/*@START_MENU_TOKEN@*/ .keys["delete"]/*[[".keyboards.keys[\"delete\"]",".keys[\"delete\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
-    for _ in 1 ... n {
-      deleteKey.tap()
-    }
+    item2NameTextView.pressDeleteKey(n)
 
     var trimmedName = try XCTUnwrap(item2NameTextView.value as? String)
     XCTAssert(item2Name.prefix(item2Name.count - n) == trimmedName)
@@ -543,7 +535,7 @@ class checklistUITest: XCTestCase {
     let lastItemNameTextView = checklistTableView.children(matching: .cell).element(boundBy: numItems).textViews["itemNameTextView"]
     lastItemNameTextView.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.9)).tap()
 
-    app/*@START_MENU_TOKEN@*/ .buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    lastItemNameTextView.pressReturnKey()
     app.typeText(newItemName2)
     app.toolbars["Toolbar"].buttons["Done"].tap()
 

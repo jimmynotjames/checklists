@@ -211,20 +211,42 @@ the fix:
 ## Simulator sandbox
 
 Each clone gets its own simulator, `iPhone 17 [<hash of repo path>]`, managed by
-`scripts/_sim_sandbox.sh` (sourced by the test scripts only). `SIMULATOR_NAME` picks a different
-base device; `SIMULATOR_UDID` pins a device and skips sandbox management. `make sim-status` shows it.
+`scripts/_sim_sandbox.sh` (sourced via `_destination.sh` by the test scripts and by
+`translation-accessibility-size-check/run.sh`). `SIMULATOR_NAME` picks a different base device;
+`SIMULATOR_UDID` pins a device and skips sandbox management. `make sim-status` shows it.
+
+### The software keyboard
+
+The UI tests do not tap keyboard keys — `XCUIElement+Keyboard.swift` drives return and delete
+through `typeText`, which needs keyboard *focus* but not a visible keyboard. `make gate` fails on
+any new key tap (`scripts/check_ui_test_keyboard.py`), because the Xcode recorder generates them.
+
+`_sim_sandbox.sh` still turns Simulator.app's "Connect Hardware Keyboard" off, for ad-hoc runs and
+anything that needs the keyboard on screen. The preference is per-UDID but owned by Simulator.app,
+not the device, and is read at boot — so it is written before a boot, and `open -a Simulator` is
+what makes it take effect. Under `SIMULATOR_UDID` none of this runs; fix it by hand with:
+
+```bash
+UDID=$(cat .build/sim/device.udid); python3 scripts/sim_keyboard_pref.py --disable "$UDID"; xcrun simctl shutdown "$UDID"; xcrun simctl boot "$UDID"; open -a Simulator
+```
+
+**The preference does not determine the outcome, and nobody has found what does.** Setting
+`ConnectHardwareKeyboard = true` and rebooting does *not* reliably hide the software keyboard: a
+control test that tapped `app.keys["delete"]` under exactly that setting passed. Three separate
+attempts to reproduce the original mass failure on demand all failed. So treat the preference as a
+hint, not a lever, and do not trust a green run to mean the setting works.
+
+A device also carries `AutomaticMinimizationEnabled` / `HardwareKeyboardLastSeen` in its own
+`data/Library/Preferences/com.apple.keyboard.preferences.plist`, which survives reboots and is not
+checked or reset by anything here. That is the next place to look, not a known answer.
+
+This is also why the tests were changed rather than the tooling: `typeText` never queries the
+keyboard's accessibility elements, so it does not matter which of these is the real mechanism.
+
+Note the whole mechanism is on borrowed time: Xcode 27 replaces Simulator.app with Device Hub, and
+there is no `com.apple.iphonesimulator` domain there.
 
 ## Known issues
-
-- **UI tests fail en masse with `kAXErrorCannotComplete` on keyboard keys** when the simulator's
-  software keyboard is off (Simulator.app's "Connect Hardware Keyboard"). `_sim_sandbox.sh`
-  re-checks and re-applies the fix on every test run, except under `SIMULATOR_UDID`. Manual fix for
-  that case — `open -a Simulator` is required because the preference belongs to Simulator.app and
-  is read at boot:
-
-  ```bash
-  UDID=$(cat .build/sim/device.udid); defaults write com.apple.iphonesimulator DevicePreferences -dict-add "$UDID" '{ ConnectHardwareKeyboard = 0; }'; xcrun simctl shutdown "$UDID"; xcrun simctl boot "$UDID"; open -a Simulator
-  ```
 
 - **The old Flurry API key is in ~294 commits of history** and the gitleaks gate does not catch it
   (a bare 20-char alphanumeric matches no rule). A green secrets gate does not cover it. Tracked in

@@ -56,21 +56,21 @@ class checklistCreateUITest: XCTestCase {
 
     // Should auto-focus on Checklist Name field
     app.typeText(checklistName)
-    app/*@START_MENU_TOKEN@*/ .buttons["done"]/*[[".keyboards",".buttons[\"done\"]",".buttons[\"Done\"]"],[[[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    app.pressReturnKey()
 
     // After tapping done on Checklist Name, should auto-focus on first Item without taps.
     app.typeText(item1Name) // Item 1
 
-    // Create item 2 via tapping Next on keyboard.
-    app/*@START_MENU_TOKEN@*/ .buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
-      .tap() // Should auto-create Item 2 and auto-focus to write in.
+    // Create item 2 via the keyboard's Next key.
+    app.pressReturnKey() // Should auto-create Item 2 and auto-focus to write in.
     app.typeText(item2Name) // Item 2
 
     // Add Item Notes to Item 2
     var cell = checklistTable.children(matching: .cell).element(boundBy: 1)
-    cell.textViews["itemNotesTextView"].tap()
+    let item2NotesTextView = cell.textViews["itemNotesTextView"]
+    item2NotesTextView.tap()
     app.typeText(item2NotesLine1)
-    app/*@START_MENU_TOKEN@*/ .buttons["Return"]/*[[".keyboards",".buttons[\"return\"]",".buttons[\"Return\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    item2NotesTextView.pressReturnKey()
     app.typeText(item2NotesLine2)
 
     // Create Item 3 via Add Button without dismissing keyboard from prior.
@@ -140,23 +140,23 @@ class checklistCreateUITest: XCTestCase {
 
     // Should auto-focus on Checklist Name field
     app.typeText(checklistName)
-    app/*@START_MENU_TOKEN@*/ .buttons["done"]/*[[".keyboards",".buttons[\"done\"]",".buttons[\"Done\"]"],[[[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    app.pressReturnKey()
 
     // After tapping done on Checklist Name, should auto-focus on first Item without taps.
     app.typeText(item1Name) // Item 1
 
     // Create Item 3 via Add Button without dismissing keyboard from prior.
-    app/*@START_MENU_TOKEN@*/ .buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    app.pressReturnKey()
     app.typeText(item3Name)
 
     // Create Item 4 via Add button after dismissing keyboard from prior.
-    app/*@START_MENU_TOKEN@*/ .buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    app.pressReturnKey()
     app.typeText(item4Name)
     app.toolbars["Toolbar"].buttons["Done"].tap()
 
     // Pop back in at Item 1 and insert something.
     checklistTable.children(matching: .cell).element(boundBy: 0).tap()
-    app/*@START_MENU_TOKEN@*/ .buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    app.pressReturnKey()
     app.typeText(item2Name) // Item 2
 
     // Check Checklist Name and all the items
@@ -189,13 +189,12 @@ class checklistCreateUITest: XCTestCase {
 
     // Should auto-focus on Checklist Name field
     app.typeText(checklistName)
-    app/*@START_MENU_TOKEN@*/ .buttons["done"]/*[[".keyboards",".buttons[\"done\"]",".buttons[\"Done\"]"],[[[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
-      .tap() // Should auto-focus on first Item
+    app.pressReturnKey() // Should auto-focus on first Item
 
-    app/*@START_MENU_TOKEN@*/ .buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    app.pressReturnKey()
     app.typeText(item1Name)
-    app/*@START_MENU_TOKEN@*/ .buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/ .tap()
-    app/*@START_MENU_TOKEN@*/ .buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    app.pressReturnKey()
+    app.pressReturnKey()
 
     // Final state: { empty, item1, empty, empty }
 
@@ -212,14 +211,11 @@ class checklistCreateUITest: XCTestCase {
     XCTAssert(checklistTable.children(matching: .cell).count == 2)
     XCTAssert(checklistTable.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String == item1Name)
 
-    let lowerRightCorner = checklistTable.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.9))
-    lowerRightCorner.tap()
+    let item1NameTextView = checklistTable.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"]
+    item1NameTextView.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.9)).tap()
 
     // Remove the text only, leaving Item with empty field.
-    let deleteKey = app/*@START_MENU_TOKEN@*/ .keys["delete"]/*[[".keyboards.keys[\"delete\"]",".keys[\"delete\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
-    for _ in 1 ... item1Name.count {
-      deleteKey.tap()
-    }
+    item1NameTextView.pressDeleteKey(item1Name.count)
     app.toolbars["Toolbar"].buttons["Done"].tap()
 
     // Finish and dismiss modal, go back to check stuff
@@ -244,17 +240,13 @@ class checklistCreateUITest: XCTestCase {
     addChecklistButton.tap() // Should pull up modal and auto-focus on name. Leave Checklist Name blank.
 
     app.typeText(checklistName) // Arbitrary Checklist Name
-    app/*@START_MENU_TOKEN@*/ .buttons["done"]/*[[".keyboards",".buttons[\"done\"]",".buttons[\"Done\"]"],[[[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
-      .tap() // Should auto-focus on first Item after tapping done Checklist Name
+    app.pressReturnKey() // Should auto-focus on first Item after tapping done Checklist Name
     app.typeText("X")
-    app/*@START_MENU_TOKEN@*/ .buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    app.pressReturnKey()
     app.typeText("Y")
 
     // Remove all items plus some more delete key tapping for good measure.
-    let deleteKey = app/*@START_MENU_TOKEN@*/ .keys["delete"]/*[[".keyboards.keys[\"delete\"]",".keys[\"delete\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
-    for _ in 1 ... 8 {
-      deleteKey.tap()
-    }
+    app.pressDeleteKey(8)
     app.navigationBars.buttons["Done"].tap()
 
     XCTAssertTrue(app.staticTexts[checklistName].waitForExistence(timeout: 5))
@@ -273,12 +265,11 @@ class checklistCreateUITest: XCTestCase {
     addChecklistButton.tap() // Should pull up modal and auto-focus on name. Leave Checklist Name blank.
 
     app.typeText(checklistName) // Arbitrary Checklist Name
-    app/*@START_MENU_TOKEN@*/ .buttons["done"]/*[[".keyboards",".buttons[\"done\"]",".buttons[\"Done\"]"],[[[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
-      .tap() // Should auto-focus on first Item after tapping done Checklist Name
+    app.pressReturnKey() // Should auto-focus on first Item after tapping done Checklist Name
     app.typeText(itemName1)
-    app/*@START_MENU_TOKEN@*/ .buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    app.pressReturnKey()
     app.typeText(itemName2)
-    app/*@START_MENU_TOKEN@*/ .buttons["Next:"]/*[[".keyboards",".buttons[\"next\"]",".buttons[\"Next:\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/ .tap()
+    app.pressReturnKey()
     app.typeText(itemName3)
 
     app.navigationBars.buttons["Done"].tap()

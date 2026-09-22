@@ -54,8 +54,8 @@ when that's the honest answer.
 
 - `make test-unit` — runs entirely against in-memory `ModelContainer`s; it does not touch the
   simulator's real store.
-- `make test-ui` — requires a prior `make test-unit` for the warm-up sentinel. If tests fail on
-  `kAXErrorCannotComplete` against keyboard keys, that's the simulator's software keyboard being
-  off, not your change — see AGENTS.md §"Known issues".
+- `make test-ui` — requires a prior `make test-unit` for the warm-up sentinel. The tests no longer
+  tap keyboard keys, so a `kAXErrorCannotComplete` failure against one is a real regression, not
+  the simulator setting it used to be — see AGENTS.md §"The software keyboard".
 
 CI (`.github/workflows/ci.yml`) is present but **disabled** — no checks run on this PR.
