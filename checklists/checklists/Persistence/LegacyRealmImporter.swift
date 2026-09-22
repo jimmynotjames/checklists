@@ -18,17 +18,25 @@ import SwiftData
 
  1. **It never loses data.** The Realm file is not deleted, here or anywhere else in this release.
     If anything below goes wrong the original store is still on disk, untouched, and the import
-    runs again on the next launch.
+    runs again on the next launch — and after `maximumAttempts` of those it stops trying and lets
+    the app open anyway, still without deleting anything.
  2. **It is idempotent.** Records are matched by their existing `id`, so a second run — after a
-    crash, after the completion flag failed to reach disk, after the user tapped Retry — adds
-    nothing and changes nothing.
+    crash, or after the completion flag failed to reach disk — adds nothing and changes nothing.
  3. **It verifies before declaring success.** The completion flag is written only after every
     record read out of Realm has been read back out of SwiftData. A partial import leaves the flag
     unset and is retried rather than silently accepted.
  */
 enum LegacyRealmImporter {
-  /// Set once the copy has completed and been verified.
+  /// Set once the copy has completed and been verified, or once it has been abandoned.
   static let completedFlagKey = "legacyRealmImportCompletedV1"
+
+  /// How many launches have tried and failed. Cleared on success; read only while the import is
+  /// still needed.
+  static let failedAttemptsKey = "legacyRealmImportFailedAttemptsV1"
+
+  /// Failures to tolerate before giving up on the legacy store for good. More than one so a
+  /// transient cause — a full disk, a read interrupted by a crash — still gets its retries.
+  static let maximumAttempts = 3
 
   enum ImportError: Error, Equatable {
     /// The copy did not read back intact. Carries counts only — never user content.
@@ -225,23 +233,72 @@ enum LegacyRealmImporter {
     userDefaults: UserDefaults = .standard,
     fileManager: FileManager = .default,
     configuration: Realm.Configuration = legacyConfiguration(),
-    sortKeyBase: Double = randomImportSortKeyBase()
+    sortKeyBase: Double = randomImportSortKeyBase(),
+    analytics: any AnalyticsClient = AppAnalytics.shared
   ) throws {
     guard isNeeded(userDefaults: userDefaults, fileManager: fileManager, fileURL: configuration.fileURL) else { return }
 
     let startedAt = Date()
-    let snapshots = try readLegacyChecklists(from: configuration)
-    try upsert(snapshots, into: context, sortKeyBase: sortKeyBase)
-    try verify(snapshots, in: context)
+    let snapshots: [ChecklistSnapshot]
+    do {
+      snapshots = try readLegacyChecklists(from: configuration)
+      try upsert(snapshots, into: context, sortKeyBase: sortKeyBase)
+      try verify(snapshots, in: context)
+    } catch {
+      try abandonIfOutOfAttempts(error, userDefaults: userDefaults, analytics: analytics)
+      return
+    }
 
     // Written last, and only on the success path: an unset flag costs one harmless repeat run,
     // whereas a flag set too early would skip an import that never actually happened.
     userDefaults.set(true, forKey: completedFlagKey)
+    userDefaults.removeObject(forKey: failedAttemptsKey)
 
     let elapsedMilliseconds = Int(Date().timeIntervalSince(startedAt) * 1000)
     let itemCount = snapshots.reduce(0) { $0 + $1.items.count }
     AppLog.persistence.log(
       "legacyImport.completed: \(snapshots.count, privacy: .public) checklists, \(itemCount, privacy: .public) items, \(elapsedMilliseconds, privacy: .public) ms"
+    )
+  }
+
+  /// Rethrows until the import has failed `maximumAttempts` times, then gives up on it for good.
+  ///
+  /// Every precondition `isNeeded` checks is still true after a failure, so an import that fails
+  /// for a durable reason — a corrupt Realm file, most likely — fails identically on every
+  /// subsequent launch. Rethrowing forever would pin the user on the failure screen with no way
+  /// into the app, and the only escape that used to exist was "Start over fresh", which deletes
+  /// the very file being protected.
+  ///
+  /// Giving up sets the completion flag and **keeps the Realm file**, so the user gets a working
+  /// app, nothing is destroyed, and a later release with a better reader can still find the data.
+  /// The cost is that this release stops trying, which is why it takes several failures rather
+  /// than one — a full disk or a transient read error still gets its retries.
+  private static func abandonIfOutOfAttempts(
+    _ error: any Error,
+    userDefaults: UserDefaults,
+    analytics: any AnalyticsClient
+  ) throws {
+    let attempts = userDefaults.integer(forKey: failedAttemptsKey) + 1
+    userDefaults.set(attempts, forKey: failedAttemptsKey)
+
+    let nsError = error as NSError
+    guard attempts >= maximumAttempts else {
+      AppLog.persistence.error(
+        "legacyImport.failed: attempt \(attempts, privacy: .public), \(nsError.domain, privacy: .public) \(nsError.code, privacy: .public)"
+      )
+      throw error
+    }
+
+    userDefaults.set(true, forKey: completedFlagKey)
+    AppLog.persistence.error(
+      "legacyImport.abandoned: \(attempts, privacy: .public) attempts, \(nsError.domain, privacy: .public) \(nsError.code, privacy: .public)"
+    )
+    analytics.track(
+      AnalyticsEvent.legacyImportAbandoned,
+      properties: [
+        AnalyticsProperty.errorDomain: nsError.domain,
+        AnalyticsProperty.errorCode: nsError.code,
+      ]
     )
   }
 

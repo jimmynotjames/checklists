@@ -6,10 +6,13 @@
 import SwiftUI
 
 /**
- Shown when the store cannot be opened, or the one-time Realm copy cannot be completed — rather
- than continuing into an empty list, which an upgrading user could mistake for having lost
- everything. By the time `onStoreReset` runs, every local store has already been deleted; the
- caller reruns startup from there. See core-docs/persistence-design.md §The failure screen.
+ Shown when the store cannot be opened, or the one-time Realm copy or the first-launch seed cannot
+ be completed — rather than continuing into an empty list, which an upgrading user could mistake
+ for having lost everything.
+
+ "Start over fresh" appears only when `failure.allowsStoreReset` says the store itself would not
+ open. By the time `onStoreReset` runs, every local store has already been deleted; the caller
+ reruns startup from there. See core-docs/persistence-design.md §The failure screen.
  */
 struct ContainerFailureView: View {
   let failure: ContainerCreationFailure
@@ -62,24 +65,26 @@ struct ContainerFailureView: View {
           comment: "VoiceOver hint for the Send Feedback button on the database-failure screen."
         ))
 
-        Button {
-          // Destructive and irreversible, on a screen the user reaches while already alarmed — so
-          // it confirms first, and the confirmation says plainly what is lost rather than "are you
-          // sure?".
-          isShowingStartOverConfirmation = true
-        } label: {
-          Text(Self.startOverTitle)
-            .frame(maxWidth: .infinity)
+        if failure.allowsStoreReset {
+          Button {
+            // Destructive and irreversible, on a screen the user reaches while already alarmed — so
+            // it confirms first, and the confirmation says plainly what is lost rather than "are you
+            // sure?".
+            isShowingStartOverConfirmation = true
+          } label: {
+            Text(Self.startOverTitle)
+              .frame(maxWidth: .infinity)
+          }
+          .buttonStyle(.glass)
+          .controlSize(.large)
+          .tint(Colors.destructiveColor)
+          .accessibilityLabel(Self.startOverTitle)
+          .accessibilityHint(String(
+            localized: "containerFailure.action.startOver.hint",
+            defaultValue: "Starts the app as if it were newly installed. Any data on this device will be lost.",
+            comment: "VoiceOver hint for the Start over fresh button."
+          ))
         }
-        .buttonStyle(.glass)
-        .controlSize(.large)
-        .tint(Colors.destructiveColor)
-        .accessibilityLabel(Self.startOverTitle)
-        .accessibilityHint(String(
-          localized: "containerFailure.action.startOver.hint",
-          defaultValue: "Starts the app as if it were newly installed. Any data on this device will be lost.",
-          comment: "VoiceOver hint for the Start over fresh button."
-        ))
       }
     }
     .padding(.horizontal, 16)
@@ -140,7 +145,14 @@ struct ContainerFailureView: View {
 #if DEBUG
   #Preview("Store failure") {
     ContainerFailureView(
-      failure: ContainerCreationFailure(errorDomain: "NSCocoaErrorDomain", errorCode: 134_060)
+      failure: ContainerCreationFailure(stage: .storeOpen, errorDomain: "NSCocoaErrorDomain", errorCode: 134_060)
+    ) {}
+  }
+
+  // The store opened here, so the same screen offers feedback without the destructive reset.
+  #Preview("Import failure") {
+    ContainerFailureView(
+      failure: ContainerCreationFailure(stage: .legacyImport, errorDomain: "NSCocoaErrorDomain", errorCode: 134_060)
     ) {}
   }
 #endif

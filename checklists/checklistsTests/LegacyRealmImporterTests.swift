@@ -92,11 +92,17 @@ struct LegacyRealmImporterTests {
     }
   }
 
-  private func runImport(into context: ModelContext, fixtureURL: URL, userDefaults: UserDefaults) throws {
+  private func runImport(
+    into context: ModelContext,
+    fixtureURL: URL,
+    userDefaults: UserDefaults,
+    analytics: any AnalyticsClient = ConsoleAnalyticsClient()
+  ) throws {
     try LegacyRealmImporter.importIfNeeded(
       into: context,
       userDefaults: userDefaults,
-      configuration: legacyConfiguration(fixtureURL: fixtureURL)
+      configuration: legacyConfiguration(fixtureURL: fixtureURL),
+      analytics: analytics
     )
   }
 
@@ -261,6 +267,63 @@ struct LegacyRealmImporterTests {
 
       #expect(!userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
       #expect(LegacyRealmImporter.isNeeded(userDefaults: userDefaults, fileURL: fixtureURL))
+    }
+  }
+
+  /// Every precondition `isNeeded` checks is still true after a failure, so a durable cause — a
+  /// corrupt file, most likely — fails identically forever. Without a ceiling the user never
+  /// reaches the app at all, and the escape that used to exist deleted the very file at stake.
+  @Test("a repeatedly failing import is abandoned rather than retried forever")
+  func repeatedlyFailingImportIsAbandoned() throws {
+    try withFixture { fixtureURL, userDefaults in
+      try Data("not a realm file".utf8).write(to: fixtureURL)
+      let context = try TestModelContainer.makeContext()
+      let spy = SpyAnalyticsClient()
+
+      for attempt in 1 ..< LegacyRealmImporter.maximumAttempts {
+        #expect(throws: (any Error).self) {
+          try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults, analytics: spy)
+        }
+        #expect(!userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey), "Gave up on attempt \(attempt).")
+      }
+
+      // The attempt that gives up returns instead of throwing, so the app opens.
+      try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults, analytics: spy)
+
+      #expect(userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
+      #expect(!LegacyRealmImporter.isNeeded(userDefaults: userDefaults, fileURL: fixtureURL))
+      #expect(spy.count(of: AnalyticsEvent.legacyImportAbandoned) == 1)
+    }
+  }
+
+  /// Giving up is not the same as deleting: a later release with a better reader still has the
+  /// file to work from, which is the whole reason this is preferable to the old escape hatch.
+  @Test("abandoning the import keeps the Realm file on disk")
+  func abandoningTheImportKeepsTheRealmFile() throws {
+    try withFixture { fixtureURL, userDefaults in
+      try Data("not a realm file".utf8).write(to: fixtureURL)
+      let context = try TestModelContainer.makeContext()
+
+      for _ in 0 ..< LegacyRealmImporter.maximumAttempts {
+        try? runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults)
+      }
+
+      #expect(FileManager.default.fileExists(atPath: fixtureURL.path))
+    }
+  }
+
+  /// The counter records consecutive failures, not lifetime ones — a success has to clear it, or a
+  /// user who recovered once would be abandoned early on some unrelated failure much later.
+  @Test("a successful import clears the failed-attempt count")
+  func successfulImportClearsTheAttemptCount() throws {
+    try withFixture { fixtureURL, userDefaults in
+      userDefaults.set(LegacyRealmImporter.maximumAttempts - 1, forKey: LegacyRealmImporter.failedAttemptsKey)
+      try writeFixture(fixtureURL: fixtureURL, checklists: [FixtureChecklist(name: "Packing")])
+      let context = try TestModelContainer.makeContext()
+
+      try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults)
+
+      #expect(userDefaults.object(forKey: LegacyRealmImporter.failedAttemptsKey) == nil)
     }
   }
 

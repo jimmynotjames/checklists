@@ -62,6 +62,8 @@ enum StoreReset {
     userDefaults.removeObject(forKey: SampleData.seededFlagKey)
     userDefaults.removeObject(forKey: SampleData.legacyLaunchedAtLeastOnceKey)
     userDefaults.set(true, forKey: LegacyRealmImporter.completedFlagKey)
+    // Only read while the import is still needed, which the line above has just ended.
+    userDefaults.removeObject(forKey: LegacyRealmImporter.failedAttemptsKey)
 
     AppLog.persistence.warning("storeReset.complete")
   }
