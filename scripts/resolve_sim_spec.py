@@ -24,6 +24,40 @@ def simctl_json(*args: str) -> dict:
     return json.loads(out)
 
 
+def selected_sdk_version() -> str | None:
+    """The selected Xcode's iOS Simulator SDK version, or None if it can't be read."""
+    try:
+        out = subprocess.check_output(
+            ["xcrun", "--sdk", "iphonesimulator", "--show-sdk-version"],
+            text=True,
+            timeout=10,
+        )
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError):
+        return None
+    return out.strip() or None
+
+
+def newest_ios_runtime(runtimes: list[dict], sdk_version: str | None = None) -> dict | None:
+    """The highest-versioned available iOS runtime from `simctl list runtimes -j`.
+
+    Runtimes above `sdk_version` (major.minor) come from another installed Xcode, such as a
+    beta, that the selected one can't target, so they are skipped.
+    """
+    cap = runtime_version(sdk_version)[:2] if sdk_version else None
+    ios = [
+        r
+        for r in runtimes
+        if r.get("isAvailable")
+        and "iOS" in r.get("name", "")
+        and (cap is None or runtime_version(r["version"])[:2] <= cap)
+    ]
+    return max(ios, key=lambda r: runtime_version(r["version"]), default=None)
+
+
+def runtime_version(version: str) -> tuple[int, ...]:
+    return tuple(int(x) for x in version.split("."))
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", required=True)
@@ -63,11 +97,9 @@ def main() -> None:
     # -- Runtime resolution (newest available iOS) --
     runtime_id: str | None = None
     try:
-        runtimes = simctl_json("list", "runtimes").get("runtimes", [])
-        ios = [r for r in runtimes if r.get("isAvailable") and "iOS" in r.get("name", "")]
-        if ios:
-            ios.sort(key=lambda r: tuple(int(x) for x in r.get("version", "0").split(".")), reverse=True)
-            runtime_id = ios[0]["identifier"]
+        newest = newest_ios_runtime(simctl_json("list", "runtimes").get("runtimes", []), selected_sdk_version())
+        if newest:
+            runtime_id = newest["identifier"]
     except Exception as e:
         print(f"error: could not list runtimes: {e}", file=sys.stderr)
         sys.exit(1)

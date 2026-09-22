@@ -86,6 +86,10 @@ _ensure_sim_booted() {
 
     mkdir -p "${ROOT}/.build/sim" "${SIM_DERIVED}" "${SIM_RESULTS_DIR}"
 
+    # 0. Behind the newest installed iOS (e.g. after an Xcode upgrade) — delete it so
+    #    step 3 recreates it on the new runtime instead of reusing the old one forever
+    python3 "${ROOT}/scripts/sim_retire_stale.py" --name "${_SIM_DEVICE_NAME}"
+
     # 1. Already booted — reuse it (still call bootstatus to confirm UI services ready)
     local udid
     udid="$(_pick_sim Booted)"
