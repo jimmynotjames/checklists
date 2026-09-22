@@ -150,9 +150,9 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     XCTAssertEqual(names.last, "Set up auto-reply on email accounts", "The copy should sit at the end.")
   }
 
-  /// Omitted rather than disabled, matching how the create sheet drops the whole non-destructive
-  /// section.
-  func testCopyCheckedItemsEntryIsAbsentWithNothingChecked() {
+  /// The entry stays, and stays live, so someone who has never ticked an item can still find the
+  /// feature. Tapping it is what explains the rule.
+  func testCopyCheckedItemsEntryExplainsItselfWithNothingChecked() {
     // Pre-Trip Checklist is seeded with none of its eleven items checked.
     checklistsList.staticTexts["Pre-Trip Checklist"].tap()
     XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
@@ -161,9 +161,19 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     XCTAssertTrue(moreButton.waitForExistence(timeout: 5))
     moreButton.tap()
 
-    // Waiting on a neighbouring entry rather than on the absent one, so this asserts the menu is
-    // up before asserting what is missing from it.
-    XCTAssertTrue(app.buttons["Duplicate Checklist"].waitForExistence(timeout: 5), "The overflow menu didn't open.")
-    XCTAssertFalse(app.buttons["Copy Checked Items to…"].exists, "Nothing is checked, so there is nothing to copy.")
+    let copyEntry = app.buttons["Copy Checked Items to…"]
+    XCTAssertTrue(copyEntry.waitForExistence(timeout: 5), "The entry should be offered even with nothing to copy.")
+    XCTAssertTrue(copyEntry.isEnabled, "The entry is live, not dimmed — tapping it is how the rule gets explained.")
+
+    copyEntry.tap()
+
+    // The notice is what the tap produces, and the menu holds still to show it: no picker, and the
+    // neighbouring entries are all still there.
+    XCTAssertTrue(app.buttons["No checked items."].waitForExistence(timeout: 5), "The notice didn't appear.")
+    XCTAssertTrue(app.buttons["Duplicate Checklist"].exists, "The menu should still be up around the notice.")
+    XCTAssertFalse(
+      app.buttons["copyDestination.createNewChecklist"].exists,
+      "With nothing to copy there is nothing to pick a destination for."
+    )
   }
 }
