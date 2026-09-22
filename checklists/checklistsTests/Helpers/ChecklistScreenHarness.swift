@@ -88,9 +88,9 @@ enum ChecklistScreenHarness {
 
     let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
     defer {
-      // Drops the last reference this helper holds to the controller, and with it the
-      // remote-change observer the controller registered. Anything the closure captured that
-      // reaches the controller will outlive this, so don't capture the harness in a callback.
+      // Lets the controller go once this frame exits, and with it the remote-change observer the
+      // controller registered. Anything the closure captured that reaches the controller will
+      // outlive that, so don't capture the harness in a callback.
       window.rootViewController = nil
       window.isHidden = true
     }

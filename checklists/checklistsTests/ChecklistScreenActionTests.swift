@@ -11,7 +11,12 @@ import UIKit
 
 /// Covers the checklist screen's own actions — reset, the checkbox, item duplication and the
 /// remote-change handler. The overflow menu's actions are in `ChecklistMenuActionTests`.
-@Suite("Checklist screen actions")
+/// `.serialized` because the controller this builds registers a `RemoteChangeObserver`, which does
+/// not filter by store: a burst posted by `RemoteChangeObserverTests` would otherwise reach a live
+/// harness controller mid-test and, in the deletion cases, dismiss the screen out from under it.
+/// `scripts/test-unit.sh` already passes `-parallel-testing-enabled NO`, but that is a property of
+/// the runner — this states the requirement where it applies, so running from Xcode is safe too.
+@Suite("Checklist screen actions", .serialized)
 struct ChecklistScreenActionTests {
   // MARK: - Reset
 

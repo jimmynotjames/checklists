@@ -13,7 +13,12 @@ import UIKit
 ///
 /// The menu entries themselves are `UIAction` handlers, which cannot be fired from a test, so each
 /// action is invoked directly. What that still covers is everything between the tap and the store.
-@Suite("Checklist overflow menu actions")
+/// `.serialized` because the controller this builds registers a `RemoteChangeObserver`, which does
+/// not filter by store: a burst posted by `RemoteChangeObserverTests` would otherwise reach a live
+/// harness controller mid-test and, in the deletion cases, dismiss the screen out from under it.
+/// `scripts/test-unit.sh` already passes `-parallel-testing-enabled NO`, but that is a property of
+/// the runner — this states the requirement where it applies, so running from Xcode is safe too.
+@Suite("Checklist overflow menu actions", .serialized)
 struct ChecklistMenuActionTests {
   // MARK: - Delete
 
