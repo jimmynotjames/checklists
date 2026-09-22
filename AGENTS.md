@@ -243,6 +243,14 @@ checked or reset by anything here. That is the next place to look, not a known a
 This is also why the tests were changed rather than the tooling: `typeText` never queries the
 keyboard's accessibility elements, so it does not matter which of these is the real mechanism.
 
+Both paths print **`SIM-KEYBOARD-FLAKE`** so the question can later be settled from evidence rather
+than argument — `guard-fired` when `_sim_sandbox.sh` cycles the simulator, `tests-failed` when
+`check_keyboard_flake.py` finds a run that actually failed on a keyboard key. **If you see
+`tests-failed`, say so explicitly in your report rather than treating it as known flake** — it
+means something still depends on the keyboard and got past the gate check.
+[#231](https://github.com/jimmynotjames/checklists/issues/231) tracks deleting this machinery once
+the tag has stayed quiet.
+
 Note the whole mechanism is on borrowed time: Xcode 27 replaces Simulator.app with Device Hub, and
 there is no `com.apple.iphonesimulator` domain there.
 

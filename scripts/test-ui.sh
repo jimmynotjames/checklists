@@ -23,6 +23,10 @@ fi
 
 RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-ui.xcresult"
 
+# `|| RC=$?` rather than a bare call: `set -e` would otherwise exit here on a test failure and
+# skip the tagging below. Do NOT rewrite this as `if ! xcodebuild …` — the `!` resets `$?` and the
+# real exit code is lost, which is the same trap gate.sh documents.
+RC=0
 xcodebuild test \
     -project checklists/checklists.xcodeproj \
     -scheme checklists \
@@ -35,4 +39,10 @@ xcodebuild test \
     -only-testing:checklistsUITests/checklistUITest \
     -only-testing:checklistsUITests/checklistCreateUITest \
     -only-testing:checklistsUITests/ChecklistCopyCheckedItemsUITest \
-    -only-testing:checklistsUITests/AnalyticsConsentUITest
+    -only-testing:checklistsUITests/AnalyticsConsentUITest || RC=$?
+
+# Tags keyboard-caused failures for issue #231 (is the keyboard machinery still needed?).
+# Reports only; it never turns a pass into a failure or the reverse.
+python3 "${ROOT}/scripts/check_keyboard_flake.py" "${RESULT_BUNDLE}" || true
+
+exit "${RC}"

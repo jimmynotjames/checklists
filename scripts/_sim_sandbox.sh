@@ -62,6 +62,12 @@ _invalidate_warm_sentinel() {
 
 _fix_software_keyboard() {
     # $1: UDID of an already-booted device whose preference read back wrong.
+    #
+    # The SIM-KEYBOARD-FLAKE tag is for issue #231: nobody has shown this preference actually
+    # controls the keyboard, so the tag is how we find out later whether the cycling below (a
+    # reboot plus a lost warm session) ever buys anything. `guard-fired` alone is cheap drift;
+    # it is `tests-failed`, from check_keyboard_flake.py, that would justify keeping this.
+    echo "SIM-KEYBOARD-FLAKE guard-fired: ConnectHardwareKeyboard wrong for $1 — see https://github.com/jimmynotjames/checklists/issues/231" >&2
     echo "sim-sandbox: software-keyboard preference wrong for $1 — cycling to fix" >&2
     _write_keyboard_pref "$1"
     xcrun simctl shutdown "$1"
