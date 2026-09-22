@@ -177,7 +177,10 @@ Full rules: `core-docs/localization-spec.md`. What bites in practice:
   the translator comment and add the pair to `scripts/translate_audit/distinct_pairs.py`. The
   translator sees one key at a time; the gate is what knows they meet.
 - **A fan-out is one message.** Dispatch all locales in a single message with
-  `run_in_background: true`, never `nohup`, and never a shell loop that blocks the session.
+  `run_in_background: true`, never `nohup`, and never a shell loop that blocks the session. On a
+  tool without a subagent primitive, run the step inline and serially instead — read each prompt
+  file, produce the JSON yourself, write the matching output file. Same scripts, same gates, same
+  result.
 
 ## Bash command hygiene
 

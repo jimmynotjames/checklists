@@ -99,8 +99,8 @@ translation), and clears stale outputs for those locales. Restrict with position
 > subagent per locale in parallel (below). On **Codex** or any tool without a subagent primitive,
 > run the same step **inline and serially**: for each `tmp/translate-audit-prompts/{locale}.md`, read
 > it, produce the findings JSON yourself, and write `tmp/translate-audit-outputs/{locale}.json` — then
-> continue to step 4. Same scripts, same result. Canonical: `AGENTS.md > Cross-cutting concerns >
-> Running the translation pipelines`.
+> continue to step 4. Same scripts, same result.
+> Canonical: AGENTS.md §"Running the translation pipelines".
 
 #### Claude Code — one `translation-audit-locale` subagent per locale, in parallel
 

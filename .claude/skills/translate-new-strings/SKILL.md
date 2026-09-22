@@ -218,7 +218,7 @@ output and want to preserve the others.
 > **inline and serially**: for each `tmp/translate-prompts/{locale}.md` (and `{locale}.sample.md`),
 > read it, produce the JSON yourself, and write `tmp/translate-outputs/{locale}.json` (or
 > `{locale}.sample.json`) — then continue to step 4. Same scripts, same gates, same result.
-> Canonical: `AGENTS.md > Cross-cutting concerns > Running the translation pipelines`.
+> Canonical: AGENTS.md §"Running the translation pipelines".
 
 #### Claude Code — one subagent per prompt file, in parallel
 
