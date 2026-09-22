@@ -97,6 +97,11 @@ struct CopyCheckedItemsView: View {
           Image(systemName: "arrow.forward.circle.fill")
             .font(.title2)
             .foregroundStyle(Color.accentColor)
+            // The symbol alone is about 24pt. `.plain` below scopes hit-testing to the label, so
+            // the label is what has to carry the 44pt minimum — the same pairing `ToastView`'s
+            // action button uses. Without it a near-miss lands in the field instead and raises the
+            // keyboard over the destinations.
+            .frame(minWidth: 44, minHeight: 44, alignment: .trailing)
         }
         // Plain, so the hit area stays on the symbol instead of swallowing taps meant for the
         // field beside it.
@@ -131,7 +136,20 @@ struct CopyCheckedItemsView: View {
 
   // MARK: - Copying
 
+  /// Whether there is still anything to copy.
+  ///
+  /// The menu asked this once, when it opened. A merge from another device can Reset the source
+  /// while this sheet is up, and without re-asking, committing would put a brand-new empty
+  /// checklist at the top of the list, count a `checklist_items_copied`, and say it worked.
+  /// Leaving quietly is the honest response: the person's own list is unchanged either way.
+  private func hasSomethingToCopy() -> Bool {
+    guard source.checkedItems.isEmpty else { return true }
+    dismiss()
+    return false
+  }
+
   private func createChecklistAndCopy() {
+    guard hasSomethingToCopy() else { return }
     let typed = newChecklistName.trimmingCharacters(in: .whitespacesAndNewlines)
     // An empty field commits under the name an unnamed checklist carries everywhere else, rather
     // than introducing a second untitled string.
@@ -150,6 +168,7 @@ struct CopyCheckedItemsView: View {
   }
 
   private func copyCheckedItems(into destination: Checklist) {
+    guard hasSomethingToCopy() else { return }
     do {
       try context.copyCheckedItems(of: source, into: destination)
     } catch {

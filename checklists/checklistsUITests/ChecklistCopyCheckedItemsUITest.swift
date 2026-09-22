@@ -42,6 +42,18 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
   /// the tree behind the sheet.
   private static let morningRoutineChecklistId = "C4EC1157-0000-4000-A000-000000000001"
 
+  /// The detail screen's item names, in order.
+  ///
+  /// Each row's name is an editable `CLTextView`, not a label, so it is read from the field's value
+  /// the way `checklistUITest` already does — `staticTexts` never matches it. The add-item footer is
+  /// not a cell, so every cell here is an item.
+  private func itemNames(in table: XCUIElement) -> [String] {
+    let cells = table.children(matching: .cell)
+    return (0 ..< cells.count).compactMap {
+      cells.element(boundBy: $0).textViews["itemNameTextView"].value as? String
+    }
+  }
+
   /// Opens the detail screen's overflow menu and taps the copy entry, leaving the picker up.
   private func tapCopyCheckedItemsEntry() {
     let moreButton = app.navigationBars.buttons["checklist.more"]
@@ -79,13 +91,17 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
       "A checklist made out of a subset goes to the top, where a new checklist goes."
     )
 
-    // The five checked items came over; the sixth, unchecked, did not.
+    // The five checked items came over, in order; "Journaling", the one left unchecked, did not.
     checklistsList.staticTexts["untitled checklist"].tap()
     let copyTable = app.tables["ChecklistTableView"]
     XCTAssertTrue(copyTable.waitForExistence(timeout: 5))
-    XCTAssertTrue(copyTable.staticTexts["START COFFEE MAKER"].exists)
-    XCTAssertTrue(copyTable.staticTexts["Argue politics on Facebook"].exists)
-    XCTAssertFalse(copyTable.staticTexts["Journaling"].exists, "An unchecked item shouldn't have been copied.")
+    XCTAssertEqual(itemNames(in: copyTable), [
+      "START COFFEE MAKER",
+      "Yoga/meditation",
+      "Traffic and weather reports",
+      "Breakfast",
+      "Argue politics on Facebook",
+    ])
     XCTAssertFalse(
       copyTable.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].isSelected,
       "Copied items should arrive unchecked."
@@ -128,11 +144,10 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
 
     let morningTable = app.tables["ChecklistTableView"]
     XCTAssertTrue(morningTable.waitForExistence(timeout: 5))
-    let copied = morningTable.staticTexts["Set up auto-reply on email accounts"]
-    XCTAssertTrue(copied.waitForExistence(timeout: 5), "The copied item didn't arrive.")
-    // Appended, not inserted: the last row before the add-item footer is the one that arrived.
-    let lastCell = morningTable.children(matching: .cell).element(boundBy: 6)
-    XCTAssertTrue(lastCell.staticTexts["Set up auto-reply on email accounts"].exists, "The copy should sit at the end.")
+    let names = itemNames(in: morningTable)
+    XCTAssertEqual(names.count, 7, "Morning Routine's own six items, plus the one copied in.")
+    // Appended, not inserted: the copy sits after everything the destination already had.
+    XCTAssertEqual(names.last, "Set up auto-reply on email accounts", "The copy should sit at the end.")
   }
 
   /// Omitted rather than disabled, matching how the create sheet drops the whole non-destructive
