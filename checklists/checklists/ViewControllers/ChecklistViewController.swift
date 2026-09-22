@@ -73,10 +73,12 @@ class ChecklistViewController: UIViewController {
   /// `\.modelContext` — the same context it resolved `checklist` out of, which the two must always
   /// share.
   ///
-  /// Implicitly unwrapped because there is no safe default, and unlike `checklist` its first use
-  /// is conditional — a screen whose checklist already has items renders fine without it and traps
-  /// later, on the first edit. Set it right after `init()`, alongside `checklist`; behavior is
-  /// undefined if it is set or reset after `viewDidLoad()`.
+  /// Implicitly unwrapped because there is no safe default, and unlike `checklist` — which
+  /// `viewDidLoad` dereferences unconditionally — nothing here fails on the first frame. A screen
+  /// whose checklist already has items loads and renders without it, then traps on whatever
+  /// touches the store first: an edit, or a merge arriving through `handleRemoteChange`. Set it
+  /// right after `init()`, alongside `checklist`; behavior is undefined if it is set or reset
+  /// after `viewDidLoad()`.
   ///
   /// Internal rather than private so `ChecklistViewController+Menu` can reach it.
   var context: ModelContext!
