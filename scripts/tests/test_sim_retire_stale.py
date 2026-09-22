@@ -45,6 +45,23 @@ class StaleDeviceTests(unittest.TestCase):
         found = stale_devices(NAME, {IOS_26_5: [_device(available=False)]}, runtimes)
         self.assertEqual([d["udid"] for d, _ in found], ["U1"])
 
+    def test_device_whose_runtime_is_briefly_unavailable_is_kept(self) -> None:
+        runtimes = [_runtime(IOS_26_5, "26.5", available=False), _runtime(IOS_27_0, "27.0")]
+        self.assertEqual(stale_devices(NAME, {IOS_26_5: [_device(available=False)]}, runtimes), [])
+
+    def test_runtimes_above_the_selected_sdk_are_not_the_target(self) -> None:
+        # A beta Xcode's runtime is installed alongside the selected stable one.
+        runtimes = [_runtime(IOS_26_5, "26.5"), _runtime(IOS_27_0, "27.0")]
+        self.assertEqual(stale_devices(NAME, {IOS_26_5: [_device()]}, runtimes, sdk_version="26.5"), [])
+        found = stale_devices(NAME, {IOS_27_0: [_device()]}, runtimes, sdk_version="26.5")
+        self.assertEqual([d["udid"] for d, _ in found], ["U1"])
+
+    def test_sdk_cap_ignores_patch_versions(self) -> None:
+        ios_26_5_1 = "com.apple.CoreSimulator.SimRuntime.iOS-26-5-1"
+        runtimes = [_runtime(IOS_26_5, "26.5"), _runtime(ios_26_5_1, "26.5.1")]
+        found = stale_devices(NAME, {IOS_26_5: [_device()]}, runtimes, sdk_version="26.5")
+        self.assertIn("target is iOS 26.5.1", found[0][1])
+
     def test_other_names_are_never_touched(self) -> None:
         runtimes = [_runtime(IOS_26_5, "26.5"), _runtime(IOS_27_0, "27.0")]
         devices = {

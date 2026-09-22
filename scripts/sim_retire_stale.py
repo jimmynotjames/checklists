@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""Delete a named simulator if it runs an older iOS than the newest one installed.
+"""Delete a named simulator unless it runs the newest iOS the selected Xcode can target.
 
 The sandbox and screenshot scripts reuse their per-clone simulator by name, and
-resolve_sim_spec.py only picks the newest runtime when a device is first created.
-Without this, a device created before an Xcode upgrade keeps running the old iOS
-forever, and tests silently never see the new SDK's behavior. Deleting it lets the
-caller's create path rebuild it on the newest runtime.
+resolve_sim_spec.py only picks the runtime when a device is first created. Without
+this, a device created before an Xcode upgrade keeps running the old iOS forever, and
+tests silently never see the new SDK's behavior. Deleting it lets the caller's create
+path rebuild it on the right runtime. The same applies in reverse after switching back
+from a beta Xcode.
 
-A device whose runtime has been uninstalled is retired too: it can no longer boot.
-Matches the exact device name only, so it cannot touch another clone's devices.
-Exits 0 always (callers treat this as best-effort); logs what it did to stderr.
+A device whose runtime has been uninstalled is retired too: it can no longer boot. One
+whose runtime is listed but unavailable is left alone, since runtimes can be briefly
+unmounted after an update. Matches the exact device name only, so it cannot touch
+another clone's devices. Exits 0 always (callers run under `set -e` and treat this as
+best-effort); logs what it did to stderr.
 
 Usage:
     python3 sim_retire_stale.py --name "iPhone 17 [a1b2c3d4]"
@@ -21,7 +24,7 @@ import json
 import subprocess
 import sys
 
-from resolve_sim_spec import newest_ios_runtime, runtime_version
+from resolve_sim_spec import newest_ios_runtime, runtime_version, selected_sdk_version
 
 SIMCTL_TIMEOUT_SEC = 15
 
@@ -35,26 +38,33 @@ def simctl(*args: str) -> subprocess.CompletedProcess:
     )
 
 
-def stale_devices(name: str, devices: dict[str, list[dict]], runtimes: list[dict]) -> list[tuple[dict, str]]:
-    """Devices named `name` that are behind the newest iOS runtime, with the reason.
+def stale_devices(
+    name: str,
+    devices: dict[str, list[dict]],
+    runtimes: list[dict],
+    sdk_version: str | None = None,
+) -> list[tuple[dict, str]]:
+    """Devices named `name` that are not on the target iOS runtime, with the reason.
 
     `devices` and `runtimes` are the parsed `simctl list devices -j` / `runtimes -j` bodies.
-    Returns nothing when no iOS runtime is installed: there is nothing to rebuild onto.
+    Returns nothing when no target runtime is installed: there is nothing to rebuild onto.
     """
-    newest = newest_ios_runtime(runtimes)
-    if newest is None:
+    target = newest_ios_runtime(runtimes, sdk_version)
+    if target is None:
         return []
-    versions = {r["identifier"]: r["version"] for r in runtimes if r.get("isAvailable")}
+    by_id = {r["identifier"]: r for r in runtimes}
     found = []
     for runtime_id, runtime_devices in devices.items():
         for d in runtime_devices:
             if d.get("name") != name:
                 continue
-            version = versions.get(runtime_id)
-            if version is None or not d.get("isAvailable", True):
+            runtime = by_id.get(runtime_id)
+            if runtime is None:
                 found.append((d, f"its runtime {runtime_id} is no longer installed"))
-            elif runtime_version(version) < runtime_version(newest["version"]):
-                found.append((d, f"it runs iOS {version}, newest installed is iOS {newest['version']}"))
+            elif not runtime.get("isAvailable"):
+                continue
+            elif runtime_version(runtime["version"]) != runtime_version(target["version"]):
+                found.append((d, f"it runs iOS {runtime['version']}, target is iOS {target['version']}"))
     return found
 
 
@@ -66,16 +76,21 @@ def main() -> int:
     try:
         devices = json.loads(simctl("list", "devices", "-j").stdout).get("devices", {})
         runtimes = json.loads(simctl("list", "runtimes", "-j").stdout).get("runtimes", [])
-    except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError) as e:
-        print(f"sim-retire: could not list simulators ({e}); leaving devices alone", file=sys.stderr)
+        stale = stale_devices(args.name, devices, runtimes, selected_sdk_version())
+    except Exception as e:  # noqa: BLE001 — best-effort: never fail the caller's run
+        print(f"sim-retire: could not check simulators ({e}); leaving devices alone", file=sys.stderr)
         return 0
 
-    for d, reason in stale_devices(args.name, devices, runtimes):
+    for d, reason in stale:
         udid = d["udid"]
         print(f"sim-retire: replacing {args.name} ({udid}): {reason}", file=sys.stderr)
-        if d.get("state") == "Booted":
-            simctl("shutdown", udid)
-        result = simctl("delete", udid)
+        try:
+            if d.get("state") == "Booted":
+                simctl("shutdown", udid)
+            result = simctl("delete", udid)
+        except subprocess.TimeoutExpired as e:
+            print(f"sim-retire: warning: {e}", file=sys.stderr)
+            continue
         if result.returncode != 0:
             print(f"sim-retire: warning: delete failed: {result.stderr.strip()}", file=sys.stderr)
     return 0
