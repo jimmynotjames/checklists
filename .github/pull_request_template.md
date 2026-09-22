@@ -24,7 +24,7 @@ For every change, confirm each concern applies or is N/A:
       changed, a new `VersionedSchema`, a `MigrationStage` in `ChecklistsMigrationPlan`, and a
       migration test all exist. Once the CloudKit production schema is deployed, changes are
       additive only. See `core-docs/persistence-design.md`.
-- [ ] **Analytics** — new user-initiated state changes fire a matching
+- [ ] **Analytics events** — new user-initiated state changes fire a matching
       `analytics.track(...)` call, with names in the `AnalyticsEvent`/`AnalyticsProperty` enums in
       `Analytics/AnalyticsNames.swift` and a row added to `core-docs/analytics-spec.md`. No PII.
 - [ ] **Accessibility** — new controls have `accessibilityLabel` and appropriate traits; nothing
@@ -33,12 +33,12 @@ For every change, confirm each concern applies or is N/A:
 - [ ] **Reduce Motion** — new or changed animations are gated on Reduce Motion
       (`@Environment(\.accessibilityReduceMotion)` / `UIAccessibility.isReduceMotionEnabled`), or
       carry a one-line rationale, with the verdict recorded in the animation inventory in
-      `core-docs/accessibility-spec.md` §3. Note `animated:` calls obey `animated: true` regardless
-      of the setting.
+      `core-docs/accessibility-spec.md` §3.
 - [ ] **Localization** — new user-facing strings are dotted keys with translator comments, read via
       `String(localized:defaultValue:comment:)`, and `translate-new-strings` has been run so
-      `check_translations.py` passes. Sample-data or screenshot-seed changes also need the
-      transcreation fan-out and `generate_seeds.py`. See `core-docs/localization-spec.md`.
+      `check_translations.py` passes. Sample-data changes also regenerate the screenshot seeds via
+      the transcreation fan-out and `generate_seeds.py` — never hand-edit `Localizable.xcstrings` or
+      a seed file. See `core-docs/localization-spec.md`.
 - [ ] **Secrets inventory** — added, removed, or renamed secret-bearing files, credential variables,
       external secret locations, and machine-local credential prerequisites are reflected in
       `core-docs/secrets-list.md`; no secret values are documented or exposed during verification.
