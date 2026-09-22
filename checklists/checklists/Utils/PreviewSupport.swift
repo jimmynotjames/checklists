@@ -9,18 +9,12 @@
 
   /// Shared fixtures for the `#Preview` blocks at the bottom of each view file.
   ///
-  /// `@MainActor` because building the container also installs a `PersistenceController`, which
-  /// is main-actor-isolated.
+  /// `@MainActor` because `context` reaches a container's main context.
   @MainActor
   enum PreviewSupport {
     /// In-memory, CloudKit-free container holding the `SampleData` fixture — the same three
     /// checklists first launch seeds, so a preview shows what a real install shows.
-    ///
-    /// Installing `PersistenceController` as a side effect of the first access is deliberate:
-    /// `ChecklistViewController` reaches for `PersistenceController.shared` in `viewDidLoad`, so
-    /// without it `ChecklistScreen`'s preview hits `preconditionFailure`. Each preview runs in
-    /// its own process, so this writes to nothing the app or the tests can see.
-    static let container: ModelContainer = makeInstalledContainer()
+    static let container: ModelContainer = make(InMemoryModelContainer.makeSeeded)
 
     /// For the empty-list state, which the seeded container cannot show.
     static let emptyContainer: ModelContainer = make(InMemoryModelContainer.makeEmpty)
@@ -53,14 +47,6 @@
       let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
       settings.analyticsOptIn = optedIn
       return settings
-    }
-
-    private static func makeInstalledContainer() -> ModelContainer {
-      let container = make(InMemoryModelContainer.makeSeeded)
-      PersistenceController.install(
-        PersistenceController(modelContainer: container, containerBacking: .cloudKit)
-      )
-      return container
     }
 
     private static func make(_ build: @MainActor () throws -> ModelContainer) -> ModelContainer {

@@ -31,14 +31,13 @@ class ChecklistViewController: UIViewController {
   /// Set by the SwiftUI host (`ChecklistScreen`). Called with the new checklist's `id` after a
   /// duplication, for the host to present. The id rather than the model, like every other
   /// cross-screen reference in the app (see `AppRoute`); the controller has no router and should
-  /// not acquire one. Unset (pure-UIKit presentation, previews, tests) means the copy is still
-  /// made and saved, just not opened.
+  /// not acquire one. Unset means the copy is still made and saved, just not opened.
   var onRequestOpenDuplicate: ((String) -> Void)?
 
   /// Set by the SwiftUI host (`ChecklistScreen`), like `onRequestDismiss` above. There is no
-  /// environment to read from here, so the client is pushed in. The console default keeps
-  /// pure-UIKit construction and previews working without any setup, and means a missed
-  /// injection degrades to "no events" rather than a crash.
+  /// environment to read from here, so the client is pushed in. The console default means a missed
+  /// injection degrades to "no events" rather than a crash — unlike `context` below, which has no
+  /// safe default and must be set.
   var analytics: any AnalyticsClient = ConsoleAnalyticsClient()
 
   /// Set by the SwiftUI host, like `analytics` above. Fed one call per item checked off — the
@@ -70,10 +69,19 @@ class ChecklistViewController: UIViewController {
   /// How far down the list must be dragged before an in-progress edit is committed.
   private let keyboardDismissDragThreshold: CGFloat = 40.0
 
+  /// The store this screen reads and writes. Set by the SwiftUI host (`ChecklistScreen`) from
+  /// `\.modelContext` — the same context it resolved `checklist` out of, which the two must always
+  /// share.
+  ///
+  /// Implicitly unwrapped because there is no safe default, and unlike `checklist` — which
+  /// `viewDidLoad` dereferences unconditionally — nothing here fails on the first frame. A screen
+  /// whose checklist already has items loads and renders without it, then traps on whatever
+  /// touches the store first: an edit, or a merge arriving through `handleRemoteChange`. Set it
+  /// right after `init()`, alongside `checklist`; behavior is undefined if it is set or reset
+  /// after `viewDidLoad()`.
+  ///
   /// Internal rather than private so `ChecklistViewController+Menu` can reach it.
-  var context: ModelContext {
-    PersistenceController.shared.mainContext
-  }
+  var context: ModelContext!
 
   /// False only on the create sheet, where both caption lines could only ever read "Never".
   private var showsHistoryCaption = false
@@ -92,13 +100,14 @@ class ChecklistViewController: UIViewController {
   private var snapshotView: UIView = .init()
   private var sourceIndexPath: IndexPath = .init(row: 0, section: 0)
 
-  /// Writes an item's new position to the store.
+  /// Overrides how an item's new position is written. `nil` — the normal case — means the real
+  /// write through `context`.
   ///
-  /// A closure rather than a direct call so tests can drive the failure path: a real SwiftData save
-  /// only fails on a full or damaged disk, which a test has no way to arrange.
-  var saveItemMove: (Item, [Item], Int) throws -> Void = { item, siblings, index in
-    try PersistenceController.shared.mainContext.move(item: item, among: siblings, to: index)
-  }
+  /// An override rather than a direct call so tests can drive the failure path: a real SwiftData
+  /// save only fails on a full or damaged disk, which a test has no way to arrange. Optional rather
+  /// than a defaulted closure because a default value cannot capture `context`, which is unset at
+  /// init time.
+  var saveItemMove: ((Item, [Item], Int) throws -> Void)?
 
   override func loadView() {
     let tableView = UITableView(frame: .zero, style: .plain)
@@ -294,8 +303,7 @@ class ChecklistViewController: UIViewController {
 
   /// Whether a scroll view is resting at its top, inset included.
   ///
-  /// Static and internal so tests can drive it without loading the view — loading it reaches
-  /// `PersistenceController.shared`, which is not installed in the test target.
+  /// Static and internal so a test can drive it with a stub whose `adjustedContentInset` it chose.
   static func isAtTop(_ scrollView: UIScrollView) -> Bool {
     scrollView.contentOffset.y <= -scrollView.adjustedContentInset.top + atTopTolerance
   }
@@ -426,7 +434,11 @@ class ChecklistViewController: UIViewController {
   /// they have already drawn, so each decides for itself what to do about it.
   func saveMove(of item: Item, among siblings: [Item], to index: Int) -> Bool {
     do {
-      try saveItemMove(item, siblings, index)
+      if let saveItemMove {
+        try saveItemMove(item, siblings, index)
+      } else {
+        try context.move(item: item, among: siblings, to: index)
+      }
       return true
     } catch {
       return false

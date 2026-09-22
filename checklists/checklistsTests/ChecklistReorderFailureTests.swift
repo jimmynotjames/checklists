@@ -14,9 +14,8 @@ import UIKit
 /// `saveItemMove` rather than provoked — the same closure-injection seam
 /// `ProductionContainerFactoryTests` uses for container creation.
 ///
-/// These tests deliberately never load the view. `tableView(_:moveRowAt:to:)` reads only the
-/// checklist and that closure, so leaving the view unloaded keeps the test away from
-/// `PersistenceController.shared`, which is not installed in this target.
+/// These tests deliberately never load the view: `tableView(_:moveRowAt:to:)` reads only the
+/// checklist and the injected context, so there is nothing a loaded view would add.
 @Suite("Recovering from a failed item reorder save")
 struct ChecklistReorderFailureTests {
   /// Records resync requests instead of touching a table view that was never loaded.
@@ -50,16 +49,17 @@ struct ChecklistReorderFailureTests {
     return (checklist, context)
   }
 
-  private func makeViewController(for checklist: Checklist) -> SpyViewController {
+  private func makeViewController(for checklist: Checklist, context: ModelContext) -> SpyViewController {
     let viewController = SpyViewController()
     viewController.checklist = checklist
+    viewController.context = context
     return viewController
   }
 
   @Test("a failed move asks for a resync")
   func failedMoveAsksForAResync() throws {
-    let (checklist, _) = try makeChecklist()
-    let viewController = makeViewController(for: checklist)
+    let (checklist, context) = try makeChecklist()
+    let viewController = makeViewController(for: checklist, context: context)
     viewController.saveItemMove = { _, _, _ in throw SaveFailure() }
 
     viewController.tableView(UITableView(), moveRowAt: sourceIndexPath, to: destinationIndexPath)
@@ -69,8 +69,8 @@ struct ChecklistReorderFailureTests {
 
   @Test("a successful move does not resync")
   func successfulMoveDoesNotResync() throws {
-    let (checklist, _) = try makeChecklist()
-    let viewController = makeViewController(for: checklist)
+    let (checklist, context) = try makeChecklist()
+    let viewController = makeViewController(for: checklist, context: context)
     var recordedIndex: Int?
     viewController.saveItemMove = { _, _, index in recordedIndex = index }
 
@@ -80,12 +80,33 @@ struct ChecklistReorderFailureTests {
     #expect(viewController.resyncCount == 0, "A save that succeeded leaves the table agreeing with the store already.")
   }
 
+  /// With no override, the reorder has to reach the store behind the context this controller was
+  /// given.
+  ///
+  /// Read back through a second context over the same container, rather than asserting the order
+  /// on `checklist`: `move` reassigns `sortKey` on these objects whichever context saves, and a
+  /// fetch on the context that owns them sees its own pending changes either way. Only a separate
+  /// context distinguishes "saved" from "dirtied and saved somewhere else".
+  @Test("the default save path saves through the injected context")
+  func defaultSavePathUsesTheInjectedContext() throws {
+    let (checklist, context) = try makeChecklist()
+    let viewController = makeViewController(for: checklist, context: context)
+
+    viewController.tableView(UITableView(), moveRowAt: sourceIndexPath, to: destinationIndexPath)
+
+    #expect(viewController.resyncCount == 0)
+    #expect(checklist.items.map(\.name) == ["second", "third", "first"])
+    let verification = ModelContext(context.container)
+    let saved = try verification.fetch(FetchDescriptor<Item>()).sorted { $0.sortKey < $1.sortKey }
+    #expect(saved.map(\.name) == ["second", "third", "first"], "The reorder never reached the store.")
+  }
+
   /// `saveMove` reports the outcome so the drop path can decline to move a row it failed to save;
   /// that path itself needs a `UITableViewDropCoordinator`, which cannot be constructed in a test.
   @Test("saveMove reports whether it saved")
   func saveMoveReportsWhetherItSaved() throws {
-    let (checklist, _) = try makeChecklist()
-    let viewController = makeViewController(for: checklist)
+    let (checklist, context) = try makeChecklist()
+    let viewController = makeViewController(for: checklist, context: context)
     let items = checklist.items
 
     viewController.saveItemMove = { _, _, _ in }

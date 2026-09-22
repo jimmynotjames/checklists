@@ -273,9 +273,10 @@ inside the initializer rather than at a single launch call site.
 exists, and two more are in UIKit.
 
 **The UIKit checklist screen** (`ChecklistViewController`) receives the client as a stored property,
-assigned by its SwiftUI host in `makeUIViewController`. This mirrors two injections already in that
-file (`onRequestDismiss`, `saveItemMove`), and it defaults to the console client so pure-UIKit
-construction and previews keep working.
+assigned by its SwiftUI host in `makeUIViewController`, alongside everything else that screen is
+handed there — its model context, its checklist, and the callbacks it reports back through. The
+client defaults to the console one, so a missed injection degrades to "no events" rather than a
+crash. That is not true of every property assigned there: the model context has no safe default.
 
 **The three persistence sites** — the container factory, the startup coordinator, and the save
 helper — cannot reach an environment: they run inside `AppStartupModel.init()`, itself inside a

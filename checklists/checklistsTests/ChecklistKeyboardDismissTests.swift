@@ -10,10 +10,9 @@ import UIKit
 
 /// Covers dragging the list down to dismiss the keyboard.
 ///
-/// The dismissal is observed through `endEditingAfterDragDismiss` rather than a real resign, for the
-/// same reason `ChecklistReorderFailureTests` overrides `resyncAfterFailedMove`: touching `view`
-/// would load it, and that reaches `PersistenceController.shared`, which is not installed in this
-/// target.
+/// The dismissal is observed through `endEditingAfterDragDismiss` rather than a real resign so
+/// that it is observable at all: the real path ends in `view.endEditing(true)`, which reports
+/// nothing a test can assert on.
 @Suite("Dismissing the keyboard by dragging the list")
 struct ChecklistKeyboardDismissTests {
   /// Records dismissals instead of ending editing on a view that was never loaded.
@@ -58,6 +57,7 @@ struct ChecklistKeyboardDismissTests {
 
     let viewController = SpyViewController()
     viewController.checklist = checklist
+    viewController.context = context
     return viewController
   }
 
