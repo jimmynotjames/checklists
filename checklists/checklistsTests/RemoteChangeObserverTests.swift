@@ -7,9 +7,14 @@
 import CoreData
 import Testing
 
-/// Covers `RemoteChangeObserver`'s coalescing: a burst of `NSPersistentStoreRemoteChange`
-/// notifications — the shape a CloudKit merge actually produces — collapses into one callback.
-@Suite("RemoteChangeObserver coalescing")
+/// Covers `RemoteChangeObserver`'s debounce: a burst of `NSPersistentStoreRemoteChange`
+/// notifications — the shape a CloudKit merge actually produces — collapses into one callback, and
+/// a burst that never goes quiet still fires on the maximum-delay deadline.
+/// `.serialized` is load-bearing, not tidiness: `RemoteChangeObserver` registers on
+/// `NotificationCenter.default` with `object: nil`, so every observer alive in this process sees
+/// every post. Run concurrently, one test's burst restarts another's debounce and both assert
+/// against callbacks they did not cause.
+@Suite("RemoteChangeObserver coalescing", .serialized)
 struct RemoteChangeObserverTests {
   /// `confirmation` is doing two jobs: it fails if the callback never arrives, and it fails if it
   /// arrives more than once. Coalescing is only proven by the second half.
@@ -35,5 +40,104 @@ struct RemoteChangeObserverTests {
 
       withExtendedLifetime(observer) {}
     }
+  }
+
+  /// The starvation case the maximum delay exists for: notifications arriving faster than the
+  /// debounce window, which is what an initial CloudKit import on a device joining an existing
+  /// account looks like. Without the deadline this fires zero times.
+  ///
+  /// The `await` between posts is load-bearing. This suite is main-actor isolated, so posting
+  /// without suspending queues every hop to land at the same instant — the burst would collapse
+  /// into one reschedule and the deadline would never engage.
+  ///
+  /// The elapsed-time bound is what stops the test passing for the wrong reason. On a loaded
+  /// machine the 20ms gaps can stretch past the debounce, at which point the burst goes quiet and
+  /// a debounce-only implementation would also fire — but only after the whole loop, so the first
+  /// callback arriving well before then is reachable by the deadline alone.
+  @Test("a burst that never goes quiet still fires on the deadline", .timeLimit(.minutes(1)))
+  func sustainedBurstFiresOnMaximumDelay() async throws {
+    let started = ContinuousClock.now
+    var firstFiredAt: ContinuousClock.Instant?
+
+    try await confirmation("deadline callback fired", expectedCount: 1...) { callbackFired in
+      let observer = RemoteChangeObserver(
+        coalescingDelay: .milliseconds(50),
+        maximumDelay: .milliseconds(120)
+      ) {
+        firstFiredAt = firstFiredAt ?? ContinuousClock.now
+        callbackFired()
+      }
+
+      for _ in 0 ..< 20 {
+        NotificationCenter.default.post(name: .NSPersistentStoreRemoteChange, object: nil)
+        try await Task.sleep(for: .milliseconds(20))
+      }
+
+      withExtendedLifetime(observer) {}
+    }
+
+    let elapsed = try started.duration(to: #require(firstFiredAt))
+    #expect(elapsed < .milliseconds(300))
+  }
+
+  /// Guards against the two bounds being swapped, which would turn every notification into an
+  /// immediate callback.
+  @Test("a single notification waits out the debounce", .timeLimit(.minutes(1)))
+  func quietBurstWaitsForCoalescingDelay() async throws {
+    let started = ContinuousClock.now
+    var firedAt: ContinuousClock.Instant?
+
+    try await confirmation("debounced callback fired") { callbackFired in
+      let observer = RemoteChangeObserver(
+        coalescingDelay: .milliseconds(100),
+        maximumDelay: .seconds(5)
+      ) {
+        firedAt = ContinuousClock.now
+        callbackFired()
+      }
+
+      NotificationCenter.default.post(name: .NSPersistentStoreRemoteChange, object: nil)
+      try await Task.sleep(for: .milliseconds(400))
+
+      withExtendedLifetime(observer) {}
+    }
+
+    let elapsed = try started.duration(to: #require(firedAt))
+    #expect(elapsed >= .milliseconds(90))
+  }
+
+  /// Without the reset, `burstStart` would latch at the first notification and every later
+  /// reschedule would clamp to an already-elapsed deadline, throttling the callback forever
+  /// instead of returning to the trailing debounce once the burst ends.
+  ///
+  /// As above, the elapsed-time bound on the first callback is what keeps this from passing on a
+  /// debounce-only implementation when a loaded machine stretches the gaps.
+  @Test("a burst still gets a trailing callback after a deadline fire", .timeLimit(.minutes(1)))
+  func burstResumesDebouncingAfterDeadlineFire() async throws {
+    let started = ContinuousClock.now
+    var firstFiredAt: ContinuousClock.Instant?
+
+    try await confirmation("deadline and trailing callbacks fired", expectedCount: 2...) { callbackFired in
+      let observer = RemoteChangeObserver(
+        coalescingDelay: .milliseconds(50),
+        maximumDelay: .milliseconds(100)
+      ) {
+        firstFiredAt = firstFiredAt ?? ContinuousClock.now
+        callbackFired()
+      }
+
+      // Long enough to cross the deadline at least once.
+      for _ in 0 ..< 10 {
+        NotificationCenter.default.post(name: .NSPersistentStoreRemoteChange, object: nil)
+        try await Task.sleep(for: .milliseconds(20))
+      }
+      // Then go quiet, so the trailing debounce delivers a second callback.
+      try await Task.sleep(for: .milliseconds(300))
+
+      withExtendedLifetime(observer) {}
+    }
+
+    let elapsed = try started.duration(to: #require(firstFiredAt))
+    #expect(elapsed < .milliseconds(200))
   }
 }
