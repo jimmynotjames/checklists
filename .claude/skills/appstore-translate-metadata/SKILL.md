@@ -197,8 +197,7 @@ stale output files for those storefronts.
 > in parallel (below). On **Codex** or any tool without a subagent primitive, run the same step
 > **inline and serially**: for each `tmp/metadata-prompts/{storefront}.md`, read it, produce the
 > transcreation JSON yourself, and write `tmp/metadata-outputs/{storefront}.json` — then continue.
-> Same scripts, same gates, same result. Canonical: `AGENTS.md > Cross-cutting concerns > Running the
-> translation pipelines`.
+> Same scripts, same gates, same result. Canonical: AGENTS.md §"Running the translation pipelines".
 
 #### Claude Code — one `metadata-locale` subagent per storefront, in parallel
 
