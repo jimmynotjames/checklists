@@ -69,8 +69,11 @@ private struct ToastLayer: ViewModifier {
       }
   }
 
+  /// Both layers key off the same condition, so exactly one ever draws. The sheet's half is not
+  /// redundant: a dismissing sheet's content stays mounted for its slide-out, so a toast raised
+  /// just after `dismiss()` — the shape a confirmation takes — would otherwise be drawn by both.
   private var drawsHere: Bool {
-    isRoot ? router.sheet == nil : true
+    isRoot ? router.sheet == nil : router.sheet != nil
   }
 
   private var announcedMessage: LocalizedStringResource? {

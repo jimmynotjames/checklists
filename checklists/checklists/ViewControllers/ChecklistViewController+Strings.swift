@@ -32,6 +32,18 @@ extension ChecklistViewController {
     """
   )
 
+  static let copyCheckedItemsMenuTitle = String(
+    localized: "checklist.menu.copyCheckedItems",
+    defaultValue: "Copy Checked Items to…",
+    comment: """
+    Overflow-menu entry on an existing checklist's detail screen. Copies the items the person has \
+    ticked into another checklist, picked on the sheet that opens next. Keep the trailing \
+    ellipsis — it is what promises that sheet. It sits directly under the Duplicate Checklist \
+    entry and must not read alike: that one copies the whole list, this one copies a selection \
+    into a different list.
+    """
+  )
+
   static let deleteChecklistMenuTitle = String(
     localized: "checklist.menu.deleteChecklist",
     defaultValue: "Delete Checklist",

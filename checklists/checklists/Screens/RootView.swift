@@ -59,6 +59,12 @@ struct RootView: View {
           } else {
             unresolvedSheetDestination
           }
+        case let .copyCheckedItems(sourceID):
+          if let source = context.checklist(id: sourceID) {
+            CopyCheckedItemsView(source: source)
+          } else {
+            unresolvedSheetDestination
+          }
         }
       }
       #if DEBUG

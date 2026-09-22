@@ -35,7 +35,10 @@ struct ChecklistScreen: View {
       // yet. Everything the sheet does about that is what a copy wants — Done instead of Reset, the
       // name field focused for renaming, no history caption where both lines could only read
       // "Never", and Discard as the way to undo an accidental duplicate.
-      onRequestOpenDuplicate: { id in router.sheet = .newChecklist(id: id) }
+      onRequestOpenDuplicate: { id in router.sheet = .newChecklist(id: id) },
+      // The picker does the copying itself and dismisses without navigating, so this is the whole
+      // of the host's involvement — see `CopyCheckedItemsView`.
+      onRequestCopyCheckedItems: { id in router.sheet = .copyCheckedItems(sourceID: id) }
     )
     // The view controller does its own keyboard avoidance via contentInset (the reason it ditched
     // UITableViewController); opt out of SwiftUI's so they don't stack.
@@ -64,6 +67,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   let isNewChecklist: Bool
   let onRequestDismiss: () -> Void
   let onRequestOpenDuplicate: (String) -> Void
+  let onRequestCopyCheckedItems: (String) -> Void
 
   @Environment(\.analytics) private var analytics
   /// Named `modelContext` rather than `context`: `makeUIViewController(context:)` already binds
@@ -84,6 +88,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
     viewController.isNewChecklist = isNewChecklist
     viewController.onRequestDismiss = onRequestDismiss
     viewController.onRequestOpenDuplicate = onRequestOpenDuplicate
+    viewController.onRequestCopyCheckedItems = onRequestCopyCheckedItems
     viewController.analytics = analytics
     viewController.ratingPrompt = ratingPrompt
     if !isNewChecklist {

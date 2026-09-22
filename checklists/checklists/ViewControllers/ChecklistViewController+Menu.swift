@@ -50,9 +50,45 @@ extension ChecklistViewController {
     // Inline sections, so the destructive entry keeps a gap above it and a thumb reaching for
     // Duplicate cannot land on Delete.
     return UIMenu(children: [
-      UIMenu(options: .displayInline, children: [duplicateAction]),
+      UIMenu(options: .displayInline, children: [duplicateAction, copyCheckedItemsElement]),
       UIMenu(options: .displayInline, children: [deleteAction]),
     ])
+  }
+
+  /// The copy entry, or nothing when there is nothing ticked to copy.
+  ///
+  /// Deferred rather than resolved up front because the menu is assembled once, in
+  /// `configureNavigationBar`, while what this depends on changes with every check-off, Reset and
+  /// remote merge. Rebuilding the whole menu from each of those paths would work; keeping the
+  /// freshness concern inside the menu is one place instead of five.
+  private var copyCheckedItemsElement: UIDeferredMenuElement {
+    // `uncached`, so the provider runs each time the menu opens rather than once per menu.
+    UIDeferredMenuElement.uncached { [weak self] completion in
+      // Omitted, not disabled, when nothing is ticked — the same call the create sheet's missing
+      // section makes above, and the only one this menu has precedent for.
+      guard let self, !checklist.checkedItems.isEmpty else {
+        completion([])
+        return
+      }
+      let action = UIAction(
+        title: Self.copyCheckedItemsMenuTitle,
+        // Distinct from Duplicate's `plus.square.on.square` directly above it: these two sit
+        // adjacent and a shared glyph would make one read as the other.
+        image: UIImage(systemName: "doc.on.doc")
+      ) { [weak self] _ in
+        self?.copyCheckedItems()
+      }
+      completion([action])
+    }
+  }
+
+  /// Internal so a test can invoke it: it is reached from a `UIAction` handler, which cannot be
+  /// fired directly.
+  func copyCheckedItems() {
+    // Commits a name or note still being typed, so a half-edited item is copied as it reads on
+    // screen rather than as it was last saved — the same reason `duplicateChecklist` does it.
+    view.endEditing(true)
+    onRequestCopyCheckedItems?(checklist.id)
   }
 
   /// Unconfirmed on purpose: nothing is lost, and the sheet that follows offers Discard as the way

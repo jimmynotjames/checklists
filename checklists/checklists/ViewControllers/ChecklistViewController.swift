@@ -34,6 +34,14 @@ class ChecklistViewController: UIViewController {
   /// not acquire one. Unset means the copy is still made and saved, just not opened.
   var onRequestOpenDuplicate: ((String) -> Void)?
 
+  /// Set by the SwiftUI host (`ChecklistScreen`). Called with *this* checklist's `id` when the
+  /// overflow menu's copy entry is tapped, for the host to present the destination picker. The
+  /// copy itself happens there, not here: picking the destination, naming a new list and writing
+  /// the items are one decision, and splitting them across a sheet and this controller would mean
+  /// handing a closure through the router's `SheetRoute`, which carries values only. Unset means
+  /// the entry does nothing, which is what a pure-UIKit presentation gets.
+  var onRequestCopyCheckedItems: ((String) -> Void)?
+
   /// Set by the SwiftUI host (`ChecklistScreen`), like `onRequestDismiss` above. There is no
   /// environment to read from here, so the client is pushed in. The console default means a missed
   /// injection degrades to "no events" rather than a crash — unlike `context` below, which has no
