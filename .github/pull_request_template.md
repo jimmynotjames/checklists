@@ -30,6 +30,15 @@ For every change, confirm each concern applies or is N/A:
 - [ ] **Accessibility** — new controls have `accessibilityLabel` and appropriate traits; nothing
       clips at large Dynamic Type. If this change involved any accessibility work,
       `core-docs/accessibility-spec.md` is updated too.
+- [ ] **Reduce Motion** — new or changed animations are gated on Reduce Motion
+      (`@Environment(\.accessibilityReduceMotion)` / `UIAccessibility.isReduceMotionEnabled`), or
+      carry a one-line rationale, with the verdict recorded in the animation inventory in
+      `core-docs/accessibility-spec.md` §3. Note `animated:` calls obey `animated: true` regardless
+      of the setting.
+- [ ] **Localization** — new user-facing strings are dotted keys with translator comments, read via
+      `String(localized:defaultValue:comment:)`, and `translate-new-strings` has been run so
+      `check_translations.py` passes. Sample-data or screenshot-seed changes also need the
+      transcreation fan-out and `generate_seeds.py`. See `core-docs/localization-spec.md`.
 - [ ] **Secrets inventory** — added, removed, or renamed secret-bearing files, credential variables,
       external secret locations, and machine-local credential prerequisites are reflected in
       `core-docs/secrets-list.md`; no secret values are documented or exposed during verification.
