@@ -183,7 +183,9 @@ class ChecklistViewController: UIViewController {
   }
 
   /// Reacts to this checklist being changed, or deleted, somewhere other than this screen.
-  private func handleRemoteChange() {
+  ///
+  /// Internal so a test can drive it without waiting out the observer's debounce.
+  func handleRemoteChange() {
     guard !checklist.isDeleted, context.checklist(id: checklist.id) != nil else {
       // Deleted on another device while open here. Leaving the screen up would let the user keep
       // editing a record that no longer exists.

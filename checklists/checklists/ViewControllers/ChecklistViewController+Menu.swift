@@ -57,7 +57,9 @@ extension ChecklistViewController {
 
   /// Unconfirmed on purpose: nothing is lost, and the sheet that follows offers Discard as the way
   /// back out.
-  private func duplicateChecklist() {
+  /// Internal so a test can invoke it: it is reached from a `UIAction` handler, which cannot be
+  /// fired directly.
+  func duplicateChecklist() {
     // Commits a name or note still being typed into the *source*, so the copy carries what is on
     // screen rather than the last value that happened to be saved. Same first-responder hazard
     // `deleteChecklist` documents below, for the opposite reason.
@@ -93,7 +95,9 @@ extension ChecklistViewController {
     present(alert, animated: true)
   }
 
-  private func deleteChecklist() {
+  /// Internal so a test can invoke it: it is reached from a `UIAction` handler, which cannot be
+  /// fired directly.
+  func deleteChecklist() {
     // Fired for a discard too: the store operation is identical, and "created then immediately
     // deleted" is itself a useful reading of checklist_created vs. checklist_deleted.
     analytics.track(AnalyticsEvent.checklistDeleted)
