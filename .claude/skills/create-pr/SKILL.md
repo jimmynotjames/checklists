@@ -115,8 +115,8 @@ The pre-push hook runs `scripts/build.sh` and blocks a push from `main`.
 ### 8. Open the PR
 
 Write the PR body to `tmp/pr-body.md` using the available file-editing tool, following the structure in
-`.github/pull_request_template.md` (What / Why / Test plan / Tools, then the cross-cutting checklist
-marked done-or-N/A from step 4). End with the `Co-Authored-By:` footer.
+`.github/pull_request_template.md` (What / Why / End-user impact / Test plan / Tools, then the
+cross-cutting checklist marked done-or-N/A from step 4). End with the `Co-Authored-By:` footer.
 
 PR title and issue-linkage conventions: AGENTS.md §"Commit and PR style". Test-plan honesty, and
 what belongs in the body versus what to leave out: `reference/review-and-gate.md` §"Gate and PR

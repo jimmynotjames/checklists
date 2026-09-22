@@ -42,8 +42,17 @@ subagent tool) with the diff pasted after this brief:
 >   drive-by fixes, edits to files the change had no reason to touch. Name the files.
 >
 > Do NOT flag style issues — SwiftLint and SwiftFormat own those; the two checks above are not style.
-> For each finding: state the file and approximate line, describe the issue, and rate it
-> high/medium/low. Append the full diff below."
+>
+> Number the problems `1.`, `2.`, … Title each one `**N. <Tag> (<rating>)** — <the defect stated as
+> a claim>`, where `<Tag>` is **Bug** (wrong today, a user can hit it), **Risk** (not wrong yet;
+> breaks under some future change or condition) or **Cleanup** (no behaviour change), and `<rating>`
+> is high/medium/low. The title must stand alone — a reader who stops there knows what is wrong.
+> Then, per problem: an `End-user impact:` line in plain product language (what someone using the
+> app experiences, how bad, how often — or `none — internal only`), then the file and approximate
+> line and the technical description.
+>
+> A check that came back clean is not a numbered problem. Report all clean checks together in one
+> closing `Clean: …` line. Append the full diff below."
 >
 > **The stated change:** [one or two sentences — what this PR was asked to do, and which files that
 > should touch. `create-pr-for-issue`: summarise the issue here. The scope check has nothing to
@@ -152,6 +161,10 @@ fixes are auto-applied to changed files; build failures require code changes.
 In **Test plan**, say how the change was actually verified. State accurately which automated suites
 were run — a plausible-sounding test plan that was never run is worse than "verified by hand in the
 simulator: <steps>".
+
+**End-user impact** is the human-readable section: what a person using the app notices, how bad, how
+often, in product language. "None — internal only." when there is none. The rest of the body stays
+as it is — written for the agent who later mines merged PRs.
 
 Length scales with the change — a one-line fix gets a one-line body, a schema migration gets what it
 needs. What's constrained is the *kind* of content: AGENTS.md §"Writing style", which governs PR

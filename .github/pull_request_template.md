@@ -4,6 +4,10 @@
 ## Why
 
 
+## End-user impact
+<!-- Plain product language: what a user notices, how bad, how often. "None — internal only." is valid. -->
+
+
 ## Test plan
 - [ ]
 

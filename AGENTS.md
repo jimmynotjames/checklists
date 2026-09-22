@@ -124,7 +124,9 @@ These govern every commit, skill-driven or not:
 - **Subject:** `<Past-tense verb> <description>.` — sentence case, trailing period, ≤72 chars, no
   `feat:`-style prefix, verb weight matching the change. `(#N)` is appended on merge.
 - **Body:** optional for one-liners; otherwise `*` bullets naming areas of change (not files), a
-  one-sentence `Why:` the diff can't show, and `Co-Authored-By:` on Claude commits.
+  one-sentence `Why:` the diff can't show, a one-sentence `End-user impact:` in plain product
+  language when the change is user-visible (omit the line when it isn't), and `Co-Authored-By:` on
+  Claude commits.
 - **Write messages with the Write tool**, then `git commit -F tmp/commit-msg.txt` /
   `gh pr create --body-file tmp/pr-body.md`. Never inline `printf ... && git commit` or
   `--body "..."`: a compound command is matched by its leading token and prompts.
