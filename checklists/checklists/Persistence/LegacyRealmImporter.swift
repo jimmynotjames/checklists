@@ -21,8 +21,7 @@ import SwiftData
     runs again on the next launch — and after `maximumAttempts` of those it stops trying and lets
     the app open anyway, still without deleting anything.
  2. **It is idempotent.** Records are matched by their existing `id`, so a second run — after a
-    crash, after the completion flag failed to reach disk, after the user tapped Retry — adds
-    nothing and changes nothing.
+    crash, or after the completion flag failed to reach disk — adds nothing and changes nothing.
  3. **It verifies before declaring success.** The completion flag is written only after every
     record read out of Realm has been read back out of SwiftData. A partial import leaves the flag
     unset and is retried rather than silently accepted.
