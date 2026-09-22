@@ -29,6 +29,7 @@ nonisolated enum AnalyticsEvent {
 
   static let checklistCreated = "checklist_created"
   static let checklistDuplicated = "checklist_duplicated"
+  static let checklistItemsCopied = "checklist_items_copied"
   static let checklistReset = "checklist_reset"
   static let checklistDeleted = "checklist_deleted"
 
@@ -80,6 +81,12 @@ nonisolated enum AnalyticsProperty {
   /// The two entry points are far apart in effort, so a single count would not say whether either
   /// is worth keeping.
   static let source = "source"
+
+  // MARK: checklist_items_copied
+
+  /// Copying into a list that already exists and copying into one made on the spot are different
+  /// intents — reuse versus extraction — and a single count would not separate them.
+  static let destination = "destination"
 
   // MARK: Errors and failures
 

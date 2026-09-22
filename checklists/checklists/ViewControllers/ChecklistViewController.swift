@@ -34,6 +34,27 @@ class ChecklistViewController: UIViewController {
   /// not acquire one. Unset means the copy is still made and saved, just not opened.
   var onRequestOpenDuplicate: ((String) -> Void)?
 
+  /// Set by the SwiftUI host (`ChecklistScreen`). Called with *this* checklist's `id` when the
+  /// overflow menu's copy entry is tapped, for the host to present the destination picker. The
+  /// copy itself happens there, not here: picking the destination, naming a new list and writing
+  /// the items are one decision, and splitting them across a sheet and this controller would mean
+  /// handing a closure through the router's `SheetRoute`, which carries values only. Unset means
+  /// the entry does nothing, which is what a pure-UIKit presentation gets.
+  var onRequestCopyCheckedItems: ((String) -> Void)?
+
+  /// The overflow menu's bar item, kept so its menu can be rebuilt while it is on screen — the one
+  /// way UIKit offers to change a menu that is already presented.
+  var moreBarButtonItem: UIBarButtonItem?
+
+  /// Whether the overflow menu is currently showing "No checked items." under the copy entry.
+  ///
+  /// Retired on a timer rather than when the menu closes, which a bar-button menu does not report.
+  /// See `showNoItemsCheckedNotice`.
+  var showsNoItemsCheckedNotice = false
+
+  /// The one scheduled retirement of that notice, held so a second tap can restart it.
+  var noItemsCheckedNoticeDismissal: Task<Void, Never>?
+
   /// Set by the SwiftUI host (`ChecklistScreen`), like `onRequestDismiss` above. There is no
   /// environment to read from here, so the client is pushed in. The console default means a missed
   /// injection degrades to "no events" rather than a crash — unlike `context` below, which has no

@@ -25,6 +25,7 @@ struct AnalyticsNamesTests {
     AnalyticsEvent.privacyPolicyTapped,
     AnalyticsEvent.checklistCreated,
     AnalyticsEvent.checklistDuplicated,
+    AnalyticsEvent.checklistItemsCopied,
     AnalyticsEvent.checklistReset,
     AnalyticsEvent.checklistDeleted,
     AnalyticsEvent.persistenceFatalError,
@@ -45,6 +46,7 @@ struct AnalyticsNamesTests {
     AnalyticsProperty.itemsCount,
     AnalyticsProperty.itemsWithNotesCount,
     AnalyticsProperty.source,
+    AnalyticsProperty.destination,
     AnalyticsProperty.errorDomain,
     AnalyticsProperty.errorCode,
     AnalyticsProperty.errorOperation,
@@ -146,5 +148,14 @@ struct AnalyticsNamesTests {
   func duplicationSourceValuesArePinned() {
     #expect(ChecklistDuplicationSource.menu.rawValue == "menu")
     #expect(ChecklistDuplicationSource.swipe.rawValue == "swipe")
+  }
+
+  /// `destination` transmits `CheckedItemsCopyDestination.rawValue`. Its raw values are spelled out
+  /// rather than derived from the case names, so this pins what the dashboards actually group by.
+  /// Update analytics-spec.md §9.1 in the same change.
+  @Test("the copy destination values sent as destination are pinned")
+  func copyDestinationValuesArePinned() {
+    #expect(CheckedItemsCopyDestination.newChecklist.rawValue == "new")
+    #expect(CheckedItemsCopyDestination.existingChecklist.rawValue == "existing")
   }
 }

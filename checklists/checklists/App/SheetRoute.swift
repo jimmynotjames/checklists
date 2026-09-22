@@ -15,6 +15,9 @@ enum SheetRoute: Hashable, Identifiable {
   case settings
   case newChecklist(id: String)
   case analyticsConsent
+  /// The destination picker for "Copy Checked Items to…", carrying the id of the checklist the
+  /// items are being copied *from*.
+  case copyCheckedItems(sourceID: String)
 
   var id: Self {
     self

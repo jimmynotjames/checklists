@@ -44,6 +44,16 @@ nonisolated enum ChecklistDuplicationSource: String {
   case swipe
 }
 
+/// Where the checked items went — the `destination` property on `checklist_items_copied`.
+///
+/// An enum for the same reason as `ChecklistDuplicationSource` above. The raw values are spelled
+/// out rather than left to the case names: these *are* the analytics vocabulary, and a Swift
+/// rename should not be able to change what the dashboards group by.
+nonisolated enum CheckedItemsCopyDestination: String {
+  case newChecklist = "new"
+  case existingChecklist = "existing"
+}
+
 extension Checklist {
   /// The properties `checklist_viewed` carries.
   ///
