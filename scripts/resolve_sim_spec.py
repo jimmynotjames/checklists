@@ -24,6 +24,16 @@ def simctl_json(*args: str) -> dict:
     return json.loads(out)
 
 
+def newest_ios_runtime(runtimes: list[dict]) -> dict | None:
+    """The highest-versioned available iOS runtime from `simctl list runtimes -j`."""
+    ios = [r for r in runtimes if r.get("isAvailable") and "iOS" in r.get("name", "")]
+    return max(ios, key=lambda r: runtime_version(r["version"]), default=None)
+
+
+def runtime_version(version: str) -> tuple[int, ...]:
+    return tuple(int(x) for x in version.split("."))
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", required=True)
@@ -63,11 +73,9 @@ def main() -> None:
     # -- Runtime resolution (newest available iOS) --
     runtime_id: str | None = None
     try:
-        runtimes = simctl_json("list", "runtimes").get("runtimes", [])
-        ios = [r for r in runtimes if r.get("isAvailable") and "iOS" in r.get("name", "")]
-        if ios:
-            ios.sort(key=lambda r: tuple(int(x) for x in r.get("version", "0").split(".")), reverse=True)
-            runtime_id = ios[0]["identifier"]
+        newest = newest_ios_runtime(simctl_json("list", "runtimes").get("runtimes", []))
+        if newest:
+            runtime_id = newest["identifier"]
     except Exception as e:
         print(f"error: could not list runtimes: {e}", file=sys.stderr)
         sys.exit(1)

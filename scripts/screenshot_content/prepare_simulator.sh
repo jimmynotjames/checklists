@@ -20,6 +20,7 @@ STATE_DIR="${ROOT}/.build/screenshots/simulator"
 UDID_FILE="${STATE_DIR}/device.udid"
 mkdir -p "${STATE_DIR}"
 
+python3 "${ROOT}/scripts/sim_retire_stale.py" --name "${DEVICE_NAME}"
 UDID="$(python3 "${ROOT}/scripts/resolve_booted_sim_udid.py" --name "${DEVICE_NAME}" --state Booted)"
 IS_BOOTED=0
 [[ -n "${UDID}" ]] && IS_BOOTED=1

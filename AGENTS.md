@@ -216,7 +216,9 @@ the fix:
 Each clone gets its own simulator, `iPhone 17 [<hash of repo path>]`, managed by
 `scripts/_sim_sandbox.sh` (sourced via `_destination.sh` by the test scripts and by
 `translation-accessibility-size-check/run.sh`). `SIMULATOR_NAME` picks a different base device;
-`SIMULATOR_UDID` pins a device and skips sandbox management. `make sim-status` shows it.
+`SIMULATOR_UDID` pins a device and skips sandbox management. `make sim-status` shows it. When a
+newer iOS runtime is installed (an Xcode upgrade), `scripts/sim_retire_stale.py` deletes the device
+so the next run recreates it on that runtime; the screenshot device gets the same treatment.
 
 ### The software keyboard
 
