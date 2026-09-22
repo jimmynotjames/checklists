@@ -39,6 +39,9 @@ run_step lint-changed
 # Before the build: it is the cheapest step and catches an unkeyed or untranslated
 # string without waiting on a compile.
 run_step i18n-check
+# Also cheap, and also better answered before a compile: a keyboard-key tap in a UI test
+# is a failure that only shows up on a differently-configured simulator.
+run_step uitest-check
 run_step build
 
-printf '\nGATE PASSED (format-changed, lint-changed, i18n-check, build). Full log: %s\n' "$LOG"
+printf '\nGATE PASSED (format-changed, lint-changed, i18n-check, uitest-check, build). Full log: %s\n' "$LOG"

@@ -1,4 +1,4 @@
-.PHONY: system format format-changed lint lint-changed i18n-check build test-unit test-ui gate verify-secrets hooks-install initialize-sims sim-status sim-shutdown sim-clean
+.PHONY: system format format-changed lint lint-changed i18n-check uitest-check build test-unit test-ui gate verify-secrets hooks-install initialize-sims sim-status sim-shutdown sim-clean
 
 system:
 	bash scripts/system-setup.sh
@@ -34,6 +34,10 @@ i18n-check:
 	python3 scripts/check_translations.py
 	python3 scripts/check_source_strings.py
 	python3 scripts/translate_audit/distinct_pairs.py
+
+# Static check; the UI tests themselves are opt-in and not in the gate.
+uitest-check:
+	python3 scripts/check_ui_test_keyboard.py
 	python3 scripts/screenshot_content/generate_seeds.py --check
 
 # -- Build and test -----------------------------------------------------------

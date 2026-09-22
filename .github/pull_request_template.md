@@ -47,15 +47,16 @@ For every change, confirm each concern applies or is N/A:
 
 ### 🧪 Running tests
 
-Tests are **opt-in and not part of the gate** — `make gate` is format → lint → build only.
+Tests are **opt-in and not part of the gate** — `make gate` is
+format → lint → i18n-check → uitest-check → build.
 Both suites do run and pass, so run whichever the change warrants and state explicitly in the
 Test plan above how it was verified — including "not run, verified manually in the simulator"
 when that's the honest answer.
 
 - `make test-unit` — runs entirely against in-memory `ModelContainer`s; it does not touch the
   simulator's real store.
-- `make test-ui` — requires a prior `make test-unit` for the warm-up sentinel. If tests fail on
-  `kAXErrorCannotComplete` against keyboard keys, that's the simulator's software keyboard being
-  off, not your change — see AGENTS.md §"Known issues".
+- `make test-ui` — requires a prior `make test-unit` for the warm-up sentinel. The tests no longer
+  tap keyboard keys, so a `kAXErrorCannotComplete` failure against one is a real regression, not
+  the simulator setting it used to be — see AGENTS.md §"The software keyboard".
 
 CI (`.github/workflows/ci.yml`) is present but **disabled** — no checks run on this PR.

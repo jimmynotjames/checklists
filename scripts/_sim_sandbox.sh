@@ -30,32 +30,24 @@ _pick_sim() {
         --state "$1"
 }
 
-# Self-healing fix for a known issue (see AGENTS.md "Known issues"): when the
-# simulator's ConnectHardwareKeyboard preference is on, the software keyboard never
-# appears and every UI test that taps a keyboard key (Next:, delete) before typing
-# fails. The preference is per-UDID but owned by Simulator.app, not the device, and
-# is only read at boot — so it must be written before a boot, and Simulator.app must
+# When the simulator's ConnectHardwareKeyboard preference is on, the software keyboard
+# never appears. The preference is per-UDID but owned by Simulator.app, not the device,
+# and is only read at boot — so it must be written before a boot, and Simulator.app must
 # be open afterward for it to take effect at all.
-_KEYBOARD_PREF_PLIST="${HOME}/Library/Preferences/com.apple.iphonesimulator.plist"
+#
+# The UI tests no longer tap keyboard keys (see XCUIElement+Keyboard.swift), so this is
+# belt-and-braces for ad-hoc runs and for anything that still needs the keyboard visible,
+# not the load-bearing fix it used to be. Both helpers delegate to sim_keyboard_pref.py;
+# its docstring explains why they go through `defaults` rather than the plist file.
 
 _hw_keyboard_pref_ok() {
-    # $1: UDID. True only if ConnectHardwareKeyboard reads back falsy for this device.
-    # `defaults write` (see _write_keyboard_pref) stores it as the string/number "0",
-    # but Simulator.app itself persists this same preference as a real boolean once it
-    # touches the plist (verified: every genuinely Simulator-managed entry on this
-    # machine reads back "false", never "0") — so both forms must be accepted, or a
-    # device Simulator.app has touched would read as "not ok" forever and force an
-    # unnecessary reboot (and warm-sentinel invalidation) on every single run.
-    local val
-    val="$(/usr/libexec/PlistBuddy -c "Print :DevicePreferences:$1:ConnectHardwareKeyboard" \
-        "${_KEYBOARD_PREF_PLIST}" 2>/dev/null || true)"
-    [[ "${val}" == "0" || "${val}" == "false" ]]
+    # $1: UDID. True when the hardware keyboard is off, so the software one will show.
+    python3 "${ROOT}/scripts/sim_keyboard_pref.py" --check "$1"
 }
 
 _write_keyboard_pref() {
     # $1: UDID. Safe to call whether or not the device is booted.
-    defaults write com.apple.iphonesimulator DevicePreferences \
-        -dict-add "$1" '{ ConnectHardwareKeyboard = 0; }'
+    python3 "${ROOT}/scripts/sim_keyboard_pref.py" --disable "$1"
 }
 
 # Any real boot transition (shutdown->boot, create->boot, or the self-heal cycle
@@ -70,6 +62,12 @@ _invalidate_warm_sentinel() {
 
 _fix_software_keyboard() {
     # $1: UDID of an already-booted device whose preference read back wrong.
+    #
+    # The SIM-KEYBOARD-FLAKE tag is for issue #231: nobody has shown this preference actually
+    # controls the keyboard, so the tag is how we find out later whether the cycling below (a
+    # reboot plus a lost warm session) ever buys anything. `guard-fired` alone is cheap drift;
+    # it is `tests-failed`, from check_keyboard_flake.py, that would justify keeping this.
+    echo "SIM-KEYBOARD-FLAKE guard-fired: ConnectHardwareKeyboard wrong for $1 — see https://github.com/jimmynotjames/checklists/issues/231" >&2
     echo "sim-sandbox: software-keyboard preference wrong for $1 — cycling to fix" >&2
     _write_keyboard_pref "$1"
     xcrun simctl shutdown "$1"
