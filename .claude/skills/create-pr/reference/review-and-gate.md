@@ -30,8 +30,8 @@ subagent tool) with the diff pasted after this brief:
 > - **Main-thread UI** — UIKit calls made off the main thread.
 > - Correctness bugs, architectural problems, and serious future-extensibility risks generally.
 >
-> Then two checks on the diff as a whole. Report both every time, explicitly, even when the answer
-> is "nothing" — silence on them reads as "not looked at":
+> Then two checks on the diff as a whole. Report both every time — as a numbered problem, or by name
+> in the closing `Clean:` line. Silence on them reads as "not looked at":
 >
 > - **Deletable prose** — any doc or comment line here that could be deleted with no loss: text
 >   restating what the code already shows, history or narration of how the change came about,
@@ -42,8 +42,18 @@ subagent tool) with the diff pasted after this brief:
 >   drive-by fixes, edits to files the change had no reason to touch. Name the files.
 >
 > Do NOT flag style issues — SwiftLint and SwiftFormat own those; the two checks above are not style.
-> For each finding: state the file and approximate line, describe the issue, and rate it
-> high/medium/low. Append the full diff below."
+>
+> Number the problems `1.`, `2.`, … Title each one `**N. <Tag> (<rating>)** — <the defect stated as
+> a claim>`, where `<Tag>` is **Bug** (wrong today, a user can hit it), **Risk** (not wrong yet;
+> breaks under some future change or condition) or **Cleanup** (no behaviour change: deletable
+> prose, scope creep, dead code — never style), and `<rating>` is high/medium/low. The title must
+> stand alone — a reader who stops there knows what is wrong. Then, per problem: an
+> `End-user impact:` line in plain product language (what someone using the app experiences, how
+> bad, how often — or `None — internal only.`), then the file and approximate line and the technical
+> description.
+>
+> A check that came back clean is not a numbered problem. Name the two checks above in one closing
+> `Clean: …` line, plus any review area you want to record as clean. Append the full diff below."
 >
 > **The stated change:** [one or two sentences — what this PR was asked to do, and which files that
 > should touch. `create-pr-for-issue`: summarise the issue here. The scope check has nothing to
