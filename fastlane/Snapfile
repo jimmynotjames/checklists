@@ -1,10 +1,10 @@
 # Screenshot defaults. The screenshots lane supplies a run-scoped output/cache and
-# the repository-owned simulator's exact name at runtime.
+# this checkout's simulator's exact name at runtime (AGENTS.md §"Simulator sandbox").
 require "json"
 require "digest"
 
 unless ENV["CHECKLISTS_SCOPED_SCREENSHOT_CAPTURE"] == "1"
-  raise "Use `fastlane ios screenshots`; direct snapshot bypasses repository simulator isolation"
+  raise "Use `fastlane ios screenshots`; direct snapshot bypasses per-checkout simulator isolation"
 end
 
 root = File.expand_path("..", FastlaneCore::FastlaneFolder.path)

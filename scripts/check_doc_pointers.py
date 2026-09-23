@@ -11,8 +11,8 @@ Four checks, all aimed at the drift the AGENTS.md "Writing style" rules exist to
    is restructured.
 3. Every code symbol or file name written in backticks in `core-docs/` or AGENTS.md
    (`resize(in:)`, `ToastPresenter`, `Checklist.dragItems()`, `SettingsView.swift`) still exists
-   in the code, scripts, or build config. Comments don't count as code: a name that survives only
-   in another stale comment still fails.
+   in the code, scripts, or build config. Swift comments don't count as code: a name that survives
+   only in another stale Swift comment still fails.
 4. Lines this branch adds to Swift, `core-docs/`, or AGENTS.md carry no history markers
    ("since #N", "once #N lands", "used to be", ...). Git is the record.
 
@@ -43,7 +43,7 @@ POINTER_SUFFIXES = {".swift", ".md", ".py", ".sh", ".yml", ".yaml", ".toml", ".t
 POINTER_NAMES = {"Makefile", ".swiftlint.yml", ".swiftformat", ".gitleaks.toml"}
 EXCLUDED_PARTS = {"DesignExplorations"}
 EXCLUDED_FILES = {"SnapshotHelper.swift", "TRADEMARK.md", "LICENSE", "NOTICE"}
-# Generated or third-party text that quotes other people's section numbers.
+# Generated listing copy, and test fixtures that are broken on purpose.
 EXCLUDED_PREFIXES = ("fastlane/metadata/", "scripts/tests/")
 
 # Docs whose backticked symbols must exist in the code.

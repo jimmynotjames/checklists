@@ -2,8 +2,7 @@
 #
 # Extends the default ruleset (which we still want) with a Mixpanel-token rule.
 #
-# The old Flurry key sat in source for years and matched no default rule — a green gate
-# proves nothing on its own (AGENTS.md §"Known issues", #115).
+# A green scan proves nothing on its own: AGENTS.md §"Known issues".
 #
 # The real defense is that config/Secrets.local.xcconfig is gitignored. This rule is the
 # second line: it catches a Mixpanel token pasted anywhere gitignore does not cover, such as
@@ -15,9 +14,8 @@ useDefault = true
 [[rules]]
 id = "mixpanel-project-token"
 description = "Mixpanel project token (32-char hex near a mixpanel/token keyword)"
-# The gap between keywords is deliberately permissive rather than [a-z0-9_.-]. The canonical
-# leak is `Mixpanel.initialize(token: "…")`, where "(" and "." sit between "mixpanel" and
-# "token"; a stricter class caught a bare `mixpanelToken = "…"` but missed the SDK call itself.
+# The gap between keywords is permissive so it matches the SDK call itself,
+# `Mixpanel.initialize(token: "…")`, where "(" and "." sit between "mixpanel" and "token".
 regex = '''(?i)mixpanel[^\n]{0,40}?token[^\n]{0,20}?[=:][^\n]{0,12}?([a-f0-9]{32})'''
 secretGroup = 1
 keywords = ["mixpanel"]

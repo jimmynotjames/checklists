@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Unit tests only (checklistsTests) — skips the UI test target. OPT-IN, not in the gate.
+# Unit tests only (checklistsTests) — skips the UI test target. Opt-in: AGENTS.md §"Build and test".
 #
 # Suites use in-memory ModelContainers (Helpers/TestModelContainer.swift) or per-test
 # temp dirs (Helpers/TestScope.swift); nothing touches the simulator's real store.
@@ -27,6 +27,5 @@ xcodebuild test \
     -parallel-testing-enabled NO \
     -skip-testing:checklistsUITests
 
-# Signal to test-ui.sh that the sim has hosted an app lifecycle.
-# Cleared automatically by make sim-clean (which wipes .build/sim/).
+# The warm sentinel: test-ui.sh's header.
 touch "${ROOT}/.build/sim/warmed"

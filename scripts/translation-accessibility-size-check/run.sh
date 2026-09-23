@@ -3,25 +3,13 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT"
 
-# ────────────────────────────────────────────────────────────────────────────────────────────────
-# Ad-hoc localized large-type screenshot capture. NOT part of `make test`, `make gate`, or any hook.
-#
-# Runs LocalizationScreenshotCapture across 13 locales at forced .xxxLarge, exports the screenshots
-# to tmp/loc-size-check/, downscales them, and leaves them for visual inspection. There are no
-# assertions: the check IS the reading. Record what you find in AUDIT_LOG.md.
-#
-# Heavy and slow: a serial run is roughly 20-30 minutes. Requires explicit confirmation: pass --yes.
-#
+# Ad-hoc localized large-type screenshot capture; what it does and how to read it: README.md.
 # Knobs (env):
-#   WORKERS         parallel simulator clones (default 1, i.e. serial). This repo runs tests in a
-#                   per-repo simulator sandbox, so cloning is opt-in rather than the default: raise
-#                   it only with RAM to spare, since each clone is a full simulator (~1.5-2 GB) plus
-#                   the app and runner. On 16 GB, 6-7 is the practical ceiling; higher swaps.
-#   SIMULATOR_NAME  base device (default: the repo default from _destination.sh). A narrow device is
-#                   the worst case for truncation — try SIMULATOR_NAME="iPhone SE (3rd generation)".
-#   MAX_PX          downscale longest screenshot edge to this many px (default 1000), to cut the
-#                   cost of reading ~100 images.
-# ────────────────────────────────────────────────────────────────────────────────────────────────
+#   WORKERS         parallel simulator clones (default 1, serial). Each clone is a full simulator
+#                   (~1.5-2 GB) plus the app and runner; on 16 GB, 6-7 is the practical ceiling.
+#   SIMULATOR_NAME  base device (default from _sim_sandbox.sh). A narrow device is the worst case
+#                   for truncation — try SIMULATOR_NAME="iPhone SE (3rd generation)".
+#   MAX_PX          downscale longest screenshot edge to this many px (default 1000).
 
 WORKERS="${WORKERS:-1}"
 MAX_PX="${MAX_PX:-1000}"
@@ -45,9 +33,6 @@ for tool in jq sips; do
 done
 
 source "${ROOT}/scripts/_destination.sh"   # sets DESTINATION, SIM_DERIVED, SIM_RESULTS_DIR
-
-echo "→ Warming the simulator (build) …"
-bash scripts/build.sh >/dev/null
 
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
 RESULT="${SIM_RESULTS_DIR}/${TIMESTAMP}-loc-size.xcresult"

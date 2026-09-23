@@ -71,8 +71,8 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual((mappings["zh-Hans"].storefront, mappings["zh-Hans"].apple_locale), ("zh-Hans", "zh_Hans_CN"))
 
     def test_every_locale_is_active_and_has_a_seed(self) -> None:
-        # Capture covers the whole registry now. A locale that is active without
-        # a seed fails at capture time, on a simulator, minutes in.
+        # A locale that is active without a seed fails at capture time, on a
+        # simulator, minutes in.
         config = load_config()
         self.assertEqual(set(config.active_locales), {locale.runtime for locale in config.locales})
         missing = [

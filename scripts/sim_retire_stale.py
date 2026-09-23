@@ -1,21 +1,11 @@
 #!/usr/bin/env python3
 """Delete a named simulator unless it runs the newest iOS the selected Xcode can target.
 
-The sandbox and screenshot scripts reuse their per-clone simulator by name, and
-resolve_sim_spec.py only picks the runtime when a device is first created. Without
-this, a device created before an Xcode upgrade keeps running the old iOS forever, and
-tests silently never see the new SDK's behavior. Deleting it lets the caller's create
-path rebuild it on the right runtime. The same applies in reverse after switching back
-from a beta Xcode.
+Devices get their runtime only at creation, so the caller recreates them after an Xcode switch.
+Also retires a device whose runtime is uninstalled; leaves one whose runtime is merely
+unavailable. Exact-name match only. Always exits 0 (best-effort under `set -e`).
 
-A device whose runtime has been uninstalled is retired too: it can no longer boot. One
-whose runtime is listed but unavailable is left alone, since runtimes can be briefly
-unmounted after an update. Matches the exact device name only, so it cannot touch
-another clone's devices. Exits 0 always (callers run under `set -e` and treat this as
-best-effort); logs what it did to stderr.
-
-Usage:
-    python3 sim_retire_stale.py --name "iPhone 17 [a1b2c3d4]"
+Usage: python3 sim_retire_stale.py --name "iPhone 17 [a1b2c3d4]"
 """
 from __future__ import annotations
 

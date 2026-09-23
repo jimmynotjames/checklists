@@ -1,7 +1,6 @@
 # CI — DISABLED (workflow_dispatch only; private repo, macOS minutes bill at 10x).
 # To enable: uncomment the pull_request/push triggers AND add these jobs as required
-# status checks. See AGENTS.md §"CI".
-# Not ported: test (opt-in locally), pr-summary.
+# status checks. No test job: tests are opt-in (AGENTS.md §"Build and test").
 name: CI
 
 on:
@@ -20,8 +19,8 @@ permissions:
 
 jobs:
   # --- Tier 1: lint/format parity with pre-commit (ubuntu) -------------------
-  # Pinned to the versions in scripts/system-setup.sh. Runs REPO-WIDE, unlike the
-  # local gate (AGENTS.md §"Lint policy").
+  # Pinned here; system-setup.sh installs whatever brew has. Runs REPO-WIDE, unlike
+  # the local gate (AGENTS.md §"Lint policy").
   lint:
     runs-on: ubuntu-latest
     env:
@@ -66,7 +65,7 @@ jobs:
           swiftlint_bin/swiftlint lint --strict
 
   # --- Tier 1: secret scan over full history (ubuntu) -------------------------
-  # Full-history scan. Green != no secrets — AGENTS.md §"Known issues" / #115.
+  # Full-history scan. Green != no secrets — AGENTS.md §"Known issues".
   secrets:
     runs-on: ubuntu-latest
     env:
@@ -114,11 +113,9 @@ jobs:
         run: bash scripts/check-large-files.sh ${{ steps.diff.outputs.files }}
 
   # --- Localization gates (ubuntu) --------------------------------------------
-  # The two the pre-push hook runs, plus the deterministic plural and
-  # untranslated-copy checks, the doc-pointer check, and a non-blocking
-  # consistency report. App Store
-  # metadata and screenshot-content checks stay release-time only — they run in
-  # their fastlane lanes, not here.
+  # The i18n-check and doc-check scripts, plus check_metadata and the plural and
+  # untranslated-copy audits, and a non-blocking consistency report. The
+  # uitest-check scripts don't run in CI.
   i18n-gates:
     runs-on: ubuntu-latest
     steps:
@@ -162,8 +159,7 @@ jobs:
           key: spm-${{ runner.os }}-xcode26.6-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: |
             spm-${{ runner.os }}-xcode26.6-
-      # Mirrors scripts/build.sh — keep scheme/project/ARCHS/signing in sync with it
-      # (signing left at default: CODE_SIGNING_ALLOWED=NO breaks CKContainer, #140).
+      # Mirrors scripts/build.sh.
       - name: xcodebuild build
         run: |
           xcodebuild build \

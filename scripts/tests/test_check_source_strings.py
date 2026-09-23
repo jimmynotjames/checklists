@@ -24,9 +24,8 @@ def _errors_for(swift: str) -> list[str]:
 class TernaryLiteralTests(unittest.TestCase):
     """A ternary between two capitalized literals is copy parked in a local.
 
-    This is exactly how the overflow-menu strings in #211 slipped past the
-    checker: `let title = flag ? "Discard Checklist" : "Delete Checklist"` never
-    hands a literal to a UI call on the line the checker was reading.
+    `let title = flag ? "Discard Checklist" : "Delete Checklist"` never hands a
+    literal to a UI call on the line the checker reads.
     """
 
     def test_single_line_ternary_reports_both_branches(self) -> None:

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Boot or reuse this repository's dedicated capture simulator and print UDID<TAB>name.
+# Boot or reuse this checkout's capture simulator and print UDID<TAB>name.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"

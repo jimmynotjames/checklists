@@ -1,8 +1,8 @@
 # Localized large-type layout check
 
 An ad-hoc visual check: does the UI still hold together when a long translation
-meets the largest Dynamic Type size? It is **not** part of `make test`,
-`make gate`, or any hook, and it asserts nothing. The reading is the check.
+meets the largest Dynamic Type size? It is not part of `make gate` or any hook,
+and it asserts nothing. The reading is the check.
 
 ```bash
 bash scripts/translation-accessibility-size-check/run.sh --yes

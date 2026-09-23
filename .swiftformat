@@ -1,18 +1,11 @@
 # https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md
-#
-# Ported from the `simple-recurring-budgets` repo. Deviations from that config are
-# called out inline — this project is Swift 6 / iOS 26 and hybrid SwiftUI + UIKit,
-# not pure SwiftUI.
-#
-# Pre-commit and the gate lint changed/staged files only — AGENTS.md §"Lint policy".
 --swiftversion 6.0
 --indent 2
 --importgrouping alpha
 --wraparguments before-first
 --wrapparameters before-first
-# `simple-recurring-budgets` uses `--header strip`. Every file here carries a
-# `//  Created by Jimmy Ho ... Copyright © 2020` block that `strip` would delete on
-# first format — a large, pointless, authorship-destroying diff. Leave headers alone.
+# Every file carries a `//  Created by Jimmy Ho ... Copyright © 2020` block that
+# `--header strip` would delete on first format — a large, authorship-destroying diff.
 --header ignore
 --linebreaks lf
 --maxwidth 200

@@ -1,4 +1,4 @@
-"""A per-clone simulator is retired once a newer iOS runtime is installed, and only then."""
+"""A checkout's simulator is retired once a newer iOS runtime is installed, and only then."""
 
 from __future__ import annotations
 

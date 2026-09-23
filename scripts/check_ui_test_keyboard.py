@@ -1,18 +1,7 @@
 #!/usr/bin/env python3
-"""Fail when a UI test taps a software-keyboard key.
-
-Tapping `app.keys["delete"]` or `app.buttons["Next:"]` requires the key to be rendered and
-hit-testable, so those taps fail with `kAXErrorCannotComplete` on any simulator that has a
-hardware keyboard connected. Six tests failed that way for as long as anyone had been running
-them, and every one of the taps came from the Xcode UI recorder rather than a deliberate choice.
-
-`XCUIElement.pressReturnKey()` / `pressDeleteKey(_:)` drive the same app code through `typeText`,
-which synthesizes an event against whatever holds keyboard focus and never touches the keyboard's
-accessibility elements. This check exists because the recorder will happily generate the old form
-again the next time someone records a test.
-
-The app's own controls are addressed as `buttons["Done"]` / `buttons["Delete"]` (capital), so only
-the lowercase keyboard spellings are matched here.
+"""Fail when a UI test taps a software-keyboard key; use `pressReturnKey()` / `pressDeleteKey(_:)`
+(XCUIElement+Keyboard.swift says why). The Xcode recorder generates key taps. `buttons["done"]` is
+matched lowercase-only because the app's own button is `"Done"`.
 
 Usage:
   python3 scripts/check_ui_test_keyboard.py            # exit 1 on any hit

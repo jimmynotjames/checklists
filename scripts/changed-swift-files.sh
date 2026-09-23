@@ -1,20 +1,6 @@
 #!/usr/bin/env bash
-# Print the Swift files this branch has touched, one per line (empty output if none).
-#
-# Used by `make format-changed` / `make lint-changed`, which are what `make gate` runs
-# — AGENTS.md §"Lint policy".
-#
-# The union of:
-#   1. committed changes on this branch vs the merge-base with main  (main...HEAD)
-#   2. uncommitted changes in the working tree                       (HEAD)
-#   3. new, not-yet-added files                                      (ls-files --others)
-# so the gate covers work whether or not it has been committed — or even added — yet.
-# (3) matters: a brand-new .swift file is invisible to `git diff HEAD` until it is
-# staged, so without it the gate would silently skip exactly the code most likely to
-# need linting.
-#
-# --diff-filter=d excludes deletions (a deleted file cannot be linted). Files that no
-# longer exist on disk are filtered out again at the end for safety (e.g. renames).
+# Print the existing Swift files this branch touched, one per line: committed vs the merge-base
+# with main, uncommitted, and untracked (a new file is invisible to `git diff` until staged).
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"

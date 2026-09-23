@@ -1,23 +1,17 @@
 #!/usr/bin/env python3
-"""Shut down and delete this repo's simulator and any leftover xcodebuild clones.
+"""Shut down and delete every simulator whose name contains this checkout's `[slug]`.
 
-The base device for this repo has a unique slug suffix in its name, e.g.
-"iPhone 17 [a1b2c3d4]". xcodebuild's parallel testing creates short-lived clones
-named "Clone N of <base name>" — these are usually torn down automatically, but
-crashes (e.g. "Test crashed with signal kill") can leave them orphaned. This
-script finds every device whose name contains the slug and deletes them all,
-then removes .build/sim/.
+That covers the sandbox device, its xcodebuild "Clone N of ..." leftovers, and this
+checkout's Screenshots device. The slug comes from the device named in the UDID file,
+else from the checkout path, as `_sim_sandbox.sh` derives it. Never touches another
+checkout's devices.
 
-Safe by design: only matches devices containing this repo's unique slug, so it
-cannot touch other repos' simulators or Xcode's own devices.
-
-Usage:
-    python3 sim_clean.py --slug-from-file .build/sim/device.udid
-    python3 sim_clean.py --slug a1b2c3d4
+Usage: python3 scripts/sim_clean.py --slug-from-file .build/sim/device.udid
 """
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import subprocess
@@ -25,6 +19,7 @@ import sys
 from pathlib import Path
 
 SIMCTL_TIMEOUT_SEC = 15
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def simctl(*args: str) -> subprocess.CompletedProcess:
@@ -68,29 +63,18 @@ def find_matching_devices(slug: str) -> list[dict]:
     return found
 
 
+def slug_from_root(root: Path = ROOT) -> str:
+    return hashlib.sha1(str(root).encode("utf-8")).hexdigest()[:8]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("--slug", help="8-char repo slug (the [....] suffix)")
-    group.add_argument("--slug-from-file", help="Path to file containing the device UDID")
+    parser.add_argument("--slug-from-file", required=True, help="Path to file containing the device UDID")
     args = parser.parse_args()
 
-    if args.slug:
-        slug = args.slug
-    else:
-        udid_path = Path(args.slug_from_file)
-        if not udid_path.exists():
-            print(f"sim-clean: no UDID file at {udid_path} — nothing to clean", file=sys.stderr)
-            return 0
-        udid = udid_path.read_text().strip()
-        if not udid:
-            print("sim-clean: UDID file is empty", file=sys.stderr)
-            return 0
-        slug = slug_from_udid(udid)
-        if not slug:
-            # Device may already be deleted; fall back to deleting just by UDID
-            print(f"sim-clean: device {udid} not found in default set — already gone", file=sys.stderr)
-            return 0
+    udid_path = Path(args.slug_from_file)
+    udid = udid_path.read_text().strip() if udid_path.exists() else ""
+    slug = (slug_from_udid(udid) if udid else None) or slug_from_root()
 
     devices = find_matching_devices(slug)
     if not devices:

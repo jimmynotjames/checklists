@@ -9,8 +9,8 @@ that goes through the daemon can disagree indefinitely.
 `defaults write DevicePreferences -dict-add <udid> '{ ... }'` replaces the device's *entire*
 sub-dictionary, discarding its window geometry, tint and external-display keys. Exporting the
 domain, setting the one leaf and importing it back preserves the siblings with their original
-types. It is the same whole-domain read-modify-write that `-dict-add` already performs, so it
-races with Simulator.app no more than the call it replaces.
+types. It is the same whole-domain read-modify-write that `-dict-add` performs, so it races
+with Simulator.app no more than `-dict-add` would.
 
 Usage:
   python3 scripts/sim_keyboard_pref.py --check   <udid>   # exit 0 when the hardware keyboard is off
@@ -52,8 +52,8 @@ def is_off(udid: str) -> bool:
     """True when this device's hardware keyboard is disabled (so the software one shows).
 
     Absent counts as off: a freshly created device has no entry and boots with the software
-    keyboard. Both `False` and the string "0" count — `defaults ... -dict-add` wrote the string
-    form for years, and entries Simulator.app has touched hold a real boolean.
+    keyboard. Both `False` and the string "0" count: `defaults ... -dict-add` writes the string
+    form, and entries Simulator.app has touched hold a real boolean.
     """
     value = _export().get("DevicePreferences", {}).get(udid, {}).get(KEY)
     return value in (None, False, 0, "0")

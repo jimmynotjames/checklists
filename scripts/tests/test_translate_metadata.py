@@ -72,8 +72,6 @@ class KeywordByteLimitTests(unittest.TestCase):
         return errors
 
     def test_three_byte_script_over_budget_is_rejected(self) -> None:
-        # 40 CJK characters = 120 UTF-8 bytes: comfortably under a 100-character
-        # reading of the limit, and comfortably over the real one.
         value = ",".join(["チェックリスト"] * 5)  # 39 chars, 109 bytes
         self.assertGreater(len(value.encode("utf-8")), 100)
         self.assertLess(len(value), 100)

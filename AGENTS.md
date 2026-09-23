@@ -59,14 +59,18 @@ repo is `checklists` (`jimmynotjames/checklists`). Introduce both sibling names 
 ## Build and test
 
 ```bash
-make gate        # format-changed -> lint-changed -> i18n-check -> uitest-check -> doc-check -> build. Logs to tmp/gate.log.
-make build       # compile only (generic destination; never boots a simulator)
-make i18n-check  # catalog fully translated + no unkeyed user-facing strings
-make doc-check   # doc pointers, headings, and named symbols resolve; no history on added lines
-make test-unit   # opt-in, not in the gate
-make test-ui     # opt-in; needs a prior `make test-unit` (simulator warm-up)
-make system      # once per clone: toolchain + git hooks
+make gate         # format-changed -> lint-changed -> i18n-check -> uitest-check -> doc-check -> test-scripts -> build. Logs to tmp/gate.log.
+make build        # compile only (generic destination; never boots a simulator)
+make i18n-check   # catalog fully translated + no unkeyed user-facing strings
+make doc-check    # doc pointers, headings, and named symbols resolve; no history on added lines
+make test-scripts # scripts/tests (Python) + fastlane/tests (Ruby 3+; skipped with a warning if absent)
+make test-unit    # opt-in, not in the gate
+make test-ui      # opt-in; needs a prior `make test-unit` (simulator warm-up)
+make system       # once per clone: toolchain + git hooks
 ```
+
+The app's test suites are opt-in and in no gate or hook: they boot this checkout's simulator and
+take minutes, while the gate never boots one.
 
 `scripts/build.sh` and CI pin `ARCHS=arm64` for build speed only (Realm's C++ tree compiles once);
 dropping it is safe. Don't add `-configuration Release` to the test scripts — only Debug sets
@@ -185,7 +189,7 @@ the fix:
   "list them for later" means mention them, not file them. Which ones become issues is Jimmy's call.
 - Never `pkill`/`killall Simulator`, `simctl shutdown/erase/delete all`, or
   `simctl delete unavailable` — they hit every simulator on the machine. Use `make sim-shutdown` /
-  `make sim-clean`, which act only on this repo's UDID.
+  `make sim-clean`, which act only on this checkout's devices.
 - Don't add repo-wide `make format` / `make lint` to a hook or gate.
 - Don't build a one-off container or router in a `#Preview`; use `Utils/PreviewSupport.swift` and
   `.previewEnvironment()`.
@@ -196,10 +200,12 @@ the fix:
 
 ## Simulator sandbox
 
-Each clone gets its own simulator, `iPhone 17 [<hash of repo path>]`, managed by
-`scripts/_sim_sandbox.sh` (sourced via `_destination.sh` by the test scripts and by
-`translation-accessibility-size-check/run.sh`). `SIMULATOR_NAME` picks a different base device;
-`SIMULATOR_UDID` pins a device and skips sandbox management. `make sim-status` shows it. When the
+Simulators are per checkout; each worktree gets its own, and it outlives the worktree. The device is
+`iPhone 17 [<hash of checkout path>]`, managed by `scripts/_sim_sandbox.sh` (sourced via
+`_destination.sh` by the test scripts and by `translation-accessibility-size-check/run.sh`); the
+screenshot lane's `... Screenshots [<hash>]` device shares the hash. `SIMULATOR_NAME` picks a
+different base device; `SIMULATOR_UDID` pins a device and skips sandbox management. `make
+sim-status` shows it; `make sim-clean` deletes every device carrying this checkout's hash. When the
 device isn't on the newest iOS runtime the selected Xcode can target (after an Xcode upgrade, say),
 `scripts/sim_retire_stale.py` deletes it before use so it is recreated on that runtime; the
 screenshot device gets the same treatment.

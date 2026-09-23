@@ -47,6 +47,6 @@ pre-push:
     check-source-strings:
       run: python3 scripts/check_source_strings.py
 
-    # Compile check only; tests are not run on push (AGENTS.md).
+    # Compile check only; tests are opt-in (AGENTS.md §"Build and test").
     build:
       run: bash scripts/build.sh

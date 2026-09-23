@@ -17,7 +17,7 @@ elif printf '%s' "$cmd" | grep -Eq '(^|[^[:alnum:]_/])sed +-[a-zA-Z]*n'; then
 elif printf '%s' "$cmd" | grep -Eq 'git(\s+-C\s+\S+)?\s+push(\s+--[a-zA-Z-]+)*\s+\S{3,}\s+(main|gh-pages)\b'; then
   reason='Blocked (hygiene rule 4): never push directly to main or gh-pages (both have server-side protection). Branch as u/jimmyho/<tool>/<short-kebab-description> and open a PR. See AGENTS.md §"Conventions".'
 elif printf '%s' "$cmd" | grep -Eq '(^|[^[:alnum:]_/])(pkill|killall)\b[^|&;]*\bSimulator\b'; then
-  reason='Blocked (hygiene rule 5): never `pkill`/`killall Simulator` — it hits every simulator on the machine. Use `make sim-shutdown` / `make sim-clean` (this repo'\''s UDID only).'
+  reason='Blocked (hygiene rule 5): never `pkill`/`killall Simulator` — it hits every simulator on the machine. Use `make sim-shutdown` / `make sim-clean` (this checkout'\''s devices only).'
 elif printf '%s' "$cmd" | grep -Eq 'simctl\s+((shutdown|erase|delete)\s+all|delete\s+unavailable)\b'; then
   reason='Blocked (hygiene rule 5): machine-wide `simctl ... all`/`delete unavailable` is not allowed — scoped `simctl <verb> <udid>` stays allowed; otherwise use `make sim-shutdown` / `make sim-clean`.'
 elif printf '%s' "$cmd" | grep -Eq '(^|;|\|&)[[:space:]]*nohup[[:space:]]'; then

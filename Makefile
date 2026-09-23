@@ -1,4 +1,4 @@
-.PHONY: system format format-changed lint lint-changed i18n-check uitest-check doc-check build test-unit test-ui gate verify-secrets hooks-install initialize-sims sim-status sim-shutdown sim-clean
+.PHONY: system format format-changed lint lint-changed i18n-check uitest-check doc-check build test-unit test-ui test-scripts gate verify-secrets hooks-install initialize-sims sim-status sim-shutdown sim-clean
 
 system:
 	bash scripts/system-setup.sh
@@ -27,15 +27,15 @@ lint-changed:
 
 # -- Localization -------------------------------------------------------------
 # Repo-wide on purpose, and the documented exception to AGENTS.md §"Lint policy":
-# check_translations validates one catalog file, and check_source_strings enforces a
-# repo invariant (no unkeyed user-facing copy). Neither is a style lint of Swift files,
-# and both finish in well under a second.
+# check_translations validates the catalog, check_source_strings enforces a repo
+# invariant (no unkeyed user-facing copy), and distinct_pairs catches paired strings
+# translated identically. None is a style lint of Swift files; all take under a second.
 i18n-check:
 	python3 scripts/check_translations.py
 	python3 scripts/check_source_strings.py
 	python3 scripts/translate_audit/distinct_pairs.py
 
-# Static check; the UI tests themselves are opt-in and not in the gate.
+# Static checks; the UI tests themselves are opt-in (AGENTS.md §"Build and test").
 uitest-check:
 	python3 scripts/check_ui_test_keyboard.py
 	python3 scripts/screenshot_content/generate_seeds.py --check
@@ -48,12 +48,16 @@ doc-check:
 build:
 	bash scripts/build.sh
 
-# Opt-in, not in the gate. See scripts/test-unit.sh.
+# Opt-in: AGENTS.md §"Build and test".
 test-unit:
 	bash scripts/test-unit.sh
 
 test-ui:
 	bash scripts/test-ui.sh
+
+# Python and Ruby tooling tests; offline, no simulator. In the gate.
+test-scripts:
+	bash scripts/test-scripts.sh
 
 # One command so the whole gate is a single allowlisted call; see scripts/gate.sh.
 gate:
@@ -71,7 +75,8 @@ hooks-install:
 initialize-sims:
 	@ROOT="$(CURDIR)" bash -c 'source "$(CURDIR)/scripts/_sim_sandbox.sh"'
 
-# Scoped to the UDID in .build/sim/device.udid only.
+# sim-status and sim-shutdown act on the UDID in .build/sim/device.udid only. sim-clean
+# deletes every device named with this checkout's [slug], Screenshots device included.
 
 _UDID_FILE := $(CURDIR)/.build/sim/device.udid
 

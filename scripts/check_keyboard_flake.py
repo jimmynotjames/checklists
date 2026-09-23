@@ -1,23 +1,8 @@
 #!/usr/bin/env python3
-"""Tag UI test failures caused by the simulator's software keyboard being absent.
+"""Print `SIM-KEYBOARD-FLAKE tests-failed` when a UI run failed with `kAXErrorCannotComplete` on a
+keyboard key. Report-only: never changes the run's outcome. Why: the XCUIElement+Keyboard.swift header.
 
-Prints `SIM-KEYBOARD-FLAKE tests-failed` when a run failed on a keyboard key, so that the
-question in issue #231 — does the keyboard machinery in `_sim_sandbox.sh` still protect
-anything? — can later be answered by grepping transcripts and run logs instead of by argument.
-
-The tests stopped tapping keyboard keys in `97e78c9` (see `XCUIElement+Keyboard.swift`), and
-`check_ui_test_keyboard.py` fails the gate on any new tap, so a hit here means something got past
-both and is worth investigating rather than waving through.
-
-Deliberately precise rather than generous: a false positive would argue for keeping machinery that
-may well be dead weight. Only `kAXErrorCannotComplete` against a keyboard element counts. The
-edit-menu variant ("Failed to tap \"Cut\" MenuItem", seen once when nothing had been typed) is left
-out — same suspected family, but the element is not a key and blaming it here would overstate.
-
-Never fails the build: it reports on a run that has already decided its own outcome.
-
-Usage:
-  python3 scripts/check_keyboard_flake.py <path-to.xcresult>
+Usage: python3 scripts/check_keyboard_flake.py <path-to.xcresult>
 """
 
 from __future__ import annotations

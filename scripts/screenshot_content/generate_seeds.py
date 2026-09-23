@@ -1,24 +1,15 @@
 #!/usr/bin/env python3
 """Generate the per-locale screenshot seed catalogs from the string catalog.
 
-The seeds are derived, never authored. `ScreenshotSeeds/en-US.json` supplies the
-structure — which checklists exist, their ids and order, how many items each has,
-which read as done, and which carry notes — and `Localizable.xcstrings` supplies
-the words, from the `sample.*` namespace the app itself uses on first launch.
-That is the whole point: a screenshot shows exactly what a new user sees.
-
-The mapping runs English value -> `sample.*` key -> that locale's translation.
-It never matches localized text, because the `sample.*` namespace is
-transcreated rather than translated: a locale's morning routine may start with a
-tea kettle where English starts with a coffee maker, so the localized strings are
-deliberately not parallel to the English and only the key is a reliable join.
+`ScreenshotSeeds/en-US.json` supplies the structure; the catalog's `sample.*` keys
+supply the words. Why the join is by key: `localization-spec.md §Screenshot seeds`.
 
 Usage:
   python3 scripts/screenshot_content/generate_seeds.py [--locales a,b] [--check]
 
   --check  regenerate into memory, compare against what is on disk, and exit 1
-           on any drift. This is what `make i18n-check` runs, so a catalog edit
-           that leaves the seeds stale fails the gate instead of shipping.
+           on any drift. `make uitest-check` runs this, so a catalog edit that
+           leaves the seeds stale fails the gate.
 """
 
 from __future__ import annotations
