@@ -3,13 +3,9 @@
 //  checklistsUITests
 //
 
-// No UI test taps a keyboard key: `make gate` fails on a new tap (`scripts/check_ui_test_keyboard.py`),
-// because the Xcode recorder generates them.
-//
-// `scripts/_sim_sandbox.sh` still turns Simulator.app's "Connect Hardware Keyboard" off, for ad-hoc
-// runs and anything that needs the keyboard on screen. The preference is per-UDID but owned by
-// Simulator.app and read at boot, so it is written before a boot and `open -a Simulator` applies
-// it. Under `SIMULATOR_UDID` none of this runs; fix it by hand:
+// `scripts/_sim_sandbox.sh` turns Simulator.app's "Connect Hardware Keyboard" off, for ad-hoc runs
+// and anything that needs the keyboard on screen. Under `SIMULATOR_UDID` it doesn't run; fix it by
+// hand:
 //
 //   UDID=$(cat .build/sim/device.udid)
 //   python3 scripts/sim_keyboard_pref.py --disable "$UDID"
@@ -20,13 +16,11 @@
 // hint, not a lever, and don't read a green run as proof it works. The next place to look is the
 // device's own `AutomaticMinimizationEnabled` / `HardwareKeyboardLastSeen` in
 // `data/Library/Preferences/com.apple.keyboard.preferences.plist`, which survives reboots and
-// nothing here resets. `typeText` never queries the keyboard's accessibility elements, so the
-// tests don't depend on which mechanism is real.
+// nothing here resets.
 //
-// Both paths print `SIM-KEYBOARD-FLAKE`: `guard-fired` when `_sim_sandbox.sh` cycles the
-// simulator, `tests-failed` when `scripts/check_keyboard_flake.py` finds a run that failed on a
-// keyboard key, meaning something still depends on the keyboard and got past the gate check.
-// #231 tracks deleting this machinery once the tag stays quiet.
+// `SIM-KEYBOARD-FLAKE tests-failed` (from `scripts/check_keyboard_flake.py`) means something still
+// depends on the keyboard and got past the gate check; `guard-fired` alone is cheap drift. #231
+// tracks deleting this machinery once the tag stays quiet.
 
 import XCTest
 

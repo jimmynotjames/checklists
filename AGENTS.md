@@ -20,7 +20,7 @@ rules and status, not call sites: to find where something lives, grep.
 
 - `persistence-design.md` — persistence
 - `analytics-spec.md` — analytics
-- `accessibility-spec.md` — accessibility
+- `accessibility-spec.md` — accessibility; update it only when a change involved accessibility work
 - `localization-spec.md` — localization
 - `secrets-list.md` — credentials
 
@@ -96,8 +96,8 @@ Gate and pre-commit format and strict-lint **changed Swift files only**
 (`scripts/changed-swift-files.sh`). Repo-wide `make format` / `make lint` are manual escape
 hatches — never wire them into a hook or gate.
 
-**`make i18n-check` is the one exception** and runs repo-wide (in `make gate` and `pre-push`): a key
-can stop being translated because some *other* file changed.
+**`make i18n-check` and `make uitest-check` are the exceptions** and run repo-wide: a key can stop
+being translated, or a seed go stale, because some *other* file changed.
 
 ## Commit and PR style
 
@@ -157,7 +157,8 @@ All targets set `SWIFT_APPROACHABLE_CONCURRENCY = YES`; the app and `checklistsT
 ## Running the translation pipelines
 
 Never hand-edit `Localizable.xcstrings` or a screenshot seed; both are generated. Everything else
-that bites in practice: `core-docs/localization-spec.md §Running the pipelines`.
+that bites in practice: `localization-spec.md §Running the pipelines` and §Models are pinned
+deliberately.
 
 ## Bash command hygiene
 

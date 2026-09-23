@@ -125,8 +125,6 @@ locales and protects `reChecklist` and `iCloud` from being translated.
   `translate_metadata/dispatch_prompts.py` are separate because in-app and marketing register are
   different decisions — not a DRY violation to fix. But change a locale's formality call in both, or
   the app and its listing address the same person two different ways.
-- **Paired keys:** a new string that only makes sense beside a neighbour follows the pair rule in
-  §Key convention.
 - **A fan-out is one message.** Dispatch all locales in a single message with
   `run_in_background: true` — never `nohup`, never a shell loop that blocks the session. On a tool
   without a subagent primitive, run the step inline and serially: read each prompt file, produce the
@@ -144,8 +142,8 @@ sees.
 The join runs English value → key → translation, never localized text to localized text: the
 namespace is transcreated, so the localized strings are deliberately not parallel to the English.
 
-`generate_seeds.py --check` runs in `make i18n-check`, so a change to the sample strings that leaves
-the seeds stale fails the gate. Editing a seed file by hand is therefore pointless — the gate
+`generate_seeds.py --check` runs in `make uitest-check`, so a change to the sample strings that
+leaves the seeds stale fails the gate. Editing a seed file by hand is therefore pointless — the gate
 regenerates and compares.
 
 Adding or changing a sample item means: edit `SampleData.swift` and the matching catalog key, re-run
@@ -159,7 +157,7 @@ the transcreation fan-out, then `generate_seeds.py`.
 | --- | --- | --- |
 | `check_translations.py` | `make i18n-check`, pre-push, CI | Yes |
 | `check_source_strings.py` | `make i18n-check`, pre-push, CI | Yes |
-| `generate_seeds.py --check` | `make i18n-check` | Yes |
+| `generate_seeds.py --check` | `make uitest-check` | Yes |
 | `check_metadata.py` | CI, `push_metadata` lane | Yes |
 | `plural_completeness.py` | CI | Yes |
 | `untranslated_copies.py` | CI | Yes |
@@ -174,8 +172,6 @@ call. It is a gate failure, not a review note.
 
 `distinct_pairs.py` catches the mistake no reviewer can see in a diff: two strings that share a
 screen and read identically in some locale.
-
-`make i18n-check` runs repo-wide, the one exception to `AGENTS.md §Lint policy`.
 
 ---
 
