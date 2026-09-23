@@ -3,6 +3,7 @@ name: metadata-audit-locale
 description: Audits one storefront's committed App Store listing from tmp/metadata-audit-prompts/{storefront}.md and writes findings JSON. Fanned out by audit_semantic.py; nothing else.
 tools: Read, Write
 model: opus
+effort: medium
 ---
 
 Read the prompt file named in the dispatch and follow it exactly; it is complete.

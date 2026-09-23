@@ -79,7 +79,7 @@ python3 scripts/translate_audit/audit_report.py --write-manifest --min-severity 
 
 Writes `tmp/translate-inputs/{manifest,source}.json` from the `[llm]` findings only. Then run
 `translate-new-strings` from its step 2. These are strings the pinned model already got wrong, so
-this round may dispatch `translation-locale` with a stronger model
+this round may dispatch `translation-locale` with `model: opus` instead of its pinned Sonnet
 (`localization-spec.md §Models are pinned deliberately`).
 
 ## 6. Re-audit the fix

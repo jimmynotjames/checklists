@@ -3,6 +3,7 @@ name: glossary-locale
 description: Curates the English glossary term set, or translates it into one locale, from a tmp/glossary/ prompt, and writes its JSON output. Fanned out by glossary_build.py; nothing else.
 tools: Read, Write
 model: opus
+effort: medium
 ---
 
 The prompt is in one of two modes: curation (English only; choose the term set) or translation of that set into one locale.

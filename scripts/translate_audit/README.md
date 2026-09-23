@@ -37,7 +37,8 @@ core-docs/localization-spec.md).
 | `plural_rules.py` | Generated per-locale CLDR plural categories (`required` integer-reachable + `valid` full set). Regenerate with `_gen_plural_rules.py` (needs `babel`); the check itself is dependency-free. |
 
 The per-locale auditor subagent is `.claude/agents/translation-audit-locale.md`
-(Read+Write only, **Opus** — it must out-class the model that produced the translations).
+(Read+Write only, **Opus** — it must out-class the model that produced the translations; the Opus-made
+`sample.*` keys are the exception, see `core-docs/localization-spec.md` §Models are pinned deliberately).
 
 `consistency_check.py` is the deterministic complement to the LLM `consistency` finding: it catches
 exact divergences for free; the auditor catches subtler synonym/inflection drift against the glossary

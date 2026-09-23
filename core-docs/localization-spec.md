@@ -98,9 +98,15 @@ writes them.
 
 ### Models are pinned deliberately
 
-Haiku translates ordinary UI strings. Opus does the glossary, the audits, the App Store metadata, and
-the `sample.*` transcreation. The agent definitions pin this; do not "upgrade" a translation agent to
-Opus for a routine string run, and do not downgrade a transcreation agent to save time.
+Sonnet translates ordinary UI strings. Opus does the glossary, the audits, the App Store metadata, and
+the `sample.*` transcreation. The agent definitions pin this by alias (`sonnet`, `opus`), so each
+agent moves to the newest model in its tier on release; that is deliberate. Every agent runs at
+`effort: medium`, which is enough from Opus 5.5 on; do not raise it. Do not "upgrade" a translation
+agent to Opus for a routine string run, and do not downgrade a transcreation agent to save time.
+
+The `sample.*` and App Store listing audits are Opus checking Opus, an exception to the rule that the
+auditor out-classes the producer: a higher tier costs more than that small, re-audited copy warrants.
+Read those audits as a consistency pass, not a senior review.
 
 ### Transcreation vs translation
 
