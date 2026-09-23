@@ -91,7 +91,7 @@ extension ModelContext {
       try placeAndSave(checklist, at: index, among: siblings, restoringSortKeysOf: siblings, save: save)
     } catch {
       // Left registered, the checklist would render as a blank row that was never written, and
-      // autosave might yet write it. `placeAndSave` has already put the siblings' keys back.
+      // autosave might yet write it.
       delete(checklist)
       throw error
     }

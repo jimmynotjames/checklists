@@ -34,32 +34,14 @@ enum SaveFailureNotifier {
 }
 
 extension PersistenceOperation {
-  /// Whether a failed save of this kind is shown to the person. Startup's saves are not: a failed
-  /// import or seed reaches the failure screen instead, and a failed dedupe is dropped on purpose
-  /// (reason at its `try?` in `AppStartupCoordinator`).
+  /// Whether a failed save of this kind is shown to the person. Not for a failed import or seed,
+  /// which reaches the failure screen instead, nor for dedupe, which cleans up after sync rather than
+  /// after anything the person did (its failure is dropped on purpose; reason at its `try?` in
+  /// `AppStartupCoordinator`).
   var notifiesOnFailure: Bool {
     switch self {
     case .checklistEdit, .itemEdit, .itemUpdate, .reorder, .delete: true
     case .legacyImport, .sampleSeed, .dedupe: false
     }
-  }
-}
-
-extension Toast {
-  static var saveFailed: Toast {
-    Toast(
-      message: LocalizedStringResource(
-        "toast.saveFailed",
-        defaultValue: "Save failed. Your device may be low on storage.",
-        comment: """
-        Error toast shown when a change could not be written to the device. Full storage is the \
-        likely cause but not a certain one — a damaged database fails the same way — so the \
-        second sentence must stay a guess ("may"), never a statement of fact. Appears briefly at \
-        the bottom of the screen with no button. Keep it short; it can appear after any edit \
-        (adding, ticking, renaming, deleting).
-        """
-      ),
-      style: .error
-    )
   }
 }

@@ -90,8 +90,10 @@ extension ModelContext {
       // items are, matching `insert(item:at:in:)`.
       try saveChanges(operation: .itemEdit)
     } catch {
-      // Left staged, the copies would render in a list they were never written to.
+      // Left staged, the copies would render in a list they were never written to. Unlinked first,
+      // as `insert(item:at:in:)` does, so the list's items drop them now rather than at the next save.
       for copy in copies {
+        copy.checklist = nil
         delete(copy)
       }
       throw error

@@ -641,6 +641,8 @@ extension ChecklistViewController: UITextFieldDelegate {
     textField.resignFirstResponder()
     if isJumpingToFirstItem {
       isJumpingToFirstItem = false
+      // Empty only when the seeded row's save failed and was taken back out; the toast has said so.
+      guard !checklist.items.isEmpty else { return false }
       guard
         checklist.items.count == 1,
         let cell = tableView.cellForRow(at: IndexPath(row: 0, section: itemsSection)) as? ItemTableViewCell

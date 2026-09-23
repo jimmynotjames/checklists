@@ -106,8 +106,7 @@ struct ChecklistScreenActionTests {
 
   // MARK: - Duplicating an item
 
-  /// The failure path is pinned in `InsertRollbackTests`: duplication goes through
-  /// `insert(item:at:in:)`, which takes the copy back out when its save fails.
+  /// The failure path is pinned in `InsertRollbackTests`.
   @Test("duplicating an item places the copy directly beneath it")
   func duplicatingAnItemPlacesTheCopyBeneathIt() throws {
     try ChecklistScreenHarness.withController(

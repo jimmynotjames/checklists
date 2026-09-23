@@ -198,15 +198,12 @@ instead of propagating the error, and `ChecklistsApp` shows `ContainerFailureVie
 
 ## Save failures
 
-Two rules, both because the screens render from the context rather than from disk:
-
-- **A failed save leaves no staged record behind.** Every path that inserts before it saves —
-  `insert(checklist:at:among:)`, `insert(item:at:in:)` (and so item duplication), checklist
-  duplication, copying checked items — deletes what it inserted and restores any sort keys it moved, then rethrows. Left
-  in, the record would render as if saved, and autosave might write it later (§Autosave).
-- **The person is told, once, from `saveChanges`.** It calls `SaveFailureNotifier`, which the app
-  root wires to an error toast. Startup's saves are excluded (`PersistenceOperation.notifiesOnFailure`):
-  they have the failure screen.
+- **A failed save leaves no staged record behind.** A path that inserts before it saves deletes
+  what it inserted — unlinking an item from its checklist first — and restores any sort keys it
+  moved, then rethrows. The screens render from the context rather than from disk, so a leftover
+  record would look saved, and autosave might write it later (§Autosave).
+- **The person is told, from `saveChanges`.** It calls `SaveFailureNotifier`, which the app root
+  wires to an error toast. `PersistenceOperation.notifiesOnFailure` says which saves are excluded.
 
 ## Autosave
 

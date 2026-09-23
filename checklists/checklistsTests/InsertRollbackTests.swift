@@ -11,13 +11,13 @@ import Testing
 /// Covers what the insert paths leave behind when their save fails, and who hears about it.
 ///
 /// A real SwiftData save only fails on a full or damaged disk, so the failure is injected through
-/// `insertAndSave`'s `save` closure. Siblings are seeded with keys too close to split, so every
-/// insert here renormalizes them first — the sort-key writes a rollback must also undo.
+/// `insertAndSave`'s `save` closure. Siblings are seeded with a first key too small to halve, so
+/// every insert at the top renormalizes them first — the sort-key writes a rollback must also undo.
 @Suite("Rolling back an insert whose save failed")
 struct InsertRollbackTests {
   private struct SaveFailure: Error {}
 
-  /// Below `SortKeyReorder.epsilon` once halved, so inserting at the top renormalizes.
+  /// Below `SortKeyReorder.epsilon`, so inserting at the top renormalizes.
   private static let crowdedKeys = [1e-7, 2e-7]
 
   @Test("a failed checklist insert leaves no checklist and the siblings' keys as they were")
@@ -96,11 +96,10 @@ struct SaveFailureNotifierTests {
     #expect(notified == 1)
   }
 
-  /// Startup's saves have the failure screen, or are dropped on purpose.
-  @Test("a failed startup save does not notify", arguments: [
+  @Test("a failed import, seed or dedupe save does not notify", arguments: [
     PersistenceOperation.legacyImport, .sampleSeed, .dedupe,
   ])
-  func failedStartupSaveDoesNotNotify(operation: PersistenceOperation) {
+  func failedHousekeepingSaveDoesNotNotify(operation: PersistenceOperation) {
     var notified = 0
     SaveFailureNotifier.saveFailed(during: operation) { notified += 1 }
     #expect(notified == 0)
