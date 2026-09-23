@@ -52,9 +52,11 @@ extension Toast {
         "toast.saveFailed",
         defaultValue: "Save failed. Your device may be low on storage.",
         comment: """
-        Error toast shown when a change could not be written to the device, most often because \
-        storage is full. Appears briefly at the bottom of the screen with no button. Keep it \
-        short; it can appear after any edit (adding, ticking, renaming, deleting).
+        Error toast shown when a change could not be written to the device. Full storage is the \
+        likely cause but not a certain one — a damaged database fails the same way — so the \
+        second sentence must stay a guess ("may"), never a statement of fact. Appears briefly at \
+        the bottom of the screen with no button. Keep it short; it can appear after any edit \
+        (adding, ticking, renaming, deleting).
         """
       ),
       style: .error
