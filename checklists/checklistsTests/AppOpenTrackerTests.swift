@@ -7,7 +7,7 @@
 import SwiftUI
 import Testing
 
-/// Covers which `scenePhase` transitions count as an app open (analytics-spec.md §8).
+/// Covers which `scenePhase` transitions count as an app open (analytics-spec.md §Event catalog).
 ///
 /// The `.inactive` cases are the point of this class. A drop to `.inactive` and back happens for
 /// the notification shade, the app switcher, Face ID and permission dialogs — none of which are

@@ -9,7 +9,7 @@ import Foundation
 /// Records analytics calls so tests can assert on them.
 ///
 /// Calls go into **one ordered array** rather than separate per-method collections. That matters
-/// for the consent contract (analytics-spec.md §6.3), where the requirement is that the opt-out
+/// for the consent contract (analytics-spec.md §Toggle-off behaviour), where the requirement is that the opt-out
 /// event is sent *before* `reset()` — an ordering that parallel arrays cannot express, and which
 /// would otherwise have to be re-simulated inside the test rather than observed on real code.
 /// `@MainActor` so the recorded calls can be mutable state while still satisfying the protocol's

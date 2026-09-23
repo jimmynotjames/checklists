@@ -7,19 +7,18 @@
 import Testing
 
 /// Exercises `MixpanelAnalyticsClient`'s lazy-init contract against the **real class**, not a
-/// simulation — see core-docs/analytics-spec.md §13 contract 9 and §7.2.
+/// simulation — see core-docs/analytics-spec.md §Launch and consent ordering.
 ///
 /// **Every test here is restricted to paths that never call `Mixpanel.initialize`.** Calling
 /// `track`/`identify` directly against the real class would initialize the SDK and reach
 /// `MixpanelInstance.reset()`'s `flush()`, which POSTs over the network and leaves real artifacts
 /// (`*_MPDB.sqlite`, `Mixpanel.plist`) behind — so this file asserts only the **negative** half of
 /// the contract. The **positive** half — that an opted-in `track` actually initializes the SDK
-/// exactly once — isn't safely assertable here; it's covered by the manual simulator verification
-/// in analytics-spec.md §5.
+/// exactly once — isn't safely assertable here.
 @Suite("MixpanelAnalyticsClient lazy-init gate")
 struct MixpanelClientGateTests {
   /// Deliberately not shaped like a real token (32 lowercase hex) — that would trip gitleaks
-  /// (analytics-spec.md §10); shape validation is `MixpanelTokenSource`'s job, not this class's.
+  /// (analytics-spec.md §Build hygiene); shape validation is `MixpanelTokenSource`'s job, not this class's.
   private static let testToken = "unit-test-mixpanel-token-not-real"
 
   @Test("constructing the client does not initialize the SDK")
@@ -30,7 +29,8 @@ struct MixpanelClientGateTests {
 
   /// The regression guard that matters most: `reset()` must never itself be a path to
   /// `ensureInitialized()`. If it ever became one, an opted-out `ConsentGatedAnalyticsClient`
-  /// calling the always-passed-through `reset()` (§7.2) would silently open a connection.
+  /// calling the always-passed-through `reset()` (analytics-spec.md §Launch and consent ordering)
+  /// would silently open a connection.
   @Test("calling reset() on a never-initialized client leaves it uninitialized")
   func resetOnNeverInitializedClientLeavesItUninitialized() {
     let client = MixpanelAnalyticsClient(token: Self.testToken, distinctIdProvider: { nil })

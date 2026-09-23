@@ -6,7 +6,7 @@
 @testable import checklists
 import Testing
 
-/// Guards the naming convention for the event and property catalogs (analytics-spec.md §8, §9).
+/// Guards the naming convention for the event and property catalogs (analytics-spec.md §Event catalog, §Property catalog).
 ///
 /// Cheap, but it is the regression net for a rename: two constants that collide would silently
 /// merge two events in Mixpanel, and a stray capital or space would create a second event that
@@ -122,8 +122,8 @@ struct AnalyticsNamesTests {
 
   /// `error_operation` transmits `PersistenceOperation.rawValue`, so the Swift case names *are* the
   /// analytics vocabulary — renaming a case silently changes what the dashboards group by. Pinned
-  /// here because no test can arrange a real save failure (core-docs/analytics-spec.md §13), so this is the only
-  /// place the value set is guarded. Update analytics-spec.md §9.1 in the same change.
+  /// here because no test can arrange a real save failure, so this is the only
+  /// place the value set is guarded. Update analytics-spec.md §Per-event properties in the same change.
   @Test("the persistence operation values sent as error_operation are pinned")
   func persistenceOperationValuesArePinned() {
     let sent = Set(PersistenceOperation.allCases.map(\.rawValue))
@@ -134,8 +134,8 @@ struct AnalyticsNamesTests {
   }
 
   /// `startup_stage` transmits `ContainerCreationFailure.Stage.rawValue`, so the same rule as above
-  /// applies: the case names *are* the analytics vocabulary. Update analytics-spec.md §9.1 in the
-  /// same change.
+  /// applies: the case names *are* the analytics vocabulary. Update analytics-spec.md §Per-event
+  /// properties in the same change.
   @Test("the startup stage values sent as startup_stage are pinned")
   func startupStageValuesArePinned() {
     let sent = Set(ContainerCreationFailure.Stage.allCases.map(\.rawValue))
@@ -143,7 +143,8 @@ struct AnalyticsNamesTests {
   }
 
   /// `source` transmits `ChecklistDuplicationSource.rawValue`, so the same rule as above applies:
-  /// the case names *are* the analytics vocabulary. Update analytics-spec.md §9.1 in the same change.
+  /// the case names *are* the analytics vocabulary. Update analytics-spec.md §Per-event properties
+  /// in the same change.
   @Test("the duplication source values sent as source are pinned")
   func duplicationSourceValuesArePinned() {
     #expect(ChecklistDuplicationSource.menu.rawValue == "menu")
@@ -152,7 +153,7 @@ struct AnalyticsNamesTests {
 
   /// `destination` transmits `CheckedItemsCopyDestination.rawValue`. Its raw values are spelled out
   /// rather than derived from the case names, so this pins what the dashboards actually group by.
-  /// Update analytics-spec.md §9.1 in the same change.
+  /// Update analytics-spec.md §Per-event properties in the same change.
   @Test("the copy destination values sent as destination are pinned")
   func copyDestinationValuesArePinned() {
     #expect(CheckedItemsCopyDestination.newChecklist.rawValue == "new")

@@ -11,7 +11,7 @@ import Testing
 /// `orientationAnalyticsValue`.
 ///
 /// `analyticsViewedProperties` is also where this app's PII boundary is drawn in code
-/// (analytics-spec.md §4), so the negative assertions below — that no note text and no item name
+/// (analytics-spec.md §Privacy), so the negative assertions below — that no note text and no item name
 /// appears anywhere in the payload — are the point of the class, not padding.
 @Suite("Checklist analytics property mapping")
 struct ChecklistAnalyticsPropertiesTests {
