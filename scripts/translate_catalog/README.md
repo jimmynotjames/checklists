@@ -28,8 +28,7 @@ is the authority for *when and how to invoke them*, and owns the step-by-step fl
 | `PROMPT_TEMPLATE.md` | UI-key template → `{locale}.md`, for the `translation-locale` agent |
 | `SAMPLE_PROMPT_TEMPLATE.md` | `sample.*` demo-checklist template → `{locale}.sample.md`, for the `sample-content-locale` agent (transcreated for cultural fit, structure fixed) |
 
-No dependencies beyond Python 3 stdlib. Outputs are `{locale}.json` and `{locale}.sample.json`;
-`validate.py` and `merge.py` read both.
+No dependencies beyond Python 3 stdlib.
 
 The per-locale register notes (`REGIONAL_NOTES` here, `CULTURAL_NOTES` in the metadata
 pipeline) are duplicated on purpose: `localization-spec.md §Running the pipelines`.
@@ -89,7 +88,6 @@ python3 scripts/translate_catalog/inspect_glossary.py term "Reset All"
 ## Catalog assumptions
 
 - Keys with `"shouldTranslate": false` (locale-invariant identifiers) are skipped by `--missing`.
-- `check_translations.py` remains the authoritative gate.
 
 ## Glossary (terminology consistency)
 

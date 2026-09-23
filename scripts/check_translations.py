@@ -32,8 +32,6 @@ from paths import CATALOG_PATH  # noqa: E402
 # States that mean a translation is not ready to ship.
 UNTRANSLATED_STATES = {"new", "needs_review", "stale"}
 
-# Source-language code stored in the xcstrings catalog; checked separately from
-# LOCALES because it is the source, not a translation target.
 SOURCE_LANGUAGE = "en"
 
 

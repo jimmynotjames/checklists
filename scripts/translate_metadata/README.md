@@ -26,7 +26,7 @@ Transcreated per storefront (with App Store Connect limits):
 |-------|-------|-------|
 | `subtitle` | 30 | Punchy tagline. |
 | `promotional_text` | 170 | Editable without a new app version. |
-| `keywords` | 100 bytes | **Search terms**, not prose — comma-separated, no spaces, deduped. UTF-8 bytes, not characters. |
+| `keywords` | 100 UTF-8 bytes | **Search terms**, not prose — comma-separated, no spaces, deduped. |
 | `description` | 4000 | Full persuasive listing copy; structure preserved. |
 | `release_notes` | 4000 | "What's New" text. |
 
@@ -34,8 +34,8 @@ Passthrough fields, copied verbatim from `en-US` by `merge.py` and never sent to
 `name` (the store name is the bare brand), `marketing_url`, `privacy_url`, `support_url`.
 `merge.py --skip-urls` skips all four. The catalog-level `copyright.txt` is left untouched.
 
-A translatable field that is blank or absent in `en-US` is unused: `merge.py` deletes its
-file from every storefront, because `appstore_metadata.py prepare` rejects empty files.
+A translatable field that is blank or absent in `en-US` is unused; `merge.py` deletes it
+from every storefront.
 
 The brand **"reChecklist"** is treated as a proper noun everywhere: never translated,
 transliterated, or glossed. (Decision: brand stays Latin in all locales — no
@@ -62,7 +62,7 @@ scripts/translate_metadata/
   audit.py              # inspect outputs: field length table, OVER flags, consolidated _questions; --questions/--json/--full
   audit_semantic.py     # semantic quality audit of the committed listing: --dispatch / --report / --write-manifest; --min-severity
   merge.py              # tmp/metadata-outputs/{storefront}.json → fastlane/metadata/{storefront}/*.txt + passthrough; deletes fields blank in en-US
-  check_metadata.py     # authoritative gate over fastlane/metadata/ (authored fields populated+within limits; blank-source fields stay empty)
+  check_metadata.py     # authoritative gate over fastlane/metadata/ (authored fields populated+within limits; blank-source fields have no content)
   PROMPT_TEMPLATE.md    # transcreation prompt template
   AUDIT_PROMPT_TEMPLATE.md # semantic-audit prompt template
   README.md             # this file

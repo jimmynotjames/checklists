@@ -47,8 +47,7 @@ exact divergences for free; the auditor catches subtler synonym/inflection drift
 
 The `audit-translations` skill owns the step-by-step flow: extract, dispatch, fan out one
 `translation-audit-locale` agent per locale, report, and hand the flagged subset to
-re-translation with `audit_report.py --write-manifest`. Which model re-translates:
-`localization-spec.md §Models are pinned deliberately`.
+re-translation with `audit_report.py --write-manifest`.
 
 ## Findings shape
 

@@ -9,8 +9,6 @@ tmp/glossary/terms.json in the curated shape, ready to translate. Frequent singl
 aren't yet covered are written to tmp/glossary/candidates_review.json for a human to consider
 (more ambiguous — a word isn't always a term worth pinning).
 
-Exact duplicates that aren't terminology go in IGNORED_NONTERMS and are skipped.
-
 This script never calls an LLM. To actually add the detected high-confidence terms:
     python3 scripts/translate_catalog/glossary_sync.py --detect
     # then run the standard glossary translate cycle on the new terms:

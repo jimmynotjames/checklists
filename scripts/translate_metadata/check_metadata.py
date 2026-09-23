@@ -10,8 +10,7 @@ verifies two invariants:
      `keywords`, characters otherwise).
 
   2. For every translatable field that is blank or absent in en-US, no target
-     storefront has content for it. `merge.py` deletes those files; an empty file
-     passes here but `appstore_metadata.py prepare` rejects it.
+     storefront has content for it (an empty file passes here; `merge.py` deletes it).
 
 Also verifies the passthrough files (name and URLs) exist per storefront when en-US
 has them.

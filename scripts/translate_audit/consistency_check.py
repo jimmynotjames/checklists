@@ -2,9 +2,9 @@
 """
 Deterministic cross-key terminology consistency check for Localizable.xcstrings.
 
-Some English strings are reused across keys ("Share Anonymous Usage Data" is two).
-Nothing in the translate pipeline guarantees that two keys with identical English get
-the *same* translation, so they drift. This script
+Some English strings are reused across keys ("Share Anonymous Usage Data"). Nothing
+in the translate pipeline guarantees that two keys with identical English get the
+*same* translation, so they drift. This script
 finds that drift — no LLM, no cost — and (optionally) emits a re-translation manifest
 for the divergent set so the glossary-aware translate flow can converge them.
 

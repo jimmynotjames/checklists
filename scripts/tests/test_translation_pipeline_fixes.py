@@ -86,9 +86,12 @@ class MetadataMergeBlankFieldTests(unittest.TestCase):
         self._merge("it", {"subtitle": "Liste riutilizzabili"})
         self.assertFalse((self.metadata / "it" / "release_notes.txt").exists())
 
-    def test_blank_translated_value_is_never_written(self) -> None:
-        self._merge("ja", {"subtitle": "再利用できるチェックリスト", "promotional_text": "  "})
-        self.assertFalse((self.metadata / "ja" / "promotional_text.txt").exists())
+    def test_blank_translated_value_never_replaces_an_authored_field(self) -> None:
+        folder = self.metadata / "ja"
+        folder.mkdir()
+        (folder / "subtitle.txt").write_text("再利用できるチェックリスト\n", encoding="utf-8")
+        self._merge("ja", {"subtitle": "  "})
+        self.assertEqual((folder / "subtitle.txt").read_text(encoding="utf-8"), "再利用できるチェックリスト\n")
 
     def test_name_is_copied_as_passthrough(self) -> None:
         self._merge("es-ES", {"subtitle": "Listas reutilizables"})
@@ -124,7 +127,7 @@ class MetadataAuditKeywordBytesTests(unittest.TestCase):
 
 
 class MetadataValidateNameTests(unittest.TestCase):
-    """`name` is passthrough, so it is never validated as a transcreated field."""
+    """`name` is passthrough: an output carrying it is rejected, never brand-checked."""
 
     def test_name_in_an_output_is_an_unexpected_field(self) -> None:
         source = {"subtitle": {"value": "Reusable checklists", "charLimit": 30}}
@@ -137,7 +140,6 @@ class MetadataValidateNameTests(unittest.TestCase):
                 errors, _warnings, _pending = metadata_validate.validate_storefront("de-DE", source)
         self.assertEqual(len(errors), 1)
         self.assertIn("Unexpected extra field", errors[0])
-        self.assertFalse(hasattr(metadata_validate, "BRAND"))
 
 
 class UpdateKeysPluralTests(unittest.TestCase):

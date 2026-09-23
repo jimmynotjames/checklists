@@ -25,7 +25,8 @@ to insert brand-new keys instead.
 
 Plural keys (any localization with "variations") are refused: the whole input
 is rejected and nothing is written. To change a plural key's English forms, reset
-it to a flat key with `add_keys.py --force`, then run pluralize_keys.py.
+it to a flat key with `add_keys.py --force` (pass the comment again; it is
+replaced), then run pluralize_keys.py.
 
 Usage:
   python3 scripts/translate_catalog/update_keys.py updates.json
@@ -80,8 +81,8 @@ def main(argv: list[str] | None = None) -> int:
     if plural:
         print(
             f"ERROR: plural key(s) {plural}: update_keys.py rewrites en as a flat string and "
-            "would drop the plural forms. Reset them with `add_keys.py --force`, then run "
-            "pluralize_keys.py with the new forms. Nothing written.",
+            "would drop the plural forms. Reset them with `add_keys.py --force` (pass the "
+            "comment again), then run pluralize_keys.py. Nothing written.",
             file=sys.stderr,
         )
         return 1
