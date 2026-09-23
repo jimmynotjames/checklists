@@ -329,12 +329,7 @@ class ChecklistViewController: UIViewController {
     do {
       try context.insert(item: Item(), at: index, in: checklist)
     } catch {
-      // Already logged and reported by `saveChanges`. The item is still in `checklist.items`,
-      // though — `insert(item:at:in:)` stages it before saving and has no rollback — so the data
-      // source now counts one more row than the table was told about, and the next batch update
-      // can raise. The sibling sort keys `place` may have renormalized are staged the same way.
-      // See issue #219.
-      return
+      return // `saveChanges` told the person, and the insert has taken the item back out.
     }
 
     let updates = {
@@ -646,6 +641,8 @@ extension ChecklistViewController: UITextFieldDelegate {
     textField.resignFirstResponder()
     if isJumpingToFirstItem {
       isJumpingToFirstItem = false
+      // Empty only when the seeded row's save failed and was taken back out; the toast has said so.
+      guard !checklist.items.isEmpty else { return false }
       guard
         checklist.items.count == 1,
         let cell = tableView.cellForRow(at: IndexPath(row: 0, section: itemsSection)) as? ItemTableViewCell

@@ -38250,6 +38250,312 @@
           }
         }
       }
+    },
+    "toast.saveFailed" : {
+      "comment" : "Error toast shown when a change could not be written to the device. Full storage is the likely cause but not a certain one — a damaged database fails the same way — so the second sentence must stay a guess (\"may\"), never a statement of fact. Appears briefly at the bottom of the screen with no button. Keep it short; it can appear after any edit (adding, ticking, renaming, deleting).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فشل الحفظ. قد تكون مساحة جهازك ناقصة."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "সংরক্ষণ ব্যর্থ। ডিভাইসের স্টোরেজ কম হতে পারে।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No s'ha pogut guardar. El dispositiu podria no tenir prou espai."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uložení se nezdařilo. Vaše zařízení má patrně málo volného místa."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke gemme. Din enhed mangler muligvis plads."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speichern fehlgeschlagen. Dein Gerät könnte wenig Speicherplatz haben."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Αποτυχία αποθήκευσης. Ενδέχεται να έχει χαμηλό χώρο."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save failed. Your device may be low on storage."
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save failed. Your device may be low on storage."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save failed. Your device may be low on storage."
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save failed. Your device may be low on storage."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al guardar. Tu móvil podría estar lleno."
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo guardar. Tu dispositivo podría estar bajo en almacenamiento."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tallennus epäonnistui. Muisti voi olla täynnä."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrement échoué. Ton appareil risque de manquer d'espace."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sauvegarde impossible. Ton appareil manque peut-être d'espace."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "સેવ નિષ્ફળ. તમારા ઉપકરણમાં જગ્યા ઓછી હોઈ શકે છે."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "שמירה נכשלה. ייתכן שאין מקום בהתקן."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सहेजा नहीं जा सका। डिवाइस का भंडारण कम हो सकता है।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spremanje nije uspjelo. Uređaj može biti bez prostora."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mentés sikertelen. Az eszköz tárolóhelye talán kevés."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gagal menyimpan. Penyimpanan perangkat mungkin penuh."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile salvare. Potrebbe mancare spazio."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存できませんでした。ストレージが満杯の可能性があります。"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಉಳಿಸಲಾಗಲಿಲ್ಲ. ನಿಮ್ಮ ಸಾಧನವು ಸ್ಪೇಸ್‌ನಲ್ಲಿ ಕಡಿಮೆ ಆಗಿರಬಹುದು."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장 실패. 저장공간이 부족할 수 있습니다."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "സംരക്ഷണം പരാജയപ്പെട്ടു. നിങ്ങളുടെ ഉപകരണത്തിന് സ്ഥലം കുറവായിരിക്കാം."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सेव्ह झाले नाही। स्टोरेज कमी असू शकते।"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gagal simpan. Ruang peranti anda mungkin penuh."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke lagre. Enheten kan være tom for lagringsplass."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opslaan mislukt. Je apparaat is mogelijk vol."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ସେଭ ବିଫଲ ହେଲା। ଆପଣଙ୍କ ଡିଭାଇସ ଷ୍ଟୋରେଜ କମ ଥାଇ ପାରେ।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਸੰਭਾਲ ਅਸਫਲ। ਡਿਵਾਈਸ ਸਟੋਰੇਜ ਘੱਟ ਹੋ ਸਕਦੀ ਹੈ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie zapisano. Urządzenie może mieć brak miejsca."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha ao salvar. Seu dispositivo pode estar sem espaço."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha ao guardar. Pode estar com pouco espaço."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvarea a eșuat. Dispozitivul ar putea fi scurt de spațiu."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось сохранить. На устройстве может быть мало места."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uloženie zlyhalo. Zariadenie môže mať málo miesta."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shranjevanje neuspešno. Naprava ima morda malo prostora."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sparningen misslyckades. Din enhet kan ha lågt lagringsutrymme."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "சேமிப்பு தோல்வி. உங்கள் சாதனத்தில் இடம் குறைந்திருக்கலாம்."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "సేవ్ విఫలమైంది. మీ పరికరం నిల్వ తక్కువగా ఉండవచ్చు."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "บันทึกไม่สำเร็จ อุปกรณ์อาจมีพื้นที่ไม่พอ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydedilemedi. Cihazda depolama alanı az olabilir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Збереження не вдалось. На пристрої може не вистачати місця."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "محفوظ نہیں ہو سکا۔ آپ کے ڈیوائس میں جگہ کم ہو سکتی ہے۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lưu không thành công. Bộ nhớ thiết bị có thể đã hết."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存失败。设备存储空间可能不足。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法儲存，裝置儲存空間可能不足。"
+          }
+        }
+      }
     }
   },
   "version" : "1.2"

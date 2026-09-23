@@ -127,8 +127,8 @@ or existing list. All re-issue sort keys rather than copying them. **None carrie
 or either history stamp**, since all three describe something that happened to the original list
 being run, and nothing has been run on the copy yet.
 
-Worth knowing from here: checklist duplication saves the whole graph once and undoes the half-built
-copy if that save fails. That is the shape the plain insert paths lack (issue #219).
+Worth knowing from here: checklist duplication saves the whole graph once and removes the
+half-built copy if that save fails — see §Save failures.
 
 ## Startup and failure UX
 
@@ -195,6 +195,15 @@ launch experience change actually gets to read the message.
 **A failure screen, never `fatalError`.** If container creation, the legacy import, or the
 first-launch seed throws, `AppStartupCoordinator.run()` returns `.failed(ContainerCreationFailure)`
 instead of propagating the error, and `ChecklistsApp` shows `ContainerFailureView`.
+
+## Save failures
+
+- **A failed save leaves no staged record behind.** A path that inserts before it saves deletes
+  what it inserted — unlinking an item from its checklist first — and restores any sort keys it
+  moved, then rethrows. The screens render from the context rather than from disk, so a leftover
+  record would look saved, and autosave might write it later (§Autosave).
+- **The person is told, from `saveChanges`.** It calls `SaveFailureNotifier`, which the app root
+  wires to an error toast. `PersistenceOperation.notifiesOnFailure` says which saves are excluded.
 
 ## Autosave
 

@@ -35,7 +35,8 @@ struct PersistenceError: Error, Equatable {
 
 extension ModelContext {
   /**
-   Saves, and on failure logs a diagnostic, reports an analytics event, and throws.
+   Saves, and on failure logs a diagnostic, reports an analytics event, tells the person through
+   `SaveFailureNotifier`, and throws.
 
    What it throws is a `PersistenceError`, not what `save()` gave it. The original `NSError` carries
    `userInfo`; a typed value holding only the operation, domain and code can be logged, mailed and
@@ -61,6 +62,7 @@ extension ModelContext {
           AnalyticsProperty.errorOperation: operation.rawValue,
         ]
       )
+      SaveFailureNotifier.saveFailed(during: operation)
       throw PersistenceError(operation: operation, errorDomain: error.domain, errorCode: error.code)
     }
   }
@@ -68,9 +70,8 @@ extension ModelContext {
   /**
    Saves, and on failure lets the error go after `saveChanges` has logged and reported it.
 
-   For incidental edits — a renamed checklist, a toggled checkbox — where there is no useful
-   recovery and no sensible place to put an alert; the bet is that these saves do not fail in
-   practice. The stages that can fail startup use the throwing form instead, so a failure there
+   For incidental edits — a renamed checklist, a toggled checkbox — where the caller has no useful
+   recovery; the person still hears about it from `saveChanges`. The stages that can fail startup use the throwing form instead, so a failure there
    reaches the failure screen rather than being dropped.
 
    Dropping the error does not by itself mean the write is lost: see persistence-design.md
