@@ -65,8 +65,12 @@ def metadata_prompt(storefront: str, fields: list[str]) -> str:
 class RenderTests(unittest.TestCase):
     def test_sections_render_only_when_enabled(self) -> None:
         template = "a\n<!-- if x -->\nX\n<!-- end x -->\nb\n"
-        self.assertEqual(prompt_render.render(template, {}, {"x"}), "a\nX\nb\n")
-        self.assertEqual(prompt_render.render(template, {}), "a\nb\n")
+        self.assertEqual(prompt_render.render(template, {}, {"x"}, known={"x"}), "a\nX\nb\n")
+        self.assertEqual(prompt_render.render(template, {}, known={"x"}), "a\nb\n")
+
+    def test_an_unknown_section_raises(self) -> None:
+        with self.assertRaises(KeyError):
+            prompt_render.render("<!-- if typo -->\nX\n<!-- end typo -->\n", {}, known={"x"})
 
     def test_an_unfilled_placeholder_raises(self) -> None:
         with self.assertRaises(KeyError):

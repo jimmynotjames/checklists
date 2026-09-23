@@ -46,7 +46,10 @@ from prompt_render import compact_json, render  # noqa: E402
 # The exact CLDR categories each locale needs, injected per plural entry so the model never
 # recalls them from memory. plural_rules.py imports nothing, so this cross-package import is safe.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "translate_audit"))
-from plural_rules import PLURAL_RULES  # noqa: E402
+try:
+    from plural_rules import PLURAL_RULES  # noqa: E402
+except Exception:
+    PLURAL_RULES = {}  # the template then falls back to "the categories the locale needs"
 
 _GLOSSARY_CACHE: dict | None = None
 
@@ -99,12 +102,12 @@ def render_prompt(template: str, locale: str, stream_source: dict) -> str:
             "SOURCE_JSON": compact_json(stream_source),
         },
         sections,
+        known={"plural", "glossary"},
     )
 
 
 def prompt_entry(entry: dict, locale: str) -> dict:
-    """A source.json entry as the translator sees it: `enChars` added (plural keys measure
-    `other`), `requiredPluralCategories` on plurals, `formatSpecifiers` left out."""
+    """A source.json entry as the translator sees it."""
     out = {k: v for k, v in entry.items() if k != "formatSpecifiers"}
     out["enChars"] = len(entry.get("value") or (entry.get("plural") or {}).get("other", ""))
     if entry.get("plural"):

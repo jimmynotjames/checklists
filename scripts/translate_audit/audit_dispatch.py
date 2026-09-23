@@ -85,6 +85,7 @@ def render_audit_prompt(template: str, locale: str, slice_source: dict) -> str:
             "SOURCE_JSON": compact_json(slice_source),
         },
         sections,
+        known={"sample", "plural", "glossary"},
     )
 
 

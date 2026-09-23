@@ -8,8 +8,8 @@ Default output: tmp/translate-inputs/source.json
 Each entry is flat or plural:
   "key": {"value": "<English>", "comment": "<translator comment>", "formatSpecifiers": [...]}
   "key": {"plural": {"one": "...", "other": "..."}, "comment": "...", "formatSpecifiers": [...]}
-`formatSpecifiers` lists the value's (or plural `other` form's) specifiers in order, for the
-tools that check them; dispatch_prompts.py leaves it out of the translator's slice.
+`formatSpecifiers` lists the value's (or plural `other` form's) specifiers in order;
+dispatch_prompts.py leaves it out of the translator's slice.
 
 Modes:
   (default)         emit every translatable key in the catalog

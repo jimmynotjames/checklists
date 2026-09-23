@@ -88,6 +88,7 @@ def render_audit_prompt(template: str, storefront: str, source: dict, current: d
             "CURRENT_JSON": compact_json(current),
         },
         {"rtl"} if rtl else set(),
+        known={"rtl"},
     )
 
 

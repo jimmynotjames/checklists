@@ -15,7 +15,7 @@ A **quiet, dependable utility**: you write a list once, and it is there every ti
 
 The personality stays constant across markets; its expression is localized. If a trait would read oddly here, adapt it to the local equivalent rather than copying the English move.
 
-**Register:** follow the market note below. Where it doesn't settle formality, use the informal address only if modern app marketing in {LOCALE_NAME} uses it, and otherwise keep the polite form; forced informality reads as wrong, not friendly.
+**Register:** follow the market note below. Where it doesn't settle formality, use the informal address only if modern, youth-oriented app marketing in {LOCALE_NAME} uses it; if the language keeps the polite form regardless of audience age, keep it. Forced informality reads as wrong, not friendly.
 
 ## Messaging brief
 
