@@ -33,7 +33,7 @@ For every change, confirm each concern applies or is N/A:
 - [ ] **Reduce Motion** — new or changed animations are gated on Reduce Motion
       (`@Environment(\.accessibilityReduceMotion)` / `UIAccessibility.isReduceMotionEnabled`), or
       carry a one-line rationale, with the verdict recorded in the animation inventory in
-      `core-docs/accessibility-spec.md` §3.
+      `core-docs/accessibility-spec.md §Animation and Reduce Motion`.
 - [ ] **Localization** — new user-facing strings are dotted keys with translator comments, read via
       `String(localized:defaultValue:comment:)`, and `translate-new-strings` has been run so
       `check_translations.py` passes. Sample-data changes also regenerate the screenshot seeds via
@@ -55,8 +55,8 @@ when that's the honest answer.
 
 - `make test-unit` — runs entirely against in-memory `ModelContainer`s; it does not touch the
   simulator's real store.
-- `make test-ui` — requires a prior `make test-unit` for the warm-up sentinel. The tests no longer
-  tap keyboard keys, so a `kAXErrorCannotComplete` failure against one is a real regression, not
-  the simulator setting it used to be — see AGENTS.md §"The software keyboard".
+- `make test-ui` — requires a prior `make test-unit` for the warm-up sentinel. The tests don't tap
+  keyboard keys, so a `kAXErrorCannotComplete` failure against one is a real regression — see
+  AGENTS.md §"The software keyboard".
 
 CI (`.github/workflows/ci.yml`) is present but **disabled** — no checks run on this PR.

@@ -1,15 +1,12 @@
 # Localization Spec
 
 > How this app gets into 50 languages and stays there: the key convention, the locale registry, the
-> four pipelines, and the gates that hold them. Read it instead of re-deriving; where it and the code
-> disagree, one is a bug — say which in the PR. It gives rules and status, not call sites: to find
-> where something lives, grep.
->
-> Keep it terse. The per-pipeline detail belongs in each pipeline's own README and skill.
+> four pipelines, and the gates that hold them. Keep it terse; the per-pipeline detail belongs in
+> each pipeline's own README and skill.
 
 ---
 
-## 1. Status
+## Status
 
 | Surface | State |
 | --- | --- |
@@ -23,7 +20,7 @@
 
 ---
 
-## 2. The key convention
+## Key convention
 
 Every user-facing string is a dotted key in
 `checklists/checklists/Localizable.xcstrings`, read through
@@ -46,7 +43,7 @@ Rules:
 - **Locale-invariant text uses `Text(verbatim:)`.** An empty navigation title or an alert with no
   title is not a translatable string, and `Text("")` gets re-extracted into the catalog on every
   IDE build.
-- **Never hand-edit the catalog.** It is a 29k-line generated file. Use the scripts in
+- **Never hand-edit the catalog.** It is generated. Use the scripts in
   `scripts/translate_catalog/` — `add_keys.py`, `rename_keys.py`, `remove_keys.py`,
   `invalidate_keys.py`, `pluralize_keys.py`.
 - **Formatting is locale-aware by construction.** Dates go through `DateFormatter`, percentages
@@ -65,7 +62,7 @@ data is theirs, not a view of the catalog. The call sites carry this in their co
 
 ---
 
-## 3. The locale registry
+## Locale registry
 
 `fastlane/screenshot-config.json` `locales[]` is the single source of truth: 50 rows of
 `{runtime, storefront, region, name}`. Everything else derives from it.
@@ -84,7 +81,7 @@ this area.
 
 ---
 
-## 4. The four pipelines
+## The four pipelines
 
 Each is a set of scripts plus a skill; the skill is the entry point.
 
@@ -118,7 +115,24 @@ locales and protects `reChecklist` and `iCloud` from being translated.
 
 ---
 
-## 5. Screenshot seeds
+## Running the pipelines
+
+- **Clean `tmp/` between runs** with `scripts/pipeline_tmp.py clean <group>`. The merge step reads
+  every file in an outputs dir, so a stale `tmp/translate-outputs/de.json` from a previous run
+  merges silently: last week's translation with this week's keys.
+- **The per-locale notes are duplicated on purpose.** `REGIONAL_NOTES` in
+  `translate_catalog/dispatch_prompts.py` and `CULTURAL_NOTES` in
+  `translate_metadata/dispatch_prompts.py` are separate because in-app and marketing register are
+  different decisions — not a DRY violation to fix. But change a locale's formality call in both, or
+  the app and its listing address the same person two different ways.
+- **A fan-out is one message.** Dispatch all locales in a single message with
+  `run_in_background: true` — never `nohup`, never a shell loop that blocks the session. On a tool
+  without a subagent primitive, run the step inline and serially: read each prompt file, produce the
+  JSON yourself, write the matching output file. Same scripts, same gates, same result.
+
+---
+
+## Screenshot seeds
 
 The seed catalogs under `checklists/checklistsUITests/ScreenshotSeeds/` are **generated, never
 authored**: `en-US.json` gives the structure and the catalog's `sample.*` keys give the words. Since
@@ -128,8 +142,8 @@ sees.
 The join runs English value → key → translation, never localized text to localized text: the
 namespace is transcreated, so the localized strings are deliberately not parallel to the English.
 
-`generate_seeds.py --check` runs in `make i18n-check`, so a change to the sample strings that leaves
-the seeds stale fails the gate. Editing a seed file by hand is therefore pointless — the gate
+`generate_seeds.py --check` runs in `make uitest-check`, so a change to the sample strings that
+leaves the seeds stale fails the gate. Editing a seed file by hand is therefore pointless — the gate
 regenerates and compares.
 
 Adding or changing a sample item means: edit `SampleData.swift` and the matching catalog key, re-run
@@ -137,13 +151,13 @@ the transcreation fan-out, then `generate_seeds.py`.
 
 ---
 
-## 6. Gates
+## Gates
 
 | Check | Where | Blocking |
 | --- | --- | --- |
 | `check_translations.py` | `make i18n-check`, pre-push, CI | Yes |
 | `check_source_strings.py` | `make i18n-check`, pre-push, CI | Yes |
-| `generate_seeds.py --check` | `make i18n-check` | Yes |
+| `generate_seeds.py --check` | `make uitest-check` | Yes |
 | `check_metadata.py` | CI, `push_metadata` lane | Yes |
 | `plural_completeness.py` | CI | Yes |
 | `untranslated_copies.py` | CI | Yes |
@@ -157,32 +171,28 @@ to a view, or a pair of capitalized literals in a ternary parked in a local befo
 call. It is a gate failure, not a review note.
 
 `distinct_pairs.py` catches the mistake no reviewer can see in a diff: two strings that share a
-screen and read identically in some locale. It exists because the first overflow-menu translation
-shipped an alert whose two buttons both said "Cancel" in eight languages.
-
-`make i18n-check` runs repo-wide rather than on changed files only, which is an explicit exception to
-the lint policy in `AGENTS.md`. It validates one file and one repo invariant, neither of which is a
-per-file style lint: a key can stop being fully translated because some *other* file changed.
+screen and read identically in some locale.
 
 ---
 
-## 7. Large-type layout check
+## Large-type layout check
 
 `scripts/translation-accessibility-size-check/` drives 13 locales through seven screens at forced
 `.xxxLarge` and leaves the screenshots for reading. It asserts nothing — the reading is the check —
 and it is deliberately outside `make test` and `make gate`. Findings go in its `AUDIT_LOG.md`.
 
 The checklist detail screen is UIKit with fixed fonts and does not scale with Dynamic Type. See
-`accessibility-spec.md` §2.3 and issue
+`accessibility-spec.md §Dynamic Type` and issue
 [#183](https://github.com/jimmynotjames/checklists/issues/183).
 
 ---
 
-## 8. Known gaps
+## Known gaps
 
 - `ChecklistScreen.swift` hardcodes `edgeSwipe.edges = .left`, which is the wrong edge under
   right-to-left layout.
-- Two accessibility labels in `ItemContentView.swift` carry a trailing `": "` inside the localized
-  value, which reads oddly and makes the string harder to translate well.
+- The accessibility labels in `ItemContentView.swift` and `ChecklistInfoHeaderView.swift` carry a
+  trailing `": "` inside the localized value, which reads oddly and makes the string harder to
+  translate well.
 - `DesignExplorations/` compiles into the app target, so literals there can be re-extracted into the
   catalog by an IDE build. `check_source_strings.py` skips the directory.

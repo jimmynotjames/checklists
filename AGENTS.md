@@ -14,14 +14,15 @@ use file-system-synchronized folders: a new `.swift` under `checklists/checklist
 project-file change. Each folder's `Info.plist` is its one membership exception; to exclude another
 file, uncheck it in Xcode's File inspector.
 
-Design docs in `core-docs/` are canonical for their subject — read the relevant one before touching
-its area:
+Design docs in `core-docs/` are canonical: read the relevant one before touching its area, instead
+of re-deriving. Where a doc and the code disagree, one is a bug — say which in the PR. Docs give
+rules and status, not call sites: to find where something lives, grep.
 
-- `persistence-design.md` — model, CloudKit constraints, legacy import, sort keys, sync status
-- `analytics-spec.md` — event and property catalogs, privacy contract, consent model
-- `accessibility-spec.md` — status and conventions; update it only when a change involved accessibility work
-- `localization-spec.md` — key convention, locale registry, the four translation pipelines, the gates
-- `secrets-list.md` — restoring gitignored Mixpanel and App Store Connect credentials after a fresh clone
+- `persistence-design.md` — persistence
+- `analytics-spec.md` — analytics
+- `accessibility-spec.md` — accessibility; update it only when a change involved accessibility work
+- `localization-spec.md` — localization
+- `secrets-list.md` — credentials
 
 The public support site is `index.html` on the orphan `gh-pages` branch
 (<https://jimmynotjames.github.io/checklists/>), not on `main`.
@@ -33,8 +34,12 @@ Governs docs, code comments, commit bodies, and PR bodies alike.
 - **Describe the current state.** No history sections, changelogs, or revision appendices — git is
   the record. Cite an issue or PR only where it still changes behaviour.
 - **No drifting numbers:** test counts, test inventories, annotation counts, dates, "since #N".
+- **No speculation about future work** in comments ("for deep links later").
 - **Point at the canonical home; don't paraphrase it.** A one-line pointer to a `core-docs/` section
   beats a restatement that falls out of date the moment that section changes.
+- **Pointers into docs use heading names** (`persistence-design.md §Sync status`), never `§N`.
+- **A callee doesn't describe its callers, and a caller doesn't restate the callee.** Keep a
+  one-line pointer only where a callee's invariant is non-obvious from the call site.
 - **Comments explain why, not what.** The Swift per-file headers stay — `.swiftformat` says why.
 - **`git blame` a comment before deleting it**, and let the author decide. Human-written comments
   that narrate a UI flow stay, however redundant they look: numbered `/** 1. 2. 3. */` step lists
@@ -51,7 +56,7 @@ repo is `checklists` (`jimmynotjames/checklists`). Introduce both sibling names 
 ## Build and test
 
 ```bash
-make gate        # format-changed -> lint-changed -> i18n-check -> build. Logs to tmp/gate.log.
+make gate        # format-changed -> lint-changed -> i18n-check -> uitest-check -> build. Logs to tmp/gate.log.
 make build       # compile only (generic destination; never boots a simulator)
 make i18n-check  # catalog fully translated + no unkeyed user-facing strings
 make test-unit   # opt-in, not in the gate
@@ -91,12 +96,8 @@ Gate and pre-commit format and strict-lint **changed Swift files only**
 (`scripts/changed-swift-files.sh`). Repo-wide `make format` / `make lint` are manual escape
 hatches — never wire them into a hook or gate.
 
-**`make i18n-check` is the one documented exception**, and it is not a lint:
-`check_translations.py` validates a single file (`Localizable.xcstrings`) and
-`check_source_strings.py` enforces a repo invariant — no user-facing string reaches a view
-without a catalog key. Neither scales with the diff, both finish in well under a second, and a
-changed-files scope would miss exactly the case they exist for: a key that stops being
-translated because some *other* file changed. `make gate` and `pre-push` both run them.
+**`make i18n-check` and `make uitest-check` are the exceptions** and run repo-wide: a key can stop
+being translated, or a seed go stale, because some *other* file changed.
 
 ## Commit and PR style
 
@@ -155,32 +156,9 @@ All targets set `SWIFT_APPROACHABLE_CONCURRENCY = YES`; the app and `checklistsT
 
 ## Running the translation pipelines
 
-Full rules: `core-docs/localization-spec.md`. What bites in practice:
-
-- **Never hand-edit `Localizable.xcstrings` or a screenshot seed.** Both are generated. Use the
-  scripts in `scripts/translate_catalog/`, and `generate_seeds.py` for seeds; `make gate`
-  regenerates the seeds and fails on drift, so a manual edit cannot survive anyway.
-- **Clean `tmp/` between runs.** `pipeline_tmp.py clean <group>` exists because a stale
-  `tmp/translate-outputs/de.json` from a previous run merges silently and you get last week's
-  translation with this week's keys.
-- **The per-locale notes are duplicated on purpose.** `REGIONAL_NOTES` in
-  `translate_catalog/dispatch_prompts.py` and `CULTURAL_NOTES` in
-  `translate_metadata/dispatch_prompts.py` are separate maps because in-app register and marketing
-  register are different decisions. They are not a DRY violation to fix — but if you change the
-  formality call for a locale in one, change it in the other or the app and its listing will
-  address the same person two different ways.
-- **Model pinning is deliberate.** Haiku for ordinary UI strings, Opus for the glossary, audits,
-  App Store metadata, and `sample.*` transcreation. Do not "upgrade" or "downgrade" an agent to
-  trade cost against a deadline.
-- **Keys that share a screen are declared as pairs.** If a new string is only meaningful in
-  contrast with a neighbour (Discard beside Cancel, Delete beside Discard), name the neighbour in
-  the translator comment and add the pair to `scripts/translate_audit/distinct_pairs.py`. The
-  translator sees one key at a time; the gate is what knows they meet.
-- **A fan-out is one message.** Dispatch all locales in a single message with
-  `run_in_background: true`, never `nohup`, and never a shell loop that blocks the session. On a
-  tool without a subagent primitive, run the step inline and serially instead — read each prompt
-  file, produce the JSON yourself, write the matching output file. Same scripts, same gates, same
-  result.
+Never hand-edit `Localizable.xcstrings` or a screenshot seed; both are generated. Everything else
+that bites in practice: `localization-spec.md §Running the pipelines` and §Models are pinned
+deliberately.
 
 ## Bash command hygiene
 
@@ -207,7 +185,7 @@ the fix:
 - Don't build a one-off container or router in a `#Preview`; use `Utils/PreviewSupport.swift` and
   `.previewEnvironment()`.
 - Don't hardcode an analytics token. Tokens come from `config/Secrets.local.xcconfig` via
-  Info.plist — `core-docs/analytics-spec.md` §10.
+  Info.plist — `analytics-spec.md §Build hygiene`.
 - Ignore the `swiftui_2024` branch (origin only) unless asked about it by name. It is an unmerged
   UIKit→SwiftUI migration; exploring it wastes tokens.
 
@@ -223,48 +201,15 @@ screenshot device gets the same treatment.
 
 ### The software keyboard
 
-The UI tests do not tap keyboard keys — `XCUIElement+Keyboard.swift` drives return and delete
-through `typeText`, which needs keyboard *focus* but not a visible keyboard. `make gate` fails on
-any new key tap (`scripts/check_ui_test_keyboard.py`), because the Xcode recorder generates them.
-
-`_sim_sandbox.sh` still turns Simulator.app's "Connect Hardware Keyboard" off, for ad-hoc runs and
-anything that needs the keyboard on screen. The preference is per-UDID but owned by Simulator.app,
-not the device, and is read at boot — so it is written before a boot, and `open -a Simulator` is
-what makes it take effect. Under `SIMULATOR_UDID` none of this runs; fix it by hand with:
-
-```bash
-UDID=$(cat .build/sim/device.udid); python3 scripts/sim_keyboard_pref.py --disable "$UDID"; xcrun simctl shutdown "$UDID"; xcrun simctl boot "$UDID"; open -a Simulator
-```
-
-**The preference does not determine the outcome, and nobody has found what does.** Setting
-`ConnectHardwareKeyboard = true` and rebooting does *not* reliably hide the software keyboard: a
-control test that tapped `app.keys["delete"]` under exactly that setting passed. Three separate
-attempts to reproduce the original mass failure on demand all failed. So treat the preference as a
-hint, not a lever, and do not trust a green run to mean the setting works.
-
-A device also carries `AutomaticMinimizationEnabled` / `HardwareKeyboardLastSeen` in its own
-`data/Library/Preferences/com.apple.keyboard.preferences.plist`, which survives reboots and is not
-checked or reset by anything here. That is the next place to look, not a known answer.
-
-This is also why the tests were changed rather than the tooling: `typeText` never queries the
-keyboard's accessibility elements, so it does not matter which of these is the real mechanism.
-
-Both paths print **`SIM-KEYBOARD-FLAKE`** so the question can later be settled from evidence rather
-than argument — `guard-fired` when `_sim_sandbox.sh` cycles the simulator, `tests-failed` when
-`check_keyboard_flake.py` finds a run that actually failed on a keyboard key. **If you see
-`tests-failed`, say so explicitly in your report rather than treating it as known flake** — it
-means something still depends on the keyboard and got past the gate check.
-[#231](https://github.com/jimmynotjames/checklists/issues/231) tracks deleting this machinery once
-the tag has stayed quiet.
-
-Note the whole mechanism is on borrowed time: Xcode 27 replaces Simulator.app with Device Hub, and
-there is no `com.apple.iphonesimulator` domain there.
+UI tests never tap keyboard keys; `make gate` fails on a new tap
+(`scripts/check_ui_test_keyboard.py`). **If a run prints `SIM-KEYBOARD-FLAKE tests-failed`, say so
+explicitly in your report** — never treat it as known flake. Mechanism, the `SIMULATOR_UDID`
+recovery command, and #231: the `XCUIElement+Keyboard.swift` header.
 
 ## Known issues
 
-- **The old Flurry API key is in ~294 commits of history** and the gitleaks gate does not catch it
-  (a bare 20-char alphanumeric matches no rule). A green secrets gate does not cover it. Tracked in
-  [#115](https://github.com/jimmynotjames/checklists/issues/115).
+- **The old Flurry API key is in git history** and gitleaks can't see it (a bare 20-char
+  alphanumeric matches no rule), so a green secrets gate doesn't cover it.
 
 ## CI
 
