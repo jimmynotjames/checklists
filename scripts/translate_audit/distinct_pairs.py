@@ -52,9 +52,9 @@ DISTINCT_PAIRS: list[tuple[str, str, str]] = [
     (
         "checklist.menu.copyCheckedItems",
         "checklist.menu.duplicateChecklist",
-        "adjacent entries in the same section of the detail screen's overflow menu; German already "
-        "renders Duplicate Checklist as 'Checkliste kopieren', so a Copy sibling collides without "
-        "guidance — one copies the whole list, the other only the ticked items, into another list",
+        "adjacent entries in the same section of the detail screen's overflow menu, and many "
+        "languages use one verb for duplicate and copy — one copies the whole list, the other only "
+        "the ticked items, into another list",
     ),
     (
         "checklist.menu.duplicateChecklist",
