@@ -2,9 +2,6 @@
 """
 Read-only inspector for scripts/translate_catalog/glossary.json.
 
-Replaces the recurring ad-hoc `python3 -c "import json; g=json.load(...)"`
-one-liners used to poke at the translation glossary. Pure read-only.
-
 Glossary shape: {"meta": {...}, "protected": [...], "terms": {TERM: {
   "context", "en", "partOfSpeech", "sourceKeys", "translations": {locale: str}}}}.
 
@@ -28,7 +25,6 @@ import json
 import sys
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
 GLOSSARY_PATH = Path(__file__).resolve().parent / "glossary.json"
 
 

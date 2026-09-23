@@ -2,9 +2,9 @@
 """
 Deterministic cross-key terminology consistency check for Localizable.xcstrings.
 
-Many English strings are reused across multiple keys ("Cancel" under 8 keys,
-"Add Funds" under 2, ...). Nothing in the translate pipeline guarantees that two
-keys with identical English get the *same* translation, so they drift. This script
+Some English strings are reused across keys ("Share Anonymous Usage Data"). Nothing
+in the translate pipeline guarantees that two keys with identical English get the
+*same* translation, so they drift. This script
 finds that drift — no LLM, no cost — and (optionally) emits a re-translation manifest
 for the divergent set so the glossary-aware translate flow can converge them.
 
@@ -13,14 +13,12 @@ It is the deterministic complement to the LLM `consistency` finding the auditor
 
 How it works:
   - Group translatable keys by their *normalized* English value (casefold + collapsed
-    whitespace) so "Add Funds" and "Add funds" land in one group.
+    whitespace) so "Reset All" and "Reset all" land in one group.
   - For each group with >= --min-keys keys, for each locale, collect the distinct
     current translations across those keys. More than one distinct value = a divergence.
   - Classify: `word-choice` (the translations differ even after casefold — a real
     inconsistency) vs `casing-only` (they match after casefold — often legitimate when
     the English itself is cased differently by context, e.g. a title vs a sentence).
-
-Reuses scripts/translate_catalog/{locales.py, extract.py} via import (no duplication).
 
 Usage:
   python3 scripts/translate_audit/consistency_check.py [options] [locale ...]
@@ -30,7 +28,7 @@ Usage:
   --json              machine-readable output
   --write-manifest    write tmp/translate-inputs/{manifest,source}.json for every key in a
                       divergent group (per locale), in the shape extract.py --missing produces,
-                      so the translate-new-strings flow (now glossary-aware) re-converges them
+                      so the translate-new-strings flow re-converges them
   locale ...          restrict to these locales (default: all in locales.py)
 
 Exit code: 0 if no divergences (at/above the active filter), else 1.
@@ -50,7 +48,6 @@ sys.path.insert(0, str(CATALOG_DIR))
 from paths import CATALOG_PATH  # noqa: E402
 TRANSLATE_INPUTS_DIR = REPO_ROOT / "tmp" / "translate-inputs"
 
-sys.path.insert(0, str(CATALOG_DIR))
 from locales import LOCALES  # noqa: E402
 from extract import extract_format_specifiers  # noqa: E402
 

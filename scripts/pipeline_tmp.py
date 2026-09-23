@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Inspect or clear the gitignored ``tmp/`` working directories used by the
-localization fan-out pipelines (translate / metadata / screenshot-content /
-their audits / the size-check). These dirs hold per-locale prompt and output
+localization fan-out pipelines (translate / metadata / their audits / the
+size-check). These dirs hold per-locale prompt and output
 files.
 
 Why this exists: the merge/validate steps read **every** file in an outputs dir,
@@ -24,7 +24,6 @@ GROUPs (default: all):
   translate            in-app strings        (translate-new-strings skill)
   translate-audit      translation QA audit  (audit-translations skill)
   metadata             App Store metadata    (appstore-translate-metadata skill)
-  screenshot-content   screenshot demo data  (appstore-screenshot-content skill)
   size-check           large-type captures   (translation-accessibility-size-check skill)
   all                  every group above
 """
@@ -40,8 +39,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 TMP = REPO_ROOT / "tmp"
 
 # Each group -> the tmp/ subdirectory names it owns. Keep in sync with the
-# *_DIR constants in scripts/{translate_catalog,translate_audit,translate_metadata,
-# screenshot_content}/*.py and translation-accessibility-size-check/run.sh.
+# *_DIR constants in scripts/{translate_catalog,translate_audit,translate_metadata}/*.py
+# and translation-accessibility-size-check/run.sh.
 GROUPS: dict[str, list[str]] = {
     "translate": [
         "translate-inputs",
@@ -60,11 +59,6 @@ GROUPS: dict[str, list[str]] = {
         "metadata-outputs",
         "metadata-audit-prompts",
         "metadata-audit-outputs",
-    ],
-    "screenshot-content": [
-        "screenshot-content-inputs",
-        "screenshot-content-prompts",
-        "screenshot-content-outputs",
     ],
     "size-check": [
         "loc-size-check",

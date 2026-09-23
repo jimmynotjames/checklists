@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Convert existing flat keys in Localizable.xcstrings into **plural** keys (CLDR
-`variations.plural`), so count-dependent strings like "%lld logged expense(s)" get
+`variations.plural`), so count-dependent strings like "%lld item(s)" get
 grammatically correct forms in every language.
 
 For each key you pass, this sets the English (`en`) localization to a
@@ -34,7 +34,6 @@ import json
 import sys
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).parent))
 from paths import CATALOG_PATH  # noqa: E402
 from extract import CLDR_CATEGORIES  # noqa: E402

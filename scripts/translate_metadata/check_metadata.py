@@ -3,18 +3,22 @@
 Authoritative pre-submit gate for App Store metadata translations.
 
 Walks the fastlane/metadata/ tree directly (not the tmp/ intermediates) and
-verifies two invariants:
+verifies three invariants:
 
   1. For every translatable field the en-US source has authored (non-empty), every
-     target storefront has a non-empty .txt file within the character limit.
+     target storefront has a non-empty .txt file within the limit (UTF-8 bytes for
+     `keywords`, characters otherwise).
 
-  2. For every translatable field that is blank in en-US, every target storefront
-     also has an empty (or absent) .txt file. A non-empty translation for a blank
-     source field means merge.py's clear step did not run; fix with `merge.py`.
+  2. For every translatable field that is blank or absent in en-US, no target
+     storefront has content for it.
 
-Also verifies the passthrough URL files exist per storefront when en-US has them.
+  3. No locale folder (en-US or a target) holds an empty or whitespace-only .txt,
+     which `appstore_metadata.py prepare` rejects. Delete the file instead.
 
-Exits 0 if the metadata tree satisfies both invariants; 1 otherwise.
+Also verifies the passthrough files (name and URLs) exist per storefront when en-US
+has them.
+
+Exits 0 if the metadata tree satisfies all three invariants; 1 otherwise.
 This is the metadata analogue of scripts/check_translations.py.
 
 Usage:
@@ -50,6 +54,16 @@ def read_field(locale: str, field: str) -> str:
     if not path.exists():
         return ""
     return path.read_text(encoding="utf-8").strip()
+
+
+def empty_files(locales: list[str]) -> list[Path]:
+    """Every whitespace-only .txt in these locale folders, which prepare rejects."""
+    found: list[Path] = []
+    for locale in locales:
+        folder = METADATA_DIR / locale
+        if folder.is_dir():
+            found.extend(p for p in sorted(folder.glob("*.txt")) if not p.read_text(encoding="utf-8").strip())
+    return found
 
 
 def assert_registry_matches_fastlane() -> None:
@@ -97,7 +111,11 @@ def main(argv: list[str]) -> int:
     # which is the bare brand for this app.
     source_passthrough = [f for f in PASSTHROUGH_FIELDS if read_field(SOURCE_LOCALE, f)]
 
-    issues: list[str] = []
+    issues: list[str] = [
+        f"  EMPTY    {path.relative_to(METADATA_DIR)}: empty file — delete it "
+        "(prepare rejects explicit empty values)"
+        for path in empty_files([SOURCE_LOCALE, *STOREFRONT_LOCALES])
+    ]
     for storefront in STOREFRONT_LOCALES:
         for field in source_fields:
             value = read_field(storefront, field)
@@ -120,7 +138,7 @@ def main(argv: list[str]) -> int:
             if read_field(storefront, field):
                 issues.append(
                     f"  NOTEMPTY [{storefront}] {field}: source is blank but translation has content"
-                    " — run merge.py to clear"
+                    " — run merge.py to delete it"
                 )
         for field in source_passthrough:
             if not read_field(storefront, field):

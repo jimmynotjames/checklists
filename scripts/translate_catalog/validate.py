@@ -2,13 +2,18 @@
 """
 Validate per-locale translation JSON files against the source.
 
-Checks each tmp/translate-outputs/{locale}.json file:
-  1. File exists and parses as valid JSON.
-  2. Every key present in source.json is present in the output.
+Checks the union of tmp/translate-outputs/{locale}.json and {locale}.sample.json.
+Errors:
+  1. At least one file exists, and each parses as valid JSON.
+  2. Every key present in source.json is present in the output (unless --subset).
   3. The multiset of format specifiers in each translation equals the source's.
   4. Value is non-empty.
-  5. For non-en-* locales, the value is NOT byte-equal to the English source
-     (catches silent translation failures).
+  5. A plural key comes back as a CLDR-category object with a non-empty `other`,
+     no unknown categories, and matching specifiers in every category.
+  6. No unexpected extra keys (`_`-prefixed and `__note` keys are allowed).
+Warning (does not fail the run):
+  7. For non-en-* locales, the value is byte-equal to the English source
+     (a loanword, or a silent translation failure).
 
 Exits with code 0 only if all locales pass. Prints a summary table.
 

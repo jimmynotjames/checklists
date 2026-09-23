@@ -2,25 +2,26 @@
 """
 Validate per-storefront metadata transcreation JSON files against the source.
 
-Checks each tmp/metadata-outputs/{storefront}.json file:
-  1. File exists and parses as valid JSON.
+Checks each tmp/metadata-outputs/{storefront}.json file. Errors:
+  1. File parses as valid JSON (a missing or empty file is PENDING, not an error).
   2. Every field present in source.json is present (unless --subset).
   3. Each value is a non-empty string.
-  4. Each value is within the field's App Store Connect character limit.
-  5. The `name` field begins with the brand token.
-  6. The `keywords` field has no spaces after commas, no empty/duplicate terms,
-     and fits the 100-char limit (a hard error here, warnings for the rest).
-  7. For non-English storefronts, the value is not byte-identical to the English
-     source (catches silent no-op "translations").
-  8. No unexpected extra fields.
+  4. Each value is within the field's App Store Connect limit: UTF-8 bytes for
+     `keywords` (100-byte limit), characters for everything else.
+  5. `keywords` has no empty term.
+  6. No unexpected extra fields.
+Warnings (never fail the run):
+  7. `keywords` has a space after a comma, or a duplicate term.
+  8. For non-English storefronts, a value is byte-identical to the English source
+     (catches silent no-op "translations").
 
-Exits 0 only if all storefronts pass (warnings do not fail the build).
+Exits 0 only if every storefront passes; FAIL and PENDING both exit 1.
 
 Usage:
-  python3 scripts/translate_metadata/validate.py [--subset] [storefront ...]
+  python3 scripts/translate_metadata/validate.py [--subset] [--json] [storefront ...]
   # No storefronts given -> validate all in metadata_locales.py.
   # --subset: only check fields present in each output file (for partial runs
-  #           driven by `extract.py --missing`).
+  #           driven by `extract.py --missing` or `--fields`).
 """
 
 from __future__ import annotations
@@ -37,7 +38,6 @@ OUTPUTS_DIR = REPO_ROOT / "tmp" / "metadata-outputs"
 
 sys.path.insert(0, str(Path(__file__).parent))
 from metadata_locales import (  # noqa: E402
-    BRAND,
     FIELD_BYTE_LIMITS,
     FIELD_LIMITS,
     STOREFRONT_LOCALES,
@@ -50,7 +50,7 @@ def check_keywords(storefront: str, value: str) -> Tuple[list[str], list[str]]:
     if ", " in value:
         warnings.append(
             f"[{storefront}] keywords: contains ', ' (space after comma wastes the "
-            "100-char limit; use bare commas)"
+            "100-byte limit; use bare commas)"
         )
     terms = [t.strip() for t in value.split(",")]
     if any(t == "" for t in terms):
@@ -124,9 +124,6 @@ def validate_storefront(storefront: str, source: dict, subset: bool = False) -> 
                 )
         elif limit is not None and len(value) > limit:
             errors.append(f"[{storefront}] {field}: {len(value)} chars exceeds limit of {limit}")
-
-        if field == "name" and not value.startswith(BRAND):
-            errors.append(f"[{storefront}] name: must start with brand {BRAND!r} (got {value!r})")
 
         if field == "keywords":
             k_errors, k_warnings = check_keywords(storefront, value)

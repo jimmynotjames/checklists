@@ -54,7 +54,6 @@ LOCALE_NAMES: dict[str, str] = {row["runtime"]: row["name"] for row in _ROWS}
 
 RUNTIME_TO_STOREFRONT: dict[str, str] = {row["runtime"]: row["storefront"] for row in _ROWS}
 STOREFRONT_TO_RUNTIME: dict[str, str] = {row["storefront"]: row["runtime"] for row in _ROWS}
-REGION_BY_RUNTIME: dict[str, str] = {row["runtime"]: row["region"] for row in _ROWS}
 
 
 if __name__ == "__main__":

@@ -6,9 +6,6 @@ Some keys are only meaningful in contrast with a neighbour. "Discard" sits besid
 "discard" in many languages is the same word as "cancel". A translator who sees one
 key at a time cannot know the two will meet, so the pipeline has to know instead.
 
-The first run of this check found eight locales where the discard alert's two
-buttons read identically, and one where Discard had become Delete.
-
 Usage:
   python3 scripts/translate_audit/distinct_pairs.py            # exit 1 on any collision
   python3 scripts/translate_audit/distinct_pairs.py --json     # machine-readable

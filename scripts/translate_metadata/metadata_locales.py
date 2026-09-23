@@ -12,7 +12,7 @@ SAME markets, but use DIFFERENT locale code systems:
 
 Both code systems, and the mapping between them, come from the locale registry in
 fastlane/screenshot-config.json via locales.py — this module adds only the
-metadata-specific facts (which fields are transcreated, the brand, cultural notes).
+metadata-specific facts (which fields are transcreated, their limits, the brand).
 
 **Field limits are imported from scripts/appstore_metadata.py**, the validator that
 actually gates the upload, so there is exactly one statement of Apple's limits in the
@@ -93,12 +93,6 @@ PASSTHROUGH_FIELDS: list[str] = [
     "marketing_url",
     "privacy_url",
     "support_url",
-]
-
-# Catalog-level (not per-locale). Lives at fastlane/metadata/copyright.txt and is left
-# untouched by this pipeline.
-SHARED_FIELDS: list[str] = [
-    "copyright",
 ]
 
 # Static, field-level guidance injected into every prompt. Explains what each field is
