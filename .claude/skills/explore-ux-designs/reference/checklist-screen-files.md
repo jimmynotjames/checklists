@@ -3,7 +3,10 @@
 | File | Owns visually |
 |---|---|
 | `Screens/ChecklistScreen.swift` | SwiftUI host: safe-area handling, background colour, the embedded `UINavigationController`, the back button. **Always copy this** — it is the preview's entry point. |
-| `ViewControllers/ChecklistViewController.swift` | The screen: table, header layout (status icon / name field / notes), nav-bar buttons, scroll-driven title, keyboard avoidance, drag-reorder. **Almost always copy this.** |
+| `ViewControllers/ChecklistViewController.swift` | The screen: table, nav-bar buttons, scroll-driven title, keyboard avoidance, drag-reorder. **Almost always copy this.** |
+| `ViewControllers/ChecklistViewController+Menu.swift`, `ViewControllers/ChecklistViewController+Strings.swift` | Extensions holding the trailing bar items, overflow menu, and the screen's copy. **Copy both whenever you copy the controller** — the controller calls into them. |
+| `Views/ChecklistInfoHeaderView.swift` | The table header's layout: status ring, name field, notes, history caption. Copy for header redesigns. |
+| `Views/ChecklistHistoryCaption.swift` | The "Last updated / Last completed" caption under the notes. |
 | `Views/ItemContentView.swift` | One item row's interior: checkbox, name, notes, row height animation. Copy for row redesigns. |
 | `Views/ItemTableViewCell.swift` | The cell wrapper pinning `ItemContentView` to `contentView`. Copy only if the cell's own constraints change. |
 | `Views/CircularPercentStatusIcon.swift` | The circular percent ring (`.header` and `.row` sizes), drawn with `CAShapeLayer`. |

@@ -5,8 +5,9 @@ description: "Take GitHub issue #N from report to open PR: implement, fresh-eye 
 
 # Create PR for issue
 
-Takes GitHub issue `#<N>` from report to an open, review-ready PR. The issue number is passed when
-invoking this skill.
+Takes GitHub issue `#<N>` from report to an open, review-ready PR. Branch names, commit messages,
+PR titles and `Closes`/`Refs` linkage follow AGENTS.md §"Commit and PR style". The review, gate and
+PR-body references are in the `create-pr` skill's `reference/review-and-gate.md`.
 
 ## Progress checklist
 
@@ -28,14 +29,10 @@ gh issue view <N>
 ```
 
 Add `--comments` if the thread looks substantive. Restate the problem and your intended fix in a
-sentence or two **before** touching code.
-
-If the issue is ambiguous or you find more than one reasonable fix, surface the options and ask
-before implementing rather than guessing.
+sentence or two **before** touching code. If the issue is ambiguous or has more than one reasonable
+fix, surface the options and ask before implementing.
 
 ### 2. Create a branch
-
-Off the latest `main`:
 
 ```bash
 git checkout main
@@ -43,27 +40,21 @@ git pull --ff-only
 git checkout -b u/jimmyho/<tool>/<short-kebab-description>
 ```
 
-Branch format per AGENTS.md §"Conventions".
-
 ### 3. Implement the fix
 
-Satisfy the cross-cutting checklist **as you implement**, rather than retrofitting it later — see
-the `create-pr` skill's `reference/review-and-gate.md` §"Cross-cutting concerns".
+Satisfy §"Cross-cutting concerns" as you implement, not afterwards.
 
 ### 4. Fresh-eye code review
 
-Stage only the issue changes and commit them using a message file in `tmp/`, following
-AGENTS.md. This makes the implementation visible in the branch diff below.
-
-Get the full branch diff:
+Stage only the issue changes and commit them (`git commit -F tmp/commit-msg.txt`), then get the
+full branch diff:
 
 ```bash
 git diff main..HEAD
 ```
 
-Spawn a fresh-context review subagent with the brief in the `create-pr` skill's
-`reference/review-and-gate.md` §"Reviewer brief" plus the diff above. Fix High and real-bug Medium
-findings in one pass; skip Low.
+Spawn a fresh-context review subagent with §"Reviewer brief" plus the diff. Fix High and real-bug
+Medium findings in one pass; skip Low.
 
 ### 5. Run the gate
 
@@ -72,29 +63,19 @@ PR until green (on failure read `tmp/gate.log`).
 
 ### 6. Push and open the PR
 
-Commit any review or gate fixes using specific paths and a message file in `tmp/` before pushing.
+Commit any review or gate fixes, then:
 
 ```bash
 git push -u origin <branch-name>
 ```
 
-Write the PR body to `tmp/pr-body.md` using the available file-editing tool (never inline `--body` — see
-AGENTS.md §"Commit and PR style"), following `.github/pull_request_template.md`. Issue linkage:
-
-- **`Closes #<N>`** — complete fix (auto-closes on squash-merge)
-- **`Refs #<N>`** — partial fix; note what's still pending
-
-Body length scales with the change, but its content doesn't — **Test plan** honesty included: the
-`create-pr` skill's `reference/review-and-gate.md` §"Gate and PR body".
-
-Create the PR:
+Write `tmp/pr-body.md` following `.github/pull_request_template.md`, with `Closes #<N>` for a
+complete fix or `Refs #<N>` plus what's still pending for a partial one. Test-plan honesty:
+§"Gate and PR body".
 
 ```bash
 gh pr create --title "<Past-tense subject>" --body-file tmp/pr-body.md
 ```
-
-PR title: past-tense verb, sentence case, ends with a period, ≤72 chars, no conventional-commit
-prefix (AGENTS.md §"Commit and PR style").
 
 Report the PR URL and a one-line summary. **Stop — do not merge.**
 
@@ -106,5 +87,4 @@ user's call; or a SwiftData model change lacks its schema/migration/test triad.
 ## What this skill does NOT do
 
 - **Does not run tests** — see the `create-pr` skill's closing section.
-- **Does not replace `/create-pr`.** Use `create-pr` when code is already written and no issue drives
-  the work.
+- **Does not replace `/create-pr`**, which is for code already written with no issue.

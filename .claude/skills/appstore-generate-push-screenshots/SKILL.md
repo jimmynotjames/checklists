@@ -5,7 +5,7 @@ description: "Capture and review App Store screenshots locally, inspect existing
 
 # Capture and publish screenshots
 
-The workflow captures two screens per locale across the 50 active locales.
+The workflow captures two screens per active locale.
 A full run is serial and takes hours, so it is release-time work and is
 resumable by `run_id`; use a `locales:` subset while iterating. Run commands
 from the repository root. Read `fastlane/SETUP.md` and
@@ -50,7 +50,7 @@ or release record. If either is ambiguous, ask before changing ASC. Use the
 `fastlane/SETUP.md` for exact options. It validates local artifacts first, then
 requires the matching existing editable version and existing listing locales.
 
-A reviewed run covers every active locale, which is now all 50. `locales:` takes
+A reviewed run covers every active locale. `locales:` takes
 a subset of **runtime** codes, not storefront codes, for a spot check or a
 retry. Before any `push_screenshots`, open the run's `review.html` and look
 specifically at right-to-left layout in `ar`, `he`, and `ur`, at glyph rendering
