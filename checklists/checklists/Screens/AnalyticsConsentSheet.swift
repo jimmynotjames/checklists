@@ -6,11 +6,11 @@
 import SwiftUI
 
 /// First-run analytics consent sheet, shown once in strict-opt-in jurisdictions on the first
-/// pushed `checklist_viewed` (core-docs/analytics-spec.md §6.2) — see the trigger guard in
-/// `ChecklistScreen`.
+/// pushed `checklist_viewed` (`analytics-spec.md §Strict-opt-in jurisdictions`) — see the trigger
+/// guard in `ChecklistScreen`.
 ///
-/// Accept and decline both route through `AnalyticsConsentController` so the ordering §6.3
-/// requires is exercised by the same code the contract tests run against.
+/// Accept and decline both route through `AnalyticsConsentController` so the ordering
+/// `analytics-spec.md §Toggle-off behaviour` requires is exercised by the same code the contract tests run against.
 struct AnalyticsConsentSheet: View {
   @Environment(AnalyticsSettings.self) private var settings
   @Environment(\.analytics) private var analytics
@@ -105,7 +105,7 @@ struct AnalyticsConsentSheet: View {
       .appBackground()
       .navigationBarTitleDisplayMode(.inline)
     }
-    // Swipe-to-dismiss is a decline (§6.3): without this, a swipe would leave the choice
+    // Swipe-to-dismiss is a decline (`analytics-spec.md §Toggle-off behaviour`): without this, a swipe would leave the choice
     // unmade and the sheet would re-present on every checklist open.
     .onDisappear {
       if !settings.analyticsOptInExplicitlySet {

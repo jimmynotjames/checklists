@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// The toast card itself, with no opinion about where it sits or how long it lives —
-/// `ToastPresenterModifier` owns both.
+/// The toast card itself, with no opinion about where it sits (`ToastPresenterModifier`) or how
+/// long it lives (`ToastPresenter`).
 ///
 /// Dark on a light-only app, matching `MainMenuView`'s surface: it separates from the content
 /// underneath on its own, where a light card would lean entirely on its shadow to do that.
@@ -34,7 +34,7 @@ struct ToastView: View {
       }
       // On this group rather than the whole card. A gesture on an ancestor of the button fires
       // *as well as* the button, and its dismissal lands after the handler — clearing any toast
-      // the handler raised. Confirmed on device, not theorised.
+      // the handler raised.
       .contentShape(Rectangle())
       .onTapGesture(perform: onDismiss)
 

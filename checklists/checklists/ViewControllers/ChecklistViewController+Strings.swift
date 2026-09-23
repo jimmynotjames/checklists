@@ -67,7 +67,7 @@ extension ChecklistViewController {
     localized: "checklist.menu.discardChecklist",
     defaultValue: "Discard Checklist",
     comment: """
-    Overflow-menu entry on the new-checklist sheet that throws the unsaved checklist away. \
+    Overflow-menu entry on the new-checklist sheet that throws away a checklist never kept. \
     Destructive; a confirmation follows. It must read differently from the Delete Checklist \
     entry, which removes a kept list: this one abandons something never kept.
     """

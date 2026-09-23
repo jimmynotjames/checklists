@@ -10,8 +10,8 @@ import UIKit
 ///
 /// Kept as a UIKit wrapper rather than redrawn natively in SwiftUI because
 /// `CircularPercentStatusIcon` is shared with the still-UIKit `ChecklistViewController`'s
-/// header icon — one implementation, one place the ring-drawing math and the
-/// accessibility value ("Checklist X percent complete") can drift out of sync.
+/// header icon — one implementation, so the ring-drawing math and the accessibility value
+/// ("Checklist X percent complete") cannot drift apart between the two screens.
 struct StatusIconView: UIViewRepresentable {
   var percentageComplete: CGFloat
   var iconType: CircularPercentStatusIcon.IconType = .row

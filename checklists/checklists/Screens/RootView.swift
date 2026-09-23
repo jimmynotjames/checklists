@@ -7,8 +7,8 @@ import SwiftData
 import SwiftUI
 
 /// The app's main scene once startup has succeeded: the checklists list inside a
-/// `NavigationStack`, with the main menu layered above it and sheets for
-/// Settings and the new-checklist flow. Modeled on `simple-recurring-budgets`'s `RootView`.
+/// `NavigationStack`, with the main menu layered above it and the router's sheets presented over
+/// it.
 struct RootView: View {
   @Environment(Router.self) private var router
   @Environment(\.modelContext) private var context
@@ -73,9 +73,7 @@ struct RootView: View {
         // large-type check would silently photograph settings at the default size.
       .modifier(TestDynamicTypeOverride())
       #endif
-      // A sheet is presented outside the root overlay's hierarchy, so a toast raised while one
-      // is up can only be drawn from in here. The root layer stands down for the duration, so
-      // only one of the two ever draws.
+      // The sheet's own toast layer; see `ToastPresenterModifier`.
       .toastOverlay()
     }
   }

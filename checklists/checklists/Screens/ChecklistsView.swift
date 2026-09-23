@@ -58,11 +58,9 @@ struct ChecklistsView: View {
         // Lets the screen's background show through instead of the system's row fill.
         .listRowBackground(Color.clear)
         .swipeActions(edge: .trailing) {
-          // Deliberately NOT `role: .destructive`: a full swipe on a destructive action
-          // optimistically animates the row away before any model change, but this action only
-          // records intent — the delete itself waits for the confirmation alert. A cancelled
-          // confirmation must leave the row visible, so the red comes from an explicit tint
-          // instead of the role.
+          // Deliberately NOT `role: .destructive`: a full swipe on one animates the row away
+          // before the confirmation alert, and a cancelled confirmation must leave the row
+          // visible. The red comes from an explicit tint instead.
           Button {
             pendingDeleteID = checklist.id
           } label: {
@@ -72,14 +70,13 @@ struct ChecklistsView: View {
               .labelStyle(.iconOnly)
           }
           .tint(Colors.destructiveColor)
-          // Locale-invariant handle: the localized large-type check cannot match
-          // the label text across 13 languages, and positional lookup on the
-          // revealed buttons is not reliable straight after the swipe.
+          // Locale-invariant handle for `translation-accessibility-size-check`, which cannot
+          // match localized label text, and positional lookup on the revealed buttons is not
+          // reliable straight after the swipe.
           .accessibilityIdentifier("checklistRow.delete")
 
-          // Declared after Delete, so Delete keeps the outer edge and the full-swipe slot it has
-          // today. Unconfirmed, unlike its neighbour: a copy takes nothing away, and the way to
-          // undo one is to delete it.
+          // Declared after Delete, so Delete keeps the outer edge and the full-swipe slot.
+          // Unconfirmed: a copy takes nothing away, and the way to undo one is to delete it.
           Button {
             duplicate(checklist: checklist)
           } label: {
@@ -113,8 +110,8 @@ struct ChecklistsView: View {
           defaultValue: "Miscellaneous Menu",
           comment: "VoiceOver label for the toolbar button that opens the main menu (feedback, rating, settings)."
         ))
-        // Locale-invariant handle for the localized large-type check, which
-        // cannot navigate by visible text across 13 languages.
+        // Locale-invariant handle for `translation-accessibility-size-check`, which cannot
+        // navigate by localized visible text.
         .accessibilityIdentifier("toolbar.mainMenu")
       }
 
@@ -193,7 +190,7 @@ struct ChecklistsView: View {
       addChecklist()
     } label: {
       // Deliberately 60pt across, with a 10pt inset around the icon and a gray shadow at 40%
-      // opacity, radius 3, offset 2pt down: matches the pre-SwiftUI design (see PR #136).
+      // opacity, radius 3, offset 2pt down.
       Image("AddChecklistIcon")
         .resizable()
         .scaledToFit()
@@ -230,7 +227,7 @@ struct ChecklistsView: View {
   // MARK: - Reordering
 
   /// - Note: `@Query` re-derives order from the store, so the list can never show an order the
-  ///   context doesn't hold — the desync class in issue #132 is structurally impossible here.
+  ///   context doesn't hold.
   private func move(from source: IndexSet, to destination: Int) {
     guard let sourceIndex = source.first else { return }
     // SwiftUI hands over an insertion offset in the list *as it stands*; `move(checklist:among:to:)`
@@ -260,7 +257,7 @@ struct ChecklistsView: View {
   )
 
   /// Resolves the pending delete by `id`, not by row. The alert is answered asynchronously, and
-  /// once sync is on a merge can reorder the list while it is up — at which point a captured
+  /// a sync merge can reorder the list while it is up — at which point a captured
   /// index would name a different checklist and this would silently delete the wrong one.
   private func confirmDelete(id checklistId: String) {
     // `nil` means it is already gone — deleted on another device while the alert was up.

@@ -32,9 +32,10 @@ class CircularPercentStatusIcon: UIView {
 
   /// The icon's whole VoiceOver announcement, as a value rather than a label — see `commonInit`.
   ///
-  /// Exposed as a static so the string has one definition: the icon itself announces it, and
-  /// `ChecklistRowView` declares the same text on the SwiftUI row that hosts the icon rather than
-  /// restating the format there.
+  /// Static so a SwiftUI host can declare the same text: a `Button` row folds its content into one
+  /// element whose value is whatever the merge picks up from the hosted UIView, so
+  /// `ChecklistRowView` states it explicitly. Only the value — the grouping stays, because
+  /// `checklistUITest` addresses the icon and the notes label as elements inside the row.
   static func accessibilityValueText(forPercentageComplete percentageComplete: CGFloat) -> String {
     // Locale-aware percent: "18%" in English, "18 %" in French, "%18" in Turkish.
     let percent = Double(percentageComplete).formatted(.percent.precision(.fractionLength(0)))

@@ -35,21 +35,16 @@ class ChecklistViewController: UIViewController {
   var onRequestOpenDuplicate: ((String) -> Void)?
 
   /// Set by the SwiftUI host (`ChecklistScreen`). Called with *this* checklist's `id` when the
-  /// overflow menu's copy entry is tapped, for the host to present the destination picker. The
-  /// copy itself happens there, not here: picking the destination, naming a new list and writing
-  /// the items are one decision, and splitting them across a sheet and this controller would mean
-  /// handing a closure through the router's `SheetRoute`, which carries values only. Unset means
-  /// the entry does nothing, which is what a pure-UIKit presentation gets.
+  /// overflow menu's copy entry is tapped, for the host to present the destination picker, which
+  /// does the copying (see `CopyCheckedItemsView`). Unset means the entry does nothing.
   var onRequestCopyCheckedItems: ((String) -> Void)?
 
   /// The overflow menu's bar item, kept so its menu can be rebuilt while it is on screen — the one
   /// way UIKit offers to change a menu that is already presented.
   var moreBarButtonItem: UIBarButtonItem?
 
-  /// Whether the overflow menu is currently showing "No checked items." under the copy entry.
-  ///
-  /// Retired on a timer rather than when the menu closes, which a bar-button menu does not report.
-  /// See `showNoItemsCheckedNotice`.
+  /// Whether the overflow menu is currently showing "No checked items." under the copy entry. See
+  /// `showNoItemsCheckedNotice`.
   var showsNoItemsCheckedNotice = false
 
   /// The one scheduled retirement of that notice, held so a second tap can restart it.
@@ -90,18 +85,10 @@ class ChecklistViewController: UIViewController {
   /// How far down the list must be dragged before an in-progress edit is committed.
   private let keyboardDismissDragThreshold: CGFloat = 40.0
 
-  /// The store this screen reads and writes. Set by the SwiftUI host (`ChecklistScreen`) from
-  /// `\.modelContext` — the same context it resolved `checklist` out of, which the two must always
-  /// share.
-  ///
-  /// Implicitly unwrapped because there is no safe default, and unlike `checklist` — which
-  /// `viewDidLoad` dereferences unconditionally — nothing here fails on the first frame. A screen
-  /// whose checklist already has items loads and renders without it, then traps on whatever
-  /// touches the store first: an edit, or a merge arriving through `handleRemoteChange`. Set it
-  /// right after `init()`, alongside `checklist`; behavior is undefined if it is set or reset
-  /// after `viewDidLoad()`.
-  ///
-  /// Internal rather than private so `ChecklistViewController+Menu` can reach it.
+  /// The store this screen reads and writes: the context `checklist` was resolved from. Set right
+  /// after `init()`, alongside `checklist`; behavior is undefined if set or reset after
+  /// `viewDidLoad()`. There is no safe default, and a missed injection doesn't fail on the first
+  /// frame — it traps on the first edit or remote merge.
   var context: ModelContext!
 
   /// False only on the create sheet, where both caption lines could only ever read "Never".
@@ -319,7 +306,7 @@ class ChecklistViewController: UIViewController {
   }
 
   /// The table's resting offset at the top. Zero only when nothing is inset above the content;
-  /// under the navigation bar the top is the negative of the adjusted inset (#145).
+  /// under the navigation bar the top is the negative of the adjusted inset.
   private var topContentOffset: CGPoint {
     CGPoint(x: 0.0, y: -tableView.adjustedContentInset.top)
   }
@@ -362,7 +349,7 @@ class ChecklistViewController: UIViewController {
       if success {
         let indexPath = IndexPath(row: index, section: itemsSection)
         guard let cell = self.tableView.cellForRow(at: indexPath) as? ItemTableViewCell else { assertionFailure(); return }
-        // Explicit scroll needed: becomeFirstResponder alone doesn't reliably scroll the new row into view (#97).
+        // Explicit scroll needed: becomeFirstResponder alone doesn't reliably scroll the new row into view.
         self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
         cell.itemContentView.startEditing()
       }
@@ -408,8 +395,7 @@ class ChecklistViewController: UIViewController {
   /// `ModelContext.duplicate(item:in:)` — unlike checklist duplication, the name carries over
   /// unchanged.
   func duplicateItem(at index: Int) {
-    // Commits any in-progress edit first, or the copy would be taken from stale, uncommitted
-    // text — the same reason `duplicateChecklist()` ends editing before copying.
+    // Commits in-progress edits first; see `duplicateChecklist`.
     view.endEditing(true)
     let items = checklist.items
     guard index >= 0, index < items.count else { assertionFailure(); return }
@@ -567,7 +553,7 @@ extension ChecklistViewController: UIScrollViewDelegate {
     }
     // Measured from the table's real top rather than a literal zero, so the threshold below means
     // the distance actually scrolled: `52.0` clears the name field, which sits at 22-54 in the
-    // header (#145).
+    // header.
     let scrolledY: CGFloat = scrollView.contentOffset.y + scrollView.adjustedContentInset.top
     let thresholdY: CGFloat = 52.0
 
@@ -604,7 +590,7 @@ extension ChecklistViewController {
     keyboardHeight += 20.0 // On iPhone 8-style resolutions, it doesn't scroll up quite enough, so adding this in, even though iPhone X-style goes up a tad more than I'd like.
 
     // `cell.frame` below is in the table's content space; `tableView.frame` is in its superview's,
-    // and the two only line up at a content offset of zero (#145). `bounds` is content space, so
+    // and the two only line up at a content offset of zero. `bounds` is content space, so
     // inset it by the bar above and the keyboard below to get the genuinely visible slice.
     let visibleFrame = tableView.bounds.inset(by: UIEdgeInsets(
       top: tableView.adjustedContentInset.top,
@@ -718,10 +704,8 @@ extension ChecklistViewController: UITableViewDropDelegate {
 
   func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
     // `coordinator.destinationIndexPath` is nil when the drop lands past the last row (e.g. the user
-    // drags below the bottom of the list). The clamp to `count - 1` (the last valid index) is still
-    // required, but the reason has moved: the sort-key reorder below handles one-past-the-end fine
-    // — it just appends — whereas `tableView.moveRow` would be given an out-of-range index path.
-    // Clamping keeps both agreeing that the drop means "move to the end."
+    // drags below the bottom of the list). Clamped to `count - 1` because `tableView.moveRow` would
+    // otherwise get an out-of-range index path; the sort-key reorder would append either way.
     let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(row: checklist.items.count - 1, section: itemsSection)
     assert(coordinator.items.count == 1)
     guard let dropItem = coordinator.items.first else { assertionFailure(); return }
@@ -815,7 +799,7 @@ extension ChecklistViewController: ItemContentViewDelegate {
       UIView.animate(withDuration: 0.05, animations: {
         self.tableView.scrollToRow(at: nextNextIndexPath, at: .top, animated: true)
       }, completion: { success in
-        // Wait until animation completes, otherwise, when user taps backspace lots and fast, we get crashes from Realm due to double-deleting stuff.
+        // Wait until animation completes, otherwise, when user taps backspace lots and fast, we risk double-deleting stuff.
         if success {
           nextCellActionBlock()
         }

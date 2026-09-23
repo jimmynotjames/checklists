@@ -33,7 +33,7 @@ struct SettingsView: View {
           .tint(Color.accentColor)
         }
       }
-      // Two independent `.task`s, each auto-cancelled by SwiftUI when the sheet is dismissed,
+      // Independent `.task`s, each auto-cancelled by SwiftUI when the sheet is dismissed,
       // so there's no manual task lifecycle to start and stop here.
       .task {
         await ICloudStatusLoader().load(into: syncStatus)

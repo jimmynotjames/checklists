@@ -19,10 +19,8 @@ extension Colors {
 }
 
 extension View {
-  /// Applies the app's standard page background to a screen.
-  ///
-  /// Minimal by design, unlike `simple-recurring-budgets`'s `appBackground()`: this app has no
-  /// custom nav-bar background requirement, so there's no `toolbarBackground` call to make here.
+  /// Applies the app's standard page background to a screen. No `toolbarBackground`: this app has
+  /// no custom nav-bar background.
   func appBackground() -> some View {
     scrollContentBackground(.hidden)
       .background(Colors.defaultBackgroundColor.ignoresSafeArea())

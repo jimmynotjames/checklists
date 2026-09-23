@@ -9,7 +9,7 @@ import UIKit
 /// Shown while the one-time copy out of the old Realm store runs.
 ///
 /// Only ever appears on the single launch after an upgrade from a Realm build. Every other launch
-/// installs the checklist list directly, exactly as before.
+/// installs the checklist list directly.
 struct LoadingView: View {
   private let showsCloudSyncNote: Bool
 

@@ -9,7 +9,7 @@ import UIKit
 ///
 /// Owns its subviews and their constraints; the view controller sets delegates and model text.
 /// Frame-driven at its top level like `AddItemButtonTableFooterView` — the table positions both by
-/// frame, and `resizeTableHeaderToFit` keeps that frame right.
+/// frame, and `resize(in:)` keeps that frame right.
 final class ChecklistInfoHeaderView: UIView {
   let statusIcon = CircularPercentStatusIcon(iconType: .header)
   let nameTextField = CLTextField()
