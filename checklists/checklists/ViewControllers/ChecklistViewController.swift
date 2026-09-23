@@ -85,10 +85,9 @@ class ChecklistViewController: UIViewController {
   /// How far down the list must be dragged before an in-progress edit is committed.
   private let keyboardDismissDragThreshold: CGFloat = 40.0
 
-  /// The store this screen reads and writes: the context `checklist` was resolved from. Set right
-  /// after `init()`, alongside `checklist`; behavior is undefined if set or reset after
-  /// `viewDidLoad()`. There is no safe default, and a missed injection doesn't fail on the first
-  /// frame — it traps on the first edit or remote merge.
+  /// The store this screen reads and writes: the context `checklist` was resolved from. Same
+  /// lifetime rule as `checklist`. There is no safe default, and a missed injection only traps in
+  /// `viewDidLoad` for an empty checklist; otherwise it traps on the first edit or remote merge.
   var context: ModelContext!
 
   /// False only on the create sheet, where both caption lines could only ever read "Never".

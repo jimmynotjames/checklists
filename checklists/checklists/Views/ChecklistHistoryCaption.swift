@@ -11,8 +11,8 @@ import UIKit
 /// Not `nonisolated` (AGENTS.md §Concurrency): it touches `UIView` and a cached `DateFormatter`,
 /// neither of which is `Sendable`.
 ///
-/// What each line means and which actions move it are in `persistence-design.md §The two history
-/// stamps`.
+/// What each line means and which actions move it:
+/// `persistence-design.md §The two history stamps`.
 enum ChecklistHistoryCaption {
   private static let dateFormatter: DateFormatter = {
     let formatter = DateFormatter()

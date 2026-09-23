@@ -136,10 +136,11 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   }
 
   /// `checklist` and `context` are set once, before `viewDidLoad`, and never re-applied: the
-  /// controller has already written through that context and `checklist` is owned by it. A new
-  /// container can only arrive across `ChecklistsApp`'s `.ready`/`.failed` switch, which rebuilds
-  /// this view anyway; the assertion is the tripwire if that stops being true. The analytics client
-  /// and rating prompt are re-applied so a swapped client never leaves a screen on the old one.
+  /// controller's remote-change observer and any rows it inserted belong to that context, and so
+  /// does `checklist`. A new container can only arrive across `ChecklistsApp`'s `.ready`/`.failed`
+  /// switch, which rebuilds this view anyway; the assertion is the tripwire if that stops being
+  /// true. The analytics client and rating-prompt coordinator are re-applied so a swapped instance
+  /// never leaves a screen on the old one.
   func updateUIViewController(_ navigationController: UINavigationController, context _: Context) {
     guard let viewController = navigationController.viewControllers.first as? ChecklistViewController else { return }
     assert(viewController.context === modelContext, "The screen's context changed under a live controller.")

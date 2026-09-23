@@ -189,8 +189,6 @@ struct ChecklistsView: View {
     Button {
       addChecklist()
     } label: {
-      // Deliberately 60pt across, with a 10pt inset around the icon and a gray shadow at 40%
-      // opacity, radius 3, offset 2pt down.
       Image("AddChecklistIcon")
         .resizable()
         .scaledToFit()

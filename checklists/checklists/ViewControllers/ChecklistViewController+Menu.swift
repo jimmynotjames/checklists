@@ -8,8 +8,8 @@ import UIKit
 /// The trailing navigation items, the overflow menu, the actions behind it, and the dismissal
 /// the destructive one shares with the remote-deletion path.
 ///
-/// The menu actions are internal so a test can invoke them: a `UIAction` handler cannot be fired
-/// directly.
+/// `duplicateChecklist` and `deleteChecklist` are internal so a test can invoke them: a `UIAction`
+/// handler cannot be fired directly.
 extension ChecklistViewController {
   /// Picks the menu's wording for this screen's mode and builds the trailing bar items. The create
   /// sheet gets Done, an existing checklist gets Reset; both get the overflow menu at the outer edge.
