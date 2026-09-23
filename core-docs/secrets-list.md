@@ -59,7 +59,7 @@ control, or logs.
 
 `Secrets.xcconfig` is the tracked base (safe placeholders, optional `#include?` of the local file);
 `Secrets.local.xcconfig.template` is a scaffold to copy — Xcode never reads the template. Full
-resolution chain: [`analytics-spec.md`](analytics-spec.md) §10.
+resolution chain: [`analytics-spec.md`](analytics-spec.md) §Build hygiene.
 
 ## Keeping this inventory current
 
