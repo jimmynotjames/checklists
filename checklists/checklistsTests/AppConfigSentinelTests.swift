@@ -13,7 +13,7 @@ import Testing
 /// `config/Secrets.xcconfig`, `AppConfig.Placeholder`, and `scripts/verify_release_secrets.sh`.
 /// A test target cannot read the xcconfig or the shell script, so this covers the half it can:
 /// that the Swift constants exist, are distinct, and can never be mistaken for a real token.
-/// The other two are held together by review and by the spec (core-docs/analytics-spec.md §10).
+/// The other two are held together by review and by the spec (core-docs/analytics-spec.md §Build hygiene).
 @Suite("AppConfig sentinel and token validity")
 struct AppConfigSentinelTests {
   // MARK: - Sentinels

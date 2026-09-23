@@ -114,7 +114,7 @@ struct StoreResetTests {
     }
   }
 
-  /// A data reset is not a consent withdrawal (core-docs/analytics-spec.md §5). Silently
+  /// A data reset is not a consent withdrawal (core-docs/analytics-spec.md §Identity). Silently
   /// re-prompting someone who already declined would be worse than keeping the decision, so
   /// the analytics keys must survive even though everything else in this suite is cleared.
   @Test("does not remove the analytics keys")

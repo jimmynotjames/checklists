@@ -7,7 +7,7 @@
 import Testing
 
 /// Exercises `AnalyticsConsentController` against the **real** controller and a spy client, so
-/// the ordering contract in core-docs/analytics-spec.md §6.3 is asserted against production
+/// the ordering contract in core-docs/analytics-spec.md §Toggle-off behaviour is asserted against production
 /// code rather than re-simulated inside the test body.
 @Suite("Analytics consent controller")
 struct AnalyticsConsentControllerTests {

@@ -8,7 +8,7 @@ import Foundation
 import Testing
 
 /// Covers `AnalyticsSettings`'s locale-aware opt-in default, its non-persistence, the explicit
-/// override, and the stable, once-generated `distinct_id` (core-docs/analytics-spec.md §5, §6).
+/// override, and the stable, once-generated `distinct_id` (core-docs/analytics-spec.md §Identity, §Consent).
 @Suite("Analytics settings")
 struct AnalyticsSettingsTests {
   /// The exact jurisdiction lookup `AnalyticsSettings` itself uses. Comparing against it, rather

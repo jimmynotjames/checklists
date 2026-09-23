@@ -9,7 +9,7 @@ import SwiftData
 import Testing
 
 /// Covers the analytics emitted by the three call sites that run before any SwiftUI environment
-/// exists (analytics-spec.md §7.3).
+/// exists (analytics-spec.md §Non-SwiftUI callers).
 @Suite("Persistence and startup analytics")
 struct PersistenceAnalyticsTests {
   /// Both store paths failing is the only way the app cannot open a store at all — the event

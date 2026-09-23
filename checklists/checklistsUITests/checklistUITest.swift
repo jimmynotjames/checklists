@@ -39,8 +39,8 @@ class checklistUITest: XCTestCase {
   /// the checklist name / the view controller's default ("checklists.ChecklistView") happens to
   /// apply: `ChecklistViewController.scrollViewDidScroll` only shows the title once the table is
   /// scrolled past a threshold, so the identifier flips between the two depending on scroll
-  /// position — and under the SwiftUI `NavigationStack` the title now survives a reorder drag /
-  /// row insertion where it used to be cleared. A query naming the bar therefore passes or fails
+  /// position — and under the SwiftUI `NavigationStack` the title survives a reorder drag / row
+  /// insertion. A query naming the bar therefore passes or fails
   /// on how far the table happened to scroll, which is the difference between a green suite and an
   /// intermittent "No matches found for … IN identifiers".
   ///

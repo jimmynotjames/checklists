@@ -8,7 +8,7 @@ import Foundation
 import Testing
 
 /// Covers `ConsentGatedAnalyticsClient` — the seam that makes the consent flag actually gate
-/// something (core-docs/analytics-spec.md §2, canonical constraint #3). Without it,
+/// something (core-docs/analytics-spec.md §Constraints, canonical constraint #3). Without it,
 /// `analyticsOptIn` is read only by the Settings toggle's own getter and the consent controller's
 /// writes: an opted-out install still emits every event, including `checklist_viewed` carrying
 /// `checklist_name` — the one thing the consent sheet exists to gate.

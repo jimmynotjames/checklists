@@ -6,7 +6,7 @@
 @testable import checklists
 import Testing
 
-/// Pins the jurisdiction lookup in core-docs/analytics-spec.md §6.2, including the
+/// Pins the jurisdiction lookup in core-docs/analytics-spec.md §Strict-opt-in jurisdictions, including the
 /// conservative default for an unrecognized region — the easiest behaviour to regress.
 @Suite("Consent jurisdiction lookup")
 struct ConsentJurisdictionTests {
