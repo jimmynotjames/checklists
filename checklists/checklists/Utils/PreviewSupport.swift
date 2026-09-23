@@ -38,9 +38,12 @@
 
     static func syncStatus(
       containerBacking: ContainerBacking = .cloudKit,
-      accountStatus: SyncStatus.AccountStatus = .available
+      accountStatus: SyncStatus.AccountStatus = .available,
+      syncActivity: [SyncOperation: SyncOperationState] = [:]
     ) -> SyncStatus {
-      SyncStatus(containerBacking: containerBacking, accountStatus: accountStatus)
+      let status = SyncStatus(containerBacking: containerBacking, accountStatus: accountStatus)
+      status.syncActivity = syncActivity
+      return status
     }
 
     static func analyticsSettings(optedIn: Bool) -> AnalyticsSettings {

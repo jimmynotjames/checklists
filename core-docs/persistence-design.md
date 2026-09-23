@@ -245,7 +245,7 @@ stays at Complete. It is only ever read at launch, in the foreground, so that co
 ## Sync status
 
 `Persistence/SyncStatus.swift` is the user-facing half of "is my data syncing?" — it turns two
-independent signals into the single four-state row Settings shows.
+independent signals, plus observed sync activity, into the single row Settings shows.
 
 **Two signals, because they answer different questions and can disagree:**
 
@@ -254,13 +254,22 @@ independent signals into the single four-state row Settings shows.
 - `accountStatus` (`SyncStatus.AccountStatus`: `.checking`, `.available`, `.noAccount`,
   `.restricted`, `.temporarilyUnavailable`, `.couldNotDetermine`) — whether the user is *currently*
   signed in to iCloud, a live signal that can change while the app is running (sign-in, sign-out,
-  account switch) independently of which store this launch picked. `rowState` still collapses every
-  non-`.available` case onto the same `.unavailable` row; the four-state row's wording per case is
-  PR 2.
+  account switch) independently of which store this launch picked.
 
 Collapsing them into one flag would lose exactly the case that matters most: a signed-in user whose
 launch nonetheless fell back to the local store. `SyncStatus.rowState` is the switch that maps the
-pair to the four user-facing states — read it there rather than here.
+pair, plus observed sync activity, to the Settings row's state — read it there rather than here.
+
+**Row-state precedence.** `rowState` resolves `.checking` → an account problem
+(`.unavailable`/`.restricted`/`.needsAttention`/`.couldNotCheck`) → `.paused` (local fallback) → a
+sync failure (`.storageFull`/`.syncInterrupted`) → `.available`, in that order. An account problem
+outranks `.paused` because it explains why syncing isn't happening even more directly than "this
+launch fell back to local storage" does. Sync failures only reach the row from `syncActivity`'s
+latest per-operation error: `CKError.quotaExceeded` is `.storageFull`; `.networkUnavailable`,
+`.networkFailure`, `.serviceUnavailable`, `.requestRateLimited`, and `.zoneBusy` never change the
+row (they're transient and `NSPersistentCloudKitContainer` retries them); any other failure is
+`.syncInterrupted`. All of this still reaches diagnostics and analytics regardless of what the row
+shows.
 
 **`.paused` is the state worth dwelling on.** It exists only because `containerBacking` and
 `accountStatus` can disagree — any throw from the CloudKit-configured container initializer falls
@@ -270,6 +279,11 @@ send a signed-in user off to check their Apple ID; reporting it as plain "availa
 this launch isn't syncing at all. `.paused` says the true thing: your data is safe on this device, it
 just isn't syncing this launch, and relaunching may fix it — which is exactly the copy the Settings
 row's footer gives for that state.
+
+**Presentation is computed on the model.** `SyncStatus.rowPresentation` (`Persistence/SyncStatusPresentation.swift`)
+turns `rowState` into the row's title, footer, SF Symbol name, and warning flag; `SettingsView`
+only renders it. The Active row's footer names the most recent sync success across `setup`/
+`import`/`export`, formatted as a relative time, and is omitted until the first one this launch.
 
 **Where it's loaded and observed.** `PersistenceController` owns one `SyncStatus` per launch,
 constructed in its `init` from the `containerBacking` it was already given, so `containerBacking`
@@ -287,8 +301,8 @@ from `NSPersistentCloudKitContainer.eventChangedNotification`, only while this l
 CloudKit-backed. `fallbackError` (`SyncErrorCode?`, set once in `PersistenceController.init`) is the
 domain and code `ProductionContainerFactory` caught when the CloudKit container failed to open — the
 error the `.paused` row has no way to show. Both feed the Feedback email's diagnostics block
-(`SyncDiagnostics.report`) and analytics (`icloud_status_checked`, `cloudkit_container_fell_back`,
-`cloudkit_sync_failed`); the Settings row itself is unaffected until PR 2.
+(`SyncDiagnostics.report`), analytics (`icloud_status_checked`, `cloudkit_container_fell_back`,
+`cloudkit_sync_failed`), and `syncActivity` also feeds the Settings row's precedence above.
 
 **The live call needs the `application-identifier` entitlement, and nothing in Swift can rescue it
 if it is missing.** `CKContainer.default()` derives its container from that entitlement; with no
