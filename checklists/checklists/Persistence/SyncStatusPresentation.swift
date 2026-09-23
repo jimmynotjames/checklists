@@ -25,9 +25,10 @@ extension SyncStatus {
   /// Separated from `rowPresentation` so tests can assert a presentation for every `RowState`
   /// without also exercising `rowState`'s own derivation.
   ///
-  /// The icon reuses `exclamationmark.icloud` (a transient, self-resolving problem) or
-  /// `xmark.icloud` (needs an action outside the app) rather than introducing new symbol names —
-  /// the approved copy doesn't specify iconography.
+  /// The icon reuses `xmark.icloud` (no working iCloud connection: no account, or the account is
+  /// blocked) or `exclamationmark.icloud` (there is a connection, but something about it is
+  /// degraded) rather than introducing new symbol names — the approved copy doesn't specify
+  /// iconography.
   func presentation(for state: RowState) -> RowPresentation {
     switch state {
     case .checking: checkingPresentation
