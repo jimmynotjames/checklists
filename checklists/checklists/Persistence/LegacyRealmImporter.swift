@@ -16,10 +16,11 @@ import SwiftData
 
  Three properties matter, in this order:
 
- 1. **It never loses data.** The Realm file is not deleted, here or anywhere else in this release.
-    If anything below goes wrong the original store is still on disk, untouched, and the import
-    runs again on the next launch — and after `maximumAttempts` of those it stops trying and lets
-    the app open anyway, still without deleting anything.
+ 1. **It never loses data.** Nothing on the import path deletes the Realm file; only `StoreReset`
+    does, and the failure screen offers that only for `.storeOpen`. If anything below goes wrong
+    the original store is still on disk, untouched, and the import runs again on the next launch —
+    and after `maximumAttempts` of those it stops trying and lets the app open anyway, still
+    without deleting anything.
  2. **It is idempotent.** Records are matched by their existing `id`, so a second run — after a
     crash, or after the completion flag failed to reach disk — adds nothing and changes nothing.
  3. **It verifies before declaring success.** The completion flag is written only after every
@@ -157,24 +158,22 @@ enum LegacyRealmImporter {
   /**
    The base a device's imported checklists are numbered from, picked at random per import.
 
-   Solves a problem that only appears once sync is on: a user with two devices that never synced has
-   a *different* set of checklists on each. Both stores import independently, and if both numbered
-   from 1.0 the two lists would interleave — A's first checklist, B's first, A's second, B's second —
-   scrambling an order the user arranged by hand on each device. Giving each import its own block
-   keeps each device's list contiguous and in its original order.
+   A user with two devices that never synced has a *different* set of checklists on each. Both
+   stores import independently, and if both numbered from 1.0 the two lists would interleave — A's
+   first checklist, B's first, A's second, B's second — scrambling an order the user arranged by
+   hand on each device. Giving each import its own block keeps each device's list contiguous and in
+   its original order.
 
-   **Random rather than clock-based.** The obvious approach — number from the import timestamp — was
-   tried first and is wrong: two devices updated in the same sitting import within the same second,
-   which is the *common* case, not a rare one. Making the clock granular enough to separate them
-   pushes sort keys to a magnitude where `Double` can no longer subdivide gaps for midpoint
-   insertion. A random block sidesteps both problems.
+   **Random, not clock-based:** two devices updated in the same sitting import within the same
+   second, and a clock granular enough to separate them pushes sort keys to a magnitude where
+   `Double` can no longer subdivide gaps for midpoint insertion.
 
    The largest key this produces is under 1e7, where a `Double`'s ULP is around 1.9e-9 — far below
    `SortKeyReorder.epsilon`, so midpoint insertion keeps working afterwards.
 
-   A collision (1 in `sortKeyBlockCount`) degrades to the old interleaved order; nothing is lost
-   either way, since ids are per-device random UUIDs. Item sort keys still start at 1.0: items
-   belong to one checklist from one device, so they can never interleave with another device's.
+   A collision (1 in `sortKeyBlockCount`) degrades to an interleaved order; nothing is lost either
+   way, since ids are per-device random UUIDs. Item sort keys still start at 1.0: items belong to
+   one checklist from one device, so they can never interleave with another device's.
    */
   static func randomImportSortKeyBase() -> Double {
     Double(Int.random(in: 0 ..< sortKeyBlockCount)) * sortKeyBlockSize
@@ -266,8 +265,7 @@ enum LegacyRealmImporter {
   /// Every precondition `isNeeded` checks is still true after a failure, so an import that fails
   /// for a durable reason — a corrupt Realm file, most likely — fails identically on every
   /// subsequent launch. Rethrowing forever would pin the user on the failure screen with no way
-  /// into the app, and the only escape that used to exist was "Start over fresh", which deletes
-  /// the very file being protected.
+  /// into the app.
   ///
   /// Giving up sets the completion flag and **keeps the Realm file**, so the user gets a working
   /// app, nothing is destroyed, and a later release with a better reader can still find the data.

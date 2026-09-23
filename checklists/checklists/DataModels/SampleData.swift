@@ -17,8 +17,7 @@ import SwiftData
  The checklist identifiers are fixed constants rather than fresh UUIDs. Two devices signed into the
  same iCloud account each seed themselves on first launch, before either has synced; with random
  identifiers that produces two of everything and no way to tell the copies apart. Fixed identifiers
- turn it into an ordinary duplicate-record problem that can be resolved deterministically once
- sync arrives.
+ turn it into an ordinary duplicate-record problem, which `dedupeChecklists` resolves.
  */
 enum SampleData {
   // Stable for the life of the app. Never regenerate these.
@@ -186,7 +185,7 @@ enum SampleData {
   // MARK: - The fixture itself
 
   /// Resolved at call time, so a first launch seeds the store in the device's language. The
-  /// `sample.*` keys are transcreated per locale, not translated (core-docs/localization-spec.md):
+  /// `sample.*` keys are transcreated per locale, not translated (localization-spec.md):
   /// each item is what a person there would write on such a list. Once seeded the rows are data
   /// and stay in that language.
   static func generateFirstTimeLaunchChecklists() -> [ChecklistFixture] {

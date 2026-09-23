@@ -13,10 +13,9 @@ struct ICloudStatusLoader {
   /// Returns the live account status.
   var accountStatus: () async throws -> CKAccountStatus = {
     #if DEBUG
-      // UI tests: CKContainer.accountStatus() hangs on the account-less
-      // Simulator, pinning the iCloud row to a spinner so XCUITest can't open
-      // Settings. Skip the query; `.noAccount` maps to `.unavailable` in
-      // `load(into:)`. DEBUG-only.
+      // Test runs (see `LaunchModeContainerFactory.isRunningTests`): CKContainer.accountStatus()
+      // hangs on the account-less Simulator, pinning the iCloud row to a spinner so XCUITest
+      // can't open Settings. `.noAccount` maps to `.unavailable` in `load(into:)`.
       if ProcessInfo.processInfo.environment["IS_TESTING"] != nil
         || CommandLine.arguments.contains("-UITests1") {
         return .noAccount

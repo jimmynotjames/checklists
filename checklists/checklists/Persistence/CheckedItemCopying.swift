@@ -11,8 +11,8 @@ extension Checklist {
   /// trims.
   ///
   /// Shared by the two operations below and by the overflow-menu entry that offers them, so the
-  /// entry is never present when there would be nothing to copy — including the case of a blank
-  /// row someone happened to tick.
+  /// entry shows its "No checked items." notice exactly when there is nothing to copy — including
+  /// when the only ticked row is a blank one.
   var checkedItems: [Item] {
     items.filter { $0.status == .checked && !$0.isBlank }
   }
@@ -21,8 +21,7 @@ extension Checklist {
 extension ModelContext {
   /// Copies `source`'s checked items into a brand-new checklist at the top of the user's ordering.
   ///
-  /// Neither history stamp is set, here or on `source`: both record something that happened to a
-  /// list being run, and nothing has been run yet.
+  /// No history stamps, here or on `source`: persistence-design.md §Duplication.
   ///
   /// - Parameter siblings: every checklist in display order, **excluding** the new one.
   /// - Returns: the new checklist, inserted and saved.
@@ -55,9 +54,7 @@ extension ModelContext {
       }
     } catch {
       // `placeAndSave` puts the siblings' keys back; the half-built destination is this method's to
-      // undo, for the reasons `duplicate(checklist:among:)` sets out — the items go one at a time
-      // rather than by the cascade rule, which never runs against the store when nothing is saved
-      // after this.
+      // undo, item by item, for the reasons `duplicate(checklist:among:)` sets out.
       for copy in copies {
         delete(copy)
       }

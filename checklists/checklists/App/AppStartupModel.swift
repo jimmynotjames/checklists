@@ -23,7 +23,7 @@ final class AppStartupModel {
     case failed(ContainerCreationFailure)
   }
 
-  /// See core-docs/persistence-design.md for why this floor exists.
+  /// Why this floor exists: persistence-design.md §Startup sequence.
   private static let minimumMigrationScreenDuration: Duration = .seconds(1.5)
 
   private(set) var phase: Phase
@@ -36,7 +36,7 @@ final class AppStartupModel {
       }
     } else {
       // The overwhelmingly common path: no migration, so nothing to wait for and no reason to show
-      // an intermediate screen. Identical to how the app has always launched.
+      // an intermediate screen.
       phase = Self.phase(for: AppStartupCoordinator().run())
     }
   }

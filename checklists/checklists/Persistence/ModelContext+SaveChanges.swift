@@ -39,8 +39,7 @@ extension ModelContext {
 
    What it throws is a `PersistenceError`, not what `save()` gave it. The original `NSError` carries
    `userInfo`; a typed value holding only the operation, domain and code can be logged, mailed and
-   re-thrown without anyone downstream having to remember that. `ContainerCreationFailure` unwraps
-   it again rather than bridging, for the same reason.
+   re-thrown without anyone downstream having to remember that.
 
    The public/private split in the log line follows from the same rule: domain, code and
    `localizedDescription` are bounded, framework-authored strings and are what make a sysdiagnose
@@ -72,14 +71,10 @@ extension ModelContext {
    For incidental edits — a renamed checklist, a toggled checkbox — where there is no useful
    recovery and no sensible place to put an alert; the bet is that these saves do not fail in
    practice. The stages that can fail startup use the throwing form instead, so a failure there
-   reaches the failure screen rather than being dropped. `AppStartupCoordinator`'s dedupe is the one
-   startup call that swallows a failure, which it does with its own `try?` and for its own reason.
+   reaches the failure screen rather than being dropped.
 
-   Note that dropping the error is not the same as deciding the write is lost: the main context
-   autosaves (see core-docs/persistence-design.md §Autosave), so the pending changes may still
-   reach disk on a later tick, with nothing reported either way. They equally may not — the
-   failures that get here are usually store-level and persistent, and the next attempt fails the
-   same way.
+   Dropping the error does not by itself mean the write is lost: see persistence-design.md
+   §Autosave.
    */
   func saveChangesIgnoringFailure(operation: PersistenceOperation, analytics: any AnalyticsClient = AppAnalytics.shared) {
     try? saveChanges(operation: operation, analytics: analytics)

@@ -8,19 +8,16 @@ import Foundation
 /**
  Deletes every local persistence artifact so the next startup behaves like a first launch.
 
- The escape hatch behind "Start over fresh" on the container-failure screen. It exists because the
- alternative, for a user whose store will not open, is an app that is permanently unusable: the
- failure is usually a corrupt store or a full disk, and nothing in the app can repair a corrupt
- store in place.
+ The escape hatch behind "Start over fresh" on the container-failure screen: a store that will not
+ open cannot be repaired in place, and without this the app is permanently unusable.
 
  **This destroys data and cannot be undone.** It is only reachable from the failure screen, behind a
  confirmation, and only once the app has already failed to open its store — so there is nothing
  readable left to lose by then. It must never be wired to anything else.
 
- One consequence worth understanding: it deletes the *local* stores only. It cannot and must not
- touch the user's iCloud data, so an account holding CloudKit records will repopulate from them on
- the next launch. For a corrupt local store that is the best possible outcome — the user gets their
- checklists back — but it means "fresh" is only literally true for someone not using iCloud.
+ It deletes the *local* stores only and must never touch iCloud data, so an account holding
+ CloudKit records repopulates from them on the next launch; "fresh" is only literally true for
+ someone not using iCloud.
  */
 enum StoreReset {
   /// Removes the SwiftData store, the legacy Realm store, and the flags recording what has already
@@ -41,24 +38,18 @@ enum StoreReset {
     // from an orphaned WAL.
     remove(storeURL, suffixes: ["", "-shm", "-wal"], using: fileManager)
 
-    // Realm's own sidecars, removed through `FileManager` rather than `Realm.deleteFiles(for:)`.
-    // That API refuses with "already open" if any Realm instance for the file is still alive, which
-    // is entirely possible here — the failure that brought the user to this screen may well have
-    // been thrown mid-import, with the instance not yet released. Unlinking the paths works
-    // regardless, which is what matters on a recovery path.
+    // Realm's own sidecars, removed through `FileManager` rather than `Realm.deleteFiles(for:)`,
+    // which refuses with "already open" if a Realm instance for the file is still alive — possible
+    // if the failure was thrown mid-import. Unlinking the paths works regardless.
     if let realmURL {
       remove(realmURL, suffixes: ["", ".lock", ".note", ".management"], using: fileManager)
     }
 
-    // Note the asymmetry, which is deliberate.
-    //
-    // The seeding flags are *cleared*, so the next launch seeds the sample checklists and the user
-    // gets a working app rather than an empty one.
-    //
-    // The import flag is *set*, not cleared. "Start over fresh" means the old Realm data is being
-    // abandoned on purpose, so it must not come back — and if the deletion above failed, clearing
-    // this flag would make the next launch re-import the very file that just broke the app, fail
-    // the same way, and leave the user in a loop with no way out.
+    // Deliberately asymmetric. The seeding flags are *cleared*, so the next launch seeds the sample
+    // checklists rather than opening empty. The import flag is *set*, not cleared: the Realm data
+    // is being abandoned on purpose, and if the deletion above failed, clearing this flag would
+    // make the next launch re-import the very file that just broke the app, fail the same way, and
+    // leave the user in a loop with no way out.
     userDefaults.removeObject(forKey: SampleData.seededFlagKey)
     userDefaults.removeObject(forKey: SampleData.legacyLaunchedAtLeastOnceKey)
     userDefaults.set(true, forKey: LegacyRealmImporter.completedFlagKey)

@@ -18,7 +18,7 @@ import Foundation
 /// `MixpanelTokenSource.isValidToken`, which is what makes either safe.
 ///
 /// An analytics token is never a source literal. It reaches the app only through this
-/// indirection — see core-docs/analytics-spec.md §10, and `scripts/verify_release_secrets.sh`,
+/// indirection — see analytics-spec.md §Build hygiene, and `scripts/verify_release_secrets.sh`,
 /// which refuses to ship a build whose token is still the committed placeholder.
 enum AppConfig {
   /// Must stay in sync with the defaults in `config/Secrets.xcconfig` and the values

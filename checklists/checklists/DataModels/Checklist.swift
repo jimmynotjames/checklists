@@ -10,19 +10,16 @@ import SwiftData
 import UIKit
 import UniformTypeIdentifiers
 
-/// A single checklist. Top-level: unlike the Realm schema this replaces, there is no `Group`
-/// object holding an ordered list of checklists — ordering lives on the checklist itself, in
-/// `sortKey`, since a singleton `Group` is exactly the shape CloudKit cannot express.
-/// See core-docs/persistence-design.md §Model / §CloudKit rules.
+/// A single checklist. Top-level, with no parent object holding the order: ordering lives on the
+/// checklist itself, in `sortKey`, since an ordered singleton parent is exactly the shape CloudKit
+/// cannot express. See persistence-design.md §CloudKit rules.
 @Model
 final class Checklist {
   var id: String = UUID().uuidString
   var name: String = ""
   var notes: String?
 
-  /// User-defined display order, ascending. Not an index: reordering assigns a value *between*
-  /// the two neighbours (see `SortKeyReorder`) so that moving one row rewrites one record
-  /// rather than renumbering the whole list, which keeps cross-device merges small.
+  /// User-defined display order, ascending. Not an index; see `SortKeyReorder`.
   var sortKey: Double = 0.0
 
   /// When an item here was last checked or unchecked. `nil` means nobody ever has.
@@ -85,8 +82,7 @@ final class Checklist {
     return didUncheck
   }
 
-  // `date` is injectable for the same reason `RatingPromptCoordinator` takes a `now` — it is the
-  // only way to assert a stamp without sleeping.
+  // `date` is injectable so a test can assert a stamp without sleeping.
 
   func recordUpdate(at date: Date = .now) {
     lastUpdated = date
@@ -96,9 +92,7 @@ final class Checklist {
     lastCompleted = date
   }
 
-  /// `@MainActor` because `UIDragItem` is: SwiftData models are not actor-isolated, so this would
-  /// otherwise be a nonisolated method reaching into UIKit. Only ever called from a table view's
-  /// drag delegate, which is already on the main actor.
+  /// `@MainActor` for the reason on `Item.dragItems()`.
   @MainActor
   func dragItems() -> [UIDragItem] {
     let itemProvider = NSItemProvider()

@@ -10,7 +10,7 @@ extension ModelContext {
   /// All checklists in display order.
   ///
   /// `id` breaks ties so the order is total and stable. Two records can genuinely share a
-  /// `sortKey` once sync is involved — CloudKit cannot enforce uniqueness, so two devices editing
+  /// `sortKey` under sync — CloudKit cannot enforce uniqueness, so two devices editing
   /// while apart can both land on the same key — and a table view whose row order flickers between
   /// reloads is worse than an arbitrary but fixed choice.
   func fetchChecklistsSorted() throws -> [Checklist] {
@@ -23,7 +23,7 @@ extension ModelContext {
 
   /// Resolves a checklist by its app-assigned `id`.
   ///
-  /// Drag-and-drop payloads and any cross-screen reference carry this `id` rather than a
+  /// Navigation routes (`AppRoute`, `SheetRoute`) carry this `id` rather than a
   /// `PersistentIdentifier`, so a reference survives the record being re-created by a sync merge.
   /// `nil` means the record is gone — deleted here, or deleted on another device.
   func checklist(id: String) -> Checklist? {
