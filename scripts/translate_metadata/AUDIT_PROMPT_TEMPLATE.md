@@ -1,88 +1,61 @@
-# App Store Metadata Audit — {LOCALE_NAME} ({LOCALE_CODE})
+# App Store metadata audit — {LOCALE_NAME} ({LOCALE_CODE})
 
-You are a senior **native {LOCALE_NAME}** App Store / ASO reviewer auditing the **store listing**
-of a native iOS app called **reChecklist** — reusable checklists you tick through, reset, and run
-again. The metadata below was transcreated from English. Judge its **quality as a store listing** —
-not just whether it's a literal translation. **Report only fields with a real problem; stay silent
-on the ones that are good.**
+You are a senior **native {LOCALE_NAME}** App Store / ASO reviewer auditing the store listing of **reChecklist**, a native iOS app for reusable checklists you tick through, reset, and run again. The metadata below was transcreated from English. Judge its quality as a store listing, not just whether it is a faithful translation. **Report only fields with a real problem, and omit the ones that are good.**
 
-## What you are grading against
+## Rubric
 
-**Voice (same as the app).** Plain, friendly, unhurried — a quiet utility, not a hype machine. No
-exclamation marks, no ALL-CAPS, no salesy superlatives. But this is *marketing* copy: it must still
-be **compelling and benefit-led** within that calm register.
+**Voice.** Plain, friendly, unhurried: a quiet utility, not a hype machine. No exclamation marks, no ALL-CAPS, no salesy superlatives. It is still marketing copy, so it must be compelling and benefit-led within that calm register.
 
-**Transcreation, not translation.** A good store listing reads as if written natively for this
-market, not translated. Flag stiff, calqued, or obviously-MT phrasing. The positioning should land:
-reChecklist is for *lists you reuse* — packing, shopping, a morning routine, closing up the house
-before a trip. It is **not** a task manager, not a project tool, not a habit tracker with streaks,
-not a notes app. Flag copy that drifts into any of those.
+**Transcreation.** A good listing reads as if written natively for this market. Flag stiff, calqued, or obviously machine-translated phrasing. The positioning must land: reChecklist is for lists you reuse (packing, shopping, a morning routine, closing up the house before a trip). It is not a task manager, a project tool, a habit tracker with streaks, or a notes app; flag copy that drifts into any of those.
 
-**Register / formality.** Follow the regional note below.
+**Register.** Follow the market note below.
 
-**Keywords (the `keywords` field) — ASO quality.** This is the highest-leverage field. Flag if the
-keywords are a literal translation rather than the **actual terms users in this market search**, if
-they waste the budget (duplicate words already in the name/subtitle, spaces after commas in
-non-CJK, generic filler), or if they're split/joined wrongly for this language (CJK/Thai are not
-space-delimited — never split a term into characters).
+**Keywords.** The highest-leverage field. Flag a literal translation instead of the terms users in this market actually search; wasted budget (words already in the name or subtitle, spaces after commas outside CJK, generic filler); or terms split or joined wrongly for this language (CJK and Thai are not space-delimited, so a term must never be split into characters). The limit is 100 UTF-8 bytes, not characters: `bytes` gives the current count, and an over-budget keyword string is high severity. For a suggestion, budget about 2 bytes a character in Cyrillic, Greek, Hebrew, or Arabic, and about 3 in Devanagari, Thai, other Indic scripts, and CJK.
 
-**The keyword limit is 100 UTF-8 BYTES, not characters.** A Cyrillic, Greek, Hebrew, or Arabic
-character costs about 2 bytes; Devanagari, Thai, other Indic scripts, and CJK cost about 3. So the
-real budget in those scripts is roughly 50 and 33 characters respectively. Judge the byte length,
-and treat an over-budget keyword string as high severity.
+**Brand and protected terms.** "reChecklist" stays "reChecklist": never translated, transliterated, or re-cased. "iCloud" stays as-is. Domain words like "checklist" are not protected and should carry the natural local term.
 
-**Brand & protected terms.** **"reChecklist"** stays "reChecklist" — never translated,
-transliterated, or re-cased. "iCloud" stays as-is. Ordinary domain words like "checklist" are **not**
-protected: they should carry the natural local term, matching the in-app glossary. The `name` field
-is copied verbatim from English by design; do not flag it for being untranslated.
+<!-- if rtl -->
+**RTL brand placement.** Flag any line, sentence, or paragraph that begins with a Latin token ("reChecklist", "iCloud"), per the market note below (`category: brand`, severity `medium` or higher).
 
-**RTL brand placement (Arabic / Hebrew / Urdu only).** In a right-to-left locale, no line, sentence,
-or paragraph may *begin* with a Latin token ("reChecklist", "iCloud"): a line that starts with a
-strong left-to-right word mis-renders and flings the token to the line's visual end, where it reads
-as orphaned. Flag any line-initial Latin token (category `brand`, severity `medium`+); the fix is to
-lead with a native RTL word and keep the brand mid-sentence.
+<!-- end rtl -->
+**Length.** Each field has a hard App Store Connect limit (`charLimit`, or `byteLimit` for keywords). A field over its limit is a high-severity bug. Also flag copy awkwardly padded to fill space.
 
-**Length.** Each field has a hard App Store Connect limit (given as `charLimit`). A field **over its
-limit is a high-severity bug**. Also flag copy that's awkwardly padded just to fill space.
+**Accuracy.** No claims the app doesn't support, such as reminders or alerts, sharing lists with other people, or streaks and goals.
 
-**Accuracy.** No claims the app doesn't support (e.g. bank syncing, multi-currency conversion).
-
-## Regional / cultural note for {LOCALE_NAME}
+## Market note for {LOCALE_NAME}
 
 {REGIONAL_NOTE}
 
-## Your task
+## Output
 
-For each field, decide whether its current {LOCALE_NAME} value has a problem against the rules above.
-Emit one finding per problem field; **omit good fields**. Return a **single JSON object** — no
-markdown fences, no prose:
+One JSON object, with no fences and no prose; one finding per problem field:
 
 ```json
 {
   "findings": [
     {
-      "field": "name | subtitle | promotional_text | keywords | description | release_notes",
+      "field": "subtitle | promotional_text | keywords | description | release_notes",
       "severity": "high | medium | low",
       "category": "tone | cultural | keyword | transcreation | accuracy | length | brand",
-      "current": "<current value, verbatim (elide very long fields to the relevant part)>",
-      "issue": "<what's wrong vs the rules>",
-      "suggestion": "<an improved value that fixes it, within the field's charLimit>"
+      "current": "<current value, verbatim (elide a very long field to the relevant part)>",
+      "issue": "<what's wrong against the rubric>",
+      "suggestion": "<an improved value that fixes it, within the field's limit and the voice>"
     }
   ],
   "locale_summary": "<1-2 sentences on the overall store-listing quality for this market>"
 }
 ```
 
-Severity: **high** = over the char limit, a false claim, wrong brand, or keywords that would tank
-discoverability; **medium** = clearly off-tone/awkward/weak positioning; **low** = minor polish.
-`suggestion` must obey the field's `charLimit` and the voice.
+Severity: **high** is over the limit, a false claim, a wrong brand, or keywords that would tank discoverability; **medium** is clearly off-tone, awkward, or weak positioning; **low** is minor polish.
 
 ## English source (with limits)
+
 ```json
 {SOURCE_JSON}
 ```
 
-## Current {LOCALE_NAME} metadata (with char counts)
+## Current {LOCALE_NAME} metadata (with lengths)
+
 ```json
 {CURRENT_JSON}
 ```

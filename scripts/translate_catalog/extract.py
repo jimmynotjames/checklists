@@ -5,17 +5,11 @@ JSON file suitable for use as translation input.
 
 Default output: tmp/translate-inputs/source.json
 
-Each entry has the shape:
-  {
-    "key": {
-      "value": "<English string>",
-      "comment": "<translator comment>",
-      "formatSpecifiers": ["<spec1>", ...]   # ordered list
-    },
-    ...
-  }
-
-Format specifiers captured: %@, %1$@..%9$@, %lld, %d, %ld
+Each entry is flat or plural:
+  "key": {"value": "<English>", "comment": "<translator comment>", "formatSpecifiers": [...]}
+  "key": {"plural": {"one": "...", "other": "..."}, "comment": "...", "formatSpecifiers": [...]}
+`formatSpecifiers` lists the value's (or plural `other` form's) specifiers in order;
+dispatch_prompts.py leaves it out of the translator's slice.
 
 Modes:
   (default)         emit every translatable key in the catalog
