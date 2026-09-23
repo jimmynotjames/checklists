@@ -10,9 +10,9 @@ extension Checklist {
   /// The items a copy would carry: ticked, and not the scratch row the detail screen seeds and
   /// trims.
   ///
-  /// Shared by the two operations below and by the overflow-menu entry that offers them, so the
-  /// entry shows its "No checked items." notice exactly when there is nothing to copy — including
-  /// when the only ticked row is a blank one.
+  /// Shared by the two operations below and by the overflow-menu entry that offers them, so a tap
+  /// on the entry opens the picker only when there is something to copy, and shows the "No checked
+  /// items." notice otherwise — including when the only ticked row is a blank one.
   var checkedItems: [Item] {
     items.filter { $0.status == .checked && !$0.isBlank }
   }
@@ -21,7 +21,8 @@ extension Checklist {
 extension ModelContext {
   /// Copies `source`'s checked items into a brand-new checklist at the top of the user's ordering.
   ///
-  /// No history stamps, here or on `source`: persistence-design.md §Duplication.
+  /// No history stamps on the copy (persistence-design.md §Duplication), and none on `source`:
+  /// copying from a list is not a run of it.
   ///
   /// - Parameter siblings: every checklist in display order, **excluding** the new one.
   /// - Returns: the new checklist, inserted and saved.

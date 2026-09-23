@@ -35,8 +35,6 @@ final class AppStartupModel {
         await self?.runStartupBehindLoadingScreen()
       }
     } else {
-      // The overwhelmingly common path: no migration, so nothing to wait for and no reason to show
-      // an intermediate screen.
       phase = Self.phase(for: AppStartupCoordinator().run())
     }
   }

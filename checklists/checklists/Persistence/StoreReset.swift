@@ -12,8 +12,9 @@ import Foundation
  open cannot be repaired in place, and without this the app is permanently unusable.
 
  **This destroys data and cannot be undone.** It is only reachable from the failure screen, behind a
- confirmation, and only once the app has already failed to open its store — so there is nothing
- readable left to lose by then. It must never be wired to anything else.
+ confirmation, and only once the app has already failed to open its store. It must never be wired
+ to anything else. On the one launch that would have run the legacy import, the Realm file has
+ not been copied yet, so this deletes the user's only copy of that data.
 
  It deletes the *local* stores only and must never touch iCloud data, so an account holding
  CloudKit records repopulates from them on the next launch; "fresh" is only literally true for

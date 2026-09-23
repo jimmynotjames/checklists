@@ -140,8 +140,7 @@ struct ChecklistsApp: App {
 
   /// The truth table behind `makeAnalyticsClient()`, pulled out so it is testable without
   /// touching `LaunchModeContainerFactory` or `MixpanelTokenSource` directly. Pinned by
-  /// `AnalyticsClientSelectionTests`. `true` means "use `ConsoleAnalyticsClient`" — a test run, or a build with no configured
-  /// token, both fall back rather than reach real Mixpanel.
+  /// `AnalyticsClientSelectionTests`. `true` means "use `ConsoleAnalyticsClient`".
   static func shouldUseConsoleClient(isRunningTests: Bool, isTokenConfigured: Bool) -> Bool {
     isRunningTests || !isTokenConfigured
   }

@@ -111,9 +111,7 @@ still carried on `LegacyChecklist` even though nothing else uses it.
 ## Sort keys
 
 `Persistence/SortKeyReorder.swift` is canonical for the ordering arithmetic: midpoint insertion,
-renormalization once a gap falls below `epsilon`, and why that floor sits where it does. The
-short version: each record carries a `Double` `sortKey`, a reorder rewrites only the record that
-moved, and the rare renormalization rewrites the whole list.
+renormalization once a gap falls below `epsilon`, and why that floor sits where it does.
 
 **Imported checklists do not start at 1.** `LegacyRealmImporter` gives each device's import a
 random block of keys rather than numbering from `step`, so two devices importing the same Realm
@@ -330,10 +328,9 @@ still free to change.
 
 ## Realm removal plan
 
-- **v1.3**: the Realm file left by `LegacyRealmImporter` is deleted from disk. Because it's a plain
-  file, that needs no Realm API — `FileManager.default.removeItem(at:)` — once enough of the install
-  base has had a release cycle to complete its one-time import. This does not touch the `RealmSwift`
-  package dependency.
+- **v1.3**: the Realm file left by `LegacyRealmImporter` is deleted from disk, once enough of the
+  install base has had a release cycle to complete its one-time import. This does not touch the
+  `RealmSwift` package dependency.
 - **Dropping the `RealmSwift` package dependency itself is a later, separate decision**, made only
   once enough of the install base is confidently past v1.1.0 (the last Realm-only release). Anyone
   who upgrades directly from v1.1.0 straight to a build without `RealmSwift` linked at all would have
