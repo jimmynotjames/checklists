@@ -64,20 +64,19 @@ every reference to a renamed type within the variant's own files is updated to m
 
 What must be renamed:
 
-- `class ChecklistViewController` → `class ChecklistViewControllerCompact`, and each of its eight
-  `extension ChecklistViewController: …` blocks.
+- `class ChecklistViewController` → `class ChecklistViewControllerCompact`, and every
+  `extension ChecklistViewController` block, including those in the copied `+Menu` and `+Strings`
+  files.
 - `struct ChecklistScreen` → `struct ChecklistScreenCompact`.
 - **Protocols, which are easy to miss.** `ItemContentViewDelegate`, `CLTextViewDelegate`, and
   `AddItemButtonTableFooterViewDelegate` are internal top-level declarations. If you copy the file
   declaring one, rename the protocol too — *and* the `extension …: ThatDelegate` conformance in
   whichever other copied file adopts it.
 
-What must **not** be renamed, because file-scope `private` does not collide across files:
-
-- `private let itemsSection`, `itemCellReuseIdentifier`, `defaultChecklistName` at the top of
-  `ChecklistViewController.swift`.
-- `private struct ChecklistControllerView` in `ChecklistScreen.swift` — but its body still needs
-  `ChecklistViewController()` changed to `ChecklistViewControllerCompact()`.
+What must **not** be renamed: file-scope `private` declarations (constants at the top of a file,
+`private struct ChecklistControllerView` in `ChecklistScreen.swift`), because they don't collide
+across files. Their bodies still need renamed references updated, e.g. `ChecklistViewController()`
+→ `ChecklistViewControllerCompact()`.
 
 Wrap each generated file in `#if DEBUG` / `#endif`.
 
@@ -137,10 +136,11 @@ one `#Preview` at a time, so a combined block is the only way to see them togeth
 ## Step 6 — Build before reporting
 
 ```bash
-make build 2>&1 | tail -40
+make build > tmp/build.log 2>&1; echo $?
 ```
 
-These files compile into the app target, so a broken variant breaks the gate.
+Non-zero means read `tmp/build.log`. These files compile into the app target, so a broken variant
+breaks the gate.
 
 On a duplicate-symbol error: a top-level type was left unrenamed — re-run the Step 3 grep.
 On "cannot find X in scope": a reference was renamed in one copied file but not another.

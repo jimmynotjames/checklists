@@ -125,10 +125,15 @@ locales and protects `reChecklist` and `iCloud` from being translated.
   `translate_metadata/dispatch_prompts.py` are separate because in-app and marketing register are
   different decisions — not a DRY violation to fix. But change a locale's formality call in both, or
   the app and its listing address the same person two different ways.
-- **A fan-out is one message.** Dispatch all locales in a single message with
-  `run_in_background: true` — never `nohup`, never a shell loop that blocks the session. On a tool
-  without a subagent primitive, run the step inline and serially: read each prompt file, produce the
-  JSON yourself, write the matching output file. Same scripts, same gates, same result.
+- **No ad-hoc Python.** Every step, inspection included, is a flag on a pipeline script. Reaching
+  for `python3 -c` or a throwaway `tmp/*.py` means a script is missing a flag: extend the script, so
+  the permission surface stays narrow and the next run gets the primitive too.
+- **Fan out in batches, agents only.** Send about 8–12 agent calls per message with
+  `run_in_background: true`, and never put a `Bash` call in the same message. One failed call
+  cancels its whole batch, in-flight agents included. Never `nohup`, never a shell loop that blocks
+  the session. On a tool without a subagent primitive, run the step inline and serially: read each
+  prompt file, produce the JSON yourself, write the matching output file. Same scripts, same gates,
+  same result.
 
 ---
 
@@ -144,7 +149,7 @@ namespace is transcreated, so the localized strings are deliberately not paralle
 
 `generate_seeds.py --check` runs in `make uitest-check`, so a change to the sample strings that
 leaves the seeds stale fails the gate. Editing a seed file by hand is therefore pointless — the gate
-regenerates and compares.
+checks the seeds against the catalog.
 
 Adding or changing a sample item means: edit `SampleData.swift` and the matching catalog key, re-run
 the transcreation fan-out, then `generate_seeds.py`.
@@ -179,7 +184,7 @@ screen and read identically in some locale.
 
 `scripts/translation-accessibility-size-check/` drives 13 locales through seven screens at forced
 `.xxxLarge` and leaves the screenshots for reading. It asserts nothing — the reading is the check —
-and it is deliberately outside `make test` and `make gate`. Findings go in its `AUDIT_LOG.md`.
+and it is deliberately outside the app test suites and `make gate`. Findings go in its `AUDIT_LOG.md`.
 
 The checklist detail screen is UIKit with fixed fonts and does not scale with Dynamic Type. See
 `accessibility-spec.md §Dynamic Type` and issue

@@ -11,9 +11,9 @@ Publish the repository metadata as a resolved, reviewable staging tree. Every Ap
 
 1. Run `python3 scripts/translate_metadata/check_metadata.py`. Every storefront must be transcreated and within Apple's limits before anything else happens. If it fails, run the `appstore-translate-metadata` skill and come back; do not hand-edit a storefront file to get past it.
 2. Read `fastlane/SETUP.md` and the files under `fastlane/metadata/`. Resolve the intended App Store version from the user's current instruction or active release record. Ask only when absent or conflicting; never infer it from the latest build or make the user repeat an established choice.
-3. Run `python3 scripts/appstore_metadata.py validate`. Fix validation failures in source files and do not proceed with blank present values. Optional fields should be absent when unused; a blank file is ambiguous and must never silently clear live copy.
-3. Run `python3 scripts/appstore_metadata.py prepare --output tmp/appstore-metadata`.
-4. Inspect the generated staging files and command-reported count/path. Spot-check resolved required fields, optional omissions, URLs, locale coverage, and copyright. Treat `tmp/appstore-metadata` as generated review output, not authored source.
+3. Run `python3 scripts/appstore_metadata.py validate`. Fix validation failures in source files. An unused optional field has no file; a blank file is rejected, so delete it rather than empty it.
+4. Run `python3 scripts/appstore_metadata.py prepare --output tmp/appstore-metadata`.
+5. Inspect the generated staging files and command-reported count/path. Spot-check resolved required fields, optional omissions, URLs, locale coverage, and copyright. Treat `tmp/appstore-metadata` as generated review output, not authored source.
 
 Preparation and validation are local and do not authorize an upload.
 
