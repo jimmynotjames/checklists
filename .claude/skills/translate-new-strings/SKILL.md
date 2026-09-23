@@ -10,9 +10,7 @@ flags and file layout: `scripts/translate_catalog/README.md`.
 
 **Done when** `python3 scripts/check_translations.py` exits 0. Anything else is not done; loop back.
 
-Pipeline rules, in `localization-spec.md §Running the pipelines` and
-§Models are pinned deliberately: no ad-hoc Python, clean `tmp/` first, fan out in batches, run
-inline on a tool without subagents, keep the two note maps' formality calls in step, don't change pinned models.
+Pipeline rules: `localization-spec.md §Running the pipelines` and §Models are pinned deliberately.
 Never hand-edit the catalog.
 
 ## Pre-flight
@@ -30,7 +28,7 @@ heredoc works for small batches. All are allowlisted.
 | Change | Command | Input | Then |
 |---|---|---|---|
 | New key in Swift, not in the catalog | `add_keys.py -` | `{"key": {"comment": "…", "value": "English"}}` | step 1. `--force` overwrites. |
-| English text changed | `update_keys.py -` | `{"key": {"value": "New English", "comment": "optional"}}` | step 1 (non-`en` marked `needs_review`) |
+| English text changed | `update_keys.py -` | `{"key": {"value": "New English", "comment": "optional"}}` | step 1 (non-`en` marked `needs_review`). Refuses plural keys: follow its message (`add_keys.py --force` with the comment, then `pluralize_keys.py`). |
 | Key renamed, text unchanged | `rename_keys.py -` | `{"old.key": "new.key"}` | update the Swift call sites; no re-translation. `--dry-run`, `--force`. |
 | Count string reads wrong at 1 | `pluralize_keys.py -` | `{"key": {"one": "%lld item", "other": "%lld items"}}` (`other` required) | step 1; locales re-translate as plurals. `--dry-run`. |
 | Translation must change, English unchanged (e.g. a glossary term changed) | `invalidate_keys.py --keys k1,k2` or `--keys-file tmp/keys.txt` | — | step 1. `--locales`, `--dry-run`. |
@@ -55,7 +53,8 @@ python3 scripts/translate_catalog/extract.py --missing
 ```
 
 Writes `tmp/translate-inputs/source.json` and `manifest.json` (`{locale: [keys]}`). If it reports
-nothing missing or stale, skip to step 5. To force specific keys: `--keys k1,k2`.
+nothing missing or stale, run `check_translations.py` and `check_source_strings.py`, then step 5 or
+6. To force specific keys: `--keys k1,k2`.
 
 ## 2. Compose per-locale prompts
 
@@ -78,8 +77,8 @@ message. If a rule is missing, fix `PROMPT_TEMPLATE.md` or `SAMPLE_PROMPT_TEMPLA
 | `tmp/translate-prompts/{locale}.sample.md` | `sample-content-locale` | `tmp/translate-outputs/{locale}.sample.json` |
 
 Dispatch message: "Read `<abs>/tmp/translate-prompts/ja.md` and follow it. Write the JSON object
-(nothing else) to `<abs>/tmp/translate-outputs/ja.json`." Never use `general-purpose`: only the
-narrow agents are allowlisted.
+(nothing else) to `<abs>/tmp/translate-outputs/ja.json`." Never use `general-purpose`: the named
+agents pin the model and restrict the tools.
 
 ## 4. Validate, merge, and check
 
@@ -113,12 +112,7 @@ python3 scripts/translate_catalog/glossary_build.py --merge
 
 Skip this step if `--detect` reports nothing new.
 
-## 5. Check
-
-```bash
-python3 scripts/check_translations.py
-python3 scripts/check_source_strings.py
-```
+## 5. If the checks fail
 
 - Missing or stale `(key, locale)` pairs: `extract.py --keys k1,k2`, then step 2.
 - `check_source_strings.py` failure: an unkeyed literal in Swift. Key it, then rerun this skill.

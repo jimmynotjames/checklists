@@ -82,7 +82,8 @@ git push -u origin <branch-name>
 ### 8. Open the PR
 
 Write `tmp/pr-body.md` with the file-editing tool, following `.github/pull_request_template.md`,
-with the cross-cutting checklist marked done or N/A from step 4. Test-plan honesty, and what belongs
+with the cross-cutting checklist marked done or N/A from step 4, ending with the `Co-Authored-By:`
+footer. Test-plan honesty, and what belongs
 in the body: `reference/review-and-gate.md` §"Gate and PR body".
 
 ```bash
@@ -99,7 +100,8 @@ always gets raised.
 
 ## What this skill does NOT do
 
-- **Does not run tests.** They are not part of the gate. Run them yourself when the change warrants
+- **Does not run the app's test suites.** Unit and UI tests are opt-in and not in the gate (the
+  tooling tests are). Run them yourself when the change warrants
   it — layout, data-model, or persistence work especially — and report the real result in the Test
   plan. Do not claim test coverage you did not obtain.
 - **Does not involve a GitHub issue.** For issue-linked work, use `/create-pr-for-issue <N>`.

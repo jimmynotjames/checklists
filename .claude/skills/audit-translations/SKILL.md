@@ -8,9 +8,7 @@ description: Grade the existing Localizable.xcstrings translations for tone, reg
 Drives `scripts/translate_audit/`. Run everything from the repo root. Script flags, findings shape
 and file layout: `scripts/translate_audit/README.md`. New translations are `translate-new-strings`.
 
-Pipeline rules, in `localization-spec.md §Running the pipelines` and
-§Models are pinned deliberately: no ad-hoc Python, clean `tmp/` first, fan out in batches, run
-inline on a tool without subagents, keep the two note maps' formality calls in step, don't change pinned models.
+Pipeline rules: `localization-spec.md §Running the pipelines` and §Models are pinned deliberately.
 The auditor is `translation-audit-locale`, never `general-purpose`.
 
 A `[ratio]` length flag is a heuristic; trust the auditor's `[llm]` length judgment over it.
@@ -96,5 +94,3 @@ Ask first. On a yes:
 ```bash
 python3 scripts/pipeline_tmp.py clean translate-audit
 ```
-
-`translate-new-strings` cleans its own `translate` group.

@@ -10,9 +10,7 @@ and file layout: `scripts/translate_metadata/README.md`. In-app strings are `tra
 
 **Done when** `python3 scripts/translate_metadata/check_metadata.py` exits 0.
 
-Pipeline rules, in `localization-spec.md §Running the pipelines` and
-§Models are pinned deliberately: no ad-hoc Python, clean `tmp/` first, fan out in batches, run
-inline on a tool without subagents, keep the two note maps' formality calls in step, don't change pinned models.
+Pipeline rules: `localization-spec.md §Running the pipelines` and §Models are pinned deliberately.
 Inspect outputs with `validate.py --subset [--json]` and `audit.py [storefront …] [--json]
 [--full]`, not `cat`, `jq` or `wc`.
 
@@ -90,7 +88,7 @@ python3 scripts/translate_metadata/validate.py --subset
 ```
 
 Per storefront: **PASS** (ready), **PENDING** (no output yet: dispatch it), or **FAIL** (usually over
-the limit, above all `keywords`: re-dispatch it). Keyword hygiene warnings don't fail.
+the limit, above all `keywords`, whose limit is 100 bytes, not characters: re-dispatch it). Keyword hygiene warnings don't fail.
 
 Retry by re-dispatching only the PENDING and FAIL storefronts. **Don't re-run
 `dispatch_prompts.py` mid-fan-out**: it deletes the outputs that already passed.

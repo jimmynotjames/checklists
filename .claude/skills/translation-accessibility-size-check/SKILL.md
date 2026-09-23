@@ -6,11 +6,12 @@ description: "Capture and read localized screenshots at the largest Dynamic Type
 # Localized large-type layout check
 
 Does the UI hold together when a long translation meets the largest Dynamic Type size? Ad-hoc,
-slow, and outside `make gate`.
+slow, and outside the app test suites and `make gate`.
 
 ## Run it
 
-Read `scripts/translation-accessibility-size-check/README.md` first for the locale set and knobs.
+Read `scripts/translation-accessibility-size-check/README.md` first for the locale set; the knobs
+(`WORKERS`, `SIMULATOR_NAME`, `MAX_PX`) are in the `run.sh` header.
 
 ```bash
 bash scripts/translation-accessibility-size-check/run.sh --yes

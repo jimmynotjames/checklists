@@ -149,7 +149,7 @@ namespace is transcreated, so the localized strings are deliberately not paralle
 
 `generate_seeds.py --check` runs in `make uitest-check`, so a change to the sample strings that
 leaves the seeds stale fails the gate. Editing a seed file by hand is therefore pointless — the gate
-regenerates and compares.
+checks the seeds against the catalog.
 
 Adding or changing a sample item means: edit `SampleData.swift` and the matching catalog key, re-run
 the transcreation fan-out, then `generate_seeds.py`.
@@ -184,7 +184,7 @@ screen and read identically in some locale.
 
 `scripts/translation-accessibility-size-check/` drives 13 locales through seven screens at forced
 `.xxxLarge` and leaves the screenshots for reading. It asserts nothing — the reading is the check —
-and it is deliberately outside `make test` and `make gate`. Findings go in its `AUDIT_LOG.md`.
+and it is deliberately outside the app test suites and `make gate`. Findings go in its `AUDIT_LOG.md`.
 
 The checklist detail screen is UIKit with fixed fonts and does not scale with Dynamic Type. See
 `accessibility-spec.md §Dynamic Type` and issue

@@ -42,7 +42,7 @@ git checkout -b u/jimmyho/<tool>/<short-kebab-description>
 
 ### 3. Implement the fix
 
-Satisfy §"Cross-cutting concerns" as you implement, not afterwards.
+Make the change the issue asks for, and nothing beyond it.
 
 ### 4. Fresh-eye code review
 
