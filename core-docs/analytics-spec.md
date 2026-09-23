@@ -73,11 +73,12 @@ with its rationale recorded here. The app code sends exactly:
   `checklists_count_bucket`, `rating_prompt_first_eligible_at`, `rating_prompt_last_requested_at`.
 - **`distinct_id`**, a random app-generated UUID (§Identity).
 
-The SDK adds its own defaults to every event, which `trackAutomaticEvents: false` does not remove:
-`$os`, `$os_version`, `$model`, `$manufacturer`, `$screen_width`, `$screen_height`, `$wifi`,
-`$app_version_string`, `$app_build_number`, `mp_lib`, `$lib_version`, `$device_id` and
-`$had_persisted_distinct_id`. `$device_id` is an SDK-generated random UUID, not the IDFV
-(`useUniqueDistinctId` stays off). Mixpanel also sees the request IP.
+The SDK also attaches its own device, network, app-version and library properties to events and
+people records (`AutomaticProperties.swift` in `mixpanel-swift`: OS, model, screen size, radio,
+carrier, wifi), plus identity fields such as `$device_id`, `$user_id` and a session-metadata block.
+`trackAutomaticEvents: false` does not remove them. `$device_id` is an SDK-generated random UUID,
+not the IDFV (`useUniqueDistinctId` stays off). Mixpanel also sees the request IP. Recheck this
+paragraph when bumping the SDK.
 
 ### Deny-list
 
@@ -93,7 +94,7 @@ The SDK adds its own defaults to every event, which `trackAutomaticEvents: false
 
 ### Free-text exception
 
-`checklist_viewed` sends the checklist's name, truncated to 127 characters. Nothing else answers
+`checklist_viewed` sends the checklist's name, truncated by `AnalyticsText`. Nothing else answers
 3.2, the most valuable question this app has.
 
 - It is the **only** free-text property; another would be a new decision, not this precedent.
@@ -122,6 +123,8 @@ and identity are **per device**, which `TARGETED_DEVICE_FAMILY = 1` makes nearly
 `RatingPromptState` uses the same seam and store but is **not** analytics state and **not**
 consent-gated: an opted-out install earns its prompt on the same schedule; only the two events are
 dropped.
+
+Test launches get a fresh in-memory store instead; the rules are on `AnalyticsSettings.makeStore`.
 
 **`StoreReset.startOverFresh()` keeps the analytics keys.** A data reset is not a consent
 withdrawal. `StoreResetTests` pins it.
@@ -180,8 +183,8 @@ opt-in, then track, then stamp `analytics_opt_in_at`. Declining the sheet, swipe
 `app_opened` once the scene is active.
 
 **The gate is a decorator** and the only path to the base client. It drops every call except
-`reset()` while opted out; `reset()` always passes, because the opt-out calls it before the flag
-flips.
+`reset()` while opted out; `reset()` always passes, so it can clear state whatever the flag says.
+It must therefore never initialize the SDK itself (`MixpanelClientGateTests`).
 
 **SDK init is lazy.** `Mixpanel.initialize` runs only in `ensureInitialized()`, reached from
 `track` and `identify`, so an opted-out install never builds an instance. `reset()` discards it; a
@@ -192,9 +195,9 @@ later opt-in re-runs init, which re-registers super properties and re-identifies
 `ChecklistViewController` gets the client as a stored property from `ChecklistScreen`, defaulting
 to the console client.
 
-`ProductionContainerFactory`, `AppStartupCoordinator` and `ModelContext.saveChanges` run inside
-`AppStartupModel.init()`, with no environment. Each takes a parameter defaulting to
-`AppAnalytics.shared`.
+The persistence layer (`ProductionContainerFactory`, `AppStartupCoordinator`,
+`LegacyRealmImporter`, `ModelContext.saveChanges`) runs inside `AppStartupModel.init()`, with no
+environment. Each takes a parameter defaulting to `AppAnalytics.shared`.
 
 > **Install before startup.** `AppStartupModel.init()` runs startup synchronously, and stored
 > properties initialize before `init()`'s body. `ChecklistsApp` must install `AppAnalytics` first
@@ -244,7 +247,7 @@ The rating-prompt events fire from `RatingPromptCoordinator`; its doc comment ha
 | Property | Type | Values / notes |
 | --- | --- | --- |
 | `checklists_count` | Int | Raw |
-| `checklist_name` | String | **User content**, ≤127 characters |
+| `checklist_name` | String | **User content**, `AnalyticsText.truncated` |
 | `notes_length` | Int | Characters in the checklist's notes; 0 when absent |
 | `items_count` | Int | |
 | `items_with_notes_count` | Int | Items with non-nil, non-empty notes |
@@ -258,8 +261,9 @@ The rating-prompt events fire from `RatingPromptCoordinator`; its doc comment ha
 | `new_value` / `old_value` | Bool | |
 | `time_since_first_eligible_bucket` | String | `<1d` / `<7d` / `<30d` / `30d+` |
 
-For `error_operation` and `startup_stage` the Swift case names *are* the vocabulary; a rename
-changes the dashboards. `AnalyticsNamesTests` pins those and `destination`. 3.6 must be filtered by
+`error_operation` values are Swift case names, so renaming a case changes the dashboards.
+`AnalyticsNamesTests` pins the value sets of `source`, `destination`, `error_operation` and
+`startup_stage`. 3.6 must be filtered by
 `startup_stage`, since only `store_open` offers the reset.
 
 Counts are raw: Mixpanel handles numbers natively, and bucketing for privacy would be incoherent
@@ -334,7 +338,7 @@ AppConfig  →  MixpanelTokenSource.activeToken   (#if DEBUG picks dev vs prod)
   `ITSEncryptionExportComplianceCode`.
 
 **Privacy manifest.** `PrivacyInfo.xcprivacy`: `NSPrivacyTracking = false`, no tracking domains,
-`UserDefaults` reason `CA92.1`, and four collected types — linked, purpose Analytics, not tracking:
+`UserDefaults` reason `CA92.1`, and these collected types — linked, purpose Analytics, not tracking:
 
 | Type | Covers |
 | --- | --- |
@@ -355,8 +359,8 @@ because analytics covers the same failure.
 
 ## Dashboards
 
-Boards live in Prod (4062256, Release and TestFlight) and are mirrored in Dev (4062257, Debug),
-which is the pre-release smoke test. **Mixpanel is the source of truth**; the MCP server can edit
+Boards live in Prod (Release and TestFlight builds) and are mirrored in Dev (Debug), which is the
+pre-release smoke test. **Mixpanel is the source of truth**; the MCP server can edit
 boards directly.
 
 Name boards for the **behaviour** shown, citing one question ID from §Product questions. No ticket
@@ -368,11 +372,11 @@ is not charted (`items_with_notes_count` answers 3.4 better). **Never** query a 
 - **Privacy policy**: <https://jimmynotjames.github.io/checklists/privacy.html> (`privacy.html` on
   `gh-pages`), naming Mixpanel as processor. The URL is in `SettingsView.swift` and
   `fastlane/metadata/en-US/privacy_url.txt`.
-- **Nutrition label**: the manifest's four types, Linked, Analytics, not tracking.
+- **Nutrition label**: the manifest's types, Linked, Analytics, not tracking.
 
 **Do not push the App Store listing yet.** `privacy_url.txt` must not reach App Store Connect before
-the first SDK build is submitted; the live listing's 2019 page is correct while `v1.1.0` collects
-nothing. Run `push_metadata` in the release that ships the SDK.
+the first SDK build is submitted; the listing's older privacy page is correct while no shipped
+build collects anything. Run `push_metadata` in the release that ships the SDK.
 
 Deliberate — do not "fix":
 

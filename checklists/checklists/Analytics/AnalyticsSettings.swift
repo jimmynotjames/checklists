@@ -65,8 +65,8 @@ final class AnalyticsSettings {
   /// Builds the settings store for a launch. Under `LaunchModeContainerFactory.isRunningTests`
   /// every launch gets a fresh `InMemoryKeyValueStore` — the same test-launch isolation as the
   /// in-memory `ModelContainer` — so a UI test's consent decision cannot leak into the next
-  /// launch. `RatingPromptState` applies the same rule. Screenshot launches additionally begin
-  /// with an explicit opt-out so a strict-region consent sheet cannot cover a marketing capture.
+  /// launch. Debug screenshot launches additionally begin with an explicit opt-out so a
+  /// strict-region consent sheet cannot cover a marketing capture.
   static func makeStore(
     arguments: [String],
     environment: [String: String],

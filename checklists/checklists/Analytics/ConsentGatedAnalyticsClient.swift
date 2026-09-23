@@ -32,10 +32,8 @@ final class ConsentGatedAnalyticsClient: AnalyticsClient, @unchecked Sendable {
     wrapped.identify(distinctId)
   }
 
-  /// **Always passes through, ungated.** The controller calls this *during* the opt-out
-  /// transition, before the flag has flipped to `false` — gating on the current opt-in state
-  /// would silently no-op the one reset that matters, leaving the wrapped client's identity and
-  /// queued events in place on exactly the transition meant to clear them.
+  /// **Always passes through, ungated**, so a reset clears the wrapped client's identity and
+  /// queued events whatever the flag says — including one issued after it has flipped to `false`.
   func reset() {
     wrapped.reset()
   }
