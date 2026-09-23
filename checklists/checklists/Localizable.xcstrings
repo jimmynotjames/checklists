@@ -32743,6 +32743,1230 @@
         }
       }
     },
+    "settings.icloud.couldNotCheck" : {
+      "comment" : "iCloud status row: checking the account status failed, e.g. no network. Distinct from 'settings.icloud.unavailable' — a failed check, not a missing account.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذر فحص iCloud"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud চেক করা যায়নি"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No s'ha pogut comprovar l'iCloud"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nelze zkontrolovat iCloud"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kan ikke kontrollere iCloud"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konnte iCloud nicht prüfen"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Δεν κατέστη δυνατό"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't Check iCloud"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't Check iCloud"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't Check iCloud"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't Check iCloud"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo comprobar iCloud"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo verificar iCloud"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ei voitu tarkistaa iCloudia"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de vérifier iCloud"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérification échouée"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ચેક કરી ન શક્યા"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "לא ניתן לבדוק את iCloud"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud जाँच नहीं हो सकी"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nije moguće provjeriti iCloud"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Az iCloud nem ellenőrizhető"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak Bisa Periksa iCloud"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile controllare iCloud"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudを確認できません"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ಪರಿಶೀಲಿಸಲು ಆಗಲಿಲ್ಲ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud를 확인할 수 없어요"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud പരിശോധിക്കാൻ കഴിഞ്ഞില്ല"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud तपासू शकले नाही"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak Dapat Semak iCloud"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke sjekke iCloud"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kan iCloud niet controleren"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ଯାଞ୍ଚ ବିଫଳ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ਚੈੱਕ ਨਹੀਂ ਹੋ ਸਕਿਆ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie można sprawdzić iCloud"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível verificar iCloud"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível verificar iCloud"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nu s-a putut verifica iCloud"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось проверить iCloud"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontrola iCloud sa nepodarila"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ni mogoče preveriti iCloud"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunde inte kontrollera iCloud"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud சரிபார்க்க முடியவில்லை"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud చెక్‌ చేయలేకపోయారు"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ตรวจสอบ iCloud ไม่ได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Kontrol Edilemedi"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося перевірити iCloud"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud چیک نہ ہو سکا"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không thể kiểm tra iCloud"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查 iCloud 失败"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法檢查 iCloud"
+          }
+        }
+      }
+    },
+    "settings.icloud.footer.couldNotCheck" : {
+      "comment" : "Footer under the iCloud section when the account status couldn't be determined.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تأكد من اتصالك بالإنترنت. قوائمك محفوظة على هذا الجهاز."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "আপনার ইন্টারনেট সংযোগ পরীক্ষা করুন। আপনার চেকলিস্ট এই ডিভাইসে সংরক্ষিত।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprova la connexió a internet. Les teves llistes es desen en aquest dispositiu."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zkontrolujte připojení k internetu. Vaše seznamy jsou uloženy na tomto zařízení."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontroller din internetforbindelse. Dine tjeklister gemmes på denne enhed."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überprüfe deine Internetverbindung. Deine Checklisten werden auf diesem Gerät gespeichert."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ελέγξτε τη σύνδεσή σας στο διαδίκτυο. Οι λίστες ελέγχου αποθηκεύονται σε αυτήν τη συσκευή."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check your internet connection. Your checklists are saved on this device."
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check your internet connection. Your checklists are saved on this device."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check your internet connection. Your checklists are saved on this device."
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check your internet connection. Your checklists are saved on this device."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprueba tu conexión de internet. Tus listas se guardan en este dispositivo."
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifica tu conexión a internet. Tus listas están guardadas en este dispositivo."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarkista internetyhteytesi. Luettelosi on tallennettu tähän laitteeseen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifie ta connexion Internet. Tes listes sont sauvegardées sur cet appareil."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifie ta connexion Internet. Tes listes sont enregistrées sur cet appareil."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "તમારું ઇન્ટરનેટ જોડાણ તપાસો. તમારી ચેકલિસ્ટ્સ આ ઉપકરણ પર સંગ્રહિત છે."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "בדוק את חיבור האינטרנט. רשימות הבדיקה שמורות בהתקן זה."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपना इंटरनेट कनेक्शन जाँचें। आपकी चेकलिस्ट्स इस डिवाइस पर सहेजी गई हैं।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Provjerite internetsku vezu. Vaše liste su spremljene na uređaju."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ellenőrizze az internetkapcsolatot. Az ellenőrző listák ezen az eszközön lesznek mentve."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Periksa koneksi internet Anda. Daftar periksa Anda tersimpan di perangkat ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controlla la connessione internet. Le tue liste vengono salvate su questo dispositivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インターネット接続を確認してください。チェックリストはこのデバイスに保存されています。"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ನಿಮ್ಮ ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ. ನಿಮ್ಮ ಚೆಕ್‌ಲಿಸ್ಟ್‌ಗಳು ಈ ಸಾಧನದಲ್ಲಿ ಸುರಕ್ಷಿತವಾಗಿವೆ."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "인터넷 연결을 확인해 주세요. 체크리스트가 이 기기에 저장돼요."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക. നിങ്ങളുടെ checklists ഈ ഡിവൈസിൽ സംരക്ഷിച്ചിരിക്കുന്നു."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपले इंटरनेट कनेक्शन तपासा. आपली checklists या डिव्हाइसवर सेव केली आहेत."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Periksa sambungan internet anda. Senarai semak anda disimpan di peranti ini."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sjekk internettforbindelsen din. Sjekklistene dine er lagret på denne enheten."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controleer je internetverbinding. Je checklists worden opgeslagen op dit apparaat."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଆପଣଙ୍କ ଇଣ୍ଟରନେଟ ସଂଯୋଗ ଯାଞ୍ଚ କରନ୍ତୁ। ଆପଣଙ୍କ checklists ଏହି ଡିଭାଇସରେ ସଂରକ୍ଷିତ।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਆਪਣਾ ਇੰਟਰਨੈੱਟ ਕਨੈਕਸ਼ਨ ਚੈੱਕ ਕਰੋ। ਤੁਹਾਡੀਆਂ ਚੈਕਲਿਸਟਾਂ ਇਸ ਡਿਵਾਈਸ ਤੇ ਸੁਰੱਖਿਅਤ ਹਨ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprawdź połączenie internetowe. Listy są zapisane na tym urządzeniu."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifique sua conexão com a internet. Suas listas de verificação são salvas neste dispositivo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifica a tua ligação à Internet. As tuas listas estão guardadas neste dispositivo."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifică conexiunea ta la internet. Listele tale sunt salvate pe acest dispozitiv."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Проверь подключение к интернету. Твои чек-листы сохранены на этом устройстве."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skontrolujte internetové pripojenie. Vaše zoznamy sú uložené na tomto zariadení."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preveri svojo internetno povezavo. Tvoji seznami so shranjeni na tej napravi."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontrollera internetanslutningen. Dina checklistor sparas på denna enhet."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "உங்கள் இணையதள இணைப்பைச் சரிபார்க்கவும். உங்கள் பட்டியல்கள் இந்த சாதனத்தில் சேமிக்கப்பட்டுள்ளன."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "మీ ఇంటర్‌నెట్ కనెక్షన్‌ను చెక్‌ చేయండి. మీ చెక్‌లిస్ట్‌లు ఈ ఉపకరణంపై సేవ్ చేయబడ్డాయి."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณ รายการตรวจสอบของคุณถูกบันทึกไว้บนอุปกรณ์นี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İnternet bağlantınızı kontrol edin. Kontrol listeleriniz bu cihazda kaydediliyor."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перевірте підключення до інтернету. Ваші контрольні списки збережені на цьому пристрої."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اپنی انٹرنیٹ کنکشن چیک کریں۔ آپ کی چیک لسٹیں اس ڈیوائس پر محفوظ ہیں۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kiểm tra kết nối Internet của bạn. Các danh sách của bạn được lưu trên thiết bị này."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查您的网络连接。您的清单已保存在此设备。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請檢查您的網際網路連線。您的檢查清單已儲存在此裝置上。"
+          }
+        }
+      }
+    },
+    "settings.icloud.footer.lastSynced" : {
+      "comment" : "Footer under the iCloud section when sync is active; the placeholder is a relative time like '5 minutes ago'.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آخر مزامنة %@"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "সর্বশেষ সিঙ্ক %@"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última sincronització %@"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poslední synchronizace %@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sidst synkroniseret %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt synchronisiert %@"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Τελευταίος συγχρονισμός %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last synced %@"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last synced %@"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last synced %@"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last synced %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última sincronización %@"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última sincronización %@"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viimeksi synkronoitu %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dernière synchro %@"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronisé %@"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "છેલ્લે સિંક થયું %@"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "סנכרון אחרון %@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आखिरी सिंक %@"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zadnja sinkronizacija %@"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szinkronizálva: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinkronisasi terakhir %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimo sincronizzamento %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最後に同期: %@"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಕೊನೆಯ ಸಿಂಕ್ %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마지막 동기화 %@"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "കഴിഞ്ഞ സിങ്ക് %@"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आखरी सिंक %@"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Penyegerakan terakhir %@"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sist synkronisert %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laatst gesynchroniseerd %@"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଶେଷ ସିଙ୍କ୍ %@"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਆਖ਼ਰੀ ਸਿੰਕ %@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ostatnia synchronizacja %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última sincronização %@"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última Sincronização: %@"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultima sincronizare %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Синхронизировано %@"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naposledy synchronizované %@"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinhronizirano %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senast synkroniserad %@"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "கடைசி ஒத்திசைவு %@"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "చివరిసారి సింక్ %@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ซิงค์ล่าสุด %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son eşzamanlaması %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Синхронізовано %@"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آخری سنک %@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đồng bộ hóa lần cuối %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最后同步 %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最後同步於 %@"
+          }
+        }
+      }
+    },
+    "settings.icloud.footer.needsAttention" : {
+      "comment" : "Footer under the iCloud section when the account is temporarily unavailable. 'Settings' here means the iOS Settings app.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح الإعدادات وأكد حساب Apple لاستئناف المزامنة."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "সেটিংস খুলুন এবং আপনার Apple অ্যাকাউন্ট নিশ্চিত করুন সিঙ্ক পুনরায় শুরু করতে।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obre Configuració i confirma el teu Compte d'Apple per reprendre la sincronització."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otevřete Nastavení a potvrďte Účet Apple, aby pokračovala synchronizace."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åbn Indstillinger og bekræft din Apple-konto for at genoptage synkroniseringen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne die Einstellungen und bestätige deinen Apple-Account, um die Synchronisierung fortzusetzen."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ανοίξτε τις Ρυθμίσεις και επιβεβαιώστε τον Λογαριασμό Apple για να συνεχίσετε."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings and confirm your Apple Account to resume syncing."
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings and confirm your Apple Account to resume syncing."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings and confirm your Apple Account to resume syncing."
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings and confirm your Apple Account to resume syncing."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre Ajustes y confirma tu Cuenta de Apple para reanudar la sincronización."
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre Configuración y confirma tu Cuenta de Apple para reanudar la sincronización."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avaa Asetukset ja vahvista Apple-tilisi synkronoinnin jatkamiseksi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre Réglages et confirme ton Compte Apple pour reprendre la synchro."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre Réglages et confirme ton Compte Apple pour relancer la synchronisation."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "સિંક ફરી શરૂ કરવા માટે સેટિંગ્સ ખોલો અને તમારા Apple Account ની પુષ્ટિ કરો."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "פתח את ההגדרות וודא את חשבון Apple כדי להמשיך בסנכרון."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सेटिंग्ज़ खोलें और अपने Apple खाते की पुष्टि करके सिंक दोबारा शुरू करें।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otvorite Postavke i potvrdite Apple račun kako biste nastavili sinkronizaciju."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nyissa meg a Beállítások alkalmazást, és erősítse meg az Apple-fiókját a szinkronizálás folytatásához."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Pengaturan dan konfirmasi Akun Apple Anda untuk melanjutkan sinkronisasi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri Impostazioni e conferma il tuo Account Apple per riprendere la sincronizzazione."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定を開いてAppleアカウントを確認して、同期を再開してください。"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆದು ನಿಮ್ಮ Apple ಖಾತೆಯನ್ನು ಖಚಿತಪಡಿಸಿ ಸಿಂಕ್ ಮುಂದುವರೆಸಲು."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정을 열어 Apple 계정을 확인해 동기화를 재개해 주세요."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ക്രമീകരണങ്ങൾ തുറന്ന് നിങ്ങളുടെ Apple അക്കൗണ്ട് സ്ഥിരീകരിച്ച് സിങ്ക് പുനരാരംഭിക്കുക."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सेटिंग्ज उघडा, आपल्या Apple खाते पुष्टी करा आणि सिंक पुन्हा सुरू करा."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Tetapan dan sahkan Akaun Apple anda untuk meneruskan penyegerakan."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åpne Innstillinger og bekreft Apple-kontoen din for å gjenoppta synkroniseringen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Instellingen en bevestig je Apple Account om synchronisatie voort te zetten."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ସେଟିଙ୍ଗ୍ସ ଖୋଲି ଆପଣଙ୍କ Apple ଆକାଉଣ୍ଟ ନିଶ୍ଚିତ କରି ସିଙ୍କ୍ ଚାଲୁ ରାଖନ୍ତୁ।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਸੈਟਿੰਗਾਂ ਖੋਲੋ ਅਤੇ ਆਪਣਾ Apple ਖਾਤਾ ਪੁਸ਼ਟੀ ਕਰ ਕੇ ਸਿੰਕ ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਕਰੋ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otwórz Ustawienia i potwierdź Konto Apple, aby wznowić synchronizację."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra Ajustes e confirme sua Conta Apple para retomar a sincronização."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre as Definições e confirma a tua Conta Apple para retomar a Sincronização."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deschide Configurări și confirmă Contul Apple pentru a relua sincronizarea."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открой Настройки и подтверди свой Аккаунт Apple, чтобы возобновить синхронизацию."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otvorte Nastavenia a potvrďte Apple Account, aby sa synchronizácia obnovila."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odpri Nastavitve in potrdi Račun Apple, da nadaljuješ s sinhronizacijo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öppna Inställningar och bekräfta ditt Apple-konto för att återuppta synkroniseringen."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "அமைப்புகளைத் திறந்து உங்கள் Apple கணக்கை உறுதிப்படுத்தி ஒத்திசைவை மீண்டும் தொடங்கவும்."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "సెట్టింగ్‌లలో మీ Apple ఖాతా ను నిర్ధారించండి సింక్‌ని కొనసాగించడానికి."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เปิดการตั้งค่าและยืนยันบัญชี Apple เพื่อเริ่มซิงค์อีกครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eşzamanlamayı devam ettirmek için Ayarlar'da Apple Hesabınızı onaylayın."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відкрийте Налаштування та підтвердьте Обліковий запис Apple, щоб відновити синхронізацію."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ترتیبات کھولیں اور اپنا Apple اکاؤنٹ تصدیق کریں تاکہ سنک دوبارہ شروع ہو۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mở Cài đặt và xác nhận Tài khoản Apple của bạn để tiếp tục đồng bộ hóa."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开设置，确认您的 Apple 账户以恢复同步"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟設定並確認您的 Apple 帳號以繼續同步。"
+          }
+        }
+      }
+    },
     "settings.icloud.footer.paused" : {
       "comment" : "Footer under the iCloud section when sync is paused for this launch.",
       "extractionState" : "manual",
@@ -33045,6 +34269,924 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的檢查清單僅儲存在此裝置上。重新啟動應用程式以重試 iCloud 同步。"
+          }
+        }
+      }
+    },
+    "settings.icloud.footer.restricted" : {
+      "comment" : "Footer under the iCloud section when the iCloud account is restricted, e.g. by Screen Time or an organization's device management.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم تعطيل iCloud على هذا الجهاز من قبل Screen Time أو مؤسستك. قوائمك محفوظة على هذا الجهاز فقط."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "এই ডিভাইসে স্ক্রিন টাইম বা আপনার সংস্থা দ্বারা iCloud বন্ধ করা হয়েছে। আপনার চেকলিস্ট শুধুমাত্র এই ডিভাইসে সংরক্ষিত।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'iCloud està desactivat en aquest dispositiu per Screen Time o per la teva organització. Les teves llistes es desen només en aquest dispositiu."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud je na tomto zařízení vypnutý pomocí Doby hraní nebo vaší organizací. Vaše seznamy jsou uloženy pouze na tomto zařízení."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud er slået fra på denne enhed af Skjermtid eller din organisation. Dine tjeklister gemmes kun på denne enhed."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud wurde auf diesem Gerät von Screen Time oder deiner Organisation deaktiviert. Deine Checklisten werden nur auf diesem Gerät gespeichert."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το iCloud είναι απενεργοποιημένο σε αυτήν τη συσκευή. Οι λίστες ελέγχου αποθηκεύονται τοπικά."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud is turned off on this device by Screen Time or your organization. Your checklists are saved on this device only."
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud is turned off on this device by Screen Time or your organisation. Your checklists are saved on this device only."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud is turned off on this device by Screen Time or your organisation. Your checklists are saved on this device only."
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud is turned off on this device by Screen Time or your organisation. Your checklists are saved on this device only."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud está desactivado por Tiempo de pantalla o tu organización. Tus listas se guardan solo en este dispositivo."
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud está desactivado en este dispositivo por el Control de tiempo de pantalla o por tu organización. Tus listas están guardadas solo en este dispositivo."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud on poistettu käytöstä tässä laitteessa Näytön aika- tai organisaation hallinnassa. Luettelosi on tallennettu vain tähän laitteeseen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud est désactivé par Temps d'écran ou ton organisation. Tes listes sont sauvegardées sur cet appareil uniquement."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud est désactivé sur cet appareil par le Temps d'écran ou ton organisation. Tes listes sont enregistrées sur cet appareil seulement."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "આ ઉપકરણ પર Screen Time અથવા તમારી સંસ્થા દ્વારા iCloud બંધ કરવામાં આવ્યું છે. તમારી ચેકલિસ્ટ્સ માત્ર આ ઉપકરણ પર સંગ્રહિત છે."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud כבוי בהתקן זה על ידי Screen Time או הארגון שלך. רשימות הבדיקה שמורות בהתקן זה בלבד."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud इस डिवाइस पर Screen Time या आपके संगठन द्वारा बंद है। आपकी चेकलिस्ट्स केवल इस डिवाइस पर सहेजी गई हैं।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud je isključen zbog Vremena zaslona ili organizacije. Vaše liste su spremljene samo na ovom uređaju."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Az iCloud ezen az eszközön ki van kapcsolva a Képernyőidő vagy a szervezet által. Az ellenőrző listák csak ezen az eszközön lesznek mentve."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud dimatikan di perangkat ini oleh Screen Time atau organisasi Anda. Daftar periksa Anda tersimpan di perangkat ini saja."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud è disattivato su questo dispositivo da Tempo di utilizzo o dalla tua organizzazione. Le tue liste vengono salvate solo su questo dispositivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudはScreen Timeまたはお使いの組織によってこのデバイスでオフになっています。チェックリストはこのデバイスにのみ保存されています。"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ಈ ಸಾಧನದಲ್ಲಿ Screen Time ಅಥವಾ ನಿಮ್ಮ ಸಂಸ್ಥೆಯಿಂದ ಆಫ್ ಆಗಿದೆ. ನಿಮ್ಮ ಚೆಕ್‌ಲಿಸ್ಟ್‌ಗಳು ಈ ಸಾಧನದಲ್ಲಿ ಮಾತ್ರ ಸುರಕ್ಷಿತವಾಗಿವೆ."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 기기에서 Screen Time이나 조직에 의해 iCloud가 꺼져 있어요. 체크리스트는 이 기기에만 저장돼요."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ഈ ഡിവൈസിൽ Screen Time അല്ലെങ്കിൽ നിങ്ങളുടെ സ്ഥാപനം വഴി അപ്പ് ചെയ്തിരിക്കുന്നു. നിങ്ങളുടെ checklists ഈ ഡിവൈസിൽ മാത്രം സംരക്ഷിച്ചിരിക്കുന്നു."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "या डिव्हाइसवर iCloud Screen Time किंवा आपल्या संस्थेने बंद केले आहे. आपली checklists केवळ या डिव्हाइसवर सेव केली आहेत."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud dimatikan di peranti ini oleh Screen Time atau organisasi anda. Senarai semak anda hanya disimpan di peranti ini."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud er slått av på denne enheten av Skjermtid eller organisasjonen din. Sjekklistene dine er lagret kun på denne enheten."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud is op dit apparaat uitgeschakeld door Schermtijd of je organisatie. Je checklists worden alleen op dit apparaat opgeslagen."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Screen Time ବା ଆପଣଙ୍କ ସଂସ୍ଥା ଦ୍ୱାରା ଏହି ଡିଭାଇସରେ iCloud ବନ୍ଦ ଅଛି। ଆପଣଙ୍କ checklists କେବଳ ଏହି ଡିଭାଇସରେ ସଂରକ୍ଷିତ।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਇਸ ਡਿਵਾਈਸ ਤੇ iCloud ਨੂੰ Screen Time ਜਾਂ ਤੁਹਾਡੀ ਸੰਸਥਾ ਦੁਆਰਾ ਬੰਦ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ। ਤੁਹਾਡੀਆਂ ਚੈਕਲਿਸਟਾਂ ਸਿਰਫ ਇਸ ਡਿਵਾਈਸ ਤੇ ਸੁਰੱਖਿਅਤ ਹਨ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud jest wyłączony na tym urządzeniu przez Screen Time lub organizację. Listy są zapisane tylko na tym urządzeniu."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O iCloud foi desativado neste dispositivo por Tempo de Tela ou sua organização. Suas listas de verificação são salvas apenas neste dispositivo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O iCloud está desativado neste dispositivo por Tempo de Ecrã ou pela tua organização. As tuas listas estão guardadas apenas neste dispositivo."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud este dezactivat pe acest dispozitiv de Screen Time sau de organizația ta. Listele tale sunt salvate numai pe acest dispozitiv."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud отключен на этом устройстве из-за Screen Time или политики организации. Твои чек-листы сохранены только на этом устройстве."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud je na tomto zariadení vypnutý aplikáciou Screen Time alebo vašou organizáciou. Vaše zoznamy sú uložené len na tomto zariadení."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud je izključen na tej napravi prek Screen Time ali vaše organizacije. Tvoji seznami so shranjeni samo na tej napravi."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud är inaktiverad på denna enhet av Skärmtid eller din organisation. Dina checklistor sparas endast på denna enhet."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "இந்த சாதனத்தில் Screen Time அல்லது உங்கள் நிறுவனத்தால் iCloud முடக்கப்பட்டுள்ளது. உங்கள் பட்டியல்கள் இந்த சாதனத்தில் மட்டும் சேமிக்கப்பட்டுள்ளன."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ఈ ఉపకరణంపై Screen Time లేదా మీ సంస్థ ద్వారా iCloud ఆఫ్ చేయబడింది. మీ చెక్‌లిస్ట్‌లు ఈ ఉపకరణంపై మాత్రమే సేవ్ చేయబడ్డాయి."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ถูกปิดใช้งานบนอุปกรณ์นี้โดย Screen Time หรือองค์กรของคุณ รายการตรวจสอบของคุณถูกบันทึกไว้บนอุปกรณ์นี้เท่านั้น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu cihazda iCloud, Ekran Süresi veya kuruluşunuz tarafından kapatıldı. Kontrol listeleriniz yalnızca bu cihazda kaydediliyor."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud відключено на цьому пристрої через Screen Time або вашу організацію. Ваші контрольні списки збережені лише на цьому пристрої."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اس ڈیوائس پر Screen Time یا آپ کی تنظیم نے iCloud کو بند کر رکھا ہے۔ آپ کی چیک لسٹیں صرف اس ڈیوائس پر محفوظ ہیں۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud đã bị tắt trên thiết bị này bởi Screen Time hoặc tổ chức của bạn. Các danh sách của bạn chỉ được lưu trên thiết bị này."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 被屏幕使用时间或您的组织关闭。您的清单仅保存在此设备。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 已由螢幕使用時間或您的組織在此裝置上關閉。您的檢查清單只儲存在此裝置上。"
+          }
+        }
+      }
+    },
+    "settings.icloud.footer.storageFull" : {
+      "comment" : "Footer under the iCloud section when iCloud storage is full. 'Settings' here means the iOS Settings app.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حرّر مساحة على iCloud في الإعدادات لاستئناف المزامنة. قوائمك محفوظة على هذا الجهاز."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "সেটিংসে iCloud স্টোরেজ খালি করুন সিঙ্ক পুনরায় শুরু করতে। আপনার চেকলিস্ট এই ডিভাইসে সংরক্ষিত।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allibera espai a l'iCloud a Configuració per reprendre la sincronització. Les teves llistes es desen en aquest dispositiu."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uvolněte místo v iCloudu v Nastavení, aby pokračovala synchronizace. Vaše seznamy jsou uloženy na tomto zařízení."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frigør iCloud-lager i Indstillinger for at genoptage synkroniseringen. Dine tjeklister gemmes på denne enhed."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib Speicherplatz in iCloud über Einstellungen frei, um die Synchronisierung fortzusetzen. Deine Checklisten werden auf diesem Gerät gespeichert."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ελευθερώστε χώρο iCloud στις Ρυθμίσεις για να συνεχίσετε. Οι λίστες ελέγχου αποθηκεύονται σε αυτήν τη συσκευή."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free up iCloud storage in Settings to resume syncing. Your checklists are saved on this device."
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free up iCloud storage in Settings to resume syncing. Your checklists are saved on this device."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free up iCloud storage in Settings to resume syncing. Your checklists are saved on this device."
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free up iCloud storage in Settings to resume syncing. Your checklists are saved on this device."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libera espacio en iCloud en Ajustes para reanudar la sincronización. Tus listas se guardan en este dispositivo."
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libera espacio en iCloud desde Configuración para reanudar la sincronización. Tus listas están guardadas en este dispositivo."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vapauta iCloud-tallennustila asetuksissa synkronoinnin jatkamiseksi. Luettelosi on tallennettu tähän laitteeseen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libère de l'espace iCloud dans Réglages pour reprendre la synchro. Tes listes sont sauvegardées sur cet appareil."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libère de l'espace iCloud dans Réglages pour relancer la synchronisation. Tes listes sont enregistrées sur cet appareil."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "સિંક ફરી શરૂ કરવા માટે સેટિંગ્સમાં iCloud સંગ્રહ મુક્ત કરો. તમારી ચેકલિસ્ટ્સ આ ઉપકરણ પર સંગ્રહિત છે."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "שחרר מקום ב-iCloud בהגדרות כדי להמשיך בסנכרון. רשימות הבדיקה שמורות בהתקן זה."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सेटिंग्ज़ में iCloud स्टोरेज को खाली करके सिंक दोबारा शुरू करें। आपकी चेकलिस्ट्स इस डिवाइस पर सहेजी गई हैं।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oslobodite prostor u iCloudu u Postavkama kako biste nastavili sinkronizaciju. Vaše liste su spremljene na uređaju."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szabadítson fel helyet az iCloud-tárolásban a Beállítások alkalmazásban a szinkronizálás folytatásához. Az ellenőrző listák ezen az eszközön lesznek mentve."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kosongkan penyimpanan iCloud di Pengaturan untuk melanjutkan sinkronisasi. Daftar periksa Anda tersimpan di perangkat ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libera spazio di archiviazione iCloud in Impostazioni per riprendere la sincronizzazione. Le tue liste vengono salvate su questo dispositivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定でiCloudストレージを解放して、同期を再開してください。チェックリストはこのデバイスに保存されています。"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ iCloud ಸ್ಟೋರೇಜ್ ಖಾಲಿ ಮಾಡಿ ಸಿಂಕ್ ಮುಂದುವರೆಸಲು. ನಿಮ್ಮ ಚೆಕ್‌ಲಿಸ್ಟ್‌ಗಳು ಈ ಸಾಧನದಲ್ಲಿ ಸುರಕ್ಷಿತವಾಗಿವೆ."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정에서 iCloud 저장 공간을 확보하여 동기화를 재개해 주세요. 체크리스트는 이 기기에 저장돼요."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ക്രമീകരണങ്ങളിൽ iCloud സ്റ്റോറേജ് കൊതിയില്ലാതാക്കുക സിങ്ക് പുനരാരംഭിക്കാൻ. നിങ്ങളുടെ checklists ഈ ഡിവൈസിൽ സംരക്ഷിച്ചിരിക്കുന്നു."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सेटिंग्ज मध्ये iCloud स्टोरेज मुक्त करा आणि सिंक पुन्हा सुरू करा. आपली checklists या डिव्हाइसवर सेव केली आहेत."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bebaskan ruang storan iCloud di Tetapan untuk meneruskan penyegerakan. Senarai semak anda disimpan di peranti ini."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frigjør iCloud-lagring i Innstillinger for å gjenoppta synkroniseringen. Sjekklistene dine er lagret på denne enheten."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maak ruimte vrij in iCloud-opslag in Instellingen om synchronisatie voort te zetten. Je checklists worden op dit apparaat opgeslagen."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ସିଙ୍କ୍ ଚାଲୁ ରଖିବାକୁ ସେଟିଙ୍ଗ୍ସରେ iCloud ସଂରକ୍ଷଣ ଖାଲି କରନ୍ତୁ। ଆପଣଙ୍କ checklists ଏହି ଡିଭାଇସରେ ସଂରକ୍ଷିତ।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਸਿੰਕ ਲਈ ਸੈਟਿੰਗਾਂ ਵਿਚ iCloud ਸਟੋਰੇਜ ਖਾਲੀ ਕਰੋ। ਤੁਹਾਡੀਆਂ ਚੈਕਲਿਸਟਾਂ ਇਸ ਡਿਵਾਈਸ ਤੇ ਸੁਰੱਖਿਅਤ ਹਨ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zwolnij miejsce w iCloud w Ustawieniach, aby wznowić synchronizację. Listy są zapisane na tym urządzeniu."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libere espaço do iCloud em Ajustes para retomar a sincronização. Suas listas de verificação são salvas neste dispositivo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liberta espaço no iCloud nas Definições para retomar a Sincronização. As tuas listas estão guardadas neste dispositivo."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliberează spațiu iCloud în Configurări pentru a relua sincronizarea. Listele tale sunt salvate pe acest dispozitiv."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Освободи место в хранилище iCloud в Настройках, чтобы возобновить синхронизацию. Твои чек-листы сохранены на этом устройстве."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uvoľnite miesto v iCloud v Nastaveniach, aby sa synchronizácia obnovila. Vaše zoznamy sú uložené na tomto zariadení."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprosti mesto v shrambi iCloud v Nastavitvah, da nadaljuješ s sinhronizacijo. Tvoji seznami so shranjeni na tej napravi."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frigör iCloud-lagring i Inställningar för att återuppta synkroniseringen. Dina checklistor sparas på denna enhet."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "அமைப்புகளில் iCloud சேமிப்பிடத்தை வெளியிட்டு ஒத்திசைவை மீண்டும் தொடங்கவும். உங்கள் பட்டியல்கள் இந்த சாதனத்தில் சேமிக்கப்பட்டுள்ளன."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "సింక్‌ని కొనసాగించడానికి సెట్టింగ్‌లలో iCloud సంగ్రహణను విడిపించండి. మీ చెక్‌లిస్ట్‌లు ఈ ఉపకరణంపై సేవ్ చేయబడ్డాయి."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพิ่มพื้นที่เก็บข้อมูล iCloud ในการตั้งค่าเพื่อเริ่มซิงค์อีกครั้ง รายการตรวจสอบของคุณถูกบันทึกไว้บนอุปกรณ์นี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eşzamanlamayı devam ettirmek için Ayarlar'da iCloud depolaması boşaltın. Kontrol listeleriniz bu cihazda kaydediliyor."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звільніть місце в сховищі iCloud у Налаштуваннях, щоб відновити синхронізацію. Ваші контрольні списки збережені на цьому пристрої."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ترتیبات میں iCloud اسٹوریج خالی کریں تاکہ سنک دوبارہ شروع ہو۔ آپ کی چیک لسٹیں اس ڈیوائس پر محفوظ ہیں۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giải phóng bộ nhớ iCloud trong Cài đặt để tiếp tục đồng bộ hóa. Các danh sách của bạn được lưu trên thiết bị này."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在设置中释放 iCloud 存储以恢复同步。您的清单已保存在此设备。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在設定中釋放 iCloud 儲存空間以繼續同步。您的檢查清單已儲存在此裝置上。"
+          }
+        }
+      }
+    },
+    "settings.icloud.footer.syncInterrupted" : {
+      "comment" : "Footer under the iCloud section when a sync operation failed for a reason other than storage.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قوائمك محفوظة على هذا الجهاز والمزامنة ستحاول مجددًا. إذا لم تُحل المشكلة، أرسل تعليقات من القائمة."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "আপনার চেকলিস্ট এই ডিভাইসে সংরক্ষিত, এবং সিঙ্ক পুনরায় চেষ্টা করতে থাকবে। যদি এটি সমাধান না হয়, মেনু থেকে মতামত পাঠান।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les teves llistes es desen en aquest dispositiu, i la sincronització continuarà intentant-ho. Si no es resol, envia comentaris des del menú."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaše seznamy jsou uloženy na tomto zařízení a synchronizace se bude neustále pokoušet. Pokud se to nevyřeší, odešlete zpětnou vazbu z nabídky."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dine tjeklister gemmes på denne enhed, og synkroniseringen vil blive ved med at forsøge igen. Hvis dette ikke løser sig, send feedback fra menuen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Checklisten werden auf diesem Gerät gespeichert und die Synchronisierung wird weiterhin versucht. Falls dies sich nicht behebt, sende Feedback über das Menü."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Οι λίστες ελέγχου σας αποθηκεύονται σε αυτήν τη συσκευή, και ο συγχρονισμός θα συνεχίσει να προσπαθεί. Αν δεν ξεκαθαριστεί, στείλτε σχόλια από το μενού."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback from the menu."
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback from the menu."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback from the menu."
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback from the menu."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus listas se guardan en este dispositivo y la sincronización seguirá reintentándose. Si no se resuelve, envía comentarios desde el menú."
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus listas están guardadas en este dispositivo, y la sincronización seguirá intentando. Si no se resuelve, envía comentarios desde el menú."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luettelosi on tallennettu tähän laitteeseen, ja synkronointi yritetään uudelleen. Jos tilanne ei selviä, lähetä palautetta valikosta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tes listes sont sauvegardées sur cet appareil, la synchro réessaiera. Si le problème persiste, envoie des commentaires du menu."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tes listes sont enregistrées sur cet appareil, et la synchronisation continuera de réessayer. Si cela ne s'arrange pas, envoie des commentaires à partir du menu."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "તમારી ચેકલિસ્ટ્સ આ ઉપકરણ પર સંગ્રહિત છે, અને સિંક ફરી પ્રયાસ કરતો રહેશે. જો આ ઠીક ન થાય, તો મેનૂ પરથી ફીડબેક મોકલો."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "רשימות הבדיקה שלך שמורות בהתקן זה וסנכרון ינסה שוב. אם זה לא יתוקן, שלח משוב מהתפריט."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपकी चेकलिस्ट्स इस डिवाइस पर सहेजी गई हैं, और सिंक दोबारा कोशिश करते रहेंगे। अगर यह ठीक नहीं हो जाता है, तो मेन्यू से फ़ीडबैक भेजें।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaše liste su spremljene na uređaju i sinkronizacija će pokušati ponovno. Ako se to ne riješi, pošaljite povratne informacije iz izbornika."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Az ellenőrző listák ezen az eszközön lesznek mentve, és a szinkronizálás továbbra is próbálkozni fog. Ha ez nem oldódik meg, küldjön visszajelzést a menüből."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daftar periksa Anda tersimpan di perangkat ini, dan sinkronisasi akan terus mencoba lagi. Jika tidak teratasi, kirim masukan dari menu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le tue liste vengono salvate su questo dispositivo e la sincronizzazione continuerà a riprovare. Se il problema persiste, invia feedback dal Menu."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チェックリストはこのデバイスに保存されており、同期は再試行し続けます。解決しない場合は、メニューからフィードバックを送信してください。"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ನಿಮ್ಮ ಚೆಕ್‌ಲಿಸ್ಟ್‌ಗಳು ಈ ಸಾಧನದಲ್ಲಿ ಸುರಕ್ಷಿತವಾಗಿವೆ, ಮತ್ತು ಸಿಂಕ್ ಮರುಪ್ರಯತ್ನ ಮಾಡುವುದನ್ನು ಮುಂದುವರೆಸುವುದು. ಇದು ಸರಿಯಾಗದಿದ್ದರೆ, ಮೆನುವಿನಿಂದ ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "체크리스트는 이 기기에 저장돼 있고, 동기화가 계속 재시도할 거예요. 해결되지 않으면 메뉴에서 피드백을 보내 주세요."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "നിങ്ങളുടെ checklists ഈ ഡിവൈസിൽ സംരക്ഷിച്ചിരിക്കുന്നു, സിങ്ക് പുനരാവൃത്തി ശ്രമിച്ചുകൊണ്ടിരിക്കും. പരിഹരിക്കുന്നില്ലെങ്കിൽ, മെനുവിൽ നിന്ന് ഫീഡ്‌ബാക്ക് അയയ്ക്കുക."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपली checklists या डिव्हाइसवर सेव केली आहेत आणि सिंक पुन्हा प्रयत्न करत राहील. जर हे सुधारले नाही, तर मेनूतून अभिप्राय पाठवा."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senarai semak anda disimpan di peranti ini, dan penyegerakan akan terus mencuba semula. Jika ini tidak selesai, hantar maklum balas dari menu."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sjekklistene dine er lagret på denne enheten, og synkroniseringen vil fortsette å prøve igjen. Hvis dette ikke løses, send tilbakemelding fra menyen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je checklists worden op dit apparaat opgeslagen en synchronisatie blijft opnieuw proberen. Stuur feedback via het menu als dit niet opgelost wordt."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଆପଣଙ୍କ checklists ଏହି ଡିଭାଇସରେ ସଂରକ୍ଷିତ ଏବଂ ସିଙ୍କ୍ ବାରଂବାର ଚେଷ୍ଟା ଜାରି ରଖିବ। ଯଦି ଏହା ସମାଧାନ ନ ହୁଏ, ମେନୁ ଠାରୁ ମତାମତ ପଠାନ୍ତୁ।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਤੁਹਾਡੀਆਂ ਚੈਕਲਿਸਟਾਂ ਇਸ ਡਿਵਾਈਸ ਤੇ ਸੁਰੱਖਿਅਤ ਹਨ, ਅਤੇ ਸਿੰਕ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰਦਾ ਰਹੇਗਾ। ਜੇ ਇਹ ਠੀਕ ਨਾ ਹੋਵੇ, ਮੀਨੂ ਤੋਂ ਫੀਡਬੈਕ ਭੇਜੋ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listy są zapisane na tym urządzeniu i synchronizacja będzie ponawiana. Jeśli problem się nie rozwiąże, wyślij opinię z Menu."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas listas de verificação são salvas neste dispositivo, e a sincronização continuará tentando. Se isso não se resolver, envie feedback pelo menu."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As tuas listas estão guardadas neste dispositivo, e a Sincronização continuará a tentar. Se não se resolver, envia Comentários no Menu."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listele tale sunt salvate pe acest dispozitiv și sincronizarea va continua să se reînceapă. Dacă nu se rezolvă, trimite feedback din meniu."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твои чек-листы сохранены на этом устройстве, синхронизация продолжит попытки. Если это не решится, отправь отзыв из Меню."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaše zoznamy sú uložené na tomto zariadení a synchronizácia sa bude opakovať. Ak sa to nevyrieši, pošlite spätnú väzbu z ponuky."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tvoji seznami so shranjeni na tej napravi in sinhronizacija se bo še naprej poskušala. Če se to ne razreši, pošlji povratne informacije iz menija."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dina checklistor sparas på denna enhet, och synkroniseringen fortsätter att försöka igen. Om detta inte löser sig, skicka feedback från menyn."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "உங்கள் பட்டியல்கள் இந்த சாதனத்தில் சேமிக்கப்பட்டுள்ளன, மேலும் ஒத்திசைவு மீண்டும் முயலும். சரிசெய்யாவிட்டால், மெனுவில் இருந்து கருத்தை அனுப்புங்கள்."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "మీ చెక్‌లిస్ట్‌లు ఈ ఉపకరణంపై సేవ్ చేయబడ్డాయి మరియు సింక్ కొనసాగుతుంది. ఇది క్లియర్ కాకపోతే, మెనూ నుండి ఫీడ్‌బ్యాక్ పంపండి."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "รายการตรวจสอบของคุณถูกบันทึกไว้บนอุปกรณ์นี้ และจะพยายามซิงค์ต่อไป หากปัญหายังไม่แก้ไข ส่งข้อเสนอแนะจากเมนู"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontrol listeleriniz bu cihazda kaydediliyor ve eşzamanlaması yeniden denemeye devam edecek. Sorun devam ederse, menüden geri bildirim gönderin."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваші контрольні списки збережені на цьому пристрої, а синхронізація буде повторюватися. Якщо це не розв'язується, надішліть відгук з меню."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آپ کی چیک لسٹیں اس ڈیوائس پر محفوظ ہیں، اور سنک دوبارہ کوشش کرتا رہے گا۔ اگر یہ ٹھیک نہ ہو تو مینو سے فیڈ بیک بھیجیں۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Các danh sách của bạn được lưu trên thiết bị này, và đồng bộ hóa sẽ tiếp tục thử lại. Nếu vấn đề không được giải quyết, gửi phản hồi từ Menu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您的清单已保存在此设备，同步会继续重试。如果问题未解决，请从菜单发送反馈。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您的檢查清單已儲存在此裝置上，同步會持續重試。如果問題仍未解決，請從選單傳送意見回饋。"
           }
         }
       }
@@ -33661,6 +35803,312 @@
         }
       }
     },
+    "settings.icloud.needsAttention" : {
+      "comment" : "iCloud status row: signed in but temporarily unavailable, e.g. needs Apple Account re-confirmation. Distinct from 'settings.icloud.restricted' — resolvable, not a standing restriction.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud بحاجة إلى انتباه"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud মনোযোগের প্রয়োজন"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud necessita atenció"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud potřebuje pozornost"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud kræver opmærksomhed"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud braucht Aufmerksamkeit"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το iCloud χρειάζεται προσοχή"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Needs Attention"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Needs Attention"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Needs Attention"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Needs Attention"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Requiere Atención"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud requiere atención"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud vaatii huomiota"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud a besoin d'attention"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Demande Attention"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ધ્યાન આવશ્યક"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud דורש תשומת לב"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud को ध्यान चाहिए"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Zahtijeva Pažnju"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Az iCloud figyelmet igényel"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Perlu Perhatian"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud richiede attenzione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudが要注意"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ಗಮನ ಅಗತ್ಯವಿದೆ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 주의 필요"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ശ്രദ്ധ ആവശ്യമാണ്"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud लक्ष आवश्यक"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Memerlukan Perhatian"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud trenger oppmerksomhet"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud vereist aandacht"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ଧ୍ୟାନ ଦରକାର"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ਨੂੰ ਧਿਆਨ ਚਾਹੀਦਾ ਹੈ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud wymaga uwagi"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Precisa de Atenção"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Necessita de Atenção"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud necesită atenție"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud требует внимания"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud vyžaduje pozornosť"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud potrebuje pozornost"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud behöver uppmärksamhet"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud கவனம் வேண்டும்"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud శ్రద్ధ అవసరం"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ต้องการความสนใจ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud İlgi Gerekli"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud потребує уваги"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud کو توجہ درکار ہے"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud cần chú ý"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 需要注意"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 需要注意"
+          }
+        }
+      }
+    },
     "settings.icloud.paused" : {
       "comment" : "iCloud status row: the app fell back to a local-only store this launch.",
       "extractionState" : "manual",
@@ -33963,6 +36411,924 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iCloud 同步已暫停"
+          }
+        }
+      }
+    },
+    "settings.icloud.restricted" : {
+      "comment" : "iCloud status row: the account is signed in but restricted. Adjacent to 'settings.icloud.unavailable' (no account) and 'settings.icloud.needsAttention' (account needs attention) — keep distinct from both.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud مقيد"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud সীমাবদ্ধ"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud restringida"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud omezený"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud begrænsed"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud eingeschränkt"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το iCloud περιορίστηκε"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Restricted"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Restricted"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Restricted"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Restricted"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Restringido"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud restringido"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud on rajoitettu"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Restreint"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Restreint"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud પ્રતિબંધિત"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud מוגבל"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud प्रतिबंधित"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Ograničen"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud korlátozva"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Dibatasi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Disattivato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud制限中"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ನಿರ್ಬಂಧಿತ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 제한됨"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud നിരോധിത"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud प्रतिबंधित"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Dihadkan"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud begrenset"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud beperkt"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ସୀମିତ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ਸੀਮਿਤ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ograniczony"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Restrito"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Restringido"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud restricționat"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ограничена"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud je obmedzený"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud je omejen"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud begränsad"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud பரிமிதம்"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud నిషేధించబడింది"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ถูกจำกัด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Kısıtlı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud обмежена"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud محدود"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud bị hạn chế"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 受限"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 受限"
+          }
+        }
+      }
+    },
+    "settings.icloud.storageFull" : {
+      "comment" : "iCloud status row: a sync event failed because iCloud storage is full.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مساحة iCloud ممتلئة"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud স্টোরেজ পূর্ণ"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emmagatzematge de l'iCloud ple"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud úložiště plné"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-lager fyldt"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-Speicher voll"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Χώρος iCloud Πλήρης"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Storage Full"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Storage Full"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Storage Full"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Storage Full"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Almacenamiento de iCloud Lleno"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Almacenamiento de iCloud lleno"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-tallennustila täynnä"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stockage iCloud plein"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espace iCloud Rempli"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud સંગ્રહ પૂર્ણ"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "אחסון iCloud מלא"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud स्टोरेज भरा"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Pohrana Puna"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-tárolás megtelt"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Penyimpanan iCloud Penuh"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archiviazione iCloud piena"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudストレージが満杯"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ಸ್ಟೋರೇಜ್ ತುಂಬಿದೆ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 저장 공간 부족"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud സ്റ്റോറേജ് നിറഞ്ഞു"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud स्टोरेज पूर्ण"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storan iCloud Penuh"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-lagring full"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-opslag vol"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ସଂରକ୍ଷଣ ପୂର୍ଣ୍ଣ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ਸਟੋਰੇਜ ਭਰਿਆ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Magazyn iCloud pełny"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaço do iCloud Cheio"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Armazenamento do iCloud Cheio"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spațiu iCloud plin"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Хранилище iCloud полно"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Úložisko iCloud je plné"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shramba iCloud je polna"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-lagring full"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud சேமிப்பிடம் நிரம்பியுள்ளது"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud సంగ్రహణ నిండిపోయింది"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "พื้นที่เก็บข้อมูล iCloud เต็ม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Depolaması Dolu"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сховище iCloud переповнено"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud اسٹوریج بھری"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bộ nhớ iCloud đầy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 存储已满"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 儲存空間已滿"
+          }
+        }
+      }
+    },
+    "settings.icloud.syncInterrupted" : {
+      "comment" : "iCloud status row: a sync event failed for a reason other than storage. Distinct from 'settings.icloud.paused' — signed in and CloudKit-backed this launch, but a sync operation failed.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مزامنة iCloud متوقفة"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud সিঙ্ক বাধাগ্রস্ত"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronització de l'iCloud interrompuda"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronizace s iCloudem přerušena"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-synkronisering afbrudt"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-Synchronisierung gestört"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Συγχρονισμός iCloud Διακοπή"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Sync Interrupted"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Sync Interrupted"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Sync Interrupted"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Sync Interrupted"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronización de iCloud Interrumpida"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronización con iCloud interrumpida"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-synkronointi keskeytyi"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchro iCloud interrompue"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronisation iCloud Interrompue"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud સિંક અવરોધિત"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "סנכרון iCloud הופרע"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud सिंक बाधित"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinkronizacija s iCloudom Prekinuta"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-szinkronizálás szünetel"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinkronisasi iCloud Terganggu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronizzazione iCloud interrotta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同期が中断"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ಸಿಂಕ್ ಸ್ಥಗಿತ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 동기화 중단됨"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud സിങ്ക് തടസ്സപ്പെട്ടു"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud सिंक बाधित"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Penyegerakan iCloud Terganggu"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-synkronisering avbrutt"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-synchronisatie onderbroken"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ସିଙ୍କ୍ ବ୍ୟାହତ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ਸਿੰਕ ਰੁਕੀ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronizacja iCloud przerwana"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronização do iCloud Interrompida"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronização do iCloud Interrompida"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronizare iCloud întreruptă"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Синхронизация с iCloud прервана"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronizácia iCloud bola prerušená"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinhronizacija iCloud je prekinjena"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-synkronisering avbruten"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ஒத்திசைவு குறுக்கிடப்பட்டது"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud సింక్ అంతరాయమైనది"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ซิงค์ iCloud ถูกขัดจังหวะ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Eşzamanlaması Kesildi"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Синхронізація з iCloud перервана"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud سنک منقطع"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đồng bộ hóa iCloud bị gián đoạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 同步中断"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 同步中斷"
           }
         }
       }
