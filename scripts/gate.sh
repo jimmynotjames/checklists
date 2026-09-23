@@ -4,8 +4,8 @@
 # One script so the whole gate is a single allowlisted command (a subshell or trailing
 # ; echo splits into segments that prompt).
 #
-# Format and lint are scoped to changed Swift files (AGENTS.md §"Lint policy"); tests are
-# opt-in (AGENTS.md §"Build and test").
+# Format and lint are scoped to changed Swift files (AGENTS.md §"Lint policy"). The tooling
+# tests run here; the app's suites are opt-in (AGENTS.md §"Build and test").
 #
 # Logs everything to tmp/gate.log and stops at the first failing step. Exit code is
 # that step's exit code (0 = every step passed). Run it in the background to get
@@ -46,8 +46,12 @@ run_step uitest-check
 # Pure text checks: dangling doc pointers, names that no longer exist in the code, and history
 # narrated on added lines.
 run_step doc-check
-# The tooling's own unit tests; a few seconds, offline.
 run_step test-scripts
+skipped=""
+if grep -q 'fastlane/tests SKIPPED' "$LOG"; then
+  skipped=" — Ruby tests SKIPPED (no Ruby 3+)"
+  printf 'gate: WARNING: fastlane/tests SKIPPED — no Ruby 3+ found (brew install fastlane)\n'
+fi
 run_step build
 
-printf '\nGATE PASSED (format-changed, lint-changed, i18n-check, uitest-check, doc-check, test-scripts, build). Full log: %s\n' "$LOG"
+printf '\nGATE PASSED (format-changed, lint-changed, i18n-check, uitest-check, doc-check, test-scripts, build)%s. Full log: %s\n' "$skipped" "$LOG"

@@ -55,7 +55,6 @@ test-unit:
 test-ui:
 	bash scripts/test-ui.sh
 
-# Python and Ruby tooling tests; offline, no simulator. In the gate.
 test-scripts:
 	bash scripts/test-scripts.sh
 
@@ -75,8 +74,7 @@ hooks-install:
 initialize-sims:
 	@ROOT="$(CURDIR)" bash -c 'source "$(CURDIR)/scripts/_sim_sandbox.sh"'
 
-# sim-status and sim-shutdown act on the UDID in .build/sim/device.udid only. sim-clean
-# deletes every device named with this checkout's [slug], Screenshots device included.
+# sim-status and sim-shutdown act on the UDID in .build/sim/device.udid only; sim-clean's scope is in scripts/sim_clean.py.
 
 _UDID_FILE := $(CURDIR)/.build/sim/device.udid
 
@@ -99,6 +97,6 @@ sim-shutdown:
 	fi
 
 sim-clean:
-	@python3 scripts/sim_clean.py --slug-from-file "$(_UDID_FILE)" || true
+	@python3 scripts/sim_clean.py || true
 	rm -rf .build/sim
 	@echo "sim-sandbox: .build/sim removed"

@@ -1,6 +1,6 @@
 import XCTest
 
-/// **Ad-hoc** localized large-type screenshot capture — NOT part of `make test`.
+/// **Ad-hoc** localized large-type screenshot capture — NOT part of `make test-ui` or the gate.
 ///
 /// Drives the app in 13 locales at forced `.xxxLarge` and saves a screenshot of each key screen as a
 /// `.keepAlways` attachment named `<lang>__<screen>`. It makes **no layout assertions** — it never

@@ -110,6 +110,7 @@ def capture_source_files() -> list[Path]:
         Path(__file__).resolve(),
         Path(__file__).with_name("check_content.py"),
         Path(__file__).with_name("config.py"),
+        REPO_ROOT / "scripts" / "translate_catalog" / "paths.py",
         Path(__file__).with_name("prepare_simulator.sh"),
     ]
     source_suffixes = {".swift", ".plist", ".json", ".png", ".jpg", ".storyboard", ".strings", ".xcstrings"}

@@ -5,7 +5,7 @@ repository root. Install on a new machine with
 `brew install fastlane`. There is no Gemfile or plugin dependency. Supply a UTF-8
 locale per command if your shell does not already have one:
 `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 fastlane lanes`. Routing: AGENTS.md §"Commit and PR
-style"; never use an upload lane as an infrastructure test.
+style".
 
 ## Credentials
 

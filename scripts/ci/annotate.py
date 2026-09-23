@@ -24,6 +24,9 @@ def _finding_line(f: dict) -> str:
     if "locale" in f and "key" in f:
         message = f.get("message", "")
         return f"[{f['locale']}] {f['key']}" + (f": {message}" if message else "")
+    if "first" in f and "second" in f:
+        # distinct_pairs.py
+        return f"[{f.get('locale', '?')}] {f['first']} = {f['second']}: {f.get('value', '')!r}"
     if "field" in f:
         return f"{f.get('field')}: {f.get('kind', '')} {f.get('match', '')!r}"
     if "message" in f:

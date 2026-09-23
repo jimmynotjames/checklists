@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Print UDID of a simulator matching criteria, or print nothing.
 
-Exits 0 always (caller treats empty stdout as no match). simctl is capped
+Exits 0 whether or not a device matches (caller treats empty stdout as no match). simctl is capped
 with a timeout so a wedged CoreSimulatorService cannot hang CI or agents.
 
 Usage:

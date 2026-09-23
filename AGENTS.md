@@ -69,12 +69,11 @@ make test-ui      # opt-in; needs a prior `make test-unit` (simulator warm-up)
 make system       # once per clone: toolchain + git hooks
 ```
 
-The app's test suites are opt-in and in no gate or hook: they boot this checkout's simulator and
-take minutes, while the gate never boots one.
+The app's unit and UI suites are opt-in and in no gate or hook: they boot this checkout's simulator
+and take minutes, while the gate never boots one. The tooling tests (`test-scripts`) are in the gate.
 
-`scripts/build.sh` and CI pin `ARCHS=arm64` for build speed only (Realm's C++ tree compiles once);
-dropping it is safe. Don't add `-configuration Release` to the test scripts — only Debug sets
-`ONLY_ACTIVE_ARCH = YES`, so Release would build both slices.
+Don't add `-configuration Release` to the test scripts — only Debug sets `ONLY_ACTIVE_ARCH = YES`,
+so Release would build both slices.
 
 Both test suites pass. Conventions:
 

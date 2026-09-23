@@ -17,6 +17,10 @@ class NormalizeTests(unittest.TestCase):
         collision = {"locale": "de", "first": "a", "second": "b", "value": "x", "reason": "r"}
         self.assertEqual(annotate.normalize([collision]), [collision])
 
+    def test_distinct_pairs_finding_reads_as_a_pair(self) -> None:
+        collision = {"locale": "de", "first": "a", "second": "b", "value": "x", "reason": "r"}
+        self.assertEqual(annotate._finding_line(collision), "[de] a = b: 'x'")
+
     def test_empty_list_payload_has_no_findings(self) -> None:
         self.assertEqual(annotate.normalize([]), [])
 
