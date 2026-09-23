@@ -50,8 +50,9 @@ subagent tool) with the diff pasted after this brief:
 >   symbol, UI element, or default the diff changes, grep the repo for it (name, identifier, and
 >   the behaviour in plain words) and read what describes it: doc comments on its callers and
 >   callees, the matching `core-docs/` section, test comments, translator `comment:` strings, and
->   AGENTS.md. Quote each passage that is now wrong, with file and line. **Bug** if it is in
->   `core-docs/` or AGENTS.md (agents act on those), otherwise **Cleanup**. This is the check
+>   AGENTS.md. Quote each passage that is now wrong, with file and line. Tag it **Risk (high)** if
+>   it is in `core-docs/` or AGENTS.md (the next agent will act on it), otherwise **Cleanup**. This
+>   is the check
 >   most likely to find something; a diff that changes behaviour and yields nothing here should
 >   say what was searched.
 > - **Scope creep** — anything in this diff not required by the stated change: renames, refactors,
@@ -70,8 +71,8 @@ subagent tool) with the diff pasted after this brief:
 > bad, how often — or `None — internal only.`), then the file and approximate line and the technical
 > description.
 >
-> A check that came back clean is not a numbered problem. Name the three checks above in one closing
-> `Clean: …` line, plus any review area you want to record as clean. Append the full diff below."
+> A check that came back clean is not a numbered problem. Name each of the three checks that came
+> back clean in one closing `Clean: …` line, plus any review area you want to record as clean. Append the full diff below."
 >
 > **The stated change:** [one or two sentences — what this PR was asked to do, and which files that
 > should touch. `create-pr-for-issue`: summarise the issue here. The scope check has nothing to
@@ -183,10 +184,11 @@ external to this repo.
 Then check the issue references the diff adds — the gate is offline and cannot:
 
 ```bash
-git diff main...HEAD | grep -E '^\+' | grep -oE '#[0-9]+' | sort -u
+git diff main...HEAD | grep -E '^\+' | grep -oE '\B#[0-9]{1,5}\b' | sort -u
 ```
 
-Run `gh issue view <N> --json state` for each (a PR number resolves too; skip those). A
+Run `gh issue view <N> --json state` for each (a PR number resolves too; skip those, and skip
+test fixtures and hex colours the pattern also matches). A
 reference to a closed issue in a comment or doc is history: delete it, unless the text is about
 that closed item on purpose, like a PR body's `Closes #N`.
 

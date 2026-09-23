@@ -3,18 +3,22 @@
 
 Four checks, all aimed at the drift the AGENTS.md "Writing style" rules exist to prevent:
 
-1. Every `<doc>.md §Heading` pointer resolves to a real heading in that doc. The heading
-   can be quoted (`AGENTS.md §"Lint policy"`) or bare (`analytics-spec.md §Consent`); a bare
-   one resolves to the longest run of following words that matches a heading.
-2. No numbered pointer (`§4.2`). Section numbers change when a doc is restructured.
-3. Every code symbol written in backticks in `core-docs/` or AGENTS.md
-   (`resize(in:)`, `ToastPresenter`, `Checklist.dragItems()`) still appears somewhere in the
-   code, scripts, or build config.
+1. Every `<doc>.md §Heading` pointer resolves to a real heading in that doc, including
+   chained ones (`analytics-spec.md §Event catalog / §Property catalog`). Quote the heading
+   (`AGENTS.md §"Lint policy"`) for an exact match; a bare one resolves to the longest run of
+   following words that is a heading, so `§Consent` passes wherever a Consent heading exists.
+2. No numbered pointer (a section sign followed by a digit). Section numbers change when a doc
+   is restructured.
+3. Every code symbol or file name written in backticks in `core-docs/` or AGENTS.md
+   (`resize(in:)`, `ToastPresenter`, `Checklist.dragItems()`, `SettingsView.swift`) still exists
+   in the code, scripts, or build config. Comments don't count as code: a name that survives only
+   in another stale comment still fails.
 4. Lines this branch adds to Swift, `core-docs/`, or AGENTS.md carry no history markers
-   ("previously", "since #N", "once #N lands", ...). Git is the record.
+   ("since #N", "once #N lands", "used to be", ...). Git is the record.
 
 Checks 1–3 are repo-wide: a heading rename or a deleted method breaks pointers in files the
-branch never touched. Check 4 looks only at added lines, like the lint policy.
+branch never touched. Check 4 looks only at the lines this branch adds, so existing text never
+fails it; it needs the base branch (or `origin/<base>`) and warns when neither exists.
 
 Usage:
   python3 scripts/check_doc_pointers.py          # exit 1 on any hit
@@ -31,6 +35,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+SELF = {"scripts/check_doc_pointers.py", "scripts/tests/test_check_doc_pointers.py"}
 
 # Text files whose pointers are checked.
 POINTER_SUFFIXES = {".swift", ".md", ".py", ".sh", ".yml", ".yaml", ".toml", ".template",
@@ -48,35 +53,31 @@ SYMBOL_CORPUS_SUFFIXES = {".swift", ".py", ".sh", ".rb", ".xcconfig", ".plist", 
                           ".entitlements", ".xcprivacy", ".yml", ".template", ".xcscheme"}
 SYMBOL_CORPUS_NAMES = {"Makefile", "Fastfile", "Snapfile", "Appfile", ".swiftlint.yml",
                        ".swiftformat"}
-# Platform and framework names that docs discuss but this repo never spells out in code.
-# Add here only a name that is genuinely external; a name of ours that fails the check is
-# a stale doc, not a candidate for this list.
+# Names the docs discuss that this repo's code never spells out. Add only a name that is
+# genuinely external; a name of ours that fails the check is a stale doc, not a candidate here.
 EXTERNAL_SYMBOLS = {
-    "UIApplicationDelegate", "SceneDelegate", "UIApplicationDelegateAdaptor",
-    "NSUbiquitousKeyValueStore", "CKContainer", "CKException", "UITableViewController",
-    "NSPersistentCloudKitContainer", "ATTrackingManager", "IDFV", "IDFA",
-    "OSLog", "XCUIApplication", "XCTestCase", "NavigationStack", "LocalizedStringKey",
-    "LocalizedStringResource", "UIDragItem", "NSItemProvider", "ModelConfiguration",
-    "SwiftData", "CloudKit", "RealmSwift", "SwiftUI", "UIKit", "XCTest",
     # Accessibility APIs the spec records as not yet adopted.
     "isReduceTransparency", "isBoldTextEnabled", "shouldDifferentiateWithoutColor",
     "accessibilityViewIsModal", "adjustsFontForContentSizeCategory", "UIDragInteraction",
     # Mixpanel SDK internals and options the spec explains.
     "AutomaticProperties", "useUniqueDistinctId", "encryptionKey",
-    # Info.plist keys and file-protection levels the docs say are deliberately absent.
+    # Info.plist keys, file-protection levels, and files the docs say are deliberately absent.
     "ITSEncryptionExportComplianceCode", "NSFileProtectionComplete",
     "NSFileProtectionCompleteUntilFirstUserAuthentication", "InfoPlist",
+    # Apple's logging framework (the code imports `os`), and the next schema's name as an example.
+    "OSLog", "SchemaV2",
 }
 # `Name.ext` in backticks is a file reference: it must be a tracked file, not a symbol.
 FILE_EXTENSIONS = {"swift", "md", "py", "sh", "xcstrings", "xcprivacy", "plist", "yml",
                    "json", "xcconfig", "entitlements", "txt", "rb"}
 
 HISTORY_SCOPES = ("checklists/", "core-docs/", "AGENTS.md")
+# Phrases that only ever narrate the past. Words with a current-state sense ("previously
+# selected", "was tried and failed") are left to the reviewer's deletable-prose check.
 HISTORY_PATTERNS = [
-    (re.compile(r"\bpreviously\b", re.I), '"previously"'),
     (re.compile(r"\bformerly\b", re.I), '"formerly"'),
     (re.compile(r"\bused to be\b", re.I), '"used to be"'),
-    (re.compile(r"\bwas tried\b", re.I), '"was tried"'),
+    (re.compile(r"\bwas tried first\b|\btried and reverted\b", re.I), '"was tried first"'),
     (re.compile(r"\bsince #\d+", re.I), '"since #N"'),
     (re.compile(r"\bonce #\d+ (?:lands|merges|ships)\b", re.I), '"once #N lands"'),
     (re.compile(r"\b(?:an )?earlier (?:version|draft)\b", re.I), '"an earlier version/draft"'),
@@ -84,13 +85,19 @@ HISTORY_PATTERNS = [
 # Naming the sibling repo is how AGENTS.md "Naming" introduces it; in code it is provenance.
 SIBLING_PATTERN = (re.compile(r"simple-recurring-budgets"), "comparison to simple-recurring-budgets")
 
-POINTER = re.compile(r"(?P<doc>[\w./-]+\.md)`?\s*§")
+# `doc.md §`, `` `doc.md` § ``, `[doc.md](doc.md) §`.
+POINTER = re.compile(r"(?P<doc>[\w./-]+\.md)[`)\]]*\s*§")
+# A further `§Heading` in the same doc: `§Event catalog / §Property catalog`.
+CHAINED = re.compile(r"\s*(?:/|,|and|or)\s*§")
 NUMBERED = re.compile(r"§\s*\d")
 # Joins a comment or blockquote that wraps mid-pointer: `§"What gates a` / `// merge"`.
 CONTINUATION = re.compile(r"\n[ \t]*(?:///?|#|\*|>)?[ \t]*")
+FOLLOWING_LINES = 3
 BACKTICK = re.compile(r"`([^`\n]+)`")
 # `Type`, `Type.member`, `member()`, `resize(in:)` — but not `snake_case`, paths, or values.
 SYMBOL_SHAPE = re.compile(r"^([A-Za-z_]\w*)(?:\.([A-Za-z_]\w*))?(\([\w:]*\))?$")
+SWIFT_LINE_COMMENT = re.compile(r"(^|\s)//.*$", re.M)
+SWIFT_BLOCK_COMMENT = re.compile(r"/\*.*?\*/", re.S)
 
 
 def tracked_files() -> list[str]:
@@ -99,10 +106,17 @@ def tracked_files() -> list[str]:
     return [line for line in out.splitlines() if line]
 
 
+def read(rel: str) -> str | None:
+    try:
+        return (REPO_ROOT / rel).read_text(encoding="utf-8")
+    except (UnicodeDecodeError, FileNotFoundError, IsADirectoryError):
+        return None
+
+
 def excluded(path: str) -> bool:
     parts = Path(path).parts
     return (any(p in EXCLUDED_PARTS for p in parts) or Path(path).name in EXCLUDED_FILES
-            or path.startswith(EXCLUDED_PREFIXES))
+            or path.startswith(EXCLUDED_PREFIXES) or path in SELF)
 
 
 def normalize_heading(text: str) -> str:
@@ -110,10 +124,10 @@ def normalize_heading(text: str) -> str:
     return re.sub(r"\s+", " ", text).lower()
 
 
-def headings_of(path: Path) -> set[str]:
+def headings_of(rel: str) -> set[str]:
     found = set()
     in_fence = False
-    for line in path.read_text(encoding="utf-8").splitlines():
+    for line in (read(rel) or "").splitlines():
         if line.startswith("```"):
             in_fence = not in_fence
         elif not in_fence and re.match(r"#{1,6} ", line):
@@ -122,6 +136,7 @@ def headings_of(path: Path) -> set[str]:
 
 
 def resolve_doc(name: str, md_files: list[str]) -> str | None:
+    name = re.sub(r"^(?:\.\.?/)+", "", name)
     matches = [f for f in md_files if f == name or f.endswith("/" + name)]
     if len(matches) == 1:
         return matches[0]
@@ -130,17 +145,19 @@ def resolve_doc(name: str, md_files: list[str]) -> str | None:
     return core[0] if len(core) == 1 else None
 
 
-def match_heading(rest: str, headings: set[str]) -> tuple[bool, str]:
+def match_heading(rest: str, headings: set[str]) -> tuple[bool, str, int]:
+    """Whether `rest` (the text after a §) starts with a heading; the target; its length."""
+    rest = rest.replace('\\"', '"')
     quoted = re.match(r'"([^"]+)"', rest)
     if quoted:
         target = quoted.group(1)
-        return normalize_heading(target) in headings, target
-    words = rest.split()
+        return normalize_heading(target) in headings, target, quoted.end()
+    words = list(re.finditer(r"\S+", rest))
     for n in range(min(len(words), 10), 0, -1):
-        candidate = " ".join(words[:n]).rstrip(".,;:)*`'\"")
+        candidate = rest[:words[n - 1].end()].rstrip(".,;:)*`'\"")
         if normalize_heading(candidate) in headings:
-            return True, candidate
-    return False, " ".join(words[:4])
+            return True, candidate, len(candidate)
+    return False, " ".join(w.group() for w in words[:4]), 0
 
 
 def check_pointers(files: list[str]) -> list[dict]:
@@ -151,10 +168,10 @@ def check_pointers(files: list[str]) -> list[dict]:
         path = Path(rel)
         if excluded(rel) or not (path.suffix in POINTER_SUFFIXES or path.name in POINTER_NAMES):
             continue
-        try:
-            lines = (REPO_ROOT / rel).read_text(encoding="utf-8").splitlines()
-        except (UnicodeDecodeError, FileNotFoundError):
+        text = read(rel)
+        if text is None:
             continue
+        lines = text.splitlines()
         for idx, line in enumerate(lines):
             if "§" not in line:
                 continue
@@ -162,23 +179,30 @@ def check_pointers(files: list[str]) -> list[dict]:
             if NUMBERED.search(line):
                 errors.append({"file": rel, "line": lineno, "check": "numbered-pointer",
                                "message": "numbered § pointer; point at the heading name instead"})
-            # A pointer can wrap onto the next comment line: `§"What gates a` / `// merge"`.
-            following = CONTINUATION.sub(" ", "\n" + lines[idx + 1]) if idx + 1 < len(lines) else ""
+            following = "".join(CONTINUATION.sub(" ", "\n" + nxt)
+                                for nxt in lines[idx + 1: idx + 1 + FOLLOWING_LINES])
             for m in POINTER.finditer(line):
-                rest = line[m.end():] + following
-                if re.match(r"\s*\d", rest):
-                    continue  # reported above
                 doc = resolve_doc(m.group("doc"), md_files)
                 if doc is None:
                     errors.append({"file": rel, "line": lineno, "check": "unknown-doc",
                                    "message": f"`{m.group('doc')}` matches no single tracked doc"})
                     continue
                 if doc not in heading_cache:
-                    heading_cache[doc] = headings_of(REPO_ROOT / doc)
-                ok, target = match_heading(rest.lstrip(), heading_cache[doc])
-                if not ok:
-                    errors.append({"file": rel, "line": lineno, "check": "dangling-pointer",
-                                   "message": f"{doc} has no heading matching §{target!r}"})
+                    heading_cache[doc] = headings_of(doc)
+                rest = line[m.end():] + following
+                while True:
+                    if re.match(r"\s*\d", rest):
+                        break  # reported above
+                    rest = rest.lstrip()
+                    ok, target, used = match_heading(rest, heading_cache[doc])
+                    if not ok:
+                        errors.append({"file": rel, "line": lineno, "check": "dangling-pointer",
+                                       "message": f"{doc} has no heading matching §{target!r}"})
+                        break
+                    chained = CHAINED.match(rest[used:])
+                    if not chained:
+                        break
+                    rest = rest[used + chained.end():]
     return errors
 
 
@@ -186,13 +210,18 @@ def symbol_corpus(files: list[str]) -> set[str]:
     words: set[str] = set()
     for rel in files:
         path = Path(rel)
-        if any(p in EXCLUDED_PARTS for p in path.parts):
+        if any(p in EXCLUDED_PARTS for p in path.parts) or rel in SELF:
             continue
-        if path.suffix in SYMBOL_CORPUS_SUFFIXES or path.name in SYMBOL_CORPUS_NAMES:
-            try:
-                words.update(re.findall(r"\w+", (REPO_ROOT / rel).read_text(encoding="utf-8")))
-            except (UnicodeDecodeError, FileNotFoundError):
-                continue
+        if not (path.suffix in SYMBOL_CORPUS_SUFFIXES or path.name in SYMBOL_CORPUS_NAMES):
+            continue
+        text = read(rel)
+        if text is None:
+            continue
+        if path.suffix == ".swift":
+            text = SWIFT_LINE_COMMENT.sub(" ", SWIFT_BLOCK_COMMENT.sub(" ", text))
+        words.update(re.findall(r"\w+", text))
+    # A Swift file's name counts: docs name a file-level concept (`Reordering`) by it.
+    words.update(Path(f).stem for f in files if f.endswith(".swift"))
     return words
 
 
@@ -210,7 +239,7 @@ def check_symbols(files: list[str]) -> list[dict]:
         if not (rel.endswith(".md") and rel.startswith(SYMBOL_DOCS)):
             continue
         in_fence = False
-        for lineno, line in enumerate((REPO_ROOT / rel).read_text(encoding="utf-8").splitlines(), 1):
+        for lineno, line in enumerate((read(rel) or "").splitlines(), 1):
             if line.startswith("```"):
                 in_fence = not in_fence
                 continue
@@ -226,11 +255,8 @@ def check_symbols(files: list[str]) -> list[dict]:
                                        "message": f"`{raw}` is not a tracked file"})
                     continue
                 parts = [p for p in (m.group(1), m.group(2)) if p]
-                if m.group(3):
-                    # A call like `resize(in:)` names a function even without camelCase.
-                    names = parts
-                else:
-                    names = [p for p in parts if looks_like_code_symbol(p)]
+                # A call like `resize(in:)` names a function even without camelCase.
+                names = parts if m.group(3) else [p for p in parts if looks_like_code_symbol(p)]
                 for name in names:
                     if name in EXTERNAL_SYMBOLS or name in corpus:
                         continue
@@ -239,15 +265,21 @@ def check_symbols(files: list[str]) -> list[dict]:
     return errors
 
 
-def added_lines(base: str) -> list[tuple[str, int, str]]:
-    def run(*args: str) -> str:
-        return subprocess.run(["git", *args], cwd=REPO_ROOT, capture_output=True,
-                              text=True).stdout
+def git(*args: str) -> str:
+    return subprocess.run(["git", *args], cwd=REPO_ROOT, capture_output=True, text=True).stdout
 
-    diffs = []
-    if run("rev-parse", "--verify", "--quiet", base).strip():
-        diffs.append(run("diff", "-U0", "--diff-filter=d", f"{base}...HEAD"))
-    diffs.append(run("diff", "-U0", "--diff-filter=d", "HEAD"))
+
+def added_lines(base: str) -> tuple[list[tuple[str, int, str]], str | None]:
+    """Lines added on this branch and in the working tree, plus a warning if the base is missing."""
+    diffs, warning = [], None
+    ref = next((r for r in (base, f"origin/{base}")
+                if git("rev-parse", "--verify", "--quiet", r).strip()), None)
+    if ref:
+        diffs.append(git("diff", "-U0", "--diff-filter=d", f"{ref}...HEAD"))
+    else:
+        warning = (f"check_doc_pointers: neither `{base}` nor `origin/{base}` exists, so the "
+                   "history-marker check covers uncommitted changes only.")
+    diffs.append(git("diff", "-U0", "--diff-filter=d", "HEAD"))
     result = []
     for diff in diffs:
         current, lineno = None, 0
@@ -259,24 +291,23 @@ def added_lines(base: str) -> list[tuple[str, int, str]]:
             elif line.startswith("+") and current:
                 result.append((current, lineno, line[1:]))
                 lineno += 1
-    for rel in run("ls-files", "--others", "--exclude-standard").splitlines():
-        try:
-            for lineno, line in enumerate((REPO_ROOT / rel).read_text(encoding="utf-8").splitlines(), 1):
-                result.append((rel, lineno, line))
-        except (UnicodeDecodeError, FileNotFoundError, IsADirectoryError):
-            continue
-    return result
+    for rel in git("ls-files", "--others", "--exclude-standard").splitlines():
+        for lineno, line in enumerate((read(rel) or "").splitlines(), 1):
+            result.append((rel, lineno, line))
+    return result, warning
 
 
-def check_history(base: str) -> list[dict]:
+def check_history(base: str) -> tuple[list[dict], str | None]:
     errors = []
     seen = set()
-    for rel, lineno, text in added_lines(base):
-        if (rel, lineno) in seen or excluded(rel) or not rel.startswith(HISTORY_SCOPES):
+    lines, warning = added_lines(base)
+    for rel, lineno, text in lines:
+        # The same added line appears in both diffs when it is committed and then edited nearby.
+        if (rel, text) in seen or excluded(rel) or not rel.startswith(HISTORY_SCOPES):
             continue
         if not (rel.endswith(".swift") or rel.endswith(".md")):
             continue
-        seen.add((rel, lineno))
+        seen.add((rel, text))
         patterns = list(HISTORY_PATTERNS)
         if rel.endswith(".swift"):
             patterns.append(SIBLING_PATTERN)
@@ -284,7 +315,7 @@ def check_history(base: str) -> list[dict]:
             if pattern.search(text):
                 errors.append({"file": rel, "line": lineno, "check": "history-marker",
                                "message": f"{label} — describe the current state; git is the record"})
-    return errors
+    return errors, warning
 
 
 def main() -> int:
@@ -294,7 +325,10 @@ def main() -> int:
     args = parser.parse_args()
 
     files = tracked_files()
-    errors = check_pointers(files) + check_symbols(files) + check_history(args.base)
+    history, warning = check_history(args.base)
+    errors = check_pointers(files) + check_symbols(files) + history
+    if warning:
+        print(warning, file=sys.stderr)
 
     if args.json:
         print(json.dumps({"errors": errors}, indent=2))
@@ -302,7 +336,7 @@ def main() -> int:
         for e in errors:
             print(f"{e['file']}:{e['line']}: [{e['check']}] {e['message']}")
         if errors:
-            print(f"\ncheck_doc_pointers: {len(errors)} problem(s). See AGENTS.md §\"Writing style\".",
+            print(f'\ncheck_doc_pointers: {len(errors)} problem(s). See AGENTS.md §"Writing style".',
                   file=sys.stderr)
         else:
             print("check_doc_pointers: ok")

@@ -43,7 +43,8 @@ run_step i18n-check
 # Also cheap, and also better answered before a compile: a keyboard-key tap in a UI test
 # is a failure that only shows up on a differently-configured simulator.
 run_step uitest-check
-# Pure text checks: a dangling pointer or a name that no longer exists in the code.
+# Pure text checks: dangling doc pointers, names that no longer exist in the code, and history
+# narrated on added lines.
 run_step doc-check
 run_step build
 

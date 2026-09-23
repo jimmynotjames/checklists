@@ -17,11 +17,13 @@ Metadata note: —
 
 ## Candidate
 
+- [ ] Spec drift sweep clean or fixed
 - [ ] Release candidate uploaded to TestFlight
 - [ ] Version/build PR opened
 - [ ] Version/build PR reviewed and merged
 - [ ] Exact candidate installed and tested
 
+Spec sweep: —
 Version: X.Y.Z
 Build: —
 Binary source commit: —
