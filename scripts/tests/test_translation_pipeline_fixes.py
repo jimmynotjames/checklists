@@ -1,4 +1,4 @@
-"""Metadata merge, metadata audit and validate, and catalog update_keys behave as documented."""
+"""Metadata merge, gate, audit and validate, and catalog update_keys behave as documented."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ import contextlib
 import importlib.util
 import io
 import json
+import shutil
 import sys
 import tempfile
 import unittest
@@ -29,6 +30,7 @@ def _load(name: str, relative: str):
 metadata_merge = _load("translate_metadata_merge", "scripts/translate_metadata/merge.py")
 metadata_audit = _load("translate_metadata_audit", "scripts/translate_metadata/audit.py")
 metadata_validate = _load("translate_metadata_validate_fixes", "scripts/translate_metadata/validate.py")
+check_metadata = _load("translate_metadata_check_metadata", "scripts/translate_metadata/check_metadata.py")
 update_keys = _load("translate_catalog_update_keys", "scripts/translate_catalog/update_keys.py")
 
 
@@ -96,6 +98,33 @@ class MetadataMergeBlankFieldTests(unittest.TestCase):
     def test_name_is_copied_as_passthrough(self) -> None:
         self._merge("es-ES", {"subtitle": "Listas reutilizables"})
         self.assertEqual((self.metadata / "es-ES" / "name.txt").read_bytes(), b"reChecklist\n")
+
+
+class CheckMetadataEmptyFileTests(unittest.TestCase):
+    """The gate fails on an empty storefront file, which `prepare` would reject at upload."""
+
+    def _check(self, empty_file: str | None) -> tuple[int, list[str]]:
+        with tempfile.TemporaryDirectory() as tmp:
+            metadata = Path(tmp) / "metadata"
+            shutil.copytree(REPO_ROOT / "fastlane" / "metadata", metadata)
+            if empty_file:
+                (metadata / empty_file).write_text("\n", encoding="utf-8")
+            out = io.StringIO()
+            with _patched(check_metadata, METADATA_DIR=metadata), contextlib.redirect_stdout(out):
+                code = check_metadata.main(["--json"])
+        return code, json.loads(out.getvalue())["issues"]
+
+    def test_committed_tree_passes(self) -> None:
+        self.assertEqual(self._check(None), (0, []))
+
+    def test_empty_file_for_a_field_blank_in_en_us_fails_and_is_named(self) -> None:
+        blank = next(f for f in check_metadata.TRANSLATABLE_FIELDS
+                     if not check_metadata.read_field(check_metadata.SOURCE_LOCALE, f))
+        code, issues = self._check(f"de-DE/{blank}.txt")
+        self.assertEqual(code, 1)
+        self.assertEqual(len(issues), 1)
+        self.assertIn(f"de-DE/{blank}.txt", issues[0])
+        self.assertIn("delete", issues[0])
 
 
 class MetadataAuditKeywordBytesTests(unittest.TestCase):

@@ -62,7 +62,7 @@ scripts/translate_metadata/
   audit.py              # inspect outputs: field length table, OVER flags, consolidated _questions; --questions/--json/--full
   audit_semantic.py     # semantic quality audit of the committed listing: --dispatch / --report / --write-manifest; --min-severity
   merge.py              # tmp/metadata-outputs/{storefront}.json → fastlane/metadata/{storefront}/*.txt + passthrough; deletes fields blank in en-US
-  check_metadata.py     # authoritative gate over fastlane/metadata/ (authored fields populated+within limits; blank-source fields have no content)
+  check_metadata.py     # authoritative gate over fastlane/metadata/ (authored fields populated+within limits; blank-source fields have no content; no empty files)
   PROMPT_TEMPLATE.md    # transcreation prompt template
   AUDIT_PROMPT_TEMPLATE.md # semantic-audit prompt template
   README.md             # this file
