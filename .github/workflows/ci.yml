@@ -115,13 +115,16 @@ jobs:
 
   # --- Localization gates (ubuntu) --------------------------------------------
   # The two the pre-push hook runs, plus the deterministic plural and
-  # untranslated-copy checks and a non-blocking consistency report. App Store
+  # untranslated-copy checks, the doc-pointer check, and a non-blocking
+  # consistency report. App Store
   # metadata and screenshot-content checks stay release-time only — they run in
   # their fastlane lanes, not here.
   i18n-gates:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0  # check_doc_pointers diffs against main for its history scan
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
@@ -137,6 +140,8 @@ jobs:
         run: python3 scripts/ci/annotate.py --name untranslated_copies -- python3 scripts/translate_audit/untranslated_copies.py
       - name: distinct_pairs.py
         run: python3 scripts/ci/annotate.py --name distinct_pairs -- python3 scripts/translate_audit/distinct_pairs.py
+      - name: check_doc_pointers.py
+        run: python3 scripts/ci/annotate.py --name check_doc_pointers -- python3 scripts/check_doc_pointers.py
       - name: consistency_check (informational, non-blocking)
         run: python3 scripts/translate_audit/consistency_check.py --ignore-casing || true
 

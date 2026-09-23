@@ -7,9 +7,12 @@ Shared by `create-pr` and `create-pr-for-issue`.
 Spawn a fresh-context review subagent (Claude: `general-purpose`; Codex/Cursor: the available
 subagent tool) with the diff pasted after this brief:
 
-> "You are reviewing a code diff for a **UIKit iOS app (no storyboards) written in Swift 6.0 with
-> `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`**, persisted with SwiftData. Deployment target is
-> iOS 26.0.
+> "You are reviewing a code diff for a **hybrid SwiftUI/UIKit iOS app written in Swift 6.0 with
+> `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`**, persisted with SwiftData + CloudKit. Deployment
+> target is iOS 26.0. The app root, navigation, and every screen except checklist detail are
+> SwiftUI; checklist detail is `ChecklistViewController` (UIKit, table-based), hosted by
+> `ChecklistScreen`. You have repository access: read and grep beyond the diff wherever a check
+> below needs it.
 > Review for:
 >
 > - **SwiftData save correctness** — model mutations that never reach a `saveChanges(operation:)`,
@@ -21,27 +24,43 @@ subagent tool) with the diff pasted after this brief:
 > - **Ordering via `sortKey`** — SwiftData relationships are unordered, so order is data. Check
 >   midpoint-insertion boundaries and that callers pass the sibling array each function's doc
 >   comment asks for (with or without the element being moved).
+> - **SwiftUI state** — state owned by the wrong view (reset on re-render, or shared when it
+>   should not be), environment values read where they are not provided, and `.task`/`.onChange`
+>   work that re-runs or leaks when the view's identity changes.
 > - **Retain cycles** — missing `[weak self]` in escaping closures; delegate properties declared
->   `strong` instead of `weak`. This codebase is delegate-heavy.
+>   `strong` instead of `weak`. The UIKit side (`ChecklistViewController` and `Views/`) is
+>   delegate-heavy.
 > - **New force-unwraps and force-casts introduced by this diff.** The existing tree already has
 >   many; judge only what this diff adds.
-> - **UITableView data-source consistency** — row/section counts vs. the model after a mutation,
->   index-path arithmetic, and reload/insert/delete calls that can desync.
+> - **UITableView data-source consistency** (`ChecklistViewController`) — row/section counts vs.
+>   the model after a mutation, index-path arithmetic, and reload/insert/delete calls that can
+>   desync.
 > - **Main-thread UI** — UIKit calls made off the main thread.
 > - Correctness bugs, architectural problems, and serious future-extensibility risks generally.
 >
-> Then two checks on the diff as a whole. Report both every time — as a numbered problem, or by name
-> in the closing `Clean:` line. Silence on them reads as "not looked at":
+> Then three checks on the diff as a whole. Report all three every time — as a numbered problem, or
+> by name in the closing `Clean:` line. Silence on them reads as "not looked at":
 >
 > - **Deletable prose** — any doc or comment line here that could be deleted with no loss: text
 >   restating what the code already shows, history or narration of how the change came about,
 >   drift-prone numbers (counts, dates, "since #N"), or duplication of something `core-docs/`,
 >   AGENTS.md, a config file, or this same file already says. Quote each line. Do not flag comments
 >   that narrate a UI flow for a human reader.
+> - **Stale elsewhere** — prose *outside* the diff that this diff makes false. For each behaviour,
+>   symbol, UI element, or default the diff changes, grep the repo for it (name, identifier, and
+>   the behaviour in plain words) and read what describes it: doc comments on its callers and
+>   callees, the matching `core-docs/` section, test comments, translator `comment:` strings, and
+>   AGENTS.md. Quote each passage that is now wrong, with file and line. Tag it **Risk (high)** if
+>   it is in `core-docs/` or AGENTS.md (the next agent will act on it), otherwise **Cleanup**. This
+>   is the check
+>   most likely to find something; a diff that changes behaviour and yields nothing here should
+>   say what was searched.
 > - **Scope creep** — anything in this diff not required by the stated change: renames, refactors,
->   drive-by fixes, edits to files the change had no reason to touch. Name the files.
+>   drive-by fixes, edits to files the change had no reason to touch. Name the files. Fixing prose
+>   that the stale-elsewhere check found is in scope.
 >
-> Do NOT flag style issues — SwiftLint and SwiftFormat own those; the two checks above are not style.
+> Do NOT flag style issues — SwiftLint and SwiftFormat own those; the three checks above are not
+> style.
 >
 > Number the problems `1.`, `2.`, … Title each one `**N. <Tag> (<rating>)** — <the defect stated as
 > a claim>`, where `<Tag>` is **Bug** (wrong today, a user can hit it), **Risk** (not wrong yet;
@@ -52,8 +71,8 @@ subagent tool) with the diff pasted after this brief:
 > bad, how often — or `None — internal only.`), then the file and approximate line and the technical
 > description.
 >
-> A check that came back clean is not a numbered problem. Name the two checks above in one closing
-> `Clean: …` line, plus any review area you want to record as clean. Append the full diff below."
+> A check that came back clean is not a numbered problem. Name each of the three checks that came
+> back clean in one closing `Clean: …` line, plus any review area you want to record as clean. Append the full diff below."
 >
 > **The stated change:** [one or two sentences — what this PR was asked to do, and which files that
 > should touch. `create-pr-for-issue`: summarise the issue here. The scope check has nothing to
@@ -69,10 +88,11 @@ Process findings by severity:
   suggestions outside the change's scope.
 - **Low** — skip (style, premature optimization; not your job here).
 
-The deletable-prose and scope-creep verdicts are **acted on regardless of the rating they carry** —
-they are the two findings the Low rule must not swallow. Delete the prose — `git blame` first, per
-AGENTS.md §"Writing style". Revert the out-of-scope edit, or, if the change genuinely can't work
-without it, keep it and say why in the PR body. (This
+The deletable-prose, stale-elsewhere, and scope-creep verdicts are **acted on regardless of the
+rating they carry** — they are the three findings the Low rule must not swallow. Delete the prose —
+`git blame` first, per AGENTS.md §"Writing style". Correct each stale passage in this PR, or delete
+it if the code now says it better. Revert the out-of-scope edit, or, if the change genuinely can't
+work without it, keep it and say why in the PR body. (This
 does not reopen the Medium rule above: the reviewer *proposing* an adjacent refactor is still
 declined; the reviewer *catching* one already in the diff is not.)
 
@@ -98,17 +118,17 @@ Applies if: the diff introduces a new user-initiated action that materially chan
 button, a new destructive action, a new setting).
 Check: a matching `analytics.track(...)` call is present. In a SwiftUI view, read the client with
 `@Environment(\.analytics)`; in `ChecklistViewController` it is the injected `analytics` property;
-in the three pre-environment persistence sites it is a parameter defaulting to
-`AppAnalytics.shared` (see `core-docs/analytics-spec.md` §7.3). Add the event and property names to
+in the pre-environment persistence sites it is a parameter defaulting to
+`AppAnalytics.shared` (see `core-docs/analytics-spec.md` §Non-SwiftUI callers). Add the event and property names to
 the `AnalyticsEvent` / `AnalyticsProperty` enums in
 `checklists/checklists/Analytics/AnalyticsNames.swift` — **never a string literal**, and declare
 them `nonisolated static let` so SwiftData model extensions can use them — and **add a row to the
-catalog in `core-docs/analytics-spec.md` §8/§9 in the same change**. Names are flat `snake_case`,
+catalog in `core-docs/analytics-spec.md` §Event catalog / §Property catalog in the same change**. Names are flat `snake_case`,
 `noun_pastTenseVerb`. Route any user-supplied string through `AnalyticsText.truncated`.
 
 No PII: item names, item notes, and checklist notes must never be sent as raw event parameters.
 The one exception is `checklist_name` on `checklist_viewed`, which is a pre-existing accepted risk
-documented in `core-docs/analytics-spec.md` §4.4 — it is not a precedent for adding more user content.
+documented in `core-docs/analytics-spec.md` §Free-text exception — it is not a precedent for adding more user content.
 
 **Accessibility**
 Applies if: the diff adds or modifies a SwiftUI `View`, a `UIView`, or a `UIViewController`.
@@ -120,12 +140,11 @@ Dynamic Type — prefer `minHeight` over a fixed `height` on rows that contain t
 **Reduce Motion**
 Applies if: the diff adds or changes an animation — SwiftUI `.animation`/`withAnimation`/
 `.transition`, or UIKit `UIView.animate(withDuration:...)`/any `animated:` call (`setContentOffset`,
-`scrollToRow`, etc. obey `animated: true` regardless of the Reduce Motion setting — that's how one
-escaped the first audit pass).
+`scrollToRow`, etc. obey `animated: true` regardless of the Reduce Motion setting).
 Check: gate it on Reduce Motion using the established pattern
 (`@Environment(\.accessibilityReduceMotion)` in SwiftUI, `UIAccessibility.isReduceMotionEnabled` in
 UIKit), or record a one-line rationale for leaving it ungated. Add the verdict to the animation
-inventory in `core-docs/accessibility-spec.md` §3.
+inventory in `core-docs/accessibility-spec.md` §Animation and Reduce Motion.
 
 If the change involved any accessibility or Reduce Motion work, read `core-docs/accessibility-spec.md`
 and update it in the same PR. Otherwise leave it unread.
@@ -157,7 +176,21 @@ Fix any gaps you find.
 Run `make gate` in the background and collect its final exit status — it tees output to
 `tmp/gate.log`. **Do not open the PR until the gate is green.** What the gate does: AGENTS.md
 §"Build and test". On failure, read `tmp/gate.log`, fix the failure, and re-run. Format and lint
-fixes are auto-applied to changed files; build failures require code changes.
+fixes are auto-applied to changed files; build failures require code changes. A `doc-check`
+failure means a pointer, symbol, or file named in prose no longer exists, or an added line
+narrates history: fix the prose, never the check's allowlist, unless the name is genuinely
+external to this repo.
+
+Then check the issue references the diff adds — the gate is offline and cannot:
+
+```bash
+git diff main...HEAD | grep -E '^\+' | grep -oE '\B#[0-9]{1,5}\b' | sort -u
+```
+
+Run `gh issue view <N> --json state` for each (a PR number resolves too; skip those, and skip
+test fixtures and hex colours the pattern also matches). A
+reference to a closed issue in a comment or doc is history: delete it, unless the text is about
+that closed item on purpose, like a PR body's `Closes #N`.
 
 In **Test plan**, say how the change was actually verified. State accurately which automated suites
 were run — a plausible-sounding test plan that was never run is worse than "verified by hand in the

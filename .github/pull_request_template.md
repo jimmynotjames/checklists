@@ -47,8 +47,7 @@ For every change, confirm each concern applies or is N/A:
 
 ### 🧪 Running tests
 
-Tests are **opt-in and not part of the gate** — `make gate` is
-format → lint → i18n-check → uitest-check → build.
+Tests are **opt-in and not part of the gate** (gate steps: AGENTS.md §"Build and test").
 Both suites do run and pass, so run whichever the change warrants and state explicitly in the
 Test plan above how it was verified — including "not run, verified manually in the simulator"
 when that's the honest answer.
