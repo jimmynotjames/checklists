@@ -79,7 +79,7 @@ within SwiftData yet. See "CloudKit rules" below for what changing either model 
   change is a new `VersionedSchema` (`SchemaV2`, …) plus a `MigrationStage` in
   `ChecklistsMigrationPlan.stages` plus a migration test, never an edit to `SchemaV1` in place. See
   the doc comment atop `DataModels/SchemaV1.swift`, and the "SwiftData schema migration"
-  cross-cutting check in `.claude/skills/create-pr/SKILL.md`.
+  cross-cutting check in `.claude/skills/create-pr/reference/review-and-gate.md`.
 
 ## Legacy import
 

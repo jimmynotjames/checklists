@@ -40,10 +40,6 @@ from appstore_metadata import FIELD_BY_FILENAME  # noqa: E402
 # transcreated from. It is never itself a translation target.
 SOURCE_LOCALE = "en-US"
 
-# Brand token. Kept verbatim in every locale — never translated, transliterated, or
-# re-cased.
-BRAND = "reChecklist"
-
 # The translation TARGET storefronts (sorted), excluding the en-US source.
 STOREFRONT_LOCALES: list[str] = sorted(
     storefront for storefront in RUNTIME_TO_STOREFRONT.values() if storefront != SOURCE_LOCALE
