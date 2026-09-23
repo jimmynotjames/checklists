@@ -7,7 +7,6 @@
 
 import UIKit
 
-/// Unlike `UITextView` (see `CLTextView`), `UITextField` requires the drop delegate to be set explicitly.
 class CLTextField: UITextField {
   override init(frame: CGRect) {
     super.init(frame: frame)

@@ -12,7 +12,7 @@ import SwiftUI
 
  "Start over fresh" appears only when `failure.allowsStoreReset` says the store itself would not
  open. By the time `onStoreReset` runs, every local store has already been deleted; the caller
- reruns startup from there. See core-docs/persistence-design.md §The failure screen.
+ reruns startup from there. See `persistence-design.md §The failure screen`.
  */
 struct ContainerFailureView: View {
   let failure: ContainerCreationFailure

@@ -97,14 +97,11 @@ struct CopyCheckedItemsView: View {
           Image(systemName: "arrow.forward.circle.fill")
             .font(.title2)
             .foregroundStyle(Color.accentColor)
-            // The symbol alone is about 24pt. `.plain` below scopes hit-testing to the label, so
-            // the label is what has to carry the 44pt minimum — the same pairing `ToastView`'s
-            // action button uses. Without it a near-miss lands in the field instead and raises the
-            // keyboard over the destinations.
+            // The symbol alone is about 24pt, and `.plain` scopes hit-testing to the label, so the
+            // label carries the 44pt minimum; a near-miss would otherwise raise the keyboard.
             .frame(minWidth: 44, minHeight: 44, alignment: .trailing)
         }
-        // Plain, so the hit area stays on the symbol instead of swallowing taps meant for the
-        // field beside it.
+        // Plain, so the hit area doesn't swallow taps meant for the field beside it.
         .buttonStyle(.plain)
         .accessibilityLabel(Self.createAccessibilityLabel)
         .accessibilityIdentifier("copyDestination.createNewChecklist")
@@ -177,11 +174,8 @@ struct CopyCheckedItemsView: View {
     finish(copiedInto: destination, destination: .existingChecklist)
   }
 
-  /// Track, dismiss, then confirm — in that order.
-  ///
-  /// The toast is raised *after* `dismiss()` so the root toast layer is the one that draws it: a
-  /// dismissing sheet's content stays mounted for its slide-out, and this sheet's own layer stands
-  /// down the moment the router's slot clears.
+  /// Track, dismiss, then confirm — in that order, so the root toast layer is the one that draws
+  /// the toast (see `ToastPresenterModifier`).
   private func finish(copiedInto checklist: Checklist, destination: CheckedItemsCopyDestination) {
     analytics.track(
       AnalyticsEvent.checklistItemsCopied,

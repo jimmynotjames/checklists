@@ -87,7 +87,7 @@ struct MainMenuView: View {
   }
 }
 
-/// One row of the main menu: a fixed-height, full-width tap target pairing an icon with a title.
+/// One row of the main menu: a full-width tap target pairing an icon with a title.
 private struct MainMenuRow: View {
   let title: String
   let iconName: String

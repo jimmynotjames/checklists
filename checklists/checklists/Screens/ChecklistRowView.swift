@@ -17,18 +17,9 @@ struct ChecklistRowView: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 8) {
       HStack(spacing: 7) {
-        // Deliberately 7, not the standard 8: keeps the ring tight against the name (matches
-        // the pre-SwiftUI design; see PR #136).
+        // Deliberately 7, not the standard 8: keeps the ring tight against the name.
         StatusIconView(percentageComplete: checklist.percentageComplete)
-          // Declared here, not just left to the wrapped `CircularPercentStatusIcon`: the row is a
-          // `Button`, and SwiftUI folds a button's content into one element whose value is whatever
-          // the merge happens to pick up from the hosted UIView. Stating the value on this side
-          // makes "Morning Routine, Checklist 83% complete" the row's contract instead of a
-          // by-product of the icon leaving its `accessibilityLabel` nil.
-          //
-          // Only the value is declared. The grouping is left exactly as it is: `checklistNotesLabel`
-          // and the icon are both addressed as elements *inside* the row's cell by `checklistUITest`,
-          // so collapsing the children here would take those away for no accessibility gain.
+          // See `CircularPercentStatusIcon.accessibilityValueText` for why the row states this.
           .accessibilityValue(
             CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: checklist.percentageComplete)
           )

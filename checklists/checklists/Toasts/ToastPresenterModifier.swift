@@ -13,9 +13,6 @@ import SwiftUI
 /// stands down while a sheet is up — so a toast is always visible wherever the person is looking,
 /// and it is never announced or timed twice.
 ///
-/// The root layer must be applied innermost on `RootView` in `ChecklistsApp` — misplaced, the app
-/// traps at launch on the missing `ToastPresenter` / `Router` environment.
-///
 /// The main menu is *not* stood down for: it is a layer inside `RootView`'s `ZStack`, so the root
 /// overlay already draws above it, and the card sits at the bottom while the menu's only control
 /// is at the top.
@@ -26,10 +23,6 @@ private struct ToastLayer: ViewModifier {
   /// Extra room for the floating add button on `ChecklistsView` — 60pt across with 20pt of
   /// padding, so 80pt of footprint — plus a little air. At `bottomInset` the card would lie over
   /// the button and swallow taps meant for it.
-  ///
-  /// Nothing reaches this today: the app's one toast is raised from the copy sheet, which
-  /// dismisses onto the checklist *detail* screen, so something is always pushed while a toast is
-  /// up. It is here for the next screen that raises one, not because anything exercises it.
   private static let addButtonClearance: CGFloat = 88
 
   /// The root layer owns the announcement and the scene handling; the sheet's layer only draws,
@@ -74,22 +67,17 @@ private struct ToastLayer: ViewModifier {
       }
   }
 
-  /// Both layers key off the same condition, so exactly one ever draws. The sheet's half is not
-  /// redundant: a dismissing sheet's content stays mounted for its slide-out, so a toast raised
-  /// just after `dismiss()` — the shape a confirmation takes — would otherwise be drawn by both.
   /// The add button belongs to `ChecklistsView`, which is what the card sits over exactly when
-  /// nothing is pushed — `drawsHere` already keeps the root layer down while a sheet is up.
-  ///
-  /// Measured from the safe area, which includes the keyboard: this modifier opts out of nothing,
-  /// so with the keyboard up the card rides above it rather than dismissing it.
-  ///
-  /// `AnalyticsConsentSheet` is the one screen neither value clears — its Accept/Decline stack
-  /// reaches roughly 144pt up. Nothing raises a toast over it today; whoever first does needs a
-  /// third case here.
+  /// nothing is pushed and no sheet is up. Measured from the safe area, which includes the
+  /// keyboard, so with the keyboard up the card rides above it. `AnalyticsConsentSheet`'s
+  /// Accept/Decline stack is taller than either value clears; a toast over it needs a third case.
   private var bottomClearance: CGFloat {
     isRoot && router.path.isEmpty ? Self.addButtonClearance : Self.bottomInset
   }
 
+  /// Both layers key off the same condition, so exactly one ever draws. The sheet's half is not
+  /// redundant: a dismissing sheet's content stays mounted for its slide-out, so a toast raised
+  /// just after `dismiss()` would otherwise be drawn by both.
   private var drawsHere: Bool {
     isRoot ? router.sheet == nil : router.sheet != nil
   }
@@ -109,8 +97,7 @@ private struct ToastLayer: ViewModifier {
 }
 
 extension View {
-  /// Applies the root toast layer. Apply once, innermost at the app root, so `ToastPresenter` and
-  /// `Router` are ancestors in the environment.
+  /// Applies the root toast layer. Apply once, innermost at the app root; see `ChecklistsApp`.
   func toastPresenter() -> some View {
     modifier(ToastLayer(isRoot: true))
   }

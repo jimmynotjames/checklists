@@ -11,8 +11,8 @@ import UIKit
 /// Not `nonisolated` (AGENTS.md §Concurrency): it touches `UIView` and a cached `DateFormatter`,
 /// neither of which is `Sendable`.
 ///
-/// What each line means and which actions move it are in core-docs/persistence-design.md
-/// §"The two history stamps".
+/// What each line means and which actions move it:
+/// `persistence-design.md §The two history stamps`.
 enum ChecklistHistoryCaption {
   private static let dateFormatter: DateFormatter = {
     let formatter = DateFormatter()
@@ -66,7 +66,7 @@ enum ChecklistHistoryCaption {
     // One element reading both lines, and static text is what it is — without the trait VoiceOver
     // announces an untyped group, and the UI tests stop finding it among `staticTexts`.
     view.accessibilityTraits = .staticText
-    // A test hook, not accessibility — see core-docs/accessibility-spec.md §2.4.
+    // A test hook, not accessibility — see `accessibility-spec.md §Identifiers are test hooks`.
     view.accessibilityIdentifier = "checklistMetadataLabel"
     return view
   }
@@ -76,7 +76,7 @@ enum ChecklistHistoryCaption {
     label.numberOfLines = 1
     label.lineBreakMode = .byTruncatingTail
     // A fixed size rather than a text style: nothing else on this screen scales with the user's text
-    // size, so a lone label that did would outgrow its neighbours — accessibility-spec.md §2.3.
+    // size, so a lone label that did would outgrow its neighbours — `accessibility-spec.md §Dynamic Type`.
     label.font = font
     label.textColor = .secondaryLabel
     return label

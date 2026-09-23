@@ -36,7 +36,7 @@ class CheckboxButton: UIButton {
     fatalError("This init() not supported.")
   }
 
-  /// Note: Must be called within write transaction.
+  /// Note: Only reflects the status on screen; saving it is the caller's job.
   func setCheckboxState(with itemStatus: Item.Status) {
     switch itemStatus {
     case .checked:

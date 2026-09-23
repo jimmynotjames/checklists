@@ -7,13 +7,16 @@ import UIKit
 
 /// The trailing navigation items, the overflow menu, the actions behind it, and the dismissal
 /// the destructive one shares with the remote-deletion path.
+///
+/// `duplicateChecklist` and `deleteChecklist` are internal so a test can invoke them: a `UIAction`
+/// handler cannot be fired directly.
 extension ChecklistViewController {
   /// Picks the menu's wording for this screen's mode and builds the trailing bar items. The create
   /// sheet gets Done, an existing checklist gets Reset; both get the overflow menu at the outer edge.
   func configureNavigationBar() {
     showsDiscardWording = isNewChecklist
     let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: makeMoreMenu())
-    // Held on to so the menu can be rebuilt while it is on screen; see `copyCheckedItems`.
+    // Held on to so the menu can be rebuilt while it is on screen; see `refreshMoreMenu`.
     moreBarButtonItem = moreItem
     moreItem.accessibilityLabel = Self.moreMenuAccessibilityLabel
     // Locale-invariant handle for UI tests; the label above is what VoiceOver reads.
@@ -59,16 +62,10 @@ extension ChecklistViewController {
 
   /// The copy entry, and the notice explaining why a tap did nothing.
   ///
-  /// The entry stays in the menu whether or not anything is ticked, and stays *live*. Omitting it
-  /// hid the feature from the people who most need to find it — someone who has never ticked an
-  /// item has never seen it — and dimming it would say "not now" without saying why. What is
-  /// genuinely unobvious here is the rule that ticking items *is* the selection, and only the
-  /// notice teaches that.
-  ///
-  /// Deferred rather than resolved up front because the menu is assembled once, in
-  /// `configureNavigationBar`, while what this depends on changes with every check-off, Reset and
-  /// remote merge. Rebuilding the whole menu from each of those paths would work; keeping the
-  /// freshness concern inside the menu is one place instead of five.
+  /// The entry is always present and always live, even with nothing ticked: hiding or dimming it
+  /// would never teach that ticking items *is* the selection, and the notice does. Deferred so it
+  /// reads the checked items when the menu opens, rather than rebuilding the menu on every
+  /// check-off, Reset and remote merge.
   private var copyCheckedItemsElement: UIDeferredMenuElement {
     // `uncached`, so the provider runs each time the menu opens rather than once per menu.
     UIDeferredMenuElement.uncached { [weak self] completion in
@@ -99,19 +96,12 @@ extension ChecklistViewController {
     }
   }
 
-  /// How long "No checked items." stays up.
-  ///
-  /// The same dwell a toast gets, so the two transient messages this flow can produce feel alike.
-  /// Copied rather than read from `ToastPresenter`, whose dwell is an injectable initializer
-  /// parameter rather than a shared constant — a UIKit menu reaching into it would be a
-  /// dependency neither type wants.
+  /// How long "No checked items." stays up: the same dwell a toast gets, copied rather than read
+  /// from `ToastPresenter`, whose dwell is an initializer parameter.
   private static let noItemsCheckedNoticeDuration: Duration = .seconds(2)
 
-  /// Internal so a test can invoke it: it is reached from a `UIAction` handler, which cannot be
-  /// fired directly.
   func copyCheckedItems() {
-    // Commits a name or note still being typed, so a half-edited item is copied as it reads on
-    // screen rather than as it was last saved — the same reason `duplicateChecklist` does it.
+    // Commits in-progress edits first; see `duplicateChecklist`.
     view.endEditing(true)
     guard !checklist.checkedItems.isEmpty else {
       showNoItemsCheckedNotice()
@@ -126,8 +116,7 @@ extension ChecklistViewController {
   ///
   /// Timed like a toast because the menu it lives in offers nothing else to retire it: it is not
   /// a row anyone can dismiss, and a bar-button menu does not report being closed. Tapping the
-  /// entry again while it is up is a no-op that restarts the dwell — the notice is already the
-  /// whole answer, so the only thing left to do is give it another two seconds to be read.
+  /// entry again while it is up restarts the dwell.
   private func showNoItemsCheckedNotice() {
     noItemsCheckedNoticeDismissal?.cancel()
     showsNoItemsCheckedNotice = true
@@ -148,8 +137,6 @@ extension ChecklistViewController {
 
   /// Unconfirmed on purpose: nothing is lost, and the sheet that follows offers Discard as the way
   /// back out.
-  /// Internal so a test can invoke it: it is reached from a `UIAction` handler, which cannot be
-  /// fired directly.
   func duplicateChecklist() {
     // Commits a name or note still being typed into the *source*, so the copy carries what is on
     // screen rather than the last value that happened to be saved. Same first-responder hazard
@@ -186,8 +173,6 @@ extension ChecklistViewController {
     present(alert, animated: true)
   }
 
-  /// Internal so a test can invoke it: it is reached from a `UIAction` handler, which cannot be
-  /// fired directly.
   func deleteChecklist() {
     // Fired for a discard too: the store operation is identical, and "created then immediately
     // deleted" is itself a useful reading of checklist_created vs. checklist_deleted.
