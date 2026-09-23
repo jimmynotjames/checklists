@@ -68,8 +68,8 @@ scripts/translate_metadata/
   README.md             # this file
 
 .claude/agents/
-  metadata-locale.md        # transcreation subagent (Read+Write, model: opus, effort: medium)
-  metadata-audit-locale.md  # semantic-audit subagent (Read+Write, model: opus, effort: medium)
+  metadata-locale.md        # transcreation subagent
+  metadata-audit-locale.md  # semantic-audit subagent
 
 tmp/
   metadata-inputs/source.json
