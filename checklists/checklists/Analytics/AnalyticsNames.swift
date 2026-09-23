@@ -42,6 +42,12 @@ nonisolated enum AnalyticsEvent {
   static let startupStoreReset = "startup_store_reset"
   static let legacyImportAbandoned = "legacy_import_abandoned"
 
+  // MARK: iCloud sync
+
+  static let icloudStatusChecked = "icloud_status_checked"
+  static let cloudkitContainerFellBack = "cloudkit_container_fell_back"
+  static let cloudkitSyncFailed = "cloudkit_sync_failed"
+
   // MARK: Rating prompt
 
   static let ratingPromptEligible = "rating_prompt_eligible"
@@ -82,6 +88,12 @@ nonisolated enum AnalyticsProperty {
   static let errorCode = "error_code"
   static let errorOperation = "error_operation"
   static let startupStage = "startup_stage"
+
+  // MARK: iCloud sync
+
+  static let containerBacking = "container_backing"
+  static let icloudAccount = "icloud_account"
+  static let syncOperation = "sync_operation"
 
   static let orientation = "orientation"
 

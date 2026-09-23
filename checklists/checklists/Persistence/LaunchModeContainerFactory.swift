@@ -28,7 +28,7 @@ enum LaunchModeContainerFactory {
     )
   }
 
-  static func make() throws -> (container: ModelContainer, backing: ContainerBacking) {
+  static func make() throws -> ContainerLaunchResult {
     try make(
       arguments: CommandLine.arguments,
       environment: ProcessInfo.processInfo.environment
@@ -42,7 +42,7 @@ enum LaunchModeContainerFactory {
   static func make(
     arguments: [String],
     environment: [String: String]
-  ) throws -> (container: ModelContainer, backing: ContainerBacking) {
+  ) throws -> ContainerLaunchResult {
     if isRunningTests(arguments: arguments, environment: environment) {
       if let json = environment[screenshotSeedJSONKey] {
         guard let locale = environment[screenshotSeedLocaleKey], !locale.isEmpty else {
@@ -51,14 +51,22 @@ enum LaunchModeContainerFactory {
         #if DEBUG
           let seed = try ScreenshotSeed.decode(from: json, expectedLocale: locale)
           AppLog.bootstrap.info("bootstrap.launchMode: screenshot test (in-memory, localized seed)")
-          return try (InMemoryModelContainer.makeSeeded(with: seed), .localFallback)
+          return try ContainerLaunchResult(
+            container: InMemoryModelContainer.makeSeeded(with: seed),
+            backing: .localFallback,
+            fallbackError: nil
+          )
         #else
           throw ScreenshotLaunchError.requiresDebugBuild
         #endif
       }
 
       AppLog.bootstrap.info("bootstrap.launchMode: test (in-memory, seeded)")
-      return try (InMemoryModelContainer.makeSeeded(), .localFallback)
+      return try ContainerLaunchResult(
+        container: InMemoryModelContainer.makeSeeded(),
+        backing: .localFallback,
+        fallbackError: nil
+      )
     }
     return try ProductionContainerFactory.make()
   }

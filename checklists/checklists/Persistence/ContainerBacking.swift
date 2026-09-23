@@ -13,7 +13,9 @@ import Foundation
 /// (`SyncStatus.AccountStatus`). The two combine into a single user-facing status in `SyncStatus`;
 /// keeping them apart is what lets the Settings row distinguish "you are signed in but this launch
 /// is running on the local store" from "you are not signed in at all".
-enum ContainerBacking {
-  case cloudKit
-  case localFallback
+///
+/// Raw values are the `container_backing` analytics vocabulary and the Feedback diagnostics text.
+enum ContainerBacking: String {
+  case cloudKit = "cloudkit"
+  case localFallback = "local_fallback"
 }

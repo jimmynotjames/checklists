@@ -22,7 +22,7 @@ final class AppStartupCoordinator {
     case failed(ContainerCreationFailure)
   }
 
-  typealias MakeContainer = @MainActor () throws -> (container: ModelContainer, backing: ContainerBacking)
+  typealias MakeContainer = @MainActor () throws -> ContainerLaunchResult
   typealias StageWork = @MainActor (ModelContext) throws -> Void
 
   private let makeContainer: MakeContainer
@@ -58,7 +58,8 @@ final class AppStartupCoordinator {
 
   func run() -> Outcome {
     do {
-      let (container, backing) = try tagging(.storeOpen) { try makeContainer() }
+      let result = try tagging(.storeOpen) { try makeContainer() }
+      let container = result.container
 
       // Automated tests get a disposable in-memory store that is already seeded; importing the
       // simulator's leftover Realm file into it would be both wrong and slow.
@@ -72,10 +73,14 @@ final class AppStartupCoordinator {
       }
 
       PersistenceController.install(
-        PersistenceController(modelContainer: container, containerBacking: backing)
+        PersistenceController(
+          modelContainer: container,
+          containerBacking: result.backing,
+          fallbackError: result.fallbackError
+        )
       )
-      AppLog.bootstrap.info("bootstrap.ready: backing=\(String(describing: backing), privacy: .public)")
-      return .ready(container: container, backing: backing)
+      AppLog.bootstrap.info("bootstrap.ready: backing=\(String(describing: result.backing), privacy: .public)")
+      return .ready(container: container, backing: result.backing)
     } catch let failure {
       // All three stages land here on purpose: the user-facing answer to all three starts the same,
       // which is to not continue into a screen that would look like their data is gone. What

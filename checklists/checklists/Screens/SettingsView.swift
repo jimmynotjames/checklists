@@ -3,7 +3,6 @@
 //  checklists
 //
 
-import CloudKit
 import SwiftUI
 
 /// Settings screen presented as a sheet from the app's `Router`.
@@ -32,14 +31,6 @@ struct SettingsView: View {
           }
           .tint(Color.accentColor)
         }
-      }
-      // Independent `.task`s, each auto-cancelled by SwiftUI when the sheet is dismissed,
-      // so there's no manual task lifecycle to start and stop here.
-      .task {
-        await ICloudStatusLoader().load(into: syncStatus)
-      }
-      .task {
-        await observeAccountChanges()
       }
       .task {
         analytics.track(AnalyticsEvent.settingsViewed)
@@ -118,25 +109,6 @@ struct SettingsView: View {
       .foregroundStyle(Colors.inactiveTextColor)
     case .checking, .available:
       EmptyView()
-    }
-  }
-
-  /// Observes iCloud account changes while Settings is on screen, so the row updates
-  /// reactively without requiring a dismiss / re-open. Watches both `CKAccountChanged`
-  /// (CloudKit container sign-in/out) and `NSUbiquityIdentityDidChange` (iCloud identity
-  /// token rotation, e.g. an account switch in Settings.app) since either can fire
-  /// independently.
-  private func observeAccountChanges() async {
-    await withTaskGroup(of: Void.self) { group in
-      group.addTask { await observeSingleNotification(.CKAccountChanged) }
-      group.addTask { await observeSingleNotification(.NSUbiquityIdentityDidChange) }
-    }
-  }
-
-  private func observeSingleNotification(_ name: NSNotification.Name) async {
-    let notifications = NotificationCenter.default.notifications(named: name)
-    for await _ in notifications {
-      await ICloudStatusLoader().load(into: syncStatus)
     }
   }
 
@@ -229,7 +201,7 @@ struct SettingsView: View {
 
   #Preview("iCloud unavailable") {
     SettingsView()
-      .previewEnvironment(syncStatus: PreviewSupport.syncStatus(containerBacking: .cloudKit, accountStatus: .unavailable))
+      .previewEnvironment(syncStatus: PreviewSupport.syncStatus(containerBacking: .cloudKit, accountStatus: .noAccount))
   }
 
   #Preview("iCloud checking") {

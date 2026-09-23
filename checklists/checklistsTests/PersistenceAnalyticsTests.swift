@@ -12,8 +12,10 @@ import Testing
 /// exists (analytics-spec.md §Non-SwiftUI callers).
 @Suite("Persistence and startup analytics")
 struct PersistenceAnalyticsTests {
-  /// Both store paths failing is the only way the app cannot open a store at all — the event
-  /// fires once, from the local fallback's catch, not once per attempted path.
+  /// Both store paths failing is the only way the app cannot open a store at all. The fatal-error
+  /// event still fires once, from the local fallback's catch — the CloudKit branch failing first
+  /// reports its own `cloudkit_container_fell_back` on the way through, since that is a real,
+  /// separate sync-health signal even when the local store then fails too.
   @Test("an unopenable store reports a fatal-error event exactly once")
   func unopenableStoreReportsFatalErrorOnce() {
     let spy = SpyAnalyticsClient()
@@ -28,7 +30,7 @@ struct PersistenceAnalyticsTests {
     }
 
     #expect(spy.count(of: AnalyticsEvent.persistenceFatalError) == 1)
-    #expect(spy.trackedEventNames == [AnalyticsEvent.persistenceFatalError])
+    #expect(spy.trackedEventNames == [AnalyticsEvent.cloudkitContainerFellBack, AnalyticsEvent.persistenceFatalError])
   }
 
   @Test("a fatal error carries the error domain as a string and the code as an Int")
@@ -106,6 +108,42 @@ struct PersistenceAnalyticsTests {
       analytics: spy
     )
 
+    #expect(spy.calls.isEmpty)
+  }
+
+  /// The CloudKit branch failing and falling through to a working local store is not a fatal
+  /// error, but it is a sync-health signal — `cloudkit_container_fell_back` carries it.
+  @Test("a CloudKit fallback reports the fell-back event with the CloudKit error's properties")
+  func cloudKitFallbackReportsFellBackEvent() throws {
+    let spy = SpyAnalyticsClient()
+    let stubContainer = try TestModelContainer.make()
+    let cloudFailure = NSError(domain: "CKErrorDomain", code: 9)
+
+    let result = try ProductionContainerFactory.make(
+      cloud: { _ in throw cloudFailure },
+      local: { _ in stubContainer },
+      analytics: spy
+    )
+
+    #expect(result.backing == .localFallback)
+    #expect(result.fallbackError == SyncErrorCode(domain: "CKErrorDomain", code: 9))
+    #expect(spy.trackedEventNames == [AnalyticsEvent.cloudkitContainerFellBack])
+    #expect(spy.rawProperty(AnalyticsProperty.errorDomain, forFirst: AnalyticsEvent.cloudkitContainerFellBack, as: String.self) == "CKErrorDomain")
+    #expect(spy.rawProperty(AnalyticsProperty.errorCode, forFirst: AnalyticsEvent.cloudkitContainerFellBack, as: Int.self) == 9)
+  }
+
+  @Test("a successful CloudKit open reports no fallback error and no fell-back event")
+  func successfulCloudKitOpenReportsNoFallback() throws {
+    let spy = SpyAnalyticsClient()
+    let stubContainer = try TestModelContainer.make()
+
+    let result = try ProductionContainerFactory.make(
+      cloud: { _ in stubContainer },
+      local: { _ in stubContainer },
+      analytics: spy
+    )
+
+    #expect(result.fallbackError == nil)
     #expect(spy.calls.isEmpty)
   }
 
@@ -189,7 +227,7 @@ struct PersistenceAnalyticsTests {
     let stubContainer = try TestModelContainer.make()
     let thrown = NSError(domain: "TestDomain", code: 7)
     let coordinator = AppStartupCoordinator(
-      makeContainer: { (container: stubContainer, backing: .localFallback) },
+      makeContainer: { ContainerLaunchResult(container: stubContainer, backing: .localFallback, fallbackError: nil) },
       importLegacyData: { _ in if failsOnImport { throw thrown } },
       seedFirstLaunchData: { _ in if !failsOnImport { throw thrown } },
       runsPostOpenStages: true,
@@ -220,7 +258,7 @@ struct PersistenceAnalyticsTests {
   func stageIsNotInferredFromPersistenceOperation() throws {
     let stubContainer = try TestModelContainer.make()
     let coordinator = AppStartupCoordinator(
-      makeContainer: { (container: stubContainer, backing: .localFallback) },
+      makeContainer: { ContainerLaunchResult(container: stubContainer, backing: .localFallback, fallbackError: nil) },
       // Injected even though it cannot fail here: the default would run the real importer against
       // `UserDefaults.standard` and the host's Realm path.
       importLegacyData: { _ in },
@@ -250,7 +288,7 @@ struct PersistenceAnalyticsTests {
     let spy = SpyAnalyticsClient()
     let stubContainer = try TestModelContainer.make()
     let coordinator = AppStartupCoordinator(
-      makeContainer: { (container: stubContainer, backing: .localFallback) },
+      makeContainer: { ContainerLaunchResult(container: stubContainer, backing: .localFallback, fallbackError: nil) },
       analytics: spy
     )
 

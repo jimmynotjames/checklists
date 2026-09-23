@@ -21,10 +21,10 @@ enum ProductionContainerFactory {
   ///
   /// The local-only fallback is selected by *any* throw from the CloudKit-configured
   /// `ModelContainer` initializer, not by an iCloud account check: a schema that violates a
-  /// CloudKit constraint, a migration failure and a corrupt store all land there, and `try?`
-  /// discards which it was. `.automatic` is expected (not verified) to initialize with nobody
-  /// signed in, so read the local path as "the CloudKit store would not open", not "the user is
-  /// signed out".
+  /// CloudKit constraint, a migration failure and a corrupt store all land there, and `make(...)`
+  /// keeps the error's domain and code (`fallbackError`) rather than discarding which it was.
+  /// `.automatic` is expected (not verified) to initialize with nobody signed in, so read the local
+  /// path as "the CloudKit store would not open", not "the user is signed out".
   static let cloudKitEnabled = true
 
   /// The one on-disk location both configurations use: the default configuration's own `url`, so
@@ -51,19 +51,34 @@ enum ProductionContainerFactory {
     cloud: MakeContainer = realContainer,
     local: MakeContainer = realContainer,
     analytics: any AnalyticsClient = AppAnalytics.shared
-  ) throws -> (container: ModelContainer, backing: ContainerBacking) {
+  ) throws -> ContainerLaunchResult {
+    var fallbackError: SyncErrorCode?
+
     if cloudKitEnabled {
-      if let container = try? cloud(cloudConfiguration()) {
+      do {
+        let container = try cloud(cloudConfiguration())
         AppLog.cloudKit.info("cloudkit.container.backed")
-        return (container, .cloudKit)
+        return ContainerLaunchResult(container: container, backing: .cloudKit, fallbackError: nil)
+      } catch let error as NSError {
+        // Not treated as an error: the local store is a working app, just an unsynced one.
+        AppLog.cloudKit.notice(
+          "cloudkit.container.localFallback: \(error.domain, privacy: .public) \(error.code, privacy: .public)"
+        )
+        // A sibling call, not derived from the OSLog line above: analytics-spec.md §OSLog boundary.
+        analytics.track(
+          AnalyticsEvent.cloudkitContainerFellBack,
+          properties: [
+            AnalyticsProperty.errorDomain: error.domain,
+            AnalyticsProperty.errorCode: error.code,
+          ]
+        )
+        fallbackError = SyncErrorCode(domain: error.domain, code: error.code)
       }
-      // Not treated as an error: the local store is a working app, just an unsynced one.
-      AppLog.cloudKit.notice("cloudkit.container.localFallback")
     }
 
     do {
       let container = try local(localConfiguration())
-      return (container, .localFallback)
+      return ContainerLaunchResult(container: container, backing: .localFallback, fallbackError: fallbackError)
     } catch let error as NSError {
       AppLog.cloudKit.error(
         "cloudkit.container.failed: \(error.domain, privacy: .public) \(error.code, privacy: .public) \(error.localizedDescription, privacy: .public)"

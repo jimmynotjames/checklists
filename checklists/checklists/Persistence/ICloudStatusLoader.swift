@@ -15,7 +15,7 @@ struct ICloudStatusLoader {
     #if DEBUG
       // Test runs (see `LaunchModeContainerFactory.isRunningTests`): CKContainer.accountStatus()
       // hangs on the account-less Simulator, pinning the iCloud row to a spinner so XCUITest
-      // can't open Settings. `.noAccount` maps to `.unavailable` in `load(into:)`.
+      // can't open Settings. `.noAccount` maps to `AccountStatus.noAccount`, rowState `.unavailable`.
       if ProcessInfo.processInfo.environment["IS_TESTING"] != nil
         || CommandLine.arguments.contains("-UITests1") {
         return .noAccount
@@ -25,7 +25,7 @@ struct ICloudStatusLoader {
     return try await CKContainer.default().accountStatus()
   }
 
-  func load(into syncStatus: SyncStatus) async {
+  func load(into syncStatus: SyncStatus, analytics: any AnalyticsClient = AppAnalytics.shared) async {
     #if DEBUG
       // Xcode previews inject the status they want to show. The live CKContainer query would
       // overwrite it — and on an account-less simulator it hangs, pinning the row to its spinner.
@@ -36,10 +36,9 @@ struct ICloudStatusLoader {
 
     let resolved: SyncStatus.AccountStatus
     do {
-      let status = try await accountStatus()
-      resolved = status == .available ? .available : .unavailable
+      resolved = try await Self.map(accountStatus())
     } catch {
-      resolved = .unavailable
+      resolved = .couldNotDetermine
     }
 
     // A superseded query must not publish its answer: cancellation is cooperative, so a slow
@@ -51,6 +50,39 @@ struct ICloudStatusLoader {
     let new = syncStatus.accountStatus
     if old != new {
       AppLog.cloudKit.notice("cloudkit.account.transition: \(String(describing: old), privacy: .public) → \(String(describing: new), privacy: .public)")
+    }
+
+    reportInitialStatusIfNeeded(old: old, new: new, syncStatus: syncStatus, analytics: analytics)
+  }
+
+  /// Once per process, the first time the status leaves `.checking`. The flag lives on
+  /// `syncStatus` (not a static) because the "load once" and "observe account changes" tasks in
+  /// `ChecklistsApp` can both be in flight at launch and must not double-fire.
+  private func reportInitialStatusIfNeeded(
+    old: SyncStatus.AccountStatus,
+    new: SyncStatus.AccountStatus,
+    syncStatus: SyncStatus,
+    analytics: any AnalyticsClient
+  ) {
+    guard old == .checking, new != .checking, !syncStatus.hasReportedInitialAccountStatus else { return }
+    syncStatus.hasReportedInitialAccountStatus = true
+    analytics.track(
+      AnalyticsEvent.icloudStatusChecked,
+      properties: [
+        AnalyticsProperty.containerBacking: syncStatus.containerBacking.rawValue,
+        AnalyticsProperty.icloudAccount: new.rawValue,
+      ]
+    )
+  }
+
+  private static func map(_ status: CKAccountStatus) -> SyncStatus.AccountStatus {
+    switch status {
+    case .available: .available
+    case .noAccount: .noAccount
+    case .restricted: .restricted
+    case .temporarilyUnavailable: .temporarilyUnavailable
+    case .couldNotDetermine: .couldNotDetermine
+    @unknown default: .couldNotDetermine
     }
   }
 }

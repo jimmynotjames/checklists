@@ -46,6 +46,7 @@ A dashboard is justified by a question here. The IDs are stable; board names cit
 | 3.8 | What share opt out, by jurisdiction? | `analytics_consent_changed`, `consent_jurisdiction` |
 | 3.9 | When do people reach the review-prompt bar, and how soon does the app ask? | `rating_prompt_eligible` → `rating_prompt_requested` |
 | 3.10 | How often does an upgrader's old data end up out of reach? | `startup_failed` at `legacy_import`, `legacy_import_abandoned` |
+| 3.11 | Is sync working, and when it isn't, why? | `icloud_status_checked`, `cloudkit_container_fell_back`, `cloudkit_sync_failed` |
 
 3.9 stops at the request: `requestReview` reports neither whether the dialog showed nor what was
 chosen, and no custom pre-prompt manufactures that signal. The bar is three constants on
@@ -64,9 +65,10 @@ with its rationale recorded here. The app code sends exactly:
 - **Event names** in §Event catalog.
 - **Event properties:** `checklists_count`, `items_count`, `items_with_notes_count`, `notes_length`
   (integers, never content); `checklist_name` (§Free-text exception); `source`, `destination`,
-  `orientation`, `error_operation`, `startup_stage` (app-owned enumerations); `error_domain`,
-  `error_code` (an `NSError`'s domain and code, never its `userInfo`); `new_value`, `old_value`
-  (booleans); `time_since_first_eligible_bucket` (a bucket, not a timestamp).
+  `orientation`, `error_operation`, `startup_stage`, `container_backing`, `icloud_account`,
+  `sync_operation` (app-owned enumerations); `error_domain`, `error_code` (an `NSError`'s domain and
+  code, never its `userInfo`); `new_value`, `old_value` (booleans); `time_since_first_eligible_bucket`
+  (a bucket, not a timestamp).
 - **Super properties:** `app_version`, `app_build`, `device_class`, `locale`, `region`,
   `consent_jurisdiction`. `locale` and `region` are device *settings*, not a position.
 - **People properties:** `first_seen_at`, `last_app_open_at`, `analytics_opt_in_at`,
@@ -234,6 +236,9 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `startup_failed` | The failure screen is shown | `error_domain`, `error_code`, `startup_stage` |
 | `startup_store_reset` | "Start over fresh" chosen (offered only at `store_open`) | — |
 | `legacy_import_abandoned` | The Realm import failed `LegacyRealmImporter.maximumAttempts` times | `error_domain`, `error_code` |
+| `icloud_status_checked` | Once per cold launch, the first time the account status leaves `.checking` | `container_backing`, `icloud_account` |
+| `cloudkit_container_fell_back` | The CloudKit store failed to open and launch used the local one | `error_domain`, `error_code` |
+| `cloudkit_sync_failed` | A sync event fails; once per (operation, domain, code) per launch | `sync_operation`, `error_domain`, `error_code` |
 | `analytics_consent_changed` | The toggle or first-run sheet changes the setting | `new_value`, `old_value` |
 | `rating_prompt_eligible` | Every review-prompt threshold first met; **once per install** | — |
 | `rating_prompt_requested` | `requestReview` called; once per app version | `time_since_first_eligible_bucket` |
@@ -257,13 +262,16 @@ The rating-prompt events fire from `RatingPromptCoordinator`; its doc comment ha
 | `error_code` | Int | `NSError.code` |
 | `error_operation` | String | `PersistenceOperation.rawValue`: `checklistEdit`, `itemEdit`, `itemUpdate`, `reorder`, `delete`, `legacyImport`, `sampleSeed`, `dedupe` |
 | `startup_stage` | String | `ContainerCreationFailure.Stage.rawValue`: `store_open`, `legacy_import`, `first_launch_seed` |
+| `container_backing` | String | `ContainerBacking.rawValue`: `cloudkit`, `local_fallback` |
+| `icloud_account` | String | `SyncStatus.AccountStatus.rawValue`: `available`, `no_account`, `restricted`, `temporarily_unavailable`, `could_not_determine` (`.checking` is never sent) |
+| `sync_operation` | String | `SyncOperation.rawValue`: `setup`, `import`, `export` |
 | `orientation` | String | `portrait` / `landscape`; face-up/down are dropped |
 | `new_value` / `old_value` | Bool | |
 | `time_since_first_eligible_bucket` | String | `<1d` / `<7d` / `<30d` / `30d+` |
 
 `error_operation` values are Swift case names, so renaming a case changes the dashboards.
-`AnalyticsNamesTests` pins the value sets of `source`, `destination`, `error_operation` and
-`startup_stage`. 3.6 must be filtered by
+`AnalyticsNamesTests` pins the value sets of `source`, `destination`, `error_operation`,
+`startup_stage`, `container_backing`, `icloud_account`, and `sync_operation`. 3.6 must be filtered by
 `startup_stage`, since only `store_open` offers the reset.
 
 Counts are raw: Mixpanel handles numbers natively, and bucketing for privacy would be incoherent
@@ -345,7 +353,7 @@ AppConfig  →  MixpanelTokenSource.activeToken   (#if DEBUG picks dev vs prod)
 | Product Interaction | Screen views, counts, action events |
 | Other User Content | `checklist_name` |
 | Device ID | `distinct_id` — app-generated, but a per-install id sent to a third party, and why the rest is *linked* |
-| Other Diagnostic Data | The `error_*` properties |
+| Other Diagnostic Data | The `error_*` properties; `container_backing`, `icloud_account`, `sync_operation` are the same declared type, no manifest change needed |
 
 ## OSLog boundary
 

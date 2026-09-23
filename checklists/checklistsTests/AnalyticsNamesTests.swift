@@ -33,6 +33,9 @@ struct AnalyticsNamesTests {
     AnalyticsEvent.startupFailed,
     AnalyticsEvent.startupStoreReset,
     AnalyticsEvent.legacyImportAbandoned,
+    AnalyticsEvent.icloudStatusChecked,
+    AnalyticsEvent.cloudkitContainerFellBack,
+    AnalyticsEvent.cloudkitSyncFailed,
     AnalyticsEvent.orientationChanged,
     AnalyticsEvent.analyticsConsentChanged,
     AnalyticsEvent.ratingPromptEligible,
@@ -51,6 +54,9 @@ struct AnalyticsNamesTests {
     AnalyticsProperty.errorCode,
     AnalyticsProperty.errorOperation,
     AnalyticsProperty.startupStage,
+    AnalyticsProperty.containerBacking,
+    AnalyticsProperty.icloudAccount,
+    AnalyticsProperty.syncOperation,
     AnalyticsProperty.orientation,
     AnalyticsProperty.newValue,
     AnalyticsProperty.oldValue,
@@ -158,5 +164,29 @@ struct AnalyticsNamesTests {
   func copyDestinationValuesArePinned() {
     #expect(CheckedItemsCopyDestination.newChecklist.rawValue == "new")
     #expect(CheckedItemsCopyDestination.existingChecklist.rawValue == "existing")
+  }
+
+  /// `container_backing` transmits `ContainerBacking.rawValue`. Update analytics-spec.md
+  /// §Per-event properties in the same change.
+  @Test("the container backing values sent as container_backing are pinned")
+  func containerBackingValuesArePinned() {
+    #expect(ContainerBacking.cloudKit.rawValue == "cloudkit")
+    #expect(ContainerBacking.localFallback.rawValue == "local_fallback")
+  }
+
+  /// `icloud_account` transmits `SyncStatus.AccountStatus.rawValue` (`.checking` is never sent).
+  /// Update analytics-spec.md §Per-event properties in the same change.
+  @Test("the icloud account values sent as icloud_account are pinned")
+  func icloudAccountValuesArePinned() {
+    #expect(Set(SyncStatus.AccountStatus.allCases.map(\.rawValue)) == [
+      "checking", "available", "no_account", "restricted", "temporarily_unavailable", "could_not_determine",
+    ])
+  }
+
+  /// `sync_operation` transmits `SyncOperation.rawValue`. Update analytics-spec.md §Per-event
+  /// properties in the same change.
+  @Test("the sync operation values sent as sync_operation are pinned")
+  func syncOperationValuesArePinned() {
+    #expect(Set(SyncOperation.allCases.map(\.rawValue)) == ["setup", "import", "export"])
   }
 }

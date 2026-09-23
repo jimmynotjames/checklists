@@ -14,39 +14,27 @@ import Testing
 /// Ported from `simple-recurring-budgets`'s `ICloudStatusLoaderTests` suite of the same name.
 @Suite("ICloudStatusLoader account status mapping")
 struct ICloudStatusLoaderTests {
-  @Test("an available provider writes available")
-  func availableProviderWritesAvailable() async {
+  @Test("every CKAccountStatus case maps to its own AccountStatus", arguments: [
+    (CKAccountStatus.available, SyncStatus.AccountStatus.available),
+    (.noAccount, .noAccount),
+    (.restricted, .restricted),
+    (.temporarilyUnavailable, .temporarilyUnavailable),
+    (.couldNotDetermine, .couldNotDetermine),
+  ])
+  func everyAccountStatusCaseMaps(
+    ckStatus: CKAccountStatus,
+    expected: SyncStatus.AccountStatus
+  ) async {
     let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .checking)
-    let loader = ICloudStatusLoader(accountStatus: { .available })
+    let loader = ICloudStatusLoader(accountStatus: { ckStatus })
 
     await loader.load(into: syncStatus)
 
-    #expect(syncStatus.accountStatus == .available)
-    #expect(syncStatus.rowState == .available)
+    #expect(syncStatus.accountStatus == expected)
   }
 
-  @Test("no account writes unavailable")
-  func noAccountWritesUnavailable() async {
-    let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .checking)
-    let loader = ICloudStatusLoader(accountStatus: { .noAccount })
-
-    await loader.load(into: syncStatus)
-
-    #expect(syncStatus.accountStatus == .unavailable)
-  }
-
-  @Test("could not determine writes unavailable")
-  func couldNotDetermineWritesUnavailable() async {
-    let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .checking)
-    let loader = ICloudStatusLoader(accountStatus: { .couldNotDetermine })
-
-    await loader.load(into: syncStatus)
-
-    #expect(syncStatus.accountStatus == .unavailable)
-  }
-
-  @Test("a throwing provider writes unavailable")
-  func throwingProviderWritesUnavailable() async {
+  @Test("a throwing provider writes couldNotDetermine")
+  func throwingProviderWritesCouldNotDetermine() async {
     let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .checking)
     let loader = ICloudStatusLoader(accountStatus: {
       throw CKError(.networkUnavailable)
@@ -54,11 +42,11 @@ struct ICloudStatusLoaderTests {
 
     await loader.load(into: syncStatus)
 
-    #expect(syncStatus.accountStatus == .unavailable)
+    #expect(syncStatus.accountStatus == .couldNotDetermine)
   }
 
-  /// Re-query after a sign-in: the notification-driven path transitions unavailable →
-  /// available (the live chain `SettingsView.observeSingleNotification` drives on
+  /// Re-query after a sign-in: the notification-driven path transitions could-not-determine →
+  /// available (the live chain `ChecklistsApp`'s account-change observer drives on
   /// CKAccountChanged / NSUbiquityIdentityDidChange).
   @Test("reload after sign-in transitions to available")
   func reloadAfterSignInTransitionsToAvailable() async {
@@ -69,7 +57,7 @@ struct ICloudStatusLoaderTests {
     })
 
     await loader.load(into: syncStatus)
-    #expect(syncStatus.accountStatus == .unavailable)
+    #expect(syncStatus.accountStatus == .noAccount)
 
     signedIn.value = true
     await loader.load(into: syncStatus)
@@ -79,7 +67,7 @@ struct ICloudStatusLoaderTests {
 
   /// A query whose task has been superseded must not publish its answer.
   ///
-  /// Settings cancels the in-flight status task and starts a new one whenever it reappears, and
+  /// The app cancels the in-flight status task and starts a new one whenever it reappears, and
   /// cancellation is cooperative — the old `CKContainer` query keeps running and resolves later. If
   /// it were allowed to write, a stale verdict would overwrite the fresher one and leave the row
   /// showing the wrong iCloud state until the next account-change notification.
@@ -99,6 +87,35 @@ struct ICloudStatusLoaderTests {
       syncStatus.accountStatus == .available,
       "A cancelled query must leave the status alone rather than publishing a superseded answer."
     )
+  }
+
+  // MARK: - icloud_status_checked
+
+  @Test("the first resolution off .checking fires icloud_status_checked once")
+  func firstResolutionFiresIcloudStatusCheckedOnce() async {
+    let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .checking)
+    let loader = ICloudStatusLoader(accountStatus: { .available })
+    let spy = SpyAnalyticsClient()
+
+    await loader.load(into: syncStatus, analytics: spy)
+
+    #expect(spy.trackedEventNames == [AnalyticsEvent.icloudStatusChecked])
+    #expect(spy.rawProperty(AnalyticsProperty.containerBacking, forFirst: AnalyticsEvent.icloudStatusChecked, as: String.self) == "cloudkit")
+    #expect(spy.rawProperty(AnalyticsProperty.icloudAccount, forFirst: AnalyticsEvent.icloudStatusChecked, as: String.self) == "available")
+  }
+
+  @Test("a later re-query does not re-fire icloud_status_checked")
+  func laterRequeryDoesNotRefire() async {
+    let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .checking)
+    let signedIn = SignedInFlag()
+    let loader = ICloudStatusLoader(accountStatus: { signedIn.value ? .available : .noAccount })
+    let spy = SpyAnalyticsClient()
+
+    await loader.load(into: syncStatus, analytics: spy)
+    signedIn.value = true
+    await loader.load(into: syncStatus, analytics: spy)
+
+    #expect(spy.count(of: AnalyticsEvent.icloudStatusChecked) == 1)
   }
 }
 
