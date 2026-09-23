@@ -2180,7 +2180,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zu %@ kopiert"
+            "value" : "In %@ kopiert"
           }
         },
         "el" : {
@@ -6770,7 +6770,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Checkliste kopieren"
+            "value" : "Checkliste duplizieren"
           }
         },
         "el" : {
@@ -11666,7 +11666,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopieren"
+            "value" : "Duplizieren"
           }
         },
         "el" : {
@@ -34310,7 +34310,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud wurde auf diesem Gerät von Screen Time oder deiner Organisation deaktiviert. Deine Checklisten werden nur auf diesem Gerät gespeichert."
+            "value" : "iCloud ist auf diesem Gerät durch Bildschirmzeit oder deine Organisation deaktiviert. Deine Checklisten werden nur auf diesem Gerät gespeichert."
           }
         },
         "el" : {
@@ -36146,7 +36146,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud-Synchronisierung unterbrochen"
+            "value" : "iCloud-Synchronisierung pausiert"
           }
         },
         "el" : {
