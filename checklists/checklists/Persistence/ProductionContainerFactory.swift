@@ -16,28 +16,21 @@ import SwiftData
 enum ProductionContainerFactory {
   typealias MakeContainer = @MainActor (ModelConfiguration) throws -> ModelContainer
 
-  /// Whether to attempt a CloudKit-backed store.
+  /// Whether to attempt a CloudKit-backed store. Capability and container setup:
+  /// persistence-design.md §CloudKit ops record.
   ///
-  /// On: the iCloud capability, the `iCloud.com.jimmyho.checklists` container and the
-  /// remote-notification background mode are all in place. The local-only path below is still the
-  /// fallback, not dead code — but note what actually selects it: *any* throw from the
-  /// CloudKit-configured `ModelContainer` initializer, not an iCloud account check. A schema that
-  /// violates a CloudKit constraint, a migration failure and a corrupt store all land there too,
-  /// and `try?` discards which it was. A missing account is not expected to be among them:
-  /// `.automatic` should initialize with nobody signed in and simply not sync. Nothing here
-  /// verifies that, so treat the local path as "the CloudKit store would not open", not as
-  /// "the user is signed out".
+  /// The local-only fallback is selected by *any* throw from the CloudKit-configured
+  /// `ModelContainer` initializer, not by an iCloud account check: a schema that violates a
+  /// CloudKit constraint, a migration failure and a corrupt store all land there, and `try?`
+  /// discards which it was. `.automatic` is expected (not verified) to initialize with nobody
+  /// signed in, so read the local path as "the CloudKit store would not open", not "the user is
+  /// signed out".
   static let cloudKitEnabled = true
 
-  /// The one on-disk location both configurations use.
-  ///
-  /// Asking SwiftData for the default configuration's own `url` — rather than hardcoding a path —
-  /// pins both the CloudKit-backed and local-only configurations to the exact file an existing
-  /// install already has. If the two were
-  /// ever allowed to resolve independently, a launch with iCloud unavailable would write to one
-  /// file and a later launch with iCloud available would open a different, empty one, and the
-  /// user's first session would appear to vanish. Sharing the URL means the local store is
-  /// promoted to a synced store in place.
+  /// The one on-disk location both configurations use: the default configuration's own `url`, so
+  /// both land on the file an existing install already has. If the two resolved independently, a
+  /// launch without iCloud would write one file and a later launch with it would open a different,
+  /// empty one. Sharing the URL promotes the local store to a synced store in place.
   static func storeURL() -> URL {
     ModelConfiguration(schema: SchemaV1.swiftDataSchema, isStoredInMemoryOnly: false).url
   }
@@ -53,7 +46,7 @@ enum ProductionContainerFactory {
   /// CloudKit-backed if possible, otherwise local-only. Throws only when both paths fail.
   /// `analytics` is a parameter rather than a direct `AppAnalytics.shared` read so the failure
   /// branch below is testable; it runs long before any SwiftUI environment exists, which is why
-  /// the default is the process-wide handle. See analytics-spec.md §7.3.
+  /// the default is the process-wide handle. See analytics-spec.md §Non-SwiftUI callers.
   static func make(
     cloud: MakeContainer = realContainer,
     local: MakeContainer = realContainer,

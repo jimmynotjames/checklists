@@ -11,8 +11,8 @@ import RealmSwift
 // MARK: - The pre-SwiftData Realm object graph, kept only so the old store can be read once
 
 //
-// These three classes are the *exact* on-disk schema that shipped in App Store v1.1.0 and every
-// build since. They exist for one purpose: `LegacyRealmImporter` opens the old `default.realm`
+// These three classes are the *exact* on-disk schema of App Store v1.1.0, the last Realm
+// release. They exist for one purpose: `LegacyRealmImporter` opens the old `default.realm`
 // with them, copies everything into SwiftData, and never touches Realm again. Nothing else in
 // the app may use them.
 //

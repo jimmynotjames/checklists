@@ -9,8 +9,7 @@ import Foundation
 ///
 /// A key's `defaultValue` and its translator comment are part of its contract: the comment is the
 /// only context a translator ever sees, and `defaultValue` is what ships if the key is missing from
-/// the catalog. Restating either at each call site lets two screens disagree about one string —
-/// `common.action.cancel` already carried two different comments before this type existed.
+/// the catalog. Restating either at each call site lets two screens disagree about one string.
 ///
 /// Only genuinely shared copy belongs here. A string used on one screen stays on that screen, where
 /// its comment can describe that screen; `common.*` means the same words in the same sense
@@ -61,13 +60,11 @@ nonisolated enum CommonStrings {
     comment: "Name stored for a checklist saved with an empty name field. Lowercase in English; it is data once saved."
   )
 
-  /// Under the delete-checklist and reset-all confirmations on the list screen, and under the
-  /// delete confirmation reached from the detail screen's overflow menu. Keyed under `checklists.`
-  /// rather than `common.` because the list screen is where it first appeared and renaming a key
-  /// costs every locale a re-translation.
+  /// Keyed under `checklists.` rather than `common.` because renaming a key costs every locale a
+  /// re-translation.
   static let irreversibleConfirmation = String(
     localized: "checklists.confirm.irreversible",
     defaultValue: "Are you sure? This cannot be undone.",
-    comment: "Alert message under both the delete-checklist and the reset-all confirmations."
+    comment: "Alert message under the delete-checklist and reset-all confirmations on the checklist list, and under the delete-checklist confirmation on a checklist's own screen."
   )
 }

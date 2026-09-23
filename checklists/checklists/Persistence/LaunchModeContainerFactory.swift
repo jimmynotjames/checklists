@@ -18,7 +18,7 @@ enum LaunchModeContainerFactory {
 
   /// True when the process was started by an automated test.
   ///
-  /// `-UITests1` is the long-standing launch argument the XCUITest bundle passes; `IS_TESTING` is
+  /// `-UITests1` is the launch argument the XCUITest bundle passes; `IS_TESTING` is
   /// the environment variable set on the scheme's test action, which also covers the unit-test
   /// host. Either one means: never touch the user's real store, never import, never sync.
   static var isRunningTests: Bool {

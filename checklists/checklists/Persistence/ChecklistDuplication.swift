@@ -17,8 +17,7 @@ extension ModelContext {
       name: ChecklistCopyNaming.name(forCopyOf: source.name, existingNames: Set(siblings.map(\.name))),
       notes: source.notes
     )
-    // `lastUpdated` and `lastCompleted` stay nil, which is what `Checklist.init` leaves them: both
-    // record something that happened to the original, and nothing has happened to this copy yet.
+    // No history stamps: persistence-design.md §Duplication.
     insert(copy)
 
     // Blank rows are the scratch item the detail screen seeds and trims, not tasks, so a copy does
@@ -27,7 +26,7 @@ extension ModelContext {
     // order and leaves the copy evenly spaced room to reorder.
     var sortKey = SortKeyReorder.step
     for item in source.items where !item.isBlank {
-      // Status is deliberately not carried over — a duplicate has never been run.
+      // Status is not carried over — a duplicate has never been run.
       let copiedItem = Item(name: item.name, notes: item.notes, sortKey: sortKey)
       insert(copiedItem)
       // Child side only; see `Reordering`.
@@ -38,7 +37,7 @@ extension ModelContext {
     // `nil` only if the caller passed a list `source` is not in; appending is the safe response.
     let index = siblings.firstIndex { $0 === source }.map { $0 + 1 } ?? siblings.count
     // A single save for the whole graph. Going through `insert(checklist:at:among:)` and
-    // `insert(item:at:in:)` instead would be one save per record — 31 of them for a 30-item list.
+    // `insert(item:at:in:)` instead would be one save per record.
     do {
       try placeAndSave(copy, at: index, among: siblings, restoringSortKeysOf: siblings) {
         try saveChanges(operation: .checklistEdit)

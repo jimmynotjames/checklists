@@ -4,7 +4,7 @@
 //
 
 // Diagnostics channel, independent of AnalyticsClient (the product channel). See
-// core-docs/analytics-spec.md §11.
+// analytics-spec.md §OSLog boundary.
 
 import Foundation
 import os

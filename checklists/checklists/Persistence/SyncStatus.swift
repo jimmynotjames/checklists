@@ -6,16 +6,9 @@
 import Foundation
 import Observation
 
-/// Tracks the app's iCloud sync availability and exposes a derived view-state
-/// for the Settings screen's iCloud row.
-///
-/// `containerBacking` is fixed at app launch — from `ProductionContainerFactory.make` on a real
-/// launch, and hardcoded to `.localFallback` under test and screenshot runs.
-/// `accountStatus` is updated asynchronously by `SettingsView` via
-/// `ICloudStatusLoader` and `CKAccountChangedNotification`/`NSUbiquityIdentityDidChange`
-/// observers.
-///
-/// Ported from the sibling `simple-recurring-budgets` repo's `Sync/SyncStatus.swift`.
+/// Combines this launch's `ContainerBacking` with the live iCloud account status into the Settings
+/// screen's iCloud row. `accountStatus` is written by `SettingsView` via `ICloudStatusLoader`.
+/// Why the two signals stay apart: persistence-design.md §Sync status.
 @Observable
 final class SyncStatus {
   enum AccountStatus {
@@ -25,7 +18,7 @@ final class SyncStatus {
   }
 
   /// Four-state row for Settings' iCloud row. Why `.paused` exists:
-  /// core-docs/persistence-design.md §Sync status.
+  /// persistence-design.md §Sync status.
   enum RowState {
     case checking
     case available

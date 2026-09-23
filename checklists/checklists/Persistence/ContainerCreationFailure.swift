@@ -15,10 +15,10 @@ import Foundation
 /// the coordinator's single `catch` can bind it back.
 struct ContainerCreationFailure: Error, Equatable, Hashable {
   /// Which startup stage threw. Set explicitly per `try` in `AppStartupCoordinator.run()` rather
-  /// than inferred from the error — see core-docs/persistence-design.md §The failure screen.
+  /// than inferred from the error — see persistence-design.md §The failure screen.
   ///
   /// Raw values are sent as `startup_stage`, so these case names are analytics vocabulary — see
-  /// core-docs/analytics-spec.md §9.1.
+  /// analytics-spec.md §Per-event properties.
   enum Stage: String, CaseIterable {
     case storeOpen = "store_open"
     case legacyImport = "legacy_import"
@@ -44,14 +44,11 @@ struct ContainerCreationFailure: Error, Equatable, Hashable {
     self.errorCode = errorCode
   }
 
-  /// `PersistenceError` is unwrapped first. It is a Swift struct, so `as NSError` would bridge it
-  /// to `domain = "checklists.PersistenceError", code = 1` — collapsing every import and seed save
-  /// failure into one bucket while the real domain and code sit in its own fields.
+  /// `ContainerCreationFailure` and `PersistenceError` are unwrapped first. Both are Swift structs,
+  /// so `as NSError` would bridge them to their own type name and code 1 — collapsing every import
+  /// and seed save failure into one bucket while the real domain and code sit in their fields.
   init(underlying: any Error, stage: Stage) {
     self.stage = stage
-    // Both unwraps exist for one reason: these are Swift structs, so `as NSError` would bridge them
-    // to their own type name and code 1, discarding the real domain and code sitting in their
-    // fields. This type is `Error` now, so it can be nested in itself the same way.
     if let nested = underlying as? ContainerCreationFailure {
       errorDomain = nested.errorDomain
       errorCode = nested.errorCode

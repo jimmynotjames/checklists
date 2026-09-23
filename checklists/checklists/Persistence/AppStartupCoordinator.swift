@@ -10,8 +10,8 @@ import SwiftData
  Everything that has to happen between the process starting and the first screen being able to
  show data: open the store, copy anything left in the old Realm store, seed a brand-new install.
 
- Kept out of the app and scene delegates so the whole sequence is one testable unit, and so its
- failure has somewhere to go other than a crash.
+ Kept out of `ChecklistsApp` and `AppStartupModel` so the whole sequence is one testable unit, and
+ so its failure has somewhere to go other than a crash.
 
  Safe to run more than once, which is what the failure screen's "Start over fresh" relies on.
  */

@@ -9,23 +9,20 @@ import UIKit
 @main
 struct ChecklistsApp: App {
   /// **Deliberately not an inline initializer.** Stored properties are initialized before the
-  /// body of `init()` runs, and `AppStartupModel.init()` synchronously runs the whole startup
-  /// sequence — including the three analytics call sites in the persistence layer. Initializing
-  /// it here would mean those events fire before `AppAnalytics.install(_:)` and go to the console
-  /// client in every build, with no error. See core-docs/analytics-spec.md §7.3.
+  /// body of `init()` runs, and `AppStartupModel.init()` can run the whole startup sequence
+  /// synchronously, analytics included. Inline, those events would fire before
+  /// `AppAnalytics.install(_:)` and go to the console client in every build, with no error. See
+  /// analytics-spec.md §Non-SwiftUI callers.
   @State private var startup: AppStartupModel
   @State private var router = Router()
   @State private var appOpenTracker = AppOpenTracker()
   /// Inline is safe here, unlike the two below: it takes no dependencies and emits nothing.
-  /// Instrumenting toasts later would mean moving it into `init()` for the gated client.
   @State private var toasts = ToastPresenter()
-  /// Not inline either, for a related reason: `init()` needs this exact instance — not a second
-  /// one — to build the consent gate's `isOptedIn` closure before injecting it into the
-  /// environment below.
+  /// Not inline: `init()` needs this exact instance to build the consent gate's `isOptedIn`
+  /// closure before injecting it into the environment below.
   @State private var analyticsSettings: AnalyticsSettings
-  /// Built in `init()` too, because it takes the gated client above: its two events must go
-  /// through the same consent gate as everything else, while its eligibility counters
-  /// (`RatingPromptState`) are deliberately not consent-gated at all.
+  /// Built in `init()` because it takes the gated client: its events go through the consent gate,
+  /// while its eligibility counters (`RatingPromptState`) are deliberately not gated.
   @State private var ratingPrompt: RatingPromptCoordinator
 
   @Environment(\.scenePhase) private var scenePhase
@@ -36,7 +33,8 @@ struct ChecklistsApp: App {
     let settings = AnalyticsSettings()
     let base = Self.makeAnalyticsClient(settings: settings)
     // Every call site reaches the base client through this gate, so an opted-out install never
-    // touches it — see `ConsentGatedAnalyticsClient` and core-docs/analytics-spec.md §7.2.
+    // touches it — see `ConsentGatedAnalyticsClient` and analytics-spec.md §Launch and consent
+    // ordering.
     let client = ConsentGatedAnalyticsClient(wrapping: base, isOptedIn: { [settings] in settings.analyticsOptIn })
     // Install first: the startup sequence below emits analytics.
     AppAnalytics.install(client)
@@ -78,28 +76,24 @@ struct ChecklistsApp: App {
               analytics.track(AnalyticsEvent.orientationChanged, properties: [AnalyticsProperty.orientation: value])
             }
         case let .failed(failure):
-          // Deliberately gets none of the *data* environment: the store may be unsafe, and this
-          // screen only reports the failure and, for a store that would not open, offers the
-          // fresh-start reset. It does get the
-          // analytics client (injected below, for every phase) — that is a plain object built in
-          // `init()` with no dependence on the wedged store, and `startup_store_reset` paired with
-          // `startup_failed` is the most useful ratio in this app's catalog.
+          // Deliberately gets none of the *data* environment: the store may be unsafe. It does get
+          // the analytics client (injected below, for every phase) — a plain object built in
+          // `init()` with no dependence on the wedged store — so `startup_store_reset` can be
+          // read against `startup_failed`.
           ContainerFailureView(failure: failure) {
             startup.rerunAfterStoreReset()
           }
         }
       }
-      // On the Group, not one switch branch: attaching to `.ready` would drop `app_opened` entirely
-      // for anyone stuck on the failure screen. Keeping modifiers outside the switch also stops them
-      // remounting on phase changes, which would reset the tracker and let a duplicate open through.
       #if DEBUG
-        // Inert unless launched with both IS_TESTING and FORCE_DYNAMIC_TYPE, which
-        // only the localized large-type check does. On the Group so the loading and
-        // failure screens scale too — those have text worth checking as well.
+        // On the Group so the loading and failure screens scale too; see `TestDynamicTypeOverride`.
       .modifier(TestDynamicTypeOverride())
       #endif
       .environment(\.analytics, analytics)
       .environment(analyticsSettings)
+      // On the Group, not one switch branch: attaching to `.ready` would drop `app_opened` entirely
+      // for anyone stuck on the failure screen. Keeping modifiers outside the switch also stops them
+      // remounting on phase changes, which would reset the tracker and let a duplicate open through.
       .task {
         // The scene's real phase, not a hardcoded `.active`: the app declares the
         // remote-notification background mode, so it can be launched into the background, and
@@ -118,16 +112,15 @@ struct ChecklistsApp: App {
     analytics.track(AnalyticsEvent.appOpened)
   }
 
-  /// Which client this build talks to — analytics-spec.md §7.1.
+  /// Which client this build talks to — analytics-spec.md §Client selection.
   ///
   /// The consent gate wraps whatever this returns (see `init()` above), so this makes no opt-in
   /// check of its own: a test run or an unconfigured token falls back to the console client,
   /// otherwise every call reaches a real `MixpanelAnalyticsClient`, gated one layer up.
   ///
-  /// `LaunchModeContainerFactory.isRunningTests` — not `simple-recurring-budgets`'s
-  /// `IS_TESTING`-only check — because it covers both the `-UITests1` launch argument and the
-  /// `IS_TESTING` env var; the XCUITest bundle passes only the former, so checking just the env
-  /// var would let UI-test runs reach real Mixpanel.
+  /// Test detection is `LaunchModeContainerFactory.isRunningTests`, which documents the signals
+  /// it accepts; a UI test sets only one of them, so a narrower check could let it reach real
+  /// Mixpanel.
   private static func makeAnalyticsClient(settings: AnalyticsSettings) -> any AnalyticsClient {
     guard
       !shouldUseConsoleClient(
@@ -146,9 +139,8 @@ struct ChecklistsApp: App {
   }
 
   /// The truth table behind `makeAnalyticsClient()`, pulled out so it is testable without
-  /// touching `LaunchModeContainerFactory` or `MixpanelTokenSource` directly (spec §13 contract
-  /// 15). `true` means "use `ConsoleAnalyticsClient`" — a test run, or a build with no configured
-  /// token, both fall back rather than reach real Mixpanel.
+  /// touching `LaunchModeContainerFactory` or `MixpanelTokenSource` directly. Pinned by
+  /// `AnalyticsClientSelectionTests`. `true` means "use `ConsoleAnalyticsClient`".
   static func shouldUseConsoleClient(isRunningTests: Bool, isTokenConfigured: Bool) -> Bool {
     isRunningTests || !isTokenConfigured
   }

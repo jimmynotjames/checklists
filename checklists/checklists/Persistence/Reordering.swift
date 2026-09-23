@@ -17,11 +17,6 @@ extension Item: SortKeyed {}
 
 // MARK: - Ordering operations
 
-//
-// These replace Realm's `List` mutators (`move(from:to:)`, `insert(_:at:)`, `remove(at:)`), which
-// have no SwiftData equivalent: a SwiftData to-many relationship is an unordered set, so position
-// is data on the record rather than a property of the collection.
-
 extension ModelContext {
   /// Inserts a brand-new checklist at `index` in the user's ordering and saves.
   ///

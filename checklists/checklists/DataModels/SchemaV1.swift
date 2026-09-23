@@ -14,7 +14,7 @@ import SwiftData
  schemas are additive only: once a record type or field reaches production it can never be
  removed or renamed. From that point on, a model change means a *new* `VersionedSchema` plus a
  `MigrationStage` in `ChecklistsMigrationPlan` plus a migration test — never an edit in place.
- See `core-docs/persistence-design.md`.
+ See persistence-design.md §CloudKit rules.
  */
 enum SchemaV1: VersionedSchema {
   static let versionIdentifier = Schema.Version(1, 0, 0)
