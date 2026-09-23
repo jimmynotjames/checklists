@@ -3,6 +3,7 @@
 //  checklists
 //
 
+import CloudKit
 import SwiftUI
 import UIKit
 
@@ -71,6 +72,14 @@ struct ChecklistsApp: App {
             .environment(PersistenceController.shared.syncStatus)
             .environment(ratingPrompt)
             .environment(toasts)
+            // App-lifetime iCloud account check, so analytics and the Feedback diagnostics have it
+            // without Settings ever opening. persistence-design.md §Sync status.
+            .task {
+              await ICloudStatusLoader().load(into: PersistenceController.shared.syncStatus, analytics: analytics)
+            }
+            .task {
+              await observeAccountChanges(syncStatus: PersistenceController.shared.syncStatus)
+            }
             .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
               guard let value = orientationAnalyticsValue(UIDevice.current.orientation) else { return }
               analytics.track(AnalyticsEvent.orientationChanged, properties: [AnalyticsProperty.orientation: value])
@@ -110,6 +119,23 @@ struct ChecklistsApp: App {
   private func fireAppOpenedIfNeeded(for phase: ScenePhase) {
     guard appOpenTracker.shouldFire(for: phase) else { return }
     analytics.track(AnalyticsEvent.appOpened)
+  }
+
+  /// Watches both `CKAccountChanged` (CloudKit container sign-in/out) and
+  /// `NSUbiquityIdentityDidChange` (iCloud identity token rotation, e.g. an account switch in
+  /// Settings.app) since either can fire independently.
+  private func observeAccountChanges(syncStatus: SyncStatus) async {
+    await withTaskGroup(of: Void.self) { group in
+      group.addTask { await observeSingleNotification(.CKAccountChanged, syncStatus: syncStatus) }
+      group.addTask { await observeSingleNotification(.NSUbiquityIdentityDidChange, syncStatus: syncStatus) }
+    }
+  }
+
+  private func observeSingleNotification(_ name: NSNotification.Name, syncStatus: SyncStatus) async {
+    let notifications = NotificationCenter.default.notifications(named: name)
+    for await _ in notifications {
+      await ICloudStatusLoader().load(into: syncStatus, analytics: analytics)
+    }
   }
 
   /// Which client this build talks to — analytics-spec.md §Client selection.

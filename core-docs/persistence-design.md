@@ -140,8 +140,8 @@ copy if that save fails. That is the shape the plain insert paths lack (issue #2
 
 It appears when any of three stages fails: the container could not be created, the one-time Realm
 import did not complete, or first-launch seeding could not save. A CloudKit-backed store that will
-not open is not a cause of the first — `ProductionContainerFactory` attempts it with `try?` and
-falls through to the local one, so that degrades sync, never startup. The seed and import saves do
+not open is not a cause of the first — `ProductionContainerFactory` attempts it and falls through
+to the local one on any throw, so that degrades sync, never startup. The seed and import saves do
 go to a possibly CloudKit-backed context, so they are not equally insulated. In practice the
 realistic causes are a full disk and a corrupt store.
 
@@ -251,9 +251,12 @@ independent signals into the single four-state row Settings shows.
 
 - `containerBacking` (`ContainerBacking`) — which store *this launch* ended up on; the enum's doc
   says who decides it.
-- `accountStatus` (`SyncStatus.AccountStatus`, `.checking` / `.available` / `.unavailable`) — whether
-  the user is *currently* signed in to iCloud, a live signal that can change while the app is
-  running (sign-in, sign-out, account switch) independently of which store this launch picked.
+- `accountStatus` (`SyncStatus.AccountStatus`: `.checking`, `.available`, `.noAccount`,
+  `.restricted`, `.temporarilyUnavailable`, `.couldNotDetermine`) — whether the user is *currently*
+  signed in to iCloud, a live signal that can change while the app is running (sign-in, sign-out,
+  account switch) independently of which store this launch picked. `rowState` still collapses every
+  non-`.available` case onto the same `.unavailable` row; the four-state row's wording per case is
+  PR 2.
 
 Collapsing them into one flag would lose exactly the case that matters most: a signed-in user whose
 launch nonetheless fell back to the local store. `SyncStatus.rowState` is the switch that maps the
@@ -272,19 +275,28 @@ row's footer gives for that state.
 constructed in its `init` from the `containerBacking` it was already given, so `containerBacking`
 is fixed for the controller's lifetime — a retry that resolves differently installs a whole new
 `PersistenceController` (and thus a fresh `SyncStatus`) rather than mutating one in place.
-`accountStatus` starts at `.checking` and is written by `SettingsView`, which runs two `.task`s
-while it is on screen: one awaits `ICloudStatusLoader().load(into:)` once, the other observes
-`.CKAccountChanged` and `.NSUbiquityIdentityDidChange` and re-loads on each, so the row tracks an
-account change without a dismiss and re-open. SwiftUI cancels both when the sheet goes away, so
-nothing keeps running once the screen is dismissed.
+`accountStatus` starts at `.checking` and is written by `ChecklistsApp`, on the `.ready` branch, not
+by `SettingsView` — so analytics and the Feedback diagnostics see it whether or not Settings ever
+opens. Two `.task`s run for the app's lifetime: one awaits `ICloudStatusLoader().load(into:)` once,
+the other observes `.CKAccountChanged` and `.NSUbiquityIdentityDidChange` and re-loads on each, so
+the row (and diagnostics) track an account change without opening Settings.
+
+**Sync activity and the fallback error.** `syncActivity` (`[SyncOperation: SyncOperationState]`,
+`CloudKitSyncMonitor`) records each of `setup`/`import`/`export`'s last success and latest failure
+from `NSPersistentCloudKitContainer.eventChangedNotification`, only while this launch is
+CloudKit-backed. `fallbackError` (`SyncErrorCode?`, set once in `PersistenceController.init`) is the
+domain and code `ProductionContainerFactory` caught when the CloudKit container failed to open — the
+error the `.paused` row has no way to show. Both feed the Feedback email's diagnostics block
+(`SyncDiagnostics.report`) and analytics (`icloud_status_checked`, `cloudkit_container_fell_back`,
+`cloudkit_sync_failed`); the Settings row itself is unaffected until PR 2.
 
 **The live call needs the `application-identifier` entitlement, and nothing in Swift can rescue it
 if it is missing.** `CKContainer.default()` derives its container from that entitlement; with no
 entitlement there is no container identifier, and CloudKit reports the fault by raising the
 Objective-C exception `CKException` ("containerIdentifier can not be nil"). An ObjC exception is not
-a Swift `Error`, so the `do`/`catch` in `load(into:)` — which otherwise makes good on "anything else
-or a thrown error → unavailable" — cannot see it and the process aborts instead of degrading into
-the existing "iCloud Not Available" row.
+a Swift `Error`, so the `do`/`catch` in `load(into:)` — which otherwise maps a thrown error and every
+non-`.available` `CKAccountStatus` case to its own `AccountStatus` — cannot see it and the process
+aborts instead of degrading into the existing "iCloud Not Available" row.
 
 **Why `CODE_SIGNING_ALLOWED=NO` matters here:** it skips the packaging step that would otherwise
 write a simulator build's entitlements blob — see `scripts/build.sh`.

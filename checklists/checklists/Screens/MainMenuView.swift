@@ -4,11 +4,13 @@
 //
 
 import SwiftUI
+import UIKit
 
 /// Full-screen menu panel presented over the checklists list, offering feedback, App Store
 /// rating, and settings actions.
 struct MainMenuView: View {
   @Environment(Router.self) private var router
+  @Environment(SyncStatus.self) private var syncStatus
   @Environment(\.openURL) private var openURL
   @Environment(\.analytics) private var analytics
 
@@ -46,6 +48,7 @@ struct MainMenuView: View {
               comment: "Subject line of the feedback email opened from the main menu. Keep the app name reChecklist verbatim."
             )
           ),
+          URLQueryItem(name: "body", value: feedbackBody),
         ]
         guard let url = components.url else { assertionFailure(); return }
         openURL(url)
@@ -85,6 +88,18 @@ struct MainMenuView: View {
       analytics.track(AnalyticsEvent.mainMenuViewed)
     }
   }
+
+  /// Two blank lines above the diagnostics, for whatever the person types first. English only,
+  /// not localized — it's for reading, not sending.
+  private var feedbackBody: String {
+    let report = SyncDiagnostics.report(
+      syncStatus: syncStatus,
+      appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0",
+      build: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "0",
+      osVersion: UIDevice.current.systemVersion
+    )
+    return "\n\n\n\(report)"
+  }
 }
 
 /// One row of the main menu: a full-width tap target pairing an icon with a title.
@@ -120,6 +135,7 @@ private struct MainMenuRow: View {
   #Preview("Main menu") {
     MainMenuView()
       .environment(PreviewSupport.router)
+      .environment(PreviewSupport.syncStatus())
   }
 
   #Preview("Row") {

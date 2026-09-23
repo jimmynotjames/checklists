@@ -24,14 +24,19 @@ final class PersistenceController {
 
   let modelContainer: ModelContainer
   let syncStatus: SyncStatus
+  /// Only started on a CloudKit-backed launch; `nil` on the local fallback, which has no
+  /// `NSPersistentCloudKitContainer` events to observe.
+  private let syncMonitor: CloudKitSyncMonitor?
 
   var mainContext: ModelContext {
     modelContainer.mainContext
   }
 
-  init(modelContainer: ModelContainer, containerBacking: ContainerBacking) {
+  init(modelContainer: ModelContainer, containerBacking: ContainerBacking, fallbackError: SyncErrorCode? = nil) {
     self.modelContainer = modelContainer
-    syncStatus = SyncStatus(containerBacking: containerBacking)
+    let syncStatus = SyncStatus(containerBacking: containerBacking, fallbackError: fallbackError)
+    self.syncStatus = syncStatus
+    syncMonitor = containerBacking == .cloudKit ? CloudKitSyncMonitor(syncStatus: syncStatus) : nil
   }
 
   static func install(_ controller: PersistenceController) {
