@@ -4,18 +4,14 @@ Deterministic CLDR plural-completeness check for Localizable.xcstrings.
 
 `validate.py` checks plural *shape* (valid category names, non-empty `other`, matching
 format specifiers) but NOT completeness — a locale with only `one/other` passes even when
-its language needs `one/few/many/other`. The semantic audit is supposed to catch this but is
-unreliable (it missed Arabic shipping only `one/other`). This check closes that gap with no
-LLM: for every plural key, it compares each locale's provided categories against the
-CLDR-required set and flags gaps.
-
-It's the deterministic complement to the LLM plural grading, mirroring how
-`consistency_check.py` complements the LLM `consistency` finding.
+its language needs `one/few/many/other`. This check closes that gap with no LLM: for
+every plural key, it compares each locale's provided categories against the
+CLDR-required set and flags gaps. It complements the LLM auditor's plural grading.
 
 Per locale (from the committed `plural_rules.py`, generated from CLDR via babel):
   - `required` — categories reachable by realistic integer counts (0..999) + `other`. A
     plural string MUST cover all of these. (Excludes large-number-only categories like the
-    Romance `many`, which an expense count never reaches.)
+    Romance `many`, which an item count never reaches.)
   - `valid`    — every category the language's rule defines. A category outside this set is
     `spurious` (the language never uses it, e.g. `few` in German).
 
@@ -48,7 +44,6 @@ sys.path.insert(0, str(CATALOG_DIR))
 from paths import CATALOG_PATH  # noqa: E402
 TRANSLATE_INPUTS_DIR = REPO_ROOT / "tmp" / "translate-inputs"
 
-sys.path.insert(0, str(CATALOG_DIR))
 from locales import LOCALES  # noqa: E402
 from extract import localization_plural, extract_format_specifiers  # noqa: E402
 

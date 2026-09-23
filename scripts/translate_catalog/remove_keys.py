@@ -31,7 +31,6 @@ import json
 import sys
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).parent))
 from paths import CATALOG_PATH  # noqa: E402
 from xcstrings_io import write_xcstrings  # noqa: E402

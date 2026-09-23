@@ -6,13 +6,15 @@ Walks the fastlane/metadata/ tree directly (not the tmp/ intermediates) and
 verifies two invariants:
 
   1. For every translatable field the en-US source has authored (non-empty), every
-     target storefront has a non-empty .txt file within the character limit.
+     target storefront has a non-empty .txt file within the limit (UTF-8 bytes for
+     `keywords`, characters otherwise).
 
-  2. For every translatable field that is blank in en-US, every target storefront
-     also has an empty (or absent) .txt file. A non-empty translation for a blank
-     source field means merge.py's clear step did not run; fix with `merge.py`.
+  2. For every translatable field that is blank or absent in en-US, no target
+     storefront has content for it. `merge.py` deletes those files; an empty file
+     passes here but `appstore_metadata.py prepare` rejects it.
 
-Also verifies the passthrough URL files exist per storefront when en-US has them.
+Also verifies the passthrough files (name and URLs) exist per storefront when en-US
+has them.
 
 Exits 0 if the metadata tree satisfies both invariants; 1 otherwise.
 This is the metadata analogue of scripts/check_translations.py.
@@ -120,7 +122,7 @@ def main(argv: list[str]) -> int:
             if read_field(storefront, field):
                 issues.append(
                     f"  NOTEMPTY [{storefront}] {field}: source is blank but translation has content"
-                    " — run merge.py to clear"
+                    " — run merge.py to delete it"
                 )
         for field in source_passthrough:
             if not read_field(storefront, field):

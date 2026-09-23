@@ -2,20 +2,13 @@
 """
 Pre-flight voice check on the **English (en-US) App Store metadata source**.
 
-The transcreation pipeline fans the en-US source out to 49 storefronts, so a
-brand-voice slip in the source (an exclamation mark, ALL-CAPS shouting, a salesy
-superlative) propagates everywhere and then gets independently re-flagged by all
-49 semantic auditors — one source flaw becomes a whole audit+remediation cycle.
-This catches it once, at the source, before any fan-out.
+A voice slip in the source (an exclamation mark, ALL-CAPS shouting, a salesy
+superlative) propagates to every storefront and is re-flagged by every semantic
+auditor, so this catches it once, before any fan-out. It checks the
+"Calm and understated" rule in PROMPT_TEMPLATE.md.
 
-It enforces the **calm/understated** rule from PROMPT_TEMPLATE.md / the audit
-rubric: "No exclamation marks, no ALL-CAPS shouting, no '!!!', no salesy
-superlatives ('the best', 'amazing', 'revolutionary')."
-
-These are **warnings, not hard errors** — there can be a legitimate reason to keep
-one. The skill's source-ready confirmation runs this first and, on any finding,
-halts and surfaces the warning to the human, who decides whether to fix the source
-or proceed anyway. Exit code: 0 = clean, 1 = at least one possible voice issue.
+Findings are warnings for a human to accept or fix, not hard errors.
+Exit code: 0 = clean, 1 = at least one possible voice issue.
 
 Usage:
   python3 scripts/translate_metadata/check_source_voice.py [--json]
@@ -50,7 +43,7 @@ _SUPERLATIVE_RE = re.compile(
     re.IGNORECASE,
 )
 # A run of 4+ consecutive uppercase ASCII letters = shouting (e.g. AMAZING).
-# 3-letter acronyms like USD stay under the bar.
+# 3-letter acronyms like FAQ stay under the bar.
 _ALLCAPS_RE = re.compile(r"\b[A-Z]{4,}\b")
 
 
@@ -108,7 +101,7 @@ def main(argv: list[str]) -> int:
     print(f"⚠ Source voice check — {len(findings)} possible voice issue(s) in the en-US source.")
     print("  Voice rule: calm/understated — no exclamation marks, no ALL-CAPS shouting, "
           "no salesy superlatives.")
-    print("  These propagate to all 49 storefronts. Fix the en-US source, or confirm "
+    print("  These propagate to every storefront. Fix the en-US source, or confirm "
           "you want to keep them.\n")
     for f in findings:
         print(f"  ■ {f['field']:<16} {f['kind']:<11} {f['match']!r}")

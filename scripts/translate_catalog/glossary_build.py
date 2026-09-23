@@ -3,8 +3,8 @@
 Build (and extend) the app translation glossary: scripts/translate_catalog/glossary.json.
 
 The glossary gives each recurring app term ONE canonical translation per locale, so two
-keys with the same English ("Add Funds" under several keys) stay consistent, and so that
-"Add Expense" can reuse the glossary's "Add" and "Expense". It is consulted by
+keys with the same English ("Share Anonymous Usage Data") stay consistent, and so that
+"Reset All" can reuse the glossary's "Reset". It is consulted by
 dispatch_prompts.py (translation) and audit_dispatch.py (audit), and grown by glossary_sync.py.
 
 This script is an orchestration *primitive* — it never calls an LLM itself. It prepares
@@ -24,9 +24,6 @@ Pipeline:
   4. --merge               assemble terms.json + tmp/glossary/outputs/{locale}.json into
                            glossary.json (merging into any existing terms); force protected
                            nouns to themselves; validate locale coverage
-
-Reuses scripts/translate_catalog/{locales.py, dispatch_prompts.py} (LOCALES, LOCALE_NAMES,
-REGIONAL_NOTES, _GENERIC_NOTE) — no duplication.
 """
 
 from __future__ import annotations

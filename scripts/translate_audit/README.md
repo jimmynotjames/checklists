@@ -13,16 +13,11 @@ This is the quality-audit sibling of `scripts/translate_catalog/` (which *create
 - `scripts/translate_audit/` (this folder) = grade the translations already in the catalog
   (the `audit-translations` skill).
 
-It **reuses** the catalog pipeline's single sources of truth via import — `locales.py`
-(`LOCALES`, `LOCALE_NAMES`) and `dispatch_prompts.py` (`REGIONAL_NOTES`, `_GENERIC_NOTE`,
-the per-locale register/cultural notes) — so the auditor grades against the same per-locale
-rubric the translator was given. Nothing here is duplicated from there. Python 3 stdlib only.
-
-> Note: the audit reuses the in-app `REGIONAL_NOTES`. Those notes intentionally duplicate the
-> *formality decision* (not the surrounding prose) with the metadata pipeline's `CULTURAL_NOTES`
-> — see the sync-rule note in `scripts/translate_catalog/README.md`. The audit doesn't need to do
-> anything special; just be aware the two register maps are kept in sync by convention, not by a
-> shared module.
+It imports the catalog pipeline's `locales.py` (`LOCALES`, `LOCALE_NAMES`) and
+`dispatch_prompts.py` (`REGIONAL_NOTES`, `_GENERIC_NOTE`), so the auditor grades against the
+same per-locale rubric the translator was given. Python 3 stdlib only. Why `REGIONAL_NOTES`
+and the metadata pipeline's `CULTURAL_NOTES` are separate maps:
+`localization-spec.md §Running the pipelines`.
 
 Keys under `sample.*` are demo checklist content, transcreated rather than translated: the auditor
 grades them on cultural fit, not fidelity to the English (`AUDIT_PROMPT_TEMPLATE.md`,
@@ -48,34 +43,12 @@ The per-locale auditor subagent is `.claude/agents/translation-audit-locale.md`
 exact divergences for free; the auditor catches subtler synonym/inflection drift against the glossary
 (`scripts/translate_catalog/glossary.json`, injected into the audit prompt as a `{GLOSSARY}` block).
 
-## Flow
+## Running it
 
-```bash
-# 1. Pull English + all current translations out of the catalog.
-python3 scripts/translate_audit/audit_extract.py            # all keys, all locales
-#   (or:  audit_extract.py de ja   /   audit_extract.py --keys k1,k2)
-
-# 2. Compose one audit prompt per locale.
-python3 scripts/translate_audit/audit_dispatch.py           # all locales with translations
-
-# 3. Parent agent: for each tmp/translate-audit-prompts/{locale}.md, dispatch one
-#    `translation-audit-locale` subagent (in parallel, single message) that reads that
-#    prompt and writes findings to tmp/translate-audit-outputs/{locale}.json.
-
-# 4. Aggregate into a triage report.
-python3 scripts/translate_audit/audit_report.py             # everything
-python3 scripts/translate_audit/audit_report.py --min-severity medium
-
-# 5. Emit a re-translation manifest for the flagged subset (Track C hand-off).
-python3 scripts/translate_audit/audit_report.py --write-manifest --min-severity medium
-#   → writes tmp/translate-inputs/{manifest,source}.json in the shape extract.py --missing
-#     produces, so the translate-new-strings flow re-translates exactly those (key,locale)
-#     pairs — re-translate with a stronger model for this round.
-```
-
-Recommended: dry-run a single locale end-to-end first (`audit_extract.py de` →
-`audit_dispatch.py de` → one subagent → `audit_report.py de`) and sanity-check the findings
-before fanning out to all 49.
+The `audit-translations` skill owns the step-by-step flow: extract, dispatch, fan out one
+`translation-audit-locale` agent per locale, report, and hand the flagged subset to
+re-translation with `audit_report.py --write-manifest`. Which model re-translates:
+`localization-spec.md §Models are pinned deliberately`.
 
 ## Findings shape
 
@@ -86,7 +59,7 @@ Each `tmp/translate-audit-outputs/{locale}.json` is:
   "findings": [
     {
       "key": "...", "severity": "high|medium|low",
-      "category": "tone|register|cultural|accuracy|grammar|length",
+      "category": "<one of the categories in AUDIT_PROMPT_TEMPLATE.md>",
       "current": "<current translation>",
       "back_translation": "<literal English of current>",
       "issue": "<what's wrong>", "suggestion": "<improved translation>"
@@ -106,8 +79,8 @@ strings have unstable ratios and rarely truncate, so they're skipped) catches tr
 that are much longer than the English, but character count is only a **proxy** for whether a
 string actually truncates — that depends on each control's width, which this pipeline has no budget
 for. Treat `[ratio]` findings as "look at these," and rely on the auditor's `[llm]` length
-judgment (justified vs. avoidable) for the verdict. True truncation is a UI-level check; see
-the audit doc's "Layout truncation" section.
+judgment (justified vs. avoidable) for the verdict. True truncation is a UI-level check:
+`localization-spec.md §Large-type layout check`.
 
 Because of this, **`--write-manifest` excludes `[ratio]` findings** and re-translates only the
 auditor's `[llm]`-judged subset. On German alone the ratio heuristic false-positives on standard
@@ -123,5 +96,5 @@ tmp/
   translate-audit-inputs/audit_source.json     # audit_extract.py output
   translate-audit-prompts/{locale}.md          # audit_dispatch.py output
   translate-audit-outputs/{locale}.json        # subagent findings
-  translate-inputs/{manifest,source}.json      # audit_report.py --write-manifest (Track C hand-off)
+  translate-inputs/{manifest,source}.json      # audit_report.py --write-manifest
 ```

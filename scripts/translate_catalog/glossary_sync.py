@@ -9,12 +9,7 @@ tmp/glossary/terms.json in the curated shape, ready to translate. Frequent singl
 aren't yet covered are written to tmp/glossary/candidates_review.json for a human to consider
 (more ambiguous — a word isn't always a term worth pinning).
 
-Not every exact duplicate is terminology, though: placeholders ("0"), full accessibility
-sentences, and "Label, %@" a11y strings recur (often just because a key has a `.recurring.`
-twin) without being terms worth pinning. Those are listed in IGNORED_NONTERMS — a small,
-hand-curated set (one human glance per entry) — and skipped, so the high-confidence signal
-stays trustworthy. It's an explicit list rather than a content heuristic on purpose: the
-recurrence is idiosyncratic, and a guessy rule risks silently dropping a real future term.
+Exact duplicates that aren't terminology go in IGNORED_NONTERMS and are skipped.
 
 This script never calls an LLM. To actually add the detected high-confidence terms:
     python3 scripts/translate_catalog/glossary_sync.py --detect
@@ -41,16 +36,8 @@ import glossary_build as gb  # noqa: E402
 
 REVIEW_PATH = gb.GLOSSARY_DIR / "candidates_review.json"
 
-# Exact English strings that recur across keys but are deliberately NOT glossary terms, so
-# `--detect` should not keep proposing them. The glossary pins recurring *terminology*; these
-# would be placeholders / numbers / full accessibility sentences whose recurrence is incidental —
-# not shared vocabulary. Curated by hand, one glance per entry, rather than a heuristic: the
-# recurrence is idiosyncratic, and a guessy content rule risks silently dropping a real future
-# term. Each entry notes why.
-#
-# Add to this set when `--detect` surfaces a new genuine non-term; the staleness check below
-# warns if an entry stops recurring so the set doesn't rot. Matched whitespace-/case-insensitively
-# via _normset, consistent with the glossary `known` check.
+# Recurring exact English strings that are not terminology (placeholders, full sentences), with
+# the reason per entry. Matched whitespace- and case-insensitively; stale entries warn.
 IGNORED_NONTERMS: set[str] = set()
 
 

@@ -11,7 +11,7 @@ For each locale in locales.py it computes two sets of CLDR cardinal plural categ
   - "required": the categories reachable by realistic **integer** counts (0..999), plus
     `other` (always the mandatory fallback). This is what a plural string must cover —
     it excludes large-number-only categories (e.g. Romance `many`, used only for compact
-    millions, which an expense count never reaches).
+    millions, which an item count never reaches).
   - "valid": every category the language's rule defines (for spurious-category detection).
 
 Usage (requires babel):

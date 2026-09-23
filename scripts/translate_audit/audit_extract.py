@@ -1,27 +1,30 @@
 #!/usr/bin/env python3
 """
 Extract English source + every locale's CURRENT translation from
-Localizable.xcstrings, for the translation-quality audit (Track B).
+Localizable.xcstrings, for the translation-quality audit.
 
 Unlike scripts/translate_catalog/extract.py (which emits only the English source
 for *translating*), this emits the existing translations too, so an auditor can
 grade them. Writes tmp/translate-audit-inputs/audit_source.json:
 
   {
-    "key": {
+    "flat.key": {
       "value": "<English source>",
       "comment": "<translator comment>",
       "formatSpecifiers": ["%@", ...],
-      "translations": { "de": "<de string>", "ja": "<ja string>", ... }
+      "translations": { "de": "<de string>", ... }
     },
-    ...
+    "plural.key": {
+      "plural": { "one": "<en one>", "other": "<en other>" },
+      "comment": "<translator comment>",
+      "formatSpecifiers": ["%lld"],
+      "translations": { "de": { "one": "...", "other": "..." }, ... }
+    }
   }
 
-Only flat `stringUnit` translations are captured; a key whose locale entry uses a
-plural/device `variations` block is skipped *for that locale* (consistent with the
-translate pipeline's subset mode). `check_translations.py` remains the structural gate.
-
-Reuses scripts/translate_catalog/{locales.py, extract.py} via import (no duplication).
+Plural keys carry each locale's per-category forms. A key with a non-plural
+`variations` block (device) is skipped. `check_translations.py` remains the
+structural gate.
 
 Modes:
   (default)          every translatable key, all target locales
@@ -43,19 +46,14 @@ sys.path.insert(0, str(CATALOG_DIR))
 from paths import CATALOG_PATH  # noqa: E402
 AUDIT_INPUTS_DIR = REPO_ROOT / "tmp" / "translate-audit-inputs"
 AUDIT_SOURCE_PATH = AUDIT_INPUTS_DIR / "audit_source.json"
-
-# Reuse the catalog pipeline's single sources of truth.
-sys.path.insert(0, str(CATALOG_DIR))
 from locales import LOCALES  # noqa: E402
 from extract import extract_format_specifiers, localization_plural  # noqa: E402
 
 
 def stringunit_value(localization: dict | None) -> str | None:
     """Return the flat stringUnit value, or None if absent or a variations block."""
-    if not localization:
+    if not localization or "variations" in localization:
         return None
-    if "variations" in localization:
-        return None  # plural/device variations: not handled in audit subset mode
     value = localization.get("stringUnit", {}).get("value")
     return value if value else None
 

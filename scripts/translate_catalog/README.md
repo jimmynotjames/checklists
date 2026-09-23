@@ -3,15 +3,13 @@
 Translates `Localizable.xcstrings` from English into the 49 App Store storefront locales
 using AI subagents (one per locale, dispatched in parallel by a parent agent).
 
-The skill at `.claude/skills/translate-new-strings/` encodes the canonical workflow for
-adding translations for newly-keyed strings; this README is the authority for *what each
-script does*. The skill is the authority for *when and how to invoke them*.
+This README is the authority for *what each script does*; the `translate-new-strings` skill
+is the authority for *when and how to invoke them*, and owns the step-by-step flow.
 
 > **Auditing existing translations for quality** (tone, register, cultural fit, length) is a
 > separate pipeline: see `scripts/translate_audit/` (the `audit-translations` skill). It reads
 > this folder's `locales.py` and `REGIONAL_NOTES`/`_GENERIC_NOTE`, grades the translations
-> already in the catalog, and can emit a re-translation manifest that feeds back into the flow
-> below.
+> already in the catalog, and can emit a re-translation manifest that feeds back into this one.
 
 ## Scripts
 
@@ -19,77 +17,29 @@ script does*. The skill is the authority for *when and how to invoke them*.
 |---|---|
 | `locales.py` | `LOCALES`, `LOCALE_NAMES`, runtime↔storefront maps — derived from the registry in `fastlane/screenshot-config.json` |
 | `paths.py` | `CATALOG_PATH`, `SOURCE_DIR`, `SEEDS_DIR` |
-| `extract.py` | Read the catalog → write `tmp/translate-inputs/source.json` (and optionally `manifest.json`) |
-| `dispatch_prompts.py` | Compose per-locale prompt files in `tmp/translate-prompts/` from `manifest.json` + `PROMPT_TEMPLATE.md` |
-| `validate.py` | Validate `tmp/translate-outputs/{locale}.json` files against source |
+| `extract.py` | Read the catalog → write `tmp/translate-inputs/source.json` (and, with `--missing`, `manifest.json`) |
+| `dispatch_prompts.py` | Compose per-locale prompt files in `tmp/translate-prompts/` from `manifest.json` + the prompt templates |
+| `validate.py` | Validate `tmp/translate-outputs/{locale}.json` and `{locale}.sample.json` against source |
 | `merge.py` | Merge validated outputs back into `Localizable.xcstrings` |
+| `add_keys.py` / `update_keys.py` / `remove_keys.py` / `rename_keys.py` / `pluralize_keys.py` / `invalidate_keys.py` | Catalog key maintenance; each script's docstring gives its input shape |
+| `glossary_build.py` / `glossary_sync.py` | Build and grow `glossary.json` (below) |
 | `inspect_xcstrings.py` | Read-only catalog inspector (`info` / `find` / `show`) — use instead of ad-hoc `python3 -c` against the catalog |
 | `inspect_glossary.py` | Read-only glossary inspector (`info` / `term`) — use instead of ad-hoc `python3 -c` against `glossary.json` |
-| `PROMPT_TEMPLATE.md` | Template fed to per-locale subagents (placeholders substituted by `dispatch_prompts.py`) |
+| `PROMPT_TEMPLATE.md` | UI-key template → `{locale}.md`, for the `translation-locale` agent |
+| `SAMPLE_PROMPT_TEMPLATE.md` | `sample.*` demo-checklist template → `{locale}.sample.md`, for the `sample-content-locale` agent (transcreated for cultural fit, structure fixed) |
 
-No dependencies beyond Python 3 stdlib.
+No dependencies beyond Python 3 stdlib. Outputs are `{locale}.json` and `{locale}.sample.json`;
+`validate.py` and `merge.py` read both.
 
-> **Per-locale register notes are intentionally duplicated** between this pipeline's
-> `REGIONAL_NOTES` (in `dispatch_prompts.py`) and the metadata pipeline's `CULTURAL_NOTES`
-> (`scripts/translate_metadata/dispatch_prompts.py`). The two overlap only in the *formality
-> decision* per language (e.g. de→"du", ja→です/ます); the rest is genuinely
-> different (UI dialect/length here vs ASO positioning/keyword guidance there). Issue #173
-> considered consolidating them and we **decided not to** — a shared abstraction needed a
-> per-storefront override map that re-duplicated the formality sentence anyway. **Sync rule:**
-> if you change a language's *formality decision* in one map, change it in the other too; the
-> wording may differ but the formality call must match. (Don't re-file this as a DRY bug.)
+The per-locale register notes (`REGIONAL_NOTES` here, `CULTURAL_NOTES` in the metadata
+pipeline) are duplicated on purpose: `localization-spec.md §Running the pipelines`.
 
-## Default flow — adding/changing a small set of strings
+## Full backfill
 
-Use this whenever you've added new `String(localized:)` / `LocalizedStringResource` keys
-or Xcode has flagged existing keys as `stale` / `needs_review`.
-
-```bash
-# 1. Find what actually needs translating. Writes source.json AND manifest.json.
-python3 scripts/translate_catalog/extract.py --missing
-
-# 2. Compose ready-to-dispatch per-locale prompts.
-python3 scripts/translate_catalog/dispatch_prompts.py
-
-# 3. Parent agent: read each tmp/translate-prompts/{locale}.md and dispatch
-#    one subagent per locale with that prompt. Subagents must write their
-#    output JSON to tmp/translate-outputs/{locale}.json.
-
-# 4. Validate the partial outputs (subset mode — only checks keys actually translated).
-python3 scripts/translate_catalog/validate.py --subset
-
-# 5. Merge into the catalog.
-python3 scripts/translate_catalog/merge.py
-
-# 6. Authoritative pre-push gate — must exit 0 before the work is done.
-python3 scripts/check_translations.py
-python3 scripts/check_source_strings.py
-
-# 7. Gate (includes make i18n-check = step 6, then a build)
-make gate
-```
-
-Step 2 writes two prompt kinds: `{locale}.md` (UI keys, `PROMPT_TEMPLATE.md`, Haiku
-`translation-locale` agent) and `{locale}.sample.md` (the `sample.*` demo checklists,
-`SAMPLE_PROMPT_TEMPLATE.md`, Opus `sample-content-locale` agent — transcreated for cultural fit,
-structure fixed). Outputs are `{locale}.json` and `{locale}.sample.json`; steps 4–5 read both.
-
-`check_translations.py` is the same script lefthook runs on pre-push (see `lefthook.yml`),
-so a clean exit here means the push will pass that gate.
-
-## Full backfill — regenerate every locale from scratch
-
-Only needed when changing the model, fixing a systemic prompt issue, or seeding a new
-catalog from scratch. Costs O(49 × all-keys).
-
-```bash
-python3 scripts/translate_catalog/extract.py                     # all keys, no manifest
-# Manually fan out subagents using PROMPT_TEMPLATE.md, one per locale, full source.json
-python3 scripts/translate_catalog/validate.py                    # strict — full source required
-python3 scripts/translate_catalog/merge.py
-python3 scripts/check_translations.py
-make gate
-```
+`dispatch_prompts.py` needs the `manifest.json` that only `extract.py --missing` writes. To
+regenerate every locale (a model change, or a systemic prompt fix), mark the keys
+`needs_review` with `invalidate_keys.py` (optionally `--locales`), then run the normal flow.
+Costs O(49 × all-keys).
 
 ## Script flags reference
 
@@ -97,7 +47,7 @@ make gate
 - (no flags) — emit every translatable key
 - `--keys k1,k2,...` — emit only those keys
 - `--keys-file PATH` — keys from a file, one per line
-- `--missing` — emit only keys missing/stale in any locale; also writes `manifest.json`
+- `--missing` — emit only keys missing/stale in any locale, plurals included; also writes `manifest.json`
 
 `validate.py`:
 - `--subset` — only check keys present in each output file (partial-translation mode)
@@ -110,6 +60,7 @@ make gate
 
 `invalidate_keys.py` (force re-translation when the English source is unchanged):
 - `--keys k1,k2,...` / `--keys-file PATH` — mark those keys' non-`en` locales `needs_review`
+- `--locales a,b,c` — invalidate only those locales (default: every non-`en` locale)
 - Leaves the `en` source untouched; `extract.py --missing` then re-emits them
 - Use when a glossary term was re-translated so every string embedding it must flow through
   translation again (the term-changed sibling of `update_keys.py`'s English-changed path)
@@ -127,20 +78,18 @@ make gate
 - `term TERM [TERM ...] [--locales a,b,c]` — a term's translations across locales
 
 ```bash
-# Which keys mention "carry-over" anywhere, and the resulting comma list:
-python3 scripts/translate_catalog/inspect_xcstrings.py find carry-over
+# Which keys mention "reset" anywhere, and the resulting comma list:
+python3 scripts/translate_catalog/inspect_xcstrings.py find reset
 # A specific key's value+state in a few locales:
-python3 scripts/translate_catalog/inspect_xcstrings.py show carryOver.label --locales de,fr,ja
+python3 scripts/translate_catalog/inspect_xcstrings.py show checklists.action.resetAll --locales de,fr,ja
 # A glossary term's per-locale translations:
-python3 scripts/translate_catalog/inspect_glossary.py term Carry-Over
+python3 scripts/translate_catalog/inspect_glossary.py term "Reset All"
 ```
 
 ## Catalog assumptions
 
 - Keys with `"shouldTranslate": false` (locale-invariant identifiers) are skipped by `--missing`.
-- Plural / device variations (`"variations"` blocks) are not yet handled in `--missing` subset mode.
-  `check_translations.py` remains the authoritative gate and will catch any variation-shaped
-  issues at pre-push time.
+- `check_translations.py` remains the authoritative gate.
 
 ## Glossary (terminology consistency)
 
@@ -148,7 +97,7 @@ python3 scripts/translate_catalog/inspect_glossary.py term Carry-Over
 "Checklist", "Notes", "Reset All", …) so that two keys with the same English don't drift, and so a
 compound like "Reset All" reuses the agreed "Reset". It is **consulted automatically**:
 `dispatch_prompts.py` injects the relevant terms into each translation prompt as a `{GLOSSARY}` block
-(rule 6 in `PROMPT_TEMPLATE.md` tells the model to use them but keep the full string coherent), and
+(the template tells the model to use them but keep the full string coherent), and
 `audit_dispatch.py` injects the same block so the auditor can raise `consistency` findings. Protected
 nouns (reChecklist, iCloud) map to themselves.
 
@@ -163,7 +112,7 @@ python3 scripts/translate_catalog/glossary_build.py --dispatch              # �
 #   fan out one glossary-locale (Opus) agent per locale → tmp/glossary/outputs/{locale}.json
 python3 scripts/translate_catalog/glossary_build.py --merge                 # → glossary.json
 
-# Grow it after new strings land (run from the translate-new-strings skill, step 4b):
+# Grow it after new strings land:
 python3 scripts/translate_catalog/glossary_sync.py --detect                 # high-confidence repeats → terms.json
 #   then --dispatch / fan out / --merge for just the new terms (merge appends, never drops)
 ```

@@ -2,25 +2,13 @@
 """
 Deterministic "untranslated copy" detector for Localizable.xcstrings.
 
-Catches a class the state-based gate (scripts/check_translations.py) is blind to: a
-locale whose value is *byte-identical to the English source* yet carries
-`state: translated`. Such an entry looks done to every state check, but it's English
-sitting in a non-English slot — e.g. Hindi `period.specificDates` shipped as
-"Specific Dates". A visual pass found that one; this finds the rest, no LLM, no cost.
-
-The naive signal ("value == English") is far too noisy to gate on:
-  - English regional variants (en-AU/en-CA/en-GB) legitimately equal `en` → excluded.
-  - Cognates / loanwords legitimately match: German "Name", Swedish "Period",
-    French "Allocation", and broadly-kept terms like "Budget" / "Symbol" / "Version".
-
-So we report a holdout only when it's an *outlier*: the key is translated away from
-English in the overwhelming majority of OTHER non-English locales (so broadly-kept
-loanwords/brand terms are suppressed), AND only a handful of locales held out (a real
-miss is usually 1, occasionally 2 — a loanword is kept in many). Residual legitimate
-cognates (one language coincidentally matching English) are listed in ALLOWLIST.
-
-It's the value-identity complement to consistency_check.py (cross-key drift) and the
-LLM auditor (scripts/translate_audit/) — run all three.
+Flags a non-English locale whose value is byte-identical to the English source yet
+carries `state: translated`, which every state check (check_translations.py) passes.
+"Value == English" alone is too noisy (cognates, loanwords, en-* variants), so a
+holdout is reported only as an *outlier*: most other non-English locales translated
+the key away from English, and at most --max-holdouts locales kept it. Terms the
+glossary keeps in English are auto-allowed; the rest of the known-good residue is
+in ALLOWLIST.
 
 Usage:
   python3 scripts/translate_audit/untranslated_copies.py [options] [locale ...]
@@ -49,13 +37,12 @@ sys.path.insert(0, str(CATALOG_DIR))
 from paths import CATALOG_PATH  # noqa: E402
 GLOSSARY_PATH = CATALOG_DIR / "glossary.json"
 
-sys.path.insert(0, str(CATALOG_DIR))
 from locales import LOCALES  # noqa: E402
 
 # The glossary (scripts/translate_catalog/glossary.json) is the authority on which whole-string
 # terms are *deliberately* kept in English per locale — protected brands (reChecklist, iCloud)
-# and genuine cognates the language uses verbatim (ca "Recents", de "Name", sv "Period",
-# fr "Allocation", …). load_glossary_kept_english() turns it into {locale: {kept-English terms}}
+# and genuine cognates the language uses verbatim (de "Name"). load_glossary_kept_english()
+# turns it into {locale: {kept-English terms}}
 # so those are auto-allowed without hand-maintenance; re-run the glossary pipeline to change them.
 #
 # ALLOWLIST only carries the residue the glossary can't speak to: identical-to-English values that

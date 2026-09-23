@@ -8,16 +8,9 @@ language AND every supported target locale.
 Exits 1 if any key is missing or has a non-translated state (new,
 needs_review, stale) for the source language or any target locale.
 
-Why the source language is checked:
-The xcstrings format stores the en source value under
-`localizations.en.stringUnit`, and that stringUnit has its own `state`.
-When the state is `new` (a common initial value after `xcodebuild`
-extraction without an Xcode-IDE catalog write), SwiftUI's
-`Text(LocalizedStringKey)` and similar APIs that lack a `defaultValue`
-fallback resolve the key to the literal key string at runtime — a
-production bug. The safer `Text(String(localized:defaultValue:comment:))`
-pattern masks this with a hard English fallback, but the gap remains a
-latent risk. Validating en source state here closes the gap.
+The source language is checked too: its stringUnit has its own `state`, and
+while that is `new`, APIs without a `defaultValue` fallback (such as
+`Text(LocalizedStringKey)`) resolve to the literal key at runtime.
 
 Usage:
   python3 scripts/check_translations.py [--json]
@@ -39,10 +32,8 @@ from paths import CATALOG_PATH  # noqa: E402
 # States that mean a translation is not ready to ship.
 UNTRANSLATED_STATES = {"new", "needs_review", "stale"}
 
-# Source-language code stored in the xcstrings catalog. Validated separately
-# from LOCALES because semantically it's the *source*, not a translation target,
-# but a `new` / `needs_review` / `stale` state on the source still breaks
-# runtime localization for code paths that lack a `defaultValue` fallback.
+# Source-language code stored in the xcstrings catalog; checked separately from
+# LOCALES because it is the source, not a translation target.
 SOURCE_LANGUAGE = "en"
 
 
@@ -71,9 +62,6 @@ def main(argv: list[str]) -> int:
 
         localizations: dict = entry.get("localizations", {})
 
-        # Validate the source-language entry first: a `new` / `needs_review` /
-        # `stale` state on the source breaks runtime localization for any code
-        # path that uses `Text(LocalizedStringKey)` without a `defaultValue`.
         source_entry = localizations.get(source_language)
         if source_entry is None:
             issues.append(f"  MISSING  [{source_language}] {key!r} (source)")
@@ -91,9 +79,7 @@ def main(argv: list[str]) -> int:
                 issues.append(f"  MISSING  [{locale}] {key!r}")
                 continue
 
-            # Handle plural variants (stringSet) — check each variant.
             if "variations" in loc_entry:
-                # Plural/device variations: check each stringUnit within.
                 _check_variations(loc_entry["variations"], locale, key, issues)
                 continue
 
@@ -111,7 +97,7 @@ def main(argv: list[str]) -> int:
         for line in issues:
             print(line)
         print(
-            "\nRun scripts/translate_catalog/ (extract → translate → merge → validate) "
+            "\nRun scripts/translate_catalog/ (extract → translate → validate → merge) "
             "to generate missing translations before pushing."
         )
         return 1
