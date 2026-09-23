@@ -62,6 +62,32 @@ DISTINCT_PAIRS: list[tuple[str, str, str]] = [
         "the two entries of the detail screen's overflow menu; they share a noun, so only the "
         "verb distinguishes a copy from a removal",
     ),
+    (
+        "settings.icloud.unavailable",
+        "settings.icloud.restricted",
+        "both replace the Settings iCloud row's single title slot; one means no account, the "
+        "other a restricted one, and a reader must be able to tell which happened",
+    ),
+    (
+        "settings.icloud.unavailable",
+        "settings.icloud.couldNotCheck",
+        "both replace the Settings iCloud row's single title slot; one means no account, the "
+        "other a failed check, and a reader must be able to tell which happened",
+    ),
+    (
+        "settings.icloud.paused",
+        "settings.icloud.syncInterrupted",
+        "both replace the Settings iCloud row's single title slot; one means this launch fell "
+        "back to local storage, the other that a sync operation failed, and a reader must be "
+        "able to tell which happened",
+    ),
+    (
+        "settings.icloud.restricted",
+        "settings.icloud.needsAttention",
+        "both replace the Settings iCloud row's single title slot; one is a standing "
+        "restriction, the other a temporary problem the person can resolve, and a reader must "
+        "be able to tell which happened",
+    ),
 ]
 
 

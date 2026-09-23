@@ -3,6 +3,7 @@
 //  checklists
 //
 
+import CloudKit
 import SwiftUI
 
 /// Settings screen presented as a sheet from the app's `Router`.
@@ -52,39 +53,20 @@ struct SettingsView: View {
 
   @ViewBuilder
   private var iCloudStatusRow: some View {
-    switch syncStatus.rowState {
-    case .checking:
+    let presentation = syncStatus.rowPresentation
+    if let symbolName = presentation.symbolName {
+      Label {
+        Text(presentation.title)
+      } icon: {
+        Image(systemName: symbolName)
+          .foregroundStyle(presentation.isWarning ? Colors.warningColor : Colors.successColor)
+      }
+      .accessibilityElement(children: .combine)
+    } else {
       HStack {
-        Text(String(localized: "settings.icloud.checking", defaultValue: "Checking…", comment: "iCloud status row while the account status is still being looked up; shown next to a spinner."))
+        Text(presentation.title)
         Spacer()
         ProgressView()
-      }
-      .accessibilityElement(children: .combine)
-
-    case .available:
-      Label {
-        Text(String(localized: "settings.icloud.active", defaultValue: "iCloud Sync is Active", comment: "iCloud status row: checklists are syncing through iCloud."))
-      } icon: {
-        Image(systemName: "checkmark.icloud")
-          .foregroundStyle(Colors.successColor)
-      }
-      .accessibilityElement(children: .combine)
-
-    case .paused:
-      Label {
-        Text(String(localized: "settings.icloud.paused", defaultValue: "iCloud Sync Paused", comment: "iCloud status row: the app fell back to a local-only store this launch."))
-      } icon: {
-        Image(systemName: "exclamationmark.icloud")
-          .foregroundStyle(Colors.warningColor)
-      }
-      .accessibilityElement(children: .combine)
-
-    case .unavailable:
-      Label {
-        Text(String(localized: "settings.icloud.unavailable", defaultValue: "iCloud Not Available", comment: "iCloud status row: no iCloud account is signed in on this device."))
-      } icon: {
-        Image(systemName: "xmark.icloud")
-          .foregroundStyle(Colors.warningColor)
       }
       .accessibilityElement(children: .combine)
     }
@@ -92,23 +74,9 @@ struct SettingsView: View {
 
   @ViewBuilder
   private var iCloudFooter: some View {
-    switch syncStatus.rowState {
-    case .unavailable:
-      Text(String(
-        localized: "settings.icloud.footer.unavailable",
-        defaultValue: "Sign in to iCloud in Settings to sync your checklists across devices.",
-        comment: "Footer under the iCloud section when no iCloud account is signed in. 'Settings' here means the iOS Settings app."
-      ))
-      .foregroundStyle(Colors.inactiveTextColor)
-    case .paused:
-      Text(String(
-        localized: "settings.icloud.footer.paused",
-        defaultValue: "Your checklists are saved on this device only. Restart the app to retry iCloud sync.",
-        comment: "Footer under the iCloud section when sync is paused for this launch."
-      ))
-      .foregroundStyle(Colors.inactiveTextColor)
-    case .checking, .available:
-      EmptyView()
+    if let footer = syncStatus.rowPresentation.footer {
+      Text(footer)
+        .foregroundStyle(Colors.inactiveTextColor)
     }
   }
 
@@ -207,5 +175,47 @@ struct SettingsView: View {
   #Preview("iCloud checking") {
     SettingsView()
       .previewEnvironment(syncStatus: PreviewSupport.syncStatus(containerBacking: .cloudKit, accountStatus: .checking))
+  }
+
+  #Preview("iCloud active, last synced") {
+    SettingsView()
+      .previewEnvironment(syncStatus: PreviewSupport.syncStatus(
+        containerBacking: .cloudKit,
+        accountStatus: .available,
+        syncActivity: [.export: SyncOperationState(lastSuccess: .now.addingTimeInterval(-300), latestFailure: nil)]
+      ))
+  }
+
+  #Preview("iCloud restricted") {
+    SettingsView()
+      .previewEnvironment(syncStatus: PreviewSupport.syncStatus(containerBacking: .cloudKit, accountStatus: .restricted))
+  }
+
+  #Preview("iCloud needs attention") {
+    SettingsView()
+      .previewEnvironment(syncStatus: PreviewSupport.syncStatus(containerBacking: .cloudKit, accountStatus: .temporarilyUnavailable))
+  }
+
+  #Preview("iCloud could not check") {
+    SettingsView()
+      .previewEnvironment(syncStatus: PreviewSupport.syncStatus(containerBacking: .cloudKit, accountStatus: .couldNotDetermine))
+  }
+
+  #Preview("iCloud storage full") {
+    SettingsView()
+      .previewEnvironment(syncStatus: PreviewSupport.syncStatus(
+        containerBacking: .cloudKit,
+        accountStatus: .available,
+        syncActivity: [.export: SyncOperationState(lastSuccess: nil, latestFailure: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.quotaExceeded.rawValue))]
+      ))
+  }
+
+  #Preview("iCloud sync interrupted") {
+    SettingsView()
+      .previewEnvironment(syncStatus: PreviewSupport.syncStatus(
+        containerBacking: .cloudKit,
+        accountStatus: .available,
+        syncActivity: [.export: SyncOperationState(lastSuccess: nil, latestFailure: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.internalError.rawValue))]
+      ))
   }
 #endif

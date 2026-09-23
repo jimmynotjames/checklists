@@ -3,6 +3,7 @@
 //  checklists
 //
 
+import CloudKit
 import Foundation
 import Observation
 
@@ -24,14 +25,25 @@ final class SyncStatus {
     case couldNotDetermine = "could_not_determine"
   }
 
-  /// Four-state row for Settings' iCloud row. Why `.paused` exists:
+  /// Settings' iCloud row. Why `.paused` exists, and the precedence among these:
   /// persistence-design.md §Sync status.
-  enum RowState {
+  enum RowState: CaseIterable {
     case checking
     case available
+    /// No iCloud account signed in on this device.
     case unavailable
     /// Local-only container despite a potentially available iCloud account.
     case paused
+    /// Signed in, but the account is restricted (e.g. Screen Time, an organization).
+    case restricted
+    /// Signed in, but the account needs the person's attention (Apple Account confirmation).
+    case needsAttention
+    /// The account status query failed or hasn't resolved (e.g. no network).
+    case couldNotCheck
+    /// A sync event failed with `CKError.quotaExceeded`.
+    case storageFull
+    /// A sync event failed with any other non-transient error.
+    case syncInterrupted
   }
 
   let containerBacking: ContainerBacking
@@ -63,24 +75,28 @@ final class SyncStatus {
 }
 
 extension SyncStatus {
+  /// Precedence: checking → account problem → paused (local fallback) → sync failure → active. An
+  /// account problem outranks `.paused` because it explains why syncing isn't happening even more
+  /// directly than "this launch fell back to local storage" does.
   var rowState: RowState {
-    switch (containerBacking, accountStatus) {
-    case (_, .checking):
-      .checking
-    case (.cloudKit, .available):
-      .available
-    case (.localFallback, .available):
-      .paused
-    case (.cloudKit, .noAccount),
-         (.cloudKit, .restricted),
-         (.cloudKit, .temporarilyUnavailable),
-         (.cloudKit, .couldNotDetermine),
-         (.localFallback, .noAccount),
-         (.localFallback, .restricted),
-         (.localFallback, .temporarilyUnavailable),
-         (.localFallback, .couldNotDetermine):
-      .unavailable
+    switch accountStatus {
+    case .checking:
+      return .checking
+    case .noAccount:
+      return .unavailable
+    case .restricted:
+      return .restricted
+    case .temporarilyUnavailable:
+      return .needsAttention
+    case .couldNotDetermine:
+      return .couldNotCheck
+    case .available:
+      break
     }
+    if containerBacking == .localFallback {
+      return .paused
+    }
+    return syncFailureRowState ?? .available
   }
 
   /// Folds one finished `NSPersistentCloudKitContainer` event into `syncActivity`. A success clears
@@ -94,6 +110,29 @@ extension SyncStatus {
       state.latestFailure = nil
     }
     syncActivity[snapshot.operation] = state
+  }
+
+  /// `nil` when no recorded failure should change the row: none recorded, or only the transient
+  /// errors that never do (`NSPersistentCloudKitContainer` retries them on its own).
+  private var syncFailureRowState: RowState? {
+    let failures = syncActivity.values.compactMap(\.latestFailure)
+    guard !failures.isEmpty else { return nil }
+    if failures.contains(where: Self.isStorageFull) { return .storageFull }
+    guard failures.contains(where: { !Self.isIgnoredTransientFailure($0) }) else { return nil }
+    return .syncInterrupted
+  }
+
+  private static func isStorageFull(_ error: SyncErrorCode) -> Bool {
+    error.domain == CKErrorDomain && CKError.Code(rawValue: error.code) == .quotaExceeded
+  }
+
+  private static let ignoredTransientCodes: Set<CKError.Code> = [
+    .networkUnavailable, .networkFailure, .serviceUnavailable, .requestRateLimited, .zoneBusy,
+  ]
+
+  private static func isIgnoredTransientFailure(_ error: SyncErrorCode) -> Bool {
+    guard error.domain == CKErrorDomain, let code = CKError.Code(rawValue: error.code) else { return false }
+    return ignoredTransientCodes.contains(code)
   }
 }
 
