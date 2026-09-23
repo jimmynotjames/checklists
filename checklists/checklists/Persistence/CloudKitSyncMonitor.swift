@@ -44,7 +44,10 @@ final class CloudKitSyncMonitor {
     }
   }
 
-  private func handle(_ snapshot: SyncEventSnapshot) {
+  /// Internal rather than `private` so `CloudKitSyncMonitorTests` can drive the dedup-and-track
+  /// logic directly with a constructed `SyncEventSnapshot` — the real `Event` this normally comes
+  /// from can't be built in a test.
+  func handle(_ snapshot: SyncEventSnapshot) {
     syncStatus.record(snapshot)
     AppLog.cloudKit.info(
       "cloudkit.sync.event: \(snapshot.operation.rawValue, privacy: .public) \(snapshot.error == nil, privacy: .public) \(snapshot.error?.domain ?? "-", privacy: .public) \(snapshot.error?.code ?? 0, privacy: .public)"

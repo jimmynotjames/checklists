@@ -6,6 +6,7 @@
 @testable import checklists
 import CloudKit
 import CoreData
+import Foundation
 import Testing
 
 /// Covers the pure pieces of `CloudKitSyncMonitor`: error unwrapping and the `SyncOperation`
@@ -55,5 +56,74 @@ struct CloudKitSyncMonitorTests {
   ])
   func eventTypeMapsToOperation(eventType: NSPersistentCloudKitContainer.EventType, expected: SyncOperation) {
     #expect(SyncOperation(eventType) == expected)
+  }
+
+  // MARK: - handle(_:)
+
+  /// The real `NSPersistentCloudKitContainer.Event` can't be constructed, so `handle(_:)` is
+  /// driven directly with a `SyncEventSnapshot` — the same seam `SyncStatus.record(_:)` uses.
+  @Test("a failure records itself on syncStatus and fires cloudkit_sync_failed")
+  func failureRecordsAndTracks() {
+    let syncStatus = SyncStatus(containerBacking: .cloudKit)
+    let spy = SpyAnalyticsClient()
+    let monitor = CloudKitSyncMonitor(syncStatus: syncStatus, analytics: spy)
+
+    monitor.handle(SyncEventSnapshot(
+      operation: .export,
+      endDate: .now,
+      error: SyncErrorCode(domain: "CKErrorDomain", code: 25)
+    ))
+
+    #expect(syncStatus.syncActivity[.export]?.latestFailure == SyncErrorCode(domain: "CKErrorDomain", code: 25))
+    #expect(spy.trackedEventNames == [AnalyticsEvent.cloudkitSyncFailed])
+    #expect(spy.rawProperty(AnalyticsProperty.syncOperation, forFirst: AnalyticsEvent.cloudkitSyncFailed, as: String.self) == "export")
+    #expect(spy.rawProperty(AnalyticsProperty.errorDomain, forFirst: AnalyticsEvent.cloudkitSyncFailed, as: String.self) == "CKErrorDomain")
+    #expect(spy.rawProperty(AnalyticsProperty.errorCode, forFirst: AnalyticsEvent.cloudkitSyncFailed, as: Int.self) == 25)
+  }
+
+  @Test("a success records itself and fires no analytics")
+  func successRecordsAndTracksNothing() {
+    let syncStatus = SyncStatus(containerBacking: .cloudKit)
+    let spy = SpyAnalyticsClient()
+    let monitor = CloudKitSyncMonitor(syncStatus: syncStatus, analytics: spy)
+
+    let successDate = Date(timeIntervalSince1970: 1000)
+    monitor.handle(SyncEventSnapshot(operation: .setup, endDate: successDate, error: nil))
+
+    #expect(syncStatus.syncActivity[.setup]?.lastSuccess == successDate)
+    #expect(spy.calls.isEmpty)
+  }
+
+  @Test("the same (operation, domain, code) failure is reported only once per launch")
+  func sameFailureReportedOnce() {
+    let syncStatus = SyncStatus(containerBacking: .cloudKit)
+    let spy = SpyAnalyticsClient()
+    let monitor = CloudKitSyncMonitor(syncStatus: syncStatus, analytics: spy)
+    let error = SyncErrorCode(domain: "CKErrorDomain", code: 25)
+
+    monitor.handle(SyncEventSnapshot(operation: .export, endDate: .now, error: error))
+    monitor.handle(SyncEventSnapshot(operation: .export, endDate: .now, error: error))
+
+    #expect(spy.count(of: AnalyticsEvent.cloudkitSyncFailed) == 1)
+  }
+
+  @Test("the same operation failing with a different error reports again")
+  func differentErrorOnSameOperationReportsAgain() {
+    let syncStatus = SyncStatus(containerBacking: .cloudKit)
+    let spy = SpyAnalyticsClient()
+    let monitor = CloudKitSyncMonitor(syncStatus: syncStatus, analytics: spy)
+
+    monitor.handle(SyncEventSnapshot(
+      operation: .export,
+      endDate: .now,
+      error: SyncErrorCode(domain: "CKErrorDomain", code: 25)
+    ))
+    monitor.handle(SyncEventSnapshot(
+      operation: .export,
+      endDate: .now,
+      error: SyncErrorCode(domain: "CKErrorDomain", code: 2)
+    ))
+
+    #expect(spy.count(of: AnalyticsEvent.cloudkitSyncFailed) == 2)
   }
 }
