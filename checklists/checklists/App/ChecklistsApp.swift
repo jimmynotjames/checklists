@@ -17,8 +17,8 @@ struct ChecklistsApp: App {
   @State private var startup: AppStartupModel
   @State private var router = Router()
   @State private var appOpenTracker = AppOpenTracker()
-  /// Inline is safe here, unlike the two below: it takes no dependencies and emits nothing.
-  @State private var toasts = ToastPresenter()
+  /// Not inline: `init()` hands this exact instance to `SaveFailureNotifier`.
+  @State private var toasts: ToastPresenter
   /// Not inline: `init()` needs this exact instance to build the consent gate's `isOptedIn`
   /// closure before injecting it into the environment below.
   @State private var analyticsSettings: AnalyticsSettings
@@ -41,6 +41,9 @@ struct ChecklistsApp: App {
     AppAnalytics.install(client)
     analytics = client
     _analyticsSettings = State(initialValue: settings)
+    let toasts = ToastPresenter()
+    SaveFailureNotifier.install { [toasts] in toasts.show(.saveFailed) }
+    _toasts = State(initialValue: toasts)
     _ratingPrompt = State(initialValue: RatingPromptCoordinator(state: RatingPromptState(), analytics: client))
     _startup = State(initialValue: AppStartupModel())
 

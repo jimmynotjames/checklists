@@ -106,10 +106,8 @@ struct ChecklistScreenActionTests {
 
   // MARK: - Duplicating an item
 
-  /// There is deliberately no failure-path test here. There is no seam to fail the save, and
-  /// `ItemDuplication` goes through `insert(item:at:in:)`, which stages the copy without rolling it
-  /// back — so a forced failure would leave a half-inserted item with the table not updated. That
-  /// is issue #219, not something to pin here.
+  /// The failure path is pinned in `InsertRollbackTests`: duplication goes through
+  /// `insert(item:at:in:)`, which takes the copy back out when its save fails.
   @Test("duplicating an item places the copy directly beneath it")
   func duplicatingAnItemPlacesTheCopyBeneathIt() throws {
     try ChecklistScreenHarness.withController(

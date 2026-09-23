@@ -38250,6 +38250,18 @@
           }
         }
       }
+    },
+    "toast.saveFailed" : {
+      "comment" : "Error toast shown when a change could not be written to the device, most often because storage is full. Appears briefly at the bottom of the screen with no button. Keep it short; it can appear after any edit (adding, ticking, renaming, deleting).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save failed. Your device may be low on storage."
+          }
+        }
+      }
     }
   },
   "version" : "1.2"

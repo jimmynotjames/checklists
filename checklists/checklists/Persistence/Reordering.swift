@@ -22,9 +22,9 @@ extension ModelContext {
   ///
   /// - Parameter siblings: the existing checklists in display order, **excluding** the new one.
   func insert(checklist: Checklist, at index: Int, among siblings: [Checklist]) throws {
-    place(checklist, at: index, among: siblings)
-    insert(checklist)
-    try saveChanges(operation: .checklistEdit)
+    try insertAndSave(checklist, at: index, among: siblings) {
+      try saveChanges(operation: .checklistEdit)
+    }
   }
 
   /// Moves an existing checklist to `index` and saves.
@@ -41,12 +41,9 @@ extension ModelContext {
 
   /// Inserts a brand-new item at `index` within `checklist` and saves.
   func insert(item: Item, at index: Int, in checklist: Checklist) throws {
-    place(item, at: index, among: checklist.items)
-    insert(item)
-    // Setting the child's side of the relationship is what links the two; SwiftData maintains
-    // `Checklist.itemsStorage` as the inverse. Assigning both sides would risk a duplicate entry.
-    item.checklist = checklist
-    try saveChanges(operation: .itemEdit)
+    try insertAndSave(item, at: index, in: checklist) {
+      try saveChanges(operation: .itemEdit)
+    }
   }
 
   /// Moves an existing item within its checklist to `index` and saves.
@@ -78,6 +75,43 @@ extension ModelContext {
       for (record, sortKey) in snapshot {
         record.sortKey = sortKey
       }
+      throw error
+    }
+  }
+
+  /// `insert(checklist:at:among:)` with the save injected, so tests can drive the failure path.
+  func insertAndSave(
+    _ checklist: Checklist,
+    at index: Int,
+    among siblings: [Checklist],
+    save: () throws -> Void
+  ) throws {
+    insert(checklist)
+    do {
+      try placeAndSave(checklist, at: index, among: siblings, restoringSortKeysOf: siblings, save: save)
+    } catch {
+      // Left registered, the checklist would render as a blank row that was never written, and
+      // autosave might yet write it. `placeAndSave` has already put the siblings' keys back.
+      delete(checklist)
+      throw error
+    }
+  }
+
+  /// `insert(item:at:in:)` with the save injected, so tests can drive the failure path.
+  func insertAndSave(_ item: Item, at index: Int, in checklist: Checklist, save: () throws -> Void) throws {
+    let siblings = checklist.items
+    insert(item)
+    // Setting the child's side of the relationship is what links the two; SwiftData maintains
+    // `Checklist.itemsStorage` as the inverse. Assigning both sides would risk a duplicate entry.
+    item.checklist = checklist
+    do {
+      try placeAndSave(item, at: index, among: siblings, restoringSortKeysOf: siblings, save: save)
+    } catch {
+      // Left in `checklist.items`, the item would put the detail screen's data source one row
+      // ahead of its table. Unlinked first so the inverse drops it now rather than at the next
+      // save, which is what the table reads before then.
+      item.checklist = nil
+      delete(item)
       throw error
     }
   }
