@@ -6,14 +6,13 @@
 import Foundation
 
 /// Wraps any `AnalyticsClient` and suppresses every method except `reset()` while the person is
-/// opted out (core-docs/analytics-spec.md §2's canonical constraint #3: an opted-out install
-/// never opens a connection).
+/// opted out, so an opted-out install never opens a connection (core-docs/analytics-spec.md
+/// §Launch and consent ordering).
 ///
-/// A decorator rather than a guard inside each client, on purpose: it is testable today against
-/// `SpyAnalyticsClient` with no SDK involved, there is exactly one gate rather than one per
-/// client, and in a later PR wrapping `MixpanelAnalyticsClient` still preserves that client's
-/// lazy-init guarantee — a `track` this gate suppresses never reaches its `ensureInitialized()`,
-/// because it never reaches the wrapped client at all.
+/// A decorator rather than a guard inside each client: it is testable against
+/// `SpyAnalyticsClient` with no SDK involved, there is one gate rather than one per client, and it
+/// is what keeps `MixpanelAnalyticsClient`'s init lazy — a suppressed `track` never reaches the
+/// wrapped client's `ensureInitialized()`.
 final class ConsentGatedAnalyticsClient: AnalyticsClient, @unchecked Sendable {
   private let wrapped: any AnalyticsClient
   private let isOptedIn: () -> Bool

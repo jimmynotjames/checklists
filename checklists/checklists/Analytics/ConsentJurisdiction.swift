@@ -9,9 +9,7 @@ import Foundation
 /// as permitting auto opt-in.
 ///
 /// Region codes are resolved from `Locale.current.region?.identifier` at the call site, so this
-/// stays a pure function with no hidden dependency on the current locale. The table below
-/// mirrors the canonical list in core-docs/analytics-spec.md §6.2; additions or removals should
-/// update both the spec and this source together.
+/// stays a pure function with no hidden dependency on the current locale.
 ///
 /// nonisolated on the type: see AnalyticsEvent.
 nonisolated enum ConsentJurisdiction: Equatable {
@@ -21,7 +19,8 @@ nonisolated enum ConsentJurisdiction: Equatable {
   /// Analytics are default-on; the user may opt out at any time via the Settings toggle.
   case autoOptin
 
-  /// `nil` → `.required` (the conservative default).
+  /// `nil` → `.required` (the conservative default); a code not in `strictOptInRegions` →
+  /// `.autoOptin`.
   static func kind(for regionIdentifier: String?) -> ConsentJurisdiction {
     guard let code = regionIdentifier else {
       return .required
@@ -29,13 +28,10 @@ nonisolated enum ConsentJurisdiction: Equatable {
     return strictOptInRegions.contains(code) ? .required : .autoOptin
   }
 
-  // MARK: - Private: canonical region list (analytics-spec.md §6.2)
+  // MARK: - Private: canonical region list
 
-  /// All regions that require explicit opt-in consent.
-  ///
-  /// Legal basis per region: this file is the canonical list (analytics-spec §6.2 points here).
-  ///
-  /// To add or remove a region, update core-docs/analytics-spec.md §6.2 and this set together.
+  /// All regions that require explicit opt-in consent. Canonical list; analytics-spec.md
+  /// §Consent points here.
   private static let strictOptInRegions: Set<String> = [
     // European Union (27 member states)
     "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE",
@@ -58,7 +54,7 @@ nonisolated enum ConsentJurisdiction: Equatable {
     "TR",
     // Thailand
     "TH",
-    // Canada (pragmatic CA-wide coverage for Quebec Law 25; see §6.2)
+    // Canada (CA-wide, to cover Quebec Law 25)
     "CA",
   ]
 }

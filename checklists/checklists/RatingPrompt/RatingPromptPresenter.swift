@@ -8,9 +8,6 @@ import SwiftUI
 
 /// Root-level presenter for the automatic App Store review prompt.
 ///
-/// Must be applied once, innermost on `RootView` in `ChecklistsApp` — misplaced, the app traps at
-/// launch on the missing `Router` / `RatingPromptCoordinator` environment.
-///
 /// **Deferred past the transition**: the router flag flips at the *start* of a pop or dismiss
 /// animation, and Apple's guidance is not to request mid-transition, so the gate is re-checked
 /// after a short pause; anything that changes state in the meantime cancels the attempt.
@@ -65,8 +62,8 @@ private struct RatingPromptPresenter: ViewModifier {
 }
 
 extension View {
-  /// Applies the automatic rating-prompt presenter. Apply once, innermost at the app root, so
-  /// `Router` and `RatingPromptCoordinator` are ancestors in the environment.
+  /// Applies the automatic rating-prompt presenter. Apply once, innermost on `RootView` in
+  /// `ChecklistsApp`, or the app traps at launch on the missing `Router` / coordinator.
   func ratingPromptPresenter() -> some View {
     modifier(RatingPromptPresenter())
   }

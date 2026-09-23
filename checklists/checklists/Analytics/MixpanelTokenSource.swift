@@ -9,7 +9,7 @@
 /// clone with no `config/Secrets.local.xcconfig`, or a half-filled one — the app falls back to
 /// `ConsoleAnalyticsClient`. No Mixpanel traffic, no crash.
 ///
-/// See core-docs/analytics-spec.md §10.
+/// See core-docs/analytics-spec.md §Build hygiene.
 enum MixpanelTokenSource {
   /// True when the token this build configuration will actually use is a real one. Checks only
   /// the active token, not both — so a filled-in prod token with a placeholder dev token doesn't

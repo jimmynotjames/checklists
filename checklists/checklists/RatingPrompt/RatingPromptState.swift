@@ -5,9 +5,8 @@
 
 import Foundation
 
-/// Persisted eligibility signals for the automatic App Store review prompt. Backed by
-/// `UserDefaults.standard`, not the iCloud key-value store — no `ubiquity-kvstore-identifier`
-/// entitlement — so counters are per device.
+/// Persisted eligibility signals for the automatic App Store review prompt. Per device, not
+/// iCloud-synced (core-docs/analytics-spec.md §Identity).
 ///
 /// **Independent of analytics consent**: these signals must work identically for someone who
 /// declined analytics, so nothing here reads or writes `AnalyticsSettings`' keys.
@@ -79,9 +78,7 @@ final class RatingPromptState {
 
   // MARK: - Store selection
 
-  /// The same test-launch isolation `AnalyticsSettings` applies to its own store: an automated
-  /// launch gets a fresh in-memory store, so a UI test can never inherit — or leave behind —
-  /// counters in the simulator's real defaults. Production uses `UserDefaults.standard`.
+  /// Test-launch isolation as in `AnalyticsSettings.makeStore`.
   static func defaultStore() -> KeyValueStore {
     LaunchModeContainerFactory.isRunningTests ? InMemoryKeyValueStore() : UserDefaults.standard
   }

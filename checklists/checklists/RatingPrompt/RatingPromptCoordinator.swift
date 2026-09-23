@@ -19,7 +19,6 @@ import Observation
 @Observable
 @MainActor
 final class RatingPromptCoordinator {
-  /// Balanced-profile thresholds, unchanged from `simple-recurring-budgets`.
   static let minInstallAgeDays = 7
   static let minDistinctCheckDays = 3
   static let minCheckedItems = 10
@@ -111,7 +110,7 @@ final class RatingPromptCoordinator {
   }
 
   /// Buckets the gap between first eligibility and the request. Coarse on purpose: no raw
-  /// timestamp reaches an event (the people property carries the exact moment, per §9.3).
+  /// timestamp reaches an event; the people property carries the exact moment.
   nonisolated static func timeSinceFirstEligibleBucket(firstEligibleAt: Date?, now: Date) -> String {
     guard let firstEligibleAt else { return "<1d" }
     let days = now.timeIntervalSince(firstEligibleAt) / 86400
@@ -123,7 +122,7 @@ final class RatingPromptCoordinator {
     }
   }
 
-  /// `CFBundleShortVersionString`, the same value `app_version` carries (§9.2).
+  /// `CFBundleShortVersionString`, the same value `app_version` carries.
   nonisolated static var currentAppVersion: String {
     Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
   }

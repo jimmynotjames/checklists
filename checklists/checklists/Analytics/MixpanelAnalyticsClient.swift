@@ -9,10 +9,9 @@ import UIKit
 
 /// Production `AnalyticsClient` backed by the Mixpanel SDK.
 ///
-/// **Lazy init is the consent guarantee** (core-docs/analytics-spec.md §2's canonical constraint
-/// #3, §7.2): `Mixpanel.initialize` is never called from `init`, only from `ensureInitialized()`.
-/// Consent gating is `ConsentGatedAnalyticsClient`'s job — it suppresses every call except
-/// `reset()` while opted out, so this class never re-checks opt-in itself.
+/// **Lazy init is the consent guarantee**: `Mixpanel.initialize` is never called from `init`,
+/// only from `ensureInitialized()`, and `ConsentGatedAnalyticsClient` keeps opted-out calls from
+/// ever reaching it — so this class never checks opt-in itself.
 ///
 /// **Isolation:** `@unchecked Sendable` because `MixpanelInstance` isn't `Sendable`. `instanceLock`
 /// is a backstop, not load-bearing under the target's MainActor default — keep it rather than
@@ -94,18 +93,11 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
     ])
   }
 
-  /// Sets the `analytics_opt_in_at` people property (§9.3). No-op if the SDK has not yet been
-  /// lazily initialized — which cannot happen on the opt-in path in practice, since the gate only
-  /// lets this through once the flag has already flipped true, but a defensive no-op is cheaper
-  /// than a precondition.
   func setAnalyticsOptInAt() {
     guard let instance = currentInstance() else { return }
     instance.people.set(properties: [AnalyticsProperty.analyticsOptInAt: Date()])
   }
 
-  /// Both rating-prompt stamps (§9.3) follow `setAnalyticsOptInAt()`'s shape: a no-op unless the
-  /// SDK is already up. In practice it always is — `RatingPromptCoordinator` tracks the matching
-  /// event first, and that `track` is what initializes the SDK — so the guard costs nothing.
   func setRatingPromptFirstEligibleAt(_ date: Date) {
     guard let instance = currentInstance() else { return }
     instance.people.set(properties: [AnalyticsProperty.ratingPromptFirstEligibleAt: date])
@@ -151,13 +143,16 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
     return newInstance
   }
 
+  /// The instance if the SDK is already up, without initializing it. The people-property setters
+  /// go through this, so they never open a connection on their own; in practice each follows a
+  /// `track` that has already initialized the SDK.
   private func currentInstance() -> MixpanelInstance? {
     instanceLock.lock()
     defer { instanceLock.unlock() }
     return _instance
   }
 
-  // MARK: - Private: super properties (§9.2)
+  // MARK: - Private: super properties
 
   private func registerSuperProperties(on instance: MixpanelInstance) {
     let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
@@ -179,7 +174,7 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
     instance.registerSuperProperties(props)
   }
 
-  // MARK: - Private: people properties (§9.3)
+  // MARK: - Private: people properties
 
   private func setBaselinePeopleProperties(on instance: MixpanelInstance) {
     let now = Date()

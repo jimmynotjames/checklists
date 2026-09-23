@@ -6,7 +6,8 @@
 /// Prints product events to the Xcode console in DEBUG; silent in Release.
 ///
 /// This is the SwiftUI environment default and the client the app uses whenever Mixpanel should
-/// not be talked to: during tests, and on a clone with no configured token (§7.1).
+/// not be talked to: during tests, and on a clone with no configured token
+/// (core-docs/analytics-spec.md §Client selection).
 ///
 /// Printing in DEBUG, rather than staying silent, is deliberate: it's the only way to confirm locally that an event fires as expected.
 final class ConsoleAnalyticsClient: AnalyticsClient {
