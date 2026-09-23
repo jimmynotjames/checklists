@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Sourceable helper: resolves the xcodebuild -destination string for test runs.
 # Callers must set ROOT before sourcing. Sources _sim_sandbox.sh, which sets
-# DESTINATION, SIM_DERIVED, and SIM_RESULTS_DIR.
+# SIM_UDID, SIM_DERIVED, and SIM_RESULTS_DIR; this file turns SIM_UDID into DESTINATION.
 # Override SIMULATOR_NAME (device) or SIMULATOR_UDID (pin a device, skip sandboxing).
 
 : "${ROOT:?ROOT must be set to the repo root before sourcing _destination.sh}"

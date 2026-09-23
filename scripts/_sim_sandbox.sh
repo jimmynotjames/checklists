@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Sourceable helper: manages a per-repo simulator in the default CoreSimulator device set.
+# Sourceable helper: manages this checkout's simulator in the default CoreSimulator device set.
 # Callers must set ROOT before sourcing (absolute path to repo root).
 #
 # Sets, for downstream scripts:
-#   SIM_UDID        — UDID of a booted simulator for this repo
+#   SIM_UDID        — UDID of this checkout's booted simulator
 #   SIM_DERIVED     — path for xcodebuild -derivedDataPath
 #   SIM_RESULTS_DIR — parent directory for -resultBundlePath
 # SIMULATOR_NAME picks a different base device; SIMULATOR_UDID pins one and skips
@@ -18,8 +18,7 @@ SIM_DERIVED="${ROOT}/.build/sim/DerivedData"
 SIM_RESULTS_DIR="${ROOT}/.build/sim/results"
 _UDID_FILE="${ROOT}/.build/sim/device.udid"
 
-# Unique device name: base name + 8-char hash of the repo path.
-# Ensures no two clones of this repo share a simulator, even on the same Mac.
+# Device name: base name + 8-char hash of the checkout path — AGENTS.md §"Simulator sandbox".
 _REPO_SLUG="$(printf '%s' "${ROOT}" | shasum | cut -c1-8)"
 _SIM_DEVICE_NAME="${SIMULATOR_NAME} [${_REPO_SLUG}]"
 
@@ -30,15 +29,8 @@ _pick_sim() {
         --state "$1"
 }
 
-# When the simulator's ConnectHardwareKeyboard preference is on, the software keyboard
-# never appears. The preference is per-UDID but owned by Simulator.app, not the device,
-# and is only read at boot — so it must be written before a boot, and Simulator.app must
-# be open afterward for it to take effect at all.
-#
-# The UI tests no longer tap keyboard keys (see XCUIElement+Keyboard.swift), so this is
-# belt-and-braces for ad-hoc runs and for anything that still needs the keyboard visible,
-# not the load-bearing fix it used to be. Both helpers delegate to sim_keyboard_pref.py;
-# its docstring explains why they go through `defaults` rather than the plist file.
+# The ConnectHardwareKeyboard preference is read at boot, so it is written before one.
+# What it does and doesn't do: the XCUIElement+Keyboard.swift header.
 
 _hw_keyboard_pref_ok() {
     # $1: UDID. True when the hardware keyboard is off, so the software one will show.
@@ -50,23 +42,14 @@ _write_keyboard_pref() {
     python3 "${ROOT}/scripts/sim_keyboard_pref.py" --disable "$1"
 }
 
-# Any real boot transition (shutdown->boot, create->boot, or the self-heal cycle
-# below) starts a session that hasn't hosted an app yet, which invalidates
-# test-ui.sh's `warmed` sentinel (see its header comment: the XCUITest IPC socket
-# isn't reliable until *this* booted session has run an app once). Without this,
-# a rebooted-but-still-"warmed"-on-disk device produces confusing, wrong-cause test
-# failures instead of test-ui.sh's own clear "run make test-unit first" error.
+# Every boot starts an unwarmed session; the sentinel's meaning is in test-ui.sh's header.
 _invalidate_warm_sentinel() {
     rm -f "${ROOT}/.build/sim/warmed"
 }
 
 _fix_software_keyboard() {
     # $1: UDID of an already-booted device whose preference read back wrong.
-    #
-    # The SIM-KEYBOARD-FLAKE tag is for issue #231: nobody has shown this preference actually
-    # controls the keyboard, so the tag is how we find out later whether the cycling below (a
-    # reboot plus a lost warm session) ever buys anything. `guard-fired` alone is cheap drift;
-    # it is `tests-failed`, from check_keyboard_flake.py, that would justify keeping this.
+    # The SIM-KEYBOARD-FLAKE tag: the XCUIElement+Keyboard.swift header.
     echo "SIM-KEYBOARD-FLAKE guard-fired: ConnectHardwareKeyboard wrong for $1 — see https://github.com/jimmynotjames/checklists/issues/231" >&2
     echo "sim-sandbox: software-keyboard preference wrong for $1 — cycling to fix" >&2
     _write_keyboard_pref "$1"

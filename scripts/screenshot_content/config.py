@@ -5,13 +5,16 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "translate_catalog"))
+from paths import SEEDS_DIR  # noqa: E402,F401 — re-exported for the screenshot scripts
+
 CONFIG_PATH = REPO_ROOT / "fastlane" / "screenshot-config.json"
-SEEDS_DIR = REPO_ROOT / "checklists" / "checklistsUITests" / "ScreenshotSeeds"
 RUNS_DIR = REPO_ROOT / ".build" / "screenshots" / "runs"
 
 RUN_ID_PATTERN = re.compile(r"\A[A-Za-z0-9][A-Za-z0-9._-]{0,79}\Z")

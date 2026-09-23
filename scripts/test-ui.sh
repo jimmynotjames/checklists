@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-# UI tests only (checklistsUITests). Does NOT re-run unit tests.
-#
-# OPT-IN: not part of `make gate`. See test-unit.sh for why.
+# UI tests only (checklistsUITests). Does NOT re-run unit tests. Opt-in: AGENTS.md §"Build and test".
 #
 # IMPORTANT: the simulator must have hosted at least one prior app lifecycle before
 # the XCUITest IPC socket is reliable. test-unit.sh writes the `warmed` sentinel
@@ -23,9 +21,7 @@ fi
 
 RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-ui.xcresult"
 
-# `|| RC=$?` rather than a bare call: `set -e` would otherwise exit here on a test failure and
-# skip the tagging below. Do NOT rewrite this as `if ! xcodebuild …` — the `!` resets `$?` and the
-# real exit code is lost, which is the same trap gate.sh documents.
+# `|| RC=$?` so `set -e` doesn't skip the tagging below; never `if ! xcodebuild` (see gate.sh).
 RC=0
 xcodebuild test \
     -project checklists/checklists.xcodeproj \
@@ -41,8 +37,7 @@ xcodebuild test \
     -only-testing:checklistsUITests/ChecklistCopyCheckedItemsUITest \
     -only-testing:checklistsUITests/AnalyticsConsentUITest || RC=$?
 
-# Tags keyboard-caused failures for issue #231 (is the keyboard machinery still needed?).
-# Reports only; it never turns a pass into a failure or the reverse.
+# Report-only keyboard-failure tag: the XCUIElement+Keyboard.swift header.
 python3 "${ROOT}/scripts/check_keyboard_flake.py" "${RESULT_BUNDLE}" || true
 
 exit "${RC}"

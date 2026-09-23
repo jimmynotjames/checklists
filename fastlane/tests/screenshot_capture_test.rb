@@ -42,6 +42,8 @@ class ScreenshotCaptureTest < Minitest::Test
   end
 
   def test_inactive_locale_is_rejected
+    config = @capture.instance_variable_get(:@config)
+    @capture.instance_variable_set(:@config, config.merge("active_locales" => ["en-US"]))
     error = assert_raises(ArgumentError) { @capture.send(:selected_locales, "de") }
     assert_includes error.message, "inactive screenshot locale"
   end

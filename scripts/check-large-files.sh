@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 # Reject staged files larger than 1 MiB (accidental binaries, huge fixtures).
-#
-# Ported from `simple-recurring-budgets`. Its version skips .xcstrings catalogs (which
-# grow with translations); this repo has no localization catalogs. It also used to exempt the
-# vendored 32 MiB Flurry static archive — that SDK has been removed, so the cap now
-# applies uniformly and there are no carve-outs.
+# String Catalogs (*.xcstrings) are exempt: they are generated and grow with every locale.
 set -euo pipefail
 
 MAX_BYTES=$((1024 * 1024))
@@ -25,6 +21,7 @@ file_size() {
 
 for path in "$@"; do
   [[ -f "$path" ]] || continue
+  [[ "$path" == *.xcstrings ]] && continue
   size="$(file_size "$path")"
   if (( size > MAX_BYTES )); then
     printf 'error: file exceeds 1 MiB (%s bytes): %s\n' "$size" "$path" >&2

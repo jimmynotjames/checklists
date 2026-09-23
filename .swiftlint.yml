@@ -1,8 +1,4 @@
 # https://realm.github.io/SwiftLint/rule-directory.html
-#
-# Ported from the `simple-recurring-budgets` repo, with this project's names substituted.
-#
-# Pre-commit and the gate lint changed/staged files only — AGENTS.md §"Lint policy".
 disabled_rules:
   - trailing_whitespace
   # SwiftFormat uses trailing commas for multiline collection literals.
@@ -76,9 +72,8 @@ identifier_name:
     - e
 
 type_name:
-  # These four are pre-existing lowercase class names in the 2020 test targets.
-  # `type_name` requires UpperCamelCase; renaming them is a separate refactor
-  # (it would churn the Xcode project's test identifiers), so they are excluded.
+  # Legacy lowercase test class names. `type_name` requires UpperCamelCase; renaming
+  # them would churn the Xcode project's test identifiers, so they are excluded.
   excluded:
     - checklistsTests
     - checklistsUITests

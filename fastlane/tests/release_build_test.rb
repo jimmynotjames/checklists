@@ -1,6 +1,6 @@
 require "minitest/autorun"
 require "tmpdir"
-require_relative "release_build"
+require_relative "../lib/release_build"
 
 class ReleaseBuildTest < Minitest::Test
   ROOT = File.expand_path("../..", __dir__)

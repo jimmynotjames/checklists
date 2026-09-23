@@ -74,8 +74,8 @@ class AppStoreMetadataTests(unittest.TestCase):
 
     def test_missing_optional_field_is_omitted_from_every_fallback_locale(self) -> None:
         # An optional field absent from the source must not be invented anywhere
-        # that falls back to it. Every storefront now ships its own subtitle, so
-        # clear them all to leave the fallback path actually under test.
+        # that falls back to it. Clear every storefront's subtitle so the fallback
+        # path is the one under test.
         for existing in self.source.glob("*/subtitle.txt"):
             existing.unlink()
         output = self.root / "stage"
@@ -133,8 +133,6 @@ class AppStoreMetadataTests(unittest.TestCase):
         self.assertEqual((output / "fr-FR" / "support_url.txt").read_text(), url)
 
     def test_copyright_accepts_a_single_year_or_a_range(self) -> None:
-        # The repo relicensed to "2019-2026 Jimmy Ho", which a single-year-only
-        # pattern rejected and which blocked every upload (#204 vs #157).
         copyright_file = self.source / "copyright.txt"
         for accepted in ("2020 Jimmy Ho", "2019-2026 Jimmy Ho", "2026-2026 Jimmy Ho"):
             copyright_file.write_text(accepted, encoding="utf-8")

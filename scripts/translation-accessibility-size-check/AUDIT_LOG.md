@@ -6,13 +6,9 @@ ran.
 
 Format: date, what was captured, what was found, what was done about it.
 
-## Standing caveat
-
-The checklist detail screen is UIKit and uses fixed fonts, so it does not
-respond to Dynamic Type at all. Do not log that as a new finding each time; it
-is tracked in `core-docs/accessibility-spec.md` §Dynamic Type and issue
-[#183](https://github.com/jimmynotjames/checklists/issues/183). Its screenshots
-are still worth reading for translation length and right-to-left mirroring.
+The detail screen's fixed fonts are a known limitation
+(`scripts/translation-accessibility-size-check/README.md` §Known limitation), not a
+new finding.
 
 ## Runs
 
@@ -30,9 +26,7 @@ switch, and a six-line privacy footer — fits without crowding the toggle.
 **Right-to-left mirrors correctly** in `ar`, `he`, and `ur`, on both the SwiftUI
 list and the UIKit detail screen: toolbar buttons swap sides, checkboxes and
 progress rings move to the right edge, the back chevron flips, and the delete
-confirmation puts the destructive action on the left. This is the first evidence
-that right-to-left works at all in this app, since nothing had rendered in a
-right-to-left locale before this PR.
+confirmation puts the destructive action on the left.
 
 **Two bugs found, both in the check itself, neither in the app.** Worth
 recording because they are the kind that make a first run look like an app
