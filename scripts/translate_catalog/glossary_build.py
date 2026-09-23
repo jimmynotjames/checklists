@@ -95,7 +95,7 @@ def load_glossary() -> dict:
     if GLOSSARY_PATH.exists():
         with GLOSSARY_PATH.open(encoding="utf-8") as f:
             return json.load(f)
-    return {"meta": {"model": "opus", "version": 1}, "protected": PROTECTED, "terms": {}}
+    return {"meta": {"version": 1}, "protected": PROTECTED, "terms": {}}
 
 
 # ---------------------------------------------------------------- candidates
@@ -328,7 +328,6 @@ def cmd_merge() -> int:
 
     glossary["protected"] = PROTECTED
     glossary.setdefault("meta", {})["builtAt"] = _dt.datetime.now(_dt.timezone.utc).isoformat()
-    glossary["meta"]["model"] = "opus"
     with GLOSSARY_PATH.open("w", encoding="utf-8") as f:
         json.dump(glossary, f, ensure_ascii=False, indent=2, sort_keys=True)
         f.write("\n")

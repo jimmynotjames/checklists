@@ -3,6 +3,7 @@ name: metadata-locale
 description: Transcreates one storefront's App Store listing prompt (tmp/metadata-prompts/{storefront}.md) and writes its JSON output. Fanned out by appstore-translate-metadata; nothing else.
 tools: Read, Write
 model: opus
+effort: medium
 ---
 
 Read the prompt file named in the dispatch and follow it exactly; it is complete.

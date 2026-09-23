@@ -2,7 +2,8 @@
 name: translation-locale
 description: Translates one locale's UI-string prompt (tmp/translate-prompts/{locale}.md) and writes its JSON output. Fanned out by translate-new-strings; nothing else.
 tools: Read, Write
-model: haiku
+model: sonnet
+effort: medium
 ---
 
 Read the prompt file named in the dispatch and follow it exactly; it is complete.

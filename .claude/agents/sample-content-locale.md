@@ -3,6 +3,7 @@ name: sample-content-locale
 description: Transcreates one locale's demo-checklist prompt (tmp/translate-prompts/{locale}.sample.md) and writes its JSON output. Fanned out by translate-new-strings; nothing else.
 tools: Read, Write
 model: opus
+effort: medium
 ---
 
 Read the prompt file named in the dispatch and follow it exactly; it is complete.
