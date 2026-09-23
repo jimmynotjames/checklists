@@ -6,13 +6,8 @@ emit a JSON file suitable for use as transcreation input.
 Default output: tmp/metadata-inputs/source.json
 
 Each authored (non-empty) field has the shape:
-  {
-    "<field>": {
-      "value": "<English source text>",
-      "charLimit": <int>          # App Store Connect hard limit (characters)
-    },
-    ...
-  }
+  "<field>": {"value": "<English source text>", "charLimit": <int>}
+`charLimit` is App Store Connect's hard limit: characters, except UTF-8 bytes for `keywords`.
 
 Fields left blank in en-US are NOT written to source.json — it stays an
 authored-fields-only map ({field: {value, charLimit}}) that validate.py and
@@ -22,10 +17,12 @@ handling straight from the en-US source folder (blank in the source means blank 
 every translation), so no consumer has to know about a special key.
 
 Modes:
-  (default)   emit source.json for every non-empty translatable en-US field.
-  --missing   additionally scan every target storefront for fields that are
-              absent or empty, and write manifest.json mapping
-              {storefront: [fields...]} — exactly the work that remains.
+  (default)        emit source.json for every non-empty translatable en-US field.
+  --missing        also write manifest.json mapping {storefront: [fields...]} for every
+                   target field that is absent or empty: exactly the work that remains.
+  --fields F [F…]  also write manifest.json forcing those fields for every storefront,
+                   translated or not (re-transcreate after a source edit). Each must be
+                   non-blank in en-US.
 """
 
 from __future__ import annotations

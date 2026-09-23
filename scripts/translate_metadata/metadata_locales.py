@@ -114,14 +114,8 @@ FIELD_GUIDANCE: dict[str, str] = {
         "the most compelling current hook."
     ),
     "keywords": (
-        "Comma-separated SEARCH terms a native user would actually type to find a "
-        "checklist or packing-list app in this market. This is search behaviour, NOT a "
-        "literal translation. Rules: no spaces after commas (they waste the limit); "
-        "deduplicate; do NOT repeat words already in the name or subtitle (Apple indexes "
-        "those separately); singular forms are usually enough. **The limit is 100 UTF-8 "
-        "BYTES, not characters** — in Chinese, Japanese, Korean, Arabic, or an Indic "
-        "script each character costs 2–4 bytes, so roughly 25–35 characters is the real "
-        "budget. Fill as much of it as natural terms allow, and no more."
+        "Comma-separated search terms, not a translation; follow the Keywords section. "
+        "Fill as much of the byte budget as natural terms allow, and no more."
     ),
     "description": (
         "Full listing description. Transcreate into natural, native marketing prose — "

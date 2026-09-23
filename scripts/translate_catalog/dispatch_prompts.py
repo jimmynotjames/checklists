@@ -1,36 +1,15 @@
 #!/usr/bin/env python3
 """
-Compose ready-to-dispatch translation prompts for each locale, one file per
-locale, by combining PROMPT_TEMPLATE.md with the manifest written by
-`extract.py --missing`.
+Render one translation prompt per locale from tmp/translate-inputs/{source,manifest}.json.
 
-For each locale L in tmp/translate-inputs/manifest.json, writes
-  tmp/translate-prompts/{L}.md
-containing the template with {LOCALE_NAME}, {LOCALE_CODE}, {REGIONAL_NOTE},
-and {SOURCE_JSON} substituted. The SOURCE_JSON slice contains only the keys
-that locale actually needs.
+UI keys go to tmp/translate-prompts/{L}.md (PROMPT_TEMPLATE.md, `translation-locale`);
+`sample.*` keys go to {L}.sample.md (SAMPLE_PROMPT_TEMPLATE.md, `sample-content-locale`).
+Each prompt gets the locale's regional note, its glossary slice, and only the keys it needs;
+the plural and glossary sections render only when the slice has a plural or a glossary match.
+Unless --no-clean, deletes that locale's stale tmp/translate-outputs/{L}.json and
+{L}.sample.json first, so validate --subset never sees a prior run's keys.
 
-Keys under a TRANSCREATED_NAMESPACES prefix (the `sample.*` demo checklists)
-are split out into a second prompt per locale,
-  tmp/translate-prompts/{L}.sample.md
-built from SAMPLE_PROMPT_TEMPLATE.md, so the parent can dispatch them to the
-Opus `sample-content-locale` agent (cultural transcreation) while the UI keys go
-to the Haiku `translation-locale` agent. Outputs land in
-tmp/translate-outputs/{L}.json and {L}.sample.json; validate.py and merge.py
-read both.
-
-Usage:
-  python3 scripts/translate_catalog/dispatch_prompts.py [--no-clean]
-
-By default, also deletes any pre-existing tmp/translate-outputs/{locale}.json
-files for the locales in the manifest, so subagents start from a clean slate
-and validate.py --subset doesn't trip on leftover keys from prior runs. Pass
---no-clean to preserve those files (rare — generally only useful if you are
-manually iterating on a single locale).
-
-The parent agent then reads each {locale}.md and dispatches one subagent per
-locale with that prompt as the input. Subagents write their output JSON to
-tmp/translate-outputs/{locale}.json.
+Usage: python3 scripts/translate_catalog/dispatch_prompts.py [--no-clean]
 """
 
 from __future__ import annotations
@@ -51,30 +30,23 @@ TEMPLATE_PATH = Path(__file__).parent / "PROMPT_TEMPLATE.md"
 SAMPLE_TEMPLATE_PATH = Path(__file__).parent / "SAMPLE_PROMPT_TEMPLATE.md"
 GLOSSARY_PATH = Path(__file__).parent / "glossary.json"
 
-# Key prefixes whose strings are demo content shown to first-launch users and in the App
-# Store screenshots. They are transcreated for cultural fit by an Opus agent with its own
-# template rather than translated with the UI strings. core-docs/localization-spec.md.
+# Demo-content key prefixes, transcreated by their own agent and template:
+# localization-spec.md §Transcreation vs translation.
 TRANSCREATED_NAMESPACES: tuple[str, ...] = ("sample.",)
 
 
 def is_transcreated(key: str) -> bool:
     return key.startswith(TRANSCREATED_NAMESPACES)
 
+
 sys.path.insert(0, str(Path(__file__).parent))
 from locales import LOCALE_NAMES  # noqa: E402
+from prompt_render import compact_json, render  # noqa: E402
 
-# Required CLDR plural categories per locale, from the committed plural_rules.py (generated
-# from babel/CLDR by scripts/translate_audit/_gen_plural_rules.py). We inject these into the
-# prompt so each subagent is told EXACTLY which plural categories the target language needs,
-# instead of relying on the model to recall CLDR — which silently dropped `few` for Slovenian.
-# plural_rules.py imports nothing, so importing it here introduces no cycle despite living in
-# the sibling audit package. Degrade gracefully (empty map → template's "categories the locale
-# needs" fallback) if it is ever absent.
+# The exact CLDR categories each locale needs, injected per plural entry so the model never
+# recalls them from memory. plural_rules.py imports nothing, so this cross-package import is safe.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "translate_audit"))
-try:
-    from plural_rules import PLURAL_RULES  # noqa: E402
-except Exception:
-    PLURAL_RULES = {}
+from plural_rules import PLURAL_RULES  # noqa: E402
 
 _GLOSSARY_CACHE: dict | None = None
 
@@ -91,58 +63,61 @@ def load_glossary() -> dict:
     return _GLOSSARY_CACHE
 
 
-def build_glossary_block(values, locale: str, locale_name: str | None = None) -> str:
-    """Render a Markdown glossary block of the agreed `locale` translations for every glossary
-    term that appears (whole-word / phrase) in any of the given English `values`. Returns "" when
-    the glossary is empty or no term matches, so the {GLOSSARY} placeholder collapses cleanly.
-
-    Importable so audit_dispatch.py injects the identical block (no duplication).
-    """
+def glossary_lines(values, locale: str) -> str:
+    """Bullet list of the agreed `locale` rendering of every glossary term that appears
+    (whole word or phrase) in any English `values`; "" when none match, which drops the
+    template's glossary section. audit_dispatch.py uses it too."""
     terms = load_glossary().get("terms", {})
-    if not terms:
-        return ""
     haystack = "\n".join(values)
     matched: list[tuple[str, str]] = []
     for term_en in sorted(terms, key=lambda t: (-len(t), t.casefold())):  # longest-first
-        entry = terms[term_en]
-        translation = entry.get("translations", {}).get(locale)
-        if not translation:
-            continue
-        if re.search(rf"\b{re.escape(term_en)}\b", haystack, flags=re.IGNORECASE):
+        translation = terms[term_en].get("translations", {}).get(locale)
+        if translation and re.search(rf"\b{re.escape(term_en)}\b", haystack, flags=re.IGNORECASE):
             matched.append((term_en, translation))
-    if not matched:
-        return ""
-    name = locale_name or locale
-    lines = [
-        f"## Glossary — agreed {name} translations (rule 6: use these for consistency)",
-        "",
-        "Reuse these for the matching terms (incl. as parts of a longer string); keep the full "
-        "string natural and coherent.",
-        "",
-    ]
-    lines += [f'- "{en}" → "{tr}"' for en, tr in matched]
-    return "\n".join(lines)
+    return "\n".join(f'- "{en}" → "{tr}"' for en, tr in matched)
 
-# Per-locale register/dialect/cultural notes inlined into the prompt where they
-# materially help the model pick the right formality register, script variant, or
-# culturally-appropriate phrasing. UI copy, not marketing — the sibling map for the
-# App Store listing is CULTURAL_NOTES in scripts/translate_metadata/dispatch_prompts.py
-# (keyed by storefront code, not this catalog's runtime locale code — see locales.py).
-#
-# DELIBERATELY NOT DRY (see issue #173, closed without code consolidation). These two
-# maps overlap only in the *formality decision* per language (de→"du", ja→です/ます,
-# ko→해요체); everything else legitimately differs (UI dialect/length here vs ASO
-# positioning/keyword guidance there), and several locales phrase even the formality
-# call differently for marketing. A shared-prose abstraction needed a per-storefront
-# override map that re-duplicated the formality sentence anyway, so it was abandoned.
-# Future agents: do NOT re-file this as a DRY violation. The one real obligation is the
-# SYNC RULE below.
-#
-# SYNC RULE: if you change the *formality decision* for a language here (e.g. flip
-# de from "du" to "Sie"), make the matching change in CULTURAL_NOTES for that market's
-# storefront, and vice versa. Wording may differ; the formality call must not.
+
+def english_values(entry: dict) -> list[str]:
+    """The English text of a flat (`value`) or plural (`plural`) source entry."""
+    if entry.get("plural"):
+        return list(entry["plural"].values())
+    return [entry.get("value", "")]
+
+
+def render_prompt(template: str, locale: str, stream_source: dict) -> str:
+    glossary = glossary_lines([v for e in stream_source.values() for v in english_values(e)], locale)
+    sections = {"plural"} if any("plural" in e for e in stream_source.values()) else set()
+    if glossary:
+        sections.add("glossary")
+    return render(
+        template,
+        {
+            "LOCALE_NAME": LOCALE_NAMES.get(locale, locale),
+            "LOCALE_CODE": locale,
+            "REGIONAL_NOTE": REGIONAL_NOTES.get(locale, _GENERIC_NOTE),
+            "GLOSSARY": glossary,
+            "SOURCE_JSON": compact_json(stream_source),
+        },
+        sections,
+    )
+
+
+def prompt_entry(entry: dict, locale: str) -> dict:
+    """A source.json entry as the translator sees it: `enChars` added (plural keys measure
+    `other`), `requiredPluralCategories` on plurals, `formatSpecifiers` left out."""
+    out = {k: v for k, v in entry.items() if k != "formatSpecifiers"}
+    out["enChars"] = len(entry.get("value") or (entry.get("plural") or {}).get("other", ""))
+    if entry.get("plural"):
+        required = PLURAL_RULES.get(locale, {}).get("required")
+        if required:
+            out["requiredPluralCategories"] = required
+    return out
+
+
+# UI register, dialect and script notes. They are kept apart from the metadata CULTURAL_NOTES on
+# purpose; change a formality call in both: localization-spec.md §Running the pipelines.
 REGIONAL_NOTES: dict[str, str] = {
-    "ar": "Modern Standard Arabic (MSA), not a regional dialect — MSA addresses all audiences with the same standard forms, so there is no casual/formal toggle; get a warm, contemporary feel through fresh, light phrasing. Right-to-left: keep punctuation and any Latin tokens (e.g. \"iCloud\") correctly placed for RTL.",
+    "ar": "Modern Standard Arabic (MSA), not a regional dialect — MSA addresses all audiences with the same standard forms, so there is no casual/formal toggle; get a warm, contemporary feel through fresh, light phrasing. Right-to-left: keep punctuation and any Latin tokens (e.g. \"iCloud\") correctly placed for RTL, and never start a string or sentence with a Latin token, which renders flung to the visual end of the line; lead with a native word.",
     "bn": "Conversational Bengali (Bangla) in Bengali script. Keep the polite \"আপনি\" — Bengali app copy addresses all audiences politely; the casual \"তুমি\"/\"তুই\" reads as overfamiliar, not young. The modern feel comes from warmth, brevity, and natural English loanwords (e.g. \"checklist\"), not informal pronouns.",
     "ca": "Natural, friendly Catalan as used in Apple's Catalan UI.",
     "cs": "Modern Czech app tone; natural phrasing over literal calques. The informal address is standard for consumer apps.",
@@ -158,7 +133,7 @@ REGIONAL_NOTES: dict[str, str] = {
     "fr": "Use the informal \"tu\" — younger French lifestyle apps address under-35s with \"tu\". Elegant and concise; prefer natural French terms over anglicisms. French app copy prizes clarté and a refined, slightly understated register over an enthusiastic one.",
     "fr-CA": "Canadian French; informal \"tu\" (standard in Québécois consumer-app copy). Prefer Québécois usage and OQLF-style avoidance of anglicisms where they differ from France French.",
     "gu": "Conversational Gujarati in Gujarati script. Keep the polite \"તમે\" — Gujarati app copy stays polite across audiences; the casual \"તું\" reads as overfamiliar. The modern feel comes from warmth, brevity, and natural English loanwords (e.g. \"checklist\"), not informal pronouns.",
-    "he": "Modern Hebrew. Right-to-left: keep punctuation and any Latin tokens (e.g. \"iCloud\") correctly placed for RTL. Friendly register.",
+    "he": "Modern Hebrew. Right-to-left: keep punctuation and any Latin tokens (e.g. \"iCloud\") correctly placed for RTL, and never start a string or sentence with a Latin token, which renders flung to the visual end of the line; lead with a native word. Friendly register.",
     "hi": "Conversational Hindi in Devanagari. Keep the polite \"आप\" — Hindi app copy uses \"आप\" across audiences; \"तू\" would read as rude, not young. The modern feel comes from warmth, brevity, and natural English loanwords (e.g. \"checklist\"), not informal pronouns.",
     "hr": "Modern Croatian; natural phrasing, not calqued.",
     "hu": "Modern Hungarian; avoid stiff or bureaucratic register. Hungarian runs long — keep labels tight.",
@@ -187,7 +162,7 @@ REGIONAL_NOTES: dict[str, str] = {
     "th": "Polite, friendly Thai — keep the polite particles (ครับ/ค่ะ) Thai app copy uses across audiences; the modern feel comes from light, contemporary phrasing, not from dropping politeness. Follow normal Thai spacing conventions.",
     "tr": "Modern Turkish for young adults; use the informal \"sen\" (standard in youth-oriented app copy; \"siz\" reads as formal/older). Friendly and natural.",
     "uk": "Modern Ukrainian; natural phrasing, not calqued from Russian or English.",
-    "ur": "Conversational Urdu in Nastaliq (Arabic) script. Keep the polite \"آپ\" — Urdu app copy uses \"آپ\" across audiences; \"تم\"/\"تو\" reads as overfamiliar or rude, not young. Right-to-left: keep punctuation and any Latin tokens (e.g. \"iCloud\") correctly placed for RTL. The modern feel comes from warm, light phrasing and natural English loanwords (e.g. \"checklist\"), not informal pronouns.",
+    "ur": "Conversational Urdu in Nastaliq (Arabic) script. Keep the polite \"آپ\" — Urdu app copy uses \"آپ\" across audiences; \"تم\"/\"تو\" reads as overfamiliar or rude, not young. Right-to-left: keep punctuation and any Latin tokens (e.g. \"iCloud\") correctly placed for RTL, and never start a string or sentence with a Latin token, which renders flung to the visual end of the line; lead with a native word. The modern feel comes from warm, light phrasing and natural English loanwords (e.g. \"checklist\"), not informal pronouns.",
     "vi": "Friendly, natural Vietnamese as used in popular consumer apps.",
     "zh-Hans": "Simplified Chinese, mainland China conventions. Concise, modern app tone; avoid Taiwan-specific vocabulary. Mainland copy is punchy and benefit-dense — short rhythms land well, but keep it calm and avoid exclamation-heavy hype.",
     "zh-Hant": "Traditional Chinese, Taiwan conventions. Concise, modern app tone; avoid mainland-specific vocabulary.",
@@ -251,28 +226,7 @@ def main(argv: list[str]) -> int:
 
     ui_files = sample_files = 0
     for locale in sorted(manifest):
-        keys = manifest[locale]
-        # Annotate each entry with `enChars` (English character length) as a soft
-        # length budget the subagent aims at — see the length rule in PROMPT_TEMPLATE.md.
-        slice_source = {}
-        for k in keys:
-            if k not in source:
-                continue
-            entry = dict(source[k])
-            # Length budget: flat keys use `value`; plural keys use the `other` form.
-            ref = entry.get("value") or (entry.get("plural", {}) or {}).get("other", "")
-            entry["enChars"] = len(ref)
-            # For plural keys, tell the subagent exactly which CLDR categories this locale
-            # needs so it can't drop a required form (e.g. Slovenian `few`).
-            if entry.get("plural"):
-                required = PLURAL_RULES.get(locale, {}).get("required")
-                if required:
-                    entry["requiredPluralCategories"] = required
-            slice_source[k] = entry
-        if not slice_source:
-            continue
-        locale_name = LOCALE_NAMES.get(locale, locale)
-        regional_note = REGIONAL_NOTES.get(locale, _GENERIC_NOTE)
+        slice_source = {k: prompt_entry(source[k], locale) for k in manifest[locale] if k in source}
         streams = (
             (template, "", {k: v for k, v in slice_source.items() if not is_transcreated(k)}),
             (sample_template, ".sample", {k: v for k, v in slice_source.items() if is_transcreated(k)}),
@@ -280,22 +234,8 @@ def main(argv: list[str]) -> int:
         for stream_template, suffix, stream_source in streams:
             if not stream_source:
                 continue
-            gloss_values: list[str] = []
-            for e in stream_source.values():
-                if e.get("value"):
-                    gloss_values.append(e["value"])
-                elif e.get("plural"):
-                    gloss_values.extend(e["plural"].values())
-            glossary_block = build_glossary_block(gloss_values, locale, locale_name)
-            prompt = (
-                stream_template.replace("{LOCALE_NAME}", locale_name)
-                .replace("{LOCALE_CODE}", locale)
-                .replace("{REGIONAL_NOTE}", regional_note)
-                .replace("{GLOSSARY}", glossary_block)
-                .replace("{SOURCE_JSON}", json.dumps(stream_source, ensure_ascii=False, indent=2, sort_keys=True))
-            )
             out_path = PROMPTS_DIR / f"{locale}{suffix}.md"
-            out_path.write_text(prompt, encoding="utf-8")
+            out_path.write_text(render_prompt(stream_template, locale, stream_source), encoding="utf-8")
             print(f"  Wrote {len(stream_source)} keys for {locale} → {out_path}")
             if suffix:
                 sample_files += 1

@@ -1,27 +1,17 @@
 #!/usr/bin/env python3
 """
-SEMANTIC quality audit for the App Store metadata transcreations — the marketing-copy
-counterpart to scripts/translate_audit/ (which audits in-app strings).
-
-`audit.py` (sibling) checks only presence + char limits (structural). This script grades the
-*quality* of the localized store listing: voice/tone, transcreation (native vs. calqued),
-keyword/ASO effectiveness, cultural fit, brand, and false claims — via one Opus auditor per
-storefront, exactly like the catalog audit.
-
-It reads the **committed** localized metadata under fastlane/metadata/<storefront>/ (not the
-tmp/ fan-out), so you can audit what's actually shipping.
+Semantic audit of the committed App Store listing under fastlane/metadata/<storefront>/: voice,
+transcreation, keyword/ASO quality, cultural fit, brand and false claims, graded by one
+`metadata-audit-locale` agent per storefront. `audit.py` is the structural (limits) check.
 
 Flow:
-  1. --dispatch [storefronts]   compose tmp/metadata-audit-prompts/{storefront}.md (en source +
-                                that storefront's current fields + the cultural note + limits)
-  2. fan out one metadata-audit-locale (Opus) agent per prompt → tmp/metadata-audit-outputs/{sf}.json
-  3. --report [storefronts]     aggregate findings into a triage report; --json; --min-severity
-
-Reuses metadata_locales (limits/fields/names) and dispatch_prompts.CULTURAL_NOTES (no duplication).
-
-Usage:
-  python3 scripts/translate_metadata/audit_semantic.py --dispatch [storefront ...]
-  python3 scripts/translate_metadata/audit_semantic.py --report [--min-severity medium] [--json] [storefront ...]
+  1. --dispatch [storefront ...]   write tmp/metadata-audit-prompts/{S}.md (English source, the
+                                   storefront's current fields, its CULTURAL_NOTES entry, limits)
+  2. fan out the auditors          each writes tmp/metadata-audit-outputs/{S}.json
+  3. --report [storefront ...]     triage report; --json, --min-severity
+  4. --write-manifest [--min-severity S] [storefront ...]
+                                   turn findings into tmp/metadata-inputs/{manifest,source}.json,
+                                   so dispatch_prompts.py re-transcreates the flagged fields
 """
 
 from __future__ import annotations
@@ -47,17 +37,20 @@ sys.path.insert(0, str(SCRIPT_DIR))
 # Import the *metadata* dispatch_prompts first, while SCRIPT_DIR is path[0] — the module name
 # `dispatch_prompts` also exists in translate_catalog/, and metadata_locales' own path setup can
 # otherwise shadow it.
-from dispatch_prompts import CULTURAL_NOTES  # noqa: E402
+from dispatch_prompts import CULTURAL_NOTES, _GENERIC_NOTE  # noqa: E402
 from metadata_locales import (  # noqa: E402
+    FIELD_BYTE_LIMITS,
     FIELD_LIMITS,
     SOURCE_LOCALE,
     STOREFRONT_LOCALES,
     STOREFRONT_NAMES,
+    STOREFRONT_TO_RUNTIME,
     TRANSLATABLE_FIELDS,
 )
+from prompt_render import compact_json, render  # noqa: E402
 
 SEVERITY_RANK = {"high": 3, "medium": 2, "low": 1}
-_GENERIC_NOTE = "Write as a native ASO copywriter for this market would: natural, idiomatic, never calqued."
+RTL_LANGUAGES = {"ar", "he", "ur"}
 
 
 def read_field(locale: str, field: str) -> str:
@@ -69,6 +62,35 @@ def has_translation(storefront: str) -> bool:
     return any(read_field(storefront, f) for f in TRANSLATABLE_FIELDS)
 
 
+def audit_field(value: str, field: str, *, measure: bool) -> dict:
+    """A field as the auditor sees it: its value, its limit, and (with `measure`) its current
+    length, in bytes for byte-limited `keywords` and in characters otherwise."""
+    if field in FIELD_BYTE_LIMITS:
+        entry = {"value": value, "byteLimit": FIELD_BYTE_LIMITS[field]}
+        if measure:
+            entry["bytes"] = len(value.encode("utf-8"))
+    else:
+        entry = {"value": value, "charLimit": FIELD_LIMITS.get(field)}
+        if measure:
+            entry["chars"] = len(value)
+    return entry
+
+
+def render_audit_prompt(template: str, storefront: str, source: dict, current: dict) -> str:
+    rtl = STOREFRONT_TO_RUNTIME.get(storefront, storefront).split("-")[0] in RTL_LANGUAGES
+    return render(
+        template,
+        {
+            "LOCALE_NAME": STOREFRONT_NAMES.get(storefront, storefront),
+            "LOCALE_CODE": storefront,
+            "REGIONAL_NOTE": CULTURAL_NOTES.get(storefront, _GENERIC_NOTE),
+            "SOURCE_JSON": compact_json(source),
+            "CURRENT_JSON": compact_json(current),
+        },
+        {"rtl"} if rtl else set(),
+    )
+
+
 # ----------------------------------------------------------------- dispatch
 
 def cmd_dispatch(storefronts: list[str]) -> int:
@@ -76,7 +98,7 @@ def cmd_dispatch(storefronts: list[str]) -> int:
         print(f"ERROR: missing {TEMPLATE_PATH}", file=sys.stderr)
         return 1
     template = TEMPLATE_PATH.read_text(encoding="utf-8")
-    source = {f: {"value": read_field(SOURCE_LOCALE, f), "charLimit": FIELD_LIMITS.get(f)}
+    source = {f: audit_field(read_field(SOURCE_LOCALE, f), f, measure=False)
               for f in TRANSLATABLE_FIELDS if read_field(SOURCE_LOCALE, f)}
     if not source:
         print(f"ERROR: no English source metadata in {METADATA_DIR / SOURCE_LOCALE}", file=sys.stderr)
@@ -92,15 +114,9 @@ def cmd_dispatch(storefronts: list[str]) -> int:
         if not has_translation(sf):
             skipped.append(sf)
             continue
-        current = {f: {"value": read_field(sf, f), "chars": len(read_field(sf, f)), "charLimit": FIELD_LIMITS.get(f)}
+        current = {f: audit_field(read_field(sf, f), f, measure=True)
                    for f in TRANSLATABLE_FIELDS if read_field(sf, f)}
-        prompt = (
-            template.replace("{LOCALE_NAME}", STOREFRONT_NAMES.get(sf, sf))
-            .replace("{LOCALE_CODE}", sf)
-            .replace("{REGIONAL_NOTE}", CULTURAL_NOTES.get(sf, _GENERIC_NOTE))
-            .replace("{SOURCE_JSON}", json.dumps(source, ensure_ascii=False, indent=2, sort_keys=True))
-            .replace("{CURRENT_JSON}", json.dumps(current, ensure_ascii=False, indent=2, sort_keys=True))
-        )
+        prompt = render_audit_prompt(template, sf, source, current)
         (PROMPTS_DIR / f"{sf}.md").write_text(prompt, encoding="utf-8")
         if OUTPUTS_DIR.exists():
             stale = OUTPUTS_DIR / f"{sf}.json"
