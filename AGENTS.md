@@ -40,6 +40,9 @@ Governs docs, code comments, commit bodies, and PR bodies alike.
 - **Pointers into docs use heading names** (`persistence-design.md §Sync status`), never `§N`.
 - **A callee doesn't describe its callers, and a caller doesn't restate the callee.** Keep a
   one-line pointer only where a callee's invariant is non-obvious from the call site.
+- **Changing behaviour? Grep for it.** Search comments, `core-docs/`, test comments, and translator
+  comments for the symbol and the behaviour it names, and fix what the change made false in the
+  same PR. `make doc-check` catches dangling pointers and names; only a read catches a wrong claim.
 - **Comments explain why, not what.** The Swift per-file headers stay — `.swiftformat` says why.
 - **`git blame` a comment before deleting it**, and let the author decide. Human-written comments
   that narrate a UI flow stay, however redundant they look: numbered `/** 1. 2. 3. */` step lists
@@ -56,9 +59,10 @@ repo is `checklists` (`jimmynotjames/checklists`). Introduce both sibling names 
 ## Build and test
 
 ```bash
-make gate        # format-changed -> lint-changed -> i18n-check -> uitest-check -> build. Logs to tmp/gate.log.
+make gate        # format-changed -> lint-changed -> i18n-check -> uitest-check -> doc-check -> build. Logs to tmp/gate.log.
 make build       # compile only (generic destination; never boots a simulator)
 make i18n-check  # catalog fully translated + no unkeyed user-facing strings
+make doc-check   # doc pointers, headings, and named symbols resolve; no history on added lines
 make test-unit   # opt-in, not in the gate
 make test-ui     # opt-in; needs a prior `make test-unit` (simulator warm-up)
 make system      # once per clone: toolchain + git hooks
@@ -96,8 +100,9 @@ Gate and pre-commit format and strict-lint **changed Swift files only**
 (`scripts/changed-swift-files.sh`). Repo-wide `make format` / `make lint` are manual escape
 hatches — never wire them into a hook or gate.
 
-**`make i18n-check` and `make uitest-check` are the exceptions** and run repo-wide: a key can stop
-being translated, or a seed go stale, because some *other* file changed.
+**`make i18n-check`, `make uitest-check`, and `make doc-check` are the exceptions** and run
+repo-wide: a key can stop being translated, a seed go stale, or a pointer dangle because some
+*other* file changed. (`doc-check`'s history-marker scan is the one part limited to added lines.)
 
 ## Commit and PR style
 

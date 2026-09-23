@@ -10,7 +10,7 @@ Format: date, what was captured, what was found, what was done about it.
 
 The checklist detail screen is UIKit and uses fixed fonts, so it does not
 respond to Dynamic Type at all. Do not log that as a new finding each time; it
-is tracked in `core-docs/accessibility-spec.md` §2.3 and issue
+is tracked in `core-docs/accessibility-spec.md` §Dynamic Type and issue
 [#183](https://github.com/jimmynotjames/checklists/issues/183). Its screenshots
 are still worth reading for translation length and right-to-left mirroring.
 

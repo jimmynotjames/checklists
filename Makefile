@@ -1,4 +1,4 @@
-.PHONY: system format format-changed lint lint-changed i18n-check uitest-check build test-unit test-ui gate verify-secrets hooks-install initialize-sims sim-status sim-shutdown sim-clean
+.PHONY: system format format-changed lint lint-changed i18n-check uitest-check doc-check build test-unit test-ui gate verify-secrets hooks-install initialize-sims sim-status sim-shutdown sim-clean
 
 system:
 	bash scripts/system-setup.sh
@@ -39,6 +39,10 @@ i18n-check:
 uitest-check:
 	python3 scripts/check_ui_test_keyboard.py
 	python3 scripts/screenshot_content/generate_seeds.py --check
+
+# Repo-wide except its added-lines history scan; see scripts/check_doc_pointers.py.
+doc-check:
+	python3 scripts/check_doc_pointers.py
 
 # -- Build and test -----------------------------------------------------------
 build:
