@@ -6,14 +6,13 @@
 import Foundation
 
 /// Wraps any `AnalyticsClient` and suppresses every method except `reset()` while the person is
-/// opted out (core-docs/analytics-spec.md §2's canonical constraint #3: an opted-out install
-/// never opens a connection).
+/// opted out, so an opted-out install never opens a connection (core-docs/analytics-spec.md
+/// §Launch and consent ordering).
 ///
-/// A decorator rather than a guard inside each client, on purpose: it is testable today against
-/// `SpyAnalyticsClient` with no SDK involved, there is exactly one gate rather than one per
-/// client, and in a later PR wrapping `MixpanelAnalyticsClient` still preserves that client's
-/// lazy-init guarantee — a `track` this gate suppresses never reaches its `ensureInitialized()`,
-/// because it never reaches the wrapped client at all.
+/// A decorator rather than a guard inside each client: it is testable against
+/// `SpyAnalyticsClient` with no SDK involved, there is one gate rather than one per client, and it
+/// is what keeps `MixpanelAnalyticsClient`'s init lazy — a suppressed `track` never reaches the
+/// wrapped client's `ensureInitialized()`.
 final class ConsentGatedAnalyticsClient: AnalyticsClient, @unchecked Sendable {
   private let wrapped: any AnalyticsClient
   private let isOptedIn: () -> Bool
@@ -33,10 +32,8 @@ final class ConsentGatedAnalyticsClient: AnalyticsClient, @unchecked Sendable {
     wrapped.identify(distinctId)
   }
 
-  /// **Always passes through, ungated.** The controller calls this *during* the opt-out
-  /// transition, before the flag has flipped to `false` — gating on the current opt-in state
-  /// would silently no-op the one reset that matters, leaving the wrapped client's identity and
-  /// queued events in place on exactly the transition meant to clear them.
+  /// **Always passes through, ungated**, so a reset clears the wrapped client's identity and
+  /// queued events whatever the flag says — including one issued after it has flipped to `false`.
   func reset() {
     wrapped.reset()
   }

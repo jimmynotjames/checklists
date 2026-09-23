@@ -7,7 +7,8 @@
 
 /// Event-name constants: flat `snake_case`, `noun_pastTenseVerb`. Use these at every call site,
 /// never a string literal, so a typo is a compile error rather than a duplicate-looking event.
-/// Code-side mirror of core-docs/analytics-spec.md §8/§9 — change together, in the same PR.
+/// Code-side mirror of core-docs/analytics-spec.md §Event catalog and §Property catalog — change
+/// together, in the same PR.
 /// `nonisolated` on the type: plain compile-time strings, kept off the target's MainActor default.
 nonisolated enum AnalyticsEvent {
   static let appOpened = "app_opened"
@@ -39,17 +40,11 @@ nonisolated enum AnalyticsEvent {
   static let persistenceWriteFailed = "persistence_write_failed"
   static let startupFailed = "startup_failed"
   static let startupStoreReset = "startup_store_reset"
-  /// The legacy Realm import was given up on after repeated failures. The file is kept, but this
-  /// release will not try again — so this counts users whose old data is now out of reach.
   static let legacyImportAbandoned = "legacy_import_abandoned"
 
   // MARK: Rating prompt
 
-  /// Not an engagement-pressure event (§2 constraint 7): measures when the app's own bar is
-  /// reached, not how to push anyone over it.
   static let ratingPromptEligible = "rating_prompt_eligible"
-  /// StoreKit reports neither whether it showed the dialog nor what the person chose, so there is
-  /// no `shown` or `resolved` event — do not manufacture one with a custom pre-prompt.
   static let ratingPromptRequested = "rating_prompt_requested"
 
   static let orientationChanged = "orientation_changed"
@@ -68,9 +63,6 @@ nonisolated enum AnalyticsProperty {
 
   // MARK: checklist_viewed
 
-  /// **Raw checklist name — user content.** The one free-text property this app sends, kept as an
-  /// accepted risk rather than dropped or bucketed — see core-docs/analytics-spec.md §4.4. Not a
-  /// precedent for adding more user content.
   static let checklistName = "checklist_name"
   static let notesLength = "notes_length"
   static let itemsCount = "items_count"
@@ -78,23 +70,17 @@ nonisolated enum AnalyticsProperty {
 
   // MARK: checklist_duplicated
 
-  /// The two entry points are far apart in effort, so a single count would not say whether either
-  /// is worth keeping.
   static let source = "source"
 
   // MARK: checklist_items_copied
 
-  /// Copying into a list that already exists and copying into one made on the spot are different
-  /// intents — reuse versus extraction — and a single count would not separate them.
   static let destination = "destination"
 
   // MARK: Errors and failures
 
   static let errorDomain = "error_domain"
   static let errorCode = "error_code"
-  /// Which save failed: `PersistenceOperation.rawValue`. `persistence_write_failed` only.
   static let errorOperation = "error_operation"
-  /// How far launch got: `ContainerCreationFailure.Stage.rawValue`. `startup_failed` only.
   static let startupStage = "startup_stage"
 
   static let orientation = "orientation"
@@ -106,33 +92,23 @@ nonisolated enum AnalyticsProperty {
 
   // MARK: rating_prompt_requested
 
-  /// `<1d` / `<7d` / `<30d` / `30d+` between first eligibility and the request. Bucketed because
-  /// an exact interval on an event answers nothing a bucket does not; the exact moments live on
-  /// the profile.
   static let timeSinceFirstEligibleBucket = "time_since_first_eligible_bucket"
 
-  // MARK: Super properties (spec §9.2)
+  // MARK: Super properties
 
-  /// Do not send `SettingsManager.versionBuildString` here — it combines version and build and
-  /// appends `- DEBUG`.
   static let appVersion = "app_version"
   static let appBuild = "app_build"
   static let deviceClass = "device_class"
   static let locale = "locale"
   static let region = "region"
-  /// `required` / `auto_optin`. Without this, a consent-driven measurement gap is
-  /// indistinguishable from a real drop in usage — see spec §9.2.
   static let consentJurisdiction = "consent_jurisdiction"
 
-  // MARK: People properties (spec §9.3)
+  // MARK: People properties
 
   static let firstSeenAt = "first_seen_at"
   static let lastAppOpenAt = "last_app_open_at"
   static let analyticsOptInAt = "analytics_opt_in_at"
-  /// `0` / `1` / `2-3` / `4-7` / `8+`. This app's one cohort signal. Bucketed because profiles are
-  /// what cohorts are built from; the raw count still rides on `checklists_viewed`.
   static let checklistsCountBucket = "checklists_count_bucket"
   static let ratingPromptFirstEligibleAt = "rating_prompt_first_eligible_at"
-  /// No outcome is stored: StoreKit reports none.
   static let ratingPromptLastRequestedAt = "rating_prompt_last_requested_at"
 }

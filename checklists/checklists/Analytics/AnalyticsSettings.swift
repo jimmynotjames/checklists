@@ -6,8 +6,8 @@
 import Foundation
 import Observation
 
-/// The always-on Settings toggle and first-run consent state (core-docs/analytics-spec.md §5,
-/// §6).
+/// The always-on Settings toggle and first-run consent state (core-docs/analytics-spec.md
+/// §Identity, §Consent).
 ///
 /// **The opt-in default is locale-aware but never persisted.** `analyticsOptIn` resolves from
 /// `ConsentJurisdiction` whenever the store holds no explicit value; writing that resolved
@@ -34,7 +34,7 @@ final class AnalyticsSettings {
     store.object(forKey: Self.analyticsOptInKey) != nil
   }
 
-  /// A stable UUIDv4 string used as the Mixpanel `distinct_id` (§5). Generated once and persisted;
+  /// A stable UUIDv4 string used as the Mixpanel `distinct_id`. Generated once and persisted;
   /// `MixpanelAnalyticsClient.reset()` clears the SDK's notion of it but not this value, so a
   /// re-opt-in rejoins the same Mixpanel profile — why this lives here rather than in the client.
   private(set) var analyticsDistinctId: String {
@@ -54,10 +54,6 @@ final class AnalyticsSettings {
     analyticsDistinctId = Self.readOrCreateDistinctId(from: store)
   }
 
-  /// `UserDefaults.standard` persists across process launches, so a UI test's consent decision
-  /// would otherwise leak into the next test's launch. Test-launch isolation, mirroring
-  /// `LaunchModeContainerFactory.make()`'s in-memory `ModelContainer` under the same condition —
-  /// not a workaround, the same seam this app already uses for persistence.
   private static func defaultStore() -> KeyValueStore {
     makeStore(
       arguments: CommandLine.arguments,
@@ -66,9 +62,11 @@ final class AnalyticsSettings {
     )
   }
 
-  /// Builds the settings store for a launch without requiring tests to touch real defaults.
-  /// Every test launch gets a fresh store. Screenshot launches additionally begin with an
-  /// explicit opt-out so a strict-region consent sheet cannot cover a marketing capture.
+  /// Builds the settings store for a launch. Under `LaunchModeContainerFactory.isRunningTests`
+  /// every launch gets a fresh `InMemoryKeyValueStore` — the same test-launch isolation as the
+  /// in-memory `ModelContainer` — so a UI test's consent decision cannot leak into the next
+  /// launch. Debug screenshot launches additionally begin with an explicit opt-out so a
+  /// strict-region consent sheet cannot cover a marketing capture.
   static func makeStore(
     arguments: [String],
     environment: [String: String],

@@ -21,10 +21,8 @@ nonisolated func orientationAnalyticsValue(_ orientation: UIDeviceOrientation) -
   return nil
 }
 
-/// Buckets a count for use as a **profile** property (§9.3).
-///
-/// Events carry raw counts; profiles carry buckets. That is not a contradiction — cohorts are
-/// built from profiles, and a cohort of "people with exactly 7 checklists" is not useful.
+/// Buckets a count for the `checklists_count_bucket` **profile** property. Events carry raw counts;
+/// cohorts are built from profiles, where a bucket is what is useful.
 nonisolated func checklistsCountBucket(_ count: Int) -> String {
   switch count {
   case ..<1: "0"
@@ -58,8 +56,8 @@ extension Checklist {
   /// The properties `checklist_viewed` carries.
   ///
   /// Assembled here rather than at the call site so the PII boundary is in one reviewable place:
-  /// the checklist's **name** is sent (§4.4) and the length of its notes, but no note text and
-  /// nothing at all from the items beyond how many there are and how many carry notes.
+  /// the checklist's **name** is sent (analytics-spec.md §Free-text exception) and the length of
+  /// its notes, but no note text and nothing from the items beyond two counts.
   var analyticsViewedProperties: [String: any Sendable] {
     [
       AnalyticsProperty.checklistName: AnalyticsText.truncated(name),

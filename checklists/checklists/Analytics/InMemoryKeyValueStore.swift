@@ -5,14 +5,8 @@
 
 import Foundation
 
-/// A disposable, per-process `KeyValueStore` that never touches disk.
-///
-/// Mirrors `InMemoryModelContainer`: `AnalyticsSettings` resolves to one of these instead of
-/// `UserDefaults.standard` whenever `LaunchModeContainerFactory.isRunningTests`, exactly as
-/// `LaunchModeContainerFactory.make()` resolves to an in-memory `ModelContainer` under the same
-/// condition. This is test-launch isolation, matching the existing container behaviour — without
-/// it, a UI test's consent decision would persist in the real `UserDefaults.standard` and leak
-/// into every later launch, on the simulator and in later test runs alike.
+/// A disposable, per-process `KeyValueStore` that never touches disk. Test launches use it — see
+/// `AnalyticsSettings.makeStore`.
 final class InMemoryKeyValueStore: KeyValueStore {
   private var storage: [String: Any] = [:]
 

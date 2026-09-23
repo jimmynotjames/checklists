@@ -7,9 +7,8 @@ import Foundation
 
 /// Minimal key-value persistence seam used by `AnalyticsSettings` and `RatingPromptState`.
 ///
-/// Exists so the backing store is a one-line swap at the call site: production uses
-/// `UserDefaults.standard` (see the conformance below for why), and tests use an in-memory
-/// double instead of touching real defaults.
+/// Exists so the backing store is a one-line swap: production uses `UserDefaults.standard`, and
+/// test launches and unit tests use `InMemoryKeyValueStore`.
 protocol KeyValueStore: AnyObject {
   func object(forKey key: String) -> Any?
   func set(_ value: Bool, forKey defaultName: String)
@@ -20,19 +19,17 @@ protocol KeyValueStore: AnyObject {
   func synchronize() -> Bool
 }
 
-/// The production conformance. `checklists.entitlements` declares CloudKit but not
-/// `com.apple.developer.ubiquity-kvstore-identifier`, so `NSUbiquitousKeyValueStore` would not
-/// sync here — see core-docs/analytics-spec.md §5. `UserDefaults` already implements every
-/// requirement except the `String` overload of `set`.
+/// The production conformance. `UserDefaults` already implements every requirement except the
+/// `String` overload of `set`.
 extension UserDefaults: KeyValueStore {
   func set(_ value: String, forKey defaultName: String) {
     set(value as Any, forKey: defaultName)
   }
 }
 
-/// Unused today — both consumers default to `UserDefaults.standard` — but kept so a later
-/// migration to iCloud-synced state is a one-line change at the call site, once the entitlement
-/// above is added. Its native integer setter takes `Int64`, hence the `Int` bridge.
+/// Unused: without the `ubiquity-kvstore-identifier` entitlement it would not sync
+/// (core-docs/analytics-spec.md §Identity). Its native integer setter takes `Int64`, hence the
+/// `Int` bridge.
 extension NSUbiquitousKeyValueStore: KeyValueStore {
   func set(_ value: Int, forKey defaultName: String) {
     set(Int64(value), forKey: defaultName)

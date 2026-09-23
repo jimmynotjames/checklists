@@ -17,8 +17,7 @@ import SwiftUI
 /// **The rule is "has `.background` been seen since the last open", not "was the previous phase
 /// `.background`".** iOS delivers `.inactive` on the way back in, so a real foreground return
 /// arrives as `background → inactive → active`; testing only the immediately preceding phase
-/// misses every one of them and reduces the event to cold launches. Verified on device by
-/// backgrounding and reopening.
+/// misses every one of them and reduces the event to cold launches.
 ///
 /// No session-length constant here on purpose — sessionization is the backend's job, not
 /// something the client should half-reimplement.
