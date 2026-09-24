@@ -1,1 +1,1 @@
-Am adăugat indicatori de progres în procente, ca să vezi dintr-o privire cât mai ai de bifat.
+Am adăugat indicatori procentuali, ca să vedeți dintr-o privire cât ați bifat din fiecare listă.

@@ -1,1 +1,1 @@
-Dodali smo pokazatelje postotka dovršenosti pa napredak vidiš na prvi pogled.
+Dodali smo pokazatelje postotka dovršenosti kako biste napredak vidjeli na prvi pogled.

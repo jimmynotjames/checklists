@@ -1,1 +1,1 @@
-Dodali smo prikaz odstotkov, da na prvi pogled vidiš, koliko si že opravil.
+Dodali smo prikaz odstotka opravljenega, da napredek vidite na prvi pogled.

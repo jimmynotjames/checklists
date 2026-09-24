@@ -1,1 +1,1 @@
-Přidali jsme ukazatel dokončení v procentech, takže na první pohled vidíte, jak daleko jste.
+Přidali jsme ukazatele dokončení v procentech, takže svůj pokrok uvidíte na první pohled.

@@ -1,1 +1,1 @@
-Mostantól százalékos jelző mutatja, hol tartasz az egyes listákkal.
+Az új százalékos kijelzéssel egy pillantás alatt láthatja, hol tart.
