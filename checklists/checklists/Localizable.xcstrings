@@ -1106,7 +1106,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verwerpen"
+            "value" : "Gooi weg"
           }
         },
         "or" : {
@@ -1166,7 +1166,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förkasta"
+            "value" : "Släng"
           }
         },
         "ta" : {
@@ -1196,13 +1196,13 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Відхилити"
+            "value" : "Відкинути"
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "رد کریں"
+            "value" : "چھوڑ دیں"
           }
         },
         "vi" : {
@@ -1994,7 +1994,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 체크리스트를 폐기하시겠어요? 되돌릴 수 없습니다."
+            "value" : "이 체크리스트를 삭제할까요? 되돌릴 수 없어요."
           }
         },
         "ml" : {
@@ -2024,7 +2024,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Checklist verwerpen? Dit kan niet ongedaan worden gemaakt."
+            "value" : "Deze checklist weggooien? Je kunt dit niet ongedaan maken."
           }
         },
         "or" : {
@@ -2102,7 +2102,7 @@
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ละทิ้งเช็คลิสต์นี้ใช่ไหม ไม่สามารถยกเลิกการดำเนินการนี้ได้"
+            "value" : "ละทิ้งเช็คลิสต์นี้หรือไม่ คุณจะเลิกทำการกระทำนี้ไม่ได้"
           }
         },
         "tr" : {
@@ -2114,7 +2114,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Відхилити цей чек-лист? Цю дію не можна скасувати."
+            "value" : "Відкинути цей чек-лист? Цю дію не можна скасувати."
           }
         },
         "ur" : {
@@ -2168,13 +2168,13 @@
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Položky zkopírovány do %@"
+            "value" : "Položky zkopírovány do „%@“"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Emner kopieret til %@"
+            "value" : "Punkter kopieret til %@"
           }
         },
         "de" : {
@@ -2186,7 +2186,7 @@
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Τα στοιχεία αντιγράφηκαν στο %@"
+            "value" : "Αντιγράφηκαν στη λίστα «%@»"
           }
         },
         "en" : {
@@ -2390,7 +2390,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Objekt kopierat till %@"
+            "value" : "Punkter kopierade till %@"
           }
         },
         "ta" : {
@@ -2402,7 +2402,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "చర్చలు %@కు కాపీ చేయబడ్డాయి"
+            "value" : "అంశాలు %@ లోకి కాపీ అయ్యాయి"
           }
         },
         "th" : {
@@ -2426,7 +2426,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "آئٹمز %@ کو کاپی کر دیے گئے"
+            "value" : "آئٹمز %@ میں کاپی ہو گئے"
           }
         },
         "vi" : {
@@ -2480,7 +2480,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opret tjekliste og kopier emner"
+            "value" : "Opret tjekliste, og kopiér punkter"
           }
         },
         "de" : {
@@ -2558,7 +2558,7 @@
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "צור רשימת תיוג והעתק פריטים"
+            "value" : "יצירת רשימת תיוג והעתקת הפריטים"
           }
         },
         "hi" : {
@@ -2708,7 +2708,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "చెక్‌లిస్ట్ను సృష్టించి చర్చలను కాపీ చేయండి"
+            "value" : "చెక్‌లిస్ట్ సృష్టించి అంశాలను కాపీ చేయి"
           }
         },
         "th" : {
@@ -3314,7 +3314,7 @@
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "பெயர் (விரும்பினாலும்)"
+            "value" : "பெயர் (விருப்பத்தேர்வு)"
           }
         },
         "te" : {
@@ -3650,7 +3650,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "نیا چیک لسٹ"
+            "value" : "نئی چیک لسٹ"
           }
         },
         "vi" : {
@@ -3710,7 +3710,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Markierte Elemente kopieren"
+            "value" : "Markierte Einträge kopieren"
           }
         },
         "el" : {
@@ -3758,7 +3758,7 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopioi valitut nimikkeet"
+            "value" : "Kopioi valitut kohteet"
           }
         },
         "fr" : {
@@ -3776,13 +3776,13 @@
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ચેક કરેલી આઇટમ્સ નકલ કરો"
+            "value" : "ચેક કરેલી આઇટમ કૉપિ કરો"
           }
         },
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "העתק פריטים מסומנים"
+            "value" : "העתקת פריטים מסומנים"
           }
         },
         "hi" : {
@@ -3818,13 +3818,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "チェック済みアイテムをコピー"
+            "value" : "チェック済みの項目をコピー"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಗುರುತಿಸಲಾಗಿದ ಐಟಂಗಳನ್ನು ನಕಲಿಸಿ"
+            "value" : "ಗುರುತಿಸಲಾದ ಐಟಂಗಳನ್ನು ನಕಲಿಸಿ"
           }
         },
         "ko" : {
@@ -3836,7 +3836,7 @@
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ചെക്ക് ചെയ്തവ വസ്തുക്കൾ പകർത്തുക"
+            "value" : "ചെക്ക് ചെയ്ത ഇനങ്ങൾ പകർത്തുക"
           }
         },
         "mr" : {
@@ -3860,19 +3860,19 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopiëren Aangevinkte Items"
+            "value" : "Kopieer aangevinkte items"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଚେକ୍ ହୋଇଛି ଆଇଟମ ନକଲ"
+            "value" : "ଚେକ୍ ହୋଇଥିବା ଆଇଟମ୍ କପି କରନ୍ତୁ"
           }
         },
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਚੈੱਕ ਕੀਤੀਆਂ ਆਈਟਮਜ ਦੀ ਕਾਪੀ"
+            "value" : "ਚੈੱਕ ਕੀਤੀਆਂ ਆਈਟਮਾਂ ਕਾਪੀ ਕਰੋ"
           }
         },
         "pl" : {
@@ -3932,7 +3932,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "చెక్‌ చేయబడిన చర్చలను కాపీ చేయండి"
+            "value" : "చెక్ చేసిన అంశాలను కాపీ చేయి"
           }
         },
         "th" : {
@@ -5618,13 +5618,13 @@
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "העתק פריטים מסומנים אל…"
+            "value" : "העתקת פריטים מסומנים אל…"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "चेक किए गए आइटम्स कॉपी करें…"
+            "value" : "चेक किए गए आइटम इसमें कॉपी करें…"
           }
         },
         "hr" : {
@@ -5660,7 +5660,7 @@
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಗುರುತಿಸಲಾಗಿದ ಐಟಂಗಳನ್ನು…ಗೆ ನಕಲಿಸಿ"
+            "value" : "ಗುರುತಿಸಲಾದ ಐಟಂಗಳನ್ನು ಬೇರೆಡೆಗೆ ನಕಲಿಸಿ…"
           }
         },
         "ko" : {
@@ -5678,7 +5678,7 @@
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "चेक केलेले आयटम्स ला कॉपी करा…"
+            "value" : "चेक केलेले आयटम दुसरीकडे कॉपी करा…"
           }
         },
         "ms" : {
@@ -5696,13 +5696,13 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopiëren Aangevinkte Items naar…"
+            "value" : "Kopieer aangevinkte items naar…"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଚେକ୍ ହୋଇଛି ଆଇଟମ ନକଲ…"
+            "value" : "ଚେକ୍ ହୋଇଥିବା ଆଇଟମ୍ ଅନ୍ୟତ୍ର କପି କରନ୍ତୁ…"
           }
         },
         "pa" : {
@@ -5768,7 +5768,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "చెక్‌ చేయబడిన చర్చలను … కు కాపీ చేయండి"
+            "value" : "చెక్ చేసిన అంశాలను కాపీ చేయి…"
           }
         },
         "th" : {
@@ -5792,7 +5792,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "چیک شدہ آئٹمز کو … کاپی کریں"
+            "value" : "چیک شدہ آئٹمز کاپی کریں…"
           }
         },
         "vi" : {
@@ -5966,7 +5966,7 @@
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಗುರುತಿಸಲಾಗಿದ ವಿಷಯಗಳು ಇಲ್ಲ"
+            "value" : "ಗುರುತಿಸಲಾದ ಐಟಂಗಳಿಲ್ಲ."
           }
         },
         "ko" : {
@@ -5996,7 +5996,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen avkrystede."
+            "value" : "Ingen avkryssede elementer."
           }
         },
         "nl" : {
@@ -6008,13 +6008,13 @@
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଚେକ୍ ହୋଇଛି ଜିନିସ ନାହିଁ"
+            "value" : "ଚେକ୍ ହୋଇଥିବା ଆଇଟମ୍ ନାହିଁ।"
           }
         },
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਚੈੱਕ ਕੀਤੀਆਂ ਚੀਜ਼ਾਂ ਨਹੀਂ"
+            "value" : "ਕੋਈ ਚੈੱਕ ਕੀਤੀ ਆਈਟਮ ਨਹੀਂ।"
           }
         },
         "pl" : {
@@ -6074,7 +6074,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "చెక్ చేయబడిన చేకలు లేవు"
+            "value" : "చెక్ చేసిన అంశాలు లేవు."
           }
         },
         "th" : {
@@ -6098,7 +6098,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "کوئی چیک شدہ چیز نہیں۔"
+            "value" : "کوئی چیک شدہ آئٹم نہیں۔"
           }
         },
         "vi" : {
@@ -6614,7 +6614,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Checklist verwerpen"
+            "value" : "Gooi checklist weg"
           }
         },
         "or" : {
@@ -6674,7 +6674,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förkasta checklista"
+            "value" : "Släng checklista"
           }
         },
         "ta" : {
@@ -6704,7 +6704,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Відхилити чек-лист"
+            "value" : "Відкинути чек-лист"
           }
         },
         "ur" : {
@@ -6992,13 +6992,13 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "చెక్‌లిస్ట్ నకల్"
+            "value" : "చెక్‌లిస్ట్‌ను డూప్లికేట్ చేయి"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "คัดลอก เช็คลิสต์"
+            "value" : "ทำสำเนาเช็คลิสต์"
           }
         },
         "tr" : {
@@ -7022,7 +7022,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sao chép danh sách kiểm tra"
+            "value" : "Tạo bản sao danh sách kiểm tra"
           }
         },
         "zh-Hans" : {
@@ -9290,7 +9290,7 @@
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "האם אתה בטוח? לא ניתן לבטל פעולה זו."
+            "value" : "להמשיך? אי אפשר לבטל את הפעולה."
           }
         },
         "hi" : {
@@ -9374,7 +9374,7 @@
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଆପଣ ନିଶ୍ଚିତ କି? ଏହା ପୁନଃ ପରିବର୍ତ୍ତନ ହୋଇପାରିବ ନାହିଁ।"
+            "value" : "ଆପଣ ନିଶ୍ଚିତ କି? ଏହା ଆଉ ଫେରାଇ ହେବ ନାହିଁ।"
           }
         },
         "pa" : {
@@ -9494,7 +9494,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ نسخة"
+            "value" : "نسخة من %@"
           }
         },
         "bn" : {
@@ -9692,7 +9692,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ kopia"
+            "value" : "%@ – kopia"
           }
         },
         "pt-BR" : {
@@ -9746,7 +9746,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ నకల్"
+            "value" : "%@ కాపీ"
           }
         },
         "th" : {
@@ -9800,7 +9800,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ نسخة %2$lld"
+            "value" : "نسخة %2$lld من %1$@"
           }
         },
         "bn" : {
@@ -9998,7 +9998,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ kopia %2$lld"
+            "value" : "%1$@ – kopia %2$lld"
           }
         },
         "pt-BR" : {
@@ -10052,7 +10052,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ నకల్ %2$lld"
+            "value" : "%1$@ కాపీ %2$lld"
           }
         },
         "th" : {
@@ -10430,7 +10430,7 @@
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Další nabídka"
+            "value" : "Nabídka Ostatní"
           }
         },
         "da" : {
@@ -10526,7 +10526,7 @@
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Razni izbornik"
+            "value" : "Izbornik Ostalo"
           }
         },
         "hu" : {
@@ -10622,7 +10622,7 @@
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menu diverso"
+            "value" : "Menu Diversos"
           }
         },
         "ro" : {
@@ -11888,7 +11888,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "నకల్"
+            "value" : "డూప్లికేట్ చేయి"
           }
         },
         "th" : {
@@ -13010,7 +13010,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "익명 사용 데이터를 켜서 앱 개선을 돕습니다. 체크리스트 항목 이름, 항목 메모 또는 Apple이나 iCloud 식별자는 절대 포함되지 않습니다."
+            "value" : "익명 사용 데이터를 켜서 앱 개선을 도와요. 체크리스트 항목 이름, 항목 메모, Apple 또는 iCloud 식별자는 절대 포함되지 않아요."
           }
         },
         "ml" : {
@@ -13040,7 +13040,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schakelt anonieme gebruiksgegevens in om de app te verbeteren. Checklistnamen, itemnotities of Apple- of iCloud-identifiers worden nooit opgenomen."
+            "value" : "Schakelt anonieme gebruiksgegevens in om de app te helpen verbeteren. Namen en notities van items en Apple- of iCloud-ID's worden nooit meegestuurd."
           }
         },
         "or" : {
@@ -13478,7 +13478,7 @@
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "বেনামি ব্যবহারের ডেটা বন্ধ রাখুন। এটি পরে সেটিংসে পরিবর্তন করা যেতে পারে।"
+            "value" : "বেনামি ব্যবহারের ডেটা বন্ধ রাখে। পরে সেটিংস থেকে এটি বদলাতে পারবেন।"
           }
         },
         "ca" : {
@@ -13550,7 +13550,7 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pitää anonyymit käyttötiedot poissa päältä. Voit muuttaa tämän myöhemmin asetuksissa."
+            "value" : "Pitää anonyymit käyttötiedot pois päältä. Voit muuttaa tämän myöhemmin Asetuksissa."
           }
         },
         "fr" : {
@@ -13586,7 +13586,7 @@
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zadržava anonimne podatke o upotrebi isključenima. Ovo se kasnije može promijeniti u Postavkama."
+            "value" : "Anonimni podaci o upotrebi ostaju isključeni. To možete promijeniti kasnije u Postavkama."
           }
         },
         "hu" : {
@@ -13622,7 +13622,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "익명 사용 데이터를 끕니다. 나중에 설정에서 변경할 수 있습니다."
+            "value" : "익명 사용 데이터를 끈 상태로 둬요. 나중에 설정에서 바꿀 수 있어요."
           }
         },
         "ml" : {
@@ -13646,7 +13646,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lar anonyme bruksdata forbli av. Dette kan endres senere i Innstillinger."
+            "value" : "Lar anonyme bruksdata være av. Du kan endre dette senere i Innstillinger."
           }
         },
         "nl" : {
@@ -13898,7 +13898,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ez az app anonim használati adatokat küldhet, amelyek segítenek a hibák elhárításában és a használat megértésében. Az adatok soha nincsenek összekapcsolva az Apple-fiókjával. Soha nem tartalmazza: ellenőrzőlista-elem nevét, elemjegyzeteket, illetve Apple- vagy iCloud-azonosítót. Ezt bármikor módosíthatja a Beállításokban."
+            "value" : "Az alkalmazás anonim használati adatokat küldhet, amelyek segítenek a hibák elhárításában és a használat megértésében. Az adatok soha nem kapcsolódnak Apple-fiókjához. Soha nem tartalmazzák az ellenőrzőlista-elemek nevét, az elemek jegyzeteit, sem semmilyen Apple- vagy iCloud-azonosítót. Ezt bármikor módosíthatja a Beállításokban."
           }
         },
         "id" : {
@@ -14066,7 +14066,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此应用可发送匿名使用数据，帮助排查问题和了解使用情况。数据永远不会与您的 Apple 账户关联。永远不包含：清单项目名称、项目备注或任何 Apple 或 iCloud 标识符。您可以随时在设置中更改此选项。"
+            "value" : "本 App 可以发送匿名使用数据，帮助排查问题、了解使用情况。数据从不与你的 Apple 账户关联。从不包含：清单项目名称、项目备注，以及任何 Apple 或 iCloud 标识符。你可以随时在“设置”中更改。"
           }
         },
         "zh-Hant" : {
@@ -14084,7 +14084,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ساعد في تحسين التطبيق؟"
+            "value" : "هل تود المساعدة في تحسين التطبيق؟"
           }
         },
         "bn" : {
@@ -14216,7 +14216,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aiutaci a migliorare l'app?"
+            "value" : "Ci aiuti a migliorare l'app?"
           }
         },
         "ja" : {
@@ -14330,7 +14330,7 @@
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "பயன்பாட்டை மேம்படுத்த உதவ முடியுமா?"
+            "value" : "ஆப்ஸை மேம்படுத்த உதவுவீர்களா?"
           }
         },
         "te" : {
@@ -14846,7 +14846,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "오류 세부사항이 포함된 이메일을 엽니다. 개인 정보는 포함되지 않습니다."
+            "value" : "오류 세부 정보가 담긴 이메일을 열어요. 개인 데이터는 포함되지 않아요."
           }
         },
         "ml" : {
@@ -15458,7 +15458,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱이 새로 설치된 것처럼 시작됩니다. 이 기기의 모든 데이터가 손실됩니다."
+            "value" : "앱을 새로 설치한 것처럼 시작해요. 이 기기의 모든 데이터가 삭제돼요."
           }
         },
         "ml" : {
@@ -16070,7 +16070,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱이 새로 설치된 것처럼 시작됩니다. 이 기기의 모든 데이터가 손실됩니다. 되돌릴 수 없습니다."
+            "value" : "앱을 새로 설치한 것처럼 시작해요. 이 기기의 모든 데이터가 삭제되며 되돌릴 수 없어요."
           }
         },
         "ml" : {
@@ -16088,7 +16088,7 @@
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ini memulakan aplikasi seolah-olah ia baru dipasang. Sebarang data pada peranti ini akan hilang. Ini tidak boleh dibatalkan."
+            "value" : "Ini akan memulakan app seperti baru dipasang. Semua data pada peranti ini akan hilang. Tindakan ini tidak boleh dibuat asal."
           }
         },
         "nb" : {
@@ -16106,7 +16106,7 @@
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଏହା ଆପ୍‌କୁ ନୂଆ ଇନଷ୍ଟଲ ହୋଇଥିବା ପରି ଆରମ୍ଭ କରିବ। ଏହି ଡିଭାଇସରେ ଥିବା ସମସ୍ତ ତଥ୍ୟ ନଷ୍ଟ ହୋଇଯିବ। ଏହା ପୁନଃ ପରିବର୍ତ୍ତନ ହୋଇପାରିବ ନାହିଁ।"
+            "value" : "ଏହା ଆପକୁ ନୂଆ ଇନଷ୍ଟଲ୍ ହେଲା ପରି ଆରମ୍ଭ କରିବ। ଏହି ଡିଭାଇସର ସମସ୍ତ ଡାଟା ହଜିଯିବ। ଏହା ଆଉ ଫେରାଇ ହେବ ନାହିଁ।"
           }
         },
         "pa" : {
@@ -16874,7 +16874,7 @@
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Κάτι πήγε στραβά. Δοκιμάστε να επανεκκινήσετε την εφαρμογή; Ελέγξτε επίσης αν ο χώρος αποθήκευσης είναι πλήρης;"
+            "value" : "Κάτι πήγε στραβά. Δοκιμάστε επανεκκίνηση της εφαρμογής και ελέγξτε αν ο χώρος αποθήκευσης έχει γεμίσει."
           }
         },
         "en" : {
@@ -16886,7 +16886,7 @@
         "en-AU" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Something went wrong. Try restarting the app? Also check if your storage is full?"
+            "value" : "Something went wrong. Try restarting the app, and check your storage isn't full."
           }
         },
         "en-CA" : {
@@ -16988,7 +16988,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "문제가 발생했습니다. 앱을 다시 시작해 보시겠어요? 또한 저장 공간이 가득 찼는지 확인하세요."
+            "value" : "문제가 발생했어요. 앱을 다시 시작해 보세요. 저장 공간이 가득 찼는지도 확인해 보세요."
           }
         },
         "ml" : {
@@ -17018,7 +17018,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Er ging iets mis. Probeer de app opnieuw te starten? Controleer ook of je opslagruimte vol is?"
+            "value" : "Er is iets misgegaan. Probeer de app opnieuw te starten en kijk of je opslag vol is."
           }
         },
         "or" : {
@@ -17042,7 +17042,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Algo deu errado. Tente reiniciar o app? Verifique também se o armazenamento está cheio?"
+            "value" : "Algo deu errado. Tente reiniciar o app e veja se o armazenamento está cheio."
           }
         },
         "pt-PT" : {
@@ -17054,7 +17054,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ceva nu a funcționat corect. Încercați să reporniți aplicația? Verificați și dacă spațiul de stocare este plin?"
+            "value" : "A apărut o problemă. Încercați să reporniți aplicația și verificați dacă spațiul de stocare este plin."
           }
         },
         "ru" : {
@@ -17066,13 +17066,13 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Niečo sa pokazilo. Skúste reštartovať aplikáciu? Skontrolujte tiež, či nemáte plné úložisko?"
+            "value" : "Niečo sa pokazilo. Skúste aplikáciu reštartovať a overte, či nemáte plné úložisko."
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nekaj je šlo narobe. Poskusite znova zagnati aplikacijo? Preverite tudi, ali je prostor za shranjevanje poln?"
+            "value" : "Nekaj je šlo narobe. Poskusite znova zagnati aplikacijo. Preverite tudi, ali je shramba polna."
           }
         },
         "sv" : {
@@ -17102,13 +17102,13 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bir şeyler ters gitti. Uygulamayı yeniden başlatmayı dener misiniz? Depolama alanınızın dolu olup olmadığını da kontrol eder misiniz?"
+            "value" : "Bir sorun oluştu. Uygulamayı yeniden başlatmayı deneyin; depolama alanınızın dolu olup olmadığına da bakın."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Щось пішло не так. Спробуйте перезапустити застосунок? Також перевірте, чи не заповнено сховище пристрою?"
+            "value" : "Щось пішло не так. Спробуйте перезапустити програму й перевірте, чи є вільне місце на пристрої."
           }
         },
         "ur" : {
@@ -17120,7 +17120,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã xảy ra sự cố. Thử khởi động lại ứng dụng? Ngoài ra, kiểm tra xem bộ nhớ có bị đầy không?"
+            "value" : "Đã xảy ra lỗi. Hãy thử khởi động lại ứng dụng và kiểm tra xem bộ nhớ đã đầy chưa."
           }
         },
         "zh-Hans" : {
@@ -17132,7 +17132,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "發生錯誤。試試重新啟動應用程式？同時檢查你的儲存空間是否已滿？"
+            "value" : "出了點問題。試試重新啟動 App，也看看儲存空間是否已滿。"
           }
         }
       }
@@ -17432,7 +17432,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无法打开您的清单"
+            "value" : "无法打开你的清单"
           }
         },
         "zh-Hant" : {
@@ -18212,7 +18212,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이제 체크리스트가 iCloud를 통해 기기 간에 동기화됩니다."
+            "value" : "이제 체크리스트가 iCloud를 통해 모든 기기에서 동기화돼요."
           }
         },
         "ml" : {
@@ -18350,7 +18350,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "您的清单现在将通过 iCloud 在您的设备间同步。"
+            "value" : "你的清单现在会通过 iCloud 在你的各台设备间同步。"
           }
         },
         "zh-Hant" : {
@@ -18416,7 +18416,7 @@
         "en-AU" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Migrating databases… need a moment…"
+            "value" : "Updating your data. Just a moment…"
           }
         },
         "en-CA" : {
@@ -18482,7 +18482,7 @@
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Migracija baza podataka… treba trenutak…"
+            "value" : "Migracija baza podataka… samo trenutak…"
           }
         },
         "hu" : {
@@ -18776,7 +18776,7 @@
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "סגור תפריט"
+            "value" : "סגירת התפריט"
           }
         },
         "hi" : {
@@ -19448,7 +19448,7 @@
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "reChecklist अ्‍ॅपसाठी अभिप्राय"
+            "value" : "reChecklist ॲपसाठी अभिप्राय"
           }
         },
         "ms" : {
@@ -19472,7 +19472,7 @@
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "reChecklist ଅ୍ୟାପ୍‍ ପାଇଁ ମତାମତ"
+            "value" : "reChecklist ଆପ ପାଇଁ ମତାମତ"
           }
         },
         "pa" : {
@@ -19868,7 +19868,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Store میں ریٹ کریں"
+            "value" : "ایپ کو App Store پر ریٹ کریں"
           }
         },
         "vi" : {
@@ -27686,7 +27686,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "国内線は身分証、海外はパスポート、車の旅なら運転免許証を忘れずに。"
+            "value" : "免許証（レンタカー用）、マイナ保険証、海外ならパスポート"
           }
         },
         "kn" : {
@@ -27974,7 +27974,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Receptek, gyógyszerek, vitaminok"
+            "value" : "Gyógyszerek, vitaminok"
           }
         },
         "id" : {
@@ -31034,7 +31034,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Az anonim használati adatok segítenek a hibák elhárításában és a használat megértésében. Az adatok soha nincsenek összekapcsolva az Apple-fiókjával. Soha nem tartalmazza: ellenőrzőlista-elem nevét, elemjegyzeteket, illetve Apple- vagy iCloud-azonosítót."
+            "value" : "Az anonim használati adatok segítenek a hibák elhárításában és a használat megértésében. Az adatok soha nem kapcsolódnak Apple-fiókjához. Soha nem tartalmazzák az ellenőrzőlista-elemek nevét, az elemek jegyzeteit, sem semmilyen Apple- vagy iCloud-azonosítót."
           }
         },
         "id" : {
@@ -31172,7 +31172,7 @@
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ข้อมูลการใช้งานแบบไม่ระบุตัวตนช่วยแก้ไขปัญหาและเข้าใจการใช้งาน ข้อมูลไม่เคยเชื่อมโยงกับบัญชี Apple ไม่เคยรวมไว้: ชื่อรายการเช็คลิสต์ หมายเหตุรายการ หรือตัวระบุ Apple หรือ iCloud ใดๆ"
+            "value" : "ข้อมูลการใช้งานแบบไม่ระบุตัวตนช่วยในการแก้ไขปัญหาและทำความเข้าใจการใช้งาน ข้อมูลจะไม่เชื่อมโยงกับบัญชี Apple ของคุณ ไม่เคยรวม: ชื่อรายการในเช็คลิสต์ หมายเหตุของรายการ หรือตัวระบุใดๆ ของ Apple หรือ iCloud"
           }
         },
         "tr" : {
@@ -31202,7 +31202,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "匿名使用数据有助于排查问题和了解使用情况。数据永远不会与您的 Apple 账户关联。永远不包含：清单项目名称、项目备注或任何 Apple 或 iCloud 标识符。"
+            "value" : "匿名使用数据有助于排查问题、了解使用情况。数据从不与你的 Apple 账户关联。从不包含：清单项目名称、项目备注，以及任何 Apple 或 iCloud 标识符。"
           }
         },
         "zh-Hant" : {
@@ -31862,7 +31862,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ermöglicht der App, anonyme Nutzungsdaten zu senden, um die App zu verbessern. Checklisten-Eintrags-Namen, Notizen oder Apple- oder iCloud-Kennungen sind niemals enthalten."
+            "value" : "Erlaubt der App, anonyme Nutzungsdaten zu senden, damit sie besser wird. Namen und Notizen von Einträgen sowie Apple- oder iCloud-Kennungen werden nie übermittelt."
           }
         },
         "el" : {
@@ -32024,13 +32024,13 @@
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਐਪ ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਵਿੱਚ ਮਦਦ ਲਈ ਐਪ ਨੂੰ ਗੁਮਨਾਮ ਵਰਤੋਂ ਡਾਟਾ ਭੇਜਣ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ। ਕਦੇ ਵੀ ਚੈੱਕਲਿਸਟ ਆਈਟਮ ਦੇ ਨਾਂ, ਆਈਟਮ ਨੋਟਸ, ਜਾਂ Apple ਜਾਂ iCloud ਪਛਾਣਕਾਰ ਸ਼ਾਮਿਲ ਨਹੀਂ ਹਨ।"
+            "value" : "ਐਪ ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਵਿੱਚ ਮਦਦ ਲਈ ਗੁਮਨਾਮ ਵਰਤੋਂ ਡਾਟਾ ਭੇਜਣ ਦਿੰਦਾ ਹੈ। ਚੈੱਕਲਿਸਟ ਆਈਟਮਾਂ ਦੇ ਨਾਮ, ਆਈਟਮ ਨੋਟਸ, ਜਾਂ Apple ਜਾਂ iCloud ਪਛਾਣਕਰਤਾ ਕਦੇ ਸ਼ਾਮਲ ਨਹੀਂ ਕੀਤੇ ਜਾਂਦੇ।"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Umożliwia aplikacji wysyłanie anonimowych danych o użytkowaniu, aby pomóc ulepszyć aplikację. Nazwy elementów listy kontrolnej, notatki do elementów ani identyfikatory Apple i iCloud nigdy nie są uwzględniane."
+            "value" : "Pozwala aplikacji wysyłać anonimowe dane o użytkowaniu, które pomagają ją ulepszać. Nigdy nie zawierają nazw pozycji, notatek do pozycji ani identyfikatorów Apple lub iCloud."
           }
         },
         "pt-BR" : {
@@ -32414,7 +32414,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud سنک فعال ہے"
+            "value" : "آپ کا iCloud سنک فعال ہے"
           }
         },
         "vi" : {
@@ -33002,7 +33002,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud చెక్‌ చేయలేకపోయారు"
+            "value" : "iCloud చెక్ చేయడం కుదరలేదు"
           }
         },
         "th" : {
@@ -33026,7 +33026,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud چیک نہ ہو سکا"
+            "value" : "آپ کا iCloud چیک نہیں ہو سکا"
           }
         },
         "vi" : {
@@ -33212,13 +33212,13 @@
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക. നിങ്ങളുടെ checklists ഈ ഡിവൈസിൽ സംരക്ഷിച്ചിരിക്കുന്നു."
+            "value" : "നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക. നിങ്ങളുടെ ചെക്ക്‌ലിസ്റ്റുകൾ ഈ ഉപകരണത്തിൽ സേവ് ചെയ്തിട്ടുണ്ട്."
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आपले इंटरनेट कनेक्शन तपासा. आपली checklists या डिव्हाइसवर सेव केली आहेत."
+            "value" : "तुमचे इंटरनेट कनेक्शन तपासा. तुमच्या चेकलिस्ट या डिव्हाइसवर सेव्ह आहेत."
           }
         },
         "ms" : {
@@ -33242,7 +33242,7 @@
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଆପଣଙ୍କ ଇଣ୍ଟରନେଟ ସଂଯୋଗ ଯାଞ୍ଚ କରନ୍ତୁ। ଆପଣଙ୍କ checklists ଏହି ଡିଭାଇସରେ ସଂରକ୍ଷିତ।"
+            "value" : "ଆପଣଙ୍କ ଇଣ୍ଟରନେଟ୍ ସଂଯୋଗ ଯାଞ୍ଚ କରନ୍ତୁ। ଆପଣଙ୍କ ଚେକଲିଷ୍ଟଗୁଡ଼ିକ ଏହି ଡିଭାଇସରେ ସେଭ୍ ହୋଇଛି।"
           }
         },
         "pa" : {
@@ -33260,7 +33260,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verifique sua conexão com a internet. Suas listas de verificação são salvas neste dispositivo."
+            "value" : "Verifique sua conexão com a internet. Suas listas estão salvas neste dispositivo."
           }
         },
         "pt-PT" : {
@@ -33302,7 +33302,7 @@
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "உங்கள் இணையதள இணைப்பைச் சரிபார்க்கவும். உங்கள் பட்டியல்கள் இந்த சாதனத்தில் சேமிக்கப்பட்டுள்ளன."
+            "value" : "உங்கள் இணைய இணைப்பைச் சரிபார்க்கவும். உங்கள் செக்லிஸ்ட்டுகள் இந்தச் சாதனத்தில் சேமிக்கப்பட்டுள்ளன."
           }
         },
         "te" : {
@@ -33314,7 +33314,7 @@
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณ รายการตรวจสอบของคุณถูกบันทึกไว้บนอุปกรณ์นี้"
+            "value" : "โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต เช็คลิสต์ของคุณบันทึกไว้ในอุปกรณ์นี้แล้ว"
           }
         },
         "tr" : {
@@ -33332,7 +33332,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اپنی انٹرنیٹ کنکشن چیک کریں۔ آپ کی چیک لسٹیں اس ڈیوائس پر محفوظ ہیں۔"
+            "value" : "اپنا انٹرنیٹ کنکشن چیک کریں۔ آپ کی چیک لسٹیں اس ڈیوائس پر محفوظ ہیں۔"
           }
         },
         "vi" : {
@@ -33344,13 +33344,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "检查您的网络连接。您的清单已保存在此设备。"
+            "value" : "请检查网络连接。你的清单已保存在此设备上。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "請檢查您的網際網路連線。您的檢查清單已儲存在此裝置上。"
+            "value" : "請檢查網路連線。你的清單已儲存在這部裝置上。"
           }
         }
       }
@@ -33524,7 +33524,7 @@
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आखरी सिंक %@"
+            "value" : "शेवटचे सिंक %@"
           }
         },
         "ms" : {
@@ -33830,7 +33830,7 @@
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "सेटिंग्ज उघडा, आपल्या Apple खाते पुष्टी करा आणि सिंक पुन्हा सुरू करा."
+            "value" : "सिंक पुन्हा सुरू करण्यासाठी सेटिंग्ज उघडा आणि तुमचे Apple खाते कन्फर्म करा."
           }
         },
         "ms" : {
@@ -33860,7 +33860,7 @@
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਸੈਟਿੰਗਾਂ ਖੋਲੋ ਅਤੇ ਆਪਣਾ Apple ਖਾਤਾ ਪੁਸ਼ਟੀ ਕਰ ਕੇ ਸਿੰਕ ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਕਰੋ।"
+            "value" : "ਸਿੰਕ ਮੁੜ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਸੈਟਿੰਗਾਂ ਖੋਲ੍ਹੋ ਅਤੇ ਆਪਣੇ Apple ਖਾਤੇ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ।"
           }
         },
         "pl" : {
@@ -33920,7 +33920,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "సెట్టింగ్‌లలో మీ Apple ఖాతా ను నిర్ధారించండి సింక్‌ని కొనసాగించడానికి."
+            "value" : "సింక్ కొనసాగించడానికి సెట్టింగ్‌లు తెరిచి, మీ Apple ఖాతాను నిర్ధారించండి."
           }
         },
         "th" : {
@@ -33944,7 +33944,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ترتیبات کھولیں اور اپنا Apple اکاؤنٹ تصدیق کریں تاکہ سنک دوبارہ شروع ہو۔"
+            "value" : "سنک دوبارہ شروع کرنے کے لیے ترتیبات کھولیں اور اپنے Apple اکاؤنٹ کی تصدیق کریں۔"
           }
         },
         "vi" : {
@@ -33956,13 +33956,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "打开设置，确认您的 Apple 账户以恢复同步"
+            "value" : "打开“设置”并确认你的 Apple 账户，即可恢复同步。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "開啟設定並確認您的 Apple 帳號以繼續同步。"
+            "value" : "打開「設定」並確認你的 Apple 帳號，即可繼續同步。"
           }
         }
       }
@@ -34124,7 +34124,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "체크리스트가 이 기기에만 저장됩니다. 앱을 다시 시작하여 iCloud 동기화를 다시 시도하세요."
+            "value" : "체크리스트가 이 기기에만 저장돼요. iCloud 동기화를 다시 시도하려면 앱을 다시 시작하세요."
           }
         },
         "ml" : {
@@ -34172,7 +34172,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twoje listy kontrolne są zapisywane tylko na tym urządzeniu. Uruchom aplikację ponownie, aby ponowić synchronizację iCloud."
+            "value" : "Twoje listy kontrolne są zapisywane tylko na tym urządzeniu. Uruchom aplikację ponownie, aby wznowić synchronizację iCloud."
           }
         },
         "pt-BR" : {
@@ -34262,7 +34262,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "您的清单仅保存在此设备上。重启应用以重试 iCloud 同步。"
+            "value" : "你的清单仅保存在此设备上。重新启动 App 即可重试 iCloud 同步。"
           }
         },
         "zh-Hant" : {
@@ -34280,7 +34280,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تم تعطيل iCloud على هذا الجهاز من قبل Screen Time أو مؤسستك. قوائمك محفوظة على هذا الجهاز فقط."
+            "value" : "أُوقف iCloud على هذا الجهاز بواسطة مدة استخدام الجهاز أو مؤسستك. تُحفظ قوائمك على هذا الجهاز فقط."
           }
         },
         "bn" : {
@@ -34430,19 +34430,19 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 기기에서 Screen Time이나 조직에 의해 iCloud가 꺼져 있어요. 체크리스트는 이 기기에만 저장돼요."
+            "value" : "스크린 타임이나 조직 관리로 인해 이 기기에서 iCloud가 꺼져 있어요. 체크리스트는 이 기기에만 저장돼요."
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud ഈ ഡിവൈസിൽ Screen Time അല്ലെങ്കിൽ നിങ്ങളുടെ സ്ഥാപനം വഴി അപ്പ് ചെയ്തിരിക്കുന്നു. നിങ്ങളുടെ checklists ഈ ഡിവൈസിൽ മാത്രം സംരക്ഷിച്ചിരിക്കുന്നു."
+            "value" : "Screen Time അല്ലെങ്കിൽ നിങ്ങളുടെ സ്ഥാപനം ഈ ഉപകരണത്തിൽ iCloud ഓഫാക്കിയിരിക്കുന്നു. നിങ്ങളുടെ ചെക്ക്‌ലിസ്റ്റുകൾ ഈ ഉപകരണത്തിൽ മാത്രമാണ് സേവ് ചെയ്തിരിക്കുന്നത്."
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "या डिव्हाइसवर iCloud Screen Time किंवा आपल्या संस्थेने बंद केले आहे. आपली checklists केवळ या डिव्हाइसवर सेव केली आहेत."
+            "value" : "स्क्रीन टाइम किंवा तुमच्या संस्थेने या डिव्हाइसवर iCloud बंद केले आहे. तुमच्या चेकलिस्ट फक्त या डिव्हाइसवर सेव्ह आहेत."
           }
         },
         "ms" : {
@@ -34466,7 +34466,7 @@
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Screen Time ବା ଆପଣଙ୍କ ସଂସ୍ଥା ଦ୍ୱାରା ଏହି ଡିଭାଇସରେ iCloud ବନ୍ଦ ଅଛି। ଆପଣଙ୍କ checklists କେବଳ ଏହି ଡିଭାଇସରେ ସଂରକ୍ଷିତ।"
+            "value" : "Screen Time କିମ୍ବା ଆପଣଙ୍କ ସଂସ୍ଥା ଏହି ଡିଭାଇସରେ iCloud ବନ୍ଦ କରିଛି। ଆପଣଙ୍କ ଚେକଲିଷ୍ଟଗୁଡ଼ିକ କେବଳ ଏହି ଡିଭାଇସରେ ସେଭ୍ ହୋଇଛି।"
           }
         },
         "pa" : {
@@ -34478,13 +34478,13 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud jest wyłączony na tym urządzeniu przez Screen Time lub organizację. Listy są zapisane tylko na tym urządzeniu."
+            "value" : "Usługa iCloud jest wyłączona na tym urządzeniu przez Czas przed ekranem lub Twoją organizację. Twoje listy kontrolne są zapisywane tylko na tym urządzeniu."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O iCloud foi desativado neste dispositivo por Tempo de Tela ou sua organização. Suas listas de verificação são salvas apenas neste dispositivo."
+            "value" : "O iCloud foi desativado neste dispositivo pelo Tempo de Uso ou pela sua organização. Suas listas estão salvas apenas neste dispositivo."
           }
         },
         "pt-PT" : {
@@ -34538,7 +34538,7 @@
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud ถูกปิดใช้งานบนอุปกรณ์นี้โดย Screen Time หรือองค์กรของคุณ รายการตรวจสอบของคุณถูกบันทึกไว้บนอุปกรณ์นี้เท่านั้น"
+            "value" : "iCloud ถูกปิดในอุปกรณ์นี้โดยเวลาหน้าจอหรือองค์กรของคุณ เช็คลิสต์ของคุณบันทึกไว้ในอุปกรณ์นี้เท่านั้น"
           }
         },
         "tr" : {
@@ -34562,19 +34562,19 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud đã bị tắt trên thiết bị này bởi Screen Time hoặc tổ chức của bạn. Các danh sách của bạn chỉ được lưu trên thiết bị này."
+            "value" : "Thời gian sử dụng hoặc tổ chức của bạn đã tắt iCloud trên thiết bị này. Các danh sách kiểm tra của bạn chỉ được lưu trên thiết bị này."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud 被屏幕使用时间或您的组织关闭。您的清单仅保存在此设备。"
+            "value" : "“屏幕使用时间”或你所在的机构已在此设备上关闭 iCloud。你的清单仅保存在此设备上。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud 已由螢幕使用時間或您的組織在此裝置上關閉。您的檢查清單只儲存在此裝置上。"
+            "value" : "「螢幕使用時間」或你的機構已在這部裝置上關閉 iCloud。你的清單僅儲存在這部裝置上。"
           }
         }
       }
@@ -34694,7 +34694,7 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "सेटिंग्ज़ में iCloud स्टोरेज को खाली करके सिंक दोबारा शुरू करें। आपकी चेकलिस्ट्स इस डिवाइस पर सहेजी गई हैं।"
+            "value" : "सिंक फिर से शुरू करने के लिए सेटिंग्ज़ में iCloud स्टोरेज खाली करें। आपकी चेकलिस्ट इस डिवाइस पर सहेजी हुई हैं।"
           }
         },
         "hr" : {
@@ -34730,7 +34730,7 @@
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ iCloud ಸ್ಟೋರೇಜ್ ಖಾಲಿ ಮಾಡಿ ಸಿಂಕ್ ಮುಂದುವರೆಸಲು. ನಿಮ್ಮ ಚೆಕ್‌ಲಿಸ್ಟ್‌ಗಳು ಈ ಸಾಧನದಲ್ಲಿ ಸುರಕ್ಷಿತವಾಗಿವೆ."
+            "value" : "ಸಿಂಕ್ ಮುಂದುವರಿಸಲು ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ iCloud ಸಂಗ್ರಹಣೆಯಲ್ಲಿ ಸ್ಥಳಾವಕಾಶ ಮಾಡಿ. ನಿಮ್ಮ ಚೆಕ್‌ಲಿಸ್ಟ್‌ಗಳನ್ನು ಈ ಸಾಧನದಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ."
           }
         },
         "ko" : {
@@ -34742,13 +34742,13 @@
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ക്രമീകരണങ്ങളിൽ iCloud സ്റ്റോറേജ് കൊതിയില്ലാതാക്കുക സിങ്ക് പുനരാരംഭിക്കാൻ. നിങ്ങളുടെ checklists ഈ ഡിവൈസിൽ സംരക്ഷിച്ചിരിക്കുന്നു."
+            "value" : "സിങ്ക് തുടരാൻ ക്രമീകരണങ്ങളിൽ പോയി iCloud സ്റ്റോറേജിൽ ഇടം ഒഴിവാക്കുക. നിങ്ങളുടെ ചെക്ക്‌ലിസ്റ്റുകൾ ഈ ഉപകരണത്തിൽ സേവ് ചെയ്തിട്ടുണ്ട്."
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "सेटिंग्ज मध्ये iCloud स्टोरेज मुक्त करा आणि सिंक पुन्हा सुरू करा. आपली checklists या डिव्हाइसवर सेव केली आहेत."
+            "value" : "सिंक पुन्हा सुरू करण्यासाठी सेटिंग्जमध्ये iCloud स्टोरेज मोकळे करा. तुमच्या चेकलिस्ट या डिव्हाइसवर सेव्ह आहेत."
           }
         },
         "ms" : {
@@ -34772,7 +34772,7 @@
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ସିଙ୍କ୍ ଚାଲୁ ରଖିବାକୁ ସେଟିଙ୍ଗ୍ସରେ iCloud ସଂରକ୍ଷଣ ଖାଲି କରନ୍ତୁ। ଆପଣଙ୍କ checklists ଏହି ଡିଭାଇସରେ ସଂରକ୍ଷିତ।"
+            "value" : "ସିଙ୍କ୍ ପୁଣି ଆରମ୍ଭ କରିବାକୁ ସେଟିଙ୍ଗ୍ସରେ iCloud ଷ୍ଟୋରେଜ୍ ଖାଲି କରନ୍ତୁ। ଆପଣଙ୍କ ଚେକଲିଷ୍ଟଗୁଡ଼ିକ ଏହି ଡିଭାଇସରେ ସେଭ୍ ହୋଇଛି।"
           }
         },
         "pa" : {
@@ -34790,7 +34790,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Libere espaço do iCloud em Ajustes para retomar a sincronização. Suas listas de verificação são salvas neste dispositivo."
+            "value" : "Libere espaço no iCloud em Ajustes para retomar a sincronização. Suas listas estão salvas neste dispositivo."
           }
         },
         "pt-PT" : {
@@ -34832,19 +34832,19 @@
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "அமைப்புகளில் iCloud சேமிப்பிடத்தை வெளியிட்டு ஒத்திசைவை மீண்டும் தொடங்கவும். உங்கள் பட்டியல்கள் இந்த சாதனத்தில் சேமிக்கப்பட்டுள்ளன."
+            "value" : "ஒத்திசைவைத் தொடர, அமைப்புகளில் iCloud சேமிப்பகத்தில் இடத்தைக் காலியாக்கவும். உங்கள் செக்லிஸ்ட்டுகள் இந்தச் சாதனத்தில் சேமிக்கப்பட்டுள்ளன."
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "సింక్‌ని కొనసాగించడానికి సెట్టింగ్‌లలో iCloud సంగ్రహణను విడిపించండి. మీ చెక్‌లిస్ట్‌లు ఈ ఉపకరణంపై సేవ్ చేయబడ్డాయి."
+            "value" : "సింక్ కొనసాగించడానికి సెట్టింగ్‌లలో iCloud స్టోరేజ్‌లో కొంత స్థలం ఖాళీ చేయండి. మీ చెక్‌లిస్ట్‌లు ఈ పరికరంలో సేవ్ అయ్యి ఉన్నాయి."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เพิ่มพื้นที่เก็บข้อมูล iCloud ในการตั้งค่าเพื่อเริ่มซิงค์อีกครั้ง รายการตรวจสอบของคุณถูกบันทึกไว้บนอุปกรณ์นี้"
+            "value" : "เพิ่มพื้นที่ว่างใน iCloud ได้ในการตั้งค่าเพื่อซิงค์ต่อ เช็คลิสต์ของคุณบันทึกไว้ในอุปกรณ์นี้แล้ว"
           }
         },
         "tr" : {
@@ -34880,7 +34880,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在設定中釋放 iCloud 儲存空間以繼續同步。您的檢查清單已儲存在此裝置上。"
+            "value" : "在「設定」中釋放 iCloud 儲存空間，即可繼續同步。你的清單已儲存在這部裝置上。"
           }
         }
       }
@@ -34910,7 +34910,7 @@
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaše kontrolní seznamy jsou uložené v tomto zařízení a synchronizace se bude dál pokoušet o obnovení. Pokud problém přetrvá, odešlete zpětnou vazbu z nabídky."
+            "value" : "Vaše seznamy jsou uložené v tomto zařízení a synchronizace se bude dál opakovat. Pokud problém nezmizí, odešlete zpětnou vazbu z nabídky."
           }
         },
         "da" : {
@@ -34970,7 +34970,7 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Luettelosi on tallennettu tähän laitteeseen, ja synkronointi yritetään uudelleen. Jos tilanne ei selviä, lähetä palautetta valikosta."
+            "value" : "Listasi ovat tallessa tällä laitteella, ja synkronointia yritetään yhä uudelleen. Jos ongelma ei poistu, lähetä palautetta valikosta."
           }
         },
         "fr" : {
@@ -35006,7 +35006,7 @@
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaši kontrolni popisi spremljeni su na ovom uređaju, a sinkronizacija će se nastaviti pokušavati. Ako se ovo ne riješi, pošaljite povratne informacije iz izbornika."
+            "value" : "Vaši su popisi spremljeni na ovom uređaju, a sinkronizacija će se i dalje pokušavati. Ako se problem ne riješi, pošaljite povratne informacije iz izbornika."
           }
         },
         "hu" : {
@@ -35036,7 +35036,7 @@
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ನಿಮ್ಮ ಚೆಕ್‌ಲಿಸ್ಟ್‌ಗಳು ಈ ಸಾಧನದಲ್ಲಿ ಸುರಕ್ಷಿತವಾಗಿವೆ, ಮತ್ತು ಸಿಂಕ್ ಮರುಪ್ರಯತ್ನ ಮಾಡುವುದನ್ನು ಮುಂದುವರೆಸುವುದು. ಇದು ಸರಿಯಾಗದಿದ್ದರೆ, ಮೆನುವಿನಿಂದ ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ."
+            "value" : "ನಿಮ್ಮ ಚೆಕ್‌ಲಿಸ್ಟ್‌ಗಳನ್ನು ಈ ಸಾಧನದಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ, ಮತ್ತು ಸಿಂಕ್ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸುತ್ತಲೇ ಇರುತ್ತದೆ. ಇದು ಸರಿಹೋಗದಿದ್ದರೆ, ಮೆನುವಿನಿಂದ ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ."
           }
         },
         "ko" : {
@@ -35048,13 +35048,13 @@
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "നിങ്ങളുടെ checklists ഈ ഡിവൈസിൽ സംരക്ഷിച്ചിരിക്കുന്നു, സിങ്ക് പുനരാവൃത്തി ശ്രമിച്ചുകൊണ്ടിരിക്കും. പരിഹരിക്കുന്നില്ലെങ്കിൽ, മെനുവിൽ നിന്ന് ഫീഡ്‌ബാക്ക് അയയ്ക്കുക."
+            "value" : "നിങ്ങളുടെ ചെക്ക്‌ലിസ്റ്റുകൾ ഈ ഉപകരണത്തിൽ സേവ് ചെയ്തിട്ടുണ്ട്, സിങ്ക് വീണ്ടും ശ്രമിച്ചുകൊണ്ടിരിക്കും. ഇത് ശരിയാകുന്നില്ലെങ്കിൽ, മെനുവിൽ നിന്ന് ഫീഡ്‌ബാക്ക് അയയ്ക്കുക."
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आपली checklists या डिव्हाइसवर सेव केली आहेत आणि सिंक पुन्हा प्रयत्न करत राहील. जर हे सुधारले नाही, तर मेनूतून अभिप्राय पाठवा."
+            "value" : "तुमच्या चेकलिस्ट या डिव्हाइसवर सेव्ह आहेत आणि सिंक पुन्हा प्रयत्न करत राहील. हे दुरुस्त झाले नाही, तर मेनूमधून अभिप्राय पाठवा."
           }
         },
         "ms" : {
@@ -35078,7 +35078,7 @@
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଆପଣଙ୍କ checklists ଏହି ଡିଭାଇସରେ ସଂରକ୍ଷିତ ଏବଂ ସିଙ୍କ୍ ବାରଂବାର ଚେଷ୍ଟା ଜାରି ରଖିବ। ଯଦି ଏହା ସମାଧାନ ନ ହୁଏ, ମେନୁ ଠାରୁ ମତାମତ ପଠାନ୍ତୁ।"
+            "value" : "ଆପଣଙ୍କ ଚେକଲିଷ୍ଟଗୁଡ଼ିକ ଏହି ଡିଭାଇସରେ ସେଭ୍ ହୋଇଛି, ଏବଂ ସିଙ୍କ୍ ପୁଣି ଚେଷ୍ଟା କରୁଥିବ। ଯଦି ଏହା ଠିକ୍ ନହୁଏ, ମେନୁରୁ ମତାମତ ପଠାନ୍ତୁ।"
           }
         },
         "pa" : {
@@ -35096,7 +35096,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suas listas de verificação são salvas neste dispositivo, e a sincronização continuará tentando. Se isso não se resolver, envie feedback pelo menu."
+            "value" : "Suas listas estão salvas neste dispositivo, e o app continuará tentando sincronizar. Se isso não se resolver, envie feedback pelo menu."
           }
         },
         "pt-PT" : {
@@ -35126,7 +35126,7 @@
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaši kontrolni seznami so shranjeni na tej napravi, sinhronizacija pa se bo še naprej poskušala izvesti. Če se težava ne odpravi, pošljite povratne informacije prek menija."
+            "value" : "Vaši seznami so shranjeni v tej napravi, poskusi sinhronizacije pa se bodo nadaljevali. Če težava ne izgine, pošljite povratne informacije iz menija."
           }
         },
         "sv" : {
@@ -35138,19 +35138,19 @@
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "உங்கள் பட்டியல்கள் இந்த சாதனத்தில் சேமிக்கப்பட்டுள்ளன, மேலும் ஒத்திசைவு மீண்டும் முயலும். சரிசெய்யாவிட்டால், மெனுவில் இருந்து கருத்தை அனுப்புங்கள்."
+            "value" : "உங்கள் செக்லிஸ்ட்டுகள் இந்தச் சாதனத்தில் சேமிக்கப்பட்டுள்ளன, ஒத்திசைவு தொடர்ந்து மீண்டும் முயலும். இது சரியாகவில்லை என்றால், மெனுவிலிருந்து கருத்தை அனுப்பவும்."
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "మీ చెక్‌లిస్ట్‌లు ఈ ఉపకరణంపై సేవ్ చేయబడ్డాయి మరియు సింక్ కొనసాగుతుంది. ఇది క్లియర్ కాకపోతే, మెనూ నుండి ఫీడ్‌బ్యాక్ పంపండి."
+            "value" : "మీ చెక్‌లిస్ట్‌లు ఈ పరికరంలో సేవ్ అయ్యి ఉన్నాయి, సింక్ మళ్లీ ప్రయత్నిస్తూనే ఉంటుంది. ఇది సరి కాకపోతే, మెనూ నుండి ఫీడ్‌బ్యాక్ పంపండి."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "รายการตรวจสอบของคุณถูกบันทึกไว้บนอุปกรณ์นี้ และจะพยายามซิงค์ต่อไป หากปัญหายังไม่แก้ไข ส่งข้อเสนอแนะจากเมนู"
+            "value" : "เช็คลิสต์ของคุณบันทึกไว้ในอุปกรณ์นี้แล้ว และระบบจะลองซิงค์ใหม่ต่อไป หากปัญหายังไม่หายไป โปรดส่งข้อเสนอแนะจากเมนู"
           }
         },
         "tr" : {
@@ -35180,13 +35180,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "您的清单已保存在此设备，同步会继续重试。如果问题未解决，请从菜单发送反馈。"
+            "value" : "你的清单已保存在此设备上，同步会持续重试。如果问题仍未解决，请从菜单中发送反馈。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "您的檢查清單已儲存在此裝置上，同步會持續重試。如果問題仍未解決，請從選單傳送意見回饋。"
+            "value" : "你的清單已儲存在這部裝置上，同步會持續重試。若問題仍未解決，請從選單傳送意見回饋。"
           }
         }
       }
@@ -35486,7 +35486,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在设置中登录 iCloud 以在设备间同步您的清单。"
+            "value" : "在“设置”中登录 iCloud，即可在各台设备间同步你的清单。"
           }
         },
         "zh-Hant" : {
@@ -35918,7 +35918,7 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud को ध्यान चाहिए"
+            "value" : "iCloud पर ध्यान देने की ज़रूरत है"
           }
         },
         "hr" : {
@@ -36068,7 +36068,7 @@
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud ต้องการความสนใจ"
+            "value" : "iCloud ต้องได้รับการตรวจสอบ"
           }
         },
         "tr" : {
@@ -36086,7 +36086,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud کو توجہ درکار ہے"
+            "value" : "آپ کے iCloud کو توجہ درکار ہے"
           }
         },
         "vi" : {
@@ -36302,7 +36302,7 @@
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud ସିଙ୍କ୍ ବନ୍ଦ"
+            "value" : "iCloud ସିଙ୍କ୍ ସ୍ଥଗିତ"
           }
         },
         "pa" : {
@@ -36392,7 +36392,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud سنک موقوف"
+            "value" : "آپ کا iCloud سنک موقوف ہے"
           }
         },
         "vi" : {
@@ -36578,7 +36578,7 @@
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud നിരോധിത"
+            "value" : "iCloud നിയന്ത്രിതം"
           }
         },
         "mr" : {
@@ -36668,13 +36668,13 @@
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud பரிமிதம்"
+            "value" : "iCloud கட்டுப்படுத்தப்பட்டுள்ளது"
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud నిషేధించబడింది"
+            "value" : "iCloud పరిమితం చేయబడింది"
           }
         },
         "th" : {
@@ -36698,7 +36698,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud محدود"
+            "value" : "آپ کا iCloud محدود ہے"
           }
         },
         "vi" : {
@@ -36926,7 +36926,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Magazyn iCloud pełny"
+            "value" : "Pamięć iCloud jest pełna"
           }
         },
         "pt-BR" : {
@@ -36980,7 +36980,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud సంగ్రహణ నిండిపోయింది"
+            "value" : "iCloud స్టోరేజ్ నిండింది"
           }
         },
         "th" : {
@@ -37004,7 +37004,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud اسٹوریج بھری"
+            "value" : "آپ کی iCloud اسٹوریج بھر گئی ہے"
           }
         },
         "vi" : {
@@ -37172,7 +37172,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "同期が中断"
+            "value" : "iCloud同期が中断されました"
           }
         },
         "kn" : {
@@ -37226,7 +37226,7 @@
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud ਸਿੰਕ ਰੁਕੀ"
+            "value" : "iCloud ਸਿੰਕ ਵਿੱਚ ਵਿਘਨ"
           }
         },
         "pl" : {
@@ -37310,7 +37310,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud سنک منقطع"
+            "value" : "آپ کے iCloud سنک میں خلل آ گیا"
           }
         },
         "vi" : {
@@ -37616,7 +37616,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud دستیاب نہیں"
+            "value" : "اس ڈیوائس پر iCloud دستیاب نہیں"
           }
         },
         "vi" : {
@@ -38294,7 +38294,7 @@
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Η αποθήκευση απέτυχε. Ο χώρος αποθήκευσης της συσκευής σας μπορεί να είναι χαμηλός."
+            "value" : "Η αποθήκευση απέτυχε. Ίσως η συσκευή σας να μην έχει αρκετό χώρο."
           }
         },
         "en" : {
@@ -38324,7 +38324,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Error al guardar. Tu móvil podría estar lleno."
+            "value" : "No se ha podido guardar. Puede que tu dispositivo tenga poco espacio."
           }
         },
         "es-MX" : {
@@ -38402,19 +38402,19 @@
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಉಳಿಸಲಾಗಲಿಲ್ಲ. ನಿಮ್ಮ ಸಾಧನವು ಸ್ಪೇಸ್‌ನಲ್ಲಿ ಕಡಿಮೆ ಆಗಿರಬಹುದು."
+            "value" : "ಉಳಿಸಲು ಆಗಲಿಲ್ಲ. ನಿಮ್ಮ ಸಾಧನದಲ್ಲಿ ಸಂಗ್ರಹಣೆ ಕಡಿಮೆ ಇರಬಹುದು."
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "저장 실패. 저장공간이 부족할 수 있습니다."
+            "value" : "저장하지 못했어요. 기기 저장 공간이 부족할 수 있어요."
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "സംരക്ഷണം പരാജയപ്പെട്ടു. നിങ്ങളുടെ ഉപകരണത്തിന് സ്ഥലം കുറവായിരിക്കാം."
+            "value" : "സേവ് ചെയ്യാനായില്ല. നിങ്ങളുടെ ഉപകരണത്തിൽ സ്റ്റോറേജ് കുറവായിരിക്കാം."
           }
         },
         "mr" : {
@@ -38456,7 +38456,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nie zapisano. Urządzenie może mieć brak miejsca."
+            "value" : "Nie udało się zapisać. Na urządzeniu może brakować miejsca."
           }
         },
         "pt-BR" : {
@@ -38474,7 +38474,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Salvarea a eșuat. Este posibil ca dispozitivul să aibă spațiu de stocare insuficient."
+            "value" : "Salvarea a eșuat. Dispozitivul poate avea spațiu de stocare redus."
           }
         },
         "ru" : {
@@ -38498,7 +38498,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sparningen misslyckades. Din enhet kan ha lågt lagringsutrymme."
+            "value" : "Kunde inte spara. Din enhet kan ha ont om lagringsutrymme."
           }
         },
         "ta" : {
