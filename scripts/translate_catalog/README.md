@@ -31,7 +31,8 @@ is the authority for *when and how to invoke them*, and owns the step-by-step fl
 No dependencies beyond Python 3 stdlib.
 
 The per-locale register notes (`REGIONAL_NOTES` here, `CULTURAL_NOTES` in the metadata
-pipeline) are duplicated on purpose: `localization-spec.md §Running the pipelines`.
+pipeline) are duplicated on purpose: `localization-spec.md §Running the pipelines`. Each note
+records that locale's form of address, decided under `localization-spec.md §Register`.
 
 ## Full backfill
 

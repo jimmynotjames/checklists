@@ -16,7 +16,8 @@ code systems**:
 `metadata_locales.py` owns the `runtime → storefront` mapping so the two stay in lockstep.
 
 The per-storefront register notes (`CULTURAL_NOTES` here, `REGIONAL_NOTES` in the in-app
-pipeline) are duplicated on purpose: `localization-spec.md §Running the pipelines`.
+pipeline) are duplicated on purpose: `localization-spec.md §Running the pipelines`. Each note
+records that storefront's form of address, decided under `localization-spec.md §Register`.
 
 ## What it translates
 
