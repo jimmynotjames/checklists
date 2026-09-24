@@ -1,1 +1,1 @@
-ismétlődő,checklist,lista,csomagolás,bevásárlás,pakolás,utazás,rutin,visszatérő
+bevásárlólista,pakolólista,ismétlődő,checklist,lista,csomagolás,rutin,utazás,visszatérő

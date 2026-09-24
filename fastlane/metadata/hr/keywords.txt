@@ -1,1 +1,1 @@
-checklist,kontrolna,popis,pakiranje,kupovina,namirnice,putovanje,rutina,ponovno,provjera,kofer
+checklist,kontrolna,lista,popis,ponavljanje,pakiranje,kupovina,kupnja,namirnice,putovanje,rutina

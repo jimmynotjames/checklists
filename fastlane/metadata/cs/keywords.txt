@@ -1,1 +1,1 @@
-checklist,kontrolní,opakování,balení,nákupní,cestování,rutina,zaškrtávací,výlet
+seznam,kontrolní,nákupní,balení,opakovaný,znovu,rutina,zaškrtávací,výlet,cestování
