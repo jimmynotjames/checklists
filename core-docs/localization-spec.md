@@ -129,15 +129,13 @@ The principle every locale's form of address follows:
 > the respectful norm.
 
 Audience age is not the test: the reader might be anyone's grandmother, and the app speaks to her
-the way a well-made mainstream app in her language does. So `de`, `nl`, the Nordics and `es` say
-*du*/*je*/*tú*, while `fr`, `ru`, `cs`, `tr` and the Indic languages keep the polite form.
+the way a well-made mainstream app in her language does.
 
 The call is made **once per locale, by Opus**, and written into that locale's note (see below) as
 the concrete form (*vous*, *vy*, 해요체) plus where warmth comes from instead. Translators follow the
 note; they never re-decide it string by string, which is how a locale ends up mixing both forms.
 The recurring failure is system text (error messages, Settings footers, VoiceOver hints) drifting
-formal, so the prompts name it. `_GENERIC_NOTE` carries the principle only for a locale added
-before its note is written.
+formal, so the prompts name it. Short button labels are exempt: they keep the glossary's form.
 
 The `sample.*` lists are the exception: they are someone's own notes to self, so nobody is being
 addressed and the note's form of address doesn't apply.
@@ -153,8 +151,7 @@ addressed and the note's form of address doesn't apply.
   `translate_catalog/dispatch_prompts.py` and `CULTURAL_NOTES` in
   `translate_metadata/dispatch_prompts.py` are separate because in-app and marketing register are
   different decisions — not a DRY violation to fix. But change a locale's formality call in both, or
-  the app and its listing address the same person two different ways. The call itself follows
-  §Register.
+  the app and its listing address the same person two different ways.
 - **No ad-hoc Python.** Every step, inspection included, is a flag on a pipeline script. Reaching
   for `python3 -c` or a throwaway `tmp/*.py` means a script is missing a flag: extend the script, so
   the permission surface stays narrow and the next run gets the primitive too.
