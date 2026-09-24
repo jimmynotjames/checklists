@@ -34874,7 +34874,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在设置中释放 iCloud 存储以恢复同步。您的清单已保存在此设备。"
+            "value" : "在“设置”中释放 iCloud 储存空间即可恢复同步。你的清单已保存在此设备上。"
           }
         },
         "zh-Hant" : {
