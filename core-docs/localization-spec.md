@@ -119,6 +119,27 @@ done — because the screenshot seeds and the parity check depend on it.
 The glossary (`scripts/translate_catalog/glossary.json`) keeps recurring terms consistent across
 locales and protects `reChecklist` and `iCloud` from being translated.
 
+### Register
+
+The principle every locale's form of address follows:
+
+> The voice is modern and respectful: current and unfussy, never stiff or old-fashioned, and never
+> so casual that it would sound flippant to an older reader. Use the informal address where people
+> of every generation would expect it from a modern app, and the polite form where that is still
+> the respectful norm.
+
+Audience age is not the test: the reader might be anyone's grandmother, and the app speaks to her
+the way a well-made mainstream app in her language does.
+
+The call is made **once per locale, by Opus**, and written into that locale's note (see below) as
+the concrete form (*vous*, *vy*, 해요체) plus where warmth comes from instead. Translators follow the
+note; they never re-decide it string by string, which is how a locale ends up mixing both forms.
+The recurring failure is system text (error messages, Settings footers, VoiceOver hints) drifting
+formal, so the prompts name it. Short button labels are exempt: they keep the glossary's form.
+
+The `sample.*` lists are the exception: they are someone's own notes to self, so nobody is being
+addressed and the note's form of address doesn't apply.
+
 ---
 
 ## Running the pipelines
