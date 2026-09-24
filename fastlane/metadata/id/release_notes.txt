@@ -1,1 +1,1 @@
-Menambahkan indikator persentase agar progres langsung terlihat sekilas.
+Kini ada indikator persentase selesai, jadi Anda bisa melihat progres dalam sekilas.

@@ -1,1 +1,1 @@
-Cada lista passa a mostrar a percentagem concluída, para veres o progresso num relance.
+Adicionámos indicadores de percentagem concluída para acompanhar o progresso num relance.

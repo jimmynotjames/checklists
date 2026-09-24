@@ -1,1 +1,1 @@
-İlerlemeni tek bakışta görebilmen için yüzde göstergeleri eklendi.
+Tamamlanma yüzdesi göstergeleri eklendi; ilerlemenizi bir bakışta görün.

@@ -1,1 +1,1 @@
-checklist,yeniden,bavul,valiz,seyahat,alışveriş,market,rutin,hazırlık,kamp,gezi,eşya,tatil
+checklist,liste,tekrar,tekrarlayan,bavul,valiz,seyahat,alışveriş,market,rutin,hazırlık,sabah
