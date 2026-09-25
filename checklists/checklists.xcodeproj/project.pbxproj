@@ -68,6 +68,7 @@
 		A48CA796304F04F70048D9AF /* Exceptions for "checklistsUITests" folder in "checklistsUITests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				FLAKY_TESTS.md,
 				Info.plist,
 			);
 			target = 323ADC8A22828C0C00644931 /* checklistsUITests */;

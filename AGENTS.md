@@ -97,6 +97,12 @@ xcrun xcresulttool get test-results summary --path "$R"   # swap summary -> test
 
 Don't read pass/fail from `tmp/gate.log` or a stale console tail.
 
+Both test scripts end with one `TEST-FAILED: <test> <file:line> <text>` line per failure
+(`scripts/list_test_failures.py`). A test that fails in a full run but passes an isolated rerun
+(`-only-testing:<target>/<Class>/<test> -test-iterations 3`, destination and derived data from
+`scripts/_destination.sh`) is flaky: append a row to `checklists/checklistsUITests/FLAKY_TESTS.md`,
+name the flake in your report, and don't fix it in passing.
+
 ## Lint policy
 
 Gate and pre-commit format and strict-lint **changed Swift files only**
