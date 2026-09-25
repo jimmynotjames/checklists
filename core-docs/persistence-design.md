@@ -128,9 +128,8 @@ or either history stamp**, since all three describe something that happened to t
 being run, and nothing has been run on the copy yet.
 
 Worth knowing from here: checklist duplication saves the whole graph once and removes the
-half-built copy if that save fails — see §Save failures. The list's Edit mode duplicates a selection
-through `ChecklistBulkActions.swift`: one save per copy, stopping at the first failure, so copies
-made before it stay.
+half-built copy if that save fails — see §Save failures. Edit mode's bulk duplicate is
+`ModelContext.duplicateChecklists(ids:)`, whose doc comment covers its partial-failure behaviour.
 
 ## Startup and failure UX
 

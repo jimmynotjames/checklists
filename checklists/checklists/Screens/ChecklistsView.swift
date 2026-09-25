@@ -484,21 +484,25 @@ struct ChecklistsView: View {
   private func perform(_ action: ChecklistsBulkAction) {
     let ids = liveSelection
     guard !ids.isEmpty else { return }
-    switch action {
+    let didChange = switch action {
     case .delete:
-      context.deleteChecklists(ids: ids)
+      context.deleteChecklists(ids: ids) > 0
     case .duplicate:
-      context.duplicateChecklists(ids: ids)
+      context.duplicateChecklists(ids: ids) > 0
     case .reset:
       context.resetChecklists(checklists.filter { ids.contains($0.id) })
     }
-    analytics.track(
-      AnalyticsEvent.checklistsBulkActionPerformed,
-      properties: [
-        AnalyticsProperty.bulkAction: action.rawValue,
-        AnalyticsProperty.selectedCount: ids.count,
-      ]
-    )
+    // Like the single-row paths: a save that failed outright has already told the person, and
+    // nothing happened to measure.
+    if didChange {
+      analytics.track(
+        AnalyticsEvent.checklistsBulkActionPerformed,
+        properties: [
+          AnalyticsProperty.bulkAction: action.rawValue,
+          AnalyticsProperty.selectedCount: ids.count,
+        ]
+      )
+    }
     withAnimation {
       editMode = .inactive
     }
@@ -560,13 +564,11 @@ struct ChecklistsView: View {
   // MARK: Dynamic Type
 
   //
-  // The overflows these guard against showed up only in long translations, which a preview cannot
-  // force: the labels resolve through `String(localized:)`, which follows the app's language, not
-  // the preview environment. These pin the sizes either side of the icon threshold; the localized
-  // check is `translation-accessibility-size-check`.
+  // These pin the sizes either side of `barLabel`'s icon threshold, in English only: the labels
+  // resolve through `String(localized:)`, which follows the app's language, not the preview
+  // environment. The localized check is `translation-accessibility-size-check`.
 
-  // The largest size that keeps Reset All's words. At xxxLarge with words, German and Tamil pushed
-  // Edit into the nav bar's "•••" menu (Tamil lost Reset All too).
+  // The largest size that keeps Reset All's words.
   #Preview("Nav bar, xLarge: last size with words") {
     NavigationStack {
       ChecklistsView()
@@ -584,8 +586,7 @@ struct ChecklistsView: View {
     .dynamicTypeSize(.xxLarge)
   }
 
-  // The largest size that keeps the toolbar's words. At xxxLarge with words, German and Russian
-  // pushed Delete and Reset past the screen edges.
+  // The largest size that keeps the toolbar's words.
   #Preview("Edit mode, xLarge: last size with words") {
     NavigationStack {
       ChecklistsView(editingWith: [SampleData.morningRoutineId])

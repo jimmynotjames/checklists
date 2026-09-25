@@ -64,7 +64,6 @@ struct ChecklistBulkActionsTests {
     #expect(order[0].id == lists[0].id)
     #expect(order[2].id == lists[1].id)
     #expect(order[4].id == lists[2].id)
-    // The copies sit between them.
     #expect(order[1].name.contains("A"))
     #expect(order[3].name.contains("B"))
   }

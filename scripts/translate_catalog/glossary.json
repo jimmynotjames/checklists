@@ -1096,7 +1096,7 @@
       }
     },
     "Reset": {
-      "context": "Imperative verb: uncheck every item in ONE checklist so the list can be run again. It clears progress only — it never deletes the checklist, its items, or any text. Traps: NOT 'factory reset', NOT 'reset password', NOT 'restore defaults', NOT 'delete'. Choose a base form that composes cleanly into 'Reset All'.",
+      "context": "Imperative verb: uncheck every item in one or more checklists so they can be run again. It clears progress only — it never deletes the checklist, its items, or any text. Traps: NOT 'factory reset', NOT 'reset password', NOT 'restore defaults', NOT 'delete'. Choose a base form that composes cleanly into 'Reset All'.",
       "en": "Reset",
       "partOfSpeech": "verb",
       "sourceKeys": [
