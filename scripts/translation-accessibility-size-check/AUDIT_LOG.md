@@ -51,3 +51,27 @@ failure:
 - The analytics consent sheet did not appear in any of the 13, so there are no
   `04a-consent` shots in this run. The capture handles it by presence, so a
   future run in a strict region will pick it up without a code change.
+
+### 2026-09-25 — Checklists list Edit mode
+
+Three runs, each 91 screenshots: 13 locales × 7 screens, `.xxxLarge`. Screen 05 is now the list in
+Edit mode (one row selected) instead of the removed reset popover.
+
+**First run: two faults, both from long words at `.xxxLarge`.**
+
+1. The nav bar's "Reset All" and "Edit" text buttons did not fit in `de` and `ta`. iOS moved the
+   overflow into a "•••" menu, hiding Edit in `de` and both in `ta`, so the capture could not
+   reach Edit mode there.
+2. The Edit mode toolbar (Delete · Duplicate · Reset) was wider than the screen in `de` and `ru`,
+   clipping Delete and Reset at the edges. `ja` spaced the three unevenly.
+
+**Fix:** from `.xxLarge` up, Reset All and the three toolbar buttons show icons in every language,
+keeping their words as the VoiceOver label and in the Large Content Viewer. Edit and Done never
+collapse. The toolbar's items are now separated by `ToolbarSpacer`s.
+
+**Final run: no layout faults.** All 13 test methods passed. Both bars fit in every locale; `ar`,
+`he` and `ur` mirror the nav bar, the selection circles and handles, and the toolbar order.
+Long checklist names truncate in Edit mode, where the handles take width; that is expected.
+
+Not covered: `.xLarge`, the largest size that keeps the words, is not captured, so `de` and `ta`
+there are unverified.

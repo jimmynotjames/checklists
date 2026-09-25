@@ -227,6 +227,8 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `checklist_items_copied` | Ticked items copied into another checklist, from the checklist menu | `destination` |
 | `checklist_reset` | All items unchecked | — |
 | `checklist_deleted` | Deleted, from the list's swipe or the checklist menu | — |
+| `checklists_edit_mode_entered` | The list's Edit button is tapped | — |
+| `checklists_bulk_action_performed` | An Edit mode toolbar action is confirmed; once per action, not per checklist; `checklist_duplicated` and `checklist_deleted` don't also fire | `bulk_action`, `selected_count` |
 | `rate_app_tapped` | "Rate in App Store" tapped | — |
 | `feedback_tapped` | "Send feedback" tapped, main menu **or** failure screen | — |
 | `privacy_policy_tapped` | The privacy policy is opened | — |
@@ -258,6 +260,8 @@ The rating-prompt events fire from `RatingPromptCoordinator`; its doc comment ha
 | `items_with_notes_count` | Int | Items with non-nil, non-empty notes |
 | `source` | String | `menu` / `swipe` |
 | `destination` | String | `new` / `existing` |
+| `bulk_action` | String | `ChecklistsBulkAction.rawValue`: `delete`, `duplicate`, `reset` |
+| `selected_count` | Int | Checklists selected when the action ran |
 | `error_domain` | String | `NSError.domain` |
 | `error_code` | Int | `NSError.code` |
 | `error_operation` | String | `PersistenceOperation.rawValue`: `checklistEdit`, `itemEdit`, `itemUpdate`, `reorder`, `delete`, `legacyImport`, `sampleSeed`, `dedupe` |
@@ -270,7 +274,7 @@ The rating-prompt events fire from `RatingPromptCoordinator`; its doc comment ha
 | `time_since_first_eligible_bucket` | String | `<1d` / `<7d` / `<30d` / `30d+` |
 
 `error_operation` values are Swift case names, so renaming a case changes the dashboards.
-`AnalyticsNamesTests` pins the value sets of `source`, `destination`, `error_operation`,
+`AnalyticsNamesTests` pins the value sets of `source`, `destination`, `bulk_action`, `error_operation`,
 `startup_stage`, `container_backing`, `icloud_account`, and `sync_operation`. 3.6 must be filtered by
 `startup_stage`, since only `store_open` offers the reset.
 

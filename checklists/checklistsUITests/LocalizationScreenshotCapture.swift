@@ -15,8 +15,8 @@ import XCTest
 /// **Depends on existing code (don't break these without updating this capture):**
 /// - The `-UITests1` launch argument and its production sample fixture (three checklists), which is
 ///   what gives every locale the same rows to photograph.
-/// - Four `.accessibilityIdentifier(...)` handles this is currently the only consumer of:
-///   `toolbar.mainMenu`, `toolbar.checklistsMenu`, `toolbar.addChecklist`, `checklistRow.delete`
+/// - The `.accessibilityIdentifier(...)` handles it navigates by: `toolbar.mainMenu`,
+///   `toolbar.edit`, `editBar.delete`, `toolbar.addChecklist`, `checklistRow.delete`
 ///   (ChecklistsView) and `mainMenu.settings` (MainMenuView). Renaming one breaks navigation here.
 /// - The row's trailing swipe reveals two buttons: `checklistRow.duplicate` beside
 ///   `checklistRow.delete`.
@@ -117,8 +117,11 @@ final class LocalizationScreenshotCapture: XCTestCase {
         || app.textViews["itemNameTextView"].firstMatch.waitForExistence(timeout: 4)
     }
 
-    capture("05-reset-menu", lang) { app in
-      self.tap(app, "toolbar.checklistsMenu")
+    capture("05-edit-mode", lang) { app in
+      guard self.tap(app, "toolbar.edit") else { return false }
+      // One row selected, so the bottom toolbar shows its enabled state.
+      app.cells.firstMatch.tap()
+      return app.buttons["editBar.delete"].waitForExistence(timeout: 8)
     }
 
     capture("06-delete-confirm", lang) { app in

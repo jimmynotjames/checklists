@@ -427,7 +427,7 @@
       }
     },
     "Checklist": {
-      "context": "The app's central domain noun: a REUSABLE list of tasks the user ticks through, then resets and runs again — not a one-off to-do list, not a form, not a survey. Pick one natural local word for this and use it everywhere, including inside compounds ('Checklist Name', 'Add new checklist', 'Checklists Menu') and in the plural. Trap: do not drift between a 'list' word in one screen and a 'checklist' loanword in another.",
+      "context": "The app's central domain noun: a REUSABLE list of tasks the user ticks through, then resets and runs again — not a one-off to-do list, not a form, not a survey. Pick one natural local word for this and use it everywhere, including inside compounds ('Checklist Name', 'Add new checklist') and in the plural. Trap: do not drift between a 'list' word in one screen and a 'checklist' loanword in another.",
       "en": "Checklist",
       "partOfSpeech": "noun",
       "sourceKeys": [
@@ -733,11 +733,10 @@
       }
     },
     "Menu": {
-      "context": "A popover of actions opened from a toolbar button — 'Checklists Menu' (checklist actions such as Reset All), 'Miscellaneous Menu' (feedback, rating, settings), and 'Close menu'. Sense: a UI menu of commands. Trap: not a restaurant menu. These are VoiceOver labels, so use the platform-standard accessibility term and keep one word across all three.",
+      "context": "A panel of actions opened from a toolbar button — 'Miscellaneous Menu' (feedback, rating, settings) and 'Close menu'. Sense: a UI menu of commands. Trap: not a restaurant menu. These are VoiceOver labels, so use the platform-standard accessibility term and keep one word across both.",
       "en": "Menu",
       "partOfSpeech": "noun",
       "sourceKeys": [
-        "checklists.menu.actions.accessibilityLabel",
         "checklists.menu.misc.accessibilityLabel",
         "mainMenu.close.accessibilityLabel"
       ],
@@ -1102,7 +1101,7 @@
       "partOfSpeech": "verb",
       "sourceKeys": [
         "checklist.action.reset",
-        "checklists.menu.actions.accessibilityLabel"
+        "checklists.action.resetSelected"
       ],
       "translations": {
         "ar": "إعادة تعيين",
@@ -1161,8 +1160,7 @@
       "en": "Reset All",
       "partOfSpeech": "verb phrase",
       "sourceKeys": [
-        "checklists.action.resetAll",
-        "checklists.menu.actions.accessibilityLabel"
+        "checklists.action.resetAll"
       ],
       "translations": {
         "ar": "إعادة تعيين الكل",

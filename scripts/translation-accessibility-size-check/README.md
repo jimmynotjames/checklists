@@ -27,8 +27,8 @@ The thirteen are chosen for what they stress, not for market size:
 | CJK rendering | `ja`, `zh-Hans` |
 | Cyrillic | `ru` |
 
-Screens: the list, the main menu, settings, a checklist's detail, the reset
-menu, the delete confirmation, and a new checklist. The analytics consent sheet
+Screens: the list, the main menu, settings, a checklist's detail, the list in
+Edit mode, the delete confirmation, and a new checklist. The analytics consent sheet
 is captured as `04a-consent` wherever the region presents it.
 
 ## Reading the results
@@ -54,7 +54,7 @@ length and right-to-left mirroring, but not for type size. See
 
 `run.sh` needs `jq` and `sips` and checks for both. The capture navigates by
 accessibility identifier rather than visible text, so renaming `toolbar.mainMenu`,
-`toolbar.checklistsMenu`, `toolbar.addChecklist`, `mainMenu.settings`, or
+`toolbar.edit`, `editBar.delete`, `toolbar.addChecklist`, `mainMenu.settings`, or
 `analyticsConsentSheet.decline` breaks it silently. The type size is forced
 through `TestDynamicTypeOverride`, which is DEBUG-only and inert unless launched
 with both `IS_TESTING` and `FORCE_DYNAMIC_TYPE`.
