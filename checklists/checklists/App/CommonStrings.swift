@@ -24,19 +24,19 @@ nonisolated enum CommonStrings {
   static let delete = String(
     localized: "common.action.delete",
     defaultValue: "Delete",
-    comment: "Destructive action: removes a checklist or an item. Swipe action and confirmation button."
+    comment: "Destructive action: removes a checklist or an item. Swipe action, Edit mode toolbar button on the list of checklists, and confirmation button."
   )
 
   static let done = String(
     localized: "common.action.done",
     defaultValue: "Done",
-    comment: "Keyboard accessory button that ends editing."
+    comment: "Ends editing: the keyboard accessory button, and the nav bar button that leaves Edit mode on the list of checklists (it reads Edit until tapped)."
   )
 
   static let duplicate = String(
     localized: "common.action.duplicate",
     defaultValue: "Duplicate",
-    comment: "Makes a copy of a checklist or an item. Swipe action; VoiceOver reads it as the button's name."
+    comment: "Makes a copy of a checklist or an item. Swipe action, and Edit mode toolbar button on the list of checklists; VoiceOver reads it as the button's name."
   )
 
   static let notesPlaceholder = String(
@@ -65,6 +65,6 @@ nonisolated enum CommonStrings {
   static let irreversibleConfirmation = String(
     localized: "checklists.confirm.irreversible",
     defaultValue: "Are you sure? This cannot be undone.",
-    comment: "Alert message under the delete-checklist and reset-all confirmations on the checklist list, and under the delete-checklist confirmation on a checklist's own screen."
+    comment: "Alert message under the delete, reset and reset-all confirmations on the checklist list, and under the delete-checklist confirmation on a checklist's own screen."
   )
 }

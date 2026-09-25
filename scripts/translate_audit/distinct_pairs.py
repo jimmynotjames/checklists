@@ -88,6 +88,38 @@ DISTINCT_PAIRS: list[tuple[str, str, str]] = [
         "restriction, the other a temporary problem the person can resolve, and a reader must "
         "be able to tell which happened",
     ),
+    (
+        "checklists.action.resetAll",
+        "checklists.action.edit",
+        "the two text buttons side by side at the trailing end of the checklist list's nav bar",
+    ),
+    (
+        "checklists.action.edit",
+        "common.action.done",
+        "one nav bar button that toggles between the two; identical words would hide whether "
+        "Edit mode is on",
+    ),
+    (
+        "checklists.action.resetSelected",
+        "common.action.delete",
+        "neighbours in the checklist list's Edit mode toolbar; one clears ticks, the other "
+        "removes lists",
+    ),
+    (
+        "checklists.action.resetSelected",
+        "common.action.duplicate",
+        "neighbours in the checklist list's Edit mode toolbar",
+    ),
+    (
+        "checklists.accessibilityAction.moveUp",
+        "checklists.accessibilityAction.moveToTop",
+        "both in one row's VoiceOver actions list; one moves a single place, the other all the way",
+    ),
+    (
+        "checklists.accessibilityAction.moveDown",
+        "checklists.accessibilityAction.moveToBottom",
+        "both in one row's VoiceOver actions list; one moves a single place, the other all the way",
+    ),
 ]
 
 

@@ -52,6 +52,15 @@ nonisolated enum CheckedItemsCopyDestination: String {
   case existingChecklist = "existing"
 }
 
+/// Which Edit mode toolbar action ran — the `bulk_action` property on
+/// `checklists_bulk_action_performed`. The raw values are the case names, pinned by
+/// `AnalyticsNamesTests` so a rename cannot silently change what dashboards group by.
+nonisolated enum ChecklistsBulkAction: String {
+  case delete
+  case duplicate
+  case reset
+}
+
 extension Checklist {
   /// The properties `checklist_viewed` carries.
   ///

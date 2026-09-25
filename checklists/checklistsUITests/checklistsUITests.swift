@@ -89,4 +89,58 @@ class checklistsUITests: XCTestCase {
     XCTAssertGreaterThan(text1.frame.origin.y, text2.frame.origin.y, "Row 1 should have moved below row 2.")
     XCTAssertGreaterThan(text3.frame.origin.y, text1.frame.origin.y, "Row 3 should still be below row 1.")
   }
+
+  // MARK: - Edit mode
+
+  /// Rows select rather than open, the toolbar waits for a selection, and the action ends Edit mode.
+  func testEditModeDuplicatesSelection() {
+    let listQuery = app.collectionViews
+    enterEditMode()
+    XCTAssertFalse(app.buttons["toolbar.addChecklist"].exists, "The add button should hide in Edit mode.")
+    let duplicate = app.buttons["editBar.duplicate"]
+    XCTAssertTrue(duplicate.waitForExistence(timeout: 5), "The Edit mode toolbar didn't appear.")
+    XCTAssertFalse(duplicate.isEnabled, "Toolbar actions should wait for a selection.")
+
+    listQuery.staticTexts["Morning Routine"].tap()
+    listQuery.staticTexts["Pre-Trip Checklist"].tap()
+    XCTAssertFalse(app.textFields["checklistNameField"].exists, "Tapping a row in Edit mode shouldn't open it.")
+    XCTAssertTrue(duplicate.isEnabled)
+    duplicate.tap()
+
+    XCTAssertTrue(listQuery.staticTexts["Morning Routine copy"].waitForExistence(timeout: 5))
+    XCTAssertTrue(listQuery.staticTexts["Pre-Trip Checklist copy"].exists)
+    XCTAssertFalse(listQuery.staticTexts["Weekend Getaway Essentials copy"].exists, "Only the selection is copied.")
+    XCTAssertTrue(app.buttons["toolbar.addChecklist"].waitForExistence(timeout: 5), "The action should end Edit mode.")
+    XCTAssertFalse(duplicate.exists)
+  }
+
+  func testEditModeDeletesSelectionAfterConfirming() {
+    let listQuery = app.collectionViews
+    enterEditMode()
+    listQuery.staticTexts["Weekend Getaway Essentials"].tap()
+    app.buttons["editBar.delete"].tap()
+
+    let confirmDelete = app.alerts.buttons["Delete"]
+    XCTAssertTrue(confirmDelete.waitForExistence(timeout: 5), "Delete confirmation alert didn't appear.")
+    confirmDelete.tap()
+
+    XCTAssertTrue(listQuery.staticTexts["Morning Routine"].waitForExistence(timeout: 5))
+    XCTAssertFalse(listQuery.staticTexts["Weekend Getaway Essentials"].exists)
+    XCTAssertTrue(listQuery.staticTexts["Pre-Trip Checklist"].exists)
+  }
+
+  func testResetAllAsksFirst() {
+    let resetAll = app.buttons["toolbar.resetAll"]
+    XCTAssertTrue(resetAll.waitForExistence(timeout: 5), "Reset All should be in the nav bar.")
+    resetAll.tap()
+    let cancel = app.alerts.buttons["Cancel"]
+    XCTAssertTrue(cancel.waitForExistence(timeout: 5), "Reset All should confirm first.")
+    cancel.tap()
+  }
+
+  private func enterEditMode() {
+    let edit = app.buttons["toolbar.edit"]
+    XCTAssertTrue(edit.waitForExistence(timeout: 5), "The Edit button didn't appear.")
+    edit.tap()
+  }
 }

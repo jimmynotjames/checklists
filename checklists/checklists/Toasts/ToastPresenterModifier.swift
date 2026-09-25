@@ -22,7 +22,8 @@ private struct ToastLayer: ViewModifier {
 
   /// Extra room for the floating add button on `ChecklistsView` — 60pt across with 20pt of
   /// padding, so 80pt of footprint — plus a little air. At `bottomInset` the card would lie over
-  /// the button and swallow taps meant for it.
+  /// the button and swallow taps meant for it. In Edit mode the button is hidden and the bottom
+  /// toolbar takes its place, which this also clears.
   private static let addButtonClearance: CGFloat = 88
 
   /// The root layer owns the announcement and the scene handling; the sheet's layer only draws,

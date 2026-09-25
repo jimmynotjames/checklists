@@ -28,6 +28,8 @@ struct AnalyticsNamesTests {
     AnalyticsEvent.checklistItemsCopied,
     AnalyticsEvent.checklistReset,
     AnalyticsEvent.checklistDeleted,
+    AnalyticsEvent.checklistsEditModeEntered,
+    AnalyticsEvent.checklistsBulkActionPerformed,
     AnalyticsEvent.persistenceFatalError,
     AnalyticsEvent.persistenceWriteFailed,
     AnalyticsEvent.startupFailed,
@@ -50,6 +52,8 @@ struct AnalyticsNamesTests {
     AnalyticsProperty.itemsWithNotesCount,
     AnalyticsProperty.source,
     AnalyticsProperty.destination,
+    AnalyticsProperty.bulkAction,
+    AnalyticsProperty.selectedCount,
     AnalyticsProperty.errorDomain,
     AnalyticsProperty.errorCode,
     AnalyticsProperty.errorOperation,
@@ -164,6 +168,15 @@ struct AnalyticsNamesTests {
   func copyDestinationValuesArePinned() {
     #expect(CheckedItemsCopyDestination.newChecklist.rawValue == "new")
     #expect(CheckedItemsCopyDestination.existingChecklist.rawValue == "existing")
+  }
+
+  /// `bulk_action` transmits `ChecklistsBulkAction.rawValue`, the case names. Update
+  /// analytics-spec.md §Per-event properties in the same change.
+  @Test("the bulk action values sent as bulk_action are pinned")
+  func bulkActionValuesArePinned() {
+    #expect(ChecklistsBulkAction.delete.rawValue == "delete")
+    #expect(ChecklistsBulkAction.duplicate.rawValue == "duplicate")
+    #expect(ChecklistsBulkAction.reset.rawValue == "reset")
   }
 
   /// `container_backing` transmits `ContainerBacking.rawValue`. Update analytics-spec.md

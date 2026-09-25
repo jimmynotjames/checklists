@@ -40,7 +40,7 @@ A dashboard is justified by a question here. The IDs are stable; board names cit
 | 3.2 | What do people make checklists *for*? | `checklist_name` |
 | 3.3 | How big do checklists get, and how many per person? | `checklists_count`, `items_count`, `notes_length` |
 | 3.4 | Is the notes feature used? | `items_with_notes_count`, `notes_length` |
-| 3.5 | Reuse (reset), template (duplicate, copy items), or disposable (create, delete)? | the five checklist action events |
+| 3.5 | Reuse (reset), template (duplicate, copy items), or disposable (create, delete)? | the five checklist action events, plus `checklists_bulk_action_performed` by `bulk_action` for the list's Edit mode |
 | 3.6 | How often does the store fail to open, and how often is that unrecoverable? | `startup_failed` / `startup_store_reset` at `startup_stage = store_open` |
 | 3.7 | Does anyone rotate the device? | `orientation_changed` |
 | 3.8 | What share opt out, by jurisdiction? | `analytics_consent_changed`, `consent_jurisdiction` |
@@ -66,7 +66,7 @@ with its rationale recorded here. The app code sends exactly:
 - **Event properties:** `checklists_count`, `items_count`, `items_with_notes_count`, `notes_length`
   (integers, never content); `checklist_name` (§Free-text exception); `source`, `destination`,
   `orientation`, `error_operation`, `startup_stage`, `container_backing`, `icloud_account`,
-  `sync_operation` (app-owned enumerations); `error_domain`, `error_code` (an `NSError`'s domain and
+  `sync_operation`, `bulk_action` (app-owned enumerations); `selected_count` (an integer); `error_domain`, `error_code` (an `NSError`'s domain and
   code, never its `userInfo`); `new_value`, `old_value` (booleans); `time_since_first_eligible_bucket`
   (a bucket, not a timestamp).
 - **Super properties:** `app_version`, `app_build`, `device_class`, `locale`, `region`,
@@ -227,6 +227,8 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `checklist_items_copied` | Ticked items copied into another checklist, from the checklist menu | `destination` |
 | `checklist_reset` | All items unchecked | — |
 | `checklist_deleted` | Deleted, from the list's swipe or the checklist menu | — |
+| `checklists_edit_mode_entered` | The list's Edit button is tapped | — |
+| `checklists_bulk_action_performed` | An Edit mode toolbar action runs and changes something; once per action, not per checklist; `checklist_duplicated` and `checklist_deleted` don't also fire | `bulk_action`, `selected_count` |
 | `rate_app_tapped` | "Rate in App Store" tapped | — |
 | `feedback_tapped` | "Send feedback" tapped, main menu **or** failure screen | — |
 | `privacy_policy_tapped` | The privacy policy is opened | — |
@@ -258,6 +260,8 @@ The rating-prompt events fire from `RatingPromptCoordinator`; its doc comment ha
 | `items_with_notes_count` | Int | Items with non-nil, non-empty notes |
 | `source` | String | `menu` / `swipe` |
 | `destination` | String | `new` / `existing` |
+| `bulk_action` | String | `ChecklistsBulkAction.rawValue`: `delete`, `duplicate`, `reset` |
+| `selected_count` | Int | Checklists selected when the action ran |
 | `error_domain` | String | `NSError.domain` |
 | `error_code` | Int | `NSError.code` |
 | `error_operation` | String | `PersistenceOperation.rawValue`: `checklistEdit`, `itemEdit`, `itemUpdate`, `reorder`, `delete`, `legacyImport`, `sampleSeed`, `dedupe` |
@@ -270,7 +274,7 @@ The rating-prompt events fire from `RatingPromptCoordinator`; its doc comment ha
 | `time_since_first_eligible_bucket` | String | `<1d` / `<7d` / `<30d` / `30d+` |
 
 `error_operation` values are Swift case names, so renaming a case changes the dashboards.
-`AnalyticsNamesTests` pins the value sets of `source`, `destination`, `error_operation`,
+`AnalyticsNamesTests` pins the value sets of `source`, `destination`, `bulk_action`, `error_operation`,
 `startup_stage`, `container_backing`, `icloud_account`, and `sync_operation`. 3.6 must be filtered by
 `startup_stage`, since only `store_open` offers the reset.
 
