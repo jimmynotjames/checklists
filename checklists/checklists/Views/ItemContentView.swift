@@ -227,3 +227,30 @@ extension ItemContentView: UITextViewDelegate {
     return true
   }
 }
+
+#if DEBUG
+  import SwiftUI
+
+  // The Weekend Getaway fixture's first four items cover every row state: unchecked, unchecked with
+  // notes, checked, checked with notes. The last row is the blank scratch row the add button leaves.
+  #Preview("Row states") {
+    let items = Array(PreviewSupport.checklist(id: SampleData.weekendGetawayId).items.prefix(4)) + [Item()]
+    let stack = UIStackView(arrangedSubviews: items.map { item in
+      let row = ItemContentView()
+      row.item = item
+      return row
+    })
+    stack.axis = .vertical
+    stack.translatesAutoresizingMaskIntoConstraints = false
+
+    let viewController = UIViewController()
+    viewController.view.backgroundColor = .systemBackground
+    viewController.view.addSubview(stack)
+    NSLayoutConstraint.activate([
+      stack.topAnchor.constraint(equalTo: viewController.view.safeAreaLayoutGuide.topAnchor),
+      stack.leadingAnchor.constraint(equalTo: viewController.view.leadingAnchor),
+      stack.trailingAnchor.constraint(equalTo: viewController.view.trailingAnchor),
+    ])
+    return viewController
+  }
+#endif
