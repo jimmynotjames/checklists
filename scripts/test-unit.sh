@@ -31,7 +31,7 @@ xcodebuild test \
 
 python3 "${ROOT}/scripts/list_test_failures.py" "${RESULT_BUNDLE}" || true
 
-# The warm sentinel: test-ui.sh's header. Only a passing run counts.
+# The warm sentinel: test-ui.sh's header.
 if [[ "${RC}" -eq 0 ]]; then
     touch "${ROOT}/.build/sim/warmed"
 fi

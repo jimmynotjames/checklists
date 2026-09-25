@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Print one `TEST-FAILED: <test id> <file:line> <failure text>` line per failure in a test run.
 
-Report-only: never changes the run's outcome. The file:line comes from the result bundle, so a
-flaky-test log entry never has to guess it (AGENTS.md §"Reading a test result").
+Report-only: never changes the run's outcome. Reads the bundle's per-test tree rather than its
+summary, because only the tree carries each failure's file:line.
 
 Usage: python3 scripts/list_test_failures.py <path-to.xcresult>
 """
