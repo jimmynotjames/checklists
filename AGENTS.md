@@ -11,8 +11,8 @@ test run, `ConsoleAnalyticsClient` is used instead. Tooling was ported from
 The Xcode project is `checklists/checklists.xcodeproj` (Xcode 26+; CI pins 26.6). All three targets
 use file-system-synchronized folders: a new `.swift` under `checklists/checklists/`,
 `checklists/checklistsTests/`, or `checklists/checklistsUITests/` compiles into that target with no
-project-file change. Each folder's `Info.plist` is its one membership exception; to exclude another
-file, uncheck it in Xcode's File inspector.
+project-file change. Each folder's `Info.plist` is excluded from its target, as is the UI-test
+folder's `FLAKY_TESTS.md`; to exclude another file, uncheck it in Xcode's File inspector.
 
 Design docs in `core-docs/` are canonical: read the relevant one before touching its area, instead
 of re-deriving. Where a doc and the code disagree, one is a bug — say which in the PR. Docs give
@@ -96,6 +96,13 @@ xcrun xcresulttool get test-results summary --path "$R"   # swap summary -> test
 ```
 
 Don't read pass/fail from `tmp/gate.log` or a stale console tail.
+
+Both test scripts end with one `TEST-FAILED: <test> <file:line> <text>` line per failure
+(`scripts/list_test_failures.py`). A test that fails in a full run but passes an isolated rerun
+(`-only-testing:<target>/<Class>/<test> -test-iterations 3`, destination and derived data from
+`scripts/_destination.sh`) is flaky: append a row to `checklists/checklistsUITests/FLAKY_TESTS.md`
+with `file:line` from those lines, never a guess, name the flake in your report, and don't fix it in
+passing.
 
 ## Lint policy
 
