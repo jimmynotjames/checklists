@@ -17,7 +17,7 @@ source "${ROOT}/scripts/_destination.sh"
 
 RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-$$-unit.xcresult"
 
-# `|| RC=$?` so `set -e` doesn't skip the result line below; never `if ! xcodebuild` (see gate.sh).
+# `|| RC=$?` so `set -e` doesn't skip the failure listing below.
 RC=0
 xcodebuild test \
     -project checklists/checklists.xcodeproj \
@@ -29,8 +29,12 @@ xcodebuild test \
     -parallel-testing-enabled NO \
     -skip-testing:checklistsUITests || RC=$?
 
+python3 "${ROOT}/scripts/list_test_failures.py" "${RESULT_BUNDLE}" || true
+
 # The warm sentinel: test-ui.sh's header.
-[[ "${RC}" -eq 0 ]] && touch "${ROOT}/.build/sim/warmed"
+if [[ "${RC}" -eq 0 ]]; then
+    touch "${ROOT}/.build/sim/warmed"
+fi
 
 echo "result-bundle: ${RESULT_BUNDLE}"
 exit "${RC}"

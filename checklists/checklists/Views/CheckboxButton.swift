@@ -8,6 +8,19 @@
 import UIKit
 
 class CheckboxButton: UIButton {
+  /// The icon PDFs are 50pt; a configured button draws images at their own size, so they're
+  /// redrawn at 24pt to keep the icon small inside the 48pt tap target.
+  private static let iconSize = CGSize(width: 24.0, height: 24.0)
+  private static let uncheckedImage = icon(named: "CheckboxUncheckedIcon")
+  private static let checkedImage = icon(named: "CheckboxCheckedIcon")
+
+  private static func icon(named name: String) -> UIImage? {
+    guard let image = UIImage(named: name) else { return nil }
+    return UIGraphicsImageRenderer(size: iconSize).image { _ in
+      image.draw(in: CGRect(origin: .zero, size: iconSize))
+    }.withRenderingMode(.alwaysTemplate)
+  }
+
   convenience init() {
     self.init(frame: .zero)
   }
@@ -17,10 +30,12 @@ class CheckboxButton: UIButton {
 
     accessibilityLabel = String(localized: "checkbox.accessibilityLabel", defaultValue: "Checkbox", comment: "VoiceOver label of the tick box on each checklist item row.")
 
-    setImage(UIImage(named: "CheckboxUncheckedIcon"), for: .normal)
-    setImage(UIImage(named: "CheckboxCheckedIcon"), for: .selected)
-
-    contentEdgeInsets = UIEdgeInsets(top: 12.0, left: 12.0, bottom: 12.0, right: 12.0)
+    var configuration = UIButton.Configuration.plain()
+    configuration.contentInsets = NSDirectionalEdgeInsets(top: 12.0, leading: 12.0, bottom: 12.0, trailing: 12.0)
+    configuration.image = Self.uncheckedImage
+    self.configuration = configuration
+    // Off, so the plain style adds no selected background or pressed fade: the icon and tint are the state.
+    automaticallyUpdatesConfiguration = false
 
     setContentHuggingPriority(.required, for: .horizontal)
     setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -41,10 +56,12 @@ class CheckboxButton: UIButton {
     switch itemStatus {
     case .checked:
       isSelected = true
+      configuration?.image = Self.checkedImage
       tintColor = Colors.inactiveText
       accessibilityValue = String(localized: "checkbox.value.checked", defaultValue: "Checked", comment: "VoiceOver value of a ticked checklist item's checkbox.")
     case .unchecked:
       isSelected = false
+      configuration?.image = Self.uncheckedImage
       tintColor = .tintColor
       accessibilityValue = String(localized: "checkbox.value.unchecked", defaultValue: "Unchecked", comment: "VoiceOver value of an unticked checklist item's checkbox.")
     }

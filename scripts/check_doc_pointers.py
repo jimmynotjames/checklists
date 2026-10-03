@@ -13,8 +13,8 @@ Four checks, all aimed at the drift the AGENTS.md "Writing style" rules exist to
    (`resize(in:)`, `ToastPresenter`, `Checklist.dragItems()`, `SettingsView.swift`) still exists
    in the code, scripts, or build config. Swift comments don't count as code: a name that survives
    only in another stale Swift comment still fails.
-4. Lines this branch adds to Swift, `core-docs/`, or AGENTS.md carry no history markers
-   ("since #N", "once #N lands", "used to be", ...). Git is the record.
+4. Lines this branch adds under `checklists/` or `core-docs/`, or to AGENTS.md, carry no history
+   markers ("since #N", "once #N lands", "used to be", ...). Git is the record.
 
 Checks 1–3 are repo-wide: a heading rename or a deleted method breaks pointers in files the
 branch never touched. Check 4 looks only at the lines this branch adds, so existing text never
