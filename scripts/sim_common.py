@@ -2,7 +2,8 @@
 """The checkout slug that names this checkout's simulators, and the matching helper.
 
 The slug is the first 8 hex chars of sha1 over the checkout's physical path, so a symlinked path
-and its target name the same devices. Every script derives it here: AGENTS.md §"Simulator sandbox".
+and its target name the same devices. Every script derives it here except fastlane/Snapfile,
+which can't run Python and hashes the same physical path: AGENTS.md §"Simulator sandbox".
 
 Usage: python3 scripts/sim_common.py slug [ROOT]   # ROOT defaults to this checkout
 """

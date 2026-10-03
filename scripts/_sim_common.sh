@@ -7,7 +7,7 @@
 : "${ROOT:?ROOT must be set before sourcing _sim_common.sh}"
 
 ROOT="$(cd "${ROOT}" && pwd -P)"
-SIM_SLUG="${SIM_SLUG:-$(python3 "${ROOT}/scripts/sim_common.py" slug "${ROOT}")}"
+SIM_SLUG="$(python3 "${ROOT}/scripts/sim_common.py" slug "${ROOT}")"
 SIM_LOCK_PATH="${ROOT}/.build/sim.lock"
 
 # Holds SIM_LOCK_PATH on fd 9 until this shell and every child holding fd 9 exit. Outside

@@ -71,8 +71,6 @@ verify-secrets:
 hooks-install:
 	lefthook install
 
-# Every sim-* target is a verb of scripts/sim.sh, which holds the checkout's simulator lock
-# (all but sim-status): AGENTS.md §"Simulator sandbox".
 initialize-sims:
 	@bash scripts/sim.sh init
 

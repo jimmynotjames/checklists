@@ -30,6 +30,8 @@ DENIED = {
     ],
     "rule 5 booted": [
         "xcrun simctl io booted screenshot x.png",
+        "xcrun simctl io 'booted' screenshot x.png",
+        'xcrun simctl io "booted" screenshot x.png',
         "xcrun simctl shutdown booted",
         "xcrun simctl launch --console booted com.example.app",
         "xcrun simctl --set ~/sims status_bar booted override --time 9:41",

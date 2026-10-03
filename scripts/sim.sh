@@ -47,7 +47,7 @@ show)
     ;;
 run)
     source "${ROOT}/scripts/_destination.sh"
-    # Signing stays the project default, as in build.sh (#140).
+    # Signing stays the project default; build.sh's header says why.
     xcodebuild build \
         -project checklists/checklists.xcodeproj \
         -scheme checklists \

@@ -108,6 +108,8 @@ def record_holder(fd: int, root: str) -> None:
 def acquire(fd: int, path: str, timeout: float, root: str) -> int:
     start = time.monotonic()
     last_report = None
+    if not try_lock(fd):
+        time.sleep(0.2)  # rides out a `status` probe's brief shared lock
     while not try_lock(fd):
         now = time.monotonic()
         if timeout and now - start >= timeout:

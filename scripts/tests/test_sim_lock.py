@@ -47,7 +47,7 @@ class LockTests(unittest.TestCase):
         self._tmp.cleanup()
 
     def _script(self, body: str) -> str:
-        return f'ROOT="{self.root}"; SIM_SLUG=test; source "$ROOT/scripts/_sim_common.sh"; sim_lock_acquire || exit $?; {body}'
+        return f'ROOT="{self.root}"; source "$ROOT/scripts/_sim_common.sh"; sim_lock_acquire || exit $?; {body}'
 
     def _start(self, body: str, timeout: float | None = None) -> subprocess.Popen:
         env = dict(os.environ)

@@ -90,12 +90,14 @@ Both test suites pass. Conventions:
 ### Reading a test result
 
 Never pipe a test command into `tail`/`head`/`grep` and trust the exit code — a pipeline reports
-the last command's status. Redirect instead (`make test-unit > tmp/test.log 2>&1; echo $?`), or
-read the result bundle, which is authoritative. Each run's last line names its own bundle; never
-pick the newest one in `.build/sim/results/`, which may be another agent's:
+the last command's status. Redirect to a log of your own instead — another agent in this checkout
+may be writing a shared one — or read the result bundle, which is authoritative. Each run prints
+a `result-bundle:` line naming its own bundle; never pick the newest one in `.build/sim/results/`,
+which may be another agent's:
 
 ```bash
-R=$(grep -m1 '^result-bundle: ' tmp/test.log | cut -c16-)
+L=tmp/test-unit-$$.log; make test-unit > "$L" 2>&1; echo "$? $L"
+R=$(grep -m1 '^result-bundle: ' "$L" | cut -c16-)
 xcrun xcresulttool get test-results summary --path "$R"   # swap summary -> tests for failure detail
 ```
 
@@ -217,8 +219,9 @@ When the device isn't on the newest iOS runtime the selected Xcode can target,
 `scripts/sim_retire_stale.py` deletes it before use so it is recreated; the screenshot device gets
 the same treatment.
 
-Agents sharing one checkout take turns: every command that touches its simulator (the test
-scripts, `run.sh`, every `make sim-*` but `sim-status`) holds `.build/sim.lock` for its whole run.
+Agents sharing one checkout take turns: every command that touches its sandbox device (the test
+scripts, `run.sh`, every `make sim-*` but `sim-status`) holds `.build/sim.lock` for its whole run;
+the screenshot lane serializes on its own `capture.lock`.
 A second one waits, printing who holds it, so start it with `run_in_background`; `SIM_LOCK_TIMEOUT`
 (seconds) makes it give up instead. The kernel drops the lock when the holder exits, however it
 exits. For parallel runs, use a worktree.

@@ -23,7 +23,7 @@ elif printf '%s' "$cmd" | grep -Eq '(^|[^[:alnum:]_/])(pkill|killall)[[:space:]]
   reason='Blocked (hygiene rule 5): never kill Simulator, DeviceHub, or CoreSimulator processes — it hits every simulator on the machine. Use `make sim-shutdown` / `make sim-clean` (this checkout'\''s devices only).'
 elif printf '%s' "$cmd" | grep -Eq "simctl(${SIMCTL_SET})?[[:space:]]+((shutdown|erase|delete)[[:space:]]+all|delete[[:space:]]+unavailable)([^[:alnum:]_]|\$)"; then
   reason='Blocked (hygiene rule 5): machine-wide `simctl ... all`/`delete unavailable` is not allowed — scoped `simctl <verb> <udid>` stays allowed; otherwise use `make sim-shutdown` / `make sim-clean`.'
-elif printf '%s' "$cmd" | grep -oE "simctl(${SIMCTL_SET})?[[:space:]]+[a-z_]+[^|&;]*[[:space:]]booted([^[:alnum:]_]|\$)" \
+elif printf '%s' "$cmd" | grep -oE "simctl(${SIMCTL_SET})?[[:space:]]+[a-z_]+[^|&;]*[[:space:]][\"']?booted([^[:alnum:]_]|\$)" \
     | grep -Eqv "simctl(${SIMCTL_SET})?[[:space:]]+list([^[:alnum:]_]|\$)"; then
   reason='Blocked (hygiene rule 5): `simctl ... booted` acts on whichever device is booted, possibly another checkout'\''s. Target this checkout'\''s device by UDID: UDID=$(make -s sim-udid). AGENTS.md §"Simulator sandbox".'
 elif printf '%s' "$cmd" | grep -Eq '(^|;|\|&)[[:space:]]*nohup[[:space:]]'; then

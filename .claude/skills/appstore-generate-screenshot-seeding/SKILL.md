@@ -19,7 +19,7 @@ The seeds under `checklists/checklistsUITests/ScreenshotSeeds/` are generated, n
    ```bash
    python3 scripts/screenshot_content/generate_seeds.py
    python3 scripts/screenshot_content/check_content.py
-   make test-unit > tmp/test.log 2>&1; echo $?
+   L=tmp/test-unit-$$.log; make test-unit > "$L" 2>&1; echo "$? $L"
    ```
 4. Report the regenerated locales and open the PR with `create-pr`.
 

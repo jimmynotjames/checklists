@@ -45,6 +45,8 @@ if [[ "${WORKERS}" -gt 1 ]]; then
 fi
 
 echo "→ Capturing 13 locales @ xxxLarge (WORKERS=${WORKERS}) …"
+# `|| RC=$?` so a failed run still names its bundle below.
+RC=0
 xcodebuild test \
   -project checklists/checklists.xcodeproj \
   -scheme checklists \
@@ -53,9 +55,10 @@ xcodebuild test \
   -derivedDataPath "${SIM_DERIVED}" \
   -resultBundlePath "${RESULT}" \
   "${PARALLEL_ARGS[@]}" \
-  -only-testing:checklistsUITests/LocalizationScreenshotCapture
+  -only-testing:checklistsUITests/LocalizationScreenshotCapture || RC=$?
 
 echo "result-bundle: ${RESULT}"
+[[ "${RC}" -eq 0 ]] || exit "${RC}"
 echo "→ Exporting and downscaling screenshots into ${OUT} …"
 rm -rf "${OUT}" && mkdir -p "${OUT}"
 RAW="$(mktemp -d)"
