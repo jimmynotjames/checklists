@@ -19,7 +19,7 @@ if [[ ! -f "${WARM_SENTINEL}" ]]; then
     exit 1
 fi
 
-RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-ui.xcresult"
+RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-$$-ui.xcresult"
 
 # `|| RC=$?` so `set -e` doesn't skip the tagging below; never `if ! xcodebuild` (see gate.sh).
 RC=0
@@ -40,4 +40,5 @@ xcodebuild test \
 # Report-only keyboard-failure tag: the XCUIElement+Keyboard.swift header.
 python3 "${ROOT}/scripts/check_keyboard_flake.py" "${RESULT_BUNDLE}" || true
 
+echo "result-bundle: ${RESULT_BUNDLE}"
 exit "${RC}"

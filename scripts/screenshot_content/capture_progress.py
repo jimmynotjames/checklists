@@ -107,6 +107,7 @@ def capture_source_files() -> list[Path]:
         REPO_ROOT / "scripts" / "resolve_booted_sim_udid.py",
         REPO_ROOT / "scripts" / "resolve_sim_spec.py",
         REPO_ROOT / "scripts" / "sim_retire_stale.py",
+        REPO_ROOT / "scripts" / "sim_common.py",
         Path(__file__).resolve(),
         Path(__file__).with_name("check_content.py"),
         Path(__file__).with_name("config.py"),

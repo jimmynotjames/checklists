@@ -3,24 +3,16 @@
 //  checklistsUITests
 //
 
-// `scripts/_sim_sandbox.sh` turns Simulator.app's "Connect Hardware Keyboard" off, for ad-hoc runs
-// and anything that needs the keyboard on screen. Under `SIMULATOR_UDID` it doesn't run; fix it by
-// hand:
-//
-//   UDID=$(cat .build/sim/device.udid)
-//   python3 scripts/sim_keyboard_pref.py --disable "$UDID"
-//   xcrun simctl shutdown "$UDID"; xcrun simctl boot "$UDID"; open -a Simulator
-//
-// The preference does not determine the outcome, and nobody has found what does: a control test
-// that tapped `app.keys["delete"]` with `ConnectHardwareKeyboard = true` passed. Treat it as a
-// hint, not a lever, and don't read a green run as proof it works. The next place to look is the
-// device's own `AutomaticMinimizationEnabled` / `HardwareKeyboardLastSeen` in
+// The test scripts run the simulator headless, so nothing attaches a hardware keyboard to it.
+// DeviceHub (`make sim-show`) can: its "Always simulate hardware keyboard" setting and per-device
+// Keyboard menu decide it for a device it has open. Nobody has pinned down what else does; a
+// suspect is the device's own `AutomaticMinimizationEnabled` / `HardwareKeyboardLastSeen` in
 // `data/Library/Preferences/com.apple.keyboard.preferences.plist`, which survives reboots and
-// nothing here resets.
+// nothing here resets. Don't read a green run as proof the keyboard was on screen.
 //
 // `SIM-KEYBOARD-FLAKE tests-failed` (from `scripts/check_keyboard_flake.py`) means something still
-// depends on the keyboard and got past the gate check; `guard-fired` alone is cheap drift. #231
-// tracks deleting this machinery once the tag stays quiet.
+// depends on the keyboard and got past the gate check. #231 tracks retiring the tag once it stays
+// quiet.
 
 import XCTest
 

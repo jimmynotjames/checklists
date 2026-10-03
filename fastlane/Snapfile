@@ -9,7 +9,7 @@ end
 
 root = File.expand_path("..", FastlaneCore::FastlaneFolder.path)
 config = JSON.parse(File.read(File.join(root, "fastlane", "screenshot-config.json")))
-slug = Digest::SHA1.hexdigest(root)[0, 8]
+slug = Digest::SHA1.hexdigest(File.realpath(root))[0, 8]
 
 devices(config.fetch("devices").map { |device| "#{device.fetch('name')} Screenshots [#{slug}]" })
 languages(config.fetch("active_locales"))

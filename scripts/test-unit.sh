@@ -15,8 +15,10 @@ cd "$ROOT"
 
 source "${ROOT}/scripts/_destination.sh"
 
-RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-unit.xcresult"
+RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-$$-unit.xcresult"
 
+# `|| RC=$?` so `set -e` doesn't skip the result line below; never `if ! xcodebuild` (see gate.sh).
+RC=0
 xcodebuild test \
     -project checklists/checklists.xcodeproj \
     -scheme checklists \
@@ -25,7 +27,10 @@ xcodebuild test \
     -derivedDataPath "${SIM_DERIVED}" \
     -resultBundlePath "${RESULT_BUNDLE}" \
     -parallel-testing-enabled NO \
-    -skip-testing:checklistsUITests
+    -skip-testing:checklistsUITests || RC=$?
 
 # The warm sentinel: test-ui.sh's header.
-touch "${ROOT}/.build/sim/warmed"
+[[ "${RC}" -eq 0 ]] && touch "${ROOT}/.build/sim/warmed"
+
+echo "result-bundle: ${RESULT_BUNDLE}"
+exit "${RC}"
