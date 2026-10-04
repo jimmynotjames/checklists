@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import select
 import signal
 import subprocess
 import sys
@@ -80,15 +81,25 @@ class LockTests(unittest.TestCase):
         self.assertIn(f"pid {holder.pid}", err)
         self.assertIn(str(self.root), status(str(self.lock)))
 
+    def _await_stderr(self, proc: subprocess.Popen, needle: str, timeout: float = 30) -> None:
+        """Reads the raw fd, not `proc.stderr`, so nothing sits in a text buffer `communicate` skips."""
+        fd, seen = proc.stderr.fileno(), b""
+        deadline = time.monotonic() + timeout
+        while needle.encode() not in seen:
+            ready, _, _ = select.select([fd], [], [], max(deadline - time.monotonic(), 0))
+            chunk = os.read(fd, 4096) if ready else b""
+            if not chunk:
+                self.fail(f"no {needle!r} on stderr within {timeout:g}s: {seen.decode(errors='replace')!r}")
+            seen += chunk
+
     def test_waiter_proceeds_when_the_holder_exits(self) -> None:
         holder = self._hold()
         waiter = self._start("echo acquired")
-        time.sleep(1.5)
+        self._await_stderr(waiter, "sim-lock: waiting")
         self.assertIsNone(waiter.poll())
         os.killpg(holder.pid, signal.SIGTERM)
-        out, err = waiter.communicate(timeout=10)
+        out, _ = waiter.communicate(timeout=10)
         self.assertEqual(out.strip(), "acquired")
-        self.assertIn("sim-lock: waiting", err)
 
     def test_sigkill_of_the_whole_holder_releases_it(self) -> None:
         holder = self._hold()
