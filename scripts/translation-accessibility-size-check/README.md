@@ -13,7 +13,7 @@ Roughly 20-30 minutes serially. Screenshots land in `tmp/loc-size-check/`, named
 
 ## What it does
 
-Drives `LocalizationScreenshotCapture` (in `checklistsUITests`) through eight
+Drives `LocalizationScreenshotCapture` (in `checklistsUITests`) through its
 screens in thirteen locales with Dynamic Type forced to `.xxxLarge`, then exports
 and downscales the attachments.
 

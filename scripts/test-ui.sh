@@ -38,6 +38,7 @@ xcodebuild test \
     -only-testing:checklistsUITests/checklistUITest \
     -only-testing:checklistsUITests/checklistCreateUITest \
     -only-testing:checklistsUITests/ChecklistCopyCheckedItemsUITest \
+    -only-testing:checklistsUITests/ChecklistReorderItemsUITest \
     -only-testing:checklistsUITests/AnalyticsConsentUITest || RC=$?
 
 # Report-only keyboard-failure tag: the XCUIElement+Keyboard.swift header.

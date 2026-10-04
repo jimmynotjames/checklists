@@ -7,9 +7,6 @@ import XCTest
 
 /// The checklist screen's Reorder Items mode.
 ///
-/// Its own file rather than a section of `checklistUITest`, which is at the lint's file-length
-/// ceiling; `ChecklistCopyCheckedItemsUITest` is the same split.
-///
 /// Navigation-bar buttons are matched without naming the bar — see `checklistUITest.detailBackButton`
 /// for why naming it makes a query depend on scroll position.
 class ChecklistReorderItemsUITest: XCTestCase {
@@ -71,7 +68,6 @@ class ChecklistReorderItemsUITest: XCTestCase {
     doneButton.tap()
     XCTAssertTrue(app.navigationBars.buttons["Reset"].waitForExistence(timeout: 5), "Done didn't put Reset back.")
 
-    // For good measure, leave and come back, and check the move was saved.
     detailBackButton.tap()
     checklistsList.staticTexts["Morning Routine"].tap()
     XCTAssertTrue(checklistTableView.waitForExistence(timeout: 5))

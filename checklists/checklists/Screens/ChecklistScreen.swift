@@ -9,7 +9,7 @@ import UIKit
 
 /// SwiftUI host for the still-UIKit `ChecklistViewController`, embedded in its own `UINavigationController` because it drives a real UIKit nav bar directly:
 ///   - its scroll handler animates `navigationItem.title` in and out past a threshold,
-///   - it swaps the trailing bar items based on `isNewChecklist` (Done plus an overflow menu holding only Discard on the create sheet; Reset plus the full menu otherwise).
+///   - it swaps the trailing bar items based on `isNewChecklist` (Done plus an overflow menu holding Reorder Items and Discard on the create sheet; Reset plus the full menu otherwise).
 /// When pushed, the caller hides SwiftUI's navigation bar for this destination so only the
 /// embedded bar shows.
 ///
@@ -105,7 +105,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
       )
       viewController.navigationItem.leftBarButtonItem = backButton
     }
-    let navigationController = UINavigationController(rootViewController: viewController)
+    let navigationController = ChecklistNavigationController(rootViewController: viewController)
     if !isNewChecklist {
       // Swipe-back: the embedded navigation controller swallows edge pans before they reach
       // SwiftUI's NavigationStack, and its own interactive-pop recognizer is inert with a
@@ -138,7 +138,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
       onRequestDismiss()
     }
 
-    /// Reorder Items mode hides the back button, and an edge swipe would be a way out that skips it.
+    /// Reorder Items mode hides the back button, and an edge swipe would be the way out it stands in for.
     func gestureRecognizerShouldBegin(_: UIGestureRecognizer) -> Bool {
       viewController?.isReordering != true
     }
@@ -158,6 +158,18 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   }
 }
 
+/// The VoiceOver escape gesture runs up the responder chain from the focused element, and the nav
+/// bar's chain reaches this controller without passing through its root. With focus on Reorder
+/// Items mode's Done, escape would otherwise fall through to the SwiftUI stack and leave the screen.
+private final class ChecklistNavigationController: UINavigationController {
+  override func accessibilityPerformEscape() -> Bool {
+    if let root = viewControllers.first as? ChecklistViewController, root.isReordering {
+      return root.accessibilityPerformEscape()
+    }
+    return super.accessibilityPerformEscape()
+  }
+}
+
 #if DEBUG
   #Preview("Existing checklist") {
     ChecklistScreen(checklist: PreviewSupport.checklist()) {}
@@ -169,9 +181,4 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
       .previewEnvironment()
   }
 
-  // Live mode: ⋯ > Reorder Items, then drag the handles and tap Done.
-  #Preview("Reorder Items") {
-    ChecklistScreen(checklist: PreviewSupport.checklist(id: SampleData.preTripId)) {}
-      .previewEnvironment()
-  }
 #endif

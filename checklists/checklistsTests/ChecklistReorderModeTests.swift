@@ -163,7 +163,8 @@ struct ChecklistReorderModeTests {
         to: IndexPath(row: 0, section: 0)
       )
 
-      #expect(try harness.persistedItemNames() == ["Eggs", "Milk", "Bread"])
+      let saved = try harness.persistedItemNames()
+      #expect(saved == ["Eggs", "Milk", "Bread"])
     }
   }
 
@@ -209,7 +210,8 @@ struct ChecklistReorderModeTests {
 
       #expect(harness.viewController.move(itemWithID: id, action))
 
-      #expect(try harness.persistedItemNames() == expected)
+      let saved = try harness.persistedItemNames()
+      #expect(saved == expected)
       #expect(announcements == [ChecklistViewController.movedToPositionAnnouncement(position: position, count: 3)])
     }
   }
@@ -233,7 +235,8 @@ struct ChecklistReorderModeTests {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
       let id = harness.checklist.items[0].id
       #expect(!harness.viewController.move(itemWithID: id, .up))
-      #expect(try harness.persistedItemNames() == ["Milk", "Bread", "Eggs"])
+      let saved = try harness.persistedItemNames()
+      #expect(saved == ["Milk", "Bread", "Eggs"])
     }
   }
 }

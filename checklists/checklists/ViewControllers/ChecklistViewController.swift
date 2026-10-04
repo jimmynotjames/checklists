@@ -220,7 +220,9 @@ class ChecklistViewController: UIViewController {
 
     // Never yank the table out from under an active edit; the merged values are already in the
     // model and will show on the next natural reload.
-    guard findEditingCell() == nil,
+    // Nor in the middle of a row drag, which a reload cuts short or leaves out of step.
+    guard !tableView.hasActiveDrag, !tableView.hasUncommittedUpdates,
+          findEditingCell() == nil,
           !checklistNameTextField.isFirstResponder,
           !checklistNotesTextView.isFirstResponder
     else { return }
@@ -962,6 +964,8 @@ extension ChecklistViewController {
   /// Which moves a row offers depends on where it sits, so any change to the order or the count
   /// refreshes every row on screen. Rows scrolled in later get theirs from `cellForRowAt`.
   func refreshMoveActions() {
+    // Some suites drive the move callbacks without loading the view, so there is no table yet.
+    guard isViewLoaded else { return }
     for case let cell as ItemTableViewCell in tableView.visibleCells {
       guard let item = cell.itemContentView.item else { continue }
       cell.itemContentView.setAccessibilityMoveActions(moveActions(for: item))
