@@ -8,7 +8,7 @@ Analytics go to Mixpanel through the `AnalyticsClient` protocol; with no configu
 test run, `ConsoleAnalyticsClient` is used instead. Tooling was ported from
 `simple-recurring-budgets` (the **Wren** app) and trimmed.
 
-The Xcode project is `checklists/checklists.xcodeproj` (Xcode 26+; CI pins 26.6). All three targets
+The Xcode project is `checklists/checklists.xcodeproj` (Xcode 27+; CI pins 27.0). All three targets
 use file-system-synchronized folders: a new `.swift` under `checklists/checklists/`,
 `checklists/checklistsTests/`, or `checklists/checklistsUITests/` compiles into that target with no
 project-file change. Each folder's `Info.plist` is excluded from its target, as is the UI-test
