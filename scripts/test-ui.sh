@@ -22,9 +22,9 @@ fi
 RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-$$-ui.xcresult"
 
 # `|| RC=$?` so `set -e` doesn't skip the tagging below; never `if ! xcodebuild` (see gate.sh).
-# `-collect-test-diagnostics never`: Xcode 27 can otherwise sit out a 600 s timeout collecting
-# simulator diagnostics after the last test. Failures are read from the result bundle instead.
 RC=0
+# `-collect-test-diagnostics never`: nothing here reads the simulator diagnostics, and collecting
+# them once hung for its full 600 s timeout after a passing run.
 xcodebuild test \
     -project checklists/checklists.xcodeproj \
     -scheme checklists \
