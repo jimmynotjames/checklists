@@ -342,6 +342,8 @@ struct ChecklistsView: View {
       comment: "VoiceOver label for the round floating button that creates a checklist."
     ))
     .accessibilityIdentifier("toolbar.addChecklist")
+    // From the safe area, so the larger bottom gap is the home-indicator inset. Tune this constant;
+    // never offset against `safeAreaInsets`, which pushes the button into the system's gesture strip.
     .padding(20)
   }
 

@@ -47,8 +47,7 @@ check nobody ran.
 The checklist detail screen is UIKit and uses fixed fonts, so it does not scale
 with Dynamic Type. Its screenshots are still worth reading for translation
 length and right-to-left mirroring, but not for type size. See
-`core-docs/accessibility-spec.md` §Dynamic Type and issue
-[#183](https://github.com/jimmynotjames/checklists/issues/183).
+`core-docs/accessibility-spec.md` §Dynamic Type and issue #183.
 
 ## Dependencies worth knowing about
 

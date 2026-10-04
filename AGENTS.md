@@ -32,7 +32,11 @@ The public support site is `index.html` on the orphan `gh-pages` branch
 Governs docs, code comments, commit bodies, and PR bodies alike.
 
 - **Describe the current state.** No history sections, changelogs, or revision appendices — git is
-  the record. Cite an issue or PR only where it still changes behaviour.
+  the record. Cite an issue or PR only where it still changes behaviour, as a bare `#N`, never a URL
+  an agent would fetch.
+- **No archaeology.** Never explain new code by what the same change deleted ("replaces the old
+  view controller"); the comment names code that no longer exists. The one exception is a magic
+  number whose only justification is history: cite its PR.
 - **No drifting numbers:** test counts, test inventories, annotation counts, dates, "since #N".
 - **No speculation about future work** in comments ("for deep links later").
 - **Point at the canonical home; don't paraphrase it.** A one-line pointer to a `core-docs/` section
@@ -74,6 +78,7 @@ make system       # once per clone: toolchain + git hooks
 
 The app's unit and UI suites are opt-in and in no gate or hook: they boot this checkout's simulator
 and take minutes, while the gate never boots one. The tooling tests (`test-scripts`) are in the gate.
+Give any suite run a timeout of at least 30 minutes.
 
 Don't add `-configuration Release` to the test scripts — only Debug sets `ONLY_ACTIVE_ARCH = YES`,
 so Release would build both slices.
@@ -109,6 +114,10 @@ Both test scripts print one `TEST-FAILED: <test> <file:line> <text>` line per fa
 `scripts/_destination.sh`) is flaky: append a row to `checklists/checklistsUITests/FLAKY_TESTS.md`
 with `file:line` from those lines, never a guess, name the flake in your report, and don't fix it in
 passing.
+
+Before blaming a change for new failures, run the same suite on a clean `main` for a baseline.
+Several failures with one signature often point at the environment: read §Simulator sandbox first.
+Keyboard failures are the exception (§The software keyboard).
 
 ## Lint policy
 
@@ -166,7 +175,7 @@ to merge on failure. If CI is ever enabled, `/merge-pr` should wait on `gh pr ch
 
 All targets set `SWIFT_APPROACHABLE_CONCURRENCY = YES`; the app and `checklistsTests` also set
 `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`
-([#154](https://github.com/jimmynotjames/checklists/issues/154) records why it stays).
+(#154 records why it stays).
 
 - Types holding only constants or pure functions get `nonisolated` on the type, up front
   (`AnalyticsEvent`, `ConsentJurisdiction`).
@@ -211,6 +220,10 @@ the fix:
   Info.plist — `analytics-spec.md §Build hygiene`.
 - Ignore the `swiftui_2024` branch (origin only) unless asked about it by name. It is an unmerged
   UIKit→SwiftUI migration; exploring it wastes tokens.
+- Don't propose dark-mode checks or dark colour variants: `Info.plist` pins Light appearance.
+  System semantic colours always resolve to their light values, so match a new surface to `Colors`
+  explicitly.
+- Don't delete the MoreMenuIcon32x32 image set as dead; it is kept on purpose.
 
 ## Simulator sandbox
 
@@ -249,7 +262,9 @@ call's `workspaceIdentifier`; the server rejects a path there, and the identifie
 that MCP session. Use it for build diagnostics, previews, snippets, and docs; run tests with `make
 test-unit` / `make test-ui`, not `RunAllTests` / `RunSomeTests`. Before `RunProject` or a
 device-interaction session, point it at this checkout's device: `XcodeSwitchRunDestination` to the
-`iPhone 17 [<hash>]` entry, or `deviceIdentifier` set to the UDID.
+`iPhone 17 [<hash>]` entry, or `deviceIdentifier` set to the UDID. After
+`DeviceInteractionInstallAndRun`, pass `activationBundleId: com.jimmyho.checklists` to the first
+`DeviceInteractionSynthesize`, or it can land on a blank SpringBoard.
 
 ### The software keyboard
 

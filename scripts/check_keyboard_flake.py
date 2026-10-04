@@ -14,7 +14,7 @@ import subprocess
 import sys
 
 TAG = "SIM-KEYBOARD-FLAKE"
-ISSUE = "https://github.com/jimmynotjames/checklists/issues/231"
+ISSUE = "#231"
 
 # The keyboard's own elements, as XCUITest names them in a failure message.
 KEYBOARD_ELEMENT = re.compile(
