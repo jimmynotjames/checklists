@@ -65,8 +65,8 @@ final class SyncStatus {
 
   /// Orders `ICloudStatusLoader` queries, which run concurrently: each load takes the next number,
   /// and publishes only if no later-started load has published already.
-  var accountQueriesStarted = 0
-  var newestPublishedAccountQuery = 0
+  @ObservationIgnored var accountQueriesStarted = 0
+  @ObservationIgnored var newestPublishedAccountQuery = 0
 
   init(
     containerBacking: ContainerBacking,
