@@ -27,6 +27,7 @@ xcodebuild test \
     -derivedDataPath "${SIM_DERIVED}" \
     -resultBundlePath "${RESULT_BUNDLE}" \
     -parallel-testing-enabled NO \
+    -collect-test-diagnostics never \
     -skip-testing:checklistsUITests || RC=$?
 
 python3 "${ROOT}/scripts/list_test_failures.py" "${RESULT_BUNDLE}" || true
