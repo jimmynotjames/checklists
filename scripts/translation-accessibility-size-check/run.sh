@@ -55,6 +55,7 @@ xcodebuild test \
   -derivedDataPath "${SIM_DERIVED}" \
   -resultBundlePath "${RESULT}" \
   "${PARALLEL_ARGS[@]}" \
+  -collect-test-diagnostics never \
   -only-testing:checklistsUITests/LocalizationScreenshotCapture || RC=$?
 
 echo "result-bundle: ${RESULT}"

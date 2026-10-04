@@ -23,6 +23,8 @@ RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-$$-ui.xcresult"
 
 # `|| RC=$?` so `set -e` doesn't skip the tagging below; never `if ! xcodebuild` (see gate.sh).
 RC=0
+# `-collect-test-diagnostics never`: nothing here reads the simulator diagnostics, and collecting
+# them once hung for its full 600 s timeout after a passing run.
 xcodebuild test \
     -project checklists/checklists.xcodeproj \
     -scheme checklists \
@@ -31,6 +33,7 @@ xcodebuild test \
     -derivedDataPath "${SIM_DERIVED}" \
     -resultBundlePath "${RESULT_BUNDLE}" \
     -parallel-testing-enabled NO \
+    -collect-test-diagnostics never \
     -only-testing:checklistsUITests/checklistsUITests \
     -only-testing:checklistsUITests/checklistUITest \
     -only-testing:checklistsUITests/checklistCreateUITest \
