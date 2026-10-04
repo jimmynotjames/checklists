@@ -79,7 +79,8 @@ struct ChecklistReorderModeTests {
       #expect(controller.navigationItem.leftBarButtonItem === backButton)
       #expect(harness.header.nameTextField.isEnabled)
       let rows = harness.table.visibleCells.compactMap { $0 as? ItemTableViewCell }
-      #expect(rows.allSatisfy(\.itemContentView.isUserInteractionEnabled))
+      let allInteractive = rows.allSatisfy(\.itemContentView.isUserInteractionEnabled)
+      #expect(allInteractive)
       #expect(controller.tableView(harness.table, trailingSwipeActionsConfigurationForRowAt: IndexPath(row: 0, section: 0)) != nil)
     }
   }
