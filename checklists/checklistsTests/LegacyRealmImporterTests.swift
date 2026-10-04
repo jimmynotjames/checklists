@@ -296,8 +296,6 @@ struct LegacyRealmImporterTests {
     }
   }
 
-  /// Giving up is not the same as deleting: a later release with a better reader still has the
-  /// file to work from.
   @Test("abandoning the import keeps the Realm file on disk")
   func abandoningTheImportKeepsTheRealmFile() throws {
     try withFixture { fixtureURL, userDefaults in
