@@ -25,6 +25,18 @@ struct ChecklistsView: View {
   @Environment(\.analytics) private var analytics
   @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
+  private static let menuIconBaseSize: CGFloat = 20
+
+  /// The menu icon's side at the current Dynamic Type size, scaled the way body text scales.
+  /// A bitmap does not follow Dynamic Type by itself.
+  @ScaledMetric(relativeTo: .body) private var scaledMenuIconSize: CGFloat = menuIconBaseSize
+
+  /// Takes a third of each step the scale adds: at full scale the icon outgrew its capsule, whose
+  /// size follows the system's own, slower-growing glyphs.
+  private var menuIconSize: CGFloat {
+    Self.menuIconBaseSize + (scaledMenuIconSize - Self.menuIconBaseSize) / 3
+  }
+
   /// Created on the first `.task` rather than at init: a `@State` initial value would be
   /// rebuilt on every re-render of the view struct, and this observer registers for a
   /// notification in its initializer.
@@ -246,6 +258,9 @@ struct ChecklistsView: View {
       router.isMainMenuVisible = true
     } label: {
       Image("MenuIcon25x25")
+        .resizable()
+        .scaledToFit()
+        .frame(width: menuIconSize, height: menuIconSize)
     }
     // iOS 26 renders bar buttons in `labelColor` unless the button itself carries a tint.
     .tint(Color.accentColor)
