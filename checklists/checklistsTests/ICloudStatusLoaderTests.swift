@@ -88,13 +88,13 @@ struct ICloudStatusLoaderTests {
   /// The launch check and the account-change observers run their loads concurrently, so the
   /// earlier-started query can resolve last.
   @Test("an earlier query that resolves last does not overwrite a later one", .timeLimit(.minutes(1)))
-  func earlierQueryResolvingLastIsDropped() async {
+  func earlierQueryResolvingLastIsDropped() async throws {
     let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .checking)
     let earlierAnswer = PendingAccountStatus()
     let earlier = Task {
       await ICloudStatusLoader(accountStatus: { await earlierAnswer.value() }).load(into: syncStatus)
     }
-    await earlierAnswer.waitUntilRequested()
+    try await earlierAnswer.waitUntilRequested()
 
     await ICloudStatusLoader(accountStatus: { .available }).load(into: syncStatus)
     earlierAnswer.resolve(.noAccount)
@@ -104,18 +104,18 @@ struct ICloudStatusLoaderTests {
   }
 
   @Test("an earlier query still publishes while a later one is pending", .timeLimit(.minutes(1)))
-  func earlierQueryPublishesWhileLaterIsPending() async {
+  func earlierQueryPublishesWhileLaterIsPending() async throws {
     let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .checking)
     let earlierAnswer = PendingAccountStatus()
     let laterAnswer = PendingAccountStatus()
     let earlier = Task {
       await ICloudStatusLoader(accountStatus: { await earlierAnswer.value() }).load(into: syncStatus)
     }
-    await earlierAnswer.waitUntilRequested()
+    try await earlierAnswer.waitUntilRequested()
     let later = Task {
       await ICloudStatusLoader(accountStatus: { await laterAnswer.value() }).load(into: syncStatus)
     }
-    await laterAnswer.waitUntilRequested()
+    try await laterAnswer.waitUntilRequested()
 
     earlierAnswer.resolve(.noAccount)
     await earlier.value
@@ -172,8 +172,10 @@ private final class PendingAccountStatus {
   }
 
   /// Returns once a load is suspended in `value()`, so the test knows its query number is taken.
-  func waitUntilRequested() async {
+  /// Throws when the test's time limit cancels it, so a load that never asks fails instead of hanging.
+  func waitUntilRequested() async throws {
     while continuation == nil {
+      try Task.checkCancellation()
       await Task.yield()
     }
   }
