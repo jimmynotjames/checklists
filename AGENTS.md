@@ -34,8 +34,8 @@ Governs docs, code comments, commit bodies, and PR bodies alike.
 - **Describe the current state.** No history sections, changelogs, or revision appendices — git is
   the record. Cite an issue or PR only where it still changes behaviour, as a bare `#N`, never a URL
   an agent would fetch.
-- **No archaeology.** Never explain new code by what the same change deleted ("replaces
-  `FooViewController`"); the comment names code that no longer exists. The one exception is a magic
+- **No archaeology.** Never explain new code by what the same change deleted ("replaces the old
+  view controller"); the comment names code that no longer exists. The one exception is a magic
   number whose only justification is history: cite its PR.
 - **No drifting numbers:** test counts, test inventories, annotation counts, dates, "since #N".
 - **No speculation about future work** in comments ("for deep links later").
@@ -78,7 +78,7 @@ make system       # once per clone: toolchain + git hooks
 
 The app's unit and UI suites are opt-in and in no gate or hook: they boot this checkout's simulator
 and take minutes, while the gate never boots one. The tooling tests (`test-scripts`) are in the gate.
-`test-ui` alone runs over ten minutes, so give any suite run a timeout of at least 30 minutes.
+Give any suite run a timeout of at least 30 minutes.
 
 Don't add `-configuration Release` to the test scripts — only Debug sets `ONLY_ACTIVE_ARCH = YES`,
 so Release would build both slices.
@@ -116,8 +116,8 @@ with `file:line` from those lines, never a guess, name the flake in your report,
 passing.
 
 Before blaming a change for new failures, run the same suite on a clean `main` for a baseline.
-Several failures with one signature (such as `kAXErrorCannotComplete`) point at the environment:
-read §The software keyboard first.
+Several failures with one signature often point at the environment: read §Simulator sandbox first.
+Keyboard failures are the exception (§The software keyboard).
 
 ## Lint policy
 
@@ -220,10 +220,10 @@ the fix:
   Info.plist — `analytics-spec.md §Build hygiene`.
 - Ignore the `swiftui_2024` branch (origin only) unless asked about it by name. It is an unmerged
   UIKit→SwiftUI migration; exploring it wastes tokens.
-- Don't propose dark-mode checks or dark colour variants: `Info.plist` pins Light appearance
-  (`accessibility-spec.md` tracks Dark Mode as not started). System semantic colours always resolve
-  to their light values, so match a new surface to `Colors` explicitly.
-- Don't delete the `MoreMenuIcon32x32` asset as dead; it is unused but kept on purpose.
+- Don't propose dark-mode checks or dark colour variants: `Info.plist` pins Light appearance.
+  System semantic colours always resolve to their light values, so match a new surface to `Colors`
+  explicitly.
+- Don't delete the MoreMenuIcon32x32 image set as dead; it is kept on purpose.
 
 ## Simulator sandbox
 

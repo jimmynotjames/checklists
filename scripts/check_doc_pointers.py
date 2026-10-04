@@ -68,7 +68,8 @@ EXTERNAL_SYMBOLS = {
     "OSLog", "SchemaV2",
     # Xcode MCP server tools and arguments AGENTS.md §"Xcode MCP" steers agents through.
     "workspaceIdentifier", "deviceIdentifier", "RunAllTests", "RunSomeTests", "RunProject",
-    "XcodeSwitchRunDestination", "XcodeOpenWorkspace",
+    "XcodeSwitchRunDestination", "XcodeOpenWorkspace", "DeviceInteractionInstallAndRun",
+    "DeviceInteractionSynthesize",
 }
 # `Name.ext` in backticks is a file reference: it must be a tracked file, not a symbol.
 FILE_EXTENSIONS = {"swift", "md", "py", "sh", "xcstrings", "xcprivacy", "plist", "yml",

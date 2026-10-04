@@ -214,8 +214,7 @@ screen and read identically in some locale.
 and it is deliberately outside the app test suites and `make gate`. Findings go in its `AUDIT_LOG.md`.
 
 The checklist detail screen is UIKit with fixed fonts and does not scale with Dynamic Type. See
-`accessibility-spec.md §Dynamic Type` and issue
-[#183](https://github.com/jimmynotjames/checklists/issues/183).
+`accessibility-spec.md §Dynamic Type` and issue #183.
 
 ---
 
