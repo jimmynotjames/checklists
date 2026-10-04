@@ -230,7 +230,7 @@ class checklistCreateUITest: XCTestCase {
   func testCreateBlankChecklist() {
     addChecklistButton.tap()
     // A tap while the sheet is still sliding up is dropped. The name field takes focus in
-    // `viewDidAppear`, so its focus marks the end of the presentation.
+    // `viewDidAppear`, so wait for that before tapping.
     let sheetPresented = expectation(
       for: NSPredicate(format: "hasKeyboardFocus == true"),
       evaluatedWith: app.textFields["checklistNameField"]
