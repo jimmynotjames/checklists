@@ -229,6 +229,13 @@ class checklistCreateUITest: XCTestCase {
 
   func testCreateBlankChecklist() {
     addChecklistButton.tap()
+    // A tap while the sheet is still sliding up is dropped. The name field takes focus in
+    // `viewDidAppear`, so wait for that before tapping.
+    let sheetPresented = expectation(
+      for: NSPredicate(format: "hasKeyboardFocus == true"),
+      evaluatedWith: app.textFields["checklistNameField"]
+    )
+    wait(for: [sheetPresented], timeout: 5)
     app.navigationBars.buttons["Done"].tap()
 
     let untitled = checklistsList.cells.element(boundBy: 0).staticTexts["untitled checklist"]
