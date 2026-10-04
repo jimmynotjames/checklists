@@ -8,8 +8,8 @@ import UIKit
 /// The trailing navigation items, the overflow menu, the actions behind it, and the dismissal
 /// the destructive one shares with the remote-deletion path.
 ///
-/// `duplicateChecklist` and `deleteChecklist` are internal so a test can invoke them: a `UIAction`
-/// handler cannot be fired directly.
+/// `enterReorderMode`, `duplicateChecklist` and `deleteChecklist` are internal so a test can invoke
+/// them: a `UIAction` handler cannot be fired directly.
 extension ChecklistViewController {
   /// Picks the menu's wording for this screen's mode and builds the trailing bar items. The create
   /// sheet gets Done, an existing checklist gets Reset; both get the overflow menu at the outer edge.
@@ -45,9 +45,13 @@ extension ChecklistViewController {
     let deleteAction = UIAction(title: title, image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
       self?.confirmDeleteChecklist()
     }
+    // On the create sheet too: people often put items in order right after typing a batch of them.
+    let reorderSection = UIMenu(options: .displayInline, children: [reorderItemsAction])
     // Nothing on the create sheet's checklist has been kept yet — copying a draft nobody has
     // decided to keep is not an action that means anything.
-    guard !showsDiscardWording else { return UIMenu(children: [deleteAction]) }
+    guard !showsDiscardWording else {
+      return UIMenu(children: [reorderSection, UIMenu(options: .displayInline, children: [deleteAction])])
+    }
 
     let duplicateAction = UIAction(title: Self.duplicateChecklistMenuTitle, image: UIImage(systemName: "plus.square.on.square")) { [weak self] _ in
       self?.duplicateChecklist()
@@ -55,9 +59,53 @@ extension ChecklistViewController {
     // Inline sections, so the destructive entry keeps a gap above it and a thumb reaching for
     // Duplicate cannot land on Delete.
     return UIMenu(children: [
+      reorderSection,
       UIMenu(options: .displayInline, children: [duplicateAction, copyCheckedItemsElement]),
       UIMenu(options: .displayInline, children: [deleteAction]),
     ])
+  }
+
+  private var reorderItemsAction: UIAction {
+    let action = UIAction(title: Self.reorderItemsMenuTitle, image: UIImage(systemName: "arrow.up.arrow.down")) { [weak self] _ in
+      self?.enterReorderMode()
+    }
+    // Locale-invariant handle for UI tests and the localized screenshot capture.
+    action.accessibilityIdentifier = "checklist.menu.reorderItems"
+    return action
+  }
+
+  func enterReorderMode() {
+    analytics.track(AnalyticsEvent.checklistReorderModeEntered)
+    setEditing(true, animated: true)
+  }
+
+  /// Clears the bar down to Done, as ChecklistsView's Edit mode does: one obvious way out, and no
+  /// second Done beside the create sheet's own. The back button goes too; the VoiceOver escape
+  /// gesture still leaves the mode, and `ChecklistScreen` holds off its edge swipe.
+  func applyReorderModeToNavigationBar(_ reordering: Bool, animated: Bool) {
+    if reordering {
+      savedRightBarButtonItems = navigationItem.rightBarButtonItems
+      savedLeftBarButtonItem = navigationItem.leftBarButtonItem
+      // The word and semibold weight of ChecklistsView's Done; the `.done` style would draw a filled
+      // checkmark button instead.
+      let doneItem = UIBarButtonItem(title: CommonStrings.done, style: .plain, target: self, action: #selector(reorderDoneTapped))
+      let semibold = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .body).pointSize, weight: .semibold)
+      doneItem.setTitleTextAttributes([.font: semibold], for: .normal)
+      doneItem.setTitleTextAttributes([.font: semibold], for: .highlighted)
+      doneItem.tintColor = .tintColor
+      doneItem.accessibilityIdentifier = "checklist.reorderDone"
+      navigationItem.setLeftBarButton(nil, animated: animated)
+      navigationItem.setRightBarButtonItems([doneItem], animated: animated)
+    } else {
+      navigationItem.setLeftBarButton(savedLeftBarButtonItem, animated: animated)
+      navigationItem.setRightBarButtonItems(savedRightBarButtonItems, animated: animated)
+      savedRightBarButtonItems = nil
+      savedLeftBarButtonItem = nil
+    }
+  }
+
+  @objc private func reorderDoneTapped() {
+    setEditing(false, animated: true)
   }
 
   /// The copy entry, and the notice explaining why a tap did nothing.

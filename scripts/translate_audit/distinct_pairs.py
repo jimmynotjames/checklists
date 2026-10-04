@@ -120,6 +120,16 @@ DISTINCT_PAIRS: list[tuple[str, str, str]] = [
         "checklists.accessibilityAction.moveToBottom",
         "both in one row's VoiceOver actions list; one moves a single place, the other all the way",
     ),
+    (
+        "item.accessibilityAction.moveUp",
+        "item.accessibilityAction.moveToTop",
+        "both in one item row's VoiceOver actions list; one moves a single place, the other all the way",
+    ),
+    (
+        "item.accessibilityAction.moveDown",
+        "item.accessibilityAction.moveToBottom",
+        "both in one item row's VoiceOver actions list; one moves a single place, the other all the way",
+    ),
 ]
 
 

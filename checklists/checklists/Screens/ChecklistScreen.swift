@@ -117,14 +117,17 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
         action: #selector(Coordinator.edgeSwipeBegan(_:))
       )
       edgeSwipe.edges = .left
+      edgeSwipe.delegate = context.coordinator
+      context.coordinator.viewController = viewController
       navigationController.view.addGestureRecognizer(edgeSwipe)
     }
     return navigationController
   }
 
   @MainActor
-  final class Coordinator: NSObject {
+  final class Coordinator: NSObject, UIGestureRecognizerDelegate {
     private let onRequestDismiss: () -> Void
+    weak var viewController: ChecklistViewController?
 
     init(onRequestDismiss: @escaping () -> Void) {
       self.onRequestDismiss = onRequestDismiss
@@ -133,6 +136,11 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
     @objc func edgeSwipeBegan(_ gesture: UIScreenEdgePanGestureRecognizer) {
       guard gesture.state == .began else { return }
       onRequestDismiss()
+    }
+
+    /// Reorder Items mode hides the back button, and an edge swipe would be a way out that skips it.
+    func gestureRecognizerShouldBegin(_: UIGestureRecognizer) -> Bool {
+      viewController?.isReordering != true
     }
   }
 
@@ -158,6 +166,12 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
 
   #Preview("New checklist") {
     ChecklistScreen(checklist: PreviewSupport.checklist(), isNewChecklist: true) {}
+      .previewEnvironment()
+  }
+
+  // Live mode: ⋯ > Reorder Items, then drag the handles and tap Done.
+  #Preview("Reorder Items") {
+    ChecklistScreen(checklist: PreviewSupport.checklist(id: SampleData.preTripId)) {}
       .previewEnvironment()
   }
 #endif

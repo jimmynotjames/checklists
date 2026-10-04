@@ -146,6 +146,14 @@ final class LocalizationScreenshotCapture: XCTestCase {
       guard self.tap(app, "toolbar.addChecklist") else { return false }
       return app.textFields["checklistNameField"].waitForExistence(timeout: 8)
     }
+
+    capture("08-reorder-items", lang) { app in
+      app.cells.firstMatch.tap()
+      guard self.tap(app, "checklist.more"),
+            self.tap(app, "checklist.menu.reorderItems")
+      else { return false }
+      return app.buttons["checklist.reorderDone"].waitForExistence(timeout: 8)
+    }
   }
 
   /// Locales whose layout direction mirrors the swipe gesture.

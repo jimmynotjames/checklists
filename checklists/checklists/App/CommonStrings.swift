@@ -30,7 +30,11 @@ nonisolated enum CommonStrings {
   static let done = String(
     localized: "common.action.done",
     defaultValue: "Done",
-    comment: "Ends editing: the keyboard accessory button, and the nav bar button that leaves Edit mode on the list of checklists (it reads Edit until tapped)."
+    comment: """
+    Ends editing: the keyboard accessory button, the nav bar button that leaves Edit mode on the \
+    list of checklists (it reads Edit until tapped), and the nav bar button that leaves Reorder \
+    Items mode on a checklist's screen.
+    """
   )
 
   static let duplicate = String(

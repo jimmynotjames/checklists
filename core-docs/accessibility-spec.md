@@ -9,7 +9,7 @@
 
 | Axis | Status | Notes |
 | --- | --- | --- |
-| **VoiceOver labels/values** | Partial | Most interactive controls are labelled; the remaining unlabelled controls are **#181**. Checklists reorder by Move Up/Down/to Top/to Bottom actions on each row, since `.onMove` offers VoiceOver no way to move a row |
+| **VoiceOver labels/values** | Partial | Most interactive controls are labelled; the remaining unlabelled controls are **#181**. Checklists, and the items inside a checklist, reorder by Move Up/Down/to Top/to Bottom actions on each row, since neither `.onMove` nor the item table's drag handles and long-press drag offer VoiceOver a way to move a row. On item rows the actions sit on the checkbox and both text views, the elements VoiceOver lands on |
 | **VoiceOver traits** | Partial | `ChecklistHistoryCaption` sets `.staticText`; `MainMenuView` sets `.isModal`, since on a wide window it is a side panel with the list still on screen beside it; everything else relies on platform defaults |
 | **Reduce Motion** | Implemented | Every app-authored animation has a recorded verdict — §Animation and Reduce Motion |
 | **Dynamic Type** | Partial | SwiftUI scales via semantic tokens; UIKit hardcodes point sizes — §Dynamic Type, **#183**. From two steps above the default text size (xxLarge) the list's Reset All and Edit mode toolbar collapse to icons, so long translations neither push Edit into an overflow menu nor clip the toolbar; they keep their names for VoiceOver and the Large Content Viewer |
@@ -17,7 +17,7 @@
 | **Increase Contrast** | Not started | **#182** |
 | **Touch targets (44×44)** | Partial | `ToastView` and `CopyCheckedItemsView` enforce a 44pt minimum; the rest is **#184** |
 | **Color-only signaling** | N/A — none | Completion state is an icon swap plus a spoken value, never tint alone |
-| **Screen-change announcements** | Partial | `LoadingView` posts `.screenChanged`; `ToastPresenterModifier` and the list's move actions post announcements; nothing else does |
+| **Screen-change announcements** | Partial | `LoadingView` posts `.screenChanged`; `ToastPresenterModifier` and both screens' move actions post announcements; nothing else does |
 | **Automated a11y tests** | Not started | No audit-API coverage; UI tests use accessibility attributes only as element hooks |
 
 `UIAccessibility.isVoiceOverRunning` is read by `ToastPresenter`. The other flags
@@ -83,6 +83,7 @@ full two-family sweep, and the reasoning behind each verdict.
 | `ChecklistViewController` keyboard-inset, item-insert, and scroll-into-view animations (all ≤ 0.1s) | **Functional, left alone.** They keep the edited field clear of the keyboard and the target row on screen; suppressing them trades an a11y win for an a11y regression |
 | `ChecklistViewController` row insert/delete/move and row-height reflow | **Left alone.** Ordinary list-editing feedback; Apple's own list apps don't suppress it |
 | `ChecklistsView` Edit mode on/off (`withAnimation`) | **Left alone.** The system's own edit-mode reveal of selection circles and handles; Apple's list apps don't suppress it |
+| `ChecklistViewController` Reorder Items mode on/off (`setEditing(_:animated:)`, add-item footer fade) | **Left alone.** The system's reveal of drag handles, plus an opacity fade |
 | `ChecklistViewController` nav-title fade on scroll | **Left alone.** Opacity, not simulated movement |
 | `CircularPercentStatusIcon.setInnerCircle`, `CheckboxButton.setCheckboxState` | **Not animated.** Direct property assignment, outside any animation context |
 | `ProgressView` spinners (`LoadingView`, `SettingsView`) | System-owned. Progress indicators are not suppressed under Reduce Motion, by Apple's design |

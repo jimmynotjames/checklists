@@ -28,6 +28,7 @@ struct AnalyticsNamesTests {
     AnalyticsEvent.checklistItemsCopied,
     AnalyticsEvent.checklistReset,
     AnalyticsEvent.checklistDeleted,
+    AnalyticsEvent.checklistReorderModeEntered,
     AnalyticsEvent.checklistsEditModeEntered,
     AnalyticsEvent.checklistsBulkActionPerformed,
     AnalyticsEvent.persistenceFatalError,
