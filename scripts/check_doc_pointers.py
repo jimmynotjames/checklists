@@ -66,6 +66,9 @@ EXTERNAL_SYMBOLS = {
     "NSFileProtectionCompleteUntilFirstUserAuthentication", "InfoPlist",
     # Apple's logging framework (the code imports `os`), and the next schema's name as an example.
     "OSLog", "SchemaV2",
+    # Xcode MCP server tools and arguments AGENTS.md §"Xcode MCP" steers agents through.
+    "workspaceIdentifier", "deviceIdentifier", "RunAllTests", "RunSomeTests", "RunProject",
+    "XcodeSwitchRunDestination",
 }
 # `Name.ext` in backticks is a file reference: it must be a tracked file, not a symbol.
 FILE_EXTENSIONS = {"swift", "md", "py", "sh", "xcstrings", "xcprivacy", "plist", "yml",

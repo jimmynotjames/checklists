@@ -66,6 +66,9 @@ make doc-check    # doc pointers, headings, and named symbols resolve; no histor
 make test-scripts # scripts/tests (Python) + fastlane/tests (Ruby 3+; skipped with a warning if absent)
 make test-unit    # opt-in, not in the gate
 make test-ui      # opt-in; needs a prior `make test-unit` (simulator warm-up)
+make sim-udid     # this checkout's simulator UDID (boots it if needed); `make -s` for stdout alone
+make sim-run      # build, install, and launch the app on this checkout's simulator
+make sim-show     # open DeviceHub on this checkout's simulator
 make system       # once per clone: toolchain + git hooks
 ```
 
@@ -87,17 +90,20 @@ Both test suites pass. Conventions:
 ### Reading a test result
 
 Never pipe a test command into `tail`/`head`/`grep` and trust the exit code — a pipeline reports
-the last command's status. Redirect instead (`make test-unit > tmp/test.log 2>&1; echo $?`), or
-read the result bundle, which is authoritative:
+the last command's status. Redirect to a log of your own instead — another agent in this checkout
+may be writing a shared one — or read the result bundle, which is authoritative. Each run prints
+a `result-bundle:` line naming its own bundle; never pick the newest one in `.build/sim/results/`,
+which may be another agent's:
 
 ```bash
-R=$(ls -td .build/sim/results/*-unit.xcresult | head -1)
+L=tmp/test-unit-$$.log; make test-unit > "$L" 2>&1; echo "$? $L"
+R=$(grep -m1 '^result-bundle: ' "$L" | cut -c16-)
 xcrun xcresulttool get test-results summary --path "$R"   # swap summary -> tests for failure detail
 ```
 
 Don't read pass/fail from `tmp/gate.log` or a stale console tail.
 
-Both test scripts end with one `TEST-FAILED: <test> <file:line> <text>` line per failure
+Both test scripts print one `TEST-FAILED: <test> <file:line> <text>` line per failure
 (`scripts/list_test_failures.py`). A test that fails in a full run but passes an isolated rerun
 (`-only-testing:<target>/<Class>/<test> -test-iterations 3`, destination and derived data from
 `scripts/_destination.sh`) is flaky: append a row to `checklists/checklistsUITests/FLAKY_TESTS.md`
@@ -184,7 +190,7 @@ the fix:
 2. No `sed -i` — use Edit/Write.
 3. No `sed -n RANGE_p` — use Read with `offset`/`limit`.
 4. Never push directly to `main` or `gh-pages`.
-5. Never destroy simulators machine-wide (below).
+5. Never destroy simulators machine-wide or target `booted` (below).
 6. No `nohup` — use the Bash tool's `run_in_background: true`.
 
 ## What NOT to do
@@ -193,9 +199,11 @@ the fix:
   refactor beyond the change. Adjacent problems you notice get **said out loud** — in the reply or
   the turn's closing summary — and nothing more. **Never `gh issue create` without asking first**:
   "list them for later" means mention them, not file them. Which ones become issues is Jimmy's call.
-- Never `pkill`/`killall Simulator`, `simctl shutdown/erase/delete all`, or
-  `simctl delete unavailable` — they hit every simulator on the machine. Use `make sim-shutdown` /
-  `make sim-clean`, which act only on this checkout's devices.
+- Never kill Simulator, DeviceHub, or CoreSimulator processes, or run `simctl shutdown/erase/delete
+  all` or `simctl delete unavailable` — they hit every simulator on the machine. Use `make
+  sim-shutdown` / `make sim-clean`, which act only on this checkout's devices.
+- Never pass `booted` to `simctl` (`list` aside): it acts on whichever device is booted, possibly
+  another checkout's. Use the UDID from `make -s sim-udid`.
 - Don't add repo-wide `make format` / `make lint` to a hook or gate.
 - Don't build a one-off container or router in a `#Preview`; use `Utils/PreviewSupport.swift` and
   `.previewEnvironment()`.
@@ -206,22 +214,48 @@ the fix:
 
 ## Simulator sandbox
 
-Simulators are per checkout; each worktree gets its own, and it outlives the worktree. The device is
-`iPhone 17 [<hash of checkout path>]`, managed by `scripts/_sim_sandbox.sh` (sourced via
-`_destination.sh` by the test scripts and by `translation-accessibility-size-check/run.sh`); the
-screenshot lane's `... Screenshots [<hash>]` device shares the hash. `SIMULATOR_NAME` picks a
-different base device; `SIMULATOR_UDID` pins a device and skips sandbox management. `make
-sim-status` shows it; `make sim-clean` deletes every device carrying this checkout's hash. When the
-device isn't on the newest iOS runtime the selected Xcode can target (after an Xcode upgrade, say),
-`scripts/sim_retire_stale.py` deletes it before use so it is recreated on that runtime; the
-screenshot device gets the same treatment.
+Each checkout has its own simulator, so worktrees and clones never contend; it outlives a deleted
+worktree, so run `make sim-clean` in a worktree before removing it. The device is
+`iPhone 17 [<hash of the checkout's physical path>]` in the default device set, managed by
+`scripts/_sim_sandbox.sh` (sourced via `_destination.sh` by the test scripts and
+`translation-accessibility-size-check/run.sh`); the screenshot lane's `... Screenshots [<hash>]`
+device shares the hash. `SIMULATOR_NAME` picks a different base device; `SIMULATOR_UDID` pins a
+device and skips sandbox management. `make sim-status` shows the device and the lock holder;
+`make sim-clean` deletes every device and parallel-testing clone carrying this checkout's hash.
+When the device isn't on the newest iOS runtime the selected Xcode can target,
+`scripts/sim_retire_stale.py` deletes it before use so it is recreated; the screenshot device gets
+the same treatment.
+
+Agents sharing one checkout take turns: every command that touches its sandbox device (the test
+scripts, `run.sh`, every `make sim-*` but `sim-status`) holds `.build/sim.lock` for its whole run;
+the screenshot lane serializes on its own `capture.lock`.
+A second one waits, printing who holds it, so start it with `run_in_background`; `SIM_LOCK_TIMEOUT`
+(seconds) makes it give up instead. The kernel drops the lock when the holder exits, however it
+exits. For parallel runs, use a worktree.
+
+Nothing opens a window: the simulator runs headless, and `make sim-show` opens DeviceHub on it
+when someone wants to watch. For anything interactive, get `UDID=$(make -s sim-udid)` and pass it
+explicitly to every tool — `simctl`, an MCP server's device argument, `xcrun simctl io "$UDID"
+screenshot tmp/s.png`. Device-matching tools pick the "best candidate" for a name, which can be
+another checkout's device. Interactive use between commands isn't locked; another agent in the same
+checkout may run tests on that device meanwhile.
+
+### Xcode MCP
+
+`.mcp.json` registers Xcode's MCP server (`xcrun mcpbridge`). It drives the running Xcode, with that
+window's run destination and Xcode's own DerivedData, outside the lock. Pass every call this
+checkout's `.xcodeproj` absolute path as `workspaceIdentifier`. Use it for build diagnostics,
+previews, snippets, and docs; run tests with `make test-unit` / `make test-ui`, not `RunAllTests` /
+`RunSomeTests`. Before `RunProject` or a device-interaction session, point it at this checkout's
+device: `XcodeSwitchRunDestination` to the `iPhone 17 [<hash>]` entry, or `deviceIdentifier` set
+to the UDID.
 
 ### The software keyboard
 
 UI tests never tap keyboard keys; `make gate` fails on a new tap
 (`scripts/check_ui_test_keyboard.py`). **If a run prints `SIM-KEYBOARD-FLAKE tests-failed`, say so
-explicitly in your report** — never treat it as known flake. Mechanism, the `SIMULATOR_UDID`
-recovery command, and #231: the `XCUIElement+Keyboard.swift` header.
+explicitly in your report** — never treat it as known flake. Mechanism and #231: the
+`XCUIElement+Keyboard.swift` header.
 
 ## Known issues
 

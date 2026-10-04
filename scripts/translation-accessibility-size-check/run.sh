@@ -8,7 +8,7 @@ cd "$ROOT"
 #   WORKERS         parallel simulator clones (default 1, serial). Each clone is a full simulator
 #                   (~1.5-2 GB) plus the app and runner; on 16 GB, 6-7 is the practical ceiling.
 #   SIMULATOR_NAME  base device (default from _sim_sandbox.sh). A narrow device is the worst case
-#                   for truncation — try SIMULATOR_NAME="iPhone SE (3rd generation)".
+#                   for truncation — try SIMULATOR_NAME="iPhone 17e".
 #   MAX_PX          downscale longest screenshot edge to this many px (default 1000).
 
 WORKERS="${WORKERS:-1}"
@@ -35,14 +35,18 @@ done
 source "${ROOT}/scripts/_destination.sh"   # sets DESTINATION, SIM_DERIVED, SIM_RESULTS_DIR
 
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
-RESULT="${SIM_RESULTS_DIR}/${TIMESTAMP}-loc-size.xcresult"
+RESULT="${SIM_RESULTS_DIR}/${TIMESTAMP}-$$-loc-size.xcresult"
 
 PARALLEL_ARGS=(-parallel-testing-enabled NO)
 if [[ "${WORKERS}" -gt 1 ]]; then
   PARALLEL_ARGS=(-parallel-testing-enabled YES -parallel-testing-worker-count "${WORKERS}")
+  # Clones an interrupted run left behind; safe under the lock _destination.sh holds.
+  python3 "${ROOT}/scripts/sim_clean.py" --clones-only
 fi
 
 echo "→ Capturing 13 locales @ xxxLarge (WORKERS=${WORKERS}) …"
+# `|| RC=$?` so a failed run still names its bundle below.
+RC=0
 xcodebuild test \
   -project checklists/checklists.xcodeproj \
   -scheme checklists \
@@ -51,8 +55,10 @@ xcodebuild test \
   -derivedDataPath "${SIM_DERIVED}" \
   -resultBundlePath "${RESULT}" \
   "${PARALLEL_ARGS[@]}" \
-  -only-testing:checklistsUITests/LocalizationScreenshotCapture
+  -only-testing:checklistsUITests/LocalizationScreenshotCapture || RC=$?
 
+echo "result-bundle: ${RESULT}"
+[[ "${RC}" -eq 0 ]] || exit "${RC}"
 echo "→ Exporting and downscaling screenshots into ${OUT} …"
 rm -rf "${OUT}" && mkdir -p "${OUT}"
 RAW="$(mktemp -d)"

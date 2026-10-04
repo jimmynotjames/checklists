@@ -1,4 +1,4 @@
-.PHONY: system format format-changed lint lint-changed i18n-check uitest-check doc-check build test-unit test-ui test-scripts gate verify-secrets hooks-install initialize-sims sim-status sim-shutdown sim-clean
+.PHONY: system format format-changed lint lint-changed i18n-check uitest-check doc-check build test-unit test-ui test-scripts gate verify-secrets hooks-install initialize-sims sim-udid sim-show sim-run sim-status sim-shutdown sim-clean
 
 system:
 	bash scripts/system-setup.sh
@@ -72,31 +72,22 @@ hooks-install:
 	lefthook install
 
 initialize-sims:
-	@ROOT="$(CURDIR)" bash -c 'source "$(CURDIR)/scripts/_sim_sandbox.sh"'
+	@bash scripts/sim.sh init
 
-# sim-status and sim-shutdown act on the UDID in .build/sim/device.udid only; sim-clean's scope is in scripts/sim_clean.py.
+sim-udid:
+	@bash scripts/sim.sh udid
 
-_UDID_FILE := $(CURDIR)/.build/sim/device.udid
+sim-show:
+	@bash scripts/sim.sh show
+
+sim-run:
+	@bash scripts/sim.sh run
 
 sim-status:
-	@if [ -f "$(_UDID_FILE)" ]; then \
-		udid=$$(cat "$(_UDID_FILE)"); \
-		xcrun simctl list devices | grep "$$udid" || echo "(device $$udid not found in default set)"; \
-	else \
-		echo "(not initialized — run make initialize-sims)"; \
-	fi
+	@bash scripts/sim.sh status
 
 sim-shutdown:
-	@if [ -f "$(_UDID_FILE)" ]; then \
-		udid=$$(cat "$(_UDID_FILE)"); \
-		xcrun simctl shutdown "$$udid" 2>/dev/null \
-			&& echo "sim-sandbox: simulator $$udid shut down" \
-			|| echo "sim-sandbox: simulator $$udid already shut down or not found"; \
-	else \
-		echo "sim-sandbox: not initialized"; \
-	fi
+	@bash scripts/sim.sh shutdown
 
 sim-clean:
-	@python3 scripts/sim_clean.py || true
-	rm -rf .build/sim
-	@echo "sim-sandbox: .build/sim removed"
+	@bash scripts/sim.sh clean

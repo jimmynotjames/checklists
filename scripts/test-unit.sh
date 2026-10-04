@@ -15,7 +15,7 @@ cd "$ROOT"
 
 source "${ROOT}/scripts/_destination.sh"
 
-RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-unit.xcresult"
+RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-$$-unit.xcresult"
 
 # `|| RC=$?` so `set -e` doesn't skip the failure listing below.
 RC=0
@@ -36,4 +36,5 @@ if [[ "${RC}" -eq 0 ]]; then
     touch "${ROOT}/.build/sim/warmed"
 fi
 
+echo "result-bundle: ${RESULT_BUNDLE}"
 exit "${RC}"

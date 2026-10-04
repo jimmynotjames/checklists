@@ -2,7 +2,7 @@
 # Boot or reuse this checkout's capture simulator and print UDID<TAB>name.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)"
 if [[ "$#" -ne 1 || -z "$1" ]]; then
     echo "usage: prepare_simulator.sh DEVICE_NAME" >&2
     exit 2
@@ -14,7 +14,7 @@ if [[ -n "${SIMULATOR_UDID:-}" ]]; then
 fi
 
 BASE_NAME="$1"
-REPO_SLUG="$(printf '%s' "${ROOT}" | shasum | cut -c1-8)"
+REPO_SLUG="$(python3 "${ROOT}/scripts/sim_common.py" slug "${ROOT}")"
 DEVICE_NAME="${BASE_NAME} Screenshots [${REPO_SLUG}]"
 STATE_DIR="${ROOT}/.build/screenshots/simulator"
 UDID_FILE="${STATE_DIR}/device.udid"
