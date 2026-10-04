@@ -14,7 +14,7 @@ struct MainMenuView: View {
   @Environment(\.openURL) private var openURL
   @Environment(\.analytics) private var analytics
 
-  /// The window controls' footprint at this panel's top-leading corner; zero where there are none.
+  /// The window controls' footprint at this panel's top-leading corner.
   /// Toolbar items step aside on their own, but this close button is plain content.
   @State private var windowControlsInset: CGSize = .zero
 
@@ -30,7 +30,9 @@ struct MainMenuView: View {
       }
       .accessibilityLabel(String(localized: "mainMenu.close.accessibilityLabel", defaultValue: "Close menu", comment: "VoiceOver label for the X button that dismisses the main menu."))
       .padding(.top, 8)
-      .padding(.leading, windowControlsInset.width > 0 ? windowControlsInset.width + 8 : 16)
+      // Never under the stock 16: a window without controls can still report a small corner inset
+      // for its rounded corner.
+      .padding(.leading, max(16, windowControlsInset.width + 8))
       // On top of the stack's own 16, so the close button reads as separate from the menu
       // rows rather than as a fourth item.
       .padding(.bottom, 8)
