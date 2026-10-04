@@ -1,6 +1,6 @@
 # checklists
 
-A SwiftUI/UIKit iOS app (Swift 6, iOS 26+) persisted with SwiftData + CloudKit.
+A SwiftUI/UIKit iOS app (Swift 6, iOS 27+) persisted with SwiftData + CloudKit.
 
 - Agent and contributor instructions: [`AGENTS.md`](AGENTS.md)
 - Design docs: [`core-docs/`](core-docs/)

@@ -1,6 +1,6 @@
 # Agent instructions — checklists
 
-Hybrid SwiftUI/UIKit iOS app (Swift 6.0, iOS 26.0+), persisted with SwiftData + CloudKit. The app
+Hybrid SwiftUI/UIKit iOS app (Swift 6.0, iOS 27.0+), persisted with SwiftData + CloudKit. The app
 root, navigation (`NavigationStack` + `Router`), and every screen except checklist detail are SwiftUI
 (`App/`, `Screens/`); `ChecklistViewController` is UIKit, hosted by `ChecklistScreen`. Realm 20.0.5
 stays linked only so `LegacyRealmImporter` can read a pre-migration install's Realm file once.
