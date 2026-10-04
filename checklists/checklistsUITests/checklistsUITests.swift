@@ -78,12 +78,9 @@ class checklistsUITests: XCTestCase {
     let text3 = app.staticTexts["Pre-Trip Checklist"]
     // Drag row 1 onto row 2, for the ordering 2, 1, 3.
     //
-    // Two changes from the UIKit gesture this replaces. SwiftUI's `.onMove` needs a longer press to
-    // lift the row than the table view's reorder control did, plus a slow drag and a hold at the end
-    // so the list settles on the drop target before the touch lifts. And the drop target is row 2
-    // rather than row 3: the old gesture nominally dragged onto row 3 but only ever moved the row one
-    // slot, whereas SwiftUI honours the full drag and lands it at the end (2, 3, 1) — so the target
-    // now says what the assertions below have always meant.
+    // `.onMove` needs a long press to lift the row, then a slow drag and a hold at the end so the
+    // list settles on the drop target before the touch lifts. It honours the full drag, so dropping
+    // onto row 3 instead would land the row at the end (2, 3, 1).
     text1.press(forDuration: 1.0, thenDragTo: text2, withVelocity: .slow, thenHoldForDuration: 1.0)
 
     XCTAssertGreaterThan(text1.frame.origin.y, text2.frame.origin.y, "Row 1 should have moved below row 2.")

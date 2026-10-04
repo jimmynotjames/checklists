@@ -297,7 +297,7 @@ struct LegacyRealmImporterTests {
   }
 
   /// Giving up is not the same as deleting: a later release with a better reader still has the
-  /// file to work from, which is the whole reason this is preferable to the old escape hatch.
+  /// file to work from.
   @Test("abandoning the import keeps the Realm file on disk")
   func abandoningTheImportKeepsTheRealmFile() throws {
     try withFixture { fixtureURL, userDefaults in
