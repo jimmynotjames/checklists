@@ -31,8 +31,8 @@ struct ChecklistsView: View {
   /// A bitmap does not follow Dynamic Type by itself.
   @ScaledMetric(relativeTo: .body) private var scaledMenuIconSize: CGFloat = menuIconBaseSize
 
-  /// Takes a third of each step the scale adds: at full scale the icon outgrew its capsule, whose
-  /// size follows the system's own, slower-growing glyphs.
+  /// Grows at a third of the body-text rate so the icon stays inside the system's slower-growing
+  /// capsule.
   private var menuIconSize: CGFloat {
     Self.menuIconBaseSize + (scaledMenuIconSize - Self.menuIconBaseSize) / 3
   }
