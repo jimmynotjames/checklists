@@ -65,12 +65,8 @@ struct ICloudStatusLoaderTests {
     #expect(syncStatus.rowState == .available)
   }
 
-  /// A query whose task has been superseded must not publish its answer.
-  ///
-  /// The app cancels the in-flight status task and starts a new one whenever it reappears, and
-  /// cancellation is cooperative — the old `CKContainer` query keeps running and resolves later. If
-  /// it were allowed to write, a stale verdict would overwrite the fresher one and leave the row
-  /// showing the wrong iCloud state until the next account-change notification.
+  /// A load whose task is cancelled (its `.task` torn down) must not publish, even as the newest
+  /// query: cancellation is cooperative, so the `CKContainer` query keeps running and resolves late.
   @Test("a cancelled load does not overwrite a fresher status")
   func cancelledLoadDoesNotOverwriteAFresherStatus() async {
     let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .available)
