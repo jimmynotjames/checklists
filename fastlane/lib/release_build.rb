@@ -62,6 +62,7 @@ class ReleaseBuild
       clean: true, output_directory: output, output_name: "checklists.ipa",
       archive_path: File.join(output, "checklists.xcarchive"),
       buildlog_path: File.join(output, "logs"), derived_data_path: File.join(@root, "tmp/release-derived-data"),
+      # Not Xcode's "app-store-connect": gym accepts only "app-store" and rewrites the plist's method.
       export_method: "app-store", export_options: { signingStyle: "automatic" },
       xcargs: "-allowProvisioningUpdates CODE_SIGN_STYLE=Automatic",
       export_xcargs: "-allowProvisioningUpdates"

@@ -345,6 +345,10 @@ AppConfig  →  MixpanelTokenSource.activeToken   (#if DEBUG picks dev vs prod)
   real defence.
 - **Both tokens ship in Info.plist.** Project tokens are client-side credentials, so the extra
   exposure is junk events into the other project. Revisit if that happens.
+- **Proving an event did not fire**: check the simulator container for the SDK's queue
+  (`Library/*_MPDB.sqlite`, `Library/Preferences/Mixpanel.plist`). The SDK writes it before any
+  POST, so its absence is the proof. A Mixpanel query isn't: test tokens are rejected server-side,
+  so it shows nothing either way.
 - **Export compliance**: `ITSAppUsesNonExemptEncryption = false` holds only while all encryption is
   OS-provided. A Realm `encryptionKey` or custom crypto means `true` plus
   `ITSEncryptionExportComplianceCode`.
