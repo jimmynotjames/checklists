@@ -14,6 +14,18 @@ struct RootView: View {
   @Environment(\.modelContext) private var context
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+  /// Read back so the main menu can become a side panel on a wide window.
+  @State private var rootWidth: CGFloat = 0
+
+  /// The main menu's width once it stops covering the whole window.
+  static let menuPanelWidth: CGFloat = 360
+
+  /// Whether the main menu is a side panel over a dimmed list rather than full-screen: only when
+  /// the list beside it keeps at least the panel's own width.
+  static func menuIsSidePanel(in width: CGFloat) -> Bool {
+    width >= menuPanelWidth * 2
+  }
+
   var body: some View {
     @Bindable var router = router
     ZStack {
@@ -35,14 +47,27 @@ struct RootView: View {
             }
           }
       }
+      if router.isMainMenuVisible, Self.menuIsSidePanel(in: rootWidth) {
+        // Decorative: VoiceOver is held in the panel by its modal trait, and closes it with the
+        // panel's own button.
+        Color.black.opacity(0.3)
+          .ignoresSafeArea()
+          .onTapGesture { router.isMainMenuVisible = false }
+          .accessibilityHidden(true)
+          .zIndex(1)
+          .transition(.opacity)
+      }
       if router.isMainMenuVisible {
         MainMenuView()
-          .zIndex(1)
+          .frame(maxWidth: Self.menuIsSidePanel(in: rootWidth) ? Self.menuPanelWidth : .infinity)
+          .frame(maxWidth: .infinity, alignment: .leading)
+          .zIndex(2)
           // Reduce Motion suppresses simulated spatial movement, not animation itself: the
           // panel cross-fades in place instead of sliding from the leading edge.
           .transition(reduceMotion ? .opacity : .move(edge: .leading))
       }
     }
+    .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { rootWidth = $0 }
     .animation(.easeInOut(duration: 0.2), value: router.isMainMenuVisible)
     .sheet(item: $router.sheet) { route in
       Group {

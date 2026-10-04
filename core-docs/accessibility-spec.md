@@ -10,7 +10,7 @@
 | Axis | Status | Notes |
 | --- | --- | --- |
 | **VoiceOver labels/values** | Partial | Most interactive controls are labelled; the remaining unlabelled controls are **#181**. Checklists reorder by Move Up/Down/to Top/to Bottom actions on each row, since `.onMove` offers VoiceOver no way to move a row |
-| **VoiceOver traits** | Partial | `ChecklistHistoryCaption` sets `.staticText`; everything else relies on platform defaults |
+| **VoiceOver traits** | Partial | `ChecklistHistoryCaption` sets `.staticText`; `MainMenuView` sets `.isModal`, since on a wide window it is a side panel with the list still on screen beside it; everything else relies on platform defaults |
 | **Reduce Motion** | Implemented | Every app-authored animation has a recorded verdict — §Animation and Reduce Motion |
 | **Dynamic Type** | Partial | SwiftUI scales via semantic tokens; UIKit hardcodes point sizes — §Dynamic Type, **#183**. From two steps above the default text size (xxLarge) the list's Reset All and Edit mode toolbar collapse to icons, so long translations neither push Edit into an overflow menu nor clip the toolbar; they keep their names for VoiceOver and the Large Content Viewer |
 | **Dark Mode** | Not started | The app is locked to Light appearance in `Info.plist` — **#180** |
@@ -76,6 +76,7 @@ full two-family sweep, and the reasoning behind each verdict.
 | Site | Verdict |
 | --- | --- |
 | `RootView` main-menu transition | **Gated** — cross-fades instead of sliding in from the leading edge |
+| `RootView` main-menu scrim (wide windows only) | **Left alone.** Opacity, not simulated movement |
 | `ToastPresenterModifier` toast transition | **Gated** — cross-fades instead of sliding up from the bottom edge |
 | `ChecklistViewController.resetButtonTapped` scroll-to-top | **Gated** — jumps instead of gliding, and reloads directly, because the animated path defers its reload to `scrollViewDidScroll` |
 | `NavigationStack` push/pop, `.sheet`, `.alert`, `Toggle`, `.onMove`, `UIDragInteraction` reorder, `popViewController`/`dismiss` | System-owned. No app code specifies motion |

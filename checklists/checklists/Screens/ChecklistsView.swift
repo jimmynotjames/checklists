@@ -57,6 +57,14 @@ struct ChecklistsView: View {
   /// Kept on the moved row after a move action, which re-sorts the list under VoiceOver.
   @AccessibilityFocusState private var focusedChecklistID: String?
 
+  /// Read back from the list so rows can center in a readable column on a wide window.
+  @State private var listWidth: CGFloat = 0
+
+  private var listColumnMargin: CGFloat? {
+    let margin = readableColumnMargin(for: listWidth)
+    return margin > 0 ? margin : nil
+  }
+
   private var isEditing: Bool {
     editMode.isEditing
   }
@@ -118,15 +126,21 @@ struct ChecklistsView: View {
       .onMove(perform: move)
     }
     .listStyle(.plain)
+    // Insets whole rows, so Edit mode's controls and swipe actions stay beside them. `nil` below
+    // the cap keeps the list's stock margins on a narrow window.
+    .contentMargins(.horizontal, listColumnMargin, for: .scrollContent)
+    .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { listWidth = $0 }
     .environment(\.editMode, $editMode)
     .appBackground()
     .navigationTitle(Text(verbatim: ""))
     .navigationBarTitleDisplayMode(.inline)
-    .overlay(alignment: .bottomTrailing) {
+    .overlay(alignment: .bottom) {
       // Hidden rather than disabled: the bottom toolbar takes its place, and a new checklist
       // appearing mid-selection would only confuse it.
       if !isEditing {
+        // At the trailing edge of the rows' column, not of a wide window, so it stays by them.
         addChecklistButton
+          .frame(maxWidth: readableColumnMaxWidth, alignment: .trailing)
       }
     }
     .toolbar {

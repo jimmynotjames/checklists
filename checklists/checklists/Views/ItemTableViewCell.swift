@@ -25,10 +25,11 @@ class ItemTableViewCell: UITableViewCell {
     contentView.addSubview(itemContentView)
     itemContentView.translatesAutoresizingMaskIntoConstraints = false
 
+    let column = contentView.addReadableColumnGuide()
     [contentView.topAnchor.constraint(equalTo: itemContentView.topAnchor),
      contentView.bottomAnchor.constraint(equalTo: itemContentView.bottomAnchor),
-     contentView.leftAnchor.constraint(equalTo: itemContentView.leftAnchor),
-     contentView.rightAnchor.constraint(equalTo: itemContentView.rightAnchor)].forEach { $0.isActive = true }
+     column.leadingAnchor.constraint(equalTo: itemContentView.leadingAnchor),
+     column.trailingAnchor.constraint(equalTo: itemContentView.trailingAnchor)].forEach { $0.isActive = true }
   }
 
   override func prepareForReuse() {

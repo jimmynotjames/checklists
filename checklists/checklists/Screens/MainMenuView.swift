@@ -6,13 +6,17 @@
 import SwiftUI
 import UIKit
 
-/// Full-screen menu panel presented over the checklists list, offering feedback, App Store
-/// rating, and settings actions.
+/// Menu panel presented over the checklists list, offering feedback, App Store rating, and
+/// settings actions. Full-screen on a narrow window, a side panel on a wide one (see `RootView`).
 struct MainMenuView: View {
   @Environment(Router.self) private var router
   @Environment(SyncStatus.self) private var syncStatus
   @Environment(\.openURL) private var openURL
   @Environment(\.analytics) private var analytics
+
+  /// The window controls' footprint at this panel's top-leading corner.
+  /// Toolbar items step aside on their own, but this close button is plain content.
+  @State private var windowControlsInset: CGSize = .zero
 
   var body: some View {
     // The gap between menu rows lives here rather than in the rows themselves.
@@ -26,7 +30,9 @@ struct MainMenuView: View {
       }
       .accessibilityLabel(String(localized: "mainMenu.close.accessibilityLabel", defaultValue: "Close menu", comment: "VoiceOver label for the X button that dismisses the main menu."))
       .padding(.top, 8)
-      .padding(.leading, 16)
+      // Never under the stock 16: a window without controls can still report a small corner inset
+      // for its rounded corner.
+      .padding(.leading, max(16, windowControlsInset.width + 8))
       // On top of the stack's own 16, so the close button reads as separate from the menu
       // rows rather than as a fourth item.
       .padding(.bottom, 8)
@@ -83,7 +89,14 @@ struct MainMenuView: View {
       Spacer()
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    .onGeometryChange(for: CGSize.self) { $0.containerCornerInsets.topLeading } action: {
+      windowControlsInset = $0
+    }
     .background(Colors.darkBlueGrayColor.ignoresSafeArea())
+    // As a side panel the list stays on screen beside it; VoiceOver must not wander into it. The
+    // trait needs a container to apply to, or SwiftUI hands it down to each row.
+    .accessibilityElement(children: .contain)
+    .accessibilityAddTraits(.isModal)
     .task {
       analytics.track(AnalyticsEvent.mainMenuViewed)
     }

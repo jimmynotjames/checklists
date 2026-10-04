@@ -55,24 +55,26 @@ final class ChecklistInfoHeaderView: UIView {
       subview.translatesAutoresizingMaskIntoConstraints = false
     }
 
+    let column = addReadableColumnGuide()
+
     // Whichever of the two closes the height owns the bottom anchor. With no caption that is the
     // notes, and the header collapses to the height it has without the feature.
     let captionConstraints: [NSLayoutConstraint] = showsHistoryCaption
-      ? ChecklistHistoryCaption.install(captionView, in: self, below: notesTextView)
+      ? ChecklistHistoryCaption.install(captionView, in: self, column: column, below: notesTextView)
       : [notesTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0)]
 
     NSLayoutConstraint.activate(captionConstraints + [
-      statusIcon.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.0),
+      statusIcon.leadingAnchor.constraint(equalTo: column.leadingAnchor, constant: 16.0),
 
       nameTextField.topAnchor.constraint(equalTo: topAnchor, constant: 22.0),
       nameTextField.leadingAnchor.constraint(equalTo: statusIcon.trailingAnchor, constant: 10.0),
-      nameTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.0),
+      nameTextField.trailingAnchor.constraint(equalTo: column.trailingAnchor, constant: -16.0),
       nameTextField.centerYAnchor.constraint(equalTo: statusIcon.centerYAnchor),
       nameTextField.heightAnchor.constraint(equalToConstant: 32.0),
 
       notesTextView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 4.0),
-      notesTextView.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor, constant: 8.0),
-      notesTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16.0),
+      notesTextView.leadingAnchor.constraint(equalTo: column.leadingAnchor, constant: 16.0),
+      notesTextView.trailingAnchor.constraint(equalTo: column.trailingAnchor, constant: -16.0),
       notesTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 32.0),
     ])
   }
