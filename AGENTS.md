@@ -243,12 +243,13 @@ checkout may run tests on that device meanwhile.
 ### Xcode MCP
 
 `.mcp.json` registers Xcode's MCP server (`xcrun mcpbridge`). It drives the running Xcode, with that
-window's run destination and Xcode's own DerivedData, outside the lock. Pass every call this
-checkout's `.xcodeproj` absolute path as `workspaceIdentifier`. Use it for build diagnostics,
-previews, snippets, and docs; run tests with `make test-unit` / `make test-ui`, not `RunAllTests` /
-`RunSomeTests`. Before `RunProject` or a device-interaction session, point it at this checkout's
-device: `XcodeSwitchRunDestination` to the `iPhone 17 [<hash>]` entry, or `deviceIdentifier` set
-to the UDID.
+window's run destination and Xcode's own DerivedData, outside the lock. Call `XcodeOpenWorkspace`
+with this checkout's `.xcodeproj` absolute path first, and pass the identifier it returns as every
+call's `workspaceIdentifier`; the server rejects a path there, and the identifier lasts only for
+that MCP session. Use it for build diagnostics, previews, snippets, and docs; run tests with `make
+test-unit` / `make test-ui`, not `RunAllTests` / `RunSomeTests`. Before `RunProject` or a
+device-interaction session, point it at this checkout's device: `XcodeSwitchRunDestination` to the
+`iPhone 17 [<hash>]` entry, or `deviceIdentifier` set to the UDID.
 
 ### The software keyboard
 
