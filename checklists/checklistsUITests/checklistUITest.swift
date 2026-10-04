@@ -556,6 +556,35 @@ class checklistUITest: XCTestCase {
     XCTAssert(lastItemName == newItemName2)
   }
 
+  /**
+   1. Turn the phone to landscape, where the keyboard covers most of a short window.
+   2. Go to the "Morning Routine" Checklist and add an item at the end with the Add button.
+   3. Check that the item being typed into sits above the keyboard, not behind it.
+   */
+  func testNewItemStaysAboveKeyboardInLandscape() {
+    XCUIDevice.shared.orientation = .landscapeLeft
+    addTeardownBlock { XCUIDevice.shared.orientation = .portrait }
+
+    checklistsList.staticTexts["Morning Routine"].tap()
+    let checklistTableView = app.tables["ChecklistTableView"]
+    XCTAssertTrue(checklistTableView.waitForExistence(timeout: 5))
+    let numItems = checklistTableView.children(matching: .cell).count
+
+    checklistTableView.swipeUp()
+    checklistTableView.buttons["Add"].tap()
+    app.typeText("Pack sunglasses")
+
+    let keyboard = app.keyboards.firstMatch
+    XCTAssertTrue(keyboard.waitForExistence(timeout: 5), "Keyboard didn't appear for the new item.")
+    let newItem = checklistTableView.children(matching: .cell).element(boundBy: numItems)
+    XCTAssertTrue(newItem.waitForExistence(timeout: 5), "New item row didn't appear.")
+    XCTAssertLessThanOrEqual(
+      newItem.frame.maxY,
+      keyboard.frame.minY,
+      "The item being typed into is hidden behind the keyboard."
+    )
+  }
+
   // MARK: - Duplicating from the overflow menu
 
   /// The sheet the copy opens in. Two navigation bars are in the tree once it is up, and only this

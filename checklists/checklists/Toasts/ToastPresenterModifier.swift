@@ -49,6 +49,8 @@ private struct ToastLayer: ViewModifier {
             toast.action?.handler()
           }
           .padding(.horizontal, 16)
+          // In line with the list's rows on a wide window rather than spanning it.
+          .frame(maxWidth: readableColumnMaxWidth)
           .padding(.bottom, bottomClearance)
           .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
         }

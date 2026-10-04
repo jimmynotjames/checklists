@@ -140,6 +140,8 @@ class ChecklistViewController: UIViewController {
     super.viewDidLoad()
 
     NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardAppear(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+    // Floating, docking, and resizing the window all move the keyboard without a show or hide.
+    NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardAppear(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardDisappear(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
 
     tableView.accessibilityIdentifier = "ChecklistTableView"
@@ -572,14 +574,35 @@ extension ChecklistViewController: UIScrollViewDelegate {
 
 /// https://developer.apple.com/library/archive/documentation/StringsTextFonts/Conceptual/TextAndWebiPhoneOS/KeyboardManagement/KeyboardManagement.html
 extension ChecklistViewController {
+  /// How much of `tableBounds` the keyboard covers from below, in the table's own (content)
+  /// coordinates. Zero when the keyboard misses the table entirely: floating, undocked, or below a
+  /// window that does not reach the bottom of the screen.
+  ///
+  /// Static and internal so a test can drive it with frames it chose.
+  static func keyboardOverlap(keyboardFrame: CGRect, tableBounds: CGRect) -> CGFloat {
+    guard keyboardFrame.intersects(tableBounds) else { return 0.0 }
+    return max(0.0, tableBounds.maxY - keyboardFrame.minY)
+  }
+
   @objc func onKeyboardAppear(_ notification: NSNotification) {
     guard
       let userInfo = notification.userInfo,
-      var keyboardHeight = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.size.height
+      let screenKeyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
     else { assertionFailure(); return }
 
     guard let cell = findEditingCell()
     else { return } // If keyboard arose for Checklist Name/Notes, which, if visible, shouldn't require scrolling (except for massive notes, but we're accepting that for now).
+
+    // The frame is in screen coordinates. The keyboard's raw height is only the covered amount
+    // when the window fills the screen; an iPad window, the iPhone Duo's Split View, or a sheet
+    // need the actual overlap.
+    guard let screen = view.window?.windowScene?.screen else { return }
+    let keyboardFrame = tableView.convert(screenKeyboardFrame, from: screen.coordinateSpace)
+    var keyboardHeight = Self.keyboardOverlap(keyboardFrame: keyboardFrame, tableBounds: tableView.bounds)
+    guard keyboardHeight > 0.0 else {
+      onKeyboardDisappear(notification)
+      return
+    }
 
     keyboardHeight += 20.0 // On iPhone 8-style resolutions, it doesn't scroll up quite enough, so adding this in, even though iPhone X-style goes up a tad more than I'd like.
 

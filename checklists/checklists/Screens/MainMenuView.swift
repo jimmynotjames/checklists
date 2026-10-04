@@ -6,8 +6,8 @@
 import SwiftUI
 import UIKit
 
-/// Full-screen menu panel presented over the checklists list, offering feedback, App Store
-/// rating, and settings actions.
+/// Menu panel presented over the checklists list, offering feedback, App Store rating, and
+/// settings actions. Full-screen on a narrow window, a side panel on a wide one (see `RootView`).
 struct MainMenuView: View {
   @Environment(Router.self) private var router
   @Environment(SyncStatus.self) private var syncStatus
@@ -84,6 +84,8 @@ struct MainMenuView: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     .background(Colors.darkBlueGrayColor.ignoresSafeArea())
+    // As a side panel the list stays on screen beside it; VoiceOver must not wander into it.
+    .accessibilityAddTraits(.isModal)
     .task {
       analytics.track(AnalyticsEvent.mainMenuViewed)
     }

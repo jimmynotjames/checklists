@@ -92,20 +92,21 @@ enum ChecklistHistoryCaption {
     view.accessibilityLabel = lines.joined(separator: ". ")
   }
 
-  /// Adds `view` to `header` and returns the constraints placing it below `notesView`.
+  /// Adds `view` to `header` and returns the constraints placing it below `notesView`, inside
+  /// `column`, the header's content column.
   ///
   /// The caption owns the bottom anchor that closes the header's height, and so its own height is
   /// stated rather than intrinsic — every height in that chain is a constant.
-  static func install(_ view: UIStackView, in header: UIView, below notesView: UIView) -> [NSLayoutConstraint] {
+  static func install(_ view: UIStackView, in header: UIView, column: UILayoutGuide, below notesView: UIView) -> [NSLayoutConstraint] {
     header.addSubview(view)
     view.translatesAutoresizingMaskIntoConstraints = false
     return [
       // Wider than the gap between name and notes: under a block of notes a tighter one reads as a
       // third paragraph of them rather than as metadata.
       view.topAnchor.constraint(equalTo: notesView.bottomAnchor, constant: 10.0),
-      // The header's own leading edge, where the status ring also sits.
-      view.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 16.0),
-      view.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -16.0),
+      // The column's leading edge, where the status ring also sits.
+      view.leadingAnchor.constraint(equalTo: column.leadingAnchor, constant: 16.0),
+      view.trailingAnchor.constraint(equalTo: column.trailingAnchor, constant: -16.0),
       view.heightAnchor.constraint(equalToConstant: height),
       // Matches the table's `sectionHeaderHeight`, the other half of the gap down to the first row.
       view.bottomAnchor.constraint(equalTo: header.bottomAnchor, constant: -8.0),

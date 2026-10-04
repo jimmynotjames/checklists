@@ -40,9 +40,12 @@ class AddItemButtonTableFooterView: UIView {
 
     views.forEach { $0.value.translatesAutoresizingMaskIntoConstraints = false }
 
+    // The column already follows the safe area, so the inset is the stock 8pt layout margin alone.
+    let column = addReadableColumnGuide()
     NSLayoutConstraint.activate(
       [NSLayoutConstraint.constraints(withVisualFormat: "V:|[contentView]|", metrics: metrics, views: views),
-       NSLayoutConstraint.constraints(withVisualFormat: "H:|-[contentView]-|", metrics: metrics, views: views),
+       [contentView.leadingAnchor.constraint(equalTo: column.leadingAnchor, constant: 8.0),
+        contentView.trailingAnchor.constraint(equalTo: column.trailingAnchor, constant: -8.0)],
        NSLayoutConstraint.constraints(withVisualFormat: "V:|-spacing-[addButton(==buttonHeight)]-spacing-|", metrics: metrics, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|-spacing-[addButton]-spacing-|", metrics: metrics, views: views)].flatMap(\.self)
     )

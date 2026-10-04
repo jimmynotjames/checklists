@@ -45,6 +45,9 @@ struct ChecklistsView: View {
   /// Kept on the moved row after a move action, which re-sorts the list under VoiceOver.
   @AccessibilityFocusState private var focusedChecklistID: String?
 
+  /// Read back from the list so rows can center in a readable column on a wide window.
+  @State private var listWidth: CGFloat = 0
+
   private var isEditing: Bool {
     editMode.isEditing
   }
@@ -68,7 +71,14 @@ struct ChecklistsView: View {
               }
             }
           }
-          .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+          // The column margin rides on the row insets rather than `contentMargins`, so a narrow
+          // window keeps exactly the list's stock layout.
+          .listRowInsets(EdgeInsets(
+            top: 8,
+            leading: 16 + readableColumnMargin(for: listWidth),
+            bottom: 8,
+            trailing: 16 + readableColumnMargin(for: listWidth)
+          ))
           .listRowSeparator(.hidden)
           // Lets the screen's background show through instead of the system's row fill.
           .listRowBackground(Color.clear)
@@ -106,15 +116,18 @@ struct ChecklistsView: View {
       .onMove(perform: move)
     }
     .listStyle(.plain)
+    .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { listWidth = $0 }
     .environment(\.editMode, $editMode)
     .appBackground()
     .navigationTitle(Text(verbatim: ""))
     .navigationBarTitleDisplayMode(.inline)
-    .overlay(alignment: .bottomTrailing) {
+    .overlay(alignment: .bottom) {
       // Hidden rather than disabled: the bottom toolbar takes its place, and a new checklist
       // appearing mid-selection would only confuse it.
       if !isEditing {
+        // At the trailing edge of the rows' column, not of a wide window, so it stays by them.
         addChecklistButton
+          .frame(maxWidth: readableColumnMaxWidth, alignment: .trailing)
       }
     }
     .toolbar {
