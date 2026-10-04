@@ -63,6 +63,11 @@ final class SyncStatus {
   /// be in flight together.
   var hasReportedInitialAccountStatus = false
 
+  /// Orders `ICloudStatusLoader` queries, which run concurrently: each load takes the next number,
+  /// and publishes only if no later-started load has published already.
+  var accountQueriesStarted = 0
+  var newestPublishedAccountQuery = 0
+
   init(
     containerBacking: ContainerBacking,
     accountStatus: AccountStatus = .checking,

@@ -32,7 +32,8 @@ struct ICloudStatusLoader {
       if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" { return }
     #endif
 
-    let old = syncStatus.accountStatus
+    syncStatus.accountQueriesStarted += 1
+    let query = syncStatus.accountQueriesStarted
 
     let resolved: SyncStatus.AccountStatus
     do {
@@ -41,11 +42,15 @@ struct ICloudStatusLoader {
       resolved = .couldNotDetermine
     }
 
-    // A superseded query must not publish its answer: cancellation is cooperative, so a slow
-    // `CKContainer.accountStatus()` keeps running and can resolve after a newer query already wrote
-    // a fresher status. Without this guard, a signed-in user can be stuck on "iCloud Not Available".
-    guard !Task.isCancelled else { return }
+    // A superseded query must not publish its answer: a slow `CKContainer.accountStatus()` can
+    // resolve after a later-started query already wrote a fresher status, and cancellation is
+    // cooperative, so a cancelled one keeps running too. Without this guard, a signed-in user can
+    // be stuck on "iCloud Not Available". A later query that is still pending doesn't block this
+    // one: the call can hang, and an older answer beats none.
+    guard !Task.isCancelled, query > syncStatus.newestPublishedAccountQuery else { return }
+    syncStatus.newestPublishedAccountQuery = query
 
+    let old = syncStatus.accountStatus
     syncStatus.accountStatus = resolved
     let new = syncStatus.accountStatus
     if old != new {
