@@ -84,7 +84,9 @@ struct MainMenuView: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     .background(Colors.darkBlueGrayColor.ignoresSafeArea())
-    // As a side panel the list stays on screen beside it; VoiceOver must not wander into it.
+    // As a side panel the list stays on screen beside it; VoiceOver must not wander into it. The
+    // trait needs a container to apply to, or SwiftUI hands it down to each row.
+    .accessibilityElement(children: .contain)
     .accessibilityAddTraits(.isModal)
     .task {
       analytics.track(AnalyticsEvent.mainMenuViewed)

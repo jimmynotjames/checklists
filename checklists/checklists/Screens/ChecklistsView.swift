@@ -48,6 +48,11 @@ struct ChecklistsView: View {
   /// Read back from the list so rows can center in a readable column on a wide window.
   @State private var listWidth: CGFloat = 0
 
+  private var listColumnMargin: CGFloat? {
+    let margin = readableColumnMargin(for: listWidth)
+    return margin > 0 ? margin : nil
+  }
+
   private var isEditing: Bool {
     editMode.isEditing
   }
@@ -71,14 +76,7 @@ struct ChecklistsView: View {
               }
             }
           }
-          // The column margin rides on the row insets rather than `contentMargins`, so a narrow
-          // window keeps exactly the list's stock layout.
-          .listRowInsets(EdgeInsets(
-            top: 8,
-            leading: 16 + readableColumnMargin(for: listWidth),
-            bottom: 8,
-            trailing: 16 + readableColumnMargin(for: listWidth)
-          ))
+          .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
           .listRowSeparator(.hidden)
           // Lets the screen's background show through instead of the system's row fill.
           .listRowBackground(Color.clear)
@@ -116,6 +114,9 @@ struct ChecklistsView: View {
       .onMove(perform: move)
     }
     .listStyle(.plain)
+    // Insets whole rows, so Edit mode's controls and swipe actions stay beside them. `nil` below
+    // the cap keeps the list's stock margins on a narrow window.
+    .contentMargins(.horizontal, listColumnMargin, for: .scrollContent)
     .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { listWidth = $0 }
     .environment(\.editMode, $editMode)
     .appBackground()

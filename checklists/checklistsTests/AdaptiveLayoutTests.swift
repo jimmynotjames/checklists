@@ -7,11 +7,9 @@
 import Testing
 import UIKit
 
-/// A 393×852 table resting at the top of its content.
 private let restingTable = CGRect(x: 0.0, y: 0.0, width: 393.0, height: 852.0)
 
-/// Covers `ChecklistViewController.keyboardOverlap(keyboardFrame:tableBounds:)`: the keyboard
-/// covers only what it overlaps, which is its full height only for a window filling the screen.
+/// Covers `ChecklistViewController.keyboardOverlap(keyboardFrame:tableBounds:)`.
 @Suite("How much of the checklist the keyboard covers")
 struct ChecklistKeyboardOverlapTests {
   @Test("a docked keyboard under a full-screen table covers its full height")
@@ -74,7 +72,6 @@ struct ReadableColumnTests {
     #expect(readableColumnMargin(for: 1000.0) == (1000.0 - readableColumnMaxWidth) / 2.0)
   }
 
-  /// The guide is what the checklist screen's header, rows and Add button pin to.
   @Test("the UIKit guide fills a narrow view and caps and centers in a wide one")
   func layoutGuide() {
     for (width, expectedWidth) in [(393.0, 393.0), (1200.0, readableColumnMaxWidth)] {

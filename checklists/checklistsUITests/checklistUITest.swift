@@ -578,9 +578,12 @@ class checklistUITest: XCTestCase {
     XCTAssertTrue(keyboard.waitForExistence(timeout: 5), "Keyboard didn't appear for the new item.")
     let newItem = checklistTableView.children(matching: .cell).element(boundBy: numItems)
     XCTAssertTrue(newItem.waitForExistence(timeout: 5), "New item row didn't appear.")
+    // The Done bar rides above the keyboard and covers rows just the same.
+    let doneBar = app.toolbars.containing(.button, identifier: "Done").firstMatch
+    let coveredFrom = doneBar.exists ? min(doneBar.frame.minY, keyboard.frame.minY) : keyboard.frame.minY
     XCTAssertLessThanOrEqual(
-      newItem.frame.maxY,
-      keyboard.frame.minY,
+      newItem.textViews["itemNameTextView"].frame.maxY,
+      coveredFrom,
       "The item being typed into is hidden behind the keyboard."
     )
   }

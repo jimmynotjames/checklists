@@ -593,9 +593,7 @@ extension ChecklistViewController {
     guard let cell = findEditingCell()
     else { return } // If keyboard arose for Checklist Name/Notes, which, if visible, shouldn't require scrolling (except for massive notes, but we're accepting that for now).
 
-    // The frame is in screen coordinates. The keyboard's raw height is only the covered amount
-    // when the window fills the screen; an iPad window, the iPhone Duo's Split View, or a sheet
-    // need the actual overlap.
+    // The frame is in screen coordinates.
     guard let screen = view.window?.windowScene?.screen else { return }
     let keyboardFrame = tableView.convert(screenKeyboardFrame, from: screen.coordinateSpace)
     var keyboardHeight = Self.keyboardOverlap(keyboardFrame: keyboardFrame, tableBounds: tableView.bounds)
@@ -604,7 +602,7 @@ extension ChecklistViewController {
       return
     }
 
-    keyboardHeight += 20.0 // On iPhone 8-style resolutions, it doesn't scroll up quite enough, so adding this in, even though iPhone X-style goes up a tad more than I'd like.
+    keyboardHeight += 20.0 // Breathing room between the edited row and the keyboard. (iPhone X-style phones used to get 34pt more, from counting the home-indicator strip the table doesn't cover.)
 
     // `cell.frame` below is in the table's content space; `tableView.frame` is in its superview's,
     // and the two only line up at a content offset of zero. `bounds` is content space, so

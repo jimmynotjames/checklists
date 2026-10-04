@@ -14,7 +14,7 @@ protocol AddItemButtonTableFooterViewDelegate: AnyObject {
 class AddItemButtonTableFooterView: UIView {
   weak var delegate: AddItemButtonTableFooterViewDelegate?
 
-  /// This feels slightly hacky. Adding this so in landscape mode, I can still use VFL and adhere to layout margins while using custom inset.
+  /// This feels slightly hacky. Adding this so the button can keep its own VFL inset inside the readable column, which follows the safe area in landscape.
   let contentView = UIView()
 
   let addButton: CLButton = {
