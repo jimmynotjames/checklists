@@ -15,7 +15,7 @@ extension ChecklistViewController {
   /// sheet gets Done, an existing checklist gets Reset; both get the overflow menu at the outer edge.
   func configureNavigationBar() {
     showsDiscardWording = isNewChecklist
-    let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: makeMoreMenu())
+    let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: makeMoreMenu())
     // Held on to so the menu can be rebuilt while it is on screen; see `refreshMoreMenu`.
     moreBarButtonItem = moreItem
     moreItem.accessibilityLabel = Self.moreMenuAccessibilityLabel
