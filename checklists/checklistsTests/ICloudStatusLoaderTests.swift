@@ -87,7 +87,7 @@ struct ICloudStatusLoaderTests {
 
   /// The launch check and the account-change observers run their loads concurrently, so the
   /// earlier-started query can resolve last.
-  @Test("an earlier query that resolves last does not overwrite a later one")
+  @Test("an earlier query that resolves last does not overwrite a later one", .timeLimit(.minutes(1)))
   func earlierQueryResolvingLastIsDropped() async {
     let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .checking)
     let earlierAnswer = PendingAccountStatus()
@@ -103,7 +103,7 @@ struct ICloudStatusLoaderTests {
     #expect(syncStatus.accountStatus == .available)
   }
 
-  @Test("an earlier query still publishes while a later one is pending")
+  @Test("an earlier query still publishes while a later one is pending", .timeLimit(.minutes(1)))
   func earlierQueryPublishesWhileLaterIsPending() async {
     let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .checking)
     let earlierAnswer = PendingAccountStatus()
