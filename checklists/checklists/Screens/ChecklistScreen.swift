@@ -3,6 +3,7 @@
 //  checklists
 //
 
+import SwiftData
 import SwiftUI
 import UIKit
 
