@@ -269,9 +269,9 @@ device-interaction session, point it at this checkout's device: `XcodeSwitchRunD
 ### The software keyboard
 
 UI tests never tap keyboard keys; `make gate` fails on a new tap
-(`scripts/check_ui_test_keyboard.py`). **If a run prints `SIM-KEYBOARD-FLAKE tests-failed`, say so
-explicitly in your report** — never treat it as known flake. Mechanism and #231: the
-`XCUIElement+Keyboard.swift` header.
+(`scripts/check_ui_test_keyboard.py`); use the `XCUIElement+Keyboard.swift` helpers. **A UI failure
+with `kAXErrorCannotComplete` on a keyboard key means a tap got past that check: say so explicitly in
+your report** — never treat it as known flake.
 
 ## Known issues
 
