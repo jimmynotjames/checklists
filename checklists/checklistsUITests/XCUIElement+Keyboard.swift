@@ -3,17 +3,6 @@
 //  checklistsUITests
 //
 
-// The test scripts run the simulator headless, so nothing attaches a hardware keyboard to it.
-// DeviceHub (`make sim-show`) can: its "Always simulate hardware keyboard" setting and per-device
-// Keyboard menu decide it for a device it has open. Nobody has pinned down what else does; a
-// suspect is the device's own `AutomaticMinimizationEnabled` / `HardwareKeyboardLastSeen` in
-// `data/Library/Preferences/com.apple.keyboard.preferences.plist`, which survives reboots and
-// nothing here resets. Don't read a green run as proof the keyboard was on screen.
-//
-// `SIM-KEYBOARD-FLAKE tests-failed` (from `scripts/check_keyboard_flake.py`) means something still
-// depends on the keyboard and got past the gate check. #231 tracks retiring the tag once it stays
-// quiet.
-
 import XCTest
 
 /// Keyboard input that does not depend on the software keyboard being on screen.

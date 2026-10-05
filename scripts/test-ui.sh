@@ -40,8 +40,6 @@ xcodebuild test \
     -only-testing:checklistsUITests/ChecklistCopyCheckedItemsUITest \
     -only-testing:checklistsUITests/AnalyticsConsentUITest || RC=$?
 
-# Report-only keyboard-failure tag: the XCUIElement+Keyboard.swift header.
-python3 "${ROOT}/scripts/check_keyboard_flake.py" "${RESULT_BUNDLE}" || true
 python3 "${ROOT}/scripts/list_test_failures.py" "${RESULT_BUNDLE}" || true
 
 echo "result-bundle: ${RESULT_BUNDLE}"
