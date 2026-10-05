@@ -70,6 +70,8 @@ EXTERNAL_SYMBOLS = {
     "workspaceIdentifier", "deviceIdentifier", "RunAllTests", "RunSomeTests", "RunProject",
     "XcodeSwitchRunDestination", "XcodeOpenWorkspace", "DeviceInteractionInstallAndRun",
     "DeviceInteractionSynthesize",
+    # The XCUITest error AGENTS.md §"The software keyboard" says to escalate.
+    "kAXErrorCannotComplete",
 }
 # `Name.ext` in backticks is a file reference: it must be a tracked file, not a symbol.
 FILE_EXTENSIONS = {"swift", "md", "py", "sh", "xcstrings", "xcprivacy", "plist", "yml",
