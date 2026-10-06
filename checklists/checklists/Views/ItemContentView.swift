@@ -133,6 +133,27 @@ class ItemContentView: UIView {
     _ = nameTextView.becomeFirstResponder()
   }
 
+  /// Reorder Items mode: the row shows as usual but takes no touches, and its text cannot be
+  /// edited. `isEditable` as well, because a VoiceOver double-tap does not go through hit-testing.
+  func setReordering(_ reordering: Bool) {
+    isUserInteractionEnabled = !reordering
+    nameTextView.isEditable = !reordering
+    notesTextView.isEditable = !reordering
+  }
+
+  /// Put on every element VoiceOver can land on in the row: the row itself is not one, and custom
+  /// actions are not inherited from a container.
+  func setAccessibilityMoveActions(_ actions: [UIAccessibilityCustomAction]) {
+    checkboxButton.accessibilityCustomActions = actions
+    nameTextView.accessibilityCustomActions = actions
+    notesTextView.accessibilityCustomActions = actions
+  }
+
+  /// Where VoiceOver focus goes after the row is moved.
+  var accessibilityFocusTarget: UIView {
+    nameTextView
+  }
+
   func updateCheckedStatus() {
     guard let status = item?.status else { return }
     checkboxButton.setCheckboxState(with: status)

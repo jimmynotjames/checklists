@@ -33,6 +33,7 @@ nonisolated enum AnalyticsEvent {
   static let checklistItemsCopied = "checklist_items_copied"
   static let checklistReset = "checklist_reset"
   static let checklistDeleted = "checklist_deleted"
+  static let checklistReorderModeEntered = "checklist_reorder_mode_entered"
   static let checklistsEditModeEntered = "checklists_edit_mode_entered"
   static let checklistsBulkActionPerformed = "checklists_bulk_action_performed"
 

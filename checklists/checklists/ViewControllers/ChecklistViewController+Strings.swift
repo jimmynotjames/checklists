@@ -16,6 +16,17 @@ extension ChecklistViewController {
 
   // MARK: Overflow menu
 
+  static let reorderItemsMenuTitle = String(
+    localized: "checklist.menu.reorderItems",
+    defaultValue: "Reorder Items",
+    comment: """
+    First overflow-menu entry on a checklist's screen, both for a saved checklist and while \
+    creating one. Shows drag handles for putting this checklist's items in a new order; a Done \
+    button leaves. It does not edit the items' text and does not sort them, so avoid a verb that \
+    could read as sorting.
+    """
+  )
+
   static let moreMenuAccessibilityLabel = String(
     localized: "checklist.menu.more.accessibilityLabel",
     defaultValue: "More",
@@ -88,4 +99,47 @@ extension ChecklistViewController {
     either: this checklist was never kept. Prefer the sense of abandon or throw away. Keep it short.
     """
   )
+
+  // MARK: VoiceOver moves
+
+  static func moveActionTitle(for action: ChecklistMoveAction) -> String {
+    switch action {
+    case .up:
+      String(
+        localized: "item.accessibilityAction.moveUp",
+        defaultValue: "Move Up",
+        comment: "VoiceOver action on an item row inside a checklist: moves the item one place up."
+      )
+    case .down:
+      String(
+        localized: "item.accessibilityAction.moveDown",
+        defaultValue: "Move Down",
+        comment: "VoiceOver action on an item row inside a checklist: moves the item one place down."
+      )
+    case .top:
+      String(
+        localized: "item.accessibilityAction.moveToTop",
+        defaultValue: "Move to Top",
+        comment: "VoiceOver action on an item row inside a checklist: moves the item to the start of the checklist."
+      )
+    case .bottom:
+      String(
+        localized: "item.accessibilityAction.moveToBottom",
+        defaultValue: "Move to Bottom",
+        comment: "VoiceOver action on an item row inside a checklist: moves the item to the end of the checklist."
+      )
+    }
+  }
+
+  static func movedToPositionAnnouncement(position: Int, count: Int) -> String {
+    String(
+      localized: "item.accessibility.movedToPosition",
+      defaultValue: "Moved to position \(position) of \(count)",
+      comment: """
+      VoiceOver announcement after an item inside a checklist is moved with a Move Up/Down/to \
+      Top/to Bottom action. First placeholder is its new position counting from 1, second the \
+      number of items in the checklist.
+      """
+    )
+  }
 }

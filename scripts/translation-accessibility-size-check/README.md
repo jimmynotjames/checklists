@@ -13,7 +13,7 @@ Roughly 20-30 minutes serially. Screenshots land in `tmp/loc-size-check/`, named
 
 ## What it does
 
-Drives `LocalizationScreenshotCapture` (in `checklistsUITests`) through seven
+Drives `LocalizationScreenshotCapture` (in `checklistsUITests`) through its
 screens in thirteen locales with Dynamic Type forced to `.xxxLarge`, then exports
 and downscales the attachments.
 
@@ -28,7 +28,8 @@ The thirteen are chosen for what they stress, not for market size:
 | Cyrillic | `ru` |
 
 Screens: the list, the main menu, settings, a checklist's detail, the list in
-Edit mode, the delete confirmation, and a new checklist. The analytics consent sheet
+Edit mode, the delete confirmation, a new checklist, and a checklist in Reorder Items
+mode. The analytics consent sheet
 is captured as `04a-consent` wherever the region presents it.
 
 ## Reading the results

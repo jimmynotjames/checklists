@@ -38,6 +38,7 @@ xcodebuild test \
     -only-testing:checklistsUITests/checklistUITest \
     -only-testing:checklistsUITests/checklistCreateUITest \
     -only-testing:checklistsUITests/ChecklistCopyCheckedItemsUITest \
+    -only-testing:checklistsUITests/ChecklistReorderItemsUITest \
     -only-testing:checklistsUITests/AnalyticsConsentUITest || RC=$?
 
 python3 "${ROOT}/scripts/list_test_failures.py" "${RESULT_BUNDLE}" || true

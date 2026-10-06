@@ -68,7 +68,8 @@ extension ModelContext {
   }
 }
 
-/// A one-step reorder offered to assistive technologies, which cannot drag.
+/// A one-step reorder of a checklist or an item, offered to assistive technologies, which cannot
+/// drag.
 ///
 /// Free of SwiftData so the edge rules can be tested without a container.
 nonisolated enum ChecklistMoveAction: CaseIterable {
@@ -77,8 +78,8 @@ nonisolated enum ChecklistMoveAction: CaseIterable {
   case top
   case bottom
 
-  /// The index to hand `ModelContext.move(checklist:among:to:)`, which counts positions after the
-  /// moved row is taken out; `nil` when the move would go nowhere.
+  /// The index to hand `ModelContext.move(checklist:among:to:)` or `move(item:among:to:)`, which
+  /// count positions after the moved row is taken out; `nil` when the move would go nowhere.
   func destination(from index: Int, count: Int) -> Int? {
     let last = count - 1
     switch self {

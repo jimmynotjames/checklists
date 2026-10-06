@@ -57,11 +57,13 @@ enum ChecklistScreenHarness {
     }
   }
 
-  /// - Parameter items: each item's name and whether it is checked, in the order they should
-  ///   appear.
+  /// - Parameters:
+  ///   - items: each item's name and whether it is checked, in the order they should appear.
+  ///   - isNewChecklist: builds the create sheet's variant of the screen, with Done and Discard.
   static func withController<T>(
     name: String = "Groceries",
     items: [(name: String, isChecked: Bool)] = [],
+    isNewChecklist: Bool = false,
     _ body: (Context) throws -> T
   ) throws -> T {
     let container = try TestModelContainer.make()
@@ -85,6 +87,7 @@ enum ChecklistScreenHarness {
     viewController.checklist = checklist
     viewController.context = modelContext
     viewController.analytics = analytics
+    viewController.isNewChecklist = isNewChecklist
 
     let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
     defer {

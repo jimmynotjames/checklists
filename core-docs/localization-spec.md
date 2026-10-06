@@ -209,7 +209,7 @@ screen and read identically in some locale.
 
 ## Large-type layout check
 
-`scripts/translation-accessibility-size-check/` drives 13 locales through seven screens at forced
+`scripts/translation-accessibility-size-check/` drives 13 locales through its screens at forced
 `.xxxLarge` and leaves the screenshots for reading. It asserts nothing — the reading is the check —
 and it is deliberately outside the app test suites and `make gate`. Findings go in its `AUDIT_LOG.md`.
 
