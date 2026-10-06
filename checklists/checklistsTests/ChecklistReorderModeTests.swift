@@ -47,8 +47,9 @@ struct ChecklistReorderModeTests {
 
       #expect(!harness.header.nameTextField.isEnabled)
       #expect(!harness.header.notesTextView.isEditable)
-      let footer = try #require(harness.table.tableFooterView)
+      let footer = try #require(harness.table.tableFooterView as? AddItemButtonTableFooterView)
       #expect(!footer.isUserInteractionEnabled)
+      #expect(footer.contentView.alpha == 0)
 
       let rows = harness.table.visibleCells.compactMap { $0 as? ItemTableViewCell }
       #expect(rows.count == 3)
@@ -78,6 +79,9 @@ struct ChecklistReorderModeTests {
       #expect(controller.navigationItem.rightBarButtonItems == original)
       #expect(controller.navigationItem.leftBarButtonItem === backButton)
       #expect(harness.header.nameTextField.isEnabled)
+      let footer = try #require(harness.table.tableFooterView as? AddItemButtonTableFooterView)
+      #expect(footer.isUserInteractionEnabled)
+      #expect(footer.contentView.alpha == 1)
       let rows = harness.table.visibleCells.compactMap { $0 as? ItemTableViewCell }
       let allInteractive = rows.allSatisfy(\.itemContentView.isUserInteractionEnabled)
       #expect(allInteractive)
@@ -112,6 +116,26 @@ struct ChecklistReorderModeTests {
       controller.setEditing(false, animated: false)
 
       #expect(controller.navigationItem.rightBarButtonItems == original)
+    }
+  }
+
+  /// The table puts its footer view back to full opacity when it animates a row move; the Add
+  /// button must stay hidden regardless.
+  @Test("the Add button stays hidden when the table resets its footer during a move")
+  func addButtonStaysHiddenThroughAMove() throws {
+    try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
+      harness.viewController.setEditing(true, animated: false)
+      let footer = try #require(harness.table.tableFooterView as? AddItemButtonTableFooterView)
+
+      footer.alpha = 1
+      harness.viewController.tableView(
+        harness.table,
+        moveRowAt: IndexPath(row: 2, section: 0),
+        to: IndexPath(row: 0, section: 0)
+      )
+
+      #expect(footer.contentView.alpha == 0)
+      #expect(!footer.isUserInteractionEnabled)
     }
   }
 

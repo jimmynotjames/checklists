@@ -310,9 +310,11 @@ class ChecklistViewController: UIViewController {
     for case let cell as ItemTableViewCell in tableView.visibleCells {
       cell.itemContentView.setReordering(editing)
     }
-    let footer = tableView.tableFooterView
-    footer?.isUserInteractionEnabled = !editing
-    let fadeFooter: () -> Void = { footer?.alpha = editing ? 0.0 : 1.0 }
+    tableView.tableFooterView?.isUserInteractionEnabled = !editing
+    // The footer's content rather than the footer itself: the table puts its footer view back to
+    // full opacity when it animates a row move, which would bring the Add button back mid-mode.
+    let footerContent = (tableView.tableFooterView as? AddItemButtonTableFooterView)?.contentView
+    let fadeFooter: () -> Void = { footerContent?.alpha = editing ? 0.0 : 1.0 }
     if animated {
       UIView.animate(withDuration: 0.25, animations: fadeFooter)
     } else {
