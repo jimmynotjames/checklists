@@ -7345,7 +7345,7 @@
       }
     },
     "checklist.menu.reorderItems" : {
-      "comment" : "First overflow-menu entry on a checklist's screen, both for a saved checklist and while creating one. Shows drag handles for putting this checklist's items in a new order; a Done button leaves. It does not edit the items' text and does not sort them. It sits above the Duplicate Checklist entry.",
+      "comment" : "First overflow-menu entry on a checklist's screen, both for a saved checklist and while creating one. Shows drag handles for putting this checklist's items in a new order; a Done button leaves. It does not edit the items' text and does not sort them, so avoid a verb that could read as sorting.",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7357,7 +7357,7 @@
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "আইটেম পুনর্বিন্যাস"
+            "value" : "আইটেমের ক্রম বদলান"
           }
         },
         "ca" : {
@@ -7375,13 +7375,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Omarranger emner"
+            "value" : "Omarranger punkter"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Einträge ordnen"
+            "value" : "Reihenfolge ändern"
           }
         },
         "el" : {
@@ -7429,7 +7429,7 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Järjestä kohteet"
+            "value" : "Muuta järjestystä"
           }
         },
         "fr" : {
@@ -7447,7 +7447,7 @@
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "આઇટમ ફરી ગોઠવો"
+            "value" : "આઇટમનો ક્રમ બદલો"
           }
         },
         "he" : {
@@ -7465,7 +7465,7 @@
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Promijeni redoslijed stavki"
+            "value" : "Promijeni redoslijed"
           }
         },
         "hu" : {
@@ -7477,7 +7477,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Urutkan Ulang Item"
+            "value" : "Atur Ulang Urutan Item"
           }
         },
         "it" : {
@@ -7513,7 +7513,7 @@
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आयटमची क्रमवारी बदला"
+            "value" : "आयटम पुन्हा लावा"
           }
         },
         "ms" : {
@@ -7585,7 +7585,7 @@
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spremeni vrstni red"
+            "value" : "Preuredi postavke"
           }
         },
         "sv" : {
@@ -7603,13 +7603,13 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "అంశాలను పునఃక్రమించు"
+            "value" : "అంశాల క్రమం మార్చండి"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "จัดลำดับรายการ"
+            "value" : "จัดเรียงรายการใหม่"
           }
         },
         "tr" : {
@@ -7621,7 +7621,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Змінити порядок"
+            "value" : "Змінити порядок пунктів"
           }
         },
         "ur" : {
@@ -7639,13 +7639,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "调整项目顺序"
+            "value" : "调整顺序"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重新排序項目"
+            "value" : "重新排列項目"
           }
         }
       }

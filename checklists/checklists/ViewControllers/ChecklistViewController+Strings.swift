@@ -22,8 +22,8 @@ extension ChecklistViewController {
     comment: """
     First overflow-menu entry on a checklist's screen, both for a saved checklist and while \
     creating one. Shows drag handles for putting this checklist's items in a new order; a Done \
-    button leaves. It does not edit the items' text and does not sort them. It sits above the \
-    Duplicate Checklist entry.
+    button leaves. It does not edit the items' text and does not sort them, so avoid a verb that \
+    could read as sorting.
     """
   )
 
