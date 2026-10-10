@@ -5,7 +5,8 @@ import XCTest
 /// Drives the app in 13 locales at forced `.xxxLarge` and saves a screenshot of each key screen as a
 /// `.keepAlways` attachment named `<lang>__<screen>`. It makes **no layout assertions** — it never
 /// "fails" on truncation; a human or Claude inspects the screenshots (see
-/// `scripts/translation-accessibility-size-check/`). Runs only when the runner `-only-testing`s it.
+/// `scripts/translation-accessibility-size-check/`). It skips unless the runner sets
+/// `RUN_LOCALIZATION_SCREENSHOTS=1`, so an unscoped `xcodebuild test` never runs it.
 ///
 /// Navigation is locale-invariant (accessibility identifiers and `cells.firstMatch`); the type size is
 /// forced via the `FORCE_DYNAMIC_TYPE` env hook, because the standard
@@ -24,9 +25,15 @@ import XCTest
 /// - `TestDynamicTypeOverride` (the `FORCE_DYNAMIC_TYPE` hook), applied at the app root and again on
 ///   `RootView`'s sheet, since a sheet does not inherit the root's `dynamicTypeSize`.
 /// - The runner `scripts/translation-accessibility-size-check/run.sh`, which `-only-testing`s this
-///   class and relies on the `<lang>__<screen>` attachment names.
+///   class, sets `TEST_RUNNER_RUN_LOCALIZATION_SCREENSHOTS=1`, and relies on the `<lang>__<screen>`
+///   attachment names.
 final class LocalizationScreenshotCapture: XCTestCase {
   override func setUpWithError() throws {
+    try super.setUpWithError()
+    try XCTSkipUnless(
+      ProcessInfo.processInfo.environment["RUN_LOCALIZATION_SCREENSHOTS"] == "1",
+      "Localization screenshots run only through scripts/translation-accessibility-size-check/run.sh."
+    )
     continueAfterFailure = true
   }
 
