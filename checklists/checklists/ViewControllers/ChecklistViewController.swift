@@ -35,17 +35,18 @@ class ChecklistViewController: UIViewController {
   var onRequestOpenDuplicate: ((String) -> Void)?
 
   /// Set by the SwiftUI host (`ChecklistScreen`). Called with *this* checklist's `id` when the
-  /// overflow menu's copy entry is tapped, for the host to present the destination picker, which
-  /// does the copying (see `CopyCheckedItemsView`). Unset means the entry does nothing.
-  var onRequestCopyCheckedItems: ((String) -> Void)?
+  /// overflow menu's copy or move entry is tapped, for the host to present the destination picker,
+  /// which does the copying or moving (see `CopyCheckedItemsView`). Unset means the entries do
+  /// nothing.
+  var onRequestTransferCheckedItems: ((String, CheckedItemsTransferMode) -> Void)?
 
   /// The overflow menu's bar item, kept so its menu can be rebuilt while it is on screen — the one
   /// way UIKit offers to change a menu that is already presented.
   var moreBarButtonItem: UIBarButtonItem?
 
-  /// Whether the overflow menu is currently showing "No checked items." under the copy entry. See
-  /// `showNoItemsCheckedNotice`.
-  var showsNoItemsCheckedNotice = false
+  /// Which overflow-menu entry is currently showing "No checked items." under it, if any. See
+  /// `showNoItemsCheckedNotice(under:)`.
+  var noItemsCheckedNoticeEntry: CheckedItemsMenuEntry?
 
   /// The one scheduled retirement of that notice, held so a second tap can restart it.
   var noItemsCheckedNoticeDismissal: Task<Void, Never>?
@@ -443,6 +444,24 @@ class ChecklistViewController: UIViewController {
     updateStatusIcon()
     refreshHistoryCaption()
     refreshMoveActions()
+  }
+
+  /// The overflow menu's Delete Checked Items, once confirmed. Internal so a test can invoke it.
+  ///
+  /// Reloads rather than deleting rows one by one: the checked rows can sit anywhere in the list,
+  /// and nothing about a scattered multi-row fade tells the person more than the rows being gone.
+  func deleteCheckedItems() {
+    let checkedItems = checklist.checkedItems
+    guard !checkedItems.isEmpty else { return }
+    analytics.track(
+      AnalyticsEvent.checklistCheckedItemsDeleted,
+      properties: [AnalyticsProperty.itemsCount: checkedItems.count]
+    )
+    context.deleteItems(checkedItems, from: checklist)
+    // The reload re-issues every row's VoiceOver move actions, so no `refreshMoveActions` here.
+    tableView.reloadData()
+    updateStatusIcon()
+    refreshHistoryCaption()
   }
 
   /// Copies the item at `index` and places the copy directly beneath it. See

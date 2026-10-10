@@ -15,7 +15,7 @@
 | **App Store listing** | 49 storefronts transcreated; `name` and URLs copied from English |
 | **Screenshot seeds** | Generated for all 50 from the catalog |
 | **Screenshot capture** | All 50 active; a full run is release-time work |
-| **Plurals** | No plural keys exist yet; the pipeline supports them |
+| **Plurals** | Plural variants in the catalog where a count is shown (`pluralize_keys.py`) |
 | **Display name** | `reChecklist` verbatim everywhere; no `InfoPlist.xcstrings` |
 
 ---

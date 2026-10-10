@@ -84,9 +84,9 @@ struct RootView: View {
           } else {
             unresolvedSheetDestination
           }
-        case let .copyCheckedItems(sourceID):
+        case let .transferCheckedItems(sourceID, mode):
           if let source = context.checklist(id: sourceID) {
-            CopyCheckedItemsView(source: source)
+            CopyCheckedItemsView(source: source, mode: mode)
           } else {
             unresolvedSheetDestination
           }

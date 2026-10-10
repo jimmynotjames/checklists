@@ -56,6 +56,73 @@ struct ChecklistMenuActionTests {
     }
   }
 
+  // MARK: - Delete Checked Items
+
+  @Test("deleting checked items removes the ticked rows and keeps the rest")
+  func deleteCheckedItemsKeepsTheUnchecked() throws {
+    try ChecklistScreenHarness.withController(
+      items: [("Milk", true), ("Bread", false), ("Eggs", true), ("Tea", false)]
+    ) { harness in
+      harness.viewController.deleteCheckedItems()
+
+      #expect(harness.itemNames == ["Bread", "Tea"])
+      let persisted = try harness.persistedItemNames()
+      #expect(persisted == ["Bread", "Tea"], "The deletion is saved, not just staged.")
+      #expect(harness.table.numberOfRows(inSection: 0) == 2)
+      let count = harness.analytics.properties(forFirst: AnalyticsEvent.checklistCheckedItemsDeleted)?[
+        AnalyticsProperty.itemsCount
+      ]
+      #expect(count == "2")
+    }
+  }
+
+  /// Ticking every item and deleting them leaves an empty list, and an empty list is never complete
+  /// (persistence-design.md §The two history stamps), so this must not stamp a completion.
+  @Test("deleting every item leaves an empty, uncompleted list")
+  func deleteCheckedItemsCanEmptyTheList() throws {
+    try ChecklistScreenHarness.withController(
+      items: [("Milk", true), ("Bread", true)]
+    ) { harness in
+      harness.viewController.deleteCheckedItems()
+
+      #expect(harness.itemNames.isEmpty)
+      #expect(harness.checklist.lastCompleted == nil)
+    }
+  }
+
+  @Test("with nothing checked, nothing is deleted or reported")
+  func deleteCheckedItemsWithNothingChecked() throws {
+    try ChecklistScreenHarness.withController(
+      items: [("Milk", false), ("Bread", false)]
+    ) { harness in
+      harness.viewController.deleteCheckedItems()
+
+      #expect(harness.itemNames == ["Milk", "Bread"])
+      #expect(harness.analytics.count(of: AnalyticsEvent.checklistCheckedItemsDeleted) == 0)
+    }
+  }
+
+  // MARK: - Copy and Move Checked Items
+
+  /// The picker is the host's to present; all the controller owes it is which list, and which mode.
+  @Test("the copy and move entries hand the host this checklist and their mode")
+  func transferEntriesHandOverTheirMode() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", true)]) { harness in
+      var requests: [CheckedItemsTransferMode] = []
+      var requestedIds: Set<String> = []
+      harness.viewController.onRequestTransferCheckedItems = { id, mode in
+        requestedIds.insert(id)
+        requests.append(mode)
+      }
+
+      harness.viewController.transferCheckedItems(.copy)
+      harness.viewController.transferCheckedItems(.move)
+
+      #expect(requests == [.copy, .move])
+      #expect(requestedIds == [harness.checklist.id])
+    }
+  }
+
   // MARK: - Duplicate
 
   @Test("duplicating adds a copy and opens it")

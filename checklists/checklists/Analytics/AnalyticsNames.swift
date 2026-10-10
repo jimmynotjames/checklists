@@ -31,6 +31,8 @@ nonisolated enum AnalyticsEvent {
   static let checklistCreated = "checklist_created"
   static let checklistDuplicated = "checklist_duplicated"
   static let checklistItemsCopied = "checklist_items_copied"
+  static let checklistItemsMoved = "checklist_items_moved"
+  static let checklistCheckedItemsDeleted = "checklist_checked_items_deleted"
   static let checklistReset = "checklist_reset"
   static let checklistDeleted = "checklist_deleted"
   static let checklistReorderModeEntered = "checklist_reorder_mode_entered"
@@ -81,7 +83,7 @@ nonisolated enum AnalyticsProperty {
 
   static let source = "source"
 
-  // MARK: checklist_items_copied
+  // MARK: checklist_items_copied, checklist_items_moved
 
   static let destination = "destination"
 

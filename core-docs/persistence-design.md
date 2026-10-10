@@ -123,7 +123,7 @@ are unaffected and still start at `step`.
 
 `Persistence/ChecklistDuplication.swift` deep-copies a checklist; `ItemDuplication.swift` copies one
 item within its checklist; `CheckedItemCopying.swift` copies a checklist's checked items into a new
-or existing list. All re-issue sort keys rather than copying them. **None carries over item status
+or existing list, and moves them by deleting the originals once the copy has saved. All re-issue sort keys rather than copying them. **None carries over item status
 or either history stamp**, since all three describe something that happened to the original list
 being run, and nothing has been run on the copy yet.
 

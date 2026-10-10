@@ -1837,6 +1837,966 @@
         }
       }
     },
+    "checklist.confirm.deleteCheckedItems.message" : {
+      "comment" : "Alert message before deleting the ticked items from a checklist, shown after the Delete Checked Items menu entry. The placeholder is how many items will be deleted, always at least one. The alert's buttons are Cancel and Delete.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "حذف %lld عناصر محددة؟ لا يمكن التراجع عن ذلك."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "حذف %lld عنصرًا محددًا؟ لا يمكن التراجع عن ذلك."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "حذف عنصر محدد واحد (%lld)؟ لا يمكن التراجع عن ذلك."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "حذف %lld عنصر محدد؟ لا يمكن التراجع عن ذلك."
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "حذف %lld عنصرين محددين؟ لا يمكن التراجع عن ذلك."
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "حذف %lld عنصر محدد؟ لا يمكن التراجع عن ذلك."
+                }
+              }
+            }
+          }
+        },
+        "bn" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld টি চেক করা আইটেম মুছে ফেলবেন? এটি আগের অবস্থায় ফেরানো যাবে না।"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld টি চেক করা আইটেম মুছে ফেলবেন? এটি আগের অবস্থায় ফেরানো যাবে না।"
+                }
+              }
+            }
+          }
+        },
+        "ca" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Vols eliminar %lld element marcat? Aquesta acció no es pot desfer."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Vols eliminar %lld elements marcats? Aquesta acció no es pot desfer."
+                }
+              }
+            }
+          }
+        },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Smazat %lld zaškrtnuté položky? Tuto akci nelze vrátit zpět."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Smazat %lld zaškrtnutou položku? Tuto akci nelze vrátit zpět."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Smazat %lld zaškrtnutých položek? Tuto akci nelze vrátit zpět."
+                }
+              }
+            }
+          }
+        },
+        "da" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Vil du slette %lld afkrydset punkt? Det kan ikke fortrydes."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Vil du slette %lld afkrydsede punkter? Det kan ikke fortrydes."
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld markierten Eintrag löschen? Das lässt sich nicht rückgängig machen."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld markierte Einträge löschen? Das lässt sich nicht rückgängig machen."
+                }
+              }
+            }
+          }
+        },
+        "el" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Να διαγραφεί %lld επιλεγμένο στοιχείο; Η ενέργεια δεν αναιρείται."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Να διαγραφούν %lld επιλεγμένα στοιχεία; Η ενέργεια δεν αναιρείται."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Delete %lld checked item? This cannot be undone."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Delete %lld checked items? This cannot be undone."
+                }
+              }
+            }
+          }
+        },
+        "en-AU" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Delete %lld checked item? This can’t be undone."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Delete %lld checked items? This can’t be undone."
+                }
+              }
+            }
+          }
+        },
+        "en-CA" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Delete %lld checked item? This cannot be undone."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Delete %lld checked items? This cannot be undone."
+                }
+              }
+            }
+          }
+        },
+        "en-GB" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Delete %lld ticked item? This cannot be undone."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Delete %lld ticked items? This cannot be undone."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Eliminar %lld elemento marcado? No se puede deshacer."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Eliminar %lld elementos marcados? No se puede deshacer."
+                }
+              }
+            }
+          }
+        },
+        "es-MX" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Eliminar %lld elemento marcado? Esta acción no se puede deshacer."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Eliminar %lld elementos marcados? Esta acción no se puede deshacer."
+                }
+              }
+            }
+          }
+        },
+        "fi" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Poistetaanko %lld valittu kohde? Tätä ei voi kumota."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Poistetaanko %lld valittua kohdetta? Tätä ei voi kumota."
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Supprimer %lld élément coché ? Cette action est irréversible."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Supprimer %lld éléments cochés ? Cette action est irréversible."
+                }
+              }
+            }
+          }
+        },
+        "fr-CA" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Supprimer %lld élément coché? Cette action est irréversible."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Supprimer %lld éléments cochés? Cette action est irréversible."
+                }
+              }
+            }
+          }
+        },
+        "gu" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ચેક કરેલી આઇટમ કાઢી નાખો? આ પાછું લાવી શકાશે નહીં."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ચેક કરેલી આઇટમ કાઢી નાખો? આ પાછું લાવી શકાશે નહીં."
+                }
+              }
+            }
+          }
+        },
+        "he" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "למחוק פריט מסומן %lld? אי אפשר לבטל את הפעולה."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "למחוק %lld פריטים מסומנים? אי אפשר לבטל את הפעולה."
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "למחוק %lld פריטים מסומנים? אי אפשר לבטל את הפעולה."
+                }
+              }
+            }
+          }
+        },
+        "hi" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld चेक किया गया आइटम मिटाएँ? यह पहले जैसा नहीं किया जा सकता।"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld चेक किए गए आइटम मिटाएँ? यह पहले जैसा नहीं किया जा सकता।"
+                }
+              }
+            }
+          }
+        },
+        "hr" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Izbrisati %lld označene stavke? Ovo se ne može poništiti."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Izbrisati %lld označenu stavku? Ovo se ne može poništiti."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Izbrisati %lld označenih stavki? Ovo se ne može poništiti."
+                }
+              }
+            }
+          }
+        },
+        "hu" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Törli a(z) %lld bejelölt elemet? Ez nem vonható vissza."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Törli a(z) %lld bejelölt elemet? Ez nem vonható vissza."
+                }
+              }
+            }
+          }
+        },
+        "id" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Hapus %lld item yang dicentang? Tindakan ini tidak dapat dibatalkan."
+                }
+              }
+            }
+          }
+        },
+        "it" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Eliminare %lld elemento selezionato? L’operazione non può essere annullata."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Eliminare %lld elementi selezionati? L’operazione non può essere annullata."
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "チェック済みの項目%lld件を削除しますか？この操作は取り消せません。"
+                }
+              }
+            }
+          }
+        },
+        "kn" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ಗುರುತಿಸಿದ %lld ಐಟಂ ಅನ್ನು ಅಳಿಸಬೇಕೇ? ಇದನ್ನು ರದ್ದುಗೊಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ಗುರುತಿಸಿದ %lld ಐಟಂಗಳನ್ನು ಅಳಿಸಬೇಕೇ? ಇದನ್ನು ರದ್ದುಗೊಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "체크된 항목 %lld개를 삭제할까요? 이 작업은 되돌릴 수 없어요."
+                }
+              }
+            }
+          }
+        },
+        "ml" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ചെക്ക് ചെയ്ത %lld ഇനം ഇല്ലാതാക്കണോ? ഇത് പഴയപടിയാക്കാനാവില്ല."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ചെക്ക് ചെയ്ത %lld ഇനങ്ങൾ ഇല്ലാതാക്കണോ? ഇത് പഴയപടിയാക്കാനാവില്ല."
+                }
+              }
+            }
+          }
+        },
+        "mr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld चेक केलेला आयटम हटवायचा? हे पूर्ववत करता येणार नाही."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld चेक केलेले आयटम हटवायचे? हे पूर्ववत करता येणार नाही."
+                }
+              }
+            }
+          }
+        },
+        "ms" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Padam %lld item yang ditanda? Tindakan ini tidak boleh dibuat asal."
+                }
+              }
+            }
+          }
+        },
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Vil du slette %lld avkrysset punkt? Dette kan ikke angres."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Vil du slette %lld avkryssede punkter? Dette kan ikke angres."
+                }
+              }
+            }
+          }
+        },
+        "nl" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld aangevinkt item verwijderen? Dit kan niet worden teruggezet."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld aangevinkte items verwijderen? Dit kan niet worden teruggezet."
+                }
+              }
+            }
+          }
+        },
+        "or" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ଚେକ୍ ହୋଇଥିବା ଆଇଟମ୍ ଡିଲିଟ୍ କରିବେ? ଏହାକୁ ଫେରାଇ ହେବ ନାହିଁ।"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ଚେକ୍ ହୋଇଥିବା ଆଇଟମ୍ ଡିଲିଟ୍ କରିବେ? ଏହାକୁ ଫେରାଇ ହେବ ନାହିଁ।"
+                }
+              }
+            }
+          }
+        },
+        "pa" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ਚੈੱਕ ਕੀਤੀ ਆਈਟਮ ਮਿਟਾਉਣੀ ਹੈ? ਇਹ ਵਾਪਸ ਨਹੀਂ ਹੋ ਸਕਦਾ।"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ਚੈੱਕ ਕੀਤੀਆਂ ਆਈਟਮਾਂ ਮਿਟਾਉਣੀਆਂ ਹਨ? ਇਹ ਵਾਪਸ ਨਹੀਂ ਹੋ ਸਕਦਾ।"
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Usunąć %lld zaznaczone pozycje? Tej czynności nie można cofnąć."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Usunąć %lld zaznaczonych pozycji? Tej czynności nie można cofnąć."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Usunąć %lld zaznaczoną pozycję? Tej czynności nie można cofnąć."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Usunąć %lld zaznaczonej pozycji? Tej czynności nie można cofnąć."
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Apagar %lld item marcado? Isso não pode ser desfeito."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Apagar %lld itens marcados? Isso não pode ser desfeito."
+                }
+              }
+            }
+          }
+        },
+        "pt-PT" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Apagar %lld item marcado? Esta ação não pode ser anulada."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Apagar %lld itens marcados? Esta ação não pode ser anulada."
+                }
+              }
+            }
+          }
+        },
+        "ro" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ștergeți %lld elemente bifate? Acțiunea nu poate fi anulată."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ștergeți %lld element bifat? Acțiunea nu poate fi anulată."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ștergeți %lld de elemente bifate? Acțiunea nu poate fi anulată."
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Удалить %lld отмеченных пункта? Это действие нельзя отменить."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Удалить %lld отмеченных пунктов? Это действие нельзя отменить."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Удалить %lld отмеченный пункт? Это действие нельзя отменить."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Удалить %lld отмеченного пункта? Это действие нельзя отменить."
+                }
+              }
+            }
+          }
+        },
+        "sk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Odstrániť %lld zaškrtnuté položky? Túto akciu nemožno vrátiť späť."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Odstrániť %lld zaškrtnutú položku? Túto akciu nemožno vrátiť späť."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Odstrániť %lld zaškrtnutých položiek? Túto akciu nemožno vrátiť späť."
+                }
+              }
+            }
+          }
+        },
+        "sl" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Želite izbrisati %lld potrjene postavke? Tega ni mogoče razveljaviti."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Želite izbrisati %lld potrjeno postavko? Tega ni mogoče razveljaviti."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Želite izbrisati %lld potrjenih postavk? Tega ni mogoče razveljaviti."
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Želite izbrisati %lld potrjeni postavki? Tega ni mogoče razveljaviti."
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Vill du radera %lld markerad punkt? Det går inte att ångra."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Vill du radera %lld markerade punkter? Det går inte att ångra."
+                }
+              }
+            }
+          }
+        },
+        "ta" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "தேர்வுசெய்யப்பட்ட %lld உருப்படியை நீக்கவா? இதைத் திரும்பப்பெற முடியாது."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "தேர்வுசெய்யப்பட்ட %lld உருப்படிகளை நீக்கவா? இதைத் திரும்பப்பெற முடியாது."
+                }
+              }
+            }
+          }
+        },
+        "te" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "చెక్ చేయబడింది అయిన %lld అంశాన్ని తొలగించాలా? దీన్ని రద్దు చేయలేరు."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "చెక్ చేయబడింది అయిన %lld అంశాలను తొలగించాలా? దీన్ని రద్దు చేయలేరు."
+                }
+              }
+            }
+          }
+        },
+        "th" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ลบรายการที่ทำเครื่องหมายแล้ว %lld รายการไหม การดำเนินการนี้ไม่สามารถยกเลิกได้"
+                }
+              }
+            }
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld işaretli öğe silinsin mi? Bu işlem geri alınamaz."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld işaretli öğe silinsin mi? Bu işlem geri alınamaz."
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Видалити %lld позначені пункти? Цю дію не можна скасувати."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Видалити %lld позначених пунктів? Цю дію не можна скасувати."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Видалити %lld позначений пункт? Цю дію не можна скасувати."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Видалити %lld позначеного пункту? Цю дію не можна скасувати."
+                }
+              }
+            }
+          }
+        },
+        "ur" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld چیک شدہ آئٹم حذف کریں؟ اسے واپس نہیں لایا جا سکتا۔"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld چیک شدہ آئٹمز حذف کریں؟ انہیں واپس نہیں لایا جا سکتا۔"
+                }
+              }
+            }
+          }
+        },
+        "vi" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Xóa %lld mục đã chọn? Không thể hoàn tác."
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "删除 %lld 个已选中的项目?此操作无法撤销。"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hant" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "要刪除 %lld 個已勾選的項目嗎？此操作無法復原。"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "checklist.confirm.discard.message" : {
       "comment" : "Alert message before discarding a brand-new checklist from its create sheet.",
       "extractionState" : "manual",
@@ -2756,19 +3716,19 @@
       }
     },
     "checklist.copy.existingSection.header" : {
-      "comment" : "Header over the list of checklists the ticked items can be copied into. The checklist being copied from is not among them.",
+      "comment" : "Header over the list of checklists the ticked items can be copied or moved into. The checklist they come from is not among them.",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "قوائم التحقق الموجودة"
+            "value" : "قوائم التحقق الحالية"
           }
         },
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "বিদ্যমান চেকলিস্টগুলি"
+            "value" : "বিদ্যমান চেকলিস্ট"
           }
         },
         "ca" : {
@@ -2780,7 +3740,7 @@
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Existující kontrolní seznamy"
+            "value" : "Stávající kontrolní seznamy"
           }
         },
         "da" : {
@@ -2834,13 +3794,13 @@
         "es-MX" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Listas existentes"
+            "value" : "Listas de verificación existentes"
           }
         },
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tarkistuslistat"
+            "value" : "Olemassa olevat tarkistuslistat"
           }
         },
         "fr" : {
@@ -2858,7 +3818,7 @@
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "હાલના ચેકલિસ્ટ"
+            "value" : "હાલની ચેકલિસ્ટ"
           }
         },
         "he" : {
@@ -2870,7 +3830,7 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "मौजूदा चेकलिस्ट्स"
+            "value" : "मौजूदा चेकलिस्ट"
           }
         },
         "hr" : {
@@ -2900,7 +3860,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "既存チェックリスト"
+            "value" : "既存のチェックリスト"
           }
         },
         "kn" : {
@@ -2924,7 +3884,7 @@
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "विद्यमान चेकलिस्ट्स"
+            "value" : "सध्याच्या चेकलिस्ट"
           }
         },
         "ms" : {
@@ -2942,13 +3902,13 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bestaande Checklists"
+            "value" : "Bestaande checklists"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ବିଦ୍ୟମାନ ଚେକଲିଷ୍ଟଗୁଡିକ"
+            "value" : "ବିଦ୍ୟମାନ ଚେକଲିଷ୍ଟ"
           }
         },
         "pa" : {
@@ -2966,7 +3926,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Checklists Existentes"
+            "value" : "Checklists existentes"
           }
         },
         "pt-PT" : {
@@ -3038,7 +3998,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "موجودہ چیک لسٹیں"
+            "value" : "موجودہ چیک لسٹس"
           }
         },
         "vi" : {
@@ -3062,7 +4022,7 @@
       }
     },
     "checklist.copy.namePlaceholder" : {
-      "comment" : "Placeholder in the field naming a new checklist to copy the ticked items into. Optional is literal: committing it blank is allowed and the checklist is saved under checklist.defaultName.",
+      "comment" : "Placeholder in the field naming a new checklist to copy or move the ticked items into. Optional is literal: committing it blank is allowed and the checklist is saved under checklist.defaultName.",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -3086,7 +4046,7 @@
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Název (nepovinné)"
+            "value" : "Název (volitelné)"
           }
         },
         "da" : {
@@ -3176,7 +4136,7 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "नाम (वैकल्पिक)"
+            "value" : "नाम (ज़रूरी नहीं)"
           }
         },
         "hr" : {
@@ -3188,7 +4148,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Név (opcionális)"
+            "value" : "Név (nem kötelező)"
           }
         },
         "id" : {
@@ -3206,7 +4166,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "名前(任意)"
+            "value" : "名前（任意）"
           }
         },
         "kn" : {
@@ -3218,19 +4178,19 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이름 (선택 사항)"
+            "value" : "이름(선택 사항)"
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "പേര് (ഐച്ഛികം)"
+            "value" : "പേര് (ഓപ്ഷണൽ)"
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "नाव (वैकल्पिक)"
+            "value" : "नाव (ऐच्छिक)"
           }
         },
         "ms" : {
@@ -3254,7 +4214,7 @@
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ନାମ (ଆବଶ୍ୟକ ନୁହେଁ)"
+            "value" : "ନାମ (ବୈକଳ୍ପିକ)"
           }
         },
         "pa" : {
@@ -3296,13 +4256,13 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Názov (nepovinné)"
+            "value" : "Názov (voliteľné)"
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ime (neobvezno)"
+            "value" : "Ime (izbirno)"
           }
         },
         "sv" : {
@@ -3326,7 +4286,7 @@
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ชื่อ (ไม่จำเป็น)"
+            "value" : "ชื่อ (ไม่บังคับ)"
           }
         },
         "tr" : {
@@ -3338,7 +4298,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Назва (необов'язково)"
+            "value" : "Назва (необов’язково)"
           }
         },
         "ur" : {
@@ -3350,13 +4310,13 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tên (tuỳ chọn)"
+            "value" : "Tên (không bắt buộc)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "名称（可选）"
+            "value" : "名称(可选)"
           }
         },
         "zh-Hant" : {
@@ -3368,7 +4328,7 @@
       }
     },
     "checklist.copy.newSection.header" : {
-      "comment" : "Header over the row that creates a checklist to copy the ticked items into. The row holds an optional name field.",
+      "comment" : "Header over the row that creates a checklist to copy or move the ticked items into. The row holds an optional name field.",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -3542,7 +4502,7 @@
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Senarai Semak Baru"
+            "value" : "Senarai Semak Baharu"
           }
         },
         "nb" : {
@@ -3554,13 +4514,13 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nieuwe Checklist"
+            "value" : "Nieuwe checklist"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ନୂତନ ଚେକଲିଷ୍ଟ"
+            "value" : "ନୂଆ ଚେକଲିଷ୍ଟ"
           }
         },
         "pa" : {
@@ -3578,7 +4538,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Novo Checklist"
+            "value" : "Novo checklist"
           }
         },
         "pt-PT" : {
@@ -3662,13 +4622,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新清单"
+            "value" : "新建清单"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新檢查清單"
+            "value" : "新增檢查清單"
           }
         }
       }
@@ -5816,7 +6776,7 @@
       }
     },
     "checklist.menu.copyCheckedItems.noCheckedItems" : {
-      "comment" : "Appears inside the overflow menu, directly under the Copy Checked Items to… entry, when that entry is tapped with nothing ticked, and fades again after a moment. Not a button — it says why nothing happened. Echo the wording of checklist.menu.copyCheckedItems: it should read as \"there are none of the thing that entry copies\", so reuse that key's word for checked items rather than picking a synonym. Keep it to a few words.",
+      "comment" : "Appears inside the overflow menu, directly under the Copy Checked Items to…, Move Checked Items to… or Delete Checked Items entry, when that entry is tapped with nothing ticked, and fades again after a moment. Not a button — it says why nothing happened. Echo the wording of those entries: it should read as \"there are none of the thing that entry acts on\", so reuse their word for checked items rather than picking a synonym. Keep it to a few words.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5827,13 +6787,13 @@
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "কোনো চেক করা আইটেম নেই।"
+            "value" : "কোনো চেক করা আইটেম নেই"
           }
         },
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cap element marcat."
+            "value" : "No hi ha elements marcats."
           }
         },
         "cs" : {
@@ -5851,13 +6811,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nichts markiert."
+            "value" : "Keine markierten Einträge."
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Δεν υπάρχουν επιλεγμένα στοιχεία."
+            "value" : "Κανένα επιλεγμένο στοιχείο."
           }
         },
         "en" : {
@@ -5887,13 +6847,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sin elementos marcados."
+            "value" : "No hay elementos marcados"
           }
         },
         "es-MX" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sin elementos marcados"
+            "value" : "Sin elementos marcados."
           }
         },
         "fi" : {
@@ -5917,7 +6877,7 @@
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ચેક કરેલી આઇટમ્સ નથી"
+            "value" : "કોઈ ચેક કરેલી આઇટમ નથી."
           }
         },
         "he" : {
@@ -5929,7 +6889,7 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "चेक किए गए आइटम नहीं हैं।"
+            "value" : "कोई चेक किया गया आइटम नहीं"
           }
         },
         "hr" : {
@@ -5941,31 +6901,31 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nincsenek bejelölt elemek."
+            "value" : "Nincs bejelölt elem."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tidak ada item yang dicentang."
+            "value" : "Tidak ada item dicentang."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nessun elemento selezionato"
+            "value" : "Nessun elemento selezionato."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "チェック済み項目がありません"
+            "value" : "チェック済みの項目はありません"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಗುರುತಿಸಲಾದ ಐಟಂಗಳಿಲ್ಲ."
+            "value" : "ಗುರುತಿಸಿದ ಐಟಂಗಳಿಲ್ಲ"
           }
         },
         "ko" : {
@@ -5977,13 +6937,13 @@
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ചെക്ക് ചെയ്ത ഇനങ്ങൾ ഇല്ല."
+            "value" : "ചെക്ക് ചെയ്ത ഇനങ്ങളില്ല."
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "चेक केलेले आयटम नाहीत।"
+            "value" : "चेक केलेले आयटम नाहीत."
           }
         },
         "ms" : {
@@ -5995,13 +6955,13 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen avkryssede elementer."
+            "value" : "Ingen avkryssede punkter."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Niets aangevinkt."
+            "value" : "Geen aangevinkte items."
           }
         },
         "or" : {
@@ -6013,19 +6973,19 @@
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਕੋਈ ਚੈੱਕ ਕੀਤੀ ਆਈਟਮ ਨਹੀਂ।"
+            "value" : "ਕੋਈ ਚੈੱਕ ਕੀਤੀ ਆਈਟਮ ਨਹੀਂ"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brak zaznaczonych elementów."
+            "value" : "Brak zaznaczonych pozycji"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sem itens marcados."
+            "value" : "Nenhum item marcado."
           }
         },
         "pt-PT" : {
@@ -6043,13 +7003,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Нет отмеченных пунктов."
+            "value" : "Нет отмеченных пунктов"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Žiadne zaškrtnuté položky."
+            "value" : "Žiadne zaškrtnuté položky"
           }
         },
         "sl" : {
@@ -6061,7 +7021,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inga markerade."
+            "value" : "Inga markerade punkter."
           }
         },
         "ta" : {
@@ -6109,13 +7069,319 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有已选中的项目。"
+            "value" : "没有已选中的项目"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "沒有已勾選的項目。"
+          }
+        }
+      }
+    },
+    "checklist.menu.deleteCheckedItems" : {
+      "comment" : "Overflow-menu entry on an existing checklist's detail screen. Destructive; a confirmation follows. Removes the items the person has ticked from this checklist and keeps the rest. It sits directly above the Delete Checklist entry and must not read alike: this one keeps the checklist. Use the same word for checked items as the Copy Checked Items to… entry.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حذف العناصر المحددة"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "চেক করা আইটেম মুছে ফেলুন"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar elements marcats"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smazat zaškrtnuté položky"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slet afkrydsede punkter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markierte Einträge löschen"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Διαγραφή επιλεγμένων στοιχείων"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Checked Items"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Checked Items"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Checked Items"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Ticked Items"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar elementos marcados"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar elementos marcados"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poista valitut kohteet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer les éléments cochés"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer les éléments cochés"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ચેક કરેલી આઇટમ કાઢી નાખો"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "מחיקת פריטים מסומנים"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चेक किए गए आइटम मिटाएँ"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izbriši označene stavke"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bejelölt elemek törlése"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hapus Item Dicentang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina elementi selezionati"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チェック済みの項目を削除"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಗುರುತಿಸಿದ ಐಟಂಗಳನ್ನು ಅಳಿಸಿ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "체크된 항목 삭제"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ചെക്ക് ചെയ്ത ഇനങ്ങൾ ഇല്ലാതാക്കുക"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चेक केलेले आयटम हटवा"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Padam Item Ditanda"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett avkryssede punkter"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwijder aangevinkte items"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଚେକ୍ ହୋଇଥିବା ଆଇଟମ୍ ଡିଲିଟ୍ କରନ୍ତୁ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਚੈੱਕ ਕੀਤੀਆਂ ਆਈਟਮਾਂ ਮਿਟਾਓ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń zaznaczone pozycje"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar itens marcados"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar itens marcados"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Șterge elementele bifate"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить отмеченные пункты"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstrániť zaškrtnuté položky"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izbriši potrjene postavke"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Radera markerade punkter"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "தேர்வுசெய்யப்பட்ட உருப்படிகளை நீக்கு"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "చెక్ చేసిన అంశాలను తొలగించు"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ลบรายการที่ทำเครื่องหมายแล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İşaretli Öğeleri Sil"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити позначені пункти"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "چیک شدہ آئٹمز حذف کریں"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xóa mục đã chọn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除已选中的项目"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除已勾選的項目"
           }
         }
       }
@@ -7344,6 +8610,312 @@
         }
       }
     },
+    "checklist.menu.moveCheckedItems" : {
+      "comment" : "Overflow-menu entry on an existing checklist's detail screen. Moves the items the person has ticked into another checklist, picked on the sheet that opens next: they are added there and removed from this checklist. Keep the trailing ellipsis — it is what promises that sheet. It sits directly under the Copy Checked Items to… entry and must not read alike: that one leaves the items here, this one takes them away. Use the same word for checked items as that entry.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نقل العناصر المحددة إلى…"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "চেক করা আইটেম সরান…"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moure elements marcats a…"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přesunout zaškrtnuté položky do…"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flyt afkrydsede punkter til…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markierte Einträge verschieben nach…"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Μετακίνηση επιλεγμένων στοιχείων σε…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move Checked Items to…"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move Checked Items to…"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move Checked Items to…"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move Ticked Items to…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover elementos marcados a…"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover elementos marcados a…"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siirrä valitut kohteet…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déplacer les éléments cochés vers…"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déplacer les éléments cochés vers…"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ચેક કરેલી આઇટમ ખસેડો…"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "העברת פריטים מסומנים אל…"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चेक किए गए आइटम यहाँ ले जाएँ…"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premjesti označene stavke u…"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bejelölt elemek áthelyezése…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindahkan Item Dicentang ke…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sposta elementi selezionati in…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チェック済みの項目を移動…"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಗುರುತಿಸಿದ ಐಟಂಗಳನ್ನು ಸರಿಸಿ…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "체크된 항목 이동…"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ചെക്ക് ചെയ്ത ഇനങ്ങൾ ഇവിടേക്ക് മാറ്റുക…"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चेक केलेले आयटम येथे हलवा…"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alih Item Ditanda ke…"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytt avkryssede punkter til …"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verplaats aangevinkte items naar…"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଚେକ୍ ହୋଇଥିବା ଆଇଟମ୍ ଏଠାକୁ ନିଅନ୍ତୁ…"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਚੈੱਕ ਕੀਤੀਆਂ ਆਈਟਮਾਂ ਮੂਵ ਕਰੋ…"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przenieś zaznaczone pozycje do…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover itens marcados para…"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover itens marcados para…"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mută elementele bifate în…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переместить отмеченные пункты в…"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presunúť zaškrtnuté položky do…"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premakni potrjene postavke v …"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytta markerade punkter till …"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "தேர்வுசெய்யப்பட்ட உருப்படிகளை இங்கே நகர்த்து…"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "చెక్ చేసిన అంశాలను తరలించు…"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ย้ายรายการที่ทำเครื่องหมายแล้วไปยัง…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İşaretli Öğeleri Taşı…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перемістити позначені пункти до…"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "چیک شدہ آئٹمز منتقل کریں…"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di chuyển mục đã chọn đến…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将已选中的项目移至…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移動已勾選的項目至⋯"
+          }
+        }
+      }
+    },
     "checklist.menu.reorderItems" : {
       "comment" : "First overflow-menu entry on a checklist's screen, both for a saved checklist and while creating one. Shows drag handles for putting this checklist's items in a new order; a Done button leaves. It does not edit the items' text and does not sort them, so avoid a verb that could read as sorting.",
       "extractionState" : "manual",
@@ -7646,6 +9218,924 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重新排列項目"
+          }
+        }
+      }
+    },
+    "checklist.move.confirmation" : {
+      "comment" : "Toast shown after the ticked items are moved into another checklist and removed from this one. The placeholder is the destination checklist's name, which may be a name the person typed or the default untitled one. It appears briefly and is also read aloud by VoiceOver, so keep it to one short line.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نُقلت العناصر إلى %@"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "আইটেম %@-এ সরানো হয়েছে"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elements moguts a %@"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přesunuto do: %@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punkter flyttet til %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einträge nach %@ verschoben"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Τα στοιχεία μετακινήθηκαν σε %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moved items to %@"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moved items to %@"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moved items to %@"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moved items to %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elementos movidos a %@"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elementos movidos a %@"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kohteet siirretty: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éléments déplacés vers %@"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éléments déplacés vers %@"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "આઇટમ %@ માં ખસેડી"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "הפריטים הועברו אל %@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आइटम %@ में ले जाए गए"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stavke premještene u %@"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elemek áthelyezve ide: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Item dipindahkan ke %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elementi spostati in %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "項目を%@に移動しました"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ಗೆ ಐಟಂಗಳನ್ನು ಸರಿಸಲಾಗಿದೆ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "항목을 %@(으)로 이동했어요"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ഇനങ്ങൾ %@ എന്നതിലേക്ക് മാറ്റി"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आयटम %@ मध्ये हलवले"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Item dialih ke %@"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flyttet punkter til %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Items verplaatst naar %@"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଆଇଟମ୍ %@ କୁ ନିଆଗଲା"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਆਈਟਮਾਂ %@ ਵਿੱਚ ਮੂਵ ਕੀਤੀਆਂ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przeniesiono pozycje do %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Itens movidos para %@"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Itens movidos para %@"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elemente mutate în %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пункты перемещены в «%@»"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Položky presunuté do: %@"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Postavke premaknjene v %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punkterna flyttades till %@"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "உருப்படிகள் %@-க்கு நகர்த்தப்பட்டன"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "అంశాలను %@కి తరలించారు"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ย้ายรายการไปยัง %@ แล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öğeler %@ listesine taşındı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пункти переміщено до %@"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آئٹمز %@ میں منتقل ہو گئے"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã chuyển mục đến %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已将项目移至“%@”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已將項目移至「%@」"
+          }
+        }
+      }
+    },
+    "checklist.move.create.accessibilityLabel" : {
+      "comment" : "VoiceOver label for the button beside the name field that creates the new checklist and moves the ticked items into it.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إنشاء قائمة تحقق ونقل العناصر"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "চেকলিস্ট তৈরি করে আইটেম সরান"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crear llista de comprovació i moure els elements"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vytvořit kontrolní seznam a přesunout položky"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opret tjekliste og flyt punkter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checkliste erstellen und Einträge verschieben"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Δημιουργία λίστας ελέγχου και μετακίνηση στοιχείων"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create checklist and move items"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create checklist and move items"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create checklist and move items"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create checklist and move items"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crear lista de comprobación y mover elementos"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crear lista de verificación y mover elementos"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luo tarkistuslista ja siirrä kohteet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créer la liste et déplacer les éléments"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créer la liste de vérification et déplacer les éléments"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ચેકલિસ્ટ બનાવો અને આઇટમ ખસેડો"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "יצירת רשימת תיוג והעברת הפריטים"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चेकलिस्ट बनाएँ और आइटम ले जाएँ"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izradi kontrolni popis i premjesti stavke"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ellenőrzőlista létrehozása és elemek áthelyezése"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buat daftar periksa dan pindahkan item"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea elenco di controllo e sposta elementi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チェックリストを作成して項目を移動"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಚೆಕ್‌ಲಿಸ್ಟ್ ರಚಿಸಿ ಮತ್ತು ಐಟಂಗಳನ್ನು ಸರಿಸಿ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "체크리스트를 만들고 항목 이동"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ചെക്ക്‌ലിസ്റ്റ് സൃഷ്ടിച്ച് ഇനങ്ങൾ മാറ്റുക"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चेकलिस्ट तयार करा आणि आयटम हलवा"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cipta senarai semak dan alih item"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opprett sjekkliste og flytt punkter"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maak checklist en verplaats items"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଚେକଲିଷ୍ଟ ତିଆରି କରି ଆଇଟମ୍ ନିଅନ୍ତୁ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਚੈੱਕਲਿਸਟ ਬਣਾਓ ਅਤੇ ਆਈਟਮਾਂ ਮੂਵ ਕਰੋ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utwórz listę kontrolną i przenieś pozycje"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criar checklist e mover itens"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criar lista de verificação e mover itens"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creează lista de verificare și mută elementele"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Создать чек-лист и переместить пункты"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vytvoriť kontrolný zoznam a presunúť položky"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ustvari kontrolni seznam in premakni postavke"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa checklista och flytta punkterna"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "சரிபார்ப்புப் பட்டியலை உருவாக்கி உருப்படிகளை நகர்த்து"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "చెక్‌లిస్ట్ సృష్టించి, అంశాలను తరలించు"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สร้างเช็คลิสต์และย้ายรายการ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontrol listesi oluştur ve öğeleri taşı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Створити чек-лист і перемістити пункти"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "چیک لسٹ بنائیں اور آئٹمز منتقل کریں"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tạo danh sách kiểm tra và di chuyển mục"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "创建清单并移动项目"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "建立檢查清單並移動項目"
+          }
+        }
+      }
+    },
+    "checklist.move.title" : {
+      "comment" : "Title of the sheet that asks where to move the items someone has ticked: they are added to the chosen checklist and removed from this one. Reached from the checklist detail screen's Move Checked Items to… menu entry; keep the two consistent, and keep it distinct from checklist.copy.title, which leaves the items where they were.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نقل العناصر المحددة"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "চেক করা আইটেম সরান"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moure elements marcats"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přesunout zaškrtnuté položky"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flyt afkrydsede punkter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markierte Einträge verschieben"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Μετακίνηση επιλεγμένων στοιχείων"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move Checked Items"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move Checked Items"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move Checked Items"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move Ticked Items"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover elementos marcados"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover elementos marcados"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siirrä valitut kohteet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déplacer les éléments cochés"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déplacer les éléments cochés"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ચેક કરેલી આઇટમ ખસેડો"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "העברת פריטים מסומנים"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चेक किए गए आइटम ले जाएँ"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premjesti označene stavke"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bejelölt elemek áthelyezése"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindahkan Item Dicentang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sposta elementi selezionati"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チェック済みの項目を移動"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಗುರುತಿಸಿದ ಐಟಂಗಳನ್ನು ಸರಿಸಿ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "체크된 항목 이동"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ചെക്ക് ചെയ്ത ഇനങ്ങൾ മാറ്റുക"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चेक केलेले आयटम हलवा"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alih Item Ditanda"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytt avkryssede punkter"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verplaats aangevinkte items"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଚେକ୍ ହୋଇଥିବା ଆଇଟମ୍ ନିଅନ୍ତୁ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਚੈੱਕ ਕੀਤੀਆਂ ਆਈਟਮਾਂ ਮੂਵ ਕਰੋ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przenieś zaznaczone pozycje"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover itens marcados"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover itens marcados"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mută elementele bifate"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переместить отмеченные пункты"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presunúť zaškrtnuté položky"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premakni potrjene postavke"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytta markerade punkter"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "தேர்வுசெய்யப்பட்ட உருப்படிகளை நகர்த்து"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "చెక్ చేసిన అంశాలను తరలించు"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ย้ายรายการที่ทำเครื่องหมายแล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İşaretli Öğeleri Taşı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перемістити позначені пункти"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "چیک شدہ آئٹمز منتقل کریں"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di chuyển mục đã chọn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移动已选中的项目"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移動已勾選的項目"
           }
         }
       }

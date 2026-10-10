@@ -40,7 +40,7 @@ A dashboard is justified by a question here. The IDs are stable; board names cit
 | 3.2 | What do people make checklists *for*? | `checklist_name` |
 | 3.3 | How big do checklists get, and how many per person? | `checklists_count`, `items_count`, `notes_length` |
 | 3.4 | Is the notes feature used? | `items_with_notes_count`, `notes_length` |
-| 3.5 | Reuse (reset), template (duplicate, copy items), or disposable (create, delete)? | the five checklist action events, plus `checklists_bulk_action_performed` by `bulk_action` for the list's Edit mode |
+| 3.5 | Reuse (reset), template (duplicate, copy items), or disposable (create, delete, move or delete checked items)? | the seven checklist action events, plus `checklists_bulk_action_performed` by `bulk_action` for the list's Edit mode |
 | 3.6 | How often does the store fail to open, and how often is that unrecoverable? | `startup_failed` / `startup_store_reset` at `startup_stage = store_open` |
 | 3.7 | Does anyone rotate the device? | `orientation_changed` |
 | 3.8 | What share opt out, by jurisdiction? | `analytics_consent_changed`, `consent_jurisdiction` |
@@ -225,6 +225,8 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `checklist_created` | A checklist is created | — |
 | `checklist_duplicated` | Copied, from the list's swipe or the checklist menu | `source` |
 | `checklist_items_copied` | Ticked items copied into another checklist, from the checklist menu | `destination` |
+| `checklist_items_moved` | Ticked items moved into another checklist and out of this one, from the checklist menu | `destination` |
+| `checklist_checked_items_deleted` | The checklist menu's Delete Checked Items is confirmed | `items_count` |
 | `checklist_reset` | All items unchecked | — |
 | `checklist_deleted` | Deleted, from the list's swipe or the checklist menu | — |
 | `checklist_reorder_mode_entered` | The checklist menu's Reorder Items entry is chosen | — |
@@ -257,7 +259,7 @@ The rating-prompt events fire from `RatingPromptCoordinator`; its doc comment ha
 | `checklists_count` | Int | Raw |
 | `checklist_name` | String | **User content**, `AnalyticsText.truncated` |
 | `notes_length` | Int | Characters in the checklist's notes; 0 when absent |
-| `items_count` | Int | |
+| `items_count` | Int | Items in the checklist; on `checklist_checked_items_deleted`, the items deleted |
 | `items_with_notes_count` | Int | Items with non-nil, non-empty notes |
 | `source` | String | `menu` / `swipe` |
 | `destination` | String | `new` / `existing` |

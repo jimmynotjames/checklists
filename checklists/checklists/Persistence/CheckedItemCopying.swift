@@ -10,9 +10,9 @@ extension Checklist {
   /// The items a copy would carry: ticked, and not the scratch row the detail screen seeds and
   /// trims.
   ///
-  /// Shared by the two operations below and by the overflow-menu entry that offers them, so a tap
-  /// on the entry opens the picker only when there is something to copy, and shows the "No checked
-  /// items." notice otherwise — including when the only ticked row is a blank one.
+  /// Shared by the operations below, by Delete Checked Items, and by the overflow-menu entries that
+  /// offer them, so a tap on an entry acts only when there is something to act on, and shows the
+  /// "No checked items." notice otherwise — including when the only ticked row is a blank one.
   var checkedItems: [Item] {
     items.filter { $0.status == .checked && !$0.isBlank }
   }
@@ -99,6 +99,50 @@ extension ModelContext {
       throw error
     }
     return copies
+  }
+
+  /// `copyCheckedItems(of:intoChecklistNamed:among:)`, then removes the originals from `source`.
+  ///
+  /// The removal is a second save, after the copy has landed: if it fails, the items sit in both
+  /// lists rather than in neither.
+  ///
+  /// - Returns: the new checklist, inserted and saved.
+  @discardableResult
+  func moveCheckedItems(
+    of source: Checklist,
+    intoChecklistNamed name: String,
+    among siblings: [Checklist]
+  ) throws -> Checklist {
+    let originals = source.checkedItems
+    let destination = try copyCheckedItems(of: source, intoChecklistNamed: name, among: siblings)
+    deleteItems(originals, from: source)
+    return destination
+  }
+
+  /// `copyCheckedItems(of:into:)`, then removes the originals from `source`, in the same order as
+  /// `moveCheckedItems(of:intoChecklistNamed:among:)` for the same reason.
+  ///
+  /// - Returns: the copies, inserted and saved.
+  @discardableResult
+  func moveCheckedItems(of source: Checklist, into destination: Checklist) throws -> [Item] {
+    let originals = source.checkedItems
+    let copies = try copyCheckedItems(of: source, into: destination)
+    deleteItems(originals, from: source)
+    return copies
+  }
+
+  /// Deletes `items` from `checklist` in one save: the second half of a move, and the whole of the
+  /// detail screen's Delete Checked Items.
+  ///
+  /// Unlinked before deleting, as the copy paths' failure branches do, so `checklist.items` drops
+  /// them now rather than at the next save. Through `saveDeletion` like any other item deletion.
+  func deleteItems(_ items: [Item], from checklist: Checklist) {
+    let wasComplete = checklist.isComplete
+    for item in items {
+      item.checklist = nil
+      delete(item)
+    }
+    saveDeletion(from: checklist, wasComplete: wasComplete)
   }
 
   /// Name and notes only. **Copies arrive unchecked**, as they do on both existing copy paths: a

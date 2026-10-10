@@ -8,8 +8,9 @@ import Foundation
 import SwiftData
 import Testing
 
-/// Covers `Checklist.checkedItems` and the two `ModelContext.copyCheckedItems` operations behind
-/// the detail screen's "Copy Checked Items to…" entry.
+/// Covers `Checklist.checkedItems` and the `ModelContext.copyCheckedItems` and
+/// `moveCheckedItems` operations behind the detail screen's "Copy Checked Items to…" and "Move
+/// Checked Items to…" entries.
 ///
 /// The new checklist's name is chosen by the picker, not by these operations, so nothing here
 /// asserts localized text — unlike `ChecklistDuplicationTests`, which has naming rules to cover.
@@ -233,5 +234,80 @@ struct CheckedItemCopyingTests {
     let persisted = try verification.fetch(FetchDescriptor<Item>())
       .filter { $0.checklist?.id == destinationId }
     #expect(persisted.map(\.name) == ["Item 0"])
+  }
+
+  // MARK: - Moving
+
+  @Test("moving into a new checklist takes the ticked items out of the source")
+  func moveIntoANewChecklist() throws {
+    let context = try TestModelContainer.makeContext()
+    let source = try makeChecklist(itemCount: 4, checkedIndices: [1, 3], in: context)
+
+    let destination = try context.moveCheckedItems(of: source, intoChecklistNamed: "Ferry", among: [source])
+
+    #expect(destination.items.map(\.name) == ["Item 1", "Item 3"])
+    #expect(destination.items.allSatisfy { $0.status == .unchecked })
+    #expect(source.items.map(\.name) == ["Item 0", "Item 2"])
+  }
+
+  @Test("moving into an existing checklist appends there and removes here")
+  func moveIntoAnExistingChecklist() throws {
+    let context = try TestModelContainer.makeContext()
+    let source = try makeChecklist(name: "Packing", itemCount: 3, checkedIndices: [0, 2], in: context)
+    let destination = try makeChecklist(name: "Groceries", itemPrefix: "Grocery", itemCount: 1, sortKey: 2.0, in: context)
+
+    let copies = try context.moveCheckedItems(of: source, into: destination)
+
+    #expect(copies.map(\.name) == ["Item 0", "Item 2"])
+    #expect(destination.items.map(\.name) == ["Grocery 0", "Item 0", "Item 2"])
+    #expect(source.items.map(\.name) == ["Item 1"])
+  }
+
+  /// A ticked blank row is not a checked item, so it is neither carried nor removed.
+  @Test("a move leaves the source's blank row behind")
+  func moveLeavesTheBlankRow() throws {
+    let context = try TestModelContainer.makeContext()
+    let source = try makeChecklist(itemCount: 1, checkedIndices: [0], in: context)
+    let blank = Item(sortKey: 99.0)
+    blank.status = .checked
+    context.insert(blank)
+    blank.checklist = source
+    try context.saveChanges(operation: .sampleSeed)
+
+    try context.moveCheckedItems(of: source, intoChecklistNamed: "Ferry", among: [source])
+
+    #expect(source.items.count == 1)
+    #expect(source.items.first?.isBlank == true)
+  }
+
+  /// Deleting is an edit, not a run, and what is left is unchecked, so neither stamp moves.
+  @Test("a move leaves the source's history stamps alone")
+  func moveLeavesTheSourceStampsAlone() throws {
+    let context = try TestModelContainer.makeContext()
+    let source = try makeChecklist(itemCount: 2, checkedIndices: [0], in: context)
+    let updatedAt = Date(timeIntervalSinceReferenceDate: 1000.0)
+    source.recordUpdate(at: updatedAt)
+
+    try context.moveCheckedItems(of: source, intoChecklistNamed: "Ferry", among: [source])
+
+    #expect(source.lastUpdated == updatedAt)
+    #expect(source.lastCompleted == nil)
+  }
+
+  @Test("both halves of a move are written to the store")
+  func moveIsPersisted() throws {
+    let context = try TestModelContainer.makeContext()
+    let source = try makeChecklist(name: "Packing", itemCount: 2, checkedIndices: [0], in: context)
+    let destination = try makeChecklist(name: "Groceries", itemCount: 0, sortKey: 2.0, in: context)
+
+    try context.moveCheckedItems(of: source, into: destination)
+
+    let verification = ModelContext(context.container)
+    let persisted = try verification.fetch(FetchDescriptor<Item>())
+    let sourceId = source.id
+    let destinationId = destination.id
+    #expect(persisted.filter { $0.checklist?.id == sourceId }.map(\.name) == ["Item 1"])
+    #expect(persisted.filter { $0.checklist?.id == destinationId }.map(\.name) == ["Item 0"])
+    #expect(persisted.count == 2, "The moved original is deleted, not orphaned.")
   }
 }

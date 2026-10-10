@@ -55,17 +55,53 @@ extension ChecklistViewController {
     """
   )
 
+  static let moveCheckedItemsMenuTitle = String(
+    localized: "checklist.menu.moveCheckedItems",
+    defaultValue: "Move Checked Items to…",
+    comment: """
+    Overflow-menu entry on an existing checklist's detail screen. Moves the items the person has \
+    ticked into another checklist, picked on the sheet that opens next: they are added there and \
+    removed from this checklist. Keep the trailing ellipsis — it is what promises that sheet. It \
+    sits directly under the Copy Checked Items to… entry and must not read alike: that one leaves \
+    the items here, this one takes them away. Use the same word for checked items as that entry.
+    """
+  )
+
   static let noItemsCheckedNotice = String(
     localized: "checklist.menu.copyCheckedItems.noCheckedItems",
     defaultValue: "No checked items.",
     comment: """
-    Appears inside the overflow menu, directly under the Copy Checked Items to… entry, when that \
-    entry is tapped with nothing ticked, and fades again after a moment. Not a button — it says \
-    why nothing happened. Echo the wording of checklist.menu.copyCheckedItems: it should read as \
-    "there are none of the thing that entry copies", so reuse that key's word for checked items \
-    rather than picking a synonym. Keep it to a few words.
+    Appears inside the overflow menu, directly under the Copy Checked Items to…, Move Checked \
+    Items to… or Delete Checked Items entry, when that entry is tapped with nothing ticked, and \
+    fades again after a moment. Not a button — it says why nothing happened. Echo the wording of \
+    those entries: it should read as "there are none of the thing that entry acts on", so reuse \
+    their word for checked items rather than picking a synonym. Keep it to a few words.
     """
   )
+
+  static let deleteCheckedItemsMenuTitle = String(
+    localized: "checklist.menu.deleteCheckedItems",
+    defaultValue: "Delete Checked Items",
+    comment: """
+    Overflow-menu entry on an existing checklist's detail screen. Destructive; a confirmation \
+    follows. Removes the items the person has ticked from this checklist and keeps the rest. It \
+    sits directly above the Delete Checklist entry and must not read alike: this one keeps the \
+    checklist. Use the same word for checked items as the Copy Checked Items to… entry.
+    """
+  )
+
+  /// Plural variants live in the String Catalog, keyed off `count`.
+  static func deleteCheckedItemsConfirmationMessage(count: Int) -> String {
+    String(
+      localized: "checklist.confirm.deleteCheckedItems.message",
+      defaultValue: "Delete \(count) checked items? This cannot be undone.",
+      comment: """
+      Alert message before deleting the ticked items from a checklist, shown after the Delete \
+      Checked Items menu entry. The placeholder is how many items will be deleted, always at least \
+      one. The alert's buttons are Cancel and Delete.
+      """
+    )
+  }
 
   static let deleteChecklistMenuTitle = String(
     localized: "checklist.menu.deleteChecklist",
