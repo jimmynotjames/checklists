@@ -118,7 +118,7 @@ final class LocalizationScreenshotCapture: XCTestCase {
     }
 
     capture("04-detail", lang) { app in
-      app.cells.firstMatch.tap()
+      self.openFirstChecklist(app, lang, photographConsent: true)
       // The detail screen is the UIKit one; its name field is the reliable marker.
       return app.textFields["checklistNameField"].waitForExistence(timeout: 8)
         || app.textViews["itemNameTextView"].firstMatch.waitForExistence(timeout: 4)
@@ -155,7 +155,7 @@ final class LocalizationScreenshotCapture: XCTestCase {
     }
 
     capture("08-reorder-items", lang) { app in
-      app.cells.firstMatch.tap()
+      self.openFirstChecklist(app, lang, photographConsent: false)
       guard self.tap(app, "checklist.more"),
             self.tap(app, "checklist.menu.reorderItems")
       else { return false }
@@ -194,15 +194,25 @@ final class LocalizationScreenshotCapture: XCTestCase {
     add(attachment)
   }
 
-  /// Clear the analytics consent sheet if this region gets one, photographing it on the way past.
+  /// Open the first checklist and clear the analytics consent sheet that opening one presents in
+  /// strict-opt-in regions (`ChecklistScreen`'s first-run trigger), which otherwise covers the
+  /// detail screen and its navigation bar.
+  @MainActor private func openFirstChecklist(_ app: XCUIApplication, _ lang: String, photographConsent: Bool) {
+    app.cells.firstMatch.tap()
+    clearConsentIfPresented(app, lang, photograph: photographConsent)
+  }
+
+  /// Clear the analytics consent sheet if this region gets one, optionally photographing it first.
   ///
   /// Handled by presence rather than by a hardcoded list of strict regions: the list lives in the
   /// app and would rot here, and the sheet is worth a shot in every locale that shows it — it is the
   /// densest text in the app and the first thing a new user in those regions reads.
-  @MainActor private func clearConsentIfPresented(_ app: XCUIApplication, _ lang: String) {
+  @MainActor private func clearConsentIfPresented(_ app: XCUIApplication, _ lang: String, photograph: Bool) {
     let decline = app.buttons["analyticsConsentSheet.decline"].firstMatch
     guard decline.waitForExistence(timeout: 4) else { return }
-    attach(app, "\(lang)__04a-consent")
+    if photograph {
+      attach(app, "\(lang)__04a-consent")
+    }
     decline.tap()
     _ = decline.waitForNonExistence(timeout: 4)
   }
@@ -214,7 +224,6 @@ final class LocalizationScreenshotCapture: XCTestCase {
     navigate: (XCUIApplication) -> Bool
   ) {
     let app = launch(lang)
-    clearConsentIfPresented(app, lang)
     guard navigate(app) else {
       XCTFail("\(lang) \(screen): could not reach the screen")
       app.terminate()
