@@ -53,9 +53,12 @@ def make_entry(comment: str, value: str) -> dict:
 
 
 def extracted_only(entry: dict) -> bool:
-    """True for an entry only a sync has written: English still `new`, nothing translated."""
+    """True for an entry only a sync has written: no English value yet, or English still `new` and
+    nothing translated."""
     localizations = entry.get("localizations", {})
-    return set(localizations) <= {"en"} and localizations.get("en", {}).get("stringUnit", {}).get("state") == "new"
+    if not localizations:
+        return True
+    return set(localizations) == {"en"} and localizations["en"].get("stringUnit", {}).get("state") == "new"
 
 
 def main() -> int:

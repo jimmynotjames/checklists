@@ -12,8 +12,6 @@ merge (`xcstringstool sync`) on a copy, then writes the result in Xcode's byte f
     `remove_keys.py` drops it).
 
 Translations and their states are never touched, so a comment-only change costs no re-translation.
-Keys with `"extractionState" : "manual"` are skipped by the merge; the catalog has none, and
-`add_keys.py` writes none.
 
 Needs a current `make build`: it reads that build's derived data, not the Swift sources. Sources
 under DesignExplorations/ (gitignored scratch) are left out, as in check_source_strings.py.
@@ -69,6 +67,11 @@ def select_stringsdata(stringsdata_dir: Path, source_dir: Path, excluded_dir: Pa
 
 
 def synced_text() -> str:
+    if not STRINGSDATA_DIR.is_dir():
+        raise SystemExit(
+            f"ERROR: {STRINGSDATA_DIR.relative_to(REPO_ROOT)} does not exist. Run `make build` first; if it "
+            "has run, scripts/build.sh's derived data path, destination or ARCHS changed: update STRINGSDATA_DIR."
+        )
     selected, unbuilt = select_stringsdata(STRINGSDATA_DIR, SOURCE_DIR, EXCLUDED_DIR)
     if unbuilt:
         names = ", ".join(str(p.relative_to(REPO_ROOT)) for p in unbuilt[:5])

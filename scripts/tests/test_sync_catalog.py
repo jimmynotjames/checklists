@@ -61,6 +61,7 @@ class AddKeysTests(unittest.TestCase):
             "localizations": {"en": {"stringUnit": {"state": "new", "value": "v"}}},
         }
         self.assertTrue(extracted_only(extracted))
+        self.assertTrue(extracted_only({"comment": "c", "extractionState": "extracted_with_value"}))
         self.assertFalse(extracted_only(make_entry("comment", "value")))
         translated = json.loads(json.dumps(extracted))
         translated["localizations"]["de"] = {"stringUnit": {"state": "translated", "value": "w"}}

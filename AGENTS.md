@@ -130,7 +130,8 @@ Gate and pre-commit format and strict-lint **changed Swift files only**
 (`scripts/changed-swift-files.sh`). Repo-wide `make format` / `make lint` are manual escape
 hatches — never wire them into a hook or gate.
 
-**`make i18n-check`, `make uitest-check`, and `make doc-check` are the exceptions** and run
+**`make i18n-check`, `make i18n-sync-check`, `make uitest-check`, and `make doc-check` are the
+exceptions** and run
 repo-wide: a key can stop being translated, a seed go stale, or a pointer dangle because some
 *other* file changed. (`doc-check`'s history-marker scan is the one part limited to added lines.)
 

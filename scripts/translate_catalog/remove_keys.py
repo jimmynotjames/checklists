@@ -6,7 +6,7 @@ Use this when Swift code drops a `String(localized: ...)` call and the catalog
 key becomes orphaned. The script removes the named keys cleanly so the catalog
 stays in sync with the source.
 
-Preserves JSON ordering (sorted keys) and trailing newline so the diff is the
+Writes through xcstrings_io.py in Xcode's byte format, so the diff is the
 removal only.
 
 Usage:
