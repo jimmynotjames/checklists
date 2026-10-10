@@ -56,6 +56,7 @@
       "Bash(python3 scripts/translate_catalog/remove_keys.py:*)",
       "Bash(python3 scripts/translate_catalog/invalidate_keys.py:*)",
       "Bash(python3 scripts/translate_catalog/pluralize_keys.py:*)",
+      "Bash(python3 scripts/translate_catalog/sync_catalog.py:*)",
       "Bash(python3 scripts/translate_catalog/inspect_xcstrings.py:*)",
       "Bash(python3 scripts/translate_catalog/inspect_glossary.py:*)",
       "Bash(python3 scripts/translate_catalog/glossary_build.py:*)",

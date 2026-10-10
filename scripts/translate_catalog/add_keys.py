@@ -11,12 +11,13 @@ Input: a JSON file (or - for stdin / heredoc) with shape:
     ...
   }
 
-Each key is added with:
-  - extractionState: "manual"
-  - localizations.en.stringUnit.state: "translated"
+Each key is added with localizations.en.stringUnit.state "translated" and no
+extractionState, so a build in Xcode or sync_catalog.py keeps its comment in step
+with the Swift source.
 
-Existing keys are skipped by default; use --force to overwrite.
-The catalog is written back with sorted keys and a trailing newline.
+Existing keys are skipped by default; use --force to overwrite. A key that a build
+in Xcode or sync_catalog.py already added from Swift (English state "new", no
+translations) is not skipped: it is replaced like a new one.
 
 Usage:
   python3 scripts/translate_catalog/add_keys.py keys.json
@@ -40,7 +41,6 @@ from xcstrings_io import write_xcstrings  # noqa: E402
 def make_entry(comment: str, value: str) -> dict:
     return {
         "comment": comment,
-        "extractionState": "manual",
         "localizations": {
             "en": {
                 "stringUnit": {
@@ -50,6 +50,12 @@ def make_entry(comment: str, value: str) -> dict:
             }
         },
     }
+
+
+def extracted_only(entry: dict) -> bool:
+    """True for an entry only a sync has written: English still `new`, nothing translated."""
+    localizations = entry.get("localizations", {})
+    return set(localizations) <= {"en"} and localizations.get("en", {}).get("stringUnit", {}).get("state") == "new"
 
 
 def main() -> int:
@@ -88,7 +94,7 @@ def main() -> int:
             print(f"  SKIP {key!r}: missing value", file=sys.stderr)
             skipped.append(key)
             continue
-        if key in strings and not args.force:
+        if key in strings and not args.force and not extracted_only(strings[key]):
             print(f"  SKIP {key!r}: already in catalog (use --force to overwrite)")
             skipped.append(key)
             continue

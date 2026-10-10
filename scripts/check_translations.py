@@ -8,6 +8,9 @@ language AND every supported target locale.
 Exits 1 if any key is missing or has a non-translated state (new,
 needs_review, stale) for the source language or any target locale.
 
+Also exits 1 if the file's bytes differ from what Xcode would write for the same
+content, so a build in Xcode never rewrites a committed catalog.
+
 The source language is checked too: its stringUnit has its own `state`, and
 while that is `new`, APIs without a `defaultValue` fallback (such as
 `Text(LocalizedStringKey)`) resolve to the literal key at runtime.
@@ -28,6 +31,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "translate_catalog"))
 from locales import LOCALES  # noqa: E402
 from paths import CATALOG_PATH  # noqa: E402
+from xcstrings_io import is_xcode_format  # noqa: E402
 
 # States that mean a translation is not ready to ship.
 UNTRANSLATED_STATES = {"new", "needs_review", "stale"}
@@ -52,6 +56,12 @@ def main(argv: list[str]) -> int:
     strings: dict = data.get("strings", {})
 
     issues: list[str] = []
+
+    if not is_xcode_format(CATALOG_PATH):
+        issues.append(
+            f"  FORMAT   {CATALOG_PATH.name} is not in Xcode's byte format: "
+            "python3 scripts/translate_catalog/sync_catalog.py --format"
+        )
 
     for key, entry in strings.items():
         # Keys marked shouldTranslate=false (e.g. locale-invariant identifiers) are intentionally skipped.

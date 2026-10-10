@@ -196,6 +196,7 @@ the transcreation fan-out, then `generate_seeds.py`.
 | `plural_completeness.py` | CI | Yes |
 | `untranslated_copies.py` | CI | Yes |
 | `distinct_pairs.py` | `make i18n-check`, CI | Yes |
+| `sync_catalog.py --check` | `make i18n-sync-check`, after the build in `make gate` | Yes |
 | `consistency_check.py` | CI | No, informational |
 | `check_source_voice.py` | `push_metadata` lane | No, advisory |
 | `check_content.py` | Screenshot lanes | Yes |
@@ -206,6 +207,12 @@ call. It is a gate failure, not a review note.
 
 `distinct_pairs.py` catches the mistake no reviewer can see in a diff: two strings that share a
 screen and read identically in some locale.
+
+`sync_catalog.py --check` keeps the catalog equal to what a build in Xcode would leave. Xcode owns
+every key: none is `"extractionState" : "manual"`, so a build copies a changed Swift `comment:` into
+the catalog without touching translations, and marks a key gone from Swift `stale`. `xcodebuild`
+does neither, so after `make build` run `make i18n-sync` and commit the result. `check_translations.py`
+also fails a catalog not in Xcode's exact bytes, which every script writes through `xcstrings_io.py`.
 
 ---
 

@@ -1,4 +1,4 @@
-.PHONY: system format format-changed lint lint-changed i18n-check uitest-check doc-check build test-unit test-ui test-scripts gate verify-secrets hooks-install initialize-sims sim-udid sim-show sim-run sim-status sim-shutdown sim-clean
+.PHONY: system format format-changed lint lint-changed i18n-check i18n-sync i18n-sync-check uitest-check doc-check build test-unit test-ui test-scripts gate verify-secrets hooks-install initialize-sims sim-udid sim-show sim-run sim-status sim-shutdown sim-clean
 
 system:
 	bash scripts/system-setup.sh
@@ -34,6 +34,15 @@ i18n-check:
 	python3 scripts/check_translations.py
 	python3 scripts/check_source_strings.py
 	python3 scripts/translate_audit/distinct_pairs.py
+
+# Merge the last `make build`'s extracted strings into the catalog, as a build in Xcode does:
+# Swift `comment:` changes, new keys, and `stale` for keys gone from Swift. Needs that build.
+i18n-sync:
+	python3 scripts/translate_catalog/sync_catalog.py
+
+# The gate's form: fails when i18n-sync would change the catalog.
+i18n-sync-check:
+	python3 scripts/translate_catalog/sync_catalog.py --check
 
 # Static checks; the UI tests themselves are opt-in (AGENTS.md §"Build and test").
 uitest-check:

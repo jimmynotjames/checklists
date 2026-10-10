@@ -3,7 +3,6 @@
   "strings" : {
     "checkbox.accessibilityLabel" : {
       "comment" : "VoiceOver label of the tick box on each checklist item row.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -309,7 +308,6 @@
     },
     "checkbox.value.checked" : {
       "comment" : "VoiceOver value of a ticked checklist item's checkbox.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -615,7 +613,6 @@
     },
     "checkbox.value.unchecked" : {
       "comment" : "VoiceOver value of an unticked checklist item's checkbox.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -921,7 +918,6 @@
     },
     "checklist.action.discard" : {
       "comment" : "Confirmation button that throws away a brand-new checklist. It sits beside Cancel on the same alert, so it must not be the word your language uses for Cancel, and it is not Delete either: this checklist was never kept. Prefer the sense of abandon or throw away. Keep it short.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1227,7 +1223,6 @@
     },
     "checklist.action.reset" : {
       "comment" : "Navigation bar button on the checklist detail screen that unchecks every item so the list can be run again.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1533,7 +1528,6 @@
     },
     "checklist.back.accessibilityLabel" : {
       "comment" : "VoiceOver label for the chevron-only back button on the checklist detail screen.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1839,7 +1833,6 @@
     },
     "checklist.confirm.deleteCheckedItems.message" : {
       "comment" : "Alert message before deleting the ticked items from a checklist, shown after the Delete Checked Items menu entry. The placeholder is how many items will be deleted, always at least one. The alert's buttons are Cancel and Delete.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "variations" : {
@@ -2799,7 +2792,6 @@
     },
     "checklist.confirm.discard.message" : {
       "comment" : "Alert message before discarding a brand-new checklist from its create sheet.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3105,7 +3097,6 @@
     },
     "checklist.copy.confirmation" : {
       "comment" : "Toast shown after the ticked items are copied. The placeholder is the destination checklist's name, which may be a name the person typed or the default untitled one. It appears briefly and is also read aloud by VoiceOver, so keep it to one short line.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3411,7 +3402,6 @@
     },
     "checklist.copy.create.accessibilityLabel" : {
       "comment" : "VoiceOver label for the button beside the name field that creates the new checklist and copies the ticked items into it.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3717,7 +3707,6 @@
     },
     "checklist.copy.existingSection.header" : {
       "comment" : "Header over the list of checklists the ticked items can be copied or moved into. The checklist they come from is not among them.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4023,7 +4012,6 @@
     },
     "checklist.copy.namePlaceholder" : {
       "comment" : "Placeholder in the field naming a new checklist to copy or move the ticked items into. Optional is literal: committing it blank is allowed and the checklist is saved under checklist.defaultName.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4329,7 +4317,6 @@
     },
     "checklist.copy.newSection.header" : {
       "comment" : "Header over the row that creates a checklist to copy or move the ticked items into. The row holds an optional name field.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4635,7 +4622,6 @@
     },
     "checklist.copy.title" : {
       "comment" : "Title of the sheet that asks where to copy the items someone has ticked. The sheet is reached from the checklist detail screen's Copy Checked Items to… menu entry; keep the two consistent.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4941,7 +4927,6 @@
     },
     "checklist.defaultName" : {
       "comment" : "Name stored for a checklist saved with an empty name field. Lowercase in English; it is data once saved.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5247,7 +5232,6 @@
     },
     "checklist.history.lastCompleted" : {
       "comment" : "Caption line under a checklist's notes; the placeholder is a formatted date and time, or the word for Never.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5553,7 +5537,6 @@
     },
     "checklist.history.lastUpdated" : {
       "comment" : "Caption line under a checklist's notes; the placeholder is a formatted date and time, or the word for Never.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5859,7 +5842,6 @@
     },
     "checklist.history.never" : {
       "comment" : "Stands in for the date in the Last updated / Last completed caption when the checklist has never been touched.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -6165,7 +6147,6 @@
     },
     "checklist.item.add" : {
       "comment" : "Button under the last item row that appends a new item to the checklist.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -6471,7 +6452,6 @@
     },
     "checklist.menu.copyCheckedItems" : {
       "comment" : "Overflow-menu entry on an existing checklist's detail screen. Copies the items the person has ticked into another checklist, picked on the sheet that opens next. Keep the trailing ellipsis — it is what promises that sheet. It sits directly under the Duplicate Checklist entry and must not read alike: that one copies the whole list, this one copies a selection into a different list. \"to…\" means to a different checklist, never \"here\" or \"into this one\".",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -7082,7 +7062,6 @@
     },
     "checklist.menu.deleteCheckedItems" : {
       "comment" : "Overflow-menu entry on an existing checklist's detail screen. Destructive; a confirmation follows. Removes the items the person has ticked from this checklist and keeps the rest. It sits directly above the Delete Checklist entry and must not read alike: this one keeps the checklist. Use the same word for checked items as the Copy Checked Items to… entry.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -7388,7 +7367,6 @@
     },
     "checklist.menu.deleteChecklist" : {
       "comment" : "Overflow-menu entry on an existing checklist's detail screen. Destructive; a confirmation follows.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -7693,8 +7671,7 @@
       }
     },
     "checklist.menu.discardChecklist" : {
-      "comment" : "Overflow-menu entry on the new-checklist sheet that throws the unsaved checklist away. Destructive; a confirmation follows. It must read differently from the Delete Checklist entry, which removes a kept list: this one abandons something never kept.",
-      "extractionState" : "manual",
+      "comment" : "Overflow-menu entry on the new-checklist sheet that throws the new checklist away. Destructive; a confirmation follows. It must read differently from the Delete Checklist entry, which removes a kept list: this one abandons something never kept.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8000,7 +7977,6 @@
     },
     "checklist.menu.duplicateChecklist" : {
       "comment" : "Overflow-menu entry on an existing checklist's detail screen that makes a copy of it. Not destructive and not confirmed: it opens the copy straight away. It sits above the Delete Checklist entry, so the two must not read alike.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8306,7 +8282,6 @@
     },
     "checklist.menu.more.accessibilityLabel" : {
       "comment" : "VoiceOver label for the ellipsis button in the checklist detail screen's navigation bar that opens the overflow menu.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8612,7 +8587,6 @@
     },
     "checklist.menu.moveCheckedItems" : {
       "comment" : "Overflow-menu entry on an existing checklist's detail screen. Moves the items the person has ticked into another checklist, picked on the sheet that opens next: they are added there and removed from this checklist. Keep the trailing ellipsis — it is what promises that sheet. It sits directly under the Copy Checked Items to… entry and must not read alike: that one leaves the items here, this one takes them away. Use the same word for checked items as that entry. \"to…\" means to a different checklist, never \"here\" or \"into this one\".",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8918,7 +8892,6 @@
     },
     "checklist.menu.reorderItems" : {
       "comment" : "First overflow-menu entry on a checklist's screen, both for a saved checklist and while creating one. Shows drag handles for putting this checklist's items in a new order; a Done button leaves. It does not edit the items' text and does not sort them, so avoid a verb that could read as sorting.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9224,7 +9197,6 @@
     },
     "checklist.move.confirmation" : {
       "comment" : "Toast shown after the ticked items are moved into another checklist and removed from this one. The placeholder is the destination checklist's name, which may be a name the person typed or the default untitled one. It appears briefly and is also read aloud by VoiceOver, so keep it to one short line.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9530,7 +9502,6 @@
     },
     "checklist.move.create.accessibilityLabel" : {
       "comment" : "VoiceOver label for the button beside the name field that creates the new checklist and moves the ticked items into it.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9836,7 +9807,6 @@
     },
     "checklist.move.title" : {
       "comment" : "Title of the sheet that asks where to move the items someone has ticked: they are added to the chosen checklist and removed from this one. Reached from the checklist detail screen's Move Checked Items to… menu entry; keep the two consistent, and keep it distinct from checklist.copy.title, which leaves the items where they were.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10142,7 +10112,6 @@
     },
     "checklist.name.accessibilityLabel" : {
       "comment" : "VoiceOver label read before the checklist name field. Keep the trailing space and colon.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10448,7 +10417,6 @@
     },
     "checklist.name.placeholder" : {
       "comment" : "Placeholder of the checklist name field in the detail header.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10754,7 +10722,6 @@
     },
     "checklist.notes.accessibilityLabel" : {
       "comment" : "VoiceOver label read before the checklist notes field. Keep the trailing space and colon.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11060,7 +11027,6 @@
     },
     "checklist.progress.accessibilityValue" : {
       "comment" : "VoiceOver value of the progress ring; the placeholder is an already-formatted percentage such as 18%. Read it as \"Checklist 18% complete\": the share of items ticked so far, not a finished list. Don't word it as \"checklist completed\" followed by the number.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11366,7 +11332,6 @@
     },
     "checklists.accessibility.movedToPosition" : {
       "comment" : "VoiceOver announcement after a checklist is moved with a Move Up/Down/to Top/to Bottom action. First placeholder is its new position counting from 1, second the number of checklists.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11672,7 +11637,6 @@
     },
     "checklists.accessibilityAction.moveDown" : {
       "comment" : "VoiceOver action on a checklist row: moves it one place down the list.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11978,7 +11942,6 @@
     },
     "checklists.accessibilityAction.moveToBottom" : {
       "comment" : "VoiceOver action on a checklist row: moves it to the end of the list.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -12284,7 +12247,6 @@
     },
     "checklists.accessibilityAction.moveToTop" : {
       "comment" : "VoiceOver action on a checklist row: moves it to the start of the list.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -12590,7 +12552,6 @@
     },
     "checklists.accessibilityAction.moveUp" : {
       "comment" : "VoiceOver action on a checklist row: moves it one place up the list.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -12896,7 +12857,6 @@
     },
     "checklists.action.edit" : {
       "comment" : "Nav bar button that enters Edit mode on the list of checklists (select, reorder, delete, duplicate, reset). Becomes Done while editing.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -13202,7 +13162,6 @@
     },
     "checklists.action.resetAll" : {
       "comment" : "Unchecks every item in every checklist. Nav bar button beside Edit, and its confirmation button; clears progress, never deletes lists.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -13508,7 +13467,6 @@
     },
     "checklists.action.resetSelected" : {
       "comment" : "Edit mode toolbar button, beside Delete and Duplicate, and its confirmation button: unchecks every item in the selected checklists. Clears progress, never deletes lists.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -13814,7 +13772,6 @@
     },
     "checklists.add.accessibilityLabel" : {
       "comment" : "VoiceOver label for the round floating button that creates a checklist.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -14120,7 +14077,6 @@
     },
     "checklists.confirm.irreversible" : {
       "comment" : "Alert message under the delete, reset and reset-all confirmations on the checklist list, and under the delete-checklist confirmation on a checklist's own screen.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -14426,7 +14382,6 @@
     },
     "checklists.duplicate.name" : {
       "comment" : "Name given to a duplicated checklist. The placeholder is the original's name. Stored as the new checklist's name, so it keeps whatever language the device had when it was made — it is data, not a label, and is never re-translated afterwards. Pair it with checklists.duplicate.nameNumbered, which disambiguates a second copy. Keep the added word short: it sits after a name the user chose.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -14732,7 +14687,6 @@
     },
     "checklists.duplicate.nameNumbered" : {
       "comment" : "Name given to a duplicated checklist when checklists.duplicate.name is already taken. The first placeholder is the original's name, the second a counter starting at 2. Stored as the new checklist's name, so it is data and is never re-translated. Match the wording of checklists.duplicate.name exactly, or two copies of one list will not read as a series.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -15038,7 +14992,6 @@
     },
     "checklists.menu.misc.accessibilityLabel" : {
       "comment" : "VoiceOver label for the toolbar button that opens the main menu (feedback, rating, settings).",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -15344,7 +15297,6 @@
     },
     "common.action.cancel" : {
       "comment" : "Dismisses a confirmation alert without doing anything.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -15650,7 +15602,6 @@
     },
     "common.action.delete" : {
       "comment" : "Destructive action: removes a checklist or an item. Swipe action, Edit mode toolbar button on the list of checklists, and confirmation button.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -15956,7 +15907,6 @@
     },
     "common.action.done" : {
       "comment" : "Ends editing: the keyboard accessory button, the nav bar button that leaves Edit mode on the list of checklists (it reads Edit until tapped), and the nav bar button that leaves Reorder Items mode on a checklist's screen.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -16262,7 +16212,6 @@
     },
     "common.action.duplicate" : {
       "comment" : "Makes a copy of a checklist or an item. Swipe action, and Edit mode toolbar button on the list of checklists; VoiceOver reads it as the button's name.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -16568,7 +16517,6 @@
     },
     "common.notes.placeholder" : {
       "comment" : "Placeholder of the optional notes field on an item and on a checklist header.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -16874,7 +16822,6 @@
     },
     "common.settings.title" : {
       "comment" : "Title of the Settings screen and the main-menu row that opens it.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -17180,7 +17127,6 @@
     },
     "consent.action.accept" : {
       "comment" : "Accept button on the analytics consent sheet; turns anonymous usage data on.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -17486,7 +17432,6 @@
     },
     "consent.action.accept.hint" : {
       "comment" : "VoiceOver hint for the accept button on the analytics consent sheet.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -17792,7 +17737,6 @@
     },
     "consent.action.decline" : {
       "comment" : "Decline button on the analytics consent sheet; keeps usage data off.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -18098,7 +18042,6 @@
     },
     "consent.action.decline.hint" : {
       "comment" : "VoiceOver hint for the decline button on the analytics consent sheet.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -18404,7 +18347,6 @@
     },
     "consent.body" : {
       "comment" : "Body of the analytics consent sheet explaining what is and is not collected.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -18710,7 +18652,6 @@
     },
     "consent.title" : {
       "comment" : "Title of the one-time analytics consent sheet.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -19016,7 +18957,6 @@
     },
     "containerFailure.action.sendFeedback" : {
       "comment" : "Button on the database-failure screen that opens a pre-filled support email.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -19322,7 +19262,6 @@
     },
     "containerFailure.action.sendFeedback.hint" : {
       "comment" : "VoiceOver hint for the Send Feedback button on the database-failure screen.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -19628,7 +19567,6 @@
     },
     "containerFailure.action.startOver" : {
       "comment" : "Destructive button on the database-failure screen: deletes the local data and relaunches as a new install.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -19934,7 +19872,6 @@
     },
     "containerFailure.action.startOver.hint" : {
       "comment" : "VoiceOver hint for the Start over fresh button.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -20240,7 +20177,6 @@
     },
     "containerFailure.confirm.action" : {
       "comment" : "Destructive confirmation button: deletes local data and relaunches as a new install.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -20546,7 +20482,6 @@
     },
     "containerFailure.confirm.message" : {
       "comment" : "Message of the confirmation alert before deleting local data.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -20852,7 +20787,6 @@
     },
     "containerFailure.confirm.title" : {
       "comment" : "Title of the confirmation alert before deleting local data on the database-failure screen.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -21158,7 +21092,6 @@
     },
     "containerFailure.mail.subject" : {
       "comment" : "Subject line of the support email opened from the database-failure screen.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -21464,7 +21397,6 @@
     },
     "containerFailure.message" : {
       "comment" : "Body of the database-failure screen; suggests a restart and checking free storage. Word the second sentence as a gentle suggestion, not a question.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -21770,7 +21702,6 @@
     },
     "containerFailure.title" : {
       "comment" : "Title of the full-screen error shown when the local database cannot be opened.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -22076,7 +22007,6 @@
     },
     "item.accessibility.movedToPosition" : {
       "comment" : "VoiceOver announcement after an item inside a checklist is moved with a Move Up/Down/to Top/to Bottom action. First placeholder is its new position counting from 1, second the number of items in the checklist.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -22382,7 +22312,6 @@
     },
     "item.accessibilityAction.moveDown" : {
       "comment" : "VoiceOver action on an item row inside a checklist: moves the item one place down.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -22688,7 +22617,6 @@
     },
     "item.accessibilityAction.moveToBottom" : {
       "comment" : "VoiceOver action on an item row inside a checklist: moves the item to the end of the checklist.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -22994,7 +22922,6 @@
     },
     "item.accessibilityAction.moveToTop" : {
       "comment" : "VoiceOver action on an item row inside a checklist: moves the item to the start of the checklist.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -23300,7 +23227,6 @@
     },
     "item.accessibilityAction.moveUp" : {
       "comment" : "VoiceOver action on an item row inside a checklist: moves the item one place up.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -23606,7 +23532,6 @@
     },
     "item.name.accessibilityLabel" : {
       "comment" : "VoiceOver label read before an item's name in the editable item row. Keep the trailing space and colon.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -23912,7 +23837,6 @@
     },
     "item.notes.accessibilityLabel" : {
       "comment" : "VoiceOver label read before an item's notes in the editable item row. Keep the trailing space and colon.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -24218,7 +24142,6 @@
     },
     "loading.cloudSyncNote" : {
       "comment" : "Footnote under the migration message when the migrated data will start syncing through iCloud.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -24524,7 +24447,6 @@
     },
     "loading.message" : {
       "comment" : "Shown with a spinner on the one launch that copies data out of the pre-2025 database format.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -24830,7 +24752,6 @@
     },
     "mainMenu.close.accessibilityLabel" : {
       "comment" : "VoiceOver label for the X button that dismisses the main menu.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -25136,7 +25057,6 @@
     },
     "mainMenu.feedback" : {
       "comment" : "Main-menu row that opens a pre-addressed feedback email.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -25442,7 +25362,6 @@
     },
     "mainMenu.feedback.mail.subject" : {
       "comment" : "Subject line of the feedback email opened from the main menu. Keep the app name reChecklist verbatim.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -25748,7 +25667,6 @@
     },
     "mainMenu.rateInAppStore" : {
       "comment" : "Main-menu row that opens the App Store review page.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -26054,7 +25972,6 @@
     },
     "sample.morningRoutine.item1" : {
       "comment" : "Morning routine demo item 1 of 6. Deliberately in capitals, like a hand-written reminder. Swap the drink or appliance for the local morning norm.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -26360,7 +26277,6 @@
     },
     "sample.morningRoutine.item2" : {
       "comment" : "Morning routine demo item 2 of 6.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -26666,7 +26582,6 @@
     },
     "sample.morningRoutine.item3" : {
       "comment" : "Morning routine demo item 3 of 6.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -26972,7 +26887,6 @@
     },
     "sample.morningRoutine.item4" : {
       "comment" : "Morning routine demo item 4 of 6.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -27278,7 +27192,6 @@
     },
     "sample.morningRoutine.item5" : {
       "comment" : "Morning routine demo item 5 of 6.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -27584,7 +27497,6 @@
     },
     "sample.morningRoutine.item6" : {
       "comment" : "Morning routine demo item 6 of 6. Wry, self-aware joke; keep the tone and name the network people there actually argue on.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -27890,7 +27802,6 @@
     },
     "sample.morningRoutine.name" : {
       "comment" : "Demo checklist 1 of 3: name of the everyday morning-routine list every new install starts with.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -28196,7 +28107,6 @@
     },
     "sample.preTrip.item1" : {
       "comment" : "Pre-trip demo item 1 of 11.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -28502,7 +28412,6 @@
     },
     "sample.preTrip.item2" : {
       "comment" : "Pre-trip demo item 2 of 11: pausing postal delivery. Adapt to what a local does about mail before a trip, or a different pre-trip errand if that service does not exist there.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -28808,7 +28717,6 @@
     },
     "sample.preTrip.item3" : {
       "comment" : "Pre-trip demo item 3 of 11.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -29114,7 +29022,6 @@
     },
     "sample.preTrip.item4" : {
       "comment" : "Pre-trip demo item 4 of 11.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -29420,7 +29327,6 @@
     },
     "sample.preTrip.item5" : {
       "comment" : "Pre-trip demo item 5 of 11.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -29726,7 +29632,6 @@
     },
     "sample.preTrip.item6" : {
       "comment" : "Pre-trip demo item 6 of 11.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -30032,7 +29937,6 @@
     },
     "sample.preTrip.item7" : {
       "comment" : "Pre-trip demo item 7 of 11.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -30338,7 +30242,6 @@
     },
     "sample.preTrip.item8" : {
       "comment" : "Pre-trip demo item 8 of 11.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -30644,7 +30547,6 @@
     },
     "sample.preTrip.item9" : {
       "comment" : "Pre-trip demo item 9 of 11: heating or cooling. Adapt to the local climate.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -30950,7 +30852,6 @@
     },
     "sample.preTrip.item9.notes" : {
       "comment" : "Note under the heater item. Adapt to the local climate; a warm-climate locale may replace the freezing-pipes concern.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -31256,7 +31157,6 @@
     },
     "sample.preTrip.item10" : {
       "comment" : "Pre-trip demo item 10 of 11.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -31562,7 +31462,6 @@
     },
     "sample.preTrip.item11" : {
       "comment" : "Pre-trip demo item 11 of 11.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -31868,7 +31767,6 @@
     },
     "sample.preTrip.name" : {
       "comment" : "Demo checklist 3 of 3: name of the leaving-the-house-before-a-trip list.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -32174,7 +32072,6 @@
     },
     "sample.weekendGetaway.item1" : {
       "comment" : "Weekend packing demo item 1 of 12.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -32480,7 +32377,6 @@
     },
     "sample.weekendGetaway.item2" : {
       "comment" : "Weekend packing demo item 2 of 12.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -32786,7 +32682,6 @@
     },
     "sample.weekendGetaway.item2.notes" : {
       "comment" : "Note under the Wallet/ID packing item. Adapt to the documents people there carry for flights, border crossings, and driving.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -33092,7 +32987,6 @@
     },
     "sample.weekendGetaway.item3" : {
       "comment" : "Weekend packing demo item 3 of 12.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -33398,7 +33292,6 @@
     },
     "sample.weekendGetaway.item4" : {
       "comment" : "Weekend packing demo item 4 of 12.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -33704,7 +33597,6 @@
     },
     "sample.weekendGetaway.item4.notes" : {
       "comment" : "Note under the toiletries packing item about the airline liquids rule.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -34010,7 +33902,6 @@
     },
     "sample.weekendGetaway.item5" : {
       "comment" : "Weekend packing demo item 5 of 12.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -34316,7 +34207,6 @@
     },
     "sample.weekendGetaway.item6" : {
       "comment" : "Weekend packing demo item 6 of 12.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -34622,7 +34512,6 @@
     },
     "sample.weekendGetaway.item7" : {
       "comment" : "Weekend packing demo item 7 of 12: things to read. Keep Apple product names as Apple writes them; swap Kindle for the local e-reader if another dominates.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -34928,7 +34817,6 @@
     },
     "sample.weekendGetaway.item8" : {
       "comment" : "Weekend packing demo item 8 of 12: rain and wind gear. Adapt to the local climate.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -35234,7 +35122,6 @@
     },
     "sample.weekendGetaway.item9" : {
       "comment" : "Weekend packing demo item 9 of 12.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -35540,7 +35427,6 @@
     },
     "sample.weekendGetaway.item10" : {
       "comment" : "Weekend packing demo item 10 of 12.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -35846,7 +35732,6 @@
     },
     "sample.weekendGetaway.item11" : {
       "comment" : "Weekend packing demo item 11 of 12.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -36152,7 +36037,6 @@
     },
     "sample.weekendGetaway.item12" : {
       "comment" : "Weekend packing demo item 12 of 12.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -36458,7 +36342,6 @@
     },
     "sample.weekendGetaway.name" : {
       "comment" : "Demo checklist 2 of 3: name of the packing list for a short trip.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -36764,7 +36647,6 @@
     },
     "settings.about.version" : {
       "comment" : "Label next to the app's version and build number in Settings.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -37070,7 +36952,6 @@
     },
     "settings.analytics.footer" : {
       "comment" : "Footer under the analytics section explaining what usage data is and is not collected.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -37376,7 +37257,6 @@
     },
     "settings.analytics.header" : {
       "comment" : "Section header above the analytics opt-in toggle in Settings.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -37682,7 +37562,6 @@
     },
     "settings.analytics.toggle" : {
       "comment" : "Label of the analytics opt-in toggle in Settings.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -37988,7 +37867,6 @@
     },
     "settings.analytics.toggle.hint" : {
       "comment" : "VoiceOver hint for the analytics opt-in toggle.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -38294,7 +38172,6 @@
     },
     "settings.icloud.active" : {
       "comment" : "iCloud status row: checklists are syncing through iCloud.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -38600,7 +38477,6 @@
     },
     "settings.icloud.checking" : {
       "comment" : "iCloud status row while the account status is still being looked up; shown next to a spinner.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -38906,7 +38782,6 @@
     },
     "settings.icloud.couldNotCheck" : {
       "comment" : "iCloud status row: checking the account status failed, e.g. no network. Distinct from 'settings.icloud.unavailable' — a failed check, not a missing account.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -39212,7 +39087,6 @@
     },
     "settings.icloud.footer.couldNotCheck" : {
       "comment" : "Footer under the iCloud section when the account status couldn't be determined.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -39518,7 +39392,6 @@
     },
     "settings.icloud.footer.lastSynced" : {
       "comment" : "Footer under the iCloud section when sync is active; the placeholder is a relative time like '5 minutes ago'.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -39824,7 +39697,6 @@
     },
     "settings.icloud.footer.needsAttention" : {
       "comment" : "Footer under the iCloud section when the account is temporarily unavailable. 'Settings' here means the iOS Settings app.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -40130,7 +40002,6 @@
     },
     "settings.icloud.footer.paused" : {
       "comment" : "Footer under the iCloud section when sync is paused for this launch.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -40436,7 +40307,6 @@
     },
     "settings.icloud.footer.restricted" : {
       "comment" : "Footer under the iCloud section when the iCloud account is restricted, e.g. by Screen Time or an organization's device management.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -40742,7 +40612,6 @@
     },
     "settings.icloud.footer.storageFull" : {
       "comment" : "Footer under the iCloud section when iCloud storage is full. 'Settings' here means the iOS Settings app.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -41048,7 +40917,6 @@
     },
     "settings.icloud.footer.syncInterrupted" : {
       "comment" : "Footer under the iCloud section when a sync operation failed for a reason other than storage.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -41354,7 +41222,6 @@
     },
     "settings.icloud.footer.unavailable" : {
       "comment" : "Footer under the iCloud section when no iCloud account is signed in. 'Settings' here means the iOS Settings app.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -41660,7 +41527,6 @@
     },
     "settings.icloud.header" : {
       "comment" : "Section header above the iCloud sync status row in Settings.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -41966,7 +41832,6 @@
     },
     "settings.icloud.needsAttention" : {
       "comment" : "iCloud status row: signed in but temporarily unavailable, e.g. needs Apple Account re-confirmation. Distinct from 'settings.icloud.restricted' — resolvable, not a standing restriction.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -42272,7 +42137,6 @@
     },
     "settings.icloud.paused" : {
       "comment" : "iCloud status row: the app fell back to a local-only store this launch.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -42578,7 +42442,6 @@
     },
     "settings.icloud.restricted" : {
       "comment" : "iCloud status row: the account is signed in but restricted. Adjacent to 'settings.icloud.unavailable' (no account) and 'settings.icloud.needsAttention' (account needs attention) — keep distinct from both.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -42884,7 +42747,6 @@
     },
     "settings.icloud.storageFull" : {
       "comment" : "iCloud status row: a sync event failed because iCloud storage is full.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -43190,7 +43052,6 @@
     },
     "settings.icloud.syncInterrupted" : {
       "comment" : "iCloud status row: a sync event failed for a reason other than storage. Distinct from 'settings.icloud.paused' — signed in and CloudKit-backed this launch, but a sync operation failed.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -43496,7 +43357,6 @@
     },
     "settings.icloud.unavailable" : {
       "comment" : "iCloud status row: no iCloud account is signed in on this device.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -43802,7 +43662,6 @@
     },
     "settings.info.header" : {
       "comment" : "Section header above the Privacy Policy row in Settings.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -44108,7 +43967,6 @@
     },
     "settings.info.privacyPolicy" : {
       "comment" : "Row in Settings that opens the app's privacy policy web page.",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -44414,7 +44272,6 @@
     },
     "toast.saveFailed" : {
       "comment" : "Error toast shown when a change could not be written to the device. Full storage is the likely cause but not a certain one — a damaged database fails the same way — so the second sentence must stay a guess (\"may\"), never a statement of fact. Appears briefly at the bottom of the screen with no button. Keep it short; it can appear after any edit (adding, ticking, renaming, deleting).",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

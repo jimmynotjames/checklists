@@ -27,12 +27,13 @@ heredoc works for small batches. All are allowlisted.
 
 | Change | Command | Input | Then |
 |---|---|---|---|
-| New key in Swift, not in the catalog | `add_keys.py -` | `{"key": {"comment": "…", "value": "English"}}` | step 1. `--force` overwrites. |
+| New key in Swift, not in the catalog | `add_keys.py -` | `{"key": {"comment": "…", "value": "English"}}` (the Swift `comment:` verbatim) | step 1. `--force` overwrites. Also takes over a key a build in Xcode or `make i18n-sync` added (English still `new`). |
+| Translator comment changed in Swift, English unchanged | `make build`, then `make i18n-sync` | — | commit the catalog; no re-translation. |
 | English text changed | `update_keys.py -` | `{"key": {"value": "New English", "comment": "optional"}}` | step 1 (non-`en` marked `needs_review`). Refuses plural keys: follow its message (`add_keys.py --force` with the comment, then `pluralize_keys.py`). |
 | Key renamed, text unchanged | `rename_keys.py -` | `{"old.key": "new.key"}` | update the Swift call sites; no re-translation. `--dry-run`, `--force`. |
 | Count string reads wrong at 1 | `pluralize_keys.py -` | `{"key": {"one": "%lld item", "other": "%lld items"}}` (`other` required) | step 1; locales re-translate as plurals. `--dry-run`. |
 | Translation must change, English unchanged (e.g. a glossary term changed) | `invalidate_keys.py --keys k1,k2` or `--keys-file tmp/keys.txt` | — | step 1. `--locales`, `--dry-run`. |
-| Key no longer used in Swift | `remove_keys.py --keys k1,k2` or `--keys-file …` | — | `--dry-run` first |
+| Key no longer used in Swift | `remove_keys.py --keys k1,k2` or `--keys-file …` | — | `--dry-run` first. `make i18n-sync` marks such keys `stale`. |
 
 Scripts live in `scripts/translate_catalog/`, e.g.:
 

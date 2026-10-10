@@ -53,5 +53,7 @@ if grep -q 'fastlane/tests SKIPPED' "$LOG"; then
   printf 'gate: WARNING: fastlane/tests SKIPPED — no Ruby 3+ found (brew install fastlane)\n'
 fi
 run_step build
+# Reads the strings the build just extracted, so it can only run after it.
+run_step i18n-sync-check
 
-printf '\nGATE PASSED (format-changed, lint-changed, i18n-check, uitest-check, doc-check, test-scripts, build)%s. Full log: %s\n' "$skipped" "$LOG"
+printf '\nGATE PASSED (format-changed, lint-changed, i18n-check, uitest-check, doc-check, test-scripts, build, i18n-sync-check)%s. Full log: %s\n' "$skipped" "$LOG"
