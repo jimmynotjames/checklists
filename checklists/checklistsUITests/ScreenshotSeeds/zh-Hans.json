@@ -8,7 +8,7 @@
       "name": "晨间日常",
       "items": [
         {
-          "name": "烧水泡茶",
+          "name": "先烧水泡茶",
           "isChecked": true
         },
         {
@@ -28,7 +28,7 @@
           "isChecked": false
         },
         {
-          "name": "在微博上跟人吵架",
+          "name": "上微博跟人吵时事",
           "isChecked": true
         }
       ]
@@ -42,17 +42,17 @@
           "isChecked": false
         },
         {
-          "name": "钱包和证件",
-          "notes": "身份证（飞机、高铁）、护照或通行证（出境）、驾照（自驾）。",
+          "name": "钱包/身份证",
+          "notes": "带齐证件（坐飞机高铁用身份证，出境带护照，自驾带驾照等）",
           "isChecked": false
         },
         {
-          "name": "处方药、常备药、保健品",
+          "name": "处方药、常用药、保健品",
           "isChecked": true
         },
         {
           "name": "洗漱包",
-          "notes": "坐飞机随身带时，液体单瓶不超100毫升，装在透明袋里。",
+          "notes": "坐飞机的话，随身液体只带小瓶，单独装袋。",
           "isChecked": true
         },
         {
@@ -64,11 +64,11 @@
           "isChecked": false
         },
         {
-          "name": "书、iPad、电纸书…",
+          "name": "书、iPad、Kindle…",
           "isChecked": false
         },
         {
-          "name": "雨具、防风外套",
+          "name": "雨伞/雨衣",
           "isChecked": false
         },
         {
@@ -84,37 +84,37 @@
           "isChecked": false
         },
         {
-          "name": "泳池拖鞋",
+          "name": "拖鞋",
           "isChecked": false
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "出发前清单",
+      "name": "出门前清单",
       "items": [
         {
           "name": "设置邮箱自动回复",
           "isChecked": true
         },
         {
-          "name": "暂停快递或托人代收",
+          "name": "快递改放驿站",
           "isChecked": true
         },
         {
-          "name": "安排宠物寄养",
+          "name": "安排人照看宠物",
           "isChecked": true
         },
         {
-          "name": "安排浇花、看家",
+          "name": "托人浇花、看家",
           "isChecked": false
         },
         {
-          "name": "给孩子请好假",
+          "name": "给孩子请假",
           "isChecked": false
         },
         {
-          "name": "把行程发给家人或信得过的朋友",
+          "name": "把行程发给信得过的亲友",
           "isChecked": false
         },
         {
@@ -126,12 +126,12 @@
           "isChecked": false
         },
         {
-          "name": "关掉空调和暖气",
-          "notes": "或留最低温度，防止水管冻裂。",
+          "name": "关掉空调或取暖器",
+          "notes": "北方冬天可把壁挂炉调到防冻模式，以免水管冻裂。",
           "isChecked": false
         },
         {
-          "name": "确认燃气灶、烤箱已关",
+          "name": "关好燃气灶和总阀",
           "isChecked": false
         },
         {

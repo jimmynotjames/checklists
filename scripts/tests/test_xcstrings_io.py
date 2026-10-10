@@ -53,6 +53,16 @@ class WriteTests(unittest.TestCase):
         self.assertLess(text.index('"zh-HK"'), text.index('"zh-Hans"'))
         self.assertFalse(text.endswith("\n"))
 
+    def test_quote_then_colon_inside_a_value_survives(self) -> None:
+        value = 'Read it as "Checklist 18% complete": the share done.'
+        catalog = {"strings": {"k": {"comment": value}}}
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "c.xcstrings"
+            write_xcstrings(catalog, out)
+            text = out.read_text(encoding="utf-8")
+        self.assertEqual(json.loads(text)["strings"]["k"]["comment"], value)
+        self.assertIn('"comment" : ', text)
+
 
 if __name__ == "__main__":
     unittest.main()

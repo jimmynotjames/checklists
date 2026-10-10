@@ -8,11 +8,11 @@
       "name": "Rotina matinal",
       "items": [
         {
-          "name": "LIGAR A CAFETEIRA",
+          "name": "PASSAR O CAFÉ",
           "isChecked": true
         },
         {
-          "name": "Yoga/meditação",
+          "name": "Ioga/meditação",
           "isChecked": true
         },
         {
@@ -35,24 +35,24 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Essenciais do fim de semana",
+      "name": "Viagem de fim de semana",
       "items": [
         {
           "name": "Carregador do celular",
           "isChecked": false
         },
         {
-          "name": "Carteira/RG",
-          "notes": "Documento com foto (RG ou CNH na estrada, passaporte para viagem internacional).",
+          "name": "Carteira/documentos",
+          "notes": "RG ou CNH para voo nacional, passaporte para o exterior, CNH para ir de carro.",
           "isChecked": false
         },
         {
-          "name": "Receitas, remédios, suplementos",
+          "name": "Remédios, receitas, suplementos",
           "isChecked": true
         },
         {
           "name": "Nécessaire",
-          "notes": "Só líquidos pequenos, em saco separado, se for de avião e na bagagem de mão.",
+          "notes": "Na bagagem de mão, só líquidos de até 100 ml em saquinho transparente.",
           "isChecked": true
         },
         {
@@ -60,7 +60,7 @@
           "isChecked": false
         },
         {
-          "name": "Fone de ouvido",
+          "name": "Fones de ouvido",
           "isChecked": false
         },
         {
@@ -68,7 +68,7 @@
           "isChecked": false
         },
         {
-          "name": "Capa de chuva",
+          "name": "Guarda-chuva, casaco",
           "isChecked": false
         },
         {
@@ -76,11 +76,11 @@
           "isChecked": true
         },
         {
-          "name": "Chapéu de sol",
+          "name": "Chapéu/boné",
           "isChecked": true
         },
         {
-          "name": "Maiô/sunga",
+          "name": "Biquíni/sunga",
           "isChecked": false
         },
         {
@@ -91,14 +91,14 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Checklist pré-viagem",
+      "name": "Antes de viajar",
       "items": [
         {
-          "name": "Ativar resposta automática no e-mail",
+          "name": "Resposta automática no e-mail",
           "isChecked": true
         },
         {
-          "name": "Avisar o porteiro da viagem",
+          "name": "Porteiro: guardar as cartas",
           "isChecked": true
         },
         {
@@ -106,15 +106,15 @@
           "isChecked": true
         },
         {
-          "name": "Quem rega as plantas e cuida da casa",
+          "name": "Quem rega as plantas e olha a casa",
           "isChecked": false
         },
         {
-          "name": "Avisar a escola sobre a falta",
+          "name": "Avisar a escola da viagem",
           "isChecked": false
         },
         {
-          "name": "Mandar o roteiro para alguém de confiança",
+          "name": "Mandar roteiro para alguém de confiança",
           "isChecked": false
         },
         {
@@ -127,11 +127,11 @@
         },
         {
           "name": "Desligar o ar-condicionado",
-          "notes": "Confira também os ventiladores e o ar dos quartos.",
+          "notes": "E fechar o registro da água para evitar vazamentos.",
           "isChecked": false
         },
         {
-          "name": "Conferir fogão e forno desligados",
+          "name": "Fechar o gás do fogão",
           "isChecked": false
         },
         {

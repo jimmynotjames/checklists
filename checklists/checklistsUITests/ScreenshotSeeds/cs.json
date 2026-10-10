@@ -8,7 +8,7 @@
       "name": "Ranní rutina",
       "items": [
         {
-          "name": "UVAŘIT KÁVU",
+          "name": "ZAPNOUT KÁVOVAR",
           "isChecked": true
         },
         {
@@ -24,11 +24,11 @@
           "isChecked": true
         },
         {
-          "name": "Psát si deník",
+          "name": "Psaní deníku",
           "isChecked": false
         },
         {
-          "name": "Politické hádky na Facebooku",
+          "name": "Hádky o politice na Facebooku",
           "isChecked": true
         }
       ]
@@ -42,17 +42,17 @@
           "isChecked": false
         },
         {
-          "name": "Peněženka/doklady",
-          "notes": "Občanka do EU, pas mimo Schengen, řidičák na cestu autem.",
+          "name": "Peněženka, občanka",
+          "notes": "Občanka nebo pas (mimo Schengen), řidičák do auta, kartička pojišťovny.",
           "isChecked": false
         },
         {
-          "name": "Léky, recepty, doplňky stravy",
+          "name": "Léky, vitamíny, doplňky",
           "isChecked": true
         },
         {
-          "name": "Kosmetická taštička",
-          "notes": "Při letu jen malé tekutiny v sáčku v příručním zavazadle.",
+          "name": "Toaletní taška",
+          "notes": "Při letu: tekutiny do 100 ml v sáčku v příručním zavazadle.",
           "isChecked": true
         },
         {
@@ -64,11 +64,11 @@
           "isChecked": false
         },
         {
-          "name": "Kniha, iPad, čtečka…",
+          "name": "Knížka, iPad, Kindle…",
           "isChecked": false
         },
         {
-          "name": "Do deště a větru",
+          "name": "Pláštěnka, větrovka",
           "isChecked": false
         },
         {
@@ -76,7 +76,7 @@
           "isChecked": true
         },
         {
-          "name": "Kšiltovka",
+          "name": "Klobouk",
           "isChecked": true
         },
         {
@@ -84,29 +84,29 @@
           "isChecked": false
         },
         {
-          "name": "Žabky k bazénu",
+          "name": "Žabky",
           "isChecked": false
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Kontrolní seznam před odjezdem",
+      "name": "Před odjezdem",
       "items": [
         {
-          "name": "Zapnout automatickou odpověď v mailu",
+          "name": "Nastavit automatickou odpověď",
           "isChecked": true
         },
         {
-          "name": "Zařídit vybírání schránky",
+          "name": "Domluvit vybírání schránky",
           "isChecked": true
         },
         {
-          "name": "Zajistit hlídání zvířat",
+          "name": "Zajistit hlídání mazlíčka",
           "isChecked": true
         },
         {
-          "name": "Zalévání květin, dohled nad bytem",
+          "name": "Zalévání kytek, hlídání bytu",
           "isChecked": false
         },
         {
@@ -114,11 +114,11 @@
           "isChecked": false
         },
         {
-          "name": "Poslat itinerář někomu blízkému",
+          "name": "Poslat plán cesty někomu blízkému",
           "isChecked": false
         },
         {
-          "name": "Odpojit spotřebiče",
+          "name": "Spotřebiče ze zásuvky",
           "isChecked": false
         },
         {
@@ -126,8 +126,8 @@
           "isChecked": false
         },
         {
-          "name": "Stáhnout topení",
-          "notes": "Nebo nastavit nízkou teplotu, ať nezamrznou trubky.",
+          "name": "Vypnout topení",
+          "notes": "Nebo jen temperovat, ať nezamrznou trubky.",
           "isChecked": false
         },
         {
@@ -135,7 +135,7 @@
           "isChecked": false
         },
         {
-          "name": "Zavřít okna a zamknout",
+          "name": "Zavřít okna, zamknout dveře",
           "isChecked": false
         }
       ]

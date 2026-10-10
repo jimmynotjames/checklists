@@ -8,7 +8,7 @@
       "name": "Morgenrutine",
       "items": [
         {
-          "name": "START KAFFEMASKINEN",
+          "name": "TÆND KAFFEMASKINEN",
           "isChecked": true
         },
         {
@@ -28,31 +28,31 @@
           "isChecked": false
         },
         {
-          "name": "Skændes om politik på Facebook",
+          "name": "Diskutere politik på Facebook",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Weekendtur – det vigtigste",
+      "name": "Pakkeliste til weekendtur",
       "items": [
         {
           "name": "Telefonoplader",
           "isChecked": false
         },
         {
-          "name": "Pung og ID",
-          "notes": "Gyldig legitimation (pas til fly og udland, kørekort til biltur)",
+          "name": "Pung/ID",
+          "notes": "Gyldigt ID (pas til udlandet, kørekort til bilturen osv.)",
           "isChecked": false
         },
         {
-          "name": "Recepter, medicin og vitaminer",
+          "name": "Medicin, vitaminer, kosttilskud",
           "isChecked": true
         },
         {
           "name": "Toilettaske",
-          "notes": "Kun små væsker i en separat pose, hvis du flyver med håndbagage.",
+          "notes": "Kun små væsker, i en separat pose i håndbagagen ved fly.",
           "isChecked": true
         },
         {
@@ -64,11 +64,11 @@
           "isChecked": false
         },
         {
-          "name": "Bog, iPad, Kindle ...",
+          "name": "Bog, iPad, Kindle …",
           "isChecked": false
         },
         {
-          "name": "Regn- og vindtøj",
+          "name": "Regntøj",
           "isChecked": false
         },
         {
@@ -94,11 +94,11 @@
       "name": "Tjekliste før afrejse",
       "items": [
         {
-          "name": "Slå autosvar til på mailen",
+          "name": "Autosvar på mailen",
           "isChecked": true
         },
         {
-          "name": "Bed naboen tømme postkassen",
+          "name": "Naboen tømmer postkassen",
           "isChecked": true
         },
         {
@@ -106,19 +106,19 @@
           "isChecked": true
         },
         {
-          "name": "Pasning af planter og hus",
+          "name": "Vanding af planter, huspasning",
           "isChecked": false
         },
         {
-          "name": "Meld barnet fri i skolen",
+          "name": "Giv skolen besked om fravær",
           "isChecked": false
         },
         {
-          "name": "Send rejseplanen til en nær ven eller familie",
+          "name": "Send rejseplan til en ven/familie",
           "isChecked": false
         },
         {
-          "name": "Tag stikkene ud",
+          "name": "Tag stikket ud af apparater",
           "isChecked": false
         },
         {
@@ -127,7 +127,7 @@
         },
         {
           "name": "Skru ned for varmen",
-          "notes": "Eller sæt en minimumstemperatur, så rørene ikke fryser.",
+          "notes": "Men ikke under 15 grader, så rørene ikke fryser.",
           "isChecked": false
         },
         {

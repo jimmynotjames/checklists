@@ -8,7 +8,7 @@
       "name": "Reggeli rutin",
       "items": [
         {
-          "name": "KÁVÉT FELTENNI",
+          "name": "KOTYOGÓT FELTENNI",
           "isChecked": true
         },
         {
@@ -16,7 +16,7 @@
           "isChecked": true
         },
         {
-          "name": "Forgalom és időjárás",
+          "name": "Közlekedés, időjárás",
           "isChecked": true
         },
         {
@@ -28,14 +28,14 @@
           "isChecked": false
         },
         {
-          "name": "Politikai vita a Facebookon",
+          "name": "Politikai vita Facebookon",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Hétvégi kiruccanás alapjai",
+      "name": "Hétvégi kiruccanás",
       "items": [
         {
           "name": "Telefontöltő",
@@ -43,16 +43,16 @@
         },
         {
           "name": "Pénztárca, iratok",
-          "notes": "Személyi vagy útlevél (EU-n kívülre útlevél), autóhoz jogosítvány és forgalmi.",
+          "notes": "Személyi, lakcímkártya, jogsi autóhoz, útlevél EU-n kívülre, TAJ-kártya",
           "isChecked": false
         },
         {
-          "name": "Gyógyszerek, vitaminok",
+          "name": "Receptek, gyógyszerek, vitaminok",
           "isChecked": true
         },
         {
-          "name": "Piperetáska",
-          "notes": "Repülőn kézipoggyászban csak kis flakonok, külön zacskóban.",
+          "name": "Neszeszer",
+          "notes": "Repülőn a kézipoggyászban csak kis kiszerelésű folyadék, külön tasakban.",
           "isChecked": true
         },
         {
@@ -64,11 +64,11 @@
           "isChecked": false
         },
         {
-          "name": "Könyv, iPad, Kindle…",
+          "name": "Könyv, iPad, Kindle...",
           "isChecked": false
         },
         {
-          "name": "Esőkabát, esernyő",
+          "name": "Esőkabát, széldzseki",
           "isChecked": false
         },
         {
@@ -76,7 +76,7 @@
           "isChecked": true
         },
         {
-          "name": "Szalmakalap",
+          "name": "Napkalap",
           "isChecked": true
         },
         {
@@ -84,17 +84,17 @@
           "isChecked": false
         },
         {
-          "name": "Strandpapucs",
+          "name": "Papucs",
           "isChecked": false
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Indulás előtti ellenőrzőlista",
+      "name": "Indulás előtt",
       "items": [
         {
-          "name": "Automatikus válasz beállítása",
+          "name": "E-mail automatikus válasz",
           "isChecked": true
         },
         {
@@ -102,36 +102,36 @@
           "isChecked": true
         },
         {
-          "name": "Állatfelügyelet intézése",
+          "name": "Háziállat ellátása",
           "isChecked": true
         },
         {
-          "name": "Virágöntözés, lakásfelügyelet",
+          "name": "Növények locsolása, házfelügyelet",
           "isChecked": false
         },
         {
-          "name": "Iskolai hiányzás bejelentése",
+          "name": "Iskolai hiányzás intézése",
           "isChecked": false
         },
         {
-          "name": "Útiterv elküldése rokonnak, barátnak",
+          "name": "Útiterv elküldése egy rokonnak/barátnak",
           "isChecked": false
         },
         {
-          "name": "Készülékek kihúzása",
+          "name": "Eszközök kihúzása",
           "isChecked": false
         },
         {
-          "name": "Értékek elpakolása",
+          "name": "Értékek elzárása",
           "isChecked": false
         },
         {
-          "name": "Fűtés/klíma kikapcsolása",
-          "notes": "Vagy fagyvédelemre állítani, hogy ne fagyjanak be a csövek.",
+          "name": "Fűtés/klíma lekapcsolása",
+          "notes": "Télen inkább alacsony fokon hagyni, hogy ne fagyjanak el a csövek.",
           "isChecked": false
         },
         {
-          "name": "Tűzhely, sütő kikapcsolva",
+          "name": "Tűzhely, sütő elzárva?",
           "isChecked": false
         },
         {

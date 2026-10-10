@@ -8,7 +8,7 @@
       "name": "Rutina de dimineață",
       "items": [
         {
-          "name": "PORNEȘTE CAFETIERA",
+          "name": "PUNE CAFEAUA",
           "isChecked": true
         },
         {
@@ -16,34 +16,34 @@
           "isChecked": true
         },
         {
-          "name": "Trafic și prognoza meteo",
+          "name": "Traficul și vremea",
           "isChecked": true
         },
         {
-          "name": "Micul dejun",
+          "name": "Mic dejun",
           "isChecked": true
         },
         {
-          "name": "Scris în jurnal",
+          "name": "Jurnal",
           "isChecked": false
         },
         {
-          "name": "Ceartă politică pe Facebook",
+          "name": "Certuri politice pe Facebook",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Esențiale pentru weekend",
+      "name": "Bagaj pentru weekend",
       "items": [
         {
-          "name": "Încărcător de telefon",
+          "name": "Încărcător telefon",
           "isChecked": false
         },
         {
-          "name": "Portofel/acte",
-          "notes": "Acte valabile (buletin în UE, pașaport în afara ei, permis dacă mergi cu mașina).",
+          "name": "Portofel/buletin",
+          "notes": "Actele potrivite (buletin în UE, pașaport în afara UE, permis pentru mașină etc.)",
           "isChecked": false
         },
         {
@@ -51,8 +51,8 @@
           "isChecked": true
         },
         {
-          "name": "Trusa de toaletă",
-          "notes": "Lichide mici, în pungă separată, dacă zbori cu bagaj de mână.",
+          "name": "Trusă de toaletă",
+          "notes": "Doar lichide mici, în pungă separată, la bagajul de mână în avion.",
           "isChecked": true
         },
         {
@@ -68,7 +68,7 @@
           "isChecked": false
         },
         {
-          "name": "Haine de ploaie/vânt",
+          "name": "Umbrelă, impermeabil",
           "isChecked": false
         },
         {
@@ -84,17 +84,17 @@
           "isChecked": false
         },
         {
-          "name": "Papuci de plajă",
+          "name": "Șlapi",
           "isChecked": false
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Listă de verificare la plecare",
+      "name": "Înainte de plecare",
       "items": [
         {
-          "name": "Setează răspuns automat pe e-mail",
+          "name": "Răspuns automat pe e-mail",
           "isChecked": true
         },
         {
@@ -106,36 +106,36 @@
           "isChecked": true
         },
         {
-          "name": "Cine udă plantele și vede de casă",
+          "name": "Udat florile, cine vede de casă",
           "isChecked": false
         },
         {
-          "name": "Anunță absența la școală",
+          "name": "Învoire de la școală",
           "isChecked": false
         },
         {
-          "name": "Trimite itinerarul unei rude sau unui prieten",
+          "name": "Itinerariul la o rudă sau un prieten",
           "isChecked": false
         },
         {
-          "name": "Scoate aparatele din priză",
+          "name": "Scos aparatele din priză",
           "isChecked": false
         },
         {
-          "name": "Ascunde lucrurile de valoare",
+          "name": "Obiectele de valoare puse bine",
           "isChecked": false
         },
         {
-          "name": "Oprește centrala sau aerul",
-          "notes": "Sau lasă temperatura minimă, ca să nu înghețe țevile.",
+          "name": "Oprit centrala sau clima",
+          "notes": "Sau centrala pe minim, ca să nu înghețe țevile.",
           "isChecked": false
         },
         {
-          "name": "Verifică aragazul și cuptorul",
+          "name": "Verificat aragazul și cuptorul",
           "isChecked": false
         },
         {
-          "name": "Încuie ușile și ferestrele",
+          "name": "Încuiat ușile și geamurile",
           "isChecked": false
         }
       ]

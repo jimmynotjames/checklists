@@ -5,22 +5,22 @@
   "checklists": [
     {
       "id": "C4EC1157-0000-4000-A000-000000000001",
-      "name": "晨間例行公事",
+      "name": "晨間例行事項",
       "items": [
         {
-          "name": "開咖啡機",
+          "name": "先開咖啡機",
           "isChecked": true
         },
         {
-          "name": "瑜珈／冥想",
+          "name": "瑜伽／冥想",
           "isChecked": true
         },
         {
-          "name": "看路況與天氣預報",
+          "name": "看路況和天氣",
           "isChecked": true
         },
         {
-          "name": "早餐",
+          "name": "吃早餐",
           "isChecked": true
         },
         {
@@ -28,7 +28,7 @@
           "isChecked": false
         },
         {
-          "name": "上臉書戰政治",
+          "name": "上 PTT 吵政治",
           "isChecked": true
         }
       ]
@@ -43,7 +43,7 @@
         },
         {
           "name": "錢包／證件",
-          "notes": "帶齊證件（國內搭機用身分證，出國帶護照，自駕帶駕照）。",
+          "notes": "身分證、健保卡；搭國內線帶身分證，出國帶護照，自駕帶駕照。",
           "isChecked": false
         },
         {
@@ -52,7 +52,7 @@
         },
         {
           "name": "盥洗包",
-          "notes": "搭飛機帶手提行李時，液體分裝小瓶並裝在透明夾鏈袋。",
+          "notes": "搭飛機的話，隨身行李的液體用小瓶裝，另放透明夾鏈袋。",
           "isChecked": true
         },
         {
@@ -64,11 +64,11 @@
           "isChecked": false
         },
         {
-          "name": "書、iPad、Kobo…",
+          "name": "書、iPad、mooInk…",
           "isChecked": false
         },
         {
-          "name": "雨具、薄外套",
+          "name": "雨具、防風外套",
           "isChecked": false
         },
         {
@@ -84,21 +84,21 @@
           "isChecked": false
         },
         {
-          "name": "泳池拖鞋",
+          "name": "拖鞋",
           "isChecked": false
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "出發前檢查清單",
+      "name": "出遊前檢查清單",
       "items": [
         {
-          "name": "設定信箱自動回覆",
+          "name": "設定郵件自動回覆",
           "isChecked": true
         },
         {
-          "name": "請鄰居幫忙收信件",
+          "name": "請管理室代收包裹",
           "isChecked": true
         },
         {
@@ -106,7 +106,7 @@
           "isChecked": true
         },
         {
-          "name": "請人澆花、看家",
+          "name": "安排澆花、看家",
           "isChecked": false
         },
         {
@@ -114,7 +114,7 @@
           "isChecked": false
         },
         {
-          "name": "行程表傳給信任的親友",
+          "name": "把行程傳給家人或好友",
           "isChecked": false
         },
         {
@@ -122,20 +122,20 @@
           "isChecked": false
         },
         {
-          "name": "貴重物品收好",
+          "name": "收好貴重物品",
           "isChecked": false
         },
         {
-          "name": "關掉冷氣、除濕機",
-          "notes": "長時間不在家，可設定除濕機定時，避免發霉。",
+          "name": "關冷氣和除濕機",
+          "notes": "門窗關緊，放幾個除濕盒防潮。",
           "isChecked": false
         },
         {
-          "name": "確認瓦斯爐、烤箱關閉",
+          "name": "確認瓦斯爐、熱水器已關",
           "isChecked": false
         },
         {
-          "name": "門窗上鎖",
+          "name": "鎖好門窗",
           "isChecked": false
         }
       ]

@@ -8,7 +8,7 @@
       "name": "Morgonrutin",
       "items": [
         {
-          "name": "STARTA KAFFEBRYGGAREN",
+          "name": "SÄTT PÅ KAFFET",
           "isChecked": true
         },
         {
@@ -28,31 +28,31 @@
           "isChecked": false
         },
         {
-          "name": "Bråka om politik på Facebook",
+          "name": "Gräla om politik på Facebook",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Packlista för helgresan",
+      "name": "Packlista helgresa",
       "items": [
         {
           "name": "Mobilladdare",
           "isChecked": false
         },
         {
-          "name": "Plånbok/ID",
-          "notes": "Giltig legitimation (ID-kort, pass utrikes, körkort om du kör).",
+          "name": "Plånbok/leg",
+          "notes": "Giltig legitimation (körkort eller id-kort inrikes, pass eller nationellt id-kort utomlands)",
           "isChecked": false
         },
         {
-          "name": "Recept, mediciner, kosttillskott",
+          "name": "Mediciner, vitaminer",
           "isChecked": true
         },
         {
           "name": "Necessär",
-          "notes": "Bara små flaskor i separat påse om du flyger med handbagage.",
+          "notes": "Flyg: små flaskor i separat påse i handbagaget.",
           "isChecked": true
         },
         {
@@ -64,7 +64,7 @@
           "isChecked": false
         },
         {
-          "name": "Bok, iPad, Kindle...",
+          "name": "Bok, iPad, ljudbok...",
           "isChecked": false
         },
         {
@@ -91,14 +91,14 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Checklista före resan",
+      "name": "Före resan",
       "items": [
         {
-          "name": "Slå på autosvar på mejlen",
+          "name": "Autosvar på mejlen",
           "isChecked": true
         },
         {
-          "name": "Pausa posten hos PostNord",
+          "name": "Be grannen ta in posten",
           "isChecked": true
         },
         {
@@ -106,28 +106,28 @@
           "isChecked": true
         },
         {
-          "name": "Ordna blomvattning och husvakt",
+          "name": "Ordna blomvattning, husvakt",
           "isChecked": false
         },
         {
-          "name": "Anmäl ledighet i skolan",
+          "name": "Ansök om ledigt från skolan",
           "isChecked": false
         },
         {
-          "name": "Skicka resplanen till någon du litar på",
+          "name": "Skicka resplanen till en vän/släkting",
           "isChecked": false
         },
         {
-          "name": "Dra ur kontakterna",
+          "name": "Dra ur sladdar",
           "isChecked": false
         },
         {
-          "name": "Lås in värdesaker",
+          "name": "Göm värdesaker",
           "isChecked": false
         },
         {
-          "name": "Stäng av värmen",
-          "notes": "Eller ställ in lägsta värmen så rören inte fryser.",
+          "name": "Sänk värmen",
+          "notes": "Men inte för lågt, så att rören inte fryser.",
           "isChecked": false
         },
         {

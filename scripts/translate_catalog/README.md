@@ -36,7 +36,8 @@ pipeline) are duplicated on purpose: `localization-spec.md §Running the pipelin
 ## Full backfill
 
 `dispatch_prompts.py` needs the `manifest.json` that only `extract.py --missing` writes. To
-regenerate every locale (a model change, or a systemic prompt fix), mark the keys
+regenerate every locale (a systemic prompt or rule change, or recovery; never a model or alias
+bump on its own: `localization-spec.md §Models are pinned deliberately`), mark the keys
 `needs_review` with `invalidate_keys.py` (optionally `--locales`), then run the normal flow.
 Costs O(49 × all-keys).
 

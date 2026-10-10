@@ -8,7 +8,7 @@
       "name": "Routine du matin",
       "items": [
         {
-          "name": "LANCER LA CAFETIÈRE",
+          "name": "LANCER LE CAFÉ",
           "isChecked": true
         },
         {
@@ -24,26 +24,26 @@
           "isChecked": true
         },
         {
-          "name": "Tenir mon journal",
+          "name": "Écrire mon journal",
           "isChecked": false
         },
         {
-          "name": "Débattre de politique sur X",
+          "name": "Refaire le monde sur X",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "L'essentiel du week-end",
+      "name": "Indispensables du week-end",
       "items": [
         {
-          "name": "Chargeur de téléphone",
+          "name": "Chargeur téléphone",
           "isChecked": false
         },
         {
           "name": "Portefeuille, papiers",
-          "notes": "Carte d'identité pour l'Europe, passeport hors UE, permis pour la route.",
+          "notes": "Bons papiers (carte d'identité ou passeport pour l'avion, permis pour la route, etc.)",
           "isChecked": false
         },
         {
@@ -52,7 +52,7 @@
         },
         {
           "name": "Trousse de toilette",
-          "notes": "En cabine, petits flacons de liquides dans un sac à part.",
+          "notes": "En avion, petits flacons de liquides dans un sachet à part, en cabine.",
           "isChecked": true
         },
         {
@@ -64,11 +64,11 @@
           "isChecked": false
         },
         {
-          "name": "Livre, iPad, liseuse...",
+          "name": "Livre, iPad, liseuse…",
           "isChecked": false
         },
         {
-          "name": "Coupe-vent, parapluie",
+          "name": "Imper, coupe-vent",
           "isChecked": false
         },
         {
@@ -84,21 +84,21 @@
           "isChecked": false
         },
         {
-          "name": "Tongs",
+          "name": "Claquettes",
           "isChecked": false
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Liste avant départ",
+      "name": "Liste avant le départ",
       "items": [
         {
-          "name": "Activer la réponse auto sur mes mails",
+          "name": "Activer le message d'absence",
           "isChecked": true
         },
         {
-          "name": "La Poste : garde du courrier",
+          "name": "Faire relever le courrier",
           "isChecked": true
         },
         {
@@ -106,7 +106,7 @@
           "isChecked": true
         },
         {
-          "name": "Plantes à arroser, maison à surveiller",
+          "name": "Arrosage des plantes, garde maison",
           "isChecked": false
         },
         {
@@ -114,7 +114,7 @@
           "isChecked": false
         },
         {
-          "name": "Envoyer l'itinéraire à un proche de confiance",
+          "name": "Envoyer l'itinéraire à un proche",
           "isChecked": false
         },
         {
@@ -127,15 +127,15 @@
         },
         {
           "name": "Couper le chauffage",
-          "notes": "Ou laisse le mode hors-gel pour protéger les tuyaux.",
+          "notes": "Ou le mettre en hors-gel pour protéger les canalisations.",
           "isChecked": false
         },
         {
-          "name": "Vérifier gaz et four éteints",
+          "name": "Plaques et four éteints",
           "isChecked": false
         },
         {
-          "name": "Verrouiller portes et fenêtres",
+          "name": "Fermer portes et fenêtres",
           "isChecked": false
         }
       ]

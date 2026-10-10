@@ -12,7 +12,7 @@
           "isChecked": true
         },
         {
-          "name": "Joga/meditácia",
+          "name": "Jóga/meditácia",
           "isChecked": true
         },
         {
@@ -28,31 +28,31 @@
           "isChecked": false
         },
         {
-          "name": "Politické hádky na Facebooku",
+          "name": "Hádať sa o politike na Facebooku",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Balenie na víkendovku",
+      "name": "Balenie na víkend",
       "items": [
         {
           "name": "Nabíjačka na mobil",
           "isChecked": false
         },
         {
-          "name": "Peňaženka, doklady",
-          "notes": "Občiansky preukaz stačí v rámci EÚ, mimo nej pas, na cestu autom vodičák.",
+          "name": "Peňaženka/doklady",
+          "notes": "Občiansky (stačí v EÚ), pas mimo EÚ, vodičák na cestu autom.",
           "isChecked": false
         },
         {
-          "name": "Lieky, recepty, výživové doplnky",
+          "name": "Lieky, recepty, vitamíny",
           "isChecked": true
         },
         {
-          "name": "Toaletná taštička",
-          "notes": "Ak letíš, malé tekutiny v samostatnom vrecku v príručnej batožine.",
+          "name": "Toaletná taška",
+          "notes": "Pri lete s príručnou batožinou malé tekutiny zvlášť vo vrecku.",
           "isChecked": true
         },
         {
@@ -64,7 +64,7 @@
           "isChecked": false
         },
         {
-          "name": "Kniha, iPad, čítačka...",
+          "name": "Kniha, iPad, Kindle…",
           "isChecked": false
         },
         {
@@ -91,26 +91,26 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Kontrolný zoznam pred cestou",
+      "name": "Zoznam pred cestou",
       "items": [
         {
           "name": "Nastaviť automatickú odpoveď v e-maile",
           "isChecked": true
         },
         {
-          "name": "Sused: vyberať poštovú schránku",
+          "name": "Poprosiť suseda o schránku",
           "isChecked": true
         },
         {
-          "name": "Dohodnúť opateru zvierat",
+          "name": "Zariadiť opateru zvierat",
           "isChecked": true
         },
         {
-          "name": "Polievanie kvetov, dozor nad bytom",
+          "name": "Zalievanie kvetov, dozor nad bytom",
           "isChecked": false
         },
         {
-          "name": "Ospravedlniť deti zo školy",
+          "name": "Ospravedlniť deti v škole",
           "isChecked": false
         },
         {
@@ -122,16 +122,16 @@
           "isChecked": false
         },
         {
-          "name": "Odložiť cennosti",
+          "name": "Uschovať cennosti",
           "isChecked": false
         },
         {
-          "name": "Stiahnuť kúrenie",
-          "notes": "Alebo nastav minimum, nech nezamrznú rúry.",
+          "name": "Vypnúť kúrenie alebo klímu",
+          "notes": "Alebo nechať temperovať, aby nezamrzli rúry.",
           "isChecked": false
         },
         {
-          "name": "Skontrolovať sporák a rúru",
+          "name": "Vypnutý sporák a rúra",
           "isChecked": false
         },
         {

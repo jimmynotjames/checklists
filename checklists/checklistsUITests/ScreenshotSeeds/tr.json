@@ -24,18 +24,18 @@
           "isChecked": true
         },
         {
-          "name": "Günlük tutmak",
+          "name": "Günlük yazmak",
           "isChecked": false
         },
         {
-          "name": "X'te siyaset tartışmak",
+          "name": "Twitter'da siyaset kavgası",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Hafta Sonu Çantası",
+      "name": "Hafta Sonu Kaçamağı",
       "items": [
         {
           "name": "Telefon şarj aleti",
@@ -43,16 +43,16 @@
         },
         {
           "name": "Cüzdan/kimlik",
-          "notes": "Uçuş için kimlik, yurt dışı için pasaport, araba için ehliyet.",
+          "notes": "Kimlik kartı (yurt içi uçuş), pasaport (yurt dışı), ehliyet (araçla yolculuk)",
           "isChecked": false
         },
         {
-          "name": "Reçeteler, ilaçlar, vitaminler",
+          "name": "İlaçlar, reçeteler, vitaminler",
           "isChecked": true
         },
         {
-          "name": "Bakım çantası",
-          "notes": "Uçakta el bagajındaysa sıvılar küçük ve ayrı poşette olsun.",
+          "name": "Banyo çantası",
+          "notes": "Uçakla gidilecekse sıvılar küçük şişede, ayrı poşette, kabinde.",
           "isChecked": true
         },
         {
@@ -84,41 +84,41 @@
           "isChecked": false
         },
         {
-          "name": "Deniz terliği",
+          "name": "Havuz terliği",
           "isChecked": false
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Yolculuk Öncesi Kontrol Listesi",
+      "name": "Tatil Öncesi Kontrol Listesi",
       "items": [
         {
-          "name": "E-postalara otomatik yanıt kur",
+          "name": "E-postada otomatik yanıtı aç",
           "isChecked": true
         },
         {
-          "name": "Kapıcıya haber ver",
+          "name": "Posta ve kargo için komşuya haber ver",
           "isChecked": true
         },
         {
-          "name": "Evcil hayvan bakımı",
+          "name": "Evcil hayvanın bakımını ayarla",
           "isChecked": true
         },
         {
-          "name": "Çiçekleri sulama, ev bakımı",
+          "name": "Çiçek sulama, eve bakacak biri",
           "isChecked": false
         },
         {
-          "name": "Okul için izin al",
+          "name": "Okula devamsızlık bildir",
           "isChecked": false
         },
         {
-          "name": "Seyahat planını bir yakınına gönder",
+          "name": "Seyahat planını yakın birine gönder",
           "isChecked": false
         },
         {
-          "name": "Fişleri çek",
+          "name": "Cihazların fişini çek",
           "isChecked": false
         },
         {
@@ -126,12 +126,12 @@
           "isChecked": false
         },
         {
-          "name": "Kombiyi/klimayı kapat",
-          "notes": "Ya da kombiyi donma korumasına al.",
+          "name": "Kombiyi veya klimayı kapat",
+          "notes": "Kışsa kombiyi kapatma, donma korumasında bırak.",
           "isChecked": false
         },
         {
-          "name": "Ocak ve fırın kapalı mı",
+          "name": "Ocak ve fırın kapalı mı?",
           "isChecked": false
         },
         {

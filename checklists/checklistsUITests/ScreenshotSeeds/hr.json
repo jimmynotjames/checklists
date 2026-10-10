@@ -8,7 +8,7 @@
       "name": "Jutarnja rutina",
       "items": [
         {
-          "name": "SKUHAJ KAVU",
+          "name": "SKUHATI KAVU",
           "isChecked": true
         },
         {
@@ -16,7 +16,7 @@
           "isChecked": true
         },
         {
-          "name": "Stanje na cestama i vrijeme",
+          "name": "Promet i vremenska prognoza",
           "isChecked": true
         },
         {
@@ -28,14 +28,14 @@
           "isChecked": false
         },
         {
-          "name": "Svađa o politici na Facebooku",
+          "name": "Svađa o politici na Fejsu",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Osnovno za vikend putovanje",
+      "name": "Sve za vikend izlet",
       "items": [
         {
           "name": "Punjač za mobitel",
@@ -43,16 +43,16 @@
         },
         {
           "name": "Novčanik/osobna",
-          "notes": "Osobna iskaznica za EU, putovnica izvan EU, vozačka za put autom.",
+          "notes": "Osobna ili putovnica za let i izvan EU-a, vozačka za put autom.",
           "isChecked": false
         },
         {
-          "name": "Recepti, lijekovi, dodaci prehrani",
+          "name": "Lijekovi, recepti, dodaci prehrani",
           "isChecked": true
         },
         {
-          "name": "Toaletna torbica",
-          "notes": "U ručnoj prtljazi samo male bočice tekućine u prozirnoj vrećici.",
+          "name": "Neseser",
+          "notes": "Za let u ručnoj prtljazi: male tekućine u zasebnoj vrećici.",
           "isChecked": true
         },
         {
@@ -68,7 +68,7 @@
           "isChecked": false
         },
         {
-          "name": "Kišobran i vjetrovka",
+          "name": "Kišobran, vjetrovka",
           "isChecked": false
         },
         {
@@ -76,7 +76,7 @@
           "isChecked": true
         },
         {
-          "name": "Šešir za sunce",
+          "name": "Šešir",
           "isChecked": true
         },
         {
@@ -84,58 +84,58 @@
           "isChecked": false
         },
         {
-          "name": "Cipelice za more",
+          "name": "Japanke",
           "isChecked": false
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Kontrolni popis prije puta",
+      "name": "Popis prije puta",
       "items": [
         {
-          "name": "Postavi automatski odgovor na mailu",
+          "name": "Automatski odgovor na e-mailu",
           "isChecked": true
         },
         {
-          "name": "Susjed: prazni sandučić",
+          "name": "Sandučić: zamoliti susjeda",
           "isChecked": true
         },
         {
-          "name": "Dogovor za čuvanje ljubimaca",
+          "name": "Čuvanje ljubimaca",
           "isChecked": true
         },
         {
-          "name": "Dogovor za biljke i čuvanje stana",
+          "name": "Zalijevanje cvijeća, čuvanje stana",
           "isChecked": false
         },
         {
-          "name": "Najavi izostanak iz škole",
+          "name": "Ispričnica za školu",
           "isChecked": false
         },
         {
-          "name": "Pošalji plan puta osobi od povjerenja",
+          "name": "Poslati plan puta prijatelju/obitelji",
           "isChecked": false
         },
         {
-          "name": "Isključi uređaje iz struje",
+          "name": "Izvući utikače",
           "isChecked": false
         },
         {
-          "name": "Skloniti dragocjenosti",
+          "name": "Spremiti dragocjenosti",
           "isChecked": false
         },
         {
-          "name": "Isključi grijanje ili klimu",
-          "notes": "Ili postavi minimalnu temperaturu da cijevi ne puknu.",
+          "name": "Ugasiti grijanje ili klimu",
+          "notes": "Ili grijanje na minimum da se cijevi ne smrznu.",
           "isChecked": false
         },
         {
-          "name": "Provjeri štednjak i pećnicu",
+          "name": "Provjeriti štednjak i pećnicu",
           "isChecked": false
         },
         {
-          "name": "Zaključaj vrata i prozore",
+          "name": "Zaključati vrata, zatvoriti prozore",
           "isChecked": false
         }
       ]

@@ -16,7 +16,7 @@
           "isChecked": true
         },
         {
-          "name": "Cek lalu lintas dan cuaca",
+          "name": "Cek info macet dan cuaca",
           "isChecked": true
         },
         {
@@ -28,7 +28,7 @@
           "isChecked": false
         },
         {
-          "name": "Debat politik di Facebook",
+          "name": "Debat politik di grup WA",
           "isChecked": true
         }
       ]
@@ -43,16 +43,16 @@
         },
         {
           "name": "Dompet/KTP",
-          "notes": "KTP untuk penerbangan domestik, paspor ke luar negeri, SIM kalau nyetir.",
+          "notes": "Identitas yang sesuai (KTP untuk naik pesawat, paspor ke luar negeri, SIM untuk menyetir, dll.)",
           "isChecked": false
         },
         {
-          "name": "Obat resep, obat bebas, vitamin",
+          "name": "Obat resep, obat, vitamin",
           "isChecked": true
         },
         {
           "name": "Tas peralatan mandi",
-          "notes": "Kalau naik pesawat, cairan ukuran kecil di kantong terpisah untuk kabin.",
+          "notes": "Jika naik pesawat, cairan ukuran kecil di kantong terpisah dalam bagasi kabin.",
           "isChecked": true
         },
         {
@@ -60,11 +60,11 @@
           "isChecked": false
         },
         {
-          "name": "Headset",
+          "name": "Earphone",
           "isChecked": false
         },
         {
-          "name": "Buku, iPad, Kindle...",
+          "name": "Buku, iPad, komik...",
           "isChecked": false
         },
         {
@@ -76,7 +76,7 @@
           "isChecked": true
         },
         {
-          "name": "Topi",
+          "name": "Topi pantai",
           "isChecked": true
         },
         {
@@ -91,10 +91,10 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Daftar Periksa Sebelum Pergi",
+      "name": "Cek Sebelum Bepergian",
       "items": [
         {
-          "name": "Atur balasan otomatis di email",
+          "name": "Pasang balasan otomatis email",
           "isChecked": true
         },
         {
@@ -106,19 +106,19 @@
           "isChecked": true
         },
         {
-          "name": "Titip tanaman dan rumah",
+          "name": "Titip siram tanaman & jaga rumah",
           "isChecked": false
         },
         {
-          "name": "Urus izin sekolah anak",
+          "name": "Izin tidak masuk sekolah",
           "isChecked": false
         },
         {
-          "name": "Kirim itinerary ke keluarga atau teman",
+          "name": "Kirim jadwal perjalanan ke kerabat",
           "isChecked": false
         },
         {
-          "name": "Cabut semua colokan",
+          "name": "Cabut colokan listrik",
           "isChecked": false
         },
         {
@@ -126,12 +126,12 @@
           "isChecked": false
         },
         {
-          "name": "Matikan AC dan kipas",
-          "notes": "Buka sedikit ventilasi supaya rumah tidak lembap.",
+          "name": "Matikan AC dan kipas angin",
+          "notes": "Matikan juga pompa air dan pemanas air.",
           "isChecked": false
         },
         {
-          "name": "Pastikan kompor sudah mati",
+          "name": "Cek kompor dan regulator gas",
           "isChecked": false
         },
         {

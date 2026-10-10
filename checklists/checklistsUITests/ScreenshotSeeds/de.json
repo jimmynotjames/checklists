@@ -28,22 +28,22 @@
           "isChecked": false
         },
         {
-          "name": "Auf X über Politik streiten",
+          "name": "Politikstreit auf Facebook",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Packliste fürs Wochenende",
+      "name": "Wochenendtrip-Packliste",
       "items": [
         {
-          "name": "Handy-Ladekabel",
+          "name": "Handyladegerät",
           "isChecked": false
         },
         {
-          "name": "Geldbörse/Ausweis",
-          "notes": "Personalausweis in der EU, Reisepass für Fernreisen, Führerschein fürs Auto.",
+          "name": "Geldbeutel/Ausweis",
+          "notes": "Personalausweis oder Reisepass (Flug, Ausland), Führerschein fürs Auto usw.",
           "isChecked": false
         },
         {
@@ -52,7 +52,7 @@
         },
         {
           "name": "Kulturbeutel",
-          "notes": "Im Handgepäck nur kleine Flüssigkeiten im extra Beutel.",
+          "notes": "Beim Fliegen: Flüssigkeiten im Handgepäck nur klein und im extra Beutel.",
           "isChecked": true
         },
         {
@@ -91,7 +91,7 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Checkliste vor der Reise",
+      "name": "Vor der Abreise",
       "items": [
         {
           "name": "Abwesenheitsnotiz einrichten",
@@ -106,32 +106,32 @@
           "isChecked": true
         },
         {
-          "name": "Pflanzen- und Wohnungsbetreuung klären",
+          "name": "Blumengießen, Wohnung hüten klären",
           "isChecked": false
         },
         {
-          "name": "Schule: Beurlaubung klären",
+          "name": "Schule/Kita Bescheid geben",
           "isChecked": false
         },
         {
-          "name": "Reiseplan an Familie oder Freunde schicken",
+          "name": "Reiseplan an Vertrauensperson schicken",
           "isChecked": false
         },
         {
-          "name": "Geräte vom Strom nehmen",
+          "name": "Stecker ziehen",
           "isChecked": false
         },
         {
-          "name": "Wertsachen wegschließen",
+          "name": "Wertsachen verstauen",
           "isChecked": false
         },
         {
-          "name": "Heizung runterdrehen",
+          "name": "Heizung abdrehen",
           "notes": "Oder auf Frostschutz stellen, damit keine Rohre einfrieren.",
           "isChecked": false
         },
         {
-          "name": "Herd und Ofen ausgeschaltet?",
+          "name": "Herd und Backofen aus",
           "isChecked": false
         },
         {

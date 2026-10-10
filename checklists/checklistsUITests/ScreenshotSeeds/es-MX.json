@@ -16,26 +16,26 @@
           "isChecked": true
         },
         {
-          "name": "Ver tráfico y clima",
+          "name": "Tráfico y clima",
           "isChecked": true
         },
         {
-          "name": "Desayunar",
+          "name": "Desayuno",
           "isChecked": true
         },
         {
-          "name": "Escribir mi diario",
+          "name": "Escribir en el diario",
           "isChecked": false
         },
         {
-          "name": "Discutir política en Facebook",
+          "name": "Pelear de política en Facebook",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Maleta de fin de semana",
+      "name": "Escapada de fin de semana",
       "items": [
         {
           "name": "Cargador del celular",
@@ -43,16 +43,16 @@
         },
         {
           "name": "Cartera/INE",
-          "notes": "INE para vuelos nacionales, pasaporte al extranjero, licencia si vas a manejar.",
+          "notes": "Identificación (INE para vuelos nacionales, pasaporte si es internacional, licencia para carretera, etc.)",
           "isChecked": false
         },
         {
-          "name": "Recetas, medicinas y suplementos",
+          "name": "Recetas, medicinas, suplementos",
           "isChecked": true
         },
         {
-          "name": "Bolsa de aseo personal",
-          "notes": "Si vuelas con equipaje de mano, líquidos pequeños en bolsa aparte.",
+          "name": "Cosmetiquera",
+          "notes": "Líquidos chicos en bolsa aparte si vuelo con equipaje de mano.",
           "isChecked": true
         },
         {
@@ -68,7 +68,7 @@
           "isChecked": false
         },
         {
-          "name": "Impermeable o paraguas",
+          "name": "Paraguas/impermeable",
           "isChecked": false
         },
         {
@@ -84,7 +84,7 @@
           "isChecked": false
         },
         {
-          "name": "Sandalias de alberca",
+          "name": "Chanclas",
           "isChecked": false
         }
       ]
@@ -94,27 +94,27 @@
       "name": "Lista antes del viaje",
       "items": [
         {
-          "name": "Poner respuesta automática en el correo",
+          "name": "Activar respuesta automática del correo",
           "isChecked": true
         },
         {
-          "name": "Vecino: recibir paquetes",
+          "name": "Encargar paquetes al vecino",
           "isChecked": true
         },
         {
-          "name": "Cuidado de mascotas",
+          "name": "Quién cuida a la mascota",
           "isChecked": true
         },
         {
-          "name": "Riego de plantas y cuidado de la casa",
+          "name": "Riego de plantas, cuidado de la casa",
           "isChecked": false
         },
         {
-          "name": "Avisar en la escuela",
+          "name": "Avisar a la escuela",
           "isChecked": false
         },
         {
-          "name": "Mandar el itinerario a un familiar de confianza",
+          "name": "Mandar itinerario a alguien de confianza",
           "isChecked": false
         },
         {
@@ -122,20 +122,20 @@
           "isChecked": false
         },
         {
-          "name": "Guardar cosas de valor",
+          "name": "Guardar objetos de valor",
           "isChecked": false
         },
         {
-          "name": "Apagar el aire acondicionado",
-          "notes": "O déjalo en temperatura alta para que gaste menos luz.",
+          "name": "Apagar el boiler o el clima",
+          "notes": "O dejar el boiler en piloto para no gastar gas.",
           "isChecked": false
         },
         {
-          "name": "Revisar estufa y horno apagados",
+          "name": "Estufa y horno apagados",
           "isChecked": false
         },
         {
-          "name": "Cerrar bien puertas y ventanas",
+          "name": "Cerrar puertas y ventanas",
           "isChecked": false
         }
       ]

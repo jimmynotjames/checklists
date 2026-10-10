@@ -8,7 +8,7 @@
       "name": "Morgenrutine",
       "items": [
         {
-          "name": "SETT PÅ KAFFEN",
+          "name": "SETTE PÅ KAFFEN",
           "isChecked": true
         },
         {
@@ -16,7 +16,7 @@
           "isChecked": true
         },
         {
-          "name": "Trafikk- og værmelding",
+          "name": "Trafikk og vær",
           "isChecked": true
         },
         {
@@ -35,15 +35,15 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Helgetur: det viktigste",
+      "name": "Pakkeliste for helgetur",
       "items": [
         {
           "name": "Mobillader",
           "isChecked": false
         },
         {
-          "name": "Lommebok/ID",
-          "notes": "Pass til utenlandsreise, førerkort på biltur, bankkort.",
+          "name": "Lommebok/leg",
+          "notes": "Riktig legitimasjon (pass eller nasjonalt ID-kort for fly og utland, førerkort for biltur osv.)",
           "isChecked": false
         },
         {
@@ -52,7 +52,7 @@
         },
         {
           "name": "Toalettmappe",
-          "notes": "Små væsker i egen pose hvis du flyr med håndbagasje.",
+          "notes": "Ved flyreise: små flasker i egen pose i håndbagasjen.",
           "isChecked": true
         },
         {
@@ -64,11 +64,11 @@
           "isChecked": false
         },
         {
-          "name": "Bok, iPad, Kindle ...",
+          "name": "Bok, iPad, Kindle …",
           "isChecked": false
         },
         {
-          "name": "Regn- og vindtøy",
+          "name": "Regntøy, vindjakke",
           "isChecked": false
         },
         {
@@ -91,51 +91,51 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Sjekkliste før reise",
+      "name": "Sjekkliste før reisen",
       "items": [
         {
-          "name": "Sett på autosvar på e-posten",
+          "name": "Sette opp autosvar på e-post",
           "isChecked": true
         },
         {
-          "name": "Posten: be om oppbevaring",
+          "name": "Be naboen ta inn posten",
           "isChecked": true
         },
         {
-          "name": "Ordne pass av kjæledyr",
+          "name": "Ordne dyrepass",
           "isChecked": true
         },
         {
-          "name": "Ordne plantevanning og tilsyn",
+          "name": "Ordne plantevanning, husvakt",
           "isChecked": false
         },
         {
-          "name": "Søk om permisjon fra skolen",
+          "name": "Melde fravær på skolen",
           "isChecked": false
         },
         {
-          "name": "Send reiseplanen til en du stoler på",
+          "name": "Sende reiseplan til en du stoler på",
           "isChecked": false
         },
         {
-          "name": "Trekk ut støpsler",
+          "name": "Trekke ut kontakter",
           "isChecked": false
         },
         {
-          "name": "Lås inn verdisaker",
+          "name": "Gjemme verdisaker",
           "isChecked": false
         },
         {
           "name": "Skru ned varmen",
-          "notes": "Eller sett minimumstemperatur så ikke rørene fryser.",
+          "notes": "Men la litt varme stå på, så rørene ikke fryser.",
           "isChecked": false
         },
         {
-          "name": "Sjekk at komfyr og ovn er av",
+          "name": "Sjekke at komfyr og ovn er av",
           "isChecked": false
         },
         {
-          "name": "Lås dører og vinduer",
+          "name": "Låse dører og vinduer",
           "isChecked": false
         }
       ]
