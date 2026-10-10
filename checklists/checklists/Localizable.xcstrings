@@ -6146,7 +6146,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Không bao giờ"
+            "value" : "Chưa có"
           }
         },
         "zh-Hans" : {
@@ -15019,7 +15019,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ bản sao %2$lld"
+            "value" : "Bản sao %2$lld của %1$@"
           }
         },
         "zh-Hans" : {
@@ -40213,7 +40213,7 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tarkistuslistasi tallentuvat vain tähän laitteeseen. Käynnistä appi uudelleen, niin iCloud-synkronointia yritetään taas."
+            "value" : "Tarkistuslistasi tallentuvat vain tähän laitteeseen. Käynnistä sovellus uudelleen, niin iCloud-synkronointia yritetään taas."
           }
         },
         "fr" : {
@@ -40363,7 +40363,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaše zoznamy sa ukladajú len v tomto zariadení. Synchronizáciu cez iCloud skúsite znova po reštartovaní aplikácie."
+            "value" : "Vaše zoznamy sa ukladajú len v tomto zariadení. Synchronizáciu cez iCloud obnovíte reštartovaním aplikácie."
           }
         },
         "sl" : {
@@ -40903,7 +40903,7 @@
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "സമന്വയിപ്പിക്കൽ തുടരാൻ ക്രമീകരണത്തിൽ iCloud സ്റ്റോറേജിൽ ഇടം ഒഴിവാക്കുക. നിങ്ങളുടെ ചെക്ക്‌ലിസ്റ്റുകൾ ഈ ഉപകരണത്തിൽ സംരക്ഷിച്ചിട്ടുണ്ട്."
+            "value" : "സമന്വയം തുടരാൻ ക്രമീകരണത്തിൽ iCloud സ്റ്റോറേജിൽ ഇടം ലഭ്യമാക്കുക. നിങ്ങളുടെ ചെക്ക്‌ലിസ്റ്റുകൾ ഈ ഉപകരണത്തിൽ സംരക്ഷിച്ചിട്ടുണ്ട്."
           }
         },
         "mr" : {
