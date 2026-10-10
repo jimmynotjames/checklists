@@ -21,7 +21,9 @@ import XCTest
 ///   (ChecklistsView) and `mainMenu.settings` (MainMenuView). Renaming one breaks navigation here.
 /// - The row's trailing swipe reveals two buttons: `checklistRow.duplicate` beside
 ///   `checklistRow.delete`.
-/// - `analyticsConsentSheet.decline`, shared with `AnalyticsConsentUITest`.
+/// - `analyticsConsentSheet.decline`, shared with `AnalyticsConsentUITest`, and the sheet's trigger:
+///   `ChecklistScreen`'s `.task` presents it on opening a checklist, where `openFirstChecklist`
+///   clears it. Moving the trigger leaves the sheet over whichever screen it moves to.
 /// - `TestDynamicTypeOverride` (the `FORCE_DYNAMIC_TYPE` hook), applied at the app root and again on
 ///   `RootView`'s sheet, since a sheet does not inherit the root's `dynamicTypeSize`.
 /// - The runner `scripts/translation-accessibility-size-check/run.sh`, which `-only-testing`s this
@@ -119,9 +121,11 @@ final class LocalizationScreenshotCapture: XCTestCase {
 
     capture("04-detail", lang) { app in
       self.openFirstChecklist(app, lang, photographConsent: true)
-      // The detail screen is the UIKit one; its name field is the reliable marker.
-      return app.textFields["checklistNameField"].waitForExistence(timeout: 8)
+      // The detail screen is the UIKit one; its name field is the reliable marker. The field
+      // exists under the consent sheet too, so a sheet that arrived late must fail the step.
+      let reached = app.textFields["checklistNameField"].waitForExistence(timeout: 8)
         || app.textViews["itemNameTextView"].firstMatch.waitForExistence(timeout: 4)
+      return reached && !app.buttons["analyticsConsentSheet.decline"].exists
     }
 
     capture("05-edit-mode", lang) { app in

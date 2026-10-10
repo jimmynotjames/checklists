@@ -51,6 +51,9 @@ failure:
 - The analytics consent sheet did not appear in any of the 13, so there are no
   `04a-consent` shots in this run. The capture handles it by presence, so a
   future run in a strict region will pick it up without a code change.
+  **Correction (2026-10-10):** wrong on both counts. The sheet opens with the first checklist, not
+  at launch, and covered the detail screen in `de`, `fi`, `th` and `zh-Hans`, so those four
+  `04-detail` shots were of the sheet. The capture needed a code change to clear it there.
 
 ### 2026-09-25 — Checklists list Edit mode
 
