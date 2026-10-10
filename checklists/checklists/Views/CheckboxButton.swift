@@ -8,18 +8,12 @@
 import UIKit
 
 class CheckboxButton: UIButton {
-  /// The icon PDFs are 50pt; a configured button draws images at their own size, so they're
-  /// redrawn at 24pt to keep the icon small inside the 48pt tap target.
-  private static let iconSize = CGSize(width: 24.0, height: 24.0)
-  private static let uncheckedImage = icon(named: "CheckboxUncheckedIcon")
-  private static let checkedImage = icon(named: "CheckboxCheckedIcon")
-
-  private static func icon(named name: String) -> UIImage? {
-    guard let image = UIImage(named: name) else { return nil }
-    return UIGraphicsImageRenderer(size: iconSize).image { _ in
-      image.draw(in: CGRect(origin: .zero, size: iconSize))
-    }.withRenderingMode(.alwaysTemplate)
-  }
+  /// The 18pt is tuned by eye against the button's configuration, which draws a symbol larger
+  /// than a bare `UIImageView` given the same configuration would. The glyph sits well inside the
+  /// fixed 48pt frame below; that frame, not the glyph, is the tap target.
+  private static let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 18.0, weight: .regular)
+  private static let uncheckedImage = UIImage(systemName: "square", withConfiguration: symbolConfiguration)
+  private static let checkedImage = UIImage(systemName: "checkmark.square.fill", withConfiguration: symbolConfiguration)
 
   convenience init() {
     self.init(frame: .zero)
@@ -31,6 +25,9 @@ class CheckboxButton: UIButton {
     accessibilityLabel = String(localized: "checkbox.accessibilityLabel", defaultValue: "Checkbox", comment: "VoiceOver label of the tick box on each checklist item row.")
 
     var configuration = UIButton.Configuration.plain()
+    // Positions the glyph, not the tap target: the insets are what place it inside the 48pt frame
+    // below. Glyph plus insets comes to a little over 48 wide and under 48 tall, and the frame still
+    // holds at 48×48 (`CheckboxButtonTests`).
     configuration.contentInsets = NSDirectionalEdgeInsets(top: 12.0, leading: 12.0, bottom: 12.0, trailing: 12.0)
     configuration.image = Self.uncheckedImage
     self.configuration = configuration
