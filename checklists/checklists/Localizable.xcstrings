@@ -11437,7 +11437,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Movida a la posición %1$lld de %2$lld"
+            "value" : "Se ha movido a la posición %1$lld de %2$lld"
           }
         },
         "es-MX" : {
@@ -11455,13 +11455,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déplacée à la position %1$lld sur %2$lld"
+            "value" : "Nouvelle position : %1$lld sur %2$lld"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déplacée à la position %1$lld sur %2$lld"
+            "value" : "Maintenant en position %1$lld sur %2$lld"
           }
         },
         "gu" : {
@@ -11581,13 +11581,13 @@
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Movida para a posição %1$lld de %2$lld"
+            "value" : "Agora na posição %1$lld de %2$lld"
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mutată pe poziția %1$lld din %2$lld"
+            "value" : "Acum pe poziția %1$lld din %2$lld"
           }
         },
         "ru" : {
@@ -22147,7 +22147,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Movido a la posición %1$lld de %2$lld"
+            "value" : "Se ha movido a la posición %1$lld de %2$lld"
           }
         },
         "es-MX" : {
@@ -22165,13 +22165,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déplacé à la position %1$lld sur %2$lld"
+            "value" : "Nouvelle position : %1$lld sur %2$lld"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déplacé à la position %1$lld sur %2$lld"
+            "value" : "Maintenant en position %1$lld sur %2$lld"
           }
         },
         "gu" : {
@@ -22291,13 +22291,13 @@
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Movido para a posição %1$lld de %2$lld"
+            "value" : "Agora na posição %1$lld de %2$lld"
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mutat pe poziția %1$lld din %2$lld"
+            "value" : "Acum pe poziția %1$lld din %2$lld"
           }
         },
         "ru" : {

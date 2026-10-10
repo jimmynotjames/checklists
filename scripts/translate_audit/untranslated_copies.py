@@ -54,6 +54,8 @@ ALLOWLIST: set[tuple[str, str]] = {
     ("sample.morningRoutine.item2", "sv"),
     # "Name (optional)" is ordinary German, spelled as in English.
     ("checklist.copy.namePlaceholder", "de"),
+    # "Edit" is the Edit button label in Apple's Malay UI.
+    ("checklists.action.edit", "ms"),
 }
 
 
