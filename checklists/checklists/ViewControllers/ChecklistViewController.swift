@@ -474,6 +474,7 @@ class ChecklistViewController: UIViewController {
     let items = checklist.items
     guard index >= 0, index < items.count else { assertionFailure(); return }
     guard (try? context.duplicate(item: items[index], in: checklist)) != nil else { return }
+    analytics.track(AnalyticsEvent.checklistItemDuplicated)
     tableView.insertRows(at: [IndexPath(row: index + 1, section: itemsSection)], with: .automatic)
     // Not a status change: no timestamp write, no history-caption refresh — matches
     // `insertNewItem`. The new unchecked row can still move `percentageComplete` and flip

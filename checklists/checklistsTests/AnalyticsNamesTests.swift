@@ -31,6 +31,7 @@ struct AnalyticsNamesTests {
     AnalyticsEvent.checklistReset,
     AnalyticsEvent.checklistDeleted,
     AnalyticsEvent.checklistReorderModeEntered,
+    AnalyticsEvent.checklistItemDuplicated,
     AnalyticsEvent.checklistsEditModeEntered,
     AnalyticsEvent.checklistsBulkActionPerformed,
     AnalyticsEvent.persistenceFatalError,
