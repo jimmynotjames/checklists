@@ -6,11 +6,19 @@
 import UIKit
 
 /// The trailing navigation items, the overflow menu, the actions behind it, and the dismissal
-/// the destructive one shares with the remote-deletion path.
+/// Delete Checklist shares with the remote-deletion path.
 ///
-/// `enterReorderMode`, `duplicateChecklist` and `deleteChecklist` are internal so a test can invoke
-/// them: a `UIAction` handler cannot be fired directly.
+/// `enterReorderMode`, `duplicateChecklist`, `transferCheckedItems(_:)` and `deleteChecklist` are
+/// internal so a test can invoke them: a `UIAction` handler cannot be fired directly.
 extension ChecklistViewController {
+  /// The overflow-menu entries that act on the checked items, each of which can show "No checked
+  /// items." under itself.
+  enum CheckedItemsMenuEntry {
+    case copy
+    case move
+    case delete
+  }
+
   /// Picks the menu's wording for this screen's mode and builds the trailing bar items. The create
   /// sheet gets Done, an existing checklist gets Reset; both get the overflow menu at the outer edge.
   func configureNavigationBar() {
@@ -47,8 +55,8 @@ extension ChecklistViewController {
     }
     // On the create sheet too: people often put items in order right after typing a batch of them.
     let reorderSection = UIMenu(options: .displayInline, children: [reorderItemsAction])
-    // Nothing on the create sheet's checklist has been kept yet — copying a draft nobody has
-    // decided to keep is not an action that means anything.
+    // Nothing on the create sheet's checklist has been kept yet — copying, moving or pruning a
+    // draft nobody has decided to keep is not an action that means anything.
     guard !showsDiscardWording else {
       return UIMenu(children: [reorderSection, UIMenu(options: .displayInline, children: [deleteAction])])
     }
@@ -56,12 +64,16 @@ extension ChecklistViewController {
     let duplicateAction = UIAction(title: Self.duplicateChecklistMenuTitle, image: UIImage(systemName: "plus.square.on.square")) { [weak self] _ in
       self?.duplicateChecklist()
     }
-    // Inline sections, so the destructive entry keeps a gap above it and a thumb reaching for
-    // Duplicate cannot land on Delete.
+    // Inline sections, so the destructive entries keep a gap above them and a thumb reaching for
+    // Move cannot land on a Delete.
     return UIMenu(children: [
       reorderSection,
-      UIMenu(options: .displayInline, children: [duplicateAction, copyCheckedItemsElement]),
-      UIMenu(options: .displayInline, children: [deleteAction]),
+      UIMenu(options: .displayInline, children: [
+        duplicateAction,
+        checkedItemsElement(for: .copy),
+        checkedItemsElement(for: .move),
+      ]),
+      UIMenu(options: .displayInline, children: [checkedItemsElement(for: .delete), deleteAction]),
     ])
   }
 
@@ -108,13 +120,13 @@ extension ChecklistViewController {
     setEditing(false, animated: true)
   }
 
-  /// The copy entry, and the notice explaining why a tap did nothing.
+  /// A checked-items entry, and the notice explaining why a tap on it did nothing.
   ///
-  /// The entry is always present and always live, even with nothing ticked: hiding or dimming it
+  /// Each entry is always present and always live, even with nothing ticked: hiding or dimming it
   /// would never teach that ticking items *is* the selection, and the notice does. Deferred so it
   /// reads the checked items when the menu opens, rather than rebuilding the menu on every
   /// check-off, Reset and remote merge.
-  private var copyCheckedItemsElement: UIDeferredMenuElement {
+  private func checkedItemsElement(for entry: CheckedItemsMenuEntry) -> UIDeferredMenuElement {
     // `uncached`, so the provider runs each time the menu opens rather than once per menu.
     UIDeferredMenuElement.uncached { [weak self] completion in
       guard let self else {
@@ -122,18 +134,18 @@ extension ChecklistViewController {
         return
       }
       let hasCheckedItems = !checklist.checkedItems.isEmpty
-      let action = UIAction(
-        title: Self.copyCheckedItemsMenuTitle,
-        // Distinct from Duplicate's `plus.square.on.square` directly above it: these two sit
-        // adjacent and a shared glyph would make one read as the other.
-        image: UIImage(systemName: "doc.on.doc"),
-        // Held open only in the case that has something to say in place. With something to copy,
-        // the tap opens the picker and the menu should get out of the way as any other entry does.
-        attributes: hasCheckedItems ? [] : .keepsMenuPresented
-      ) { [weak self] _ in
-        self?.copyCheckedItems()
+      var attributes: UIMenuElement.Attributes = entry == .delete ? .destructive : []
+      // Held open only in the case that has something to say in place. With something to act on,
+      // the tap opens a sheet or an alert and the menu should get out of the way as any other
+      // entry does.
+      if !hasCheckedItems {
+        attributes.insert(.keepsMenuPresented)
       }
-      guard !hasCheckedItems, showsNoItemsCheckedNotice else {
+      let action = UIAction(title: Self.title(for: entry), image: Self.image(for: entry), attributes: attributes) { [weak self] _ in
+        self?.checkedItemsEntryTapped(entry)
+      }
+      action.accessibilityIdentifier = Self.accessibilityIdentifier(for: entry)
+      guard !hasCheckedItems, noItemsCheckedNoticeEntry == entry else {
         completion([action])
         return
       }
@@ -144,35 +156,71 @@ extension ChecklistViewController {
     }
   }
 
+  private static func title(for entry: CheckedItemsMenuEntry) -> String {
+    switch entry {
+    case .copy: copyCheckedItemsMenuTitle
+    case .move: moveCheckedItemsMenuTitle
+    case .delete: deleteCheckedItemsMenuTitle
+    }
+  }
+
+  /// Three distinct glyphs, none shared with a neighbour: Copy sits under Duplicate's
+  /// `plus.square.on.square`, and Delete Checked Items over Delete Checklist's `trash`, and a shared
+  /// glyph would make one read as the other.
+  private static func image(for entry: CheckedItemsMenuEntry) -> UIImage? {
+    switch entry {
+    case .copy: UIImage(systemName: "doc.on.doc")
+    case .move: UIImage(systemName: "arrow.turn.up.right")
+    case .delete: UIImage(systemName: "checkmark.circle.badge.xmark")
+    }
+  }
+
+  /// Locale-invariant handles for UI tests.
+  private static func accessibilityIdentifier(for entry: CheckedItemsMenuEntry) -> String {
+    switch entry {
+    case .copy: "checklist.menu.copyCheckedItems"
+    case .move: "checklist.menu.moveCheckedItems"
+    case .delete: "checklist.menu.deleteCheckedItems"
+    }
+  }
+
   /// How long "No checked items." stays up: the same dwell a toast gets, copied rather than read
   /// from `ToastPresenter`, whose dwell is an initializer parameter.
   private static let noItemsCheckedNoticeDuration: Duration = .seconds(2)
 
-  func copyCheckedItems() {
+  private func checkedItemsEntryTapped(_ entry: CheckedItemsMenuEntry) {
     // Commits in-progress edits first; see `duplicateChecklist`.
     view.endEditing(true)
     guard !checklist.checkedItems.isEmpty else {
-      showNoItemsCheckedNotice()
+      showNoItemsCheckedNotice(under: entry)
       return
     }
     noItemsCheckedNoticeDismissal?.cancel()
-    showsNoItemsCheckedNotice = false
-    onRequestCopyCheckedItems?(checklist.id)
+    noItemsCheckedNoticeEntry = nil
+    switch entry {
+    case .copy: transferCheckedItems(.copy)
+    case .move: transferCheckedItems(.move)
+    case .delete: confirmDeleteCheckedItems()
+    }
   }
 
-  /// Puts "No checked items." under the copy entry and takes it away again a moment later.
+  func transferCheckedItems(_ mode: CheckedItemsTransferMode) {
+    onRequestTransferCheckedItems?(checklist.id, mode)
+  }
+
+  /// Puts "No checked items." under `entry` and takes it away again a moment later.
   ///
   /// Timed like a toast because the menu it lives in offers nothing else to retire it: it is not
-  /// a row anyone can dismiss, and a bar-button menu does not report being closed. Tapping the
-  /// entry again while it is up restarts the dwell.
-  private func showNoItemsCheckedNotice() {
+  /// a row anyone can dismiss, and a bar-button menu does not report being closed. Tapping an
+  /// entry again while it is up restarts the dwell, and moves the notice if it was another entry.
+  private func showNoItemsCheckedNotice(under entry: CheckedItemsMenuEntry) {
     noItemsCheckedNoticeDismissal?.cancel()
-    showsNoItemsCheckedNotice = true
+    noItemsCheckedNoticeEntry = entry
     refreshMoreMenu()
     noItemsCheckedNoticeDismissal = Task { [weak self] in
       try? await Task.sleep(for: Self.noItemsCheckedNoticeDuration)
-      guard !Task.isCancelled, let self, showsNoItemsCheckedNotice else { return }
-      showsNoItemsCheckedNotice = false
+      guard !Task.isCancelled, let self, noItemsCheckedNoticeEntry != nil else { return }
+      noItemsCheckedNoticeEntry = nil
       refreshMoreMenu()
     }
   }
@@ -181,6 +229,19 @@ extension ChecklistViewController {
   /// is already on screen pick up a change; `.keepsMenuPresented` is what left it there to update.
   private func refreshMoreMenu() {
     moreBarButtonItem?.menu = makeMoreMenu()
+  }
+
+  /// Confirmed, unlike a single item's swipe: this can take most of a list at once, and nothing
+  /// brings the items back. The count is in the message so the person sees how much is going.
+  private func confirmDeleteCheckedItems() {
+    let message = Self.deleteCheckedItemsConfirmationMessage(count: checklist.checkedItems.count)
+    let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+    // Cancel added first so it sits on the left, matching Delete Checklist's alert.
+    alert.addAction(UIAlertAction(title: CommonStrings.cancel, style: .cancel))
+    alert.addAction(UIAlertAction(title: CommonStrings.delete, style: .destructive) { [weak self] _ in
+      self?.deleteCheckedItems()
+    })
+    present(alert, animated: true)
   }
 
   /// Unconfirmed on purpose: nothing is lost, and the sheet that follows offers Discard as the way

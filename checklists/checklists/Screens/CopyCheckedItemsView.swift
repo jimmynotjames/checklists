@@ -6,8 +6,9 @@
 import SwiftData
 import SwiftUI
 
-/// Destination picker for the checklist detail screen's "Copy Checked Items to…" entry: the
-/// checklists already in the list, plus a field for naming a new one.
+/// Destination picker for the checklist detail screen's "Copy Checked Items to…" and "Move Checked
+/// Items to…" entries: the checklists already in the list, plus a field for naming a new one. A move
+/// is a copy that then takes the originals out of `source`.
 ///
 /// The copy itself happens here rather than back in `ChecklistViewController`. Picking a
 /// destination, naming a new list and writing the items are one decision, and the router's
@@ -21,6 +22,7 @@ import SwiftUI
 /// this sheet is the only chance to name the new list.
 struct CopyCheckedItemsView: View {
   let source: Checklist
+  let mode: CheckedItemsTransferMode
 
   /// Display order; id breaks sortKey ties. Keep in step with ModelContext.fetchChecklistsSorted.
   @Query(sort: [SortDescriptor(\Checklist.sortKey), SortDescriptor(\Checklist.id)])
@@ -50,7 +52,7 @@ struct CopyCheckedItemsView: View {
         }
       }
       .appBackground()
-      .navigationTitle(Self.title)
+      .navigationTitle(title)
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
         ToolbarItem(placement: .topBarTrailing) {
@@ -75,7 +77,8 @@ struct CopyCheckedItemsView: View {
   }
 
   /// Everything but the source. Copying checked items back into the list they came from only
-  /// duplicates them in place, which the per-item swipe action already does.
+  /// duplicates them in place, which the per-item swipe action already does; moving them there
+  /// would only uncheck them.
   private var destinations: [Checklist] {
     checklists.filter { $0.id != source.id }
   }
@@ -103,7 +106,7 @@ struct CopyCheckedItemsView: View {
         }
         // Plain, so the hit area doesn't swallow taps meant for the field beside it.
         .buttonStyle(.plain)
-        .accessibilityLabel(Self.createAccessibilityLabel)
+        .accessibilityLabel(createAccessibilityLabel)
         .accessibilityIdentifier("copyDestination.createNewChecklist")
       }
     } header: {
@@ -137,7 +140,8 @@ struct CopyCheckedItemsView: View {
   ///
   /// The menu asked this once, when it opened. A merge from another device can Reset the source
   /// while this sheet is up, and without re-asking, committing would put a brand-new empty
-  /// checklist at the top of the list, count a `checklist_items_copied`, and say it worked.
+  /// checklist at the top of the list, count a `checklist_items_copied` or `checklist_items_moved`,
+  /// and say it worked.
   /// Leaving quietly is the honest response: the person's own list is unchanged either way.
   private func hasSomethingToCopy() -> Bool {
     guard source.checkedItems.isEmpty else { return true }
@@ -153,11 +157,12 @@ struct CopyCheckedItemsView: View {
     let name = typed.isEmpty ? CommonStrings.defaultChecklistName : typed
     let destination: Checklist
     do {
-      destination = try context.copyCheckedItems(
-        of: source,
-        intoChecklistNamed: name,
-        among: Array(checklists)
-      )
+      destination = switch mode {
+      case .copy:
+        try context.copyCheckedItems(of: source, intoChecklistNamed: name, among: Array(checklists))
+      case .move:
+        try context.moveCheckedItems(of: source, intoChecklistNamed: name, among: Array(checklists))
+      }
     } catch {
       return // Already logged and reported by `saveChanges`; nothing was added, so nothing is tracked.
     }
@@ -167,7 +172,12 @@ struct CopyCheckedItemsView: View {
   private func copyCheckedItems(into destination: Checklist) {
     guard hasSomethingToCopy() else { return }
     do {
-      try context.copyCheckedItems(of: source, into: destination)
+      switch mode {
+      case .copy:
+        try context.copyCheckedItems(of: source, into: destination)
+      case .move:
+        try context.moveCheckedItems(of: source, into: destination)
+      }
     } catch {
       return // As above.
     }
@@ -177,12 +187,18 @@ struct CopyCheckedItemsView: View {
   /// Track, dismiss, then confirm — in that order, so the root toast layer is the one that draws
   /// the toast (see `ToastPresenterModifier`).
   private func finish(copiedInto checklist: Checklist, destination: CheckedItemsCopyDestination) {
-    analytics.track(
-      AnalyticsEvent.checklistItemsCopied,
-      properties: [AnalyticsProperty.destination: destination.rawValue]
-    )
+    let event = switch mode {
+    case .copy: AnalyticsEvent.checklistItemsCopied
+    case .move: AnalyticsEvent.checklistItemsMoved
+    }
+    analytics.track(event, properties: [AnalyticsProperty.destination: destination.rawValue])
     dismiss()
-    toasts?.show(Toast(message: Self.confirmation(forCopyingInto: displayName(of: checklist)), style: .success))
+    let name = displayName(of: checklist)
+    let message = switch mode {
+    case .copy: Self.confirmation(forCopyingInto: name)
+    case .move: Self.confirmation(forMovingInto: name)
+    }
+    toasts?.show(Toast(message: message, style: .success))
   }
 
   /// A checklist saved without a name reads as "untitled checklist" everywhere else.
@@ -192,7 +208,21 @@ struct CopyCheckedItemsView: View {
 
   // MARK: - Copy
 
-  private static let title = String(
+  private var title: String {
+    switch mode {
+    case .copy: Self.copyTitle
+    case .move: Self.moveTitle
+    }
+  }
+
+  private var createAccessibilityLabel: String {
+    switch mode {
+    case .copy: Self.copyCreateAccessibilityLabel
+    case .move: Self.moveCreateAccessibilityLabel
+    }
+  }
+
+  private static let copyTitle = String(
     localized: "checklist.copy.title",
     defaultValue: "Copy Checked Items",
     comment: """
@@ -204,19 +234,19 @@ struct CopyCheckedItemsView: View {
   private static let newSectionHeader = String(
     localized: "checklist.copy.newSection.header",
     defaultValue: "New Checklist",
-    comment: "Header over the row that creates a checklist to copy the ticked items into. The row holds an optional name field."
+    comment: "Header over the row that creates a checklist to copy or move the ticked items into. The row holds an optional name field."
   )
 
   private static let namePlaceholder = String(
     localized: "checklist.copy.namePlaceholder",
     defaultValue: "Name (optional)",
     comment: """
-    Placeholder in the field naming a new checklist to copy the ticked items into. Optional is \
+    Placeholder in the field naming a new checklist to copy or move the ticked items into. Optional is \
     literal: committing it blank is allowed and the checklist is saved under checklist.defaultName.
     """
   )
 
-  private static let createAccessibilityLabel = String(
+  private static let copyCreateAccessibilityLabel = String(
     localized: "checklist.copy.create.accessibilityLabel",
     defaultValue: "Create checklist and copy items",
     comment: "VoiceOver label for the button beside the name field that creates the new checklist and copies the ticked items into it."
@@ -225,7 +255,7 @@ struct CopyCheckedItemsView: View {
   private static let existingSectionHeader = String(
     localized: "checklist.copy.existingSection.header",
     defaultValue: "Existing Checklists",
-    comment: "Header over the list of checklists the ticked items can be copied into. The checklist being copied from is not among them."
+    comment: "Header over the list of checklists the ticked items can be copied or moved into. The checklist they come from is not among them."
   )
 
   private static func confirmation(forCopyingInto name: String) -> LocalizedStringResource {
@@ -239,11 +269,41 @@ struct CopyCheckedItemsView: View {
       """
     )
   }
+
+  private static let moveTitle = String(
+    localized: "checklist.move.title",
+    defaultValue: "Move Checked Items",
+    comment: """
+    Title of the sheet that asks where to move the items someone has ticked: they are added to the \
+    chosen checklist and removed from this one. Reached from the checklist detail screen's Move \
+    Checked Items to… menu entry; keep the two consistent, and keep it distinct from \
+    checklist.copy.title, which leaves the items where they were.
+    """
+  )
+
+  private static let moveCreateAccessibilityLabel = String(
+    localized: "checklist.move.create.accessibilityLabel",
+    defaultValue: "Create checklist and move items",
+    comment: "VoiceOver label for the button beside the name field that creates the new checklist and moves the ticked items into it."
+  )
+
+  private static func confirmation(forMovingInto name: String) -> LocalizedStringResource {
+    LocalizedStringResource(
+      "checklist.move.confirmation",
+      defaultValue: "Moved items to \(name)",
+      comment: """
+      Toast shown after the ticked items are moved into another checklist and removed from this \
+      one. The placeholder is the destination checklist's name, which may be a name the person \
+      typed or the default untitled one. It appears briefly and is also read aloud by VoiceOver, \
+      so keep it to one short line.
+      """
+    )
+  }
 }
 
 #if DEBUG
   #Preview("Destination picker") {
-    CopyCheckedItemsView(source: PreviewSupport.checklist())
+    CopyCheckedItemsView(source: PreviewSupport.checklist(), mode: .copy)
       .previewEnvironment()
   }
 #endif

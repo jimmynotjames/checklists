@@ -26,6 +26,8 @@ struct AnalyticsNamesTests {
     AnalyticsEvent.checklistCreated,
     AnalyticsEvent.checklistDuplicated,
     AnalyticsEvent.checklistItemsCopied,
+    AnalyticsEvent.checklistItemsMoved,
+    AnalyticsEvent.checklistCheckedItemsDeleted,
     AnalyticsEvent.checklistReset,
     AnalyticsEvent.checklistDeleted,
     AnalyticsEvent.checklistReorderModeEntered,

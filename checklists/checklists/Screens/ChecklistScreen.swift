@@ -23,6 +23,10 @@ struct ChecklistScreen: View {
 
   @Environment(Router.self) private var router
   @Environment(AnalyticsSettings.self) private var settings
+  /// Bumped when a move out of this checklist's items finishes. The picker edits the store while
+  /// the controller sits under it, and a sheet's dismissal gives a UIKit screen no appearance
+  /// callback to reload on, so this is what tells it.
+  @State private var transferGeneration = 0
 
   var body: some View {
     ChecklistControllerView(
@@ -34,10 +38,19 @@ struct ChecklistScreen: View {
       // is what a copy wants — Done instead of Reset, the name field focused for renaming, no
       // history caption, and Discard as the way to undo an accidental duplicate.
       onRequestOpenDuplicate: { id in router.sheet = .newChecklist(id: id) },
-      // The picker does the copying itself and dismisses without navigating, so this is the whole
-      // of the host's involvement — see `CopyCheckedItemsView`.
-      onRequestCopyCheckedItems: { id in router.sheet = .copyCheckedItems(sourceID: id) }
+      // The picker does the copying or moving itself and dismisses without navigating, so this and
+      // `transferGeneration` are the whole of the host's involvement — see `CopyCheckedItemsView`.
+      onRequestTransferCheckedItems: { id, mode in router.sheet = .transferCheckedItems(sourceID: id, mode: mode) },
+      transferGeneration: transferGeneration
     )
+    .onChange(of: router.sheet) { oldSheet, newSheet in
+      // Matched before `checklist` is read: on the create sheet, Discard clears the sheet after
+      // deleting the checklist. A cancelled move counts too: a reload of an unchanged list is
+      // invisible.
+      guard newSheet == nil, case let .transferCheckedItems(sourceID, .move) = oldSheet,
+            sourceID == checklist.id else { return }
+      transferGeneration += 1
+    }
     // The view controller does its own keyboard avoidance via contentInset; opt out of SwiftUI's so
     // they don't stack.
     .ignoresSafeArea(.keyboard)
@@ -65,7 +78,8 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   let isNewChecklist: Bool
   let onRequestDismiss: () -> Void
   let onRequestOpenDuplicate: (String) -> Void
-  let onRequestCopyCheckedItems: (String) -> Void
+  let onRequestTransferCheckedItems: (String, CheckedItemsTransferMode) -> Void
+  let transferGeneration: Int
 
   @Environment(\.analytics) private var analytics
   /// Named `modelContext` rather than `context`: `makeUIViewController(context:)` already binds
@@ -76,7 +90,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   @Environment(RatingPromptCoordinator.self) private var ratingPrompt: RatingPromptCoordinator?
 
   func makeCoordinator() -> Coordinator {
-    Coordinator(onRequestDismiss: onRequestDismiss)
+    Coordinator(onRequestDismiss: onRequestDismiss, transferGeneration: transferGeneration)
   }
 
   func makeUIViewController(context: Context) -> UINavigationController {
@@ -86,7 +100,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
     viewController.isNewChecklist = isNewChecklist
     viewController.onRequestDismiss = onRequestDismiss
     viewController.onRequestOpenDuplicate = onRequestOpenDuplicate
-    viewController.onRequestCopyCheckedItems = onRequestCopyCheckedItems
+    viewController.onRequestTransferCheckedItems = onRequestTransferCheckedItems
     viewController.analytics = analytics
     viewController.ratingPrompt = ratingPrompt
     if !isNewChecklist {
@@ -128,9 +142,12 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   final class Coordinator: NSObject, UIGestureRecognizerDelegate {
     private let onRequestDismiss: () -> Void
     weak var viewController: ChecklistViewController?
+    /// The last `transferGeneration` the controller was brought up to date with.
+    var transferGeneration: Int
 
-    init(onRequestDismiss: @escaping () -> Void) {
+    init(onRequestDismiss: @escaping () -> Void, transferGeneration: Int) {
       self.onRequestDismiss = onRequestDismiss
+      self.transferGeneration = transferGeneration
     }
 
     @objc func edgeSwipeBegan(_ gesture: UIScreenEdgePanGestureRecognizer) {
@@ -150,11 +167,16 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   /// switch, which rebuilds this view anyway; the assertion is the tripwire if that stops being
   /// true. The analytics client and rating-prompt coordinator are re-applied so a swapped instance
   /// never leaves a screen on the old one.
-  func updateUIViewController(_ navigationController: UINavigationController, context _: Context) {
+  func updateUIViewController(_ navigationController: UINavigationController, context: Context) {
     guard let viewController = navigationController.viewControllers.first as? ChecklistViewController else { return }
     assert(viewController.context === modelContext, "The screen's context changed under a live controller.")
     viewController.analytics = analytics
     viewController.ratingPrompt = ratingPrompt
+    if context.coordinator.transferGeneration != transferGeneration {
+      context.coordinator.transferGeneration = transferGeneration
+      // The same refresh another device's edit gets, guards and all.
+      viewController.handleRemoteChange()
+    }
   }
 }
 

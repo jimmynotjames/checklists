@@ -42,7 +42,8 @@ nonisolated enum ChecklistDuplicationSource: String {
   case swipe
 }
 
-/// Where the checked items went — the `destination` property on `checklist_items_copied`.
+/// Where the checked items went — the `destination` property on `checklist_items_copied` and
+/// `checklist_items_moved`.
 ///
 /// An enum for the same reason as `ChecklistDuplicationSource` above. The raw values are spelled
 /// out rather than left to the case names: these *are* the analytics vocabulary, and a Swift
