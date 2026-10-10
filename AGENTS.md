@@ -80,6 +80,11 @@ The app's unit and UI suites are opt-in and in no gate or hook: they boot this c
 and take minutes, while the gate never boots one. The tooling tests (`test-scripts`) are in the gate.
 Give any suite run a timeout of at least 30 minutes.
 
+`make test-ui` runs every `checklistsUITests` class except the screenshot captures that
+`scripts/test-ui.sh` skips; add a new capture class to that skip list. Before a full UI run, run a
+new or changed class alone (`-only-testing:checklistsUITests/<Class>`, destination and derived data
+from `scripts/_destination.sh`) — a full run takes ~12 minutes.
+
 Don't add `-configuration Release` to the test scripts — only Debug sets `ONLY_ACTIVE_ARCH = YES`,
 so Release would build both slices.
 
