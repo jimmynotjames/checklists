@@ -6554,7 +6554,7 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopioi merkityt kohteet listaan…"
+            "value" : "Kopioi merkityt kohdat listaan…"
           }
         },
         "fr" : {
@@ -6608,7 +6608,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copia elementi spuntati in…"
+            "value" : "Copia voci spuntate in…"
           }
         },
         "ja" : {
@@ -6656,7 +6656,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afgevinkte items kopiëren naar…"
+            "value" : "Kopieer afgevinkte onderdelen naar…"
           }
         },
         "or" : {
@@ -6686,7 +6686,7 @@
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copiar itens assinalados para…"
+            "value" : "Copiar elementos assinalados para…"
           }
         },
         "ro" : {
@@ -8695,7 +8695,7 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Siirrä merkityt kohteet listaan…"
+            "value" : "Siirrä merkityt kohdat listaan…"
           }
         },
         "fr" : {
@@ -8749,7 +8749,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sposta elementi spuntati in…"
+            "value" : "Sposta voci spuntate in…"
           }
         },
         "ja" : {
@@ -8797,7 +8797,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afgevinkte items verplaatsen naar…"
+            "value" : "Verplaats afgevinkte onderdelen naar…"
           }
         },
         "or" : {
@@ -8827,7 +8827,7 @@
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mover itens assinalados para…"
+            "value" : "Mover elementos assinalados para…"
           }
         },
         "ro" : {
@@ -11083,7 +11083,7 @@
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seznam hotový z %@"
+            "value" : "Seznam hotový na %@"
           }
         },
         "da" : {
@@ -11269,7 +11269,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Checklist %@ concluída"
+            "value" : "Checklist %@ concluído"
           }
         },
         "pt-PT" : {
@@ -18553,7 +18553,7 @@
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಸಮಸ್ಯೆಗಳನ್ನು ಪತ್ತೆಹಚ್ಚಲು ಮತ್ತು ಬಳಕೆಯನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಸಹಾಯ ಮಾಡುವ ಅನಾಮಧೇಯ ಬಳಕೆಯ ಡೇಟಾವನ್ನು ಈ ಆ್ಯಪ್ ಕಳುಹಿಸಬಹುದು. ಈ ಡೇಟಾವನ್ನು ನಿಮ್ಮ Apple ಖಾತೆಗೆ ಎಂದಿಗೂ ಲಿಂಕ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ. ಎಂದಿಗೂ ಸೇರಿಸದ್ದು: ಚೆಕ್‌ಲಿಸ್ಟ್ ಐಟಂ ಹೆಸರುಗಳು, ಐಟಂ ಟಿಪ್ಪಣಿಗಳು, ಅಥವಾ ಯಾವುದೇ Apple ಅಥವಾ iCloud ಗುರುತಿಸುವಿಕೆಗಳು. ನೀವು ಇದನ್ನು ಯಾವಾಗ ಬೇಕಾದರೂ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಬದಲಾಯಿಸಬಹುದು."
+            "value" : "ಸಮಸ್ಯೆಗಳನ್ನು ಪತ್ತೆಹಚ್ಚಲು ಮತ್ತು ಬಳಕೆಯನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಸಹಾಯ ಮಾಡುವ ಅನಾಮಧೇಯ ಬಳಕೆಯ ಡೇಟಾವನ್ನು ಈ ಆ್ಯಪ್ ಕಳುಹಿಸಬಹುದು. ಈ ಡೇಟಾವನ್ನು ನಿಮ್ಮ Apple ಖಾತೆಗೆ ಎಂದಿಗೂ ಲಿಂಕ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ. ಚೆಕ್‌ಲಿಸ್ಟ್ ಐಟಂ ಹೆಸರುಗಳು, ಐಟಂ ಟಿಪ್ಪಣಿಗಳು ಅಥವಾ ಯಾವುದೇ Apple ಅಥವಾ iCloud ಗುರುತಿಸುವಿಕೆಗಳನ್ನು ಎಂದಿಗೂ ಸೇರಿಸಲಾಗುವುದಿಲ್ಲ. ನೀವು ಇದನ್ನು ಯಾವಾಗ ಬೇಕಾದರೂ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಬದಲಾಯಿಸಬಹುದು."
           }
         },
         "ko" : {
@@ -19681,7 +19681,7 @@
         "en-AU" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start again fresh"
+            "value" : "Start again"
           }
         },
         "en-CA" : {
@@ -37219,7 +37219,7 @@
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಅನಾಮಧೇಯ ಬಳಕೆಯ ಡೇಟಾ ಸಮಸ್ಯೆಗಳನ್ನು ಪತ್ತೆಹಚ್ಚಲು ಮತ್ತು ಬಳಕೆಯನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ. ಈ ಡೇಟಾವನ್ನು ನಿಮ್ಮ Apple ಖಾತೆಗೆ ಎಂದಿಗೂ ಲಿಂಕ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ. ಎಂದಿಗೂ ಸೇರಿಸದ್ದು: ಚೆಕ್‌ಲಿಸ್ಟ್ ಐಟಂ ಹೆಸರುಗಳು, ಐಟಂ ಟಿಪ್ಪಣಿಗಳು, ಅಥವಾ ಯಾವುದೇ Apple ಅಥವಾ iCloud ಗುರುತಿಸುವಿಕೆಗಳು."
+            "value" : "ಅನಾಮಧೇಯ ಬಳಕೆಯ ಡೇಟಾ ಸಮಸ್ಯೆಗಳನ್ನು ಪತ್ತೆಹಚ್ಚಲು ಮತ್ತು ಬಳಕೆಯನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ. ಈ ಡೇಟಾವನ್ನು ನಿಮ್ಮ Apple ಖಾತೆಗೆ ಎಂದಿಗೂ ಲಿಂಕ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ. ಚೆಕ್‌ಲಿಸ್ಟ್ ಐಟಂ ಹೆಸರುಗಳು, ಐಟಂ ಟಿಪ್ಪಣಿಗಳು ಅಥವಾ ಯಾವುದೇ Apple ಅಥವಾ iCloud ಗುರುತಿಸುವಿಕೆಗಳನ್ನು ಎಂದಿಗೂ ಸೇರಿಸಲಾಗುವುದಿಲ್ಲ."
           }
         },
         "ko" : {
@@ -40369,7 +40369,7 @@
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaši kontrolni seznami so shranjeni samo v tej napravi. Znova zaženite aplikacijo, da ponovno poskusite sinhronizacijo iCloud."
+            "value" : "Vaši kontrolni seznami so shranjeni samo v tej napravi. Za nov poskus sinhronizacije iCloud znova zaženite aplikacijo."
           }
         },
         "sv" : {
@@ -40561,7 +40561,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Az iCloud ki van kapcsolva ezen az eszközön a Képernyőidő vagy a szervezete által. A listái csak ezen az eszközön vannak mentve."
+            "value" : "Ezen az eszközön a Képernyőidő vagy a szervezete kikapcsolta az iCloudot. A listái csak ezen az eszközön vannak mentve."
           }
         },
         "id" : {
@@ -42223,7 +42223,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloudకు శ్రద్ధ అవసరం"
+            "value" : "iCloudకు చర్య అవసరం"
           }
         },
         "th" : {
@@ -42313,7 +42313,7 @@
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Παύση συγχρονισμού iCloud"
+            "value" : "Συγχρονισμός iCloud σε παύση"
           }
         },
         "en" : {
@@ -42493,7 +42493,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sincronizare iCloud întreruptă"
+            "value" : "Sincronizare iCloud suspendată"
           }
         },
         "ru" : {
@@ -43231,7 +43231,7 @@
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Διακοπή συγχρονισμού iCloud"
+            "value" : "Ο συγχρονισμός iCloud διακόπηκε"
           }
         },
         "en" : {
@@ -43411,7 +43411,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sincronizare iCloud întreruptă temporar"
+            "value" : "Sincronizare iCloud întreruptă"
           }
         },
         "ru" : {
@@ -44443,7 +44443,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kunne ikke gemme. Din enhed har muligvis lav lagerplads."
+            "value" : "Kunne ikke gemme. Enheden mangler muligvis lagerplads."
           }
         },
         "de" : {
@@ -44635,7 +44635,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Salvarea a eșuat. Este posibil ca spațiul de stocare să fie insuficient."
+            "value" : "Salvarea a eșuat. Spațiul de stocare ar putea fi insuficient."
           }
         },
         "ru" : {
