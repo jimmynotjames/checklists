@@ -8893,7 +8893,7 @@
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mogut a la posició %1$lld de %2$lld"
+            "value" : "S'ha mogut a la posició %1$lld de %2$lld"
           }
         },
         "cs" : {
@@ -8911,7 +8911,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "An Position %1$lld von %2$lld verschoben"
+            "value" : "An Position %1$lld von %2$lld bewegt"
           }
         },
         "el" : {
@@ -8947,7 +8947,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Movido a la posición %1$lld de %2$lld"
+            "value" : "Se ha movido a la posición %1$lld de %2$lld"
           }
         },
         "es-MX" : {
@@ -8959,49 +8959,49 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Siirretty sijaintiin %1$lld/%2$lld"
+            "value" : "Siirretty kohtaan %1$lld (yhteensä %2$lld)"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déplacé à la position %1$lld sur %2$lld"
+            "value" : "Nouvelle position : %1$lld sur %2$lld"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déplacé à la position %1$lld sur %2$lld"
+            "value" : "Maintenant en position %1$lld sur %2$lld"
           }
         },
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld માંથી %1$lld સ્થાન પર ખસેડાયું"
+            "value" : "%2$lld માંથી સ્થાન %1$lld પર ખસેડ્યું"
           }
         },
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "הועבר למיקום %1$lld מתוך %2$lld"
+            "value" : "עכשיו במיקום %1$lld מתוך %2$lld"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld में से %1$lld स्थिति पर ले जाया गया"
+            "value" : "%2$lld में से स्थान %1$lld पर ले जाया गया"
           }
         },
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Premješteno na poziciju %1$lld od %2$lld"
+            "value" : "Pomaknuto na položaj %1$lld od %2$lld"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld. pozícióba került, összesen %2$lld"
+            "value" : "Áthelyezve: %1$lld. hely, összesen %2$lld"
           }
         },
         "id" : {
@@ -9013,7 +9013,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spostato in posizione %1$lld di %2$lld"
+            "value" : "Ora in posizione %1$lld di %2$lld"
           }
         },
         "ja" : {
@@ -9025,13 +9025,13 @@
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld ರಲ್ಲಿ %1$lld ನೇ ಸ್ಥಾನಕ್ಕೆ ಸ್ಥಳಾಂತರಿಸಲಾಗಿದೆ"
+            "value" : "%2$lld ರಲ್ಲಿ %1$lld ನೇ ಸ್ಥಾನಕ್ಕೆ ಸರಿಸಲಾಗಿದೆ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld개 중 %1$lld번째 위치로 이동됨"
+            "value" : "%2$lld개 중 %1$lld번째 위치로 이동했어요"
           }
         },
         "ml" : {
@@ -9043,7 +9043,7 @@
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld पैकी %1$lld या स्थानावर हलवले"
+            "value" : "%2$lld पैकी %1$lld स्थानावर हलवले"
           }
         },
         "ms" : {
@@ -9067,13 +9067,13 @@
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld ମଧ୍ୟରୁ ସ୍ଥାନ %1$lld କୁ ଘୁଞ୍ଚାଗଲା"
+            "value" : "%2$lld ମଧ୍ୟରୁ %1$lld ନମ୍ବର ସ୍ଥାନକୁ ନିଆଗଲା"
           }
         },
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld ਵਿੱਚੋਂ %1$lld ਸਥਾਨ 'ਤੇ ਭੇਜਿਆ ਗਿਆ"
+            "value" : "%2$lld ਵਿੱਚੋਂ ਸਥਾਨ %1$lld ਉੱਤੇ ਲਿਜਾਇਆ ਗਿਆ"
           }
         },
         "pl" : {
@@ -9085,19 +9085,19 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Movido para a posição %1$lld de %2$lld"
+            "value" : "Agora na posição %1$lld de %2$lld"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Movida para a posição %1$lld de %2$lld"
+            "value" : "Agora na posição %1$lld de %2$lld"
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mutat pe poziția %1$lld din %2$lld"
+            "value" : "Acum pe poziția %1$lld din %2$lld"
           }
         },
         "ru" : {
@@ -9121,31 +9121,31 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flyttad till position %1$lld av %2$lld"
+            "value" : "Nu på position %1$lld av %2$lld"
           }
         },
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld இல் %1$lld-வது இடத்திற்கு நகர்த்தப்பட்டது"
+            "value" : "%2$lld-இல் %1$lld-ஆவது இடத்திற்கு நகர்த்தப்பட்டது"
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld లో %1$lld వ స్థానానికి తరలించబడింది"
+            "value" : "%2$lld లో %1$lldవ స్థానానికి తరలించబడింది"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ย้ายไปตำแหน่งที่ %1$lld จาก %2$lld"
+            "value" : "ย้ายไปที่ตำแหน่ง %1$lld จาก %2$lld แล้ว"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld. konuma taşındı (toplam %2$lld liste)"
+            "value" : "%2$lld içinden %1$lld. sıraya taşındı"
           }
         },
         "uk" : {
@@ -9157,25 +9157,25 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld میں سے %1$lld نمبر پوزیشن پر منتقل ہو گیا"
+            "value" : "پوزیشن %1$lld پر منتقل کیا گیا، کل %2$lld میں سے"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã chuyển đến vị trí %1$lld trong %2$lld"
+            "value" : "Đã di chuyển đến vị trí %1$lld trong số %2$lld"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已移至第 %1$lld 项，共 %2$lld 项"
+            "value" : "已移到第 %1$lld 位，共 %2$lld 位"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已移至第 %1$lld 項，共 %2$lld 項"
+            "value" : "已移到第 %1$lld 個位置，共 %2$lld 個"
           }
         }
       }
@@ -9217,7 +9217,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nach unten verschieben"
+            "value" : "Nach unten bewegen"
           }
         },
         "el" : {
@@ -9307,13 +9307,13 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mozgatás lefelé"
+            "value" : "Áthelyezés lefelé"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Turunkan"
+            "value" : "Pindahkan ke Bawah"
           }
         },
         "it" : {
@@ -9331,7 +9331,7 @@
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಕೆಳಗೆ ಸರಿಸಿ"
+            "value" : "ಕೆಳಕ್ಕೆ ಸರಿಸಿ"
           }
         },
         "ko" : {
@@ -9367,13 +9367,13 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Omlaag verplaatsen"
+            "value" : "Verplaats omlaag"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ତଳକୁ ଘୁଞ୍ଚାନ୍ତୁ"
+            "value" : "ତଳକୁ ନିଅନ୍ତୁ"
           }
         },
         "pa" : {
@@ -9403,7 +9403,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mutare în jos"
+            "value" : "Mutați în jos"
           }
         },
         "ru" : {
@@ -9415,13 +9415,13 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Posunúť nadol"
+            "value" : "Presunúť nadol"
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Premakni navzdol"
+            "value" : "Premakni dol"
           }
         },
         "sv" : {
@@ -9439,13 +9439,13 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "కిందికి తరలించు"
+            "value" : "కిందికి తరలించండి"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เลื่อนลง"
+            "value" : "ย้ายลง"
           }
         },
         "tr" : {
@@ -9463,7 +9463,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "نیچے منتقل کریں"
+            "value" : "نیچے لے جائیں"
           }
         },
         "vi" : {
@@ -9493,7 +9493,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "نقل إلى الأسفل"
+            "value" : "نقل إلى أسفل القائمة"
           }
         },
         "bn" : {
@@ -9517,13 +9517,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flyt til bund"
+            "value" : "Flyt til bunden"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "An das Ende verschieben"
+            "value" : "Ans Ende bewegen"
           }
         },
         "el" : {
@@ -9571,31 +9571,31 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Siirrä loppuun"
+            "value" : "Siirrä alimmaiseksi"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déplacer en bas"
+            "value" : "Déplacer tout en bas"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déplacer à la fin"
+            "value" : "Déplacer tout en bas"
           }
         },
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "તળિયે ખસેડો"
+            "value" : "સૌથી નીચે ખસેડો"
           }
         },
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "הזזה לתחתית"
+            "value" : "הזזה לסוף"
           }
         },
         "hi" : {
@@ -9613,13 +9613,13 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mozgatás a lista végére"
+            "value" : "Áthelyezés az aljára"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pindahkan ke Bawah"
+            "value" : "Pindahkan ke Paling Bawah"
           }
         },
         "it" : {
@@ -9631,13 +9631,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最後に移動"
+            "value" : "一番下に移動"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಕೊನೆಗೆ ಸರಿಸಿ"
+            "value" : "ಕೆಳಭಾಗಕ್ಕೆ ಸರಿಸಿ"
           }
         },
         "ko" : {
@@ -9655,13 +9655,13 @@
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "तळाशी हलवा"
+            "value" : "सर्वात खाली हलवा"
           }
         },
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alih ke Bawah Sekali"
+            "value" : "Alih ke Paling Bawah"
           }
         },
         "nb" : {
@@ -9673,13 +9673,13 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naar onderen verplaatsen"
+            "value" : "Verplaats naar onderen"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ସବୁ ତଳକୁ ଘୁଞ୍ଚାନ୍ତୁ"
+            "value" : "ସବୁଠାରୁ ତଳକୁ ନିଅନ୍ତୁ"
           }
         },
         "pa" : {
@@ -9691,25 +9691,25 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Przenieś na koniec"
+            "value" : "Przenieś na dół"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mover para o Fim"
+            "value" : "Mover para o Final"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mover para o fundo"
+            "value" : "Mover para o fim"
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mutare la sfârșit"
+            "value" : "Mutați la final"
           }
         },
         "ru" : {
@@ -9721,7 +9721,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Presunúť na koniec"
+            "value" : "Presunúť naspodok"
           }
         },
         "sl" : {
@@ -9745,7 +9745,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "చివరకు తరలించు"
+            "value" : "దిగువ భాగానికి తరలించండి"
           }
         },
         "th" : {
@@ -9769,19 +9769,19 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "سب سے نیچے منتقل کریں"
+            "value" : "سب سے نیچے لے جائیں"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chuyển xuống cuối"
+            "value" : "Di chuyển xuống cuối"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "移至底部"
+            "value" : "移到底部"
           }
         },
         "zh-Hant" : {
@@ -9799,7 +9799,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "نقل إلى الأعلى"
+            "value" : "نقل إلى أعلى القائمة"
           }
         },
         "bn" : {
@@ -9811,7 +9811,7 @@
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mou a l'inici"
+            "value" : "Mou al principi"
           }
         },
         "cs" : {
@@ -9823,13 +9823,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flyt til top"
+            "value" : "Flyt til toppen"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "An den Anfang verschieben"
+            "value" : "An den Anfang bewegen"
           }
         },
         "el" : {
@@ -9877,31 +9877,31 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Siirrä alkuun"
+            "value" : "Siirrä ylimmäiseksi"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déplacer en haut"
+            "value" : "Déplacer tout en haut"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déplacer au début"
+            "value" : "Déplacer tout en haut"
           }
         },
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ટોચ પર ખસેડો"
+            "value" : "સૌથી ઉપર ખસેડો"
           }
         },
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "הזזה לראש"
+            "value" : "הזזה להתחלה"
           }
         },
         "hi" : {
@@ -9919,13 +9919,13 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mozgatás a lista elejére"
+            "value" : "Áthelyezés a tetejére"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pindahkan ke Atas"
+            "value" : "Pindahkan ke Paling Atas"
           }
         },
         "it" : {
@@ -9937,13 +9937,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "先頭に移動"
+            "value" : "一番上に移動"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಆರಂಭಕ್ಕೆ ಸರಿಸಿ"
+            "value" : "ಮೇಲ್ಭಾಗಕ್ಕೆ ಸರಿಸಿ"
           }
         },
         "ko" : {
@@ -9967,7 +9967,7 @@
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alih ke Atas Sekali"
+            "value" : "Alih ke Paling Atas"
           }
         },
         "nb" : {
@@ -9979,13 +9979,13 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naar boven verplaatsen"
+            "value" : "Verplaats naar boven"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ସବୁ ଉପରକୁ ଘୁଞ୍ଚାନ୍ତୁ"
+            "value" : "ସବୁଠାରୁ ଉପରକୁ ନିଅନ୍ତୁ"
           }
         },
         "pa" : {
@@ -9997,7 +9997,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Przenieś na początek"
+            "value" : "Przenieś na górę"
           }
         },
         "pt-BR" : {
@@ -10009,13 +10009,13 @@
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mover para o topo"
+            "value" : "Mover para o início"
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mutare la început"
+            "value" : "Mutați la început"
           }
         },
         "ru" : {
@@ -10027,7 +10027,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Presunúť na začiatok"
+            "value" : "Presunúť navrch"
           }
         },
         "sl" : {
@@ -10045,13 +10045,13 @@
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "தொடக்கத்திற்கு நகர்த்து"
+            "value" : "முதலுக்கு நகர்த்து"
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "మొదటికి తరలించు"
+            "value" : "పైభాగానికి తరలించండి"
           }
         },
         "th" : {
@@ -10075,19 +10075,19 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "سب سے اوپر منتقل کریں"
+            "value" : "سب سے اوپر لے جائیں"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chuyển lên đầu"
+            "value" : "Di chuyển lên đầu"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "移至顶部"
+            "value" : "移到顶部"
           }
         },
         "zh-Hant" : {
@@ -10135,7 +10135,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nach oben verschieben"
+            "value" : "Nach oben bewegen"
           }
         },
         "el" : {
@@ -10225,13 +10225,13 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mozgatás felfelé"
+            "value" : "Áthelyezés felfelé"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naikkan"
+            "value" : "Pindahkan ke Atas"
           }
         },
         "it" : {
@@ -10249,7 +10249,7 @@
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಮೇಲೆ ಸರಿಸಿ"
+            "value" : "ಮೇಲಕ್ಕೆ ಸರಿಸಿ"
           }
         },
         "ko" : {
@@ -10285,13 +10285,13 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Omhoog verplaatsen"
+            "value" : "Verplaats omhoog"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଉପରକୁ ଘୁଞ୍ଚାନ୍ତୁ"
+            "value" : "ଉପରକୁ ନିଅନ୍ତୁ"
           }
         },
         "pa" : {
@@ -10321,7 +10321,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mutare în sus"
+            "value" : "Mutați în sus"
           }
         },
         "ru" : {
@@ -10333,13 +10333,13 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Posunúť nahor"
+            "value" : "Presunúť nahor"
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Premakni navzgor"
+            "value" : "Premakni gor"
           }
         },
         "sv" : {
@@ -10357,13 +10357,13 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "పైకి తరలించు"
+            "value" : "పైకి తరలించండి"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เลื่อนขึ้น"
+            "value" : "ย้ายขึ้น"
           }
         },
         "tr" : {
@@ -10381,7 +10381,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اوپر منتقل کریں"
+            "value" : "اوپر لے جائیں"
           }
         },
         "vi" : {
@@ -19591,7 +19591,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "نُقل إلى الموضع %1$lld من %2$lld"
+            "value" : "تم النقل إلى الموضع %1$lld من %2$lld"
           }
         },
         "bn" : {
@@ -19603,7 +19603,7 @@
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mogut a la posició %1$lld de %2$lld"
+            "value" : "S'ha mogut a la posició %1$lld de %2$lld"
           }
         },
         "cs" : {
@@ -19621,7 +19621,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verschoben auf Position %1$lld von %2$lld"
+            "value" : "An Position %1$lld von %2$lld bewegt"
           }
         },
         "el" : {
@@ -19657,61 +19657,61 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Movido a la posición %1$lld de %2$lld"
+            "value" : "Se ha movido a la posición %1$lld de %2$lld"
           }
         },
         "es-MX" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Movido a la posición %1$lld de %2$lld"
+            "value" : "Se movió a la posición %1$lld de %2$lld"
           }
         },
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Siirretty kohtaan %1$lld/%2$lld"
+            "value" : "Siirretty kohtaan %1$lld (yhteensä %2$lld)"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déplacé à la position %1$lld sur %2$lld"
+            "value" : "Nouvelle position : %1$lld sur %2$lld"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déplacé à la position %1$lld sur %2$lld"
+            "value" : "Maintenant en position %1$lld sur %2$lld"
           }
         },
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld માંથી %1$lld સ્થાને ખસેડ્યું"
+            "value" : "%2$lld માંથી સ્થાન %1$lld પર ખસેડ્યું"
           }
         },
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "הועבר למקום %1$lld מתוך %2$lld"
+            "value" : "עכשיו במיקום %1$lld מתוך %2$lld"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld में से %1$lld स्थान पर ले जाया गया"
+            "value" : "%2$lld में से स्थान %1$lld पर ले जाया गया"
           }
         },
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Premješteno na mjesto %1$lld od %2$lld"
+            "value" : "Pomaknuto na položaj %1$lld od %2$lld"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Áthelyezve: %1$lld. hely a(z) %2$lld közül"
+            "value" : "Áthelyezve: %1$lld. hely, összesen %2$lld"
           }
         },
         "id" : {
@@ -19723,7 +19723,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spostato in posizione %1$lld di %2$lld"
+            "value" : "Ora in posizione %1$lld di %2$lld"
           }
         },
         "ja" : {
@@ -19735,25 +19735,25 @@
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld ರಲ್ಲಿ %1$lld ಸ್ಥಾನಕ್ಕೆ ಸರಿಸಲಾಗಿದೆ"
+            "value" : "%2$lld ರಲ್ಲಿ %1$lld ನೇ ಸ್ಥಾನಕ್ಕೆ ಸರಿಸಲಾಗಿದೆ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld개 중 %1$lld번째로 이동했어요"
+            "value" : "%2$lld개 중 %1$lld번째 위치로 이동했어요"
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld-ൽ %1$lld-ാം സ്ഥാനത്തേക്ക് മാറ്റി"
+            "value" : "%2$lld-ൽ %1$lld-ാം സ്ഥാനത്തേക്ക് നീക്കി"
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld पैकी %1$lld व्या स्थानी हलवले"
+            "value" : "%2$lld पैकी %1$lld स्थानावर हलवले"
           }
         },
         "ms" : {
@@ -19765,7 +19765,7 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flyttet til plass %1$lld av %2$lld"
+            "value" : "Flyttet til posisjon %1$lld av %2$lld"
           }
         },
         "nl" : {
@@ -19777,13 +19777,13 @@
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld ମଧ୍ୟରୁ %1$lld ନମ୍ବର ସ୍ଥାନକୁ ଗଲା"
+            "value" : "%2$lld ମଧ୍ୟରୁ %1$lld ନମ୍ବର ସ୍ଥାନକୁ ନିଆଗଲା"
           }
         },
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld ਵਿੱਚੋਂ %1$lld ਨੰਬਰ ’ਤੇ ਲਿਜਾਇਆ ਗਿਆ"
+            "value" : "%2$lld ਵਿੱਚੋਂ ਸਥਾਨ %1$lld ਉੱਤੇ ਲਿਜਾਇਆ ਗਿਆ"
           }
         },
         "pl" : {
@@ -19795,25 +19795,25 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Movido para a posição %1$lld de %2$lld"
+            "value" : "Agora na posição %1$lld de %2$lld"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Movido para a posição %1$lld de %2$lld"
+            "value" : "Agora na posição %1$lld de %2$lld"
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mutat pe poziția %1$lld din %2$lld"
+            "value" : "Acum pe poziția %1$lld din %2$lld"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Позиция %1$lld из %2$lld"
+            "value" : "Перемещено на позицию %1$lld из %2$lld"
           }
         },
         "sk" : {
@@ -19831,61 +19831,61 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flyttad till plats %1$lld av %2$lld"
+            "value" : "Nu på position %1$lld av %2$lld"
           }
         },
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld இல் %1$lld ஆம் இடத்திற்கு நகர்த்தப்பட்டது"
+            "value" : "%2$lld-இல் %1$lld-ஆவது இடத்திற்கு நகர்த்தப்பட்டது"
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld లో %1$lld స్థానానికి తరలించబడింది"
+            "value" : "%2$lld లో %1$lldవ స్థానానికి తరలించబడింది"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ย้ายไปตำแหน่งที่ %1$lld จาก %2$lld"
+            "value" : "ย้ายไปที่ตำแหน่ง %1$lld จาก %2$lld แล้ว"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld öğeden %1$lld. sıraya taşındı"
+            "value" : "%2$lld içinden %1$lld. sıraya taşındı"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Позиція %1$lld з %2$lld"
+            "value" : "Переміщено на позицію %1$lld з %2$lld"
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$lld میں سے %1$lld نمبر پر منتقل ہوا"
+            "value" : "پوزیشن %1$lld پر منتقل کیا گیا، کل %2$lld میں سے"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã chuyển đến vị trí %1$lld trên %2$lld"
+            "value" : "Đã di chuyển đến vị trí %1$lld trong số %2$lld"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已移到第 %1$lld 位，共 %2$lld 项"
+            "value" : "已移到第 %1$lld 位，共 %2$lld 位"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已移至第 %1$lld 個，共 %2$lld 個"
+            "value" : "已移到第 %1$lld 個位置，共 %2$lld 個"
           }
         }
       }
@@ -19915,7 +19915,7 @@
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Posunout dolů"
+            "value" : "Přesunout dolů"
           }
         },
         "da" : {
@@ -19927,7 +19927,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nach unten"
+            "value" : "Nach unten bewegen"
           }
         },
         "el" : {
@@ -19963,7 +19963,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mover abajo"
+            "value" : "Bajar"
           }
         },
         "es-MX" : {
@@ -19981,13 +19981,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Descendre"
+            "value" : "Déplacer vers le bas"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Descendre"
+            "value" : "Déplacer vers le bas"
           }
         },
         "gu" : {
@@ -20017,13 +20017,13 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mozgatás lefelé"
+            "value" : "Áthelyezés lefelé"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pindah ke Bawah"
+            "value" : "Pindahkan ke Bawah"
           }
         },
         "it" : {
@@ -20035,13 +20035,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "下へ移動"
+            "value" : "下に移動"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಕೆಳಗೆ ಸರಿಸಿ"
+            "value" : "ಕೆಳಕ್ಕೆ ಸರಿಸಿ"
           }
         },
         "ko" : {
@@ -20077,13 +20077,13 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naar beneden"
+            "value" : "Verplaats omlaag"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଗୋଟିଏ ତଳକୁ ନିଅନ୍ତୁ"
+            "value" : "ତଳକୁ ନିଅନ୍ତୁ"
           }
         },
         "pa" : {
@@ -20095,13 +20095,13 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Przesuń w dół"
+            "value" : "Przenieś w dół"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mover para baixo"
+            "value" : "Mover para Baixo"
           }
         },
         "pt-PT" : {
@@ -20113,7 +20113,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mutați mai jos"
+            "value" : "Mutați în jos"
           }
         },
         "ru" : {
@@ -20125,13 +20125,13 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Posunúť nadol"
+            "value" : "Presunúť nadol"
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Premakni navzdol"
+            "value" : "Premakni dol"
           }
         },
         "sv" : {
@@ -20149,7 +20149,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "కిందికి జరపండి"
+            "value" : "కిందికి తరలించండి"
           }
         },
         "th" : {
@@ -20167,7 +20167,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Перемістити нижче"
+            "value" : "Перемістити вниз"
           }
         },
         "ur" : {
@@ -20179,7 +20179,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chuyển xuống"
+            "value" : "Di chuyển xuống"
           }
         },
         "zh-Hans" : {
@@ -20203,7 +20203,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "نقل إلى النهاية"
+            "value" : "نقل إلى أسفل القائمة"
           }
         },
         "bn" : {
@@ -20227,13 +20227,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flyt nederst"
+            "value" : "Flyt til bunden"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ans Ende"
+            "value" : "Ans Ende bewegen"
           }
         },
         "el" : {
@@ -20281,7 +20281,7 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Siirrä loppuun"
+            "value" : "Siirrä alimmaiseksi"
           }
         },
         "fr" : {
@@ -20323,13 +20323,13 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mozgatás az aljára"
+            "value" : "Áthelyezés az aljára"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pindah ke Paling Bawah"
+            "value" : "Pindahkan ke Paling Bawah"
           }
         },
         "it" : {
@@ -20341,13 +20341,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "一番下へ移動"
+            "value" : "一番下に移動"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಕೊನೆಗೆ ಸರಿಸಿ"
+            "value" : "ಕೆಳಭಾಗಕ್ಕೆ ಸರಿಸಿ"
           }
         },
         "ko" : {
@@ -20365,7 +20365,7 @@
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "तळाशी हलवा"
+            "value" : "सर्वात खाली हलवा"
           }
         },
         "ms" : {
@@ -20377,19 +20377,19 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flytt til slutten"
+            "value" : "Flytt til bunnen"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naar onderaan"
+            "value" : "Verplaats naar onderen"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ସବୁ ତଳକୁ ନିଅନ୍ତୁ"
+            "value" : "ସବୁଠାରୁ ତଳକୁ ନିଅନ୍ତୁ"
           }
         },
         "pa" : {
@@ -20401,13 +20401,13 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Przenieś na koniec"
+            "value" : "Przenieś na dół"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mover para o fim"
+            "value" : "Mover para o Final"
           }
         },
         "pt-PT" : {
@@ -20419,7 +20419,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mutați la sfârșit"
+            "value" : "Mutați la final"
           }
         },
         "ru" : {
@@ -20431,13 +20431,13 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Presunúť na koniec"
+            "value" : "Presunúť naspodok"
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Premakni na konec"
+            "value" : "Premakni na dno"
           }
         },
         "sv" : {
@@ -20449,13 +20449,13 @@
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "கீழ்ப்பகுதிக்கு நகர்த்து"
+            "value" : "கடைசிக்கு நகர்த்து"
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "చివరకు జరపండి"
+            "value" : "దిగువ భాగానికి తరలించండి"
           }
         },
         "th" : {
@@ -20485,7 +20485,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chuyển xuống cuối"
+            "value" : "Di chuyển xuống cuối"
           }
         },
         "zh-Hans" : {
@@ -20497,7 +20497,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "移至最下方"
+            "value" : "移到最下方"
           }
         }
       }
@@ -20509,7 +20509,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "نقل إلى البداية"
+            "value" : "نقل إلى أعلى القائمة"
           }
         },
         "bn" : {
@@ -20533,13 +20533,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flyt øverst"
+            "value" : "Flyt til toppen"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "An den Anfang"
+            "value" : "An den Anfang bewegen"
           }
         },
         "el" : {
@@ -20587,7 +20587,7 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Siirrä alkuun"
+            "value" : "Siirrä ylimmäiseksi"
           }
         },
         "fr" : {
@@ -20629,13 +20629,13 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mozgatás a tetejére"
+            "value" : "Áthelyezés a tetejére"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pindah ke Paling Atas"
+            "value" : "Pindahkan ke Paling Atas"
           }
         },
         "it" : {
@@ -20647,13 +20647,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "一番上へ移動"
+            "value" : "一番上に移動"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಮೇಲಕ್ಕೆ ಸರಿಸಿ"
+            "value" : "ಮೇಲ್ಭಾಗಕ್ಕೆ ಸರಿಸಿ"
           }
         },
         "ko" : {
@@ -20689,13 +20689,13 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naar bovenaan"
+            "value" : "Verplaats naar boven"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ସବୁ ଉପରକୁ ନିଅନ୍ତୁ"
+            "value" : "ସବୁଠାରୁ ଉପରକୁ ନିଅନ୍ତୁ"
           }
         },
         "pa" : {
@@ -20707,13 +20707,13 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Przenieś na początek"
+            "value" : "Przenieś na górę"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mover para o topo"
+            "value" : "Mover para o Início"
           }
         },
         "pt-PT" : {
@@ -20737,7 +20737,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Presunúť na začiatok"
+            "value" : "Presunúť navrch"
           }
         },
         "sl" : {
@@ -20755,13 +20755,13 @@
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "மேல்பகுதிக்கு நகர்த்து"
+            "value" : "முதலுக்கு நகர்த்து"
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "మొదటికి జరపండి"
+            "value" : "పైభాగానికి తరలించండి"
           }
         },
         "th" : {
@@ -20791,7 +20791,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chuyển lên đầu"
+            "value" : "Di chuyển lên đầu"
           }
         },
         "zh-Hans" : {
@@ -20803,7 +20803,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "移至最上方"
+            "value" : "移到最上方"
           }
         }
       }
@@ -20833,7 +20833,7 @@
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Posunout nahoru"
+            "value" : "Přesunout nahoru"
           }
         },
         "da" : {
@@ -20845,7 +20845,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nach oben"
+            "value" : "Nach oben bewegen"
           }
         },
         "el" : {
@@ -20881,7 +20881,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mover arriba"
+            "value" : "Subir"
           }
         },
         "es-MX" : {
@@ -20899,13 +20899,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Monter"
+            "value" : "Déplacer vers le haut"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Monter"
+            "value" : "Déplacer vers le haut"
           }
         },
         "gu" : {
@@ -20935,13 +20935,13 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mozgatás felfelé"
+            "value" : "Áthelyezés felfelé"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pindah ke Atas"
+            "value" : "Pindahkan ke Atas"
           }
         },
         "it" : {
@@ -20953,13 +20953,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "上へ移動"
+            "value" : "上に移動"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಮೇಲೆ ಸರಿಸಿ"
+            "value" : "ಮೇಲಕ್ಕೆ ಸರಿಸಿ"
           }
         },
         "ko" : {
@@ -20995,13 +20995,13 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naar boven"
+            "value" : "Verplaats omhoog"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଗୋଟିଏ ଉପରକୁ ନିଅନ୍ତୁ"
+            "value" : "ଉପରକୁ ନିଅନ୍ତୁ"
           }
         },
         "pa" : {
@@ -21013,13 +21013,13 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Przesuń w górę"
+            "value" : "Przenieś w górę"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mover para cima"
+            "value" : "Mover para Cima"
           }
         },
         "pt-PT" : {
@@ -21031,7 +21031,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mutați mai sus"
+            "value" : "Mutați în sus"
           }
         },
         "ru" : {
@@ -21043,13 +21043,13 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Posunúť nahor"
+            "value" : "Presunúť nahor"
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Premakni navzgor"
+            "value" : "Premakni gor"
           }
         },
         "sv" : {
@@ -21067,7 +21067,7 @@
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "పైకి జరపండి"
+            "value" : "పైకి తరలించండి"
           }
         },
         "th" : {
@@ -21085,7 +21085,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Перемістити вище"
+            "value" : "Перемістити вгору"
           }
         },
         "ur" : {
@@ -21097,7 +21097,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chuyển lên"
+            "value" : "Di chuyển lên"
           }
         },
         "zh-Hans" : {
