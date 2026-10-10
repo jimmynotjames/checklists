@@ -80,6 +80,11 @@ jq -r '.[] | .attachments[]? | select((.suggestedHumanReadableName // "") | test
 rm -rf "${RAW}"
 
 COUNT="$(find "${OUT}" -name '*.png' | wc -l | tr -d ' ')"
+# Skipped tests exit 0, so a lost RUN_LOCALIZATION_SCREENSHOTS would otherwise pass as a clean run.
+if [[ "${COUNT}" -eq 0 ]]; then
+  echo "✗ no screenshots exported — did every test skip? (see ${RESULT})" >&2
+  exit 1
+fi
 echo "✓ ${COUNT} screenshot(s) → ${OUT}/ (downscaled to ${MAX_PX}px max edge)"
 echo "  Next: read them — the visual review IS the check — and record findings in"
 echo "  scripts/translation-accessibility-size-check/AUDIT_LOG.md."

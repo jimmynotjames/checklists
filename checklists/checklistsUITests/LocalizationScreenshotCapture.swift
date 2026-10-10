@@ -5,9 +5,8 @@ import XCTest
 /// Drives the app in 13 locales at forced `.xxxLarge` and saves a screenshot of each key screen as a
 /// `.keepAlways` attachment named `<lang>__<screen>`. It makes **no layout assertions** — it never
 /// "fails" on truncation; a human or Claude inspects the screenshots (see
-/// `scripts/translation-accessibility-size-check/`). It is omitted from `scripts/test-ui.sh` and also
-/// skips unless the runner sets `RUN_LOCALIZATION_SCREENSHOTS=1` (passed to xcodebuild as
-/// `TEST_RUNNER_RUN_LOCALIZATION_SCREENSHOTS`), so an unscoped `xcodebuild test` never runs it.
+/// `scripts/translation-accessibility-size-check/`). It skips unless the runner sets
+/// `RUN_LOCALIZATION_SCREENSHOTS=1`, so an unscoped `xcodebuild test` never runs it.
 ///
 /// Navigation is locale-invariant (accessibility identifiers and `cells.firstMatch`); the type size is
 /// forced via the `FORCE_DYNAMIC_TYPE` env hook, because the standard
