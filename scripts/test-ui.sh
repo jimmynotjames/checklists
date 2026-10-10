@@ -25,6 +25,8 @@ RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-$$-ui.xcresult"
 RC=0
 # `-collect-test-diagnostics never`: nothing here reads the simulator diagnostics, and collecting
 # them once hung for its full 600 s timeout after a passing run.
+# The skipped screenshot captures have their own drivers (fastlane,
+# translation-accessibility-size-check).
 xcodebuild test \
     -project checklists/checklists.xcodeproj \
     -scheme checklists \
@@ -34,13 +36,9 @@ xcodebuild test \
     -resultBundlePath "${RESULT_BUNDLE}" \
     -parallel-testing-enabled NO \
     -collect-test-diagnostics never \
-    -only-testing:checklistsUITests/checklistsUITests \
-    -only-testing:checklistsUITests/checklistUITest \
-    -only-testing:checklistsUITests/checklistCreateUITest \
-    -only-testing:checklistsUITests/ChecklistCopyCheckedItemsUITest \
-    -only-testing:checklistsUITests/ChecklistMoveAndDeleteCheckedItemsUITest \
-    -only-testing:checklistsUITests/ChecklistReorderItemsUITest \
-    -only-testing:checklistsUITests/AnalyticsConsentUITest || RC=$?
+    -only-testing:checklistsUITests \
+    -skip-testing:checklistsUITests/AppStoreScreenshots \
+    -skip-testing:checklistsUITests/LocalizationScreenshotCapture || RC=$?
 
 python3 "${ROOT}/scripts/list_test_failures.py" "${RESULT_BUNDLE}" || true
 
