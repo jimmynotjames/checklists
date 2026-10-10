@@ -121,6 +121,7 @@ struct ChecklistScreenActionTests {
       )
       let persisted = try harness.persistedItemNames()
       #expect(persisted == ["Milk", "Milk", "Bread"], "The copy is saved, not just staged.")
+      #expect(harness.analytics.count(of: AnalyticsEvent.checklistItemDuplicated) == 1)
     }
   }
 

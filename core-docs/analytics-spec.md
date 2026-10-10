@@ -47,6 +47,7 @@ A dashboard is justified by a question here. The IDs are stable; board names cit
 | 3.9 | When do people reach the review-prompt bar, and how soon does the app ask? | `rating_prompt_eligible` → `rating_prompt_requested` |
 | 3.10 | How often does an upgrader's old data end up out of reach? | `startup_failed` at `legacy_import`, `legacy_import_abandoned` |
 | 3.11 | Is sync working, and when it isn't, why? | `icloud_status_checked`, `cloudkit_container_fell_back`, `cloudkit_sync_failed` |
+| 3.12 | Do people duplicate several items in a row? | `checklist_item_duplicated`, per session |
 
 3.9 stops at the request: `requestReview` reports neither whether the dialog showed nor what was
 chosen, and no custom pre-prompt manufactures that signal. The bar is three constants on
@@ -54,6 +55,9 @@ chosen, and no custom pre-prompt manufactures that signal. The bar is three cons
 
 3.7 exists to decide whether `orientation_changed` and `ChecklistsApp`'s
 `beginGeneratingDeviceOrientationNotifications()` call are worth keeping.
+
+3.12 exists to decide whether the checklist menu needs a Duplicate Checked Items entry: runs of
+three or more in one session are the signal for it.
 
 ## Privacy
 
@@ -230,6 +234,7 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `checklist_reset` | All items unchecked | — |
 | `checklist_deleted` | Deleted, from the list's swipe or the checklist menu | — |
 | `checklist_reorder_mode_entered` | The checklist menu's Reorder Items entry is chosen | — |
+| `checklist_item_duplicated` | An item is duplicated from its swipe action | — |
 | `checklists_edit_mode_entered` | The list's Edit button is tapped | — |
 | `checklists_bulk_action_performed` | An Edit mode toolbar action runs and changes something; once per action, not per checklist; `checklist_duplicated` and `checklist_deleted` don't also fire | `bulk_action`, `selected_count` |
 | `rate_app_tapped` | "Rate in App Store" tapped | — |
