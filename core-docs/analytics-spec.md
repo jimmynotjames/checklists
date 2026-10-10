@@ -40,7 +40,7 @@ A dashboard is justified by a question here. The IDs are stable; board names cit
 | 3.2 | What do people make checklists *for*? | `checklist_name` |
 | 3.3 | How big do checklists get, and how many per person? | `checklists_count`, `items_count`, `notes_length` |
 | 3.4 | Is the notes feature used? | `items_with_notes_count`, `notes_length` |
-| 3.5 | Reuse (reset), template (duplicate, copy items), or disposable (create, delete, move or delete checked items)? | the seven checklist action events, plus `checklists_bulk_action_performed` by `bulk_action` for the list's Edit mode |
+| 3.5 | Reuse (reset), template (duplicate, copy items), or disposable (create, delete, move or delete checked items)? | the checklist action events, plus `checklists_bulk_action_performed` by `bulk_action` for the list's Edit mode |
 | 3.6 | How often does the store fail to open, and how often is that unrecoverable? | `startup_failed` / `startup_store_reset` at `startup_stage = store_open` |
 | 3.7 | Does anyone rotate the device? | `orientation_changed` |
 | 3.8 | What share opt out, by jurisdiction? | `analytics_consent_changed`, `consent_jurisdiction` |

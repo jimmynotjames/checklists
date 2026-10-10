@@ -446,7 +446,8 @@ class ChecklistViewController: UIViewController {
     refreshMoveActions()
   }
 
-  /// The overflow menu's Delete Checked Items, once confirmed. Internal so a test can invoke it.
+  /// The overflow menu's Delete Checked Items, once confirmed. Internal so a test can invoke it: a
+  /// `UIAction` handler cannot be fired directly.
   ///
   /// Reloads rather than deleting rows one by one: the checked rows can sit anywhere in the list,
   /// and nothing about a scattered multi-row fade tells the person more than the rows being gone.

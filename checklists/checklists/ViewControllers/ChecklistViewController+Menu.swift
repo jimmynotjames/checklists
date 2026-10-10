@@ -6,11 +6,10 @@
 import UIKit
 
 /// The trailing navigation items, the overflow menu, the actions behind it, and the dismissal
-/// the destructive one shares with the remote-deletion path.
+/// Delete Checklist shares with the remote-deletion path.
 ///
-/// `enterReorderMode`, `duplicateChecklist`, `transferCheckedItems(_:)`, `deleteChecklist` and
-/// `deleteCheckedItems` are internal so a test can invoke them: a `UIAction` handler cannot be fired
-/// directly.
+/// `enterReorderMode`, `duplicateChecklist`, `transferCheckedItems(_:)` and `deleteChecklist` are
+/// internal so a test can invoke them: a `UIAction` handler cannot be fired directly.
 extension ChecklistViewController {
   /// The overflow-menu entries that act on the checked items, each of which can show "No checked
   /// items." under itself.
@@ -56,8 +55,8 @@ extension ChecklistViewController {
     }
     // On the create sheet too: people often put items in order right after typing a batch of them.
     let reorderSection = UIMenu(options: .displayInline, children: [reorderItemsAction])
-    // Nothing on the create sheet's checklist has been kept yet — copying a draft nobody has
-    // decided to keep is not an action that means anything.
+    // Nothing on the create sheet's checklist has been kept yet — copying, moving or pruning a
+    // draft nobody has decided to keep is not an action that means anything.
     guard !showsDiscardWording else {
       return UIMenu(children: [reorderSection, UIMenu(options: .displayInline, children: [deleteAction])])
     }

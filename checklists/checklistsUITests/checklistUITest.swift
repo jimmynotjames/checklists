@@ -663,7 +663,7 @@ class checklistUITest: XCTestCase {
 
   // MARK: - Deleting from the overflow menu
 
-  /// Opens the detail screen's overflow menu and taps its destructive entry, leaving the
+  /// Opens the detail screen's overflow menu and taps Delete Checklist, leaving the
   /// confirmation up.
   private func tapDeleteChecklistEntry() {
     let moreButton = app.navigationBars.buttons["checklist.more"]

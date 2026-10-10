@@ -59,7 +59,7 @@ class ChecklistMoveAndDeleteCheckedItemsUITest: XCTestCase {
 
   /// The moved item leaves the source at once, with the picker gone and the person still on it.
   func testMoveCheckedItemsToAnExistingChecklist() {
-    // Pre-Trip Checklist is seeded with none of its eleven items checked.
+    // Pre-Trip Checklist is seeded with none of its items checked.
     checklistsList.staticTexts["Pre-Trip Checklist"].tap()
     let preTripTable = app.tables["ChecklistTableView"]
     XCTAssertTrue(preTripTable.waitForExistence(timeout: 5))

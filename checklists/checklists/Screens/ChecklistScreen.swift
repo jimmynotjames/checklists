@@ -44,8 +44,11 @@ struct ChecklistScreen: View {
       transferGeneration: transferGeneration
     )
     .onChange(of: router.sheet) { oldSheet, newSheet in
-      // A cancelled move counts too: a reload of an unchanged list is invisible.
-      guard newSheet == nil, oldSheet == .transferCheckedItems(sourceID: checklist.id, mode: .move) else { return }
+      // Matched before `checklist` is read: on the create sheet, Discard clears the sheet after
+      // deleting the checklist. A cancelled move counts too: a reload of an unchanged list is
+      // invisible.
+      guard newSheet == nil, case let .transferCheckedItems(sourceID, .move) = oldSheet,
+            sourceID == checklist.id else { return }
       transferGeneration += 1
     }
     // The view controller does its own keyboard avoidance via contentInset; opt out of SwiftUI's so

@@ -131,11 +131,10 @@ extension ModelContext {
     return copies
   }
 
-  /// Deletes `items` from `checklist` in one save: the second half of a move, and the whole of the
-  /// detail screen's Delete Checked Items.
+  /// Deletes `items` from `checklist` in one save.
   ///
   /// Unlinked before deleting, as the copy paths' failure branches do, so `checklist.items` drops
-  /// them now rather than at the next save. Through `saveDeletion` like any other item deletion.
+  /// them now rather than at the next save.
   func deleteItems(_ items: [Item], from checklist: Checklist) {
     let wasComplete = checklist.isComplete
     for item in items {
