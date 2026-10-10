@@ -82,8 +82,7 @@ Give any suite run a timeout of at least 30 minutes.
 
 `make test-ui` runs every `checklistsUITests` class except the screenshot captures that
 `scripts/test-ui.sh` skips; add a new capture class to that skip list. Before a full UI run, run a
-new or changed class alone (`-only-testing:checklistsUITests/<Class>`, destination and derived data
-from `scripts/_destination.sh`) — a full run takes ~12 minutes.
+new or changed class alone, as in the isolated rerun under §Reading a test result.
 
 Don't add `-configuration Release` to the test scripts — only Debug sets `ONLY_ACTIVE_ARCH = YES`,
 so Release would build both slices.

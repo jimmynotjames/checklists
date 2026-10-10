@@ -25,8 +25,8 @@ RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-$$-ui.xcresult"
 RC=0
 # `-collect-test-diagnostics never`: nothing here reads the simulator diagnostics, and collecting
 # them once hung for its full 600 s timeout after a passing run.
-# Every class in checklistsUITests runs except the screenshot captures, which have their own
-# drivers (fastlane, translation-accessibility-size-check). Skip any new capture class here.
+# The skipped screenshot captures have their own drivers (fastlane,
+# translation-accessibility-size-check).
 xcodebuild test \
     -project checklists/checklists.xcodeproj \
     -scheme checklists \
