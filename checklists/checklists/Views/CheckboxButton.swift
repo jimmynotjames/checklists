@@ -9,8 +9,7 @@ import UIKit
 
 class CheckboxButton: UIButton {
   /// The 18pt is tuned by eye against the button's configuration, which draws a symbol larger
-  /// than a bare `UIImageView` given the same configuration would. The glyph sits well inside the
-  /// fixed 48pt frame below; that frame, not the glyph, is the tap target.
+  /// than a bare `UIImageView` given the same configuration would.
   private static let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 18.0, weight: .regular)
   private static let uncheckedImage = UIImage(systemName: "square", withConfiguration: symbolConfiguration)
   private static let checkedImage = UIImage(systemName: "checkmark.square.fill", withConfiguration: symbolConfiguration)
@@ -25,20 +24,15 @@ class CheckboxButton: UIButton {
     accessibilityLabel = String(localized: "checkbox.accessibilityLabel", defaultValue: "Checkbox", comment: "VoiceOver label of the tick box on each checklist item row.")
 
     var configuration = UIButton.Configuration.plain()
-    // Positions the glyph, not the tap target: the insets are what place it inside the 48pt frame
-    // below. Glyph plus insets comes to a little over 48 wide and under 48 tall, and the frame still
-    // holds at 48×48 (`CheckboxButtonTests`).
+    // Positions the glyph, not the tap target: the 48pt frame below is the tap target.
     configuration.contentInsets = NSDirectionalEdgeInsets(top: 12.0, leading: 12.0, bottom: 12.0, trailing: 12.0)
     configuration.image = Self.uncheckedImage
     self.configuration = configuration
     // Off, so the plain style adds no selected background or pressed fade: the icon and tint are the state.
     automaticallyUpdatesConfiguration = false
 
-    setContentHuggingPriority(.required, for: .horizontal)
-    setContentCompressionResistancePriority(.required, for: .horizontal)
-    setContentHuggingPriority(.required, for: .vertical)
-    setContentCompressionResistancePriority(.required, for: .vertical)
-
+    // The only required size constraints. The symbol plus insets is not 48×48, so required content
+    // hugging or compression resistance would contradict these and leave Auto Layout to break one.
     [heightAnchor.constraint(equalToConstant: 48.0),
      widthAnchor.constraint(equalToConstant: 48.0)].forEach { $0.isActive = true }
   }

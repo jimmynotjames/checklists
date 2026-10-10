@@ -9,16 +9,13 @@
 import Testing
 import UIKit
 
-/// Covers `CheckboxButton`'s tap-target size, its images (SF Symbols, whose names fail silently
-/// as nil), and the state it exposes to VoiceOver and the UI tests.
+/// The image checks matter because a mistyped SF Symbol name fails silently as nil.
 @Suite("CheckboxButton size, images and state")
 struct CheckboxButtonTests {
-  @Test("keeps a 48pt square tap target, larger than its glyph")
+  @Test("keeps a 48pt square tap target with the glyph inside it")
   func tapTargetIs48Points() throws {
-    // Laid out in a container, pinned only by its leading and top edges as `ItemContentView` pins
-    // it, so its size comes from its own constraints. Glyph plus insets is not 48×48, so this is
-    // what shows the 48pt constraints win over the required intrinsic size.
-    // (`systemLayoutSizeFitting` on the button itself reports only its content size.)
+    // Pinned only by its leading and top edges, as `ItemContentView` pins it, so its size comes
+    // from its own constraints. (`systemLayoutSizeFitting` on a button reports its content size.)
     let button = CheckboxButton()
     button.translatesAutoresizingMaskIntoConstraints = false
     let container = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
@@ -29,9 +26,8 @@ struct CheckboxButtonTests {
     ])
     container.layoutIfNeeded()
     #expect(button.frame.size == CGSize(width: 48.0, height: 48.0))
-    let glyph = try #require(button.configuration?.image)
-    #expect(glyph.size.width < 48.0)
-    #expect(glyph.size.height < 48.0)
+    let glyph = try #require(button.imageView)
+    #expect(button.bounds.contains(glyph.frame))
   }
 
   @Test("draws an image in both states")
