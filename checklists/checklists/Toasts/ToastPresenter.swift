@@ -35,10 +35,12 @@ final class ToastPresenter {
   /// arriving toast cancel another on its way to the screen.
   @ObservationIgnored private var dismissal: Task<Void, Never>?
 
-  /// - Parameter sleep: the delay mechanism. Injected so tests drive the lifecycle without
-  ///   wall-clock waits.
+  /// - Parameters:
+  ///   - autoDismissDelay: how long a toast without an action stays up. Long enough to read one
+  ///     that carries a checklist name, in the languages that run longest.
+  ///   - sleep: the delay mechanism. Injected so tests drive the lifecycle without wall-clock waits.
   init(
-    autoDismissDelay: Duration = .seconds(2),
+    autoDismissDelay: Duration = .seconds(3),
     isVoiceOverRunning: @escaping @MainActor () -> Bool = { UIAccessibility.isVoiceOverRunning },
     sleep: @escaping @Sendable (Duration) async -> Void = { try? await Task.sleep(for: $0) }
   ) {

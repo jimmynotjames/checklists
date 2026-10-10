@@ -186,7 +186,7 @@ extension ChecklistViewController {
 
   /// How long "No checked items." stays up: the same dwell a toast gets, copied rather than read
   /// from `ToastPresenter`, whose dwell is an initializer parameter.
-  private static let noItemsCheckedNoticeDuration: Duration = .seconds(2)
+  private static let noItemsCheckedNoticeDuration: Duration = .seconds(3)
 
   private func checkedItemsEntryTapped(_ entry: CheckedItemsMenuEntry) {
     // Commits in-progress edits first; see `duplicateChecklist`.
