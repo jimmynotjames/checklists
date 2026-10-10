@@ -1166,7 +1166,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förkasta"
+            "value" : "Släng"
           }
         },
         "ta" : {
@@ -2687,7 +2687,7 @@
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "ลบรายการที่ทำเครื่องหมายแล้ว %lld รายการไหม การดำเนินการนี้ไม่สามารถยกเลิกได้"
+                  "value" : "ลบ %lld รายการที่ทำเครื่องหมายแล้วไหม การกระทำนี้เลิกทำไม่ได้"
                 }
               }
             }
@@ -3044,7 +3044,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förkasta checklistan? Det går inte att ångra."
+            "value" : "Vill du slänga checklistan? Det går inte att ångra."
           }
         },
         "ta" : {
@@ -3062,7 +3062,7 @@
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ทิ้งเช็กลิสต์นี้ไหม การดำเนินการนี้ไม่สามารถยกเลิกได้"
+            "value" : "ทิ้งเช็กลิสต์นี้ไหม การกระทำนี้เลิกทำไม่ได้"
           }
         },
         "tr" : {
@@ -3968,7 +3968,7 @@
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "உள்ள செக்லிஸ்ட்கள்"
+            "value" : "ஏற்கெனவே உள்ள செக்லிஸ்ட்கள்"
           }
         },
         "te" : {
@@ -6470,7 +6470,7 @@
       }
     },
     "checklist.menu.copyCheckedItems" : {
-      "comment" : "Overflow-menu entry on an existing checklist's detail screen. Copies the items the person has ticked into another checklist, picked on the sheet that opens next. Keep the trailing ellipsis — it is what promises that sheet. It sits directly under the Duplicate Checklist entry and must not read alike: that one copies the whole list, this one copies a selection into a different list.",
+      "comment" : "Overflow-menu entry on an existing checklist's detail screen. Copies the items the person has ticked into another checklist, picked on the sheet that opens next. Keep the trailing ellipsis — it is what promises that sheet. It sits directly under the Duplicate Checklist entry and must not read alike: that one copies the whole list, this one copies a selection into a different list. \"to…\" means to a different checklist, never \"here\" or \"into this one\".",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -6482,13 +6482,13 @@
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "চেক করা আইটেম কপি করুন…"
+            "value" : "চেক করা আইটেম অন্যত্র কপি করুন…"
           }
         },
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copiar elements marcats a…"
+            "value" : "Copia els elements marcats a…"
           }
         },
         "cs" : {
@@ -6506,13 +6506,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abgehakte Einträge kopieren in …"
+            "value" : "Abgehakte kopieren nach …"
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Αντιγραφή επιλεγμένων στοιχείων σε…"
+            "value" : "Αντιγραφή επιλεγμένων σε…"
           }
         },
         "en" : {
@@ -6542,7 +6542,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copiar elementos marcados a…"
+            "value" : "Copiar marcados a…"
           }
         },
         "es-MX" : {
@@ -6554,7 +6554,7 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopioi merkityt kohdat listaan…"
+            "value" : "Kopioi merkityt kohteet listaan…"
           }
         },
         "fr" : {
@@ -6572,7 +6572,7 @@
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ચેક કરેલ આઇટમ આમાં કૉપી કરો…"
+            "value" : "ચેક કરેલ આઇટમ બીજે કૉપિ કરો…"
           }
         },
         "he" : {
@@ -6596,19 +6596,19 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bejelölt elemek másolása ide…"
+            "value" : "Bejelöltek másolása máshová…"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Salin Item yang Dicentang ke…"
+            "value" : "Salin Item Dicentang ke…"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copia voci spuntate in…"
+            "value" : "Copia elementi spuntati in…"
           }
         },
         "ja" : {
@@ -6620,25 +6620,25 @@
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಗುರುತಿಸಿದ ಐಟಂಗಳನ್ನು ಇಲ್ಲಿಗೆ ನಕಲಿಸಿ…"
+            "value" : "ಗುರುತಿಸಲಾದ ಐಟಂಗಳನ್ನು ನಕಲಿಸಿ…"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "체크된 항목 복사…"
+            "value" : "체크된 항목을 다음으로 복사…"
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ചെക്ക് ചെയ്‌ത ഇനങ്ങൾ ഇതിലേക്ക് പകർത്തുക…"
+            "value" : "ചെക്ക് ചെയ്‌ത ഇനങ്ങൾ മറ്റൊന്നിലേക്ക് പകർത്തുക…"
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "चेक केलेले आयटम यात कॉपी करा…"
+            "value" : "चेक केलेले आयटम दुसरीकडे कॉपी करा…"
           }
         },
         "ms" : {
@@ -6650,13 +6650,13 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopier avkryssede punkter til …"
+            "value" : "Kopier avkryssede punkter til…"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopieer afgevinkte onderdelen naar…"
+            "value" : "Afgevinkte items kopiëren naar…"
           }
         },
         "or" : {
@@ -6668,25 +6668,25 @@
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਚੈੱਕ ਕੀਤੀਆਂ ਆਈਟਮਾਂ ਇੱਥੇ ਕਾਪੀ ਕਰੋ…"
+            "value" : "ਚੈੱਕ ਕੀਤੀਆਂ ਆਈਟਮਾਂ ਹੋਰ ਚੈੱਕਲਿਸਟ ਵਿੱਚ ਕਾਪੀ ਕਰੋ…"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopiuj zaznaczone pozycje do…"
+            "value" : "Kopiuj zaznaczone do…"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copiar Itens Marcados para…"
+            "value" : "Copiar itens marcados para…"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copiar elementos assinalados para…"
+            "value" : "Copiar itens assinalados para…"
           }
         },
         "ro" : {
@@ -6698,13 +6698,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Копировать отмеченные пункты в…"
+            "value" : "Скопировать отмеченное в…"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopírovať zaškrtnuté položky do…"
+            "value" : "Kopírovať zaškrtnuté do…"
           }
         },
         "sl" : {
@@ -6722,13 +6722,13 @@
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "தேர்வுசெய்தவற்றை நகலெடு…"
+            "value" : "தேர்வுசெய்யப்பட்ட உருப்படிகளை நகலெடு…"
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "చెక్ చేసిన అంశాలను కాపీ చేయండి…"
+            "value" : "చెక్ చేయబడిన అంశాలను కాపీ చేయి…"
           }
         },
         "th" : {
@@ -6740,37 +6740,37 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İşaretli Ögeleri Şuraya Kopyala…"
+            "value" : "İşaretli Öğeleri Şuraya Kopyala…"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Копіювати позначені пункти до…"
+            "value" : "Скопіювати позначені до…"
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "چیک شدہ آئٹم کاپی کریں…"
+            "value" : "چیک شدہ آئٹمز کاپی کریں…"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sao chép mục đã đánh dấu đến…"
+            "value" : "Sao chép mục đã đánh dấu sang…"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "拷贝已勾选项目到…"
+            "value" : "拷贝已勾选项至…"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "拷貝已勾選項目至⋯"
+            "value" : "拷貝已勾選項目至…"
           }
         }
       }
@@ -7939,7 +7939,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förkasta checklista"
+            "value" : "Släng checklista"
           }
         },
         "ta" : {
@@ -8041,7 +8041,7 @@
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Διπλασιασμός λίστας ελέγχου"
+            "value" : "Διπλότυπο λίστας ελέγχου"
           }
         },
         "en" : {
@@ -8389,7 +8389,7 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lisää"
+            "value" : "Lisätoiminnot"
           }
         },
         "fr" : {
@@ -8611,7 +8611,7 @@
       }
     },
     "checklist.menu.moveCheckedItems" : {
-      "comment" : "Overflow-menu entry on an existing checklist's detail screen. Moves the items the person has ticked into another checklist, picked on the sheet that opens next: they are added there and removed from this checklist. Keep the trailing ellipsis — it is what promises that sheet. It sits directly under the Copy Checked Items to… entry and must not read alike: that one leaves the items here, this one takes them away. Use the same word for checked items as that entry.",
+      "comment" : "Overflow-menu entry on an existing checklist's detail screen. Moves the items the person has ticked into another checklist, picked on the sheet that opens next: they are added there and removed from this checklist. Keep the trailing ellipsis — it is what promises that sheet. It sits directly under the Copy Checked Items to… entry and must not read alike: that one leaves the items here, this one takes them away. Use the same word for checked items as that entry. \"to…\" means to a different checklist, never \"here\" or \"into this one\".",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -8623,13 +8623,13 @@
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "চেক করা আইটেম সরান…"
+            "value" : "চেক করা আইটেম অন্যত্র সরান…"
           }
         },
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Moure elements marcats a…"
+            "value" : "Mou els elements marcats a…"
           }
         },
         "cs" : {
@@ -8647,13 +8647,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abgehakte Einträge verschieben in …"
+            "value" : "Abgehakte verschieben nach …"
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Μετακίνηση επιλεγμένων στοιχείων σε…"
+            "value" : "Μετακίνηση επιλεγμένων σε…"
           }
         },
         "en" : {
@@ -8683,7 +8683,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mover elementos marcados a…"
+            "value" : "Mover marcados a…"
           }
         },
         "es-MX" : {
@@ -8695,7 +8695,7 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Siirrä merkityt kohdat listaan…"
+            "value" : "Siirrä merkityt kohteet listaan…"
           }
         },
         "fr" : {
@@ -8713,7 +8713,7 @@
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ચેક કરેલ આઇટમ આમાં ખસેડો…"
+            "value" : "ચેક કરેલ આઇટમ બીજે ખસેડો…"
           }
         },
         "he" : {
@@ -8737,19 +8737,19 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bejelölt elemek áthelyezése ide…"
+            "value" : "Bejelöltek áthelyezése máshová…"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pindahkan Item yang Dicentang ke…"
+            "value" : "Pindahkan Item Dicentang ke…"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sposta voci spuntate in…"
+            "value" : "Sposta elementi spuntati in…"
           }
         },
         "ja" : {
@@ -8761,25 +8761,25 @@
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಗುರುತಿಸಿದ ಐಟಂಗಳನ್ನು ಇಲ್ಲಿಗೆ ಸರಿಸಿ…"
+            "value" : "ಗುರುತಿಸಲಾದ ಐಟಂಗಳನ್ನು ಸರಿಸಿ…"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "체크된 항목 이동…"
+            "value" : "체크된 항목을 다음으로 이동…"
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ചെക്ക് ചെയ്‌ത ഇനങ്ങൾ ഇതിലേക്ക് നീക്കുക…"
+            "value" : "ചെക്ക് ചെയ്‌ത ഇനങ്ങൾ മറ്റൊന്നിലേക്ക് നീക്കുക…"
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "चेक केलेले आयटम यात हलवा…"
+            "value" : "चेक केलेले आयटम दुसरीकडे हलवा…"
           }
         },
         "ms" : {
@@ -8791,13 +8791,13 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flytt avkryssede punkter til …"
+            "value" : "Flytt avkryssede punkter til…"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verplaats afgevinkte onderdelen naar…"
+            "value" : "Afgevinkte items verplaatsen naar…"
           }
         },
         "or" : {
@@ -8809,25 +8809,25 @@
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਚੈੱਕ ਕੀਤੀਆਂ ਆਈਟਮਾਂ ਇੱਥੇ ਲਿਜਾਓ…"
+            "value" : "ਚੈੱਕ ਕੀਤੀਆਂ ਆਈਟਮਾਂ ਹੋਰ ਚੈੱਕਲਿਸਟ ਵਿੱਚ ਮੂਵ ਕਰੋ…"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Przenieś zaznaczone pozycje do…"
+            "value" : "Przenieś zaznaczone do…"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mover Itens Marcados para…"
+            "value" : "Mover itens marcados para…"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mover elementos assinalados para…"
+            "value" : "Mover itens assinalados para…"
           }
         },
         "ro" : {
@@ -8839,13 +8839,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Переместить отмеченные пункты в…"
+            "value" : "Переместить отмеченное в…"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Presunúť zaškrtnuté položky do…"
+            "value" : "Presunúť zaškrtnuté do…"
           }
         },
         "sl" : {
@@ -8863,13 +8863,13 @@
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "தேர்வுசெய்தவற்றை நகர்த்து…"
+            "value" : "தேர்வுசெய்யப்பட்ட உருப்படிகளை நகர்த்து…"
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "చెక్ చేసిన అంశాలను తరలించండి…"
+            "value" : "చెక్ చేయబడిన అంశాలను తరలించు…"
           }
         },
         "th" : {
@@ -8881,37 +8881,37 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İşaretli Ögeleri Şuraya Taşı…"
+            "value" : "İşaretli Öğeleri Şuraya Taşı…"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Перемістити позначені пункти до…"
+            "value" : "Перемістити позначені до…"
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "چیک شدہ آئٹم منتقل کریں…"
+            "value" : "چیک شدہ آئٹمز منتقل کریں…"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Di chuyển mục đã đánh dấu đến…"
+            "value" : "Di chuyển mục đã đánh dấu sang…"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "移动已勾选项目到…"
+            "value" : "移动已勾选项至…"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "移動已勾選項目至⋯"
+            "value" : "搬移已勾選項目至…"
           }
         }
       }
@@ -11059,49 +11059,49 @@
       }
     },
     "checklist.progress.accessibilityValue" : {
-      "comment" : "VoiceOver value of the progress ring; the placeholder is an already-formatted percentage such as 18%.",
+      "comment" : "VoiceOver value of the progress ring; the placeholder is an already-formatted percentage such as 18%. Read it as \"Checklist 18% complete\" : the share of items ticked so far, not a finished list. Don't word it as \"checklist completed\" followed by the number.",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اكتمال قائمة التحقق %@"
+            "value" : "اكتمل %@ من قائمة التحقق"
           }
         },
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "চেকলিস্ট %@ সম্পন্ন"
+            "value" : "চেকলিস্ট %@ সম্পূর্ণ"
           }
         },
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Llista completada al %@"
+            "value" : "Llista completa al %@"
           }
         },
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dokončeno: %@"
+            "value" : "Seznam hotový z %@"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tjekliste %@ færdig"
+            "value" : "Tjekliste %@ gennemført"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Checkliste zu %@ abgeschlossen"
+            "value" : "Checkliste zu %@ erledigt"
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Λίστα ελέγχου: %@ ολοκληρωμένη"
+            "value" : "Λίστα ελέγχου ολοκληρωμένη κατά %@"
           }
         },
         "en" : {
@@ -11131,31 +11131,31 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lista completada: %@"
+            "value" : "%@ de la lista completado"
           }
         },
         "es-MX" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lista completada al %@"
+            "value" : "%@ de la lista completado"
           }
         },
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tarkistuslista %@ valmis"
+            "value" : "Tarkistuslistasta %@ valmiina"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Liste complétée à %@"
+            "value" : "Progression de la liste : %@"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Liste de vérification terminée à %@"
+            "value" : "Liste de vérification remplie à %@"
           }
         },
         "gu" : {
@@ -11167,7 +11167,7 @@
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "הרשימה הושלמה ב-%@"
+            "value" : "הושלמו %@ מהרשימה"
           }
         },
         "hi" : {
@@ -11179,19 +11179,19 @@
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Popis dovršen %@"
+            "value" : "%@ popisa dovršeno"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lista teljesítve: %@"
+            "value" : "Lista: %@ kész"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Daftar periksa selesai %@"
+            "value" : "Daftar periksa %@ selesai"
           }
         },
         "it" : {
@@ -11203,7 +11203,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "チェックリストは%@完了しています"
+            "value" : "チェックリストの%@が完了"
           }
         },
         "kn" : {
@@ -11239,19 +11239,19 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sjekklisten er %@ fullført"
+            "value" : "Sjekkliste %@ fullført"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Checklist %@ voltooid"
+            "value" : "Checklist voor %@ voltooid"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଚେକଲିଷ୍ଟ %@ ସମ୍ପୂର୍ଣ୍ଣ"
+            "value" : "ଚେକଲିଷ୍ଟର %@ ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି"
           }
         },
         "pa" : {
@@ -11263,13 +11263,13 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ukończono %@"
+            "value" : "Lista ukończona w %@"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Checklist %@ concluído"
+            "value" : "Checklist %@ concluída"
           }
         },
         "pt-PT" : {
@@ -11281,7 +11281,7 @@
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Listă de verificare finalizată: %@"
+            "value" : "Listă de verificare finalizată în proporție de %@"
           }
         },
         "ru" : {
@@ -11293,13 +11293,13 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zoznam je dokončený na %@"
+            "value" : "Zoznam hotový na %@"
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kontrolni seznam dokončan: %@"
+            "value" : "Kontrolni seznam: %@ opravljeno"
           }
         },
         "sv" : {
@@ -11311,25 +11311,25 @@
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "செக்லிஸ்ட் %@ முடிந்தது"
+            "value" : "செக்லிஸ்ட் %@ நிறைவு"
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "చెక్‌లిస్ట్ %@ పూర్తయింది"
+            "value" : "చెక్‌లిస్ట్ %@ పూర్తి"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เช็กลิสต์เสร็จสมบูรณ์ %@"
+            "value" : "เช็กลิสต์เสร็จไป %@"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kontrol listesi %@ tamamlandı"
+            "value" : "Kontrol Listesinin %@ kadarı tamamlandı"
           }
         },
         "uk" : {
@@ -11347,19 +11347,19 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Danh sách kiểm tra đã hoàn thành %@"
+            "value" : "Hoàn thành %@ danh sách kiểm tra"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "清单已完成 %@"
+            "value" : "清单完成度 %@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "檢查清單已完成 %@"
+            "value" : "檢查清單完成度 %@"
           }
         }
       }
@@ -14383,7 +14383,7 @@
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "แน่ใจไหม การดำเนินการนี้ไม่สามารถยกเลิกได้"
+            "value" : "แน่ใจไหม การกระทำนี้เลิกทำไม่ได้"
           }
         },
         "tr" : {
@@ -15019,7 +15019,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bản sao của %1$@ %2$lld"
+            "value" : "%1$@ bản sao %2$lld"
           }
         },
         "zh-Hans" : {
@@ -16303,7 +16303,7 @@
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Διπλασιασμός"
+            "value" : "Διπλότυπο"
           }
         },
         "en" : {
@@ -17731,7 +17731,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Slår på anonyma användningsdata som hjälper till att förbättra appen. Inga namn på checklistepunkter, anteckningar eller Apple- eller iCloud-identifierare ingår någonsin."
+            "value" : "Slår på anonyma användningsdata för att förbättra appen. Namn på checklistpunkter, anteckningar till punkter och Apple- eller iCloud-identifierare ingår aldrig."
           }
         },
         "ta" : {
@@ -18271,13 +18271,13 @@
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mengekalkan data penggunaan tanpa nama dimatikan. Anda boleh menukarnya kemudian dalam Seting."
+            "value" : "Data penggunaan tanpa nama kekal dimatikan. Anda boleh mengubahnya kemudian dalam Seting."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Holder anonyme bruksdata av. Du kan endre dette senere i Innstillinger."
+            "value" : "Lar anonyme bruksdata være av. Du kan endre dette senere i Innstillinger."
           }
         },
         "nl" : {
@@ -18517,7 +18517,7 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "यह ऐप अनाम उपयोग डेटा भेज सकता है, जिससे समस्याओं को सुलझाने और उपयोग को समझने में मदद मिलती है। यह डेटा आपके Apple खाता से कभी नहीं जोड़ा जाता। कभी शामिल नहीं होते: चेकलिस्ट आइटम के नाम, आइटम के नोट्स, या कोई भी Apple या iCloud आइडेंटिफ़ायर। आप इसे कभी भी सेटिंग्ज़ में बदल सकते हैं।"
+            "value" : "यह ऐप अनाम उपयोग डेटा भेज सकता है, जिससे समस्याएँ सुलझाने और उपयोग को समझने में मदद मिलती है। डेटा कभी भी आपके Apple खाते से नहीं जोड़ा जाता। कभी शामिल नहीं: चेकलिस्ट आइटम के नाम, आइटम नोट्स, या कोई भी Apple या iCloud पहचानकर्ता। आप इसे कभी भी सेटिंग्ज़ में बदल सकते हैं।"
           }
         },
         "hr" : {
@@ -18649,7 +18649,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appen kan skicka anonyma användningsdata som hjälper till att felsöka problem och förstå hur appen används. Data kopplas aldrig till ditt Apple-konto. Ingår aldrig: namn på checklistepunkter, anteckningar eller Apple- eller iCloud-identifierare. Du kan ändra det när som helst i Inställningar."
+            "value" : "Appen kan skicka anonyma användningsdata som hjälper till att felsöka problem och förstå hur appen används. Data kopplas aldrig till ditt Apple-konto. Ingår aldrig: namn på checklistpunkter, anteckningar till punkter eller några Apple- eller iCloud-identifierare. Du kan ändra detta när som helst i Inställningar."
           }
         },
         "ta" : {
@@ -20809,7 +20809,7 @@
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "การดำเนินการนี้จะเริ่มแอปเหมือนติดตั้งใหม่ ข้อมูลทั้งหมดบนอุปกรณ์เครื่องนี้จะหายไป และไม่สามารถยกเลิกได้"
+            "value" : "แอปจะเริ่มต้นใหม่เหมือนเพิ่งติดตั้ง ข้อมูลทั้งหมดในอุปกรณ์นี้จะหายไป การกระทำนี้เลิกทำไม่ได้"
           }
         },
         "tr" : {
@@ -21637,7 +21637,7 @@
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sesuatu telah berlaku. Cuba mulakan semula app? Semak juga sama ada storan anda penuh?"
+            "value" : "Sesuatu tidak kena. Cuba mulakan semula app, dan semak sama ada storan anda penuh."
           }
         },
         "nb" : {
@@ -21703,7 +21703,7 @@
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nekaj je šlo narobe. Poskusite znova zagnati aplikacijo. Preverite tudi, ali je pomnilnik poln."
+            "value" : "Nekaj je šlo narobe. Poskusite znova zagnati aplikacijo in preverite, ali je shramba polna."
           }
         },
         "sv" : {
@@ -21763,7 +21763,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "發生了一些問題。試著重新啟動 App？也請檢查儲存空間是否已滿？"
+            "value" : "發生問題。試試重新啟動 App？也看看儲存空間是否已滿。"
           }
         }
       }
@@ -31189,7 +31189,7 @@
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ali nastaviti najnižjo temperaturo, da cevi ne zmrznejo."
+            "value" : "Ali na minimum, da cevi ne zmrznejo."
           }
         },
         "sv" : {
@@ -37183,7 +37183,7 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "अनाम उपयोग डेटा समस्याओं को सुलझाने और उपयोग को समझने में मदद करता है। यह डेटा आपके Apple खाता से कभी नहीं जोड़ा जाता। कभी शामिल नहीं होते: चेकलिस्ट आइटम के नाम, आइटम के नोट्स, या कोई भी Apple या iCloud आइडेंटिफ़ायर।"
+            "value" : "अनाम उपयोग डेटा से समस्याएँ सुलझाने और उपयोग को समझने में मदद मिलती है। डेटा कभी भी आपके Apple खाते से नहीं जोड़ा जाता। कभी शामिल नहीं: चेकलिस्ट आइटम के नाम, आइटम नोट्स, या कोई भी Apple या iCloud पहचानकर्ता।"
           }
         },
         "hr" : {
@@ -37315,7 +37315,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anonyma användningsdata hjälper till att felsöka problem och förstå hur appen används. Data kopplas aldrig till ditt Apple-konto. Ingår aldrig: namn på checklistepunkter, anteckningar eller Apple- eller iCloud-identifierare."
+            "value" : "Anonyma användningsdata hjälper till att felsöka problem och förstå hur appen används. Data kopplas aldrig till ditt Apple-konto. Ingår aldrig: namn på checklistpunkter, anteckningar till punkter eller några Apple- eller iCloud-identifierare."
           }
         },
         "ta" : {
@@ -37393,7 +37393,7 @@
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diagnòstic i analítiques"
+            "value" : "Diagnòstic i anàlisi"
           }
         },
         "cs" : {
@@ -37525,7 +37525,7 @@
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ರೋಗನಿರ್ಣಯ ಮತ್ತು ಅನಾಲಿಟಿಕ್ಸ್"
+            "value" : "ಡಯಾಗ್ನಾಸ್ಟಿಕ್ಸ್ ಮತ್ತು ವಿಶ್ಲೇಷಣೆ"
           }
         },
         "ko" : {
@@ -38233,7 +38233,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Låter appen skicka anonyma användningsdata som hjälper till att förbättra appen. Inga namn på checklistepunkter, anteckningar eller Apple- eller iCloud-identifierare ingår någonsin."
+            "value" : "Låter appen skicka anonyma användningsdata för att förbättra den. Namn på checklistpunkter, anteckningar till punkter och Apple- eller iCloud-identifierare ingår aldrig."
           }
         },
         "ta" : {
@@ -39937,7 +39937,7 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "सिंक फिर शुरू करने के लिए सेटिंग्ज़ खोलें और अपने Apple खाता की पुष्टि करें।"
+            "value" : "सिंक फिर से शुरू करने के लिए सेटिंग्ज़ खोलें और अपने Apple खाते की पुष्टि करें।"
           }
         },
         "hr" : {
@@ -40213,7 +40213,7 @@
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tarkistuslistasi on tallennettu vain tähän laitteeseen. Yritä iCloud-synkronointia uudelleen käynnistämällä sovellus uudelleen."
+            "value" : "Tarkistuslistasi tallentuvat vain tähän laitteeseen. Käynnistä appi uudelleen, niin iCloud-synkronointia yritetään taas."
           }
         },
         "fr" : {
@@ -40363,7 +40363,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaše zoznamy sú uložené iba v tomto zariadení. Synchronizáciu cez iCloud skúsite znova po reštarte aplikácie."
+            "value" : "Vaše zoznamy sa ukladajú len v tomto zariadení. Synchronizáciu cez iCloud skúsite znova po reštartovaní aplikácie."
           }
         },
         "sl" : {
@@ -40411,7 +40411,7 @@
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "آپ کی چیک لسٹس صرف اس ڈیوائس پر محفوظ ہیں۔ iCloud سنک دوبارہ آزمانے کے لیے ایپ دوبارہ شروع کریں۔"
+            "value" : "آپ کی چیک لسٹس صرف اس ڈیوائس پر محفوظ ہیں۔ سنک بذریعہ iCloud کی دوبارہ کوشش کے لیے ایپ ری اسٹارٹ کریں۔"
           }
         },
         "vi" : {
@@ -40477,7 +40477,7 @@
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Το iCloud είναι απενεργοποιημένο σε αυτή τη συσκευή από τον Χρόνο επιτήρησης ή τον οργανισμό σας. Οι λίστες ελέγχου σας είναι αποθηκευμένες μόνο σε αυτή τη συσκευή."
+            "value" : "Το iCloud είναι απενεργοποιημένο σε αυτήν τη συσκευή από τον Χρόνο επί οθόνης ή τον οργανισμό σας. Οι λίστες ελέγχου σας αποθηκεύονται μόνο σε αυτήν τη συσκευή."
           }
         },
         "en" : {
@@ -40567,7 +40567,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud dinonaktifkan di perangkat ini oleh Waktu Layar atau organisasi Anda. Daftar periksa Anda hanya tersimpan di perangkat ini."
+            "value" : "iCloud dimatikan di perangkat ini oleh Durasi Layar atau organisasi Anda. Daftar periksa Anda hanya disimpan di perangkat ini."
           }
         },
         "it" : {
@@ -40903,7 +40903,7 @@
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "സമന്വയം തുടരാൻ ക്രമീകരണത്തിൽ iCloud സ്റ്റോറേജ് ഒഴിവാക്കുക. നിങ്ങളുടെ ചെക്ക്‌ലിസ്റ്റുകൾ ഈ ഉപകരണത്തിൽ സംരക്ഷിച്ചിട്ടുണ്ട്."
+            "value" : "സമന്വയിപ്പിക്കൽ തുടരാൻ ക്രമീകരണത്തിൽ iCloud സ്റ്റോറേജിൽ ഇടം ഒഴിവാക്കുക. നിങ്ങളുടെ ചെക്ക്‌ലിസ്റ്റുകൾ ഈ ഉപകരണത്തിൽ സംരക്ഷിച്ചിട്ടുണ്ട്."
           }
         },
         "mr" : {
@@ -41011,7 +41011,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eşzamanlamayı sürdürmek için Ayarlar'da iCloud depolama alanı açın. Kontrol listeleriniz bu aygıtta kayıtlı."
+            "value" : "Eşzamanlamayı sürdürmek için Ayarlar'da iCloud depolama alanında yer açın. Kontrol listeleriniz bu aygıtta kayıtlı."
           }
         },
         "uk" : {
@@ -41167,7 +41167,7 @@
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaši su popisi spremljeni na ovom uređaju, a sinkronizacija će se nastaviti pokušavati. Ako se ne riješi, pošaljite povratne informacije iz izbornika."
+            "value" : "Vaši popisi spremljeni su na ovom uređaju, a pokušaji sinkronizacije nastavit će se. Ako se problem ne riješi, pošaljite povratne informacije iz izbornika."
           }
         },
         "hu" : {
@@ -41275,7 +41275,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваши чек-листы сохранены на этом устройстве, синхронизация будет повторяться. Если это не пройдёт, отправьте отзыв из меню."
+            "value" : "Ваши чек-листы сохранены на этом устройстве, а синхронизация продолжит попытки. Если проблема не исчезнет, отправьте отзыв через меню."
           }
         },
         "sk" : {
@@ -41287,7 +41287,7 @@
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaši kontrolni seznami so shranjeni v tej napravi, sinhronizacija pa se bo še poskušala. Če se težava ne reši, pošljite povratne informacije prek menija."
+            "value" : "Vaši kontrolni seznami so shranjeni v tej napravi, sinhronizacija pa bo še naprej poskušala znova. Če se težava ne odpravi, pošljite povratne informacije prek menija."
           }
         },
         "sv" : {
@@ -41323,7 +41323,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваші чеклісти збережено на цьому пристрої, а синхронізація продовжуватиме спроби. Якщо це не минеться, надішліть відгук із меню."
+            "value" : "Ваші чеклісти збережено на цьому пристрої, а синхронізація повторюватиме спроби. Якщо проблема не зникне, надішліть відгук із меню."
           }
         },
         "ur" : {
@@ -42235,7 +42235,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud İlgi Bekliyor"
+            "value" : "iCloud'da İşlem Gerekiyor"
           }
         },
         "uk" : {
@@ -43123,7 +43123,7 @@
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pomnilnik iCloud je poln"
+            "value" : "Shramba iCloud je polna"
           }
         },
         "sv" : {
@@ -43195,7 +43195,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "توقفت مزامنة iCloud"
+            "value" : "انقطعت مزامنة iCloud"
           }
         },
         "bn" : {
@@ -44491,7 +44491,7 @@
         "es-MX" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No se pudo guardar. Es posible que tu dispositivo tenga poco espacio."
+            "value" : "No se pudo guardar. Tu dispositivo podría tener poco espacio."
           }
         },
         "fi" : {
@@ -44503,13 +44503,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Échec de l'enregistrement. L'espace de stockage de l'appareil est peut-être insuffisant."
+            "value" : "Échec de l’enregistrement. Votre appareil manque peut-être d’espace."
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Échec de l'enregistrement. L'espace de stockage de l'appareil est peut-être insuffisant."
+            "value" : "Échec de l'enregistrement. Votre appareil manque peut-être d'espace."
           }
         },
         "gu" : {
@@ -44707,7 +44707,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "存储失败。设备存储空间可能不足。"
+            "value" : "保存失败。你的设备存储空间可能不足。"
           }
         },
         "zh-Hant" : {
