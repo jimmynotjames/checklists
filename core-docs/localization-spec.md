@@ -100,7 +100,10 @@ writes them.
 
 Sonnet translates ordinary UI strings. Opus does the glossary, the audits, the App Store metadata, and
 the `sample.*` transcreation. The agent definitions pin this by alias (`sonnet`, `opus`), so each
-agent moves to the newest model in its tier on release; that is deliberate. Every agent runs at
+agent moves to the newest model in its tier on release; that is deliberate. A new model behind
+an alias is not a reason to regenerate: existing strings stay until an audit flags them or a
+systemic prompt or rule change invalidates them. The current baseline is the October 2026 full
+pass (glossary, every UI and `sample.*` string, then a full audit) on Sonnet 5.5 and Opus 5.5. Every agent runs at
 `effort: medium`, which is enough from Opus 5.5 on; do not raise it. Do not "upgrade" a translation
 agent to Opus for a routine string run, and do not downgrade a transcreation agent to save time.
 

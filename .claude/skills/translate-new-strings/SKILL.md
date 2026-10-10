@@ -136,5 +136,5 @@ Ask first; the outputs are handy for inspecting a locale. On a yes:
 python3 scripts/pipeline_tmp.py clean translate
 ```
 
-Regenerating every locale (a model change, a new catalog, recovery) is not this skill:
-`scripts/translate_catalog/README.md`.
+Regenerating every locale (a systemic prompt or rule change, a new catalog, recovery; never a
+model change alone) is not this skill: `scripts/translate_catalog/README.md`.
