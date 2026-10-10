@@ -15,7 +15,10 @@ Roughly 20-30 minutes serially. Screenshots land in `tmp/loc-size-check/`, named
 
 Drives `LocalizationScreenshotCapture` (in `checklistsUITests`) through its
 screens in thirteen locales with Dynamic Type forced to `.xxxLarge`, then exports
-and downscales the attachments.
+and downscales the attachments. The class skips unless the test runner sees
+`RUN_LOCALIZATION_SCREENSHOTS=1`, which `run.sh` passes as
+`TEST_RUNNER_RUN_LOCALIZATION_SCREENSHOTS=1`; running it from Xcode or a bare
+`xcodebuild test` needs that variable too.
 
 The thirteen are chosen for what they stress, not for market size:
 

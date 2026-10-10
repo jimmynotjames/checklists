@@ -45,9 +45,10 @@ if [[ "${WORKERS}" -gt 1 ]]; then
 fi
 
 echo "→ Capturing 13 locales @ xxxLarge (WORKERS=${WORKERS}) …"
-# `|| RC=$?` so a failed run still names its bundle below.
+# `|| RC=$?` so a failed run still names its bundle below. xcodebuild strips the TEST_RUNNER_
+# prefix and hands RUN_LOCALIZATION_SCREENSHOTS to the runner; without it the class skips.
 RC=0
-xcodebuild test \
+TEST_RUNNER_RUN_LOCALIZATION_SCREENSHOTS=1 xcodebuild test \
   -project checklists/checklists.xcodeproj \
   -scheme checklists \
   -destination "${DESTINATION}" \
