@@ -8,7 +8,7 @@
       "name": "Jutranja rutina",
       "items": [
         {
-          "name": "PRIŽGI KAVNI APARAT",
+          "name": "SKUHATI KAVO",
           "isChecked": true
         },
         {
@@ -16,7 +16,7 @@
           "isChecked": true
         },
         {
-          "name": "Promet in vreme",
+          "name": "Promet in vremenska napoved",
           "isChecked": true
         },
         {
@@ -35,24 +35,24 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Nujno za vikend izlet",
+      "name": "Nujno za vikend oddih",
       "items": [
         {
-          "name": "Polnilec za telefon",
+          "name": "Polnilnik za telefon",
           "isChecked": false
         },
         {
           "name": "Denarnica, dokumenti",
-          "notes": "Osebna izkaznica za EU, potni list za dlje, vozniško dovoljenje za vožnjo.",
+          "notes": "Osebna izkaznica, potni list za izven EU, vozniško dovoljenje za vožnjo z avtom ipd.",
           "isChecked": false
         },
         {
-          "name": "Recepti, zdravila, dopolnila",
+          "name": "Recepti, zdravila, vitamini",
           "isChecked": true
         },
         {
           "name": "Toaletna torbica",
-          "notes": "Če letiš: tekočine do 100 ml v prozorni vrečki v ročni prtljagi.",
+          "notes": "Pri letenju: tekočine le v majhni embalaži, v ločeni vrečki v ročni prtljagi.",
           "isChecked": true
         },
         {
@@ -64,11 +64,11 @@
           "isChecked": false
         },
         {
-          "name": "Knjiga, iPad, e-bralnik ...",
+          "name": "Knjiga, iPad, Kindle ...",
           "isChecked": false
         },
         {
-          "name": "Dežnik in vetrovka",
+          "name": "Dežnik, vetrovka",
           "isChecked": false
         },
         {
@@ -94,48 +94,48 @@
       "name": "Kontrolni seznam pred potjo",
       "items": [
         {
-          "name": "Nastavi samodejni odgovor na e-pošti",
+          "name": "Samodejni odgovor v e-pošti",
           "isChecked": true
         },
         {
-          "name": "Pošta: zadrži pošiljke",
+          "name": "Dogovor s sosedom za pošto",
           "isChecked": true
         },
         {
-          "name": "Uredi varstvo za žival",
+          "name": "Varstvo hišnih ljubljenčkov",
           "isChecked": true
         },
         {
-          "name": "Zalivanje rož, varstvo stanovanja",
+          "name": "Zalivanje rož, nekdo naj pazi na hišo",
           "isChecked": false
         },
         {
-          "name": "Javi odsotnost v šoli",
+          "name": "Sporočiti odsotnost v šoli",
           "isChecked": false
         },
         {
-          "name": "Pošlji načrt poti prijatelju ali sorodniku",
+          "name": "Poslati načrt poti bližnjim",
           "isChecked": false
         },
         {
-          "name": "Izklopi naprave iz vtičnic",
+          "name": "Izklopiti naprave iz vtičnic",
           "isChecked": false
         },
         {
-          "name": "Pospravi dragocenosti",
+          "name": "Pospraviti dragocenosti",
           "isChecked": false
         },
         {
-          "name": "Ugasni gretje ali klimo",
-          "notes": "Ali nastavi minimalno temperaturo, da cevi ne zmrznejo.",
+          "name": "Izklopiti ogrevanje ali klimo",
+          "notes": "Ali na minimum, da cevi ne zmrznejo.",
           "isChecked": false
         },
         {
-          "name": "Preveri štedilnik in pečico",
+          "name": "Preveriti štedilnik in pečico",
           "isChecked": false
         },
         {
-          "name": "Zakleni vrata in okna",
+          "name": "Zakleniti vrata in okna",
           "isChecked": false
         }
       ]

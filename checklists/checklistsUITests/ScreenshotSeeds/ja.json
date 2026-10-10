@@ -8,7 +8,7 @@
       "name": "朝のルーティン",
       "items": [
         {
-          "name": "【コーヒーメーカーをセット】",
+          "name": "お湯を沸かす",
           "isChecked": true
         },
         {
@@ -16,11 +16,11 @@
           "isChecked": true
         },
         {
-          "name": "交通情報と天気予報",
+          "name": "天気予報と運行情報",
           "isChecked": true
         },
         {
-          "name": "朝食",
+          "name": "朝ごはん",
           "isChecked": true
         },
         {
@@ -28,7 +28,7 @@
           "isChecked": false
         },
         {
-          "name": "Xで政治論争に参戦",
+          "name": "Xで政治にもの申す",
           "isChecked": true
         }
       ]
@@ -43,7 +43,7 @@
         },
         {
           "name": "財布・身分証",
-          "notes": "免許証（レンタカー用）、マイナ保険証、海外ならパスポート",
+          "notes": "運転免許証、マイナンバーカード、海外ならパスポートなど。",
           "isChecked": false
         },
         {
@@ -52,7 +52,7 @@
         },
         {
           "name": "洗面用具ポーチ",
-          "notes": "飛行機の機内持ち込みは、液体を小分けにして透明の袋にまとめます。",
+          "notes": "機内持ち込みの液体は100ml以下の容器にして透明な袋へ。",
           "isChecked": true
         },
         {
@@ -64,11 +64,11 @@
           "isChecked": false
         },
         {
-          "name": "本、iPad、Kindleなど",
+          "name": "本・iPad・Kindle…",
           "isChecked": false
         },
         {
-          "name": "雨具・折りたたみ傘",
+          "name": "折りたたみ傘・上着",
           "isChecked": false
         },
         {
@@ -91,7 +91,7 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "出発前のチェックリスト",
+      "name": "旅行前チェックリスト",
       "items": [
         {
           "name": "メールの自動返信を設定",
@@ -106,7 +106,7 @@
           "isChecked": true
         },
         {
-          "name": "植物の水やりと留守番を手配",
+          "name": "植物の水やりを頼む",
           "isChecked": false
         },
         {
@@ -114,7 +114,7 @@
           "isChecked": false
         },
         {
-          "name": "旅程を家族や友人に共有",
+          "name": "家族や友人に旅程を伝える",
           "isChecked": false
         },
         {
@@ -126,12 +126,12 @@
           "isChecked": false
         },
         {
-          "name": "暖房・冷房を切る",
-          "notes": "寒い時期は、凍結防止のため水道の水抜きをしておきます。",
+          "name": "エアコン・暖房を切る",
+          "notes": "寒冷地なら水抜きをして水道管の凍結を防ぐ。",
           "isChecked": false
         },
         {
-          "name": "コンロとオーブンの消し忘れを確認",
+          "name": "コンロとガスの元栓を確認",
           "isChecked": false
         },
         {

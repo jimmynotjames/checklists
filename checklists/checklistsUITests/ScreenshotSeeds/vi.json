@@ -16,7 +16,7 @@
           "isChecked": true
         },
         {
-          "name": "Xem giao thông, thời tiết",
+          "name": "Xem tin giao thông, thời tiết",
           "isChecked": true
         },
         {
@@ -28,31 +28,31 @@
           "isChecked": false
         },
         {
-          "name": "Cãi chính trị trên Facebook",
+          "name": "Cãi nhau trên Facebook",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Đồ cần mang đi cuối tuần",
+      "name": "Đồ mang đi cuối tuần",
       "items": [
         {
           "name": "Sạc điện thoại",
           "isChecked": false
         },
         {
-          "name": "Ví, giấy tờ",
-          "notes": "Căn cước để bay trong nước, hộ chiếu khi ra nước ngoài, bằng lái nếu tự lái xe.",
+          "name": "Ví, căn cước",
+          "notes": "Đủ giấy tờ (căn cước khi bay, hộ chiếu nếu ra nước ngoài, bằng lái nếu tự lái xe...)",
           "isChecked": false
         },
         {
-          "name": "Đơn thuốc, thuốc, thực phẩm chức năng",
+          "name": "Thuốc, thực phẩm chức năng",
           "isChecked": true
         },
         {
-          "name": "Đồ vệ sinh cá nhân",
-          "notes": "Nếu bay, chất lỏng nhỏ để riêng túi trong hành lý xách tay.",
+          "name": "Túi đồ vệ sinh cá nhân",
+          "notes": "Nếu đi máy bay, chất lỏng loại nhỏ để túi riêng trong hành lý xách tay.",
           "isChecked": true
         },
         {
@@ -76,7 +76,7 @@
           "isChecked": true
         },
         {
-          "name": "Mũ chống nắng",
+          "name": "Nón rộng vành",
           "isChecked": true
         },
         {
@@ -84,58 +84,58 @@
           "isChecked": false
         },
         {
-          "name": "Dép đi bể bơi",
+          "name": "Dép đi biển",
           "isChecked": false
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Kiểm tra trước chuyến đi",
+      "name": "Kiểm tra trước khi đi",
       "items": [
         {
-          "name": "Bật trả lời tự động cho email",
+          "name": "Cài trả lời email tự động",
           "isChecked": true
         },
         {
-          "name": "Nhờ hàng xóm nhận thư, hàng",
+          "name": "Nhờ hàng xóm nhận bưu phẩm",
           "isChecked": true
         },
         {
-          "name": "Nhờ người trông thú cưng",
+          "name": "Nhờ người chăm thú cưng",
           "isChecked": true
         },
         {
-          "name": "Nhờ người tưới cây, trông nhà",
+          "name": "Nhờ tưới cây, trông nhà",
           "isChecked": false
         },
         {
-          "name": "Xin phép nghỉ học cho con",
+          "name": "Xin cho con nghỉ học",
           "isChecked": false
         },
         {
-          "name": "Gửi lịch trình cho người thân tin cậy",
+          "name": "Gửi lịch trình cho người thân",
           "isChecked": false
         },
         {
-          "name": "Rút điện các thiết bị",
+          "name": "Rút phích điện",
           "isChecked": false
         },
         {
-          "name": "Cất đồ có giá trị",
+          "name": "Cất kỹ đồ quý",
           "isChecked": false
         },
         {
-          "name": "Tắt điều hòa và quạt",
-          "notes": "Nhớ tắt cả bình nóng lạnh, chỉ để tủ lạnh chạy.",
+          "name": "Tắt điều hòa, quạt",
+          "notes": "Tắt luôn bình nóng lạnh, ngắt cầu dao nếu đi lâu ngày.",
           "isChecked": false
         },
         {
-          "name": "Kiểm tra bếp, lò đã tắt",
+          "name": "Khóa ga, tắt bếp",
           "isChecked": false
         },
         {
-          "name": "Khóa cửa ra vào và cửa sổ",
+          "name": "Khóa cửa và cửa sổ",
           "isChecked": false
         }
       ]

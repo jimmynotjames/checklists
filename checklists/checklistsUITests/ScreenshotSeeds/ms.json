@@ -8,7 +8,7 @@
       "name": "Rutin Pagi",
       "items": [
         {
-          "name": "BANCUH KOPI DULU",
+          "name": "BANCUH KOPI",
           "isChecked": true
         },
         {
@@ -16,7 +16,7 @@
           "isChecked": true
         },
         {
-          "name": "Laporan trafik dan cuaca",
+          "name": "Semak trafik dan cuaca",
           "isChecked": true
         },
         {
@@ -28,7 +28,7 @@
           "isChecked": false
         },
         {
-          "name": "Berbalah politik di Facebook",
+          "name": "Bertekak politik di Facebook",
           "isChecked": true
         }
       ]
@@ -42,17 +42,17 @@
           "isChecked": false
         },
         {
-          "name": "Dompet/IC",
-          "notes": "MyKad untuk penerbangan domestik, pasport ke luar negara, lesen memandu untuk pemanduan jauh.",
+          "name": "Dompet/MyKad",
+          "notes": "MyKad, pasport untuk ke luar negara, lesen memandu untuk balik kampung, dll.",
           "isChecked": false
         },
         {
-          "name": "Ubat preskripsi, ubat biasa, suplemen",
+          "name": "Ubat-ubatan, vitamin",
           "isChecked": true
         },
         {
-          "name": "Beg barang mandian",
-          "notes": "Cecair kecil sahaja dalam beg berasingan jika naik kapal terbang dan bawa ke kabin.",
+          "name": "Beg peralatan mandi",
+          "notes": "Jika naik kapal terbang: cecair kecil dalam beg berasingan, bawa dalam kabin.",
           "isChecked": true
         },
         {
@@ -68,7 +68,7 @@
           "isChecked": false
         },
         {
-          "name": "Payung, baju hujan",
+          "name": "Payung/baju hujan",
           "isChecked": false
         },
         {
@@ -84,41 +84,41 @@
           "isChecked": false
         },
         {
-          "name": "Selipar kolam",
+          "name": "Selipar",
           "isChecked": false
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Senarai Semak Sebelum Bertolak",
+      "name": "Sebelum Bercuti",
       "items": [
         {
-          "name": "Pasang auto-balas untuk e-mel",
+          "name": "Pasang balasan automatik e-mel",
           "isChecked": true
         },
         {
-          "name": "Minta jiran kutip surat",
+          "name": "Minta jiran ambil surat/parsel",
           "isChecked": true
         },
         {
-          "name": "Atur jagaan haiwan",
+          "name": "Atur jagaan haiwan peliharaan",
           "isChecked": true
         },
         {
-          "name": "Atur jagaan pokok dan rumah",
+          "name": "Atur siram pokok, jaga rumah",
           "isChecked": false
         },
         {
-          "name": "Uruskan cuti sekolah anak",
+          "name": "Surat cuti sekolah anak",
           "isChecked": false
         },
         {
-          "name": "Hantar jadual perjalanan kepada kawan/saudara",
+          "name": "Kongsi jadual perjalanan dengan keluarga/kawan",
           "isChecked": false
         },
         {
-          "name": "Cabut plag perkakas",
+          "name": "Cabut plag elektrik",
           "isChecked": false
         },
         {
@@ -126,12 +126,12 @@
           "isChecked": false
         },
         {
-          "name": "Tutup aircond dan kipas",
-          "notes": "Atau biarkan kipas ekzos hidup supaya rumah tak lembap.",
+          "name": "Tutup aircond, pemanas air",
+          "notes": "Tutup juga injap air utama untuk elak kebocoran.",
           "isChecked": false
         },
         {
-          "name": "Pastikan dapur, ketuhar tutup",
+          "name": "Tutup dapur dan kepala gas",
           "isChecked": false
         },
         {

@@ -28,14 +28,14 @@
           "isChecked": false
         },
         {
-          "name": "네이버 댓글로 정치 논쟁",
+          "name": "네이버 댓글로 정치 싸움",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "주말 여행 필수품",
+      "name": "주말 여행 준비물",
       "items": [
         {
           "name": "휴대폰 충전기",
@@ -43,7 +43,7 @@
         },
         {
           "name": "지갑/신분증",
-          "notes": "국내선은 신분증, 해외는 여권, 운전할 거면 운전면허증까지 챙겨요.",
+          "notes": "신분증 챙기기 (국내선은 주민등록증, 해외는 여권, 렌터카는 운전면허증 등)",
           "isChecked": false
         },
         {
@@ -52,7 +52,7 @@
         },
         {
           "name": "세면도구 파우치",
-          "notes": "기내에 들고 탈 땐 액체류를 100ml 이하로 소분해 따로 담아요.",
+          "notes": "비행기 탈 땐 기내 반입 액체류 100ml 이하로 지퍼백에 따로.",
           "isChecked": true
         },
         {
@@ -64,11 +64,11 @@
           "isChecked": false
         },
         {
-          "name": "책, iPad, 전자책 리더기…",
+          "name": "책, iPad, 전자책...",
           "isChecked": false
         },
         {
-          "name": "우산, 바람막이",
+          "name": "우산·바람막이",
           "isChecked": false
         },
         {
@@ -76,7 +76,7 @@
           "isChecked": true
         },
         {
-          "name": "챙 넓은 모자",
+          "name": "챙 모자",
           "isChecked": true
         },
         {
@@ -91,18 +91,18 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "출발 전 체크리스트",
+      "name": "여행 전 체크리스트",
       "items": [
         {
-          "name": "이메일 자동 회신 설정",
+          "name": "이메일 자동 응답 설정",
           "isChecked": true
         },
         {
-          "name": "택배·우편물 배송 미루기",
+          "name": "신문·우유 배달 중지",
           "isChecked": true
         },
         {
-          "name": "반려동물 돌봄 맡기기",
+          "name": "반려동물 맡기기",
           "isChecked": true
         },
         {
@@ -110,28 +110,28 @@
           "isChecked": false
         },
         {
-          "name": "학교 교외체험학습 신청",
+          "name": "체험학습 신청서 내기",
           "isChecked": false
         },
         {
-          "name": "가족이나 친구에게 여행 일정 공유",
+          "name": "가족에게 여행 일정 공유",
           "isChecked": false
         },
         {
-          "name": "가전 플러그 뽑기",
+          "name": "가전제품 플러그 뽑기",
           "isChecked": false
         },
         {
-          "name": "귀중품 정리해 두기",
+          "name": "귀중품 따로 보관",
           "isChecked": false
         },
         {
           "name": "보일러·에어컨 끄기",
-          "notes": "겨울이면 보일러를 외출 모드로 두면 수도관 동파를 막을 수 있어요.",
+          "notes": "겨울엔 동파 방지로 보일러 외출 모드 설정.",
           "isChecked": false
         },
         {
-          "name": "가스레인지·오븐 껐는지 확인",
+          "name": "가스 밸브 잠그기",
           "isChecked": false
         },
         {

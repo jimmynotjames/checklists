@@ -16,7 +16,7 @@
           "isChecked": true
         },
         {
-          "name": "Mirar el temps i el trànsit",
+          "name": "El temps i el trànsit",
           "isChecked": true
         },
         {
@@ -35,24 +35,24 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Bàsics per al cap de setmana",
+      "name": "Escapada de cap de setmana",
       "items": [
         {
           "name": "Carregador del mòbil",
           "isChecked": false
         },
         {
-          "name": "Cartera i DNI",
-          "notes": "DNI per volar, passaport si surts de la UE i carnet de conduir si vas amb cotxe.",
+          "name": "Cartera/DNI",
+          "notes": "DNI per volar dins la UE, passaport per fora, carnet de conduir per al cotxe.",
           "isChecked": false
         },
         {
-          "name": "Receptes, medicaments, vitamines",
+          "name": "Receptes, medicaments, suplements",
           "isChecked": true
         },
         {
           "name": "Necesser",
-          "notes": "Líquids petits, en una bossa a part si vas amb avió i equipatge de mà.",
+          "notes": "Si vas en avió amb maleta de mà, líquids petits en bossa a part.",
           "isChecked": true
         },
         {
@@ -68,7 +68,7 @@
           "isChecked": false
         },
         {
-          "name": "Roba de pluja i vent",
+          "name": "Paraigua/tallavents",
           "isChecked": false
         },
         {
@@ -76,7 +76,7 @@
           "isChecked": true
         },
         {
-          "name": "Barret de sol",
+          "name": "Barret o gorra",
           "isChecked": true
         },
         {
@@ -91,22 +91,22 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Llista de comprovació de viatge",
+      "name": "Llista abans de marxar",
       "items": [
         {
-          "name": "Activar la resposta automàtica al correu",
+          "name": "Resposta automàtica al correu",
           "isChecked": true
         },
         {
-          "name": "Que un veí buidi la bústia",
+          "name": "Bústia: que la buidi un veí",
           "isChecked": true
         },
         {
-          "name": "Qui cuida els animals",
+          "name": "Qui cuidarà les mascotes",
           "isChecked": true
         },
         {
-          "name": "Qui rega les plantes i mira el pis",
+          "name": "Plantes i qui vigila la casa",
           "isChecked": false
         },
         {
@@ -118,16 +118,16 @@
           "isChecked": false
         },
         {
-          "name": "Desendollar els aparells",
+          "name": "Desendollar aparells",
           "isChecked": false
         },
         {
-          "name": "Guardar les coses de valor",
+          "name": "Guardar els objectes de valor",
           "isChecked": false
         },
         {
-          "name": "Apagar la calefacció o l'aire",
-          "notes": "O deixar la calefacció al mínim si marxes a l'hivern.",
+          "name": "Apagar calefacció o aire",
+          "notes": "O termòstat al mínim. Tancar la clau de pas de l'aigua.",
           "isChecked": false
         },
         {

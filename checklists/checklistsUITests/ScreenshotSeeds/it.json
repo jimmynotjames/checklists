@@ -5,10 +5,10 @@
   "checklists": [
     {
       "id": "C4EC1157-0000-4000-A000-000000000001",
-      "name": "Routine mattutina",
+      "name": "Routine del mattino",
       "items": [
         {
-          "name": "ACCENDI LA MOKA",
+          "name": "MOKA SUL FUOCO",
           "isChecked": true
         },
         {
@@ -16,7 +16,7 @@
           "isChecked": true
         },
         {
-          "name": "Traffico e meteo",
+          "name": "Meteo e traffico",
           "isChecked": true
         },
         {
@@ -35,24 +35,24 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "L'essenziale per il weekend",
+      "name": "Weekend fuori porta",
       "items": [
         {
           "name": "Caricabatterie",
           "isChecked": false
         },
         {
-          "name": "Portafoglio/documenti",
-          "notes": "Carta d'identità per volare in UE, passaporto fuori UE, patente per l'auto.",
+          "name": "Portafoglio, documenti",
+          "notes": "Documenti giusti (carta d'identità, passaporto fuori UE, patente per l'auto, ecc.)",
           "isChecked": false
         },
         {
-          "name": "Ricette, medicine, integratori",
+          "name": "Ricette, farmaci, integratori",
           "isChecked": true
         },
         {
-          "name": "Beauty case",
-          "notes": "Liquidi piccoli in busta trasparente se voli con il bagaglio a mano.",
+          "name": "Necessaire",
+          "notes": "Liquidi in piccoli flaconi, in una bustina a parte nel bagaglio a mano se si vola.",
           "isChecked": true
         },
         {
@@ -68,7 +68,7 @@
           "isChecked": false
         },
         {
-          "name": "Antipioggia e antivento",
+          "name": "K-way, ombrello",
           "isChecked": false
         },
         {
@@ -76,45 +76,45 @@
           "isChecked": true
         },
         {
-          "name": "Cappello da sole",
+          "name": "Cappellino",
           "isChecked": true
         },
         {
-          "name": "Costume da bagno",
+          "name": "Costume",
           "isChecked": false
         },
         {
-          "name": "Ciabatte da piscina",
+          "name": "Ciabatte",
           "isChecked": false
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Elenco pre-partenza",
+      "name": "Prima di partire",
       "items": [
         {
-          "name": "Risposta automatica alle email",
+          "name": "Email: risposta automatica",
           "isChecked": true
         },
         {
-          "name": "Posta: chiedere al vicino",
+          "name": "Posta: la ritira il vicino",
           "isChecked": true
         },
         {
-          "name": "Chi tiene gli animali",
+          "name": "Animali: chi se ne occupa",
           "isChecked": true
         },
         {
-          "name": "Chi innaffia le piante e bada a casa",
+          "name": "Piante e casa: chi ci pensa",
           "isChecked": false
         },
         {
-          "name": "Avvisare la scuola dell'assenza",
+          "name": "Avvisare la scuola",
           "isChecked": false
         },
         {
-          "name": "Mandare l'itinerario a un amico o parente fidato",
+          "name": "Itinerario a un parente o amico",
           "isChecked": false
         },
         {
@@ -122,16 +122,16 @@
           "isChecked": false
         },
         {
-          "name": "Mettere via le cose di valore",
+          "name": "Nascondere i preziosi",
           "isChecked": false
         },
         {
-          "name": "Spegnere riscaldamento o clima",
-          "notes": "Oppure imposta il minimo per non far gelare i tubi.",
+          "name": "Spegnere caldaia o clima",
+          "notes": "Oppure caldaia in antigelo, per non far gelare i tubi.",
           "isChecked": false
         },
         {
-          "name": "Controllare fornelli e forno spenti",
+          "name": "Gas chiuso, forno spento",
           "isChecked": false
         },
         {

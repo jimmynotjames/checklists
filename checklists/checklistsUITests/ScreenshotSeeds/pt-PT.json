@@ -12,7 +12,7 @@
           "isChecked": true
         },
         {
-          "name": "Ioga/meditação",
+          "name": "Yoga/meditação",
           "isChecked": true
         },
         {
@@ -35,15 +35,15 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Essenciais da escapadinha",
+      "name": "Escapadinha de fim de semana",
       "items": [
         {
           "name": "Carregador do telemóvel",
           "isChecked": false
         },
         {
-          "name": "Carteira/CC",
-          "notes": "Cartão de Cidadão (passaporte fora da UE, carta de condução se fores de carro).",
+          "name": "Carteira e documentos",
+          "notes": "Cartão de Cidadão (chega na UE), passaporte fora da UE, carta de condução para ir de carro.",
           "isChecked": false
         },
         {
@@ -51,8 +51,8 @@
           "isChecked": true
         },
         {
-          "name": "Necessaire",
-          "notes": "Se fores de avião, líquidos pequenos em saco à parte na bagagem de mão.",
+          "name": "Nécessaire",
+          "notes": "Líquidos até 100 ml num saco à parte na bagagem de mão, se for de avião.",
           "isChecked": true
         },
         {
@@ -76,7 +76,7 @@
           "isChecked": true
         },
         {
-          "name": "Chapéu de sol",
+          "name": "Chapéu ou boné",
           "isChecked": true
         },
         {
@@ -91,22 +91,22 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Lista de verificação de viagem",
+      "name": "Lista antes da viagem",
       "items": [
         {
           "name": "Ativar resposta automática no email",
           "isChecked": true
         },
         {
-          "name": "Vizinho: tirar o correio",
+          "name": "Vizinho: recolher o correio",
           "isChecked": true
         },
         {
-          "name": "Quem fica com os animais",
+          "name": "Quem trata dos animais",
           "isChecked": true
         },
         {
-          "name": "Quem rega as plantas e vigia a casa",
+          "name": "Rega das plantas, vigiar a casa",
           "isChecked": false
         },
         {
@@ -114,11 +114,11 @@
           "isChecked": false
         },
         {
-          "name": "Enviar o itinerário a alguém de confiança",
+          "name": "Enviar itinerário a familiar ou amigo",
           "isChecked": false
         },
         {
-          "name": "Desligar aparelhos da tomada",
+          "name": "Desligar aparelhos das tomadas",
           "isChecked": false
         },
         {
@@ -126,12 +126,12 @@
           "isChecked": false
         },
         {
-          "name": "Desligar aquecimento/AC",
-          "notes": "Ou deixa no mínimo para a casa não ganhar humidade.",
+          "name": "Desligar aquecedor ou AC",
+          "notes": "Desligar também o esquentador e fechar o gás.",
           "isChecked": false
         },
         {
-          "name": "Verificar fogão e forno desligados",
+          "name": "Fogão e forno desligados",
           "isChecked": false
         },
         {

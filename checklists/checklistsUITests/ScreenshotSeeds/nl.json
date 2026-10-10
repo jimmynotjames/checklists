@@ -16,7 +16,7 @@
           "isChecked": true
         },
         {
-          "name": "Verkeer en weerbericht",
+          "name": "Files en weerbericht",
           "isChecked": true
         },
         {
@@ -24,7 +24,7 @@
           "isChecked": true
         },
         {
-          "name": "Dagboek bijhouden",
+          "name": "Dagboek schrijven",
           "isChecked": false
         },
         {
@@ -35,7 +35,7 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Weekendje weg: inpaklijst",
+      "name": "Weekendje weg",
       "items": [
         {
           "name": "Telefoonoplader",
@@ -43,16 +43,16 @@
         },
         {
           "name": "Portemonnee/ID",
-          "notes": "Geldig ID: ID-kaart of paspoort voor het buitenland, rijbewijs voor de auto.",
+          "notes": "Paspoort of ID-kaart (ook voor vliegen binnen Europa), rijbewijs voor de auto.",
           "isChecked": false
         },
         {
-          "name": "Recepten, medicijnen, supplementen",
+          "name": "Medicijnen, recepten, vitamines",
           "isChecked": true
         },
         {
           "name": "Toilettas",
-          "notes": "Vloeistoffen alleen klein en in een apart zakje in je handbagage.",
+          "notes": "Vliegen met handbagage: kleine flesjes in een apart zakje.",
           "isChecked": true
         },
         {
@@ -68,7 +68,7 @@
           "isChecked": false
         },
         {
-          "name": "Regenjas en paraplu",
+          "name": "Regenjas, windjack",
           "isChecked": false
         },
         {
@@ -98,27 +98,27 @@
           "isChecked": true
         },
         {
-          "name": "Buren: post uit de bus halen",
+          "name": "Buren vragen voor post",
           "isChecked": true
         },
         {
-          "name": "Huisdieroppas regelen",
+          "name": "Opvang huisdier regelen",
           "isChecked": true
         },
         {
-          "name": "Plantenzorg en huisoppas regelen",
+          "name": "Planten en huisoppas regelen",
           "isChecked": false
         },
         {
-          "name": "School: verlof aanvragen",
+          "name": "Verlof school aanvragen",
           "isChecked": false
         },
         {
-          "name": "Reisschema naar vriend of familielid sturen",
+          "name": "Reisschema naar familie of vriend sturen",
           "isChecked": false
         },
         {
-          "name": "Stekkers eruit halen",
+          "name": "Stekkers eruit",
           "isChecked": false
         },
         {
@@ -126,12 +126,12 @@
           "isChecked": false
         },
         {
-          "name": "Verwarming uit",
-          "notes": "Of op de vorstvrije stand tegen bevroren leidingen.",
+          "name": "Verwarming lager zetten",
+          "notes": "Of thermostaat op vorstbeveiliging, tegen bevroren leidingen.",
           "isChecked": false
         },
         {
-          "name": "Fornuis en oven uit",
+          "name": "Kookplaat en oven uit",
           "isChecked": false
         },
         {

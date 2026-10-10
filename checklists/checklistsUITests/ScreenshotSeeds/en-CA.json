@@ -8,7 +8,7 @@
       "name": "Morning Routine",
       "items": [
         {
-          "name": "START COFFEE MAKER",
+          "name": "START THE COFFEE",
           "isChecked": true
         },
         {
@@ -16,7 +16,7 @@
           "isChecked": true
         },
         {
-          "name": "Traffic and weather reports",
+          "name": "Traffic and weather",
           "isChecked": true
         },
         {
@@ -43,16 +43,16 @@
         },
         {
           "name": "Wallet/ID",
-          "notes": "Proper ID (photo ID for flights, passport for the border, driver's licence for a road trip).",
+          "notes": "Proper ID (photo ID for flights, passport for the U.S. or abroad, driver's licence for road trips, etc.)",
           "isChecked": false
         },
         {
-          "name": "Prescriptions, medicines, supplements",
+          "name": "Prescriptions, medications, vitamins",
           "isChecked": true
         },
         {
-          "name": "Toiletries bag",
-          "notes": "Small liquids only, in a separate bag if flying carry-on.",
+          "name": "Toiletry bag",
+          "notes": "If flying carry-on: liquids 100 mL or less, in one clear resealable bag.",
           "isChecked": true
         },
         {
@@ -64,11 +64,11 @@
           "isChecked": false
         },
         {
-          "name": "Book, iPad, Kindle...",
+          "name": "Book, iPad, Kobo...",
           "isChecked": false
         },
         {
-          "name": "Rain/wind gear",
+          "name": "Rain jacket, windbreaker",
           "isChecked": false
         },
         {
@@ -80,11 +80,11 @@
           "isChecked": true
         },
         {
-          "name": "Swimsuit",
+          "name": "Bathing suit",
           "isChecked": false
         },
         {
-          "name": "Water shoes",
+          "name": "Flip-flops",
           "isChecked": false
         }
       ]
@@ -94,7 +94,7 @@
       "name": "Pre-Trip Checklist",
       "items": [
         {
-          "name": "Set up auto-reply on email accounts",
+          "name": "Set up email auto-replies",
           "isChecked": true
         },
         {
@@ -110,11 +110,11 @@
           "isChecked": false
         },
         {
-          "name": "School absence arrangements",
+          "name": "Tell school about absence",
           "isChecked": false
         },
         {
-          "name": "Send travel itineraries to trusted friend/relative",
+          "name": "Send itinerary to a trusted friend/relative",
           "isChecked": false
         },
         {
@@ -122,12 +122,12 @@
           "isChecked": false
         },
         {
-          "name": "Stow away valuables",
+          "name": "Put away valuables",
           "isChecked": false
         },
         {
-          "name": "Turn off furnace or A/C",
-          "notes": "Or set the thermostat low to keep pipes from freezing.",
+          "name": "Turn down heat or turn off A/C",
+          "notes": "In winter, keep the thermostat high enough that pipes don't freeze.",
           "isChecked": false
         },
         {

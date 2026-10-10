@@ -5,10 +5,10 @@
   "checklists": [
     {
       "id": "C4EC1157-0000-4000-A000-000000000001",
-      "name": "Aamurutiinit",
+      "name": "Aamurutiini",
       "items": [
         {
-          "name": "KEITÄ KAHVIT",
+          "name": "KAHVINKEITIN PÄÄLLE",
           "isChecked": true
         },
         {
@@ -16,11 +16,11 @@
           "isChecked": true
         },
         {
-          "name": "Liikenne- ja säätiedot",
+          "name": "Sää ja uutiset",
           "isChecked": true
         },
         {
-          "name": "Aamiainen",
+          "name": "Aamupala",
           "isChecked": true
         },
         {
@@ -28,31 +28,31 @@
           "isChecked": false
         },
         {
-          "name": "Riitele politiikasta Suomi24:ssä",
+          "name": "Politiikkavääntöä Facebookissa",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Viikonloppureissun pakkauslista",
+      "name": "Viikonloppureissun tavarat",
       "items": [
         {
           "name": "Puhelimen laturi",
           "isChecked": false
         },
         {
-          "name": "Lompakko/henkilökortti",
-          "notes": "Henkilökortti tai passi (passi EU:n ulkopuolelle), ajokortti automatkalle.",
+          "name": "Lompakko/henkkarit",
+          "notes": "Henkilökortti tai passi lennolle ja ulkomaille, ajokortti automatkalle.",
           "isChecked": false
         },
         {
-          "name": "Reseptit, lääkkeet, vitamiinit",
+          "name": "Lääkkeet ja vitamiinit",
           "isChecked": true
         },
         {
-          "name": "Pesuvälineet",
-          "notes": "Lennolla nesteet pikkupulloissa omassa pussissa käsimatkatavarassa.",
+          "name": "Toilettilaukku",
+          "notes": "Lentäessä nesteet pieninä pakkauksina omaan pussiin käsimatkatavaroihin.",
           "isChecked": true
         },
         {
@@ -64,11 +64,11 @@
           "isChecked": false
         },
         {
-          "name": "Kirja, iPad, lukulaite...",
+          "name": "Kirja, iPad, lukulaite…",
           "isChecked": false
         },
         {
-          "name": "Sade- ja tuulivaatteet",
+          "name": "Sadevaatteet",
           "isChecked": false
         },
         {
@@ -76,7 +76,7 @@
           "isChecked": true
         },
         {
-          "name": "Lippalakki",
+          "name": "Lippis",
           "isChecked": true
         },
         {
@@ -84,58 +84,58 @@
           "isChecked": false
         },
         {
-          "name": "Uimatossut",
+          "name": "Varvassandaalit",
           "isChecked": false
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Lähtötarkistuslista",
+      "name": "Ennen matkaa",
       "items": [
         {
-          "name": "Laita automaattivastaus sähköpostiin",
+          "name": "Sähköpostin poissaoloviesti",
           "isChecked": true
         },
         {
-          "name": "Tilaa postin säilytys",
+          "name": "Postinjakelu tauolle",
           "isChecked": true
         },
         {
-          "name": "Järjestä lemmikinhoito",
+          "name": "Lemmikin hoito",
           "isChecked": true
         },
         {
-          "name": "Järjestä kukkien kastelu ja kodinvahti",
+          "name": "Kasvien kastelu, talonvahti",
           "isChecked": false
         },
         {
-          "name": "Ilmoita poissaolo Wilmassa",
+          "name": "Poissaoloilmoitus Wilmaan",
           "isChecked": false
         },
         {
-          "name": "Lähetä matkasuunnitelma läheiselle",
+          "name": "Matkasuunnitelma läheiselle",
           "isChecked": false
         },
         {
-          "name": "Irrota laitteet pistorasiasta",
+          "name": "Pistokkeet seinästä",
           "isChecked": false
         },
         {
-          "name": "Piilota arvoesineet",
+          "name": "Arvoesineet piiloon",
           "isChecked": false
         },
         {
-          "name": "Sammuta lämmitys",
-          "notes": "Tai jätä peruslämpö päälle, etteivät putket jäädy.",
+          "name": "Lämmitys pienemmälle",
+          "notes": "Talvella ei kokonaan pois, etteivät putket jäädy.",
           "isChecked": false
         },
         {
-          "name": "Tarkista liesi ja uuni",
+          "name": "Liesi ja uuni pois päältä",
           "isChecked": false
         },
         {
-          "name": "Lukitse ovet, sulje ikkunat",
+          "name": "Ovet ja ikkunat lukkoon",
           "isChecked": false
         }
       ]

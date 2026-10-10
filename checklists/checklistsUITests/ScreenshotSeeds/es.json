@@ -16,11 +16,11 @@
           "isChecked": true
         },
         {
-          "name": "Ver el tráfico y el tiempo",
+          "name": "Tráfico y el tiempo",
           "isChecked": true
         },
         {
-          "name": "Desayunar",
+          "name": "Desayuno",
           "isChecked": true
         },
         {
@@ -28,14 +28,14 @@
           "isChecked": false
         },
         {
-          "name": "Discutir de política en X",
+          "name": "Discutir de política en Twitter",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Básicos para una escapada",
+      "name": "Escapada de fin de semana",
       "items": [
         {
           "name": "Cargador del móvil",
@@ -43,16 +43,16 @@
         },
         {
           "name": "Cartera/DNI",
-          "notes": "DNI para volar por Europa, pasaporte fuera y carnet de conducir si vas en coche.",
+          "notes": "DNI o pasaporte para el avión, carné de conducir para el coche, etc.",
           "isChecked": false
         },
         {
-          "name": "Recetas, medicamentos y vitaminas",
+          "name": "Medicinas, recetas, suplementos",
           "isChecked": true
         },
         {
           "name": "Neceser",
-          "notes": "Líquidos pequeños en bolsa aparte si vuelas con equipaje de mano.",
+          "notes": "En avión con equipaje de mano: líquidos pequeños en bolsa aparte.",
           "isChecked": true
         },
         {
@@ -68,7 +68,7 @@
           "isChecked": false
         },
         {
-          "name": "Chubasquero/paraguas",
+          "name": "Paraguas/chubasquero",
           "isChecked": false
         },
         {
@@ -91,30 +91,30 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Antes de viajar",
+      "name": "Antes de salir de viaje",
       "items": [
         {
-          "name": "Poner respuesta automática en el correo",
+          "name": "Respuesta automática en el correo",
           "isChecked": true
         },
         {
-          "name": "Vecino: recoger el correo",
+          "name": "Vecino: vaciar el buzón",
           "isChecked": true
         },
         {
-          "name": "Cuidado de las mascotas",
+          "name": "Quién cuida de la mascota",
           "isChecked": true
         },
         {
-          "name": "Riego de plantas y cuidado de la casa",
+          "name": "Plantas y alguien que cuide la casa",
           "isChecked": false
         },
         {
-          "name": "Avisar al colegio de las faltas",
+          "name": "Avisar al cole de la ausencia",
           "isChecked": false
         },
         {
-          "name": "Enviar el itinerario a alguien de confianza",
+          "name": "Pasar el itinerario a un familiar o amigo",
           "isChecked": false
         },
         {
@@ -127,11 +127,11 @@
         },
         {
           "name": "Apagar calefacción o aire",
-          "notes": "O déjala al mínimo si hace mucho frío fuera.",
+          "notes": "O dejarla al mínimo si hiela. Apagar el termo.",
           "isChecked": false
         },
         {
-          "name": "Comprobar fuegos y horno",
+          "name": "Fuegos y horno apagados",
           "isChecked": false
         },
         {

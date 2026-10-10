@@ -16,7 +16,7 @@
           "isChecked": true
         },
         {
-          "name": "Check traffic and weather",
+          "name": "Travel news and weather",
           "isChecked": true
         },
         {
@@ -42,21 +42,21 @@
           "isChecked": false
         },
         {
-          "name": "Wallet/passport",
-          "notes": "Passport for flights and going abroad, driving licence for a road trip.",
+          "name": "Wallet/ID",
+          "notes": "Passport for abroad, photo ID for UK flights, driving licence for a road trip.",
           "isChecked": false
         },
         {
-          "name": "Prescriptions, medicines, supplements",
+          "name": "Prescriptions, medicines, vitamins",
           "isChecked": true
         },
         {
           "name": "Wash bag",
-          "notes": "Liquids in a small clear bag if they're going in your hand luggage.",
+          "notes": "Liquids 100ml max in a clear bag if flying with hand luggage.",
           "isChecked": true
         },
         {
-          "name": "Suncream",
+          "name": "Sun cream",
           "isChecked": false
         },
         {
@@ -76,11 +76,11 @@
           "isChecked": true
         },
         {
-          "name": "Sun hat",
+          "name": "Sunhat",
           "isChecked": true
         },
         {
-          "name": "Swimwear",
+          "name": "Swimming costume",
           "isChecked": false
         },
         {
@@ -94,11 +94,11 @@
       "name": "Pre-Trip Checklist",
       "items": [
         {
-          "name": "Set out-of-office on email accounts",
+          "name": "Set up out-of-office replies",
           "isChecked": true
         },
         {
-          "name": "Royal Mail: hold post",
+          "name": "Royal Mail Keepsafe",
           "isChecked": true
         },
         {
@@ -106,15 +106,15 @@
           "isChecked": true
         },
         {
-          "name": "Plants, house-sitting arrangements",
+          "name": "Plant watering, house-sitting",
           "isChecked": false
         },
         {
-          "name": "School absence arrangements",
+          "name": "School absence request",
           "isChecked": false
         },
         {
-          "name": "Send itinerary to a trusted friend or relative",
+          "name": "Send itinerary to a friend or relative",
           "isChecked": false
         },
         {
@@ -127,11 +127,11 @@
         },
         {
           "name": "Turn off the heating",
-          "notes": "Or leave it on frost protection so the pipes don't freeze.",
+          "notes": "Or set to frost protection so the pipes don't freeze.",
           "isChecked": false
         },
         {
-          "name": "Check the hob and oven are off",
+          "name": "Check hob and oven are off",
           "isChecked": false
         },
         {

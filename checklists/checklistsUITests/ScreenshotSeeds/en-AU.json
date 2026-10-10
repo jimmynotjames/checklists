@@ -8,7 +8,7 @@
       "name": "Morning Routine",
       "items": [
         {
-          "name": "GET THE COFFEE ON",
+          "name": "TURN ON COFFEE MACHINE",
           "isChecked": true
         },
         {
@@ -16,7 +16,7 @@
           "isChecked": true
         },
         {
-          "name": "Traffic and weather reports",
+          "name": "Traffic and weather",
           "isChecked": true
         },
         {
@@ -42,8 +42,8 @@
           "isChecked": false
         },
         {
-          "name": "Wallet and licence",
-          "notes": "Photo ID for domestic flights, passport overseas, licence for the drive.",
+          "name": "Wallet/ID",
+          "notes": "Right ID (licence or passport for flights, passport if overseas, driver's licence for a road trip)",
           "isChecked": false
         },
         {
@@ -52,7 +52,7 @@
         },
         {
           "name": "Toiletries bag",
-          "notes": "Liquids under 100 ml in a clear bag if you're flying international with carry-on.",
+          "notes": "Liquids 100 ml or less in a clear bag in carry-on if flying overseas.",
           "isChecked": true
         },
         {
@@ -68,7 +68,7 @@
           "isChecked": false
         },
         {
-          "name": "Rain jacket, jumper",
+          "name": "Rain jacket",
           "isChecked": false
         },
         {
@@ -76,7 +76,7 @@
           "isChecked": true
         },
         {
-          "name": "Sun hat",
+          "name": "Hat",
           "isChecked": true
         },
         {
@@ -94,7 +94,7 @@
       "name": "Pre-Trip Checklist",
       "items": [
         {
-          "name": "Set up auto-reply on email",
+          "name": "Set out-of-office on email",
           "isChecked": true
         },
         {
@@ -102,11 +102,11 @@
           "isChecked": true
         },
         {
-          "name": "Pet care sorted",
+          "name": "Sort out pet care",
           "isChecked": true
         },
         {
-          "name": "Plant care, house sitting",
+          "name": "Plant watering, house-sitter",
           "isChecked": false
         },
         {
@@ -114,11 +114,11 @@
           "isChecked": false
         },
         {
-          "name": "Send itinerary to a mate or family",
+          "name": "Send itinerary to a trusted friend/family member",
           "isChecked": false
         },
         {
-          "name": "Turn appliances off at the wall",
+          "name": "Unplug appliances",
           "isChecked": false
         },
         {
@@ -127,11 +127,11 @@
         },
         {
           "name": "Turn off aircon or heater",
-          "notes": "Close the blinds as well to keep the heat out.",
+          "notes": "Close blinds and curtains to keep the heat out.",
           "isChecked": false
         },
         {
-          "name": "Check stove and oven are off",
+          "name": "Check stove, oven are off",
           "isChecked": false
         },
         {

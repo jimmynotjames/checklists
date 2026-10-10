@@ -8,7 +8,7 @@
       "name": "Routine du matin",
       "items": [
         {
-          "name": "PARTIR LE CAFÉ",
+          "name": "FAIRE LE CAFÉ",
           "isChecked": true
         },
         {
@@ -24,26 +24,26 @@
           "isChecked": true
         },
         {
-          "name": "Tenir mon journal",
+          "name": "Écrire mon journal",
           "isChecked": false
         },
         {
-          "name": "M'obstiner de politique sur Facebook",
+          "name": "S'obstiner sur Facebook",
           "isChecked": true
         }
       ]
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000002",
-      "name": "Essentiels de fin de semaine",
+      "name": "Escapade de fin de semaine",
       "items": [
         {
-          "name": "Chargeur de cellulaire",
+          "name": "Chargeur de téléphone",
           "isChecked": false
         },
         {
-          "name": "Portefeuille, papiers",
-          "notes": "Passeport pour l'avion ou les États-Unis, permis de conduire sur la route, carte d'assurance maladie.",
+          "name": "Portefeuille/papiers",
+          "notes": "Bonnes pièces d'identité (photo pour l'avion, passeport pour l'étranger, permis pour la route, etc.)",
           "isChecked": false
         },
         {
@@ -52,7 +52,7 @@
         },
         {
           "name": "Trousse de toilette",
-          "notes": "En avion : petits liquides dans un sac séparé, en bagage à main.",
+          "notes": "En avion : petits liquides dans un sac à part, en bagage de cabine.",
           "isChecked": true
         },
         {
@@ -64,7 +64,7 @@
           "isChecked": false
         },
         {
-          "name": "Livre, iPad, Kindle...",
+          "name": "Livre, iPad, Kobo…",
           "isChecked": false
         },
         {
@@ -91,26 +91,26 @@
     },
     {
       "id": "C4EC1157-0000-4000-A000-000000000003",
-      "name": "Liste de vérification avant départ",
+      "name": "Liste avant le départ",
       "items": [
         {
-          "name": "Réponse automatique dans mes courriels",
+          "name": "Réponse automatique des courriels",
           "isChecked": true
         },
         {
-          "name": "Poste : retenir le courrier",
+          "name": "Retenue du courrier",
           "isChecked": true
         },
         {
-          "name": "Faire garder les animaux",
+          "name": "Garde des animaux",
           "isChecked": true
         },
         {
-          "name": "Plantes et surveillance de la maison",
+          "name": "Plantes, garde de la maison",
           "isChecked": false
         },
         {
-          "name": "Aviser l'école de l'absence",
+          "name": "Avis d'absence à l'école",
           "isChecked": false
         },
         {
@@ -126,16 +126,16 @@
           "isChecked": false
         },
         {
-          "name": "Fermer le chauffage ou la clim",
-          "notes": "Ou garder un minimum pour éviter que les tuyaux gèlent.",
+          "name": "Fermer chauffage ou climatiseur",
+          "notes": "Ou baisser le chauffage au minimum pour éviter le gel des tuyaux.",
           "isChecked": false
         },
         {
-          "name": "Vérifier le poêle et le four",
+          "name": "Cuisinière et four éteints",
           "isChecked": false
         },
         {
-          "name": "Barrer portes et fenêtres",
+          "name": "Verrouiller portes et fenêtres",
           "isChecked": false
         }
       ]
