@@ -40,8 +40,11 @@ struct ContainerFailureView: View {
 
         Text(String(
           localized: "containerFailure.message",
-          defaultValue: "Something went wrong. Try restarting the app? Also check if your storage is full?",
-          comment: "Body of the database-failure screen; suggests a restart and checking free storage."
+          defaultValue: "Something went wrong. Try restarting the app, and check whether your storage is full.",
+          comment: """
+          Body of the database-failure screen; suggests a restart and checking free storage. Word the \
+          second sentence as a gentle suggestion, not a question.
+          """
         ))
         .font(.body)
       }

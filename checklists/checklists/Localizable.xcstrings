@@ -21463,109 +21463,109 @@
       }
     },
     "containerFailure.message" : {
-      "comment" : "Body of the database-failure screen; suggests a restart and checking free storage.",
+      "comment" : "Body of the database-failure screen; suggests a restart and checking free storage. Word the second sentence as a gentle suggestion, not a question.",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "حدث خطأ ما. جرّب إعادة تشغيل التطبيق، وتحقق أيضًا من امتلاء مساحة التخزين."
+            "value" : "حدث خطأ ما. جرّب إعادة تشغيل التطبيق، وتحقّق مما إذا كانت مساحة التخزين ممتلئة."
           }
         },
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "কিছু একটা ভুল হয়েছে। অ্যাপটি আবার চালু করে দেখবেন? স্টোরেজ ভরে গেছে কি না, তাও দেখে নিন।"
+            "value" : "কিছু একটা সমস্যা হয়েছে। অ্যাপটি আবার চালু করে দেখুন, আর স্টোরেজ ভরে গেছে কি না একবার দেখে নিন।"
           }
         },
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alguna cosa ha fallat. Prova de reiniciar l'app. Comprova també que l'emmagatzematge no estigui ple."
+            "value" : "Alguna cosa ha fallat. Prova de reiniciar l'app i comprova si tens l'emmagatzematge ple."
           }
         },
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Něco se pokazilo. Zkuste aplikaci restartovat. Zkontrolujte také, jestli není plné úložiště."
+            "value" : "Něco se pokazilo. Zkuste aplikaci restartovat a zkontrolujte, jestli nemáte plné úložiště."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noget gik galt. Prøv at genstarte appen. Tjek også, om din lagerplads er fuld."
+            "value" : "Noget gik galt. Prøv at genstarte appen, og tjek om din lagerplads er fuld."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Etwas ist schiefgelaufen. Starte die App neu und prüfe auch, ob dein Speicher voll ist."
+            "value" : "Etwas ist schiefgelaufen. Starte die App am besten neu und prüfe, ob dein Speicher voll ist."
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Κάτι πήγε στραβά. Δοκιμάστε να κάνετε επανεκκίνηση της εφαρμογής. Ελέγξτε επίσης αν ο αποθηκευτικός χώρος είναι γεμάτος."
+            "value" : "Κάτι πήγε στραβά. Δοκιμάστε να κάνετε επανεκκίνηση της εφαρμογής και ελέγξτε αν ο αποθηκευτικός σας χώρος έχει γεμίσει."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Something went wrong. Try restarting the app? Also check if your storage is full?"
+            "value" : "Something went wrong. Try restarting the app, and check whether your storage is full."
           }
         },
         "en-AU" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Something went wrong. Try restarting the app? Also check if your storage is full?"
+            "value" : "Something went wrong. Try restarting the app, and check whether your storage is full."
           }
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Something went wrong. Try restarting the app? Also check if your storage is full?"
+            "value" : "Something went wrong. Try restarting the app, and check whether your storage is full."
           }
         },
         "en-GB" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Something went wrong. Try restarting the app? Also check if your storage is full?"
+            "value" : "Something went wrong. Try restarting the app, and check whether your storage is full."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Algo ha fallado. Prueba a reiniciar la app y comprueba si te queda espacio de almacenamiento."
+            "value" : "Algo ha salido mal. Prueba a reiniciar la app y revisa si te queda espacio de almacenamiento."
           }
         },
         "es-MX" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Algo salió mal. ¿Puedes reiniciar la app? Revisa también si tu almacenamiento está lleno."
+            "value" : "Algo salió mal. Prueba reiniciar la app y revisa si tu almacenamiento está lleno."
           }
         },
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jokin meni pieleen. Kokeile käynnistää sovellus uudelleen. Tarkista myös, onko tallennustila täynnä."
+            "value" : "Jokin meni pieleen. Kokeile käynnistää sovellus uudelleen ja tarkista, onko tallennustila täynnä."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un problème est survenu. Essayez de redémarrer l'app. Vérifiez aussi que votre espace de stockage n'est pas plein."
+            "value" : "Une erreur s’est produite. Essayez de redémarrer l’app et vérifiez que votre espace de stockage n’est pas saturé."
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un problème est survenu. Essayez de redémarrer l'app. Vérifiez aussi si votre espace de stockage est plein."
+            "value" : "Un problème est survenu. Essayez de redémarrer l’app et vérifiez si votre espace de stockage est plein."
           }
         },
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "કંઈક ખોટું થયું. એપ્લિકેશન ફરી શરૂ કરી જોશો? સ્ટોરેજ ભરાઈ ગયું છે કે કેમ તે પણ તપાસશો?"
+            "value" : "કંઈક ખોટું થયું. એપ ફરી શરૂ કરી જુઓ, અને તમારું સ્ટોરેજ ભરાઈ ગયું છે કે નહીં તે તપાસો."
           }
         },
         "he" : {
@@ -21577,193 +21577,193 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "कुछ गड़बड़ हो गई। ऐप को फिर से शुरू करके देखें? साथ ही देखें कि आपका स्टोरेज भरा तो नहीं है।"
+            "value" : "कुछ गड़बड़ हो गई। ऐप को फिर से शुरू करके देखें, और जाँच लें कि आपका स्टोरेज भरा तो नहीं है।"
           }
         },
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nešto je pošlo po zlu. Pokušajte ponovno pokrenuti aplikaciju. Provjerite i je li vaša pohrana puna."
+            "value" : "Nešto je pošlo po zlu. Pokušajte ponovno pokrenuti aplikaciju i provjerite je li vaša pohrana puna."
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hiba történt. Próbálja újraindítani az appot. Azt is ellenőrizze, hogy nincs-e tele a tárhely."
+            "value" : "Valami hiba történt. Indítsa újra az appot, és ellenőrizze, nincs-e tele a tárhely."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Terjadi kesalahan. Coba mulai ulang aplikasi. Periksa juga apakah penyimpanan Anda penuh."
+            "value" : "Terjadi kesalahan. Coba mulai ulang app, dan periksa apakah penyimpanan Anda penuh."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Qualcosa è andato storto. Prova a riavviare l'app. Controlla anche che lo spazio di archiviazione non sia pieno."
+            "value" : "Qualcosa è andato storto. Prova a riavviare l'app e controlla se la memoria è piena."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "問題が発生しました。アプリを再起動してみてください。ストレージの空き容量もご確認ください。"
+            "value" : "問題が発生しました。アプリを再起動して、ストレージの空き容量も確認してみてください。"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಏನೋ ತಪ್ಪಾಗಿದೆ. ಆ್ಯಪ್ ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಿ ನೋಡುವಿರಾ? ನಿಮ್ಮ ಸಂಗ್ರಹಣೆ ತುಂಬಿದೆಯೇ ಎಂದೂ ಪರಿಶೀಲಿಸಿ."
+            "value" : "ಏನೋ ತಪ್ಪಾಗಿದೆ. ಆ್ಯಪ್ ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಿ, ನಿಮ್ಮ ಸಂಗ್ರಹಣೆ ತುಂಬಿದೆಯೇ ಎಂದು ಪರಿಶೀಲಿಸಿ ನೋಡಿ."
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "문제가 생겼어요. 앱을 다시 시작해 보세요. 저장 공간이 가득 찼는지도 확인해 보세요."
+            "value" : "문제가 발생했어요. 앱을 다시 실행하고, 저장 공간이 가득 차지 않았는지 확인해 보세요."
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "എന്തോ കുഴപ്പം സംഭവിച്ചു. ആപ്പ് പുനരാരംഭിച്ച് നോക്കാമോ? സ്റ്റോറേജ് നിറഞ്ഞിട്ടുണ്ടോ എന്നും പരിശോധിക്കുക."
+            "value" : "എന്തോ കുഴപ്പം സംഭവിച്ചു. ആപ്പ് ഒന്ന് റീസ്റ്റാർട്ട് ചെയ്തുനോക്കൂ, സ്റ്റോറേജ് നിറഞ്ഞിട്ടുണ്ടോ എന്നും പരിശോധിക്കൂ."
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "काहीतरी चुकले. अॅप पुन्हा सुरू करून पाहता का? तसेच स्टोरेज भरले आहे का ते तपासा."
+            "value" : "काहीतरी चुकलं. अॅप पुन्हा सुरू करून पाहा आणि तुमचं स्टोरेज भरलं आहे का ते तपासा."
           }
         },
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sesuatu tidak kena. Cuba mulakan semula app, dan semak sama ada storan anda penuh."
+            "value" : "Sesuatu tidak kena. Cuba mulakan semula app dan semak sama ada storan anda penuh."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noe gikk galt. Prøv å starte appen på nytt. Sjekk også om lagringsplassen er full."
+            "value" : "Noe gikk galt. Prøv å starte appen på nytt, og sjekk om lagringsplassen er full."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Er ging iets mis. Probeer de app opnieuw te starten. Controleer ook of je opslagruimte vol is."
+            "value" : "Er is iets misgegaan. Probeer de app opnieuw te starten en controleer of je opslagruimte vol is."
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "କିଛି ଭୁଲ ହୋଇଗଲା। ଆପ୍‌କୁ ପୁଣି ଚଲାଇ ଦେଖିବେ? ଷ୍ଟୋରେଜ୍ ପୂର୍ଣ୍ଣ ଅଛି କି ମଧ୍ୟ ଦେଖନ୍ତୁ।"
+            "value" : "କିଛି ଭୁଲ ହୋଇଗଲା। ଆପଣ ଆପ୍‌କୁ ପୁନଃ ଆରମ୍ଭ କରି ଦେଖନ୍ତୁ, ଏବଂ ଆପଣଙ୍କ ଷ୍ଟୋରେଜ୍ ପୂର୍ଣ୍ଣ ଅଛି କି ନାହିଁ ଯାଞ୍ଚ କରନ୍ତୁ।"
           }
         },
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਕੀ ਤੁਸੀਂ ਐਪ ਮੁੜ ਚਾਲੂ ਕਰ ਕੇ ਦੇਖੋਗੇ? ਇਹ ਵੀ ਦੇਖੋ ਕਿ ਕਿਤੇ ਤੁਹਾਡੀ ਸਟੋਰੇਜ ਭਰੀ ਤਾਂ ਨਹੀਂ।"
+            "value" : "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਐਪ ਨੂੰ ਮੁੜ ਚਾਲੂ ਕਰਕੇ ਦੇਖੋ ਅਤੇ ਜਾਂਚ ਲਓ ਕਿ ਕਿਤੇ ਤੁਹਾਡੀ ਸਟੋਰੇਜ ਭਰੀ ਤਾਂ ਨਹੀਂ।"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coś poszło nie tak. Spróbuj uruchomić aplikację ponownie. Sprawdź też, czy w pamięci nie brakuje miejsca."
+            "value" : "Coś poszło nie tak. Spróbuj ponownie uruchomić aplikację i sprawdź, czy w pamięci nie brakuje miejsca."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Algo deu errado. Tente reiniciar o app. Verifique também se o armazenamento está cheio."
+            "value" : "Algo deu errado. Tente reiniciar o app e verifique se o armazenamento está cheio."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Algo correu mal. Experimente reiniciar a app. Verifique também se o armazenamento está cheio."
+            "value" : "Ocorreu um erro. Experimente reiniciar a app e verifique se o armazenamento está cheio."
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ceva nu a funcționat. Încercați să reporniți aplicația. Verificați și dacă spațiul de stocare este plin."
+            "value" : "Ceva nu a funcționat. Încercați să reporniți aplicația și verificați dacă spațiul de stocare este plin."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Что-то пошло не так. Попробуйте перезапустить приложение и проверьте, не заполнено ли хранилище."
+            "value" : "Что-то пошло не так. Попробуйте перезапустить приложение и проверьте, есть ли свободное место на устройстве."
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Niečo sa pokazilo. Skúste aplikáciu reštartovať. Skontrolujte tiež, či nemáte plné úložisko."
+            "value" : "Niečo sa pokazilo. Skúste aplikáciu reštartovať a skontrolujte, či nemáte plné úložisko."
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nekaj je šlo narobe. Poskusite znova zagnati aplikacijo in preverite, ali je shramba polna."
+            "value" : "Nekaj je šlo narobe. Poskusite znova zagnati aplikacijo in preverite, ali je vaš prostor za shranjevanje poln."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Något gick fel. Prova att starta om appen. Kontrollera också om lagringsutrymmet är fullt."
+            "value" : "Något gick fel. Prova att starta om appen och kontrollera om lagringsutrymmet är fullt."
           }
         },
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ஏதோ தவறு நடந்தது. ஆப்ஸை மீண்டும் தொடங்கிப் பாருங்கள். சேமிப்பகம் நிரம்பியுள்ளதா என்பதையும் பாருங்கள்."
+            "value" : "ஏதோ தவறாகிவிட்டது. செயலியை மீண்டும் தொடங்கிப் பாருங்கள், உங்கள் சேமிப்பகம் நிரம்பியுள்ளதா என்பதையும் சரிபார்க்கலாம்."
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ఏదో తప్పు జరిగింది. యాప్‌ను రీస్టార్ట్ చేసి చూడండి. అలాగే మీ స్టోరేజ్ నిండిపోయిందేమో కూడా చూడండి."
+            "value" : "ఏదో తప్పు జరిగింది. యాప్‌ను మళ్లీ ప్రారంభించి చూడండి, అలాగే మీ స్టోరేజ్ నిండిపోయిందేమో ఒకసారి చూడండి."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "มีบางอย่างผิดพลาด ลองรีสตาร์ทแอปดูไหม และตรวจสอบด้วยว่าพื้นที่จัดเก็บเต็มหรือเปล่า"
+            "value" : "เกิดข้อผิดพลาดบางอย่าง ลองรีสตาร์ทแอป และตรวจสอบว่าพื้นที่จัดเก็บเต็มหรือไม่"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bir şeyler ters gitti. Uygulamayı yeniden başlatmayı dener misiniz? Depolama alanınızın dolu olup olmadığını da kontrol edin."
+            "value" : "Bir sorun oluştu. Uygulamayı yeniden başlatmayı deneyebilir, depolama alanınızın dolu olup olmadığına bakabilirsiniz."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Щось пішло не так. Спробуйте перезапустити застосунок. Також перевірте, чи не заповнена пам’ять."
+            "value" : "Щось пішло не так. Спробуйте перезапустити застосунок і перевірте, чи не заповнене сховище."
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "کچھ گڑبڑ ہو گئی۔ ایپ دوبارہ شروع کر کے دیکھیں؟ یہ بھی دیکھ لیں کہ اسٹوریج بھرا تو نہیں۔"
+            "value" : "کچھ گڑبڑ ہو گئی۔ ایپ کو دوبارہ شروع کر کے دیکھیں، اور یہ بھی جانچ لیں کہ آپ کی اسٹوریج بھری تو نہیں۔"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã xảy ra sự cố. Hãy thử khởi động lại ứng dụng. Đồng thời kiểm tra xem bộ nhớ có đầy không."
+            "value" : "Đã xảy ra lỗi. Bạn thử khởi động lại ứng dụng và kiểm tra xem bộ nhớ có đầy không."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "出了点问题。试试重新启动 App？也请检查存储空间是否已满。"
+            "value" : "出了点问题。请尝试重新启动 App，并检查存储空间是否已满。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "發生問題。試試重新啟動 App？也看看儲存空間是否已滿。"
+            "value" : "發生了一些問題。可以試著重新啟動 App，並檢查儲存空間是否已滿。"
           }
         }
       }
