@@ -22,6 +22,8 @@ is the authority for *when and how to invoke them*, and owns the step-by-step fl
 | `validate.py` | Validate `tmp/translate-outputs/{locale}.json` and `{locale}.sample.json` against source |
 | `merge.py` | Merge validated outputs back into `Localizable.xcstrings` |
 | `add_keys.py` / `update_keys.py` / `remove_keys.py` / `rename_keys.py` / `pluralize_keys.py` / `invalidate_keys.py` | Catalog key maintenance; each script's docstring gives its input shape |
+| `sync_catalog.py` | Merge the last `make build`'s extracted strings into the catalog as a build in Xcode does (`make i18n-sync`); `--check` is the gate's `make i18n-sync-check` |
+| `xcstrings_io.py` | The one catalog writer, in Xcode's exact bytes |
 | `glossary_build.py` / `glossary_sync.py` | Build and grow `glossary.json` (below) |
 | `inspect_xcstrings.py` | Read-only catalog inspector (`info` / `find` / `show`) — use instead of ad-hoc `python3 -c` against the catalog |
 | `inspect_glossary.py` | Read-only glossary inspector (`info` / `term`) — use instead of ad-hoc `python3 -c` against `glossary.json` |

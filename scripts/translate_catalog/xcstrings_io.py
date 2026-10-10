@@ -40,7 +40,8 @@ def _sorted_keys(value):
     return value
 
 
-def write_xcstrings(catalog: dict, path: Path) -> None:
+def xcstrings_text(catalog: dict) -> str:
+    """The catalog serialized exactly as Xcode 27 writes it."""
     # Xcode's string catalog editor orders the `strings` keys with `localizedStandardCompare`
     # (`item2` before `item10`); every other object is in plain sorted order.
     ordered = _sorted_keys(catalog)
@@ -48,6 +49,15 @@ def write_xcstrings(catalog: dict, path: Path) -> None:
     # Xcode serializes xcstrings with a space before colons ("key" : "value"). Set it as the
     # separator rather than replacing '": ' afterwards, which also matched an escaped quote
     # followed by a colon inside a string value.
-    out = json.dumps(ordered, ensure_ascii=False, indent=2, separators=(",", " : "))
     # Xcode writes no trailing newline.
-    path.write_text(out, encoding="utf-8")
+    return json.dumps(ordered, ensure_ascii=False, indent=2, separators=(",", " : "))
+
+
+def write_xcstrings(catalog: dict, path: Path) -> None:
+    path.write_text(xcstrings_text(catalog), encoding="utf-8")
+
+
+def is_xcode_format(path: Path) -> bool:
+    """True when the file's bytes are what Xcode would write for its contents."""
+    text = path.read_text(encoding="utf-8")
+    return text == xcstrings_text(json.loads(text))

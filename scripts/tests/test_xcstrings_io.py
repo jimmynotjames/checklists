@@ -11,7 +11,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "translate_catalog"))
 
-from xcstrings_io import write_xcstrings, xcode_key_order  # noqa: E402
+from xcstrings_io import is_xcode_format, write_xcstrings, xcode_key_order  # noqa: E402
 
 CATALOG = REPO_ROOT / "checklists" / "checklists" / "Localizable.xcstrings"
 
@@ -42,6 +42,19 @@ class WriteTests(unittest.TestCase):
             out = Path(tmp) / "Localizable.xcstrings"
             write_xcstrings(json.loads(CATALOG.read_text(encoding="utf-8")), out)
             self.assertEqual(out.read_bytes(), CATALOG.read_bytes())
+
+    def test_format_check_rejects_code_point_order(self) -> None:
+        self.assertTrue(is_xcode_format(CATALOG))
+        catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "Localizable.xcstrings"
+            out.write_text(json.dumps(catalog, ensure_ascii=False, indent=2, separators=(",", " : "), sort_keys=True), encoding="utf-8")
+            self.assertFalse(is_xcode_format(out))
+
+    def test_no_committed_key_is_manual(self) -> None:
+        # Xcode never syncs a `manual` key's comment from Swift.
+        strings = json.loads(CATALOG.read_text(encoding="utf-8"))["strings"]
+        self.assertEqual([k for k, v in strings.items() if v.get("extractionState") == "manual"], [])
 
     def test_nested_objects_use_plain_sorted_order(self) -> None:
         catalog = {"version": "1.0", "strings": {"k": {"localizations": {"zh-HK": {}, "zh-Hans": {}}}}, "sourceLanguage": "en"}

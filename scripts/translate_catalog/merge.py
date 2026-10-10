@@ -7,7 +7,7 @@ locale in locales.py and writes per-key localizations entries into the catalog.
 Promotes each merged key's English source from state `new` to `translated`.
 
 Idempotent: re-running with identical inputs produces an identical catalog.
-Stable JSON ordering (sorted keys) keeps diffs clean.
+Writes through xcstrings_io.py in Xcode's byte format, which keeps diffs clean.
 Preserves all existing catalog fields (comment, extractionState, etc.).
 
 Usage:
