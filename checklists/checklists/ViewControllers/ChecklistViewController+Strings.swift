@@ -51,7 +51,7 @@ extension ChecklistViewController {
     ticked into another checklist, picked on the sheet that opens next. Keep the trailing \
     ellipsis — it is what promises that sheet. It sits directly under the Duplicate Checklist \
     entry and must not read alike: that one copies the whole list, this one copies a selection \
-    into a different list.
+    into a different list. "to…" means to a different checklist, never "here" or "into this one".
     """
   )
 
@@ -63,7 +63,8 @@ extension ChecklistViewController {
     ticked into another checklist, picked on the sheet that opens next: they are added there and \
     removed from this checklist. Keep the trailing ellipsis — it is what promises that sheet. It \
     sits directly under the Copy Checked Items to… entry and must not read alike: that one leaves \
-    the items here, this one takes them away. Use the same word for checked items as that entry.
+    the items here, this one takes them away. Use the same word for checked items as that entry. \
+    "to…" means to a different checklist, never "here" or "into this one".
     """
   )
 

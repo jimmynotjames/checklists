@@ -45,10 +45,9 @@ def write_xcstrings(catalog: dict, path: Path) -> None:
     # (`item2` before `item10`); every other object is in plain sorted order.
     ordered = _sorted_keys(catalog)
     ordered["strings"] = dict(sorted(ordered["strings"].items(), key=lambda item: xcode_key_order(item[0])))
-    out = json.dumps(ordered, ensure_ascii=False, indent=2)
-    # Xcode serializes xcstrings with a space before colons ("key" : "value").
-    # json.dumps escapes all in-string quotes as \", so literal '": ' only
-    # appears at key-value boundaries — safe to replace globally.
-    out = out.replace('": ', '" : ')
+    # Xcode serializes xcstrings with a space before colons ("key" : "value"). Set it as the
+    # separator rather than replacing '": ' afterwards, which also matched an escaped quote
+    # followed by a colon inside a string value.
+    out = json.dumps(ordered, ensure_ascii=False, indent=2, separators=(",", " : "))
     # Xcode writes no trailing newline.
     path.write_text(out, encoding="utf-8")

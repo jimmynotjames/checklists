@@ -42,7 +42,11 @@ class CircularPercentStatusIcon: UIView {
     return String(
       localized: "checklist.progress.accessibilityValue",
       defaultValue: "Checklist \(percent) complete",
-      comment: "VoiceOver value of the progress ring; the placeholder is an already-formatted percentage such as 18%."
+      comment: """
+      VoiceOver value of the progress ring; the placeholder is an already-formatted percentage such \
+      as 18%. Read it as "Checklist 18% complete": the share of items ticked so far, not a finished \
+      list. Don't word it as "checklist completed" followed by the number.
+      """
     )
   }
 
