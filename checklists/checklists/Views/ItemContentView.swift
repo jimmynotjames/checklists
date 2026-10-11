@@ -7,7 +7,9 @@
 
 import UIKit
 
-private var minNameFieldHeight: CGFloat = 24.0
+/// Apple's minimum touch target. The name field's text insets fill it out, so a tap above or below
+/// the text still lands on the field.
+private var minNameFieldHeight: CGFloat = 44.0
 private var minNotesTextViewHeight: CGFloat = 32.0
 
 protocol ItemContentViewDelegate: AnyObject {
@@ -58,6 +60,8 @@ class ItemContentView: UIView {
     let textView = CLTextView()
     textView.delegate = self
     textView.font = UIFont.systemFont(ofSize: 22.0, weight: .regular)
+    // The row's top margin and the gap down to the notes, inside the field rather than around it.
+    textView.textContainerInset = UIEdgeInsets(top: 10.0, left: 0.0, bottom: 8.0, right: 0.0)
     textView.inputAccessoryButtonTappedAction = {
       textView.resignFirstResponder()
     }
@@ -187,8 +191,8 @@ class ItemContentView: UIView {
       [NSLayoutConstraint.constraints(withVisualFormat: "H:|-2-[checkboxButton]-(-4)-[containerView]-16-|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[checkboxButton]", options: [], metrics: nil, views: views),
 
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[containerView]-8-|", options: [], metrics: nil, views: views),
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameTextView]-(4)-[notesTextView]|", options: [], metrics: nil, views: views),
+       NSLayoutConstraint.constraints(withVisualFormat: "V:|[containerView]-4-|", options: [], metrics: nil, views: views),
+       NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameTextView][notesTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[nameTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[notesTextView]|", options: [], metrics: nil, views: views),
        [nameTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: minNameFieldHeight), notesTextViewHeightConstraint]].flatMap(\.self)
