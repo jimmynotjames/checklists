@@ -15,7 +15,7 @@
 | **Dynamic Type** | Partial | SwiftUI scales via semantic tokens; UIKit hardcodes point sizes — §Dynamic Type, **#183**. From two steps above the default text size (xxLarge) the list's Reset All and Edit mode toolbar collapse to icons, so long translations neither push Edit into an overflow menu nor clip the toolbar; they keep their names for VoiceOver and the Large Content Viewer |
 | **Dark Mode** | Not started | The app is locked to Light appearance in `Info.plist` — **#180** |
 | **Increase Contrast** | Not started | **#182** |
-| **Touch targets (44×44)** | Partial | `ToastView`, `CopyCheckedItemsView`, `MainMenuView`'s close button, the checklist header's name and notes fields, and each item's name field enforce a 44pt minimum, and `ChecklistsView`'s last row scrolls clear of the Add button; the rest is **#184** |
+| **Touch targets (44×44)** | Implemented | `ToastView`, `CopyCheckedItemsView`, `MainMenuView`'s close button, the checklist header's name and notes fields, and each item's name field enforce a 44pt minimum, and `ChecklistsView`'s last row scrolls clear of the Add button. A toast may sit over rows while it is up, by design: a tap anywhere on it dismisses it |
 | **Color-only signaling** | N/A — none | Completion state is an icon swap plus a spoken value, never tint alone |
 | **Screen-change announcements** | Partial | `LoadingView` posts `.screenChanged`; `ToastPresenterModifier` and both screens' move actions post announcements; nothing else does |
 | **Automated a11y tests** | Not started | No audit-API coverage; UI tests use accessibility attributes only as element hooks |
