@@ -128,15 +128,18 @@ class ChecklistMoveAndDeleteCheckedItemsUITest: XCTestCase {
 
     for identifier in ["checklist.menu.moveCheckedItems", "checklist.menu.deleteCheckedItems"] {
       tapMenuEntry(identifier)
-      XCTAssertTrue(app.buttons["No checked items."].waitForExistence(timeout: 5), "No notice under \(identifier).")
+      // Checked at once, not waited for; `ChecklistCopyCheckedItemsUITest` says why.
+      XCTAssertTrue(app.buttons["No checked items."].exists, "No notice under \(identifier).")
       XCTAssertFalse(app.alerts.firstMatch.exists, "With nothing checked there is nothing to confirm.")
       XCTAssertFalse(
         app.buttons["copyDestination.createNewChecklist"].exists,
         "With nothing checked there is nothing to pick a destination for."
       )
-      // Closes the menu, which stayed up to show the notice, before the next entry is tried.
+      // Closes the menu, which stayed up to show the notice, before the next entry is tried. Waits
+      // on the entry, not the notice: the notice also leaves on its own timer with the menu still
+      // up, and the next overflow tap would then land on Reorder Items, which covers the button.
       app.tables["ChecklistTableView"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.9)).tap()
-      XCTAssertTrue(app.buttons["No checked items."].waitForNonExistence(timeout: 5))
+      XCTAssertTrue(app.buttons[identifier].waitForNonExistence(timeout: 5), "The menu didn't close.")
     }
   }
 }
