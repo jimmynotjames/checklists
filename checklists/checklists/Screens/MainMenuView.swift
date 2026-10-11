@@ -18,7 +18,7 @@ struct MainMenuView: View {
   /// Toolbar items step aside on their own, but this close button is plain content.
   @State private var windowControlsInset: CGSize = .zero
 
-  /// The space on each side between the close button's 21pt icon and its 44pt frame.
+  /// 21 is the `StopIcon` asset's size.
   private static let closeIconSlack: CGFloat = (44 - 21) / 2
 
   var body: some View {
@@ -30,8 +30,8 @@ struct MainMenuView: View {
       } label: {
         Image("StopIcon")
           .foregroundStyle(Colors.defaultBackgroundColor)
-          // A 44pt hit area around the 21pt glyph. The paddings below give back the slack on each
-          // side, so the icon draws where it did and only the tappable area grows.
+          // The paddings below give back the slack on each side, so the icon draws where it did
+          // and only the tappable area grows.
           .frame(width: 44, height: 44)
           .contentShape(Rectangle())
       }
