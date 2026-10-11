@@ -22,9 +22,9 @@ class checklistCreateUITest: XCTestCase {
   override func tearDownWithError() throws {}
 
   /// Navigation-bar buttons here are matched without naming the bar — see
-  /// checklistUITest.detailBackButton for why naming it makes a query depend on scroll position.
+  /// ChecklistDetailUITestCase.detailBackButton for why naming it makes a query depend on scroll position.
   ///
-  /// See checklistUITest.checklistsList.
+  /// See ChecklistDetailUITestCase.checklistsList.
   private var checklistsList: XCUIElementQuery {
     app.collectionViews
   }

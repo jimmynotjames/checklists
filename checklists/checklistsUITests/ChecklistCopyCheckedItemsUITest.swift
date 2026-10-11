@@ -7,10 +7,7 @@ import XCTest
 
 /// The detail screen's "Copy Checked Items to…" entry and the destination picker behind it.
 ///
-/// Its own file rather than a section of `checklistUITest`: that one is already at the lint's
-/// file-length ceiling, and `checklistCreateUITest` set the precedent of splitting a flow out.
-///
-/// Navigation-bar buttons are matched without naming the bar — see `checklistUITest.detailBackButton`
+/// Navigation-bar buttons are matched without naming the bar — see `ChecklistDetailUITestCase.detailBackButton`
 /// for why naming it makes a query depend on scroll position.
 class ChecklistCopyCheckedItemsUITest: XCTestCase {
   var app: XCUIApplication!
@@ -26,7 +23,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
 
   override func tearDownWithError() throws {}
 
-  /// See `checklistUITest.checklistsList`.
+  /// See `ChecklistDetailUITestCase.checklistsList`.
   private var checklistsList: XCUIElementQuery {
     app.collectionViews
   }
@@ -45,7 +42,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
   /// The detail screen's item names, in order.
   ///
   /// Each row's name is an editable `CLTextView`, not a label, so it is read from the field's value
-  /// the way `checklistUITest` already does — `staticTexts` never matches it. The add-item footer is
+  /// the way `ChecklistItemsUITest` does — `staticTexts` never matches it. The add-item footer is
   /// not a cell, so every cell here is an item.
   private func itemNames(in table: XCUIElement) -> [String] {
     let cells = table.children(matching: .cell)

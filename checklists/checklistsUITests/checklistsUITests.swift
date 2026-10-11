@@ -21,7 +21,7 @@ class checklistsUITests: XCTestCase {
   }
 
   func testChecklistDeletion() {
-    // See checklistUITest.checklistsList.
+    // See ChecklistDetailUITestCase.checklistsList.
     let listQuery = app.collectionViews
     listQuery.staticTexts["Weekend Getaway Essentials"].swipeLeft()
     // The swipe action lives in the row, but scoping to `app` keeps this working regardless of
