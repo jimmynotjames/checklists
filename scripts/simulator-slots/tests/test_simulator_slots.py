@@ -81,21 +81,6 @@ class BootedSimulatorTests(unittest.TestCase):
         held = [{"owns": "[abcd1234]"}]
         self.assertEqual([s["udid"] for s in slots.idle_simulators(booted, held)], [UDID_B])
 
-    def test_the_asking_runs_own_devices_are_never_idle(self) -> None:
-        booted = [
-            {"udid": UDID_A, "set": DEFAULT_SET, "name": "iPhone 17 [abcd1234]"},
-            {"udid": UDID_B, "set": DEFAULT_SET, "name": "iPhone 17 [ffff0000]"},
-            {"udid": "C", "set": CLONES, "name": "Clone 1 of iPhone 17 [ffff0000]"},
-        ]
-        mine = {"udid": "", "owns": "[abcd1234]"}
-        self.assertEqual([s["udid"] for s in slots.idle_simulators(booted, [None], mine)], [UDID_B, "C"])
-        self.assertEqual([s["udid"] for s in slots.idle_simulators(booted, [None], {"udid": UDID_B, "owns": ""})], [UDID_A, "C"])
-
-
-class DialogTests(unittest.TestCase):
-    def test_applescript_string_escapes_quotes_and_backslashes(self) -> None:
-        self.assertEqual(slots.applescript_string('a "b" \\c'), '"a \\"b\\" \\\\c"')
-
 
 class StateTests(unittest.TestCase):
     def test_first_use_writes_defaults(self) -> None:
@@ -156,7 +141,7 @@ class HoldTests(unittest.TestCase):
         self._tmp.cleanup()
 
     def env(self, **extra: str) -> dict[str, str]:
-        return {**os.environ, "SIMULATOR_SLOTS_STATE_DIR": str(self.state), "SIMULATOR_SLOTS_PROMPT": "0", **extra}
+        return {**os.environ, "SIMULATOR_SLOTS_STATE_DIR": str(self.state), **extra}
 
     def watched(self) -> subprocess.Popen:
         proc = subprocess.Popen(["sleep", "60"])
@@ -227,8 +212,7 @@ class HoldTests(unittest.TestCase):
 class ShellWrapperTests(unittest.TestCase):
     def test_wrapper_grants_and_records_the_exit_code(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
-            env = {**os.environ, "SIMULATOR_SLOTS_STATE_DIR": tmp, "SIMULATOR_SLOTS_PROMPT": "0",
-                   "SIMULATOR_SLOTS_HOME": str(HOME)}
+            env = {**os.environ, "SIMULATOR_SLOTS_STATE_DIR": tmp, "SIMULATOR_SLOTS_HOME": str(HOME)}
             script = 'source "$SIMULATOR_SLOTS_HOME/simulator_slots.sh"; simulator_slots_hold 3 t /r; echo "$SIMULATOR_SLOTS_GRANTED"; exit 7'
             result = subprocess.run(["bash", "-c", script], env=env, capture_output=True, text=True, timeout=30)
             self.assertEqual(result.returncode, 7)

@@ -44,9 +44,8 @@ class ScreenshotCaptureTest < Minitest::Test
 
   def test_capture_holds_one_slot_and_records_its_result
     Dir.mktmpdir do |state|
-      previous = ENV.to_h.slice("SIMULATOR_SLOTS_STATE_DIR", "SIMULATOR_SLOTS_PROMPT")
+      previous = ENV.fetch("SIMULATOR_SLOTS_STATE_DIR", nil)
       ENV["SIMULATOR_SLOTS_STATE_DIR"] = state
-      ENV["SIMULATOR_SLOTS_PROMPT"] = "0"
       begin
         result = @capture.send(:with_simulator_slot) { :captured }
         assert_equal :captured, result
@@ -54,7 +53,7 @@ class ScreenshotCaptureTest < Minitest::Test
         assert_equal [1], events.select { |e| e["event"] == "start" }.map { |e| e["granted"] }
         assert_equal [0], events.select { |e| e["event"] == "result" }.map { |e| e["rc"] }
       ensure
-        %w[SIMULATOR_SLOTS_STATE_DIR SIMULATOR_SLOTS_PROMPT].each { |name| ENV[name] = previous[name] }
+        ENV["SIMULATOR_SLOTS_STATE_DIR"] = previous
       end
     end
   end

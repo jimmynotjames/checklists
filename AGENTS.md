@@ -303,9 +303,6 @@ share. The pool's state, including its size (the `max` file, 4), is in
 - **Waiting:** a run waiting for a slot prints who holds each one, so start suites with
   `run_in_background`. `make simulator-slots-status` shows the holders, every booted simulator, and
   the recent runs.
-- **The idle dialog:** before waiting, a run may show a macOS dialog offering to shut down idle
-  booted simulators. It appears at most every 30 minutes, closes after 60 s, and leaves them
-  running. Don't ask in chat as well; `SIMULATOR_SLOTS_PROMPT=0` skips it.
 - **Idle devices still cost memory:** a booted simulator takes no slot but still uses about 2–3 GB.
   `/merge-pr` shuts down the merged checkout's devices.
 

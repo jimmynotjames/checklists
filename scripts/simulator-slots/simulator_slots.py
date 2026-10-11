@@ -5,9 +5,8 @@ A slot is one simulator actively running tests. The pool size lives in the state
 `max` file (default 4); booted-but-idle simulators don't take a slot. Repos opt in by vendoring
 this directory and wrapping each test run in `hold`; repos that don't are invisible to the pool.
 
-`hold` runs in the background next to the test run. It may first show a dialog offering to shut
-down idle simulators, then flocks free slots and prints one line, `<granted> <run-id>`, and keeps
-the locks until the process it watches exits or it is sent SIGTERM. The kernel releases a flock
+`hold` runs in the background next to the test run. It flocks free slots, prints one line,
+`<granted> <run-id>`, and keeps the locks until the process it watches exits or it is sent SIGTERM. The kernel releases a flock
 when its holder dies, so a crashed run never leaves a slot taken.
 
 Usage:
@@ -15,14 +14,12 @@ Usage:
                          [--udid U] [--owns TEXT]
   simulator_slots.py result --run ID --rc RC   # record a run's exit code in runs.log
   simulator_slots.py status                    # pool, holders, booted simulators, recent runs
-  simulator_slots.py preflight [--force]       # the idle-simulator dialog alone
   simulator_slots.py sync --into DIR [--master M]        # copy the master over a vendored copy
   simulator_slots.py sync-check --into DIR [--master M]  # exit 1 when the copy differs
 
 Environment:
   SIMULATOR_SLOTS_FEWER      leave this many slots unused for this run (default 0)
   SIMULATOR_SLOTS_TIMEOUT    seconds `hold` waits for a slot before exiting 75 (0 = forever)
-  SIMULATOR_SLOTS_PROMPT     0 skips the dialog
   SIMULATOR_SLOTS_STATE_DIR  state directory (default ~/.local/state/simulator-slots)
   SIMULATOR_SLOTS_MASTER     master copy (default ~/dev/simulator-slots)
 """
@@ -52,8 +49,6 @@ PROTOCOL = 1
 DEFAULT_MAX = 4
 POLL_SEC = 2.0
 REPORT_EVERY_SEC = 60.0
-PROMPT_EVERY_SEC = 30 * 60
-PROMPT_TIMEOUT_SEC = 60
 EXIT_TIMEOUT = 75
 EXIT_CONFIG = 78
 SYNC_IGNORE = {".git", "__pycache__", ".DS_Store"}
@@ -281,36 +276,15 @@ def set_label(device_set: str) -> str:
     return ""
 
 
-def tree_footprint_mb(root_pid: int, rows: list[tuple[int, int, str]]) -> float | None:
-    children: dict[int, list[int]] = {}
-    for pid, ppid, _command in rows:
-        children.setdefault(ppid, []).append(pid)
-    pids, stack = [], [root_pid]
-    while stack:
-        pid = stack.pop()
-        pids.append(pid)
-        stack.extend(children.get(pid, []))
-    args = [arg for pid in pids for arg in ("-p", str(pid))]
-    out = subprocess.run(["footprint", *args], capture_output=True, text=True).stdout
-    match = re.search(r"Summary Footprint: ([\d.]+) (KB|MB|GB)", out)
-    if not match:
-        return None
-    value = float(match.group(1))
-    return value / 1024 if match.group(2) == "KB" else value * 1024 if match.group(2) == "GB" else value
-
-
-def idle_simulators(
-    booted: list[dict], held: list[dict[str, str] | None], mine: dict[str, str] | None = None
-) -> list[dict]:
-    """Booted simulators no run holds, and none of `mine` (the asking run's own devices).
+def idle_simulators(booted: list[dict], held: list[dict[str, str] | None]) -> list[dict]:
+    """Booted simulators no run holds; `status` labels the rest "in use".
 
     A run owns its --udid and every device whose name contains its --owns text. Unnamed clones
     count as held while any slot is, since some running run made them.
     """
     active = [fields for fields in held if fields is not None]
-    owners = active + ([mine] if mine else [])
-    udids = {fields.get("udid") for fields in owners if fields.get("udid")}
-    tags = [fields["owns"] for fields in owners if fields.get("owns")]
+    udids = {fields.get("udid") for fields in active if fields.get("udid")}
+    tags = [fields["owns"] for fields in active if fields.get("owns")]
     return [
         sim
         for sim in booted
@@ -320,77 +294,8 @@ def idle_simulators(
     ]
 
 
-# -- The idle-simulator dialog ------------------------------------------------------------------
-
-
-def applescript_string(text: str) -> str:
-    return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
-
-
 def gb(mb: float | None) -> str:
     return "?" if mb is None else f"{mb / 1024:.1f} GB"
-
-
-def dialog_text(label: str, idle: list[dict], swap: float | None, free_pct: int | None) -> str:
-    lines = [f"Before {label}: please close other memory-heavy apps.", "", "Idle simulators:"]
-    for sim in idle:
-        kind = set_label(sim["set"])
-        lines.append(f"• {sim['name']}{f' ({kind})' if kind else ''}: {gb(sim.get('footprint_mb'))}")
-    lines += ["", f"Swap used: {gb(swap)}; memory free: {free_pct if free_pct is not None else '?'}%", ""]
-    lines.append(f"Shut the idle simulators down? This closes in {PROMPT_TIMEOUT_SEC} s and leaves them running.")
-    return "\n".join(lines)
-
-
-def ask(text: str) -> bool | None:
-    """True to shut down, False to leave them, None when no dialog could be shown or it timed out."""
-    script = (
-        "display dialog " + applescript_string(text) + ' with title "Simulator slots"'
-        ' buttons {"Leave them", "Shut down idle"} default button "Leave them"'
-        f" giving up after {PROMPT_TIMEOUT_SEC}"
-    )
-    try:
-        result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True, timeout=PROMPT_TIMEOUT_SEC + 15)
-    except subprocess.TimeoutExpired:
-        return None
-    if result.returncode != 0 or "gave up:true" in result.stdout:
-        return None
-    return "button returned:Shut down idle" in result.stdout
-
-
-def shut_down(sim: dict) -> bool:
-    result = subprocess.run(
-        ["xcrun", "simctl", "--set", sim["set"], "shutdown", sim["udid"]], capture_output=True, text=True, timeout=60
-    )
-    return result.returncode == 0
-
-
-def preflight(directory: Path, size: int, label: str, mine: dict[str, str] | None = None, force: bool = False) -> None:
-    """Offer to shut down idle simulators, at most once per PROMPT_EVERY_SEC across all runs."""
-    if os.environ.get("SIMULATOR_SLOTS_PROMPT") == "0":
-        return
-    stamp = directory / "prompt.stamp"
-    with open(directory / "prompt.lock", "a") as gate:
-        fcntl.flock(gate, fcntl.LOCK_EX)  # concurrent runs show one dialog, not several
-        if not force and stamp.exists() and time.time() - stamp.stat().st_mtime < PROMPT_EVERY_SEC:
-            return
-        rows = process_table()
-        idle = idle_simulators(booted_simulators(rows), holders(directory, size), mine)
-        if not idle:
-            return
-        for sim in idle:
-            sim["footprint_mb"] = tree_footprint_mb(sim["pid"], rows)
-        print(f"simulator-slots: {len(idle)} idle simulator(s); asking in a dialog ({PROMPT_TIMEOUT_SEC} s)", file=sys.stderr)
-        answer = ask(dialog_text(label, idle, swap_used_mb(), memory_free_percent()))
-        stamp.touch()  # a timed-out dialog counts too: an away user shouldn't cost every run a minute
-        if answer is None:
-            print("simulator-slots: no answer; leaving the idle simulators running", file=sys.stderr)
-        elif not answer:
-            print("simulator-slots: leaving the idle simulators running", file=sys.stderr)
-        else:
-            for sim in idle:
-                outcome = "shut down" if shut_down(sim) else "could not shut down"
-                print(f"simulator-slots: {outcome} {sim['name']} ({sim['udid']})", file=sys.stderr)
-        log_event(directory, {"event": "prompt", "idle": len(idle), "answer": answer})
 
 
 # -- Run log ------------------------------------------------------------------------------------
@@ -430,7 +335,6 @@ def cmd_hold(args: argparse.Namespace) -> int:
         raise ConfigError("--want must be at least 1 and SIMULATOR_SLOTS_FEWER at least 0")
     if fewer >= size:
         raise ConfigError(f"SIMULATOR_SLOTS_FEWER={fewer} leaves nothing of a pool of {size}")
-    preflight(directory, size, args.label, {"udid": args.udid, "owns": args.owns})
 
     for signum in (signal.SIGTERM, signal.SIGINT):
         signal.signal(signum, lambda *_: sys.exit(0))
@@ -487,12 +391,6 @@ def cmd_status(_args: argparse.Namespace) -> int:
             f"held {run.get('held_sec', '?')}s, rc {run.get('rc', '?')}, "
             f"swap {gb(run.get('swap_before_mb'))} -> {gb(run.get('swap_after_mb'))}"
         )
-    return 0
-
-
-def cmd_preflight(args: argparse.Namespace) -> int:
-    directory = state_dir()
-    preflight(directory, prepare_state(directory), "a simulator run", force=args.force)
     return 0
 
 
@@ -554,7 +452,7 @@ def main(argv: list[str] | None = None) -> int:
     hold.add_argument("--fewer", type=int, help="overrides SIMULATOR_SLOTS_FEWER")
     hold.add_argument("--label", default="a simulator run")
     hold.add_argument("--root", default=os.getcwd())
-    hold.add_argument("--udid", default="", help="a device this run uses, so it never counts as idle")
+    hold.add_argument("--udid", default="", help="a device this run uses, so status shows it in use")
     hold.add_argument("--owns", default="", help="devices whose name contains this text are this run's")
     hold.set_defaults(func=cmd_hold)
 
@@ -564,10 +462,6 @@ def main(argv: list[str] | None = None) -> int:
     result.set_defaults(func=cmd_result)
 
     commands.add_parser("status").set_defaults(func=cmd_status)
-
-    pre = commands.add_parser("preflight")
-    pre.add_argument("--force", action="store_true", help="ignore the once-per-30-minutes window")
-    pre.set_defaults(func=cmd_preflight)
 
     for name, func in (("sync", cmd_sync), ("sync-check", cmd_sync_check)):
         sub = commands.add_parser(name)

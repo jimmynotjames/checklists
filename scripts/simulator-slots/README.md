@@ -13,16 +13,11 @@ tests at the same time.
   leaves a slot taken.
 - **Partial grants:** a run asks for up to N slots and starts with whatever is free, at least 1. It
   waits only when none are free.
-- **Idle-simulator dialog:** before a run waits for slots, a native dialog may list the idle
-  booted simulators (any device set, including Xcode Previews) with their memory use, and offer to
-  shut them down.
-  - It appears at most once every 30 minutes across all repos, and only when something is idle.
-  - Unanswered, it closes after 60 s and leaves the simulators running.
 - **Run log:** every run appends to `runs.log`: slots wanted and granted, time spent waiting, time
   held, exit code, and swap before and after.
 
 State lives outside every repo, in `~/.local/state/simulator-slots/`: `protocol`, `max`,
-`slot-N.lock`, `runs.log`, `prompt.stamp`.
+`slot-N.lock`, `runs.log`.
 
 ## Knobs
 
@@ -30,7 +25,6 @@ State lives outside every repo, in `~/.local/state/simulator-slots/`: `protocol`
 | --- | --- |
 | `SIMULATOR_SLOTS_FEWER=N` | This run leaves N of the free slots unused. Use it when you need headroom for your own simulator or other heavy work. |
 | `SIMULATOR_SLOTS_TIMEOUT=S` | Give up (exit 75) after waiting S seconds. |
-| `SIMULATOR_SLOTS_PROMPT=0` | Skip the dialog. |
 | `max` file | Pool size; edit it to change the cap for every repo at once. |
 
 `simulator_slots.py status` shows the pool, each slot's holder, every booted simulator (idle or
@@ -43,8 +37,8 @@ in use), and the last ten runs.
 2. Wrap each test run.
    - **Bash:** source `simulator_slots.sh` with `SIMULATOR_SLOTS_HOME` set, then call
      `simulator_slots_hold WANT LABEL ROOT [UDID] [OWNS]` after building and before testing.
-     `OWNS` is text in the names of the run's devices (for example a checkout tag), so the idle
-     dialog never offers them.
+     `OWNS` is text in the names of the run's devices (for example a checkout tag), so `status`
+     shows them in use.
    - **Other languages:** start `hold --watch-pid <own pid>` with a pipe and read its one line,
      `<granted> <run-id>`.
 3. Pass the granted count to xcodebuild as its parallel worker count.

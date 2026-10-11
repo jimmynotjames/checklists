@@ -4,7 +4,7 @@
 #
 #   simulator_slots_hold WANT LABEL ROOT [UDID] [OWNS]
 #
-# UDID and OWNS (text in device names) mark this run's devices so the idle dialog never offers them.
+# UDID and OWNS (text in device names) mark this run's devices, so `status` shows them in use.
 #
 # Blocks until the pool grants this shell at least one slot (up to WANT), then sets
 # SIMULATOR_SLOTS_GRANTED and SIMULATOR_SLOTS_RUN. The slots stay held until this shell exits,
