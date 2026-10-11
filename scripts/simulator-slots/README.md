@@ -7,7 +7,8 @@ tests at the same time.
 ## Model
 
 - **Slot:** one simulator actively running tests. The pool size is the `max` file in the state
-  directory (default 4). A booted simulator that is not running tests holds no slot.
+  directory (default 2, measured on a 16 GB M4 MacBook Air: the CPU, not RAM, is
+  what runs out; a third simulator made each test about 1.5x slower). A booted simulator that is not running tests holds no slot.
 - **Holding slots:** `simulator_slots.py hold` flocks free slots and releases them when the
   process it watches exits. The kernel drops a flock when its holder dies, so a crashed run never
   leaves a slot taken.

@@ -2,7 +2,7 @@
 """A machine-wide pool of simulator slots shared by every repo that opts in.
 
 A slot is one simulator actively running tests. The pool size lives in the state directory's
-`max` file (default 4); booted-but-idle simulators don't take a slot. Repos opt in by vendoring
+`max` file (default 2); booted-but-idle simulators don't take a slot. Repos opt in by vendoring
 this directory and wrapping each test run in `hold`; repos that don't are invisible to the pool.
 
 `hold` runs in the background next to the test run. It flocks free slots, prints one line,
@@ -46,7 +46,7 @@ from pathlib import Path
 # Bump when the state directory's layout or locking changes. A copy speaking another protocol
 # refuses to run rather than share a pool it would miscount.
 PROTOCOL = 1
-DEFAULT_MAX = 4
+DEFAULT_MAX = 2
 POLL_SEC = 2.0
 REPORT_EVERY_SEC = 60.0
 EXIT_TIMEOUT = 75

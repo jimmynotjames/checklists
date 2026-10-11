@@ -8,7 +8,7 @@
 # check: xcodebuild shuts this device down to clone it, so the next boot clears the sentinel,
 # and the clones boot fresh either way.
 #
-# UI_WORKERS (default 4) is how many simulators to ask the slot pool for; the run takes what is
+# UI_WORKERS (default 2) is how many simulators to ask the slot pool for; the run takes what is
 # free and splits the test classes across that many clones (AGENTS.md §"Simulator slots").
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -26,7 +26,7 @@ COMMON_ARGS=(
 )
 
 xcodebuild build-for-testing "${COMMON_ARGS[@]}"
-slots_parallel_args "${UI_WORKERS:-4}" test-ui
+slots_parallel_args "${UI_WORKERS:-2}" test-ui
 
 WARM_SENTINEL="${ROOT}/.build/sim/warmed"
 if [[ "${SIMULATOR_SLOTS_GRANTED}" -le 1 && ! -f "${WARM_SENTINEL}" ]]; then

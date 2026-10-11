@@ -283,7 +283,7 @@ your report** — never treat it as known flake.
 ## Simulator slots
 
 Every simulator running tests takes a slot from a machine-wide pool that other opted-in repos
-share. The pool's state, including its size (the `max` file, 4), is in
+share. The pool's state, including its size (the `max` file, 2), is in
 `~/.local/state/simulator-slots/`. `scripts/simulator-slots/` is this repo's copy of the master in
 `~/dev/simulator-slots`.
 
@@ -292,7 +292,7 @@ share. The pool's state, including its size (the `max` file, 4), is in
   without the master.
 - **Slots per command:**
   - `test-unit`: 1.
-  - `test-ui`: up to `UI_WORKERS` (default 4).
+  - `test-ui`: up to `UI_WORKERS` (default 2).
   - The size check's `run.sh`: up to `WORKERS`.
   - The screenshot lane: 1.
 - **How a run uses them:** it builds first, then takes whatever is free, at least 1. With 2 or

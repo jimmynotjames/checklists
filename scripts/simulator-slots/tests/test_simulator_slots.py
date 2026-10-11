@@ -212,6 +212,8 @@ class HoldTests(unittest.TestCase):
 class ShellWrapperTests(unittest.TestCase):
     def test_wrapper_grants_and_records_the_exit_code(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
+            slots.prepare_state(Path(tmp))
+            (Path(tmp) / "max").write_text("4\n")
             env = {**os.environ, "SIMULATOR_SLOTS_STATE_DIR": tmp, "SIMULATOR_SLOTS_HOME": str(HOME)}
             script = 'source "$SIMULATOR_SLOTS_HOME/simulator_slots.sh"; simulator_slots_hold 3 t /r; echo "$SIMULATOR_SLOTS_GRANTED"; exit 7'
             result = subprocess.run(["bash", "-c", script], env=env, capture_output=True, text=True, timeout=30)
