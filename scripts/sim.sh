@@ -6,7 +6,7 @@
 #   show      boot if needed; open DeviceHub on the device
 #   run       build the app, install it on the device, and launch it
 #   status    device, lock holder, and checkout path (takes no lock)
-#   shutdown  shut the device down
+#   shutdown  shut down every booted device carrying this checkout's slug (sandbox, Screenshots, clones)
 #   clean     delete every device and clone carrying this checkout's slug, and .build/sim
 #
 # Every verb but `status` holds the checkout's simulator lock while it runs.
@@ -73,14 +73,12 @@ status)
 shutdown)
     source "${ROOT}/scripts/_sim_common.sh"
     sim_lock_acquire || exit $?
-    if [[ ! -f "${UDID_FILE}" ]]; then
-        echo "sim: not initialized"
-        exit 0
+    capture="$(python3 "${ROOT}/scripts/sim_lock.py" status --path "${CAPTURE_LOCK}")"
+    if [[ "${capture}" != "free" ]]; then
+        echo "sim: a screenshot capture is running in this checkout; not shutting down" >&2
+        exit 1
     fi
-    udid="$(cat "${UDID_FILE}")"
-    xcrun simctl shutdown "${udid}" 2>/dev/null \
-        && echo "sim: ${udid} shut down" \
-        || echo "sim: ${udid} already shut down or not found"
+    python3 "${ROOT}/scripts/sim_clean.py" --shutdown-only
     ;;
 clean)
     source "${ROOT}/scripts/_sim_common.sh"

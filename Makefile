@@ -1,4 +1,4 @@
-.PHONY: system format format-changed lint lint-changed i18n-check i18n-sync i18n-sync-check uitest-check doc-check build test-unit test-ui test-scripts gate verify-secrets hooks-install initialize-sims sim-udid sim-show sim-run sim-status sim-shutdown sim-clean
+.PHONY: system format format-changed lint lint-changed i18n-check i18n-sync i18n-sync-check uitest-check doc-check build test-unit test-ui test-scripts gate verify-secrets hooks-install initialize-sims sim-udid sim-show sim-run sim-status sim-shutdown sim-clean simulator-slots-check simulator-slots-sync simulator-slots-status
 
 system:
 	bash scripts/system-setup.sh
@@ -100,3 +100,15 @@ sim-shutdown:
 
 sim-clean:
 	@bash scripts/sim.sh clean
+
+# -- Simulator slots ----------------------------------------------------------
+# The machine-wide pool lives in ~/dev/simulator-slots; scripts/simulator-slots is this repo's
+# copy (AGENTS.md §"Simulator slots"). The check is in the gate and skipped without the master.
+simulator-slots-check:
+	python3 scripts/simulator-slots/simulator_slots.py sync-check --into scripts/simulator-slots
+
+simulator-slots-sync:
+	python3 scripts/simulator-slots/simulator_slots.py sync --into scripts/simulator-slots
+
+simulator-slots-status:
+	@python3 scripts/simulator-slots/simulator_slots.py status

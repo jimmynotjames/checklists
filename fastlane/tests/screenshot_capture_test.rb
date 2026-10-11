@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "minitest/autorun"
+require "tmpdir"
 require_relative "../lib/screenshot_capture"
 
 class ScreenshotCaptureTest < Minitest::Test
@@ -39,6 +40,23 @@ class ScreenshotCaptureTest < Minitest::Test
     refute ENV.key?("TEST_RUNNER_RUN_APP_STORE_SCREENSHOTS")
   ensure
     original.nil? ? ENV.delete("TEST_RUNNER_RUN_APP_STORE_SCREENSHOTS") : ENV["TEST_RUNNER_RUN_APP_STORE_SCREENSHOTS"] = original
+  end
+
+  def test_capture_holds_one_slot_and_records_its_result
+    Dir.mktmpdir do |state|
+      previous = ENV.to_h.slice("SIMULATOR_SLOTS_STATE_DIR", "SIMULATOR_SLOTS_PROMPT")
+      ENV["SIMULATOR_SLOTS_STATE_DIR"] = state
+      ENV["SIMULATOR_SLOTS_PROMPT"] = "0"
+      begin
+        result = @capture.send(:with_simulator_slot) { :captured }
+        assert_equal :captured, result
+        events = File.readlines(File.join(state, "runs.log")).map { |line| JSON.parse(line) }
+        assert_equal [1], events.select { |e| e["event"] == "start" }.map { |e| e["granted"] }
+        assert_equal [0], events.select { |e| e["event"] == "result" }.map { |e| e["rc"] }
+      ensure
+        %w[SIMULATOR_SLOTS_STATE_DIR SIMULATOR_SLOTS_PROMPT].each { |name| ENV[name] = previous[name] }
+      end
+    end
   end
 
   def test_inactive_locale_is_rejected

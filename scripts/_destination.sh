@@ -3,6 +3,9 @@
 # Callers must set ROOT before sourcing. Sources _sim_sandbox.sh, which sets
 # SIM_UDID, SIM_DERIVED, and SIM_RESULTS_DIR; this file turns SIM_UDID into DESTINATION.
 # Override SIMULATOR_NAME (device) or SIMULATOR_UDID (pin a device, skip sandboxing).
+#
+# Also defines simulator_slots_hold and slots_parallel_args for the scripts that run tests
+# (AGENTS.md §"Simulator slots").
 
 : "${ROOT:?ROOT must be set to the repo root before sourcing _destination.sh}"
 
@@ -10,3 +13,22 @@ source "${ROOT}/scripts/_sim_sandbox.sh"
 
 # Always pin by UDID so xcodebuild never resolves to an unintended device.
 DESTINATION="platform=iOS Simulator,id=${SIM_UDID}"
+
+SIMULATOR_SLOTS_HOME="${ROOT}/scripts/simulator-slots"
+source "${SIMULATOR_SLOTS_HOME}/simulator_slots.sh"
+
+# Takes up to $1 slots for a run labelled $2, then sets SLOTS_PARALLEL_ARGS to the xcodebuild
+# flags for the granted count: serial on this checkout's device for 1, that many clones for more.
+# Call it after building and before testing, so builds never hold a slot.
+slots_parallel_args() {
+    simulator_slots_hold "$1" "$2" "${ROOT}" "${SIM_UDID}" "[${SIM_SLUG}]" || return $?
+    if [[ "${SIMULATOR_SLOTS_GRANTED}" -le 1 ]]; then
+        SLOTS_PARALLEL_ARGS=(-parallel-testing-enabled NO)
+    else
+        SLOTS_PARALLEL_ARGS=(-parallel-testing-enabled YES
+            -parallel-testing-worker-count "${SIMULATOR_SLOTS_GRANTED}"
+            -maximum-parallel-testing-workers "${SIMULATOR_SLOTS_GRANTED}")
+        # Clones an interrupted run left behind; safe under the checkout lock _sim_sandbox.sh holds.
+        python3 "${ROOT}/scripts/sim_clean.py" --clones-only >&2
+    fi
+}

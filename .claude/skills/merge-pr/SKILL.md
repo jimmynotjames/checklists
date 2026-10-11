@@ -41,6 +41,9 @@ a request to inspect or review a PR alone is not authorization.
      squash-merge leaves the local tip un-ancestored)
    - **Stale tracking ref:** `git fetch --prune` (clears the `origin/<branch>` ref that
      `git pull --ff-only` leaves behind)
+   - **Simulators:** run `make sim-shutdown`. An idle booted device takes no slot but still uses
+     memory (AGENTS.md §"Simulator slots"). If this checkout is a worktree about to be removed, run
+     `make sim-clean` instead (§"Simulator sandbox").
 
 5. **Resolve the linked issue** (skip if step 2 found no issue):
    - **Complete fix** (`Closes #N`) — verify it auto-closed with
@@ -49,5 +52,5 @@ a request to inspect or review a PR alone is not authorization.
    - **Partial fix** (`Refs #N`) — leave it open and comment a pointer:
      `gh issue comment <N> --body "Partially addressed by #<PR>. Still pending: <summary>."`
 
-6. **Report** what merged, the gate result, that the branch was deleted, and the final issue state
+6. **Report** what merged, the gate result, that the branch was deleted, that the simulators were shut down, and the final issue state
    (or "no linked issue").

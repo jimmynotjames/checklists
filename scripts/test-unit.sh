@@ -6,7 +6,7 @@
 #
 # `-parallel-testing-enabled NO` is load-bearing for more than speed: it is also what
 # keeps Swift Testing, which parallelizes within the process by default, running the
-# suite serially.
+# suite serially. So the run asks the slot pool for exactly one simulator.
 #
 # DESTINATION, SIM_DERIVED, and SIM_RESULTS_DIR are set by _destination.sh.
 set -euo pipefail
@@ -16,15 +16,21 @@ cd "$ROOT"
 source "${ROOT}/scripts/_destination.sh"
 
 RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-$$-unit.xcresult"
+COMMON_ARGS=(
+    -project checklists/checklists.xcodeproj
+    -scheme checklists
+    -destination "${DESTINATION}"
+    -destination-timeout 300
+    -derivedDataPath "${SIM_DERIVED}"
+)
+
+# Build before taking a slot (AGENTS.md §"Simulator slots").
+xcodebuild build-for-testing "${COMMON_ARGS[@]}"
+simulator_slots_hold 1 test-unit "${ROOT}" "${SIM_UDID}" "[${SIM_SLUG}]"
 
 # `|| RC=$?` so `set -e` doesn't skip the failure listing below.
 RC=0
-xcodebuild test \
-    -project checklists/checklists.xcodeproj \
-    -scheme checklists \
-    -destination "${DESTINATION}" \
-    -destination-timeout 300 \
-    -derivedDataPath "${SIM_DERIVED}" \
+xcodebuild test-without-building "${COMMON_ARGS[@]}" \
     -resultBundlePath "${RESULT_BUNDLE}" \
     -parallel-testing-enabled NO \
     -collect-test-diagnostics never \

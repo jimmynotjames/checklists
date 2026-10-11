@@ -63,7 +63,7 @@ repo is `checklists` (`jimmynotjames/checklists`). Introduce both sibling names 
 ## Build and test
 
 ```bash
-make gate         # format-changed -> lint-changed -> i18n-check -> uitest-check -> doc-check -> test-scripts -> build -> i18n-sync-check. Logs to tmp/gate.log.
+make gate         # format-changed -> lint-changed -> i18n-check -> uitest-check -> doc-check -> simulator-slots-check -> test-scripts -> build -> i18n-sync-check. Logs to tmp/gate.log.
 make build        # compile only (generic destination; never boots a simulator)
 make i18n-check   # catalog fully translated, in Xcode's byte format + no unkeyed user-facing strings
 make i18n-sync    # after `make build`: copy Swift comments/keys into the catalog, as a build in Xcode does
@@ -71,6 +71,7 @@ make doc-check    # doc pointers, headings, and named symbols resolve; no histor
 make test-scripts # scripts/tests (Python) + fastlane/tests (Ruby 3+; skipped with a warning if absent)
 make test-unit    # opt-in, not in the gate
 make test-ui      # opt-in; needs a prior `make test-unit` (simulator warm-up)
+make simulator-slots-status  # the machine-wide simulator pool: holders, booted devices, recent runs
 make sim-udid     # this checkout's simulator UDID (boots it if needed); `make -s` for stdout alone
 make sim-run      # build, install, and launch the app on this checkout's simulator
 make sim-show     # open DeviceHub on this checkout's simulator
@@ -278,6 +279,35 @@ UI tests never tap keyboard keys; `make gate` fails on a new tap
 (`scripts/check_ui_test_keyboard.py`); use the `XCUIElement+Keyboard.swift` helpers. **A UI failure
 with `kAXErrorCannotComplete` on a keyboard key means a tap got past that check: say so explicitly in
 your report** — never treat it as known flake.
+
+## Simulator slots
+
+Every simulator running tests takes a slot from a machine-wide pool that other opted-in repos
+share. The pool's state, including its size (the `max` file, 4), is in
+`~/.local/state/simulator-slots/`. `scripts/simulator-slots/` is this repo's copy of the master in
+`~/dev/simulator-slots`.
+
+- **Changing the tool:** never edit the copy. Change the master, then run `make
+  simulator-slots-sync`. The gate fails while the two differ, and skips the check on a machine
+  without the master.
+- **Slots per command:**
+  - `test-unit`: 1.
+  - `test-ui`: up to `UI_WORKERS` (default 4).
+  - The size check's `run.sh`: up to `WORKERS`.
+  - The screenshot lane: 1.
+- **How a run uses them:** it builds first, then takes whatever is free, at least 1. With 2 or
+  more, it runs that many parallel clones of this checkout's warmed device.
+- **Fewer simulators for a task:** when Jimmy asks for one or two fewer simulators for a task,
+  prefix the command with `SIMULATOR_SLOTS_FEWER=N`. The run then leaves N of the free slots unused.
+  `SIMULATOR_SLOTS_TIMEOUT=S` makes it give up with exit 75 after waiting S seconds.
+- **Waiting:** a run waiting for a slot prints who holds each one, so start suites with
+  `run_in_background`. `make simulator-slots-status` shows the holders, every booted simulator, and
+  the recent runs.
+- **The idle dialog:** before waiting, a run may show a macOS dialog offering to shut down idle
+  booted simulators. It appears at most every 30 minutes, closes after 60 s, and leaves them
+  running. Don't ask in chat as well; `SIMULATOR_SLOTS_PROMPT=0` skips it.
+- **Idle devices still cost memory:** a booted simulator takes no slot but still uses about 2–3 GB.
+  `/merge-pr` shuts down the merged checkout's devices.
 
 ## Known issues
 
