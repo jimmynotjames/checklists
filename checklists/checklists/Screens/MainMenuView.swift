@@ -18,6 +18,9 @@ struct MainMenuView: View {
   /// Toolbar items step aside on their own, but this close button is plain content.
   @State private var windowControlsInset: CGSize = .zero
 
+  /// 21 is the `StopIcon` asset's size.
+  private static let closeIconSlack: CGFloat = (44 - 21) / 2
+
   var body: some View {
     // The gap between menu rows lives here rather than in the rows themselves.
     VStack(alignment: .leading, spacing: 16) {
@@ -27,15 +30,19 @@ struct MainMenuView: View {
       } label: {
         Image("StopIcon")
           .foregroundStyle(Colors.defaultBackgroundColor)
+          // The paddings below give back the slack on each side, so the icon draws where it did
+          // and only the tappable area grows.
+          .frame(width: 44, height: 44)
+          .contentShape(Rectangle())
       }
       .accessibilityLabel(String(localized: "mainMenu.close.accessibilityLabel", defaultValue: "Close menu", comment: "VoiceOver label for the X button that dismisses the main menu."))
-      .padding(.top, 8)
+      .padding(.top, 8 - Self.closeIconSlack)
       // Never under the stock 16: a window without controls can still report a small corner inset
       // for its rounded corner.
-      .padding(.leading, max(16, windowControlsInset.width + 8))
+      .padding(.leading, max(16, windowControlsInset.width + 8) - Self.closeIconSlack)
       // On top of the stack's own 16, so the close button reads as separate from the menu
       // rows rather than as a fourth item.
-      .padding(.bottom, 8)
+      .padding(.bottom, 8 - Self.closeIconSlack)
 
       MainMenuRow(
         title: String(localized: "mainMenu.feedback", defaultValue: "Feedback", comment: "Main-menu row that opens a pre-addressed feedback email."),
