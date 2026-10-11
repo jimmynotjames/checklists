@@ -7,8 +7,8 @@
 
 import UIKit
 
-/// Apple's minimum touch target, for both fields. Their text insets fill it out, so a tap above or
-/// below the text still lands on the field.
+/// Apple's minimum touch target, for both fields, so a tap just above or below the text still lands
+/// on the field.
 private var minNameFieldHeight: CGFloat = 44.0
 private var minNotesTextViewHeight: CGFloat = 44.0
 
