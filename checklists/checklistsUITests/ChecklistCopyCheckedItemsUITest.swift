@@ -165,8 +165,10 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     copyEntry.tap()
 
     // The notice is what the tap produces, and the menu holds still to show it: no picker, and the
-    // neighbouring entries are all still there.
-    XCTAssertTrue(app.buttons["No checked items."].waitForExistence(timeout: 5), "The notice didn't appear.")
+    // neighbouring entries are all still there. Checked at once, not waited for: the notice leaves on
+    // a timer, and `waitForExistence` first looks about a second in, by which point under load the
+    // timer has nearly run. The tap already waits for the app to go idle, so the notice is up by now.
+    XCTAssertTrue(app.buttons["No checked items."].exists, "The notice didn't appear.")
     XCTAssertTrue(app.buttons["Duplicate Checklist"].exists, "The menu should still be up around the notice.")
     XCTAssertFalse(
       app.buttons["copyDestination.createNewChecklist"].exists,
