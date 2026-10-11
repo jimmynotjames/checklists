@@ -32,6 +32,12 @@ if [[ "${ONLY}" == checklistsUITests/* ]]; then
     warm_up_if_needed
 fi
 
+# xcodebuild rejects `-test-iterations 1`, so the flag goes in only for a repeat run.
+ITERATION_ARGS=()
+if (( ITERATIONS > 1 )); then
+    ITERATION_ARGS=(-test-iterations "${ITERATIONS}")
+fi
+
 # `|| RC=$?` so `set -e` doesn't skip the failure listing below.
 RC=0
 xcodebuild test-without-building "${COMMON_ARGS[@]}" \
@@ -39,7 +45,7 @@ xcodebuild test-without-building "${COMMON_ARGS[@]}" \
     -parallel-testing-enabled NO \
     -collect-test-diagnostics never \
     -only-testing:"${ONLY}" \
-    -test-iterations "${ITERATIONS}" || RC=$?
+    ${ITERATION_ARGS[@]+"${ITERATION_ARGS[@]}"} || RC=$?
 
 python3 "${ROOT}/scripts/list_test_failures.py" "${RESULT_BUNDLE}" || true
 

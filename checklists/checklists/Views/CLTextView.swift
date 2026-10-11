@@ -126,9 +126,21 @@ class CLTextView: UITextView {
     views.forEach { $0.value.translatesAutoresizingMaskIntoConstraints = false }
 
     NSLayoutConstraint.activate(
-      [NSLayoutConstraint.constraints(withVisualFormat: "H:|[placeholderLabel]|", options: [], metrics: nil, views: views),
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|[placeholderLabel]|", options: [], metrics: nil, views: views)].flatMap(\.self)
+      NSLayoutConstraint.constraints(withVisualFormat: "H:|[placeholderLabel]|", options: [], metrics: nil, views: views)
+        + [placeholderTopConstraint, placeholderBottomConstraint]
     )
+  }
+
+  // The placeholder sits on the first line of text, so it follows the text inset's top and bottom.
+  // Sides stay pinned: no caller insets them.
+  private lazy var placeholderTopConstraint = placeholderLabel.topAnchor.constraint(equalTo: topAnchor)
+  private lazy var placeholderBottomConstraint = placeholderLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+
+  override var textContainerInset: UIEdgeInsets {
+    didSet {
+      placeholderTopConstraint.constant = textContainerInset.top
+      placeholderBottomConstraint.constant = -textContainerInset.bottom
+    }
   }
 
   deinit {
