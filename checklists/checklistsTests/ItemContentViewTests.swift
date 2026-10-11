@@ -201,7 +201,7 @@ struct ItemContentViewTests {
     contentView.delegate = delegate
     let nameField = try nameTextView(in: contentView)
 
-    _ = contentView.hitTest(CGPoint(x: 2.0, y: 2.0), with: nil) // Above the fields, inside the view.
+    _ = contentView.hitTest(CGPoint(x: 2.0, y: 2.0), with: nil) // On the checkbox, outside both fields.
     contentView.textViewDidEndEditing(nameField)
 
     #expect(delegate.didFinishEditingCount == 1, "Tapping away from both fields should end editing.")
