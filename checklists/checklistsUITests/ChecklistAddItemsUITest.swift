@@ -128,7 +128,7 @@ final class ChecklistAddItemsUITest: ChecklistDetailUITestCase {
    3. Check that the item being typed into sits above the keyboard, not behind it.
    */
   func testNewItemStaysAboveKeyboardInLandscape() {
-    XCUIDevice.shared.orientation = .landscapeLeft
+    rotateToLandscapeAndSettle()
     addTeardownBlock { XCUIDevice.shared.orientation = .portrait }
 
     checklistsList.staticTexts["Morning Routine"].tap()
@@ -152,5 +152,24 @@ final class ChecklistAddItemsUITest: ChecklistDetailUITestCase {
       coveredFrom,
       "The item being typed into is hidden behind the keyboard."
     )
+  }
+
+  /// Turns the phone to landscape and returns once the rotation animation has finished.
+  ///
+  /// XCTest's own idle wait returns while the window is still mid-turn, and a tap synthesized then
+  /// is aimed at the half-rotated window and lost. The window's accessibility frame passes through
+  /// the in-between sizes, so poll it until it is landscape and holds still.
+  private func rotateToLandscapeAndSettle() {
+    XCUIDevice.shared.orientation = .landscapeLeft
+    let window = app.windows.firstMatch
+    var lastFrame = CGRect.zero
+    let deadline = Date().addingTimeInterval(5)
+    while Date() < deadline {
+      let frame = window.frame
+      if frame.width > frame.height, frame == lastFrame { return }
+      lastFrame = frame
+      RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+    }
+    XCTFail("The window didn't settle in landscape.")
   }
 }
