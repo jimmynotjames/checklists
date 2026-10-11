@@ -101,9 +101,8 @@ enum ChecklistHistoryCaption {
     header.addSubview(view)
     view.translatesAutoresizingMaskIntoConstraints = false
     return [
-      // Wider than the gap between name and notes: under a block of notes a tighter one reads as a
-      // third paragraph of them rather than as metadata.
-      view.topAnchor.constraint(equalTo: notesView.bottomAnchor, constant: 10.0),
+      // Flush: the gap above the caption is the notes view's bottom inset, so it stays tappable.
+      view.topAnchor.constraint(equalTo: notesView.bottomAnchor),
       // The column's leading edge, where the status ring also sits.
       view.leadingAnchor.constraint(equalTo: column.leadingAnchor, constant: 16.0),
       view.trailingAnchor.constraint(equalTo: column.trailingAnchor, constant: -16.0),

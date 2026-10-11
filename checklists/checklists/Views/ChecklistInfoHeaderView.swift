@@ -38,6 +38,10 @@ final class ChecklistInfoHeaderView: UIView {
 
     notesTextView.font = .systemFont(ofSize: 16.0)
     notesTextView.backgroundColor = .clear
+    // The gap below the notes, inside the field so a tap just under the last line still lands on
+    // it. Wider than the gap above: under a block of notes a tighter one makes the history caption
+    // read as a third paragraph of them rather than as metadata.
+    notesTextView.textContainerInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 10.0, right: 0.0)
     notesTextView.placeholderText = CommonStrings.notesPlaceholder
     notesTextView.accessibilityIdentifier = "checklistNotesTextView"
     notesTextView.accessibilityLabel = String(
@@ -61,21 +65,25 @@ final class ChecklistInfoHeaderView: UIView {
     // notes, and the header collapses to the height it has without the feature.
     let captionConstraints: [NSLayoutConstraint] = showsHistoryCaption
       ? ChecklistHistoryCaption.install(captionView, in: self, column: column, below: notesTextView)
-      : [notesTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0)]
+      : [notesTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5.0)]
 
+    // Both fields are 44pt tall, Apple's minimum touch target, with the slack inside them rather
+    // than around them so a near-miss still lands on a field.
     NSLayoutConstraint.activate(captionConstraints + [
       statusIcon.leadingAnchor.constraint(equalTo: column.leadingAnchor, constant: 16.0),
 
-      nameTextField.topAnchor.constraint(equalTo: topAnchor, constant: 22.0),
+      // A text field centres its text vertically, so it stays on the status ring's centre line.
+      nameTextField.topAnchor.constraint(equalTo: topAnchor, constant: 16.0),
       nameTextField.leadingAnchor.constraint(equalTo: statusIcon.trailingAnchor, constant: 10.0),
       nameTextField.trailingAnchor.constraint(equalTo: column.trailingAnchor, constant: -16.0),
       nameTextField.centerYAnchor.constraint(equalTo: statusIcon.centerYAnchor),
-      nameTextField.heightAnchor.constraint(equalToConstant: 32.0),
+      nameTextField.heightAnchor.constraint(equalToConstant: 44.0),
 
-      notesTextView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 4.0),
+      // Abutting: the name field's own slack is the gap between the two.
+      notesTextView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor),
       notesTextView.leadingAnchor.constraint(equalTo: column.leadingAnchor, constant: 16.0),
       notesTextView.trailingAnchor.constraint(equalTo: column.trailingAnchor, constant: -16.0),
-      notesTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 32.0),
+      notesTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 44.0),
     ])
   }
 
