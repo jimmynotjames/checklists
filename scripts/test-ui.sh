@@ -3,23 +3,34 @@
 #
 # IMPORTANT: the simulator must have hosted at least one prior app lifecycle before
 # the XCUITest IPC socket is reliable. test-unit.sh writes the `warmed` sentinel
-# after a successful run; this script refuses to start without it. `make sim-clean`
-# wipes .build/sim/ so the sentinel auto-clears on simulator reset.
+# after a successful run, and every boot clears it (`make sim-clean` too). A serial run without
+# it warms the device up first (`warm_up_if_needed`). A parallel run doesn't: its clones boot
+# fresh, and xcodebuild shuts this device down to clone it.
+#
+# UI_WORKERS (default 2) is how many simulators to ask the slot pool for; the run takes what is
+# free and splits the test classes across that many clones (AGENTS.md §"Simulator slots"). Where
+# the pool is off, it is ignored and the run is serial.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
 source "${ROOT}/scripts/_destination.sh"
 
-WARM_SENTINEL="${ROOT}/.build/sim/warmed"
-if [[ ! -f "${WARM_SENTINEL}" ]]; then
-    echo "error: simulator not warmed up." >&2
-    echo "  Run 'make test-unit' before 'make test-ui'." >&2
-    echo "  If you just ran make sim-clean / make initialize-sims, run 'make test-unit' first." >&2
-    exit 1
-fi
-
 RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-$$-ui.xcresult"
+COMMON_ARGS=(
+    -project checklists/checklists.xcodeproj
+    -scheme checklists
+    -destination "${DESTINATION}"
+    -destination-timeout 300
+    -derivedDataPath "${SIM_DERIVED}"
+)
+
+xcodebuild build-for-testing "${COMMON_ARGS[@]}"
+slots_parallel_args "${UI_WORKERS:-2}" test-ui
+
+if [[ "${SIMULATOR_SLOTS_GRANTED}" -le 1 ]]; then
+    warm_up_if_needed
+fi
 
 # `|| RC=$?` so `set -e` doesn't skip the tagging below; never `if ! xcodebuild` (see gate.sh).
 RC=0
@@ -27,14 +38,9 @@ RC=0
 # them once hung for its full 600 s timeout after a passing run.
 # The skipped screenshot captures have their own drivers (fastlane,
 # translation-accessibility-size-check).
-xcodebuild test \
-    -project checklists/checklists.xcodeproj \
-    -scheme checklists \
-    -destination "${DESTINATION}" \
-    -destination-timeout 300 \
-    -derivedDataPath "${SIM_DERIVED}" \
+xcodebuild test-without-building "${COMMON_ARGS[@]}" \
     -resultBundlePath "${RESULT_BUNDLE}" \
-    -parallel-testing-enabled NO \
+    ${SLOTS_PARALLEL_ARGS[@]+"${SLOTS_PARALLEL_ARGS[@]}"} \
     -collect-test-diagnostics never \
     -only-testing:checklistsUITests \
     -skip-testing:checklistsUITests/AppStoreScreenshots \

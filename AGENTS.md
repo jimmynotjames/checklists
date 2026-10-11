@@ -63,14 +63,16 @@ repo is `checklists` (`jimmynotjames/checklists`). Introduce both sibling names 
 ## Build and test
 
 ```bash
-make gate         # format-changed -> lint-changed -> i18n-check -> uitest-check -> doc-check -> test-scripts -> build -> i18n-sync-check. Logs to tmp/gate.log.
+make gate         # format-changed -> lint-changed -> i18n-check -> uitest-check -> doc-check -> simulator-slots-check -> test-scripts -> build -> i18n-sync-check. Logs to tmp/gate.log.
 make build        # compile only (generic destination; never boots a simulator)
 make i18n-check   # catalog fully translated, in Xcode's byte format + no unkeyed user-facing strings
 make i18n-sync    # after `make build`: copy Swift comments/keys into the catalog, as a build in Xcode does
 make doc-check    # doc pointers, headings, and named symbols resolve; no history on added lines
 make test-scripts # scripts/tests (Python) + fastlane/tests (Ruby 3+; skipped with a warning if absent)
 make test-unit    # opt-in, not in the gate
-make test-ui      # opt-in; needs a prior `make test-unit` (simulator warm-up)
+make test-ui      # opt-in; a one-slot run warms the device with the unit tests first if needed
+make test-only ONLY=<target>/<Class>[/<test>] [ITERATIONS=3]  # one class or test, serially
+make simulator-slots-status  # the machine-wide simulator pool: holders, booted devices, recent runs
 make sim-udid     # this checkout's simulator UDID (boots it if needed); `make -s` for stdout alone
 make sim-run      # build, install, and launch the app on this checkout's simulator
 make sim-show     # open DeviceHub on this checkout's simulator
@@ -83,7 +85,7 @@ Give any suite run a timeout of at least 30 minutes.
 
 `make test-ui` runs every `checklistsUITests` class except the screenshot captures that
 `scripts/test-ui.sh` skips; add a new capture class to that skip list. Before a full UI run, run a
-new or changed class alone, as in the isolated rerun under §Reading a test result.
+new or changed class alone with `make test-only` (§Reading a test result).
 
 Don't add `-configuration Release` to the test scripts — only Debug sets `ONLY_ACTIVE_ARCH = YES`,
 so Release would build both slices.
@@ -115,8 +117,7 @@ Don't read pass/fail from `tmp/gate.log` or a stale console tail.
 
 Both test scripts print one `TEST-FAILED: <test> <file:line> <text>` line per failure
 (`scripts/list_test_failures.py`). A test that fails in a full run but passes an isolated rerun
-(`-only-testing:<target>/<Class>/<test> -test-iterations 3`, destination and derived data from
-`scripts/_destination.sh`) is flaky: append a row to `checklists/checklistsUITests/FLAKY_TESTS.md`
+(`make test-only ONLY=<target>/<Class>/<test> ITERATIONS=3`, which takes a simulator slot) is flaky: append a row to `checklists/checklistsUITests/FLAKY_TESTS.md`
 with `file:line` from those lines, never a guess, name the flake in your report, and don't fix it in
 passing.
 
@@ -278,6 +279,40 @@ UI tests never tap keyboard keys; `make gate` fails on a new tap
 (`scripts/check_ui_test_keyboard.py`); use the `XCUIElement+Keyboard.swift` helpers. **A UI failure
 with `kAXErrorCannotComplete` on a keyboard key means a tap got past that check: say so explicitly in
 your report** — never treat it as known flake.
+
+## Simulator slots
+
+Every simulator running tests takes a slot from a machine-wide pool that other opted-in repos
+share. The pool's state, including its size (the `max` file), is in
+`~/.local/state/simulator-slots/`. `scripts/simulator-slots/` is this repo's copy of the master in
+`~/dev/simulator-slots`.
+
+**The pool is on only where `~/dev/simulator-slots` exists** (Jimmy's machine). On any other
+clone it is off: don't look for or create that directory or the state directory. Test scripts
+take no slots and pass no parallel-testing flags, so they run serially on the checkout's own
+device, the scheme's setting. The gate's sync check is skipped, and the rest of this section
+doesn't apply.
+
+- **Changing the tool:** never edit the copy. Change the master, then run `make
+  simulator-slots-sync`. The gate fails while the two differ.
+- **Slots per command:**
+  - `test-unit` and `test-only`: 1.
+  - `test-ui`: up to `UI_WORKERS`.
+  - The size check's `run.sh`: up to `WORKERS`.
+  - The screenshot lane: 1, held for the whole capture, its builds included: fastlane's snapshot
+    builds and tests in one step.
+- **How a run uses them:** it builds first, then takes whatever is free, at least 1. With 2 or
+  more, it runs that many parallel clones of this checkout's device; the clones boot fresh, without
+  the warm-up a one-slot run gets.
+- **Fewer simulators for a task:** when Jimmy asks for fewer simulators for a task, prefix the
+  command with `SIMULATOR_SLOTS_FEWER=N`. The run then leaves N of the free slots unused; N must be
+  smaller than the pool.
+  `SIMULATOR_SLOTS_TIMEOUT=S` makes it give up with exit 75 after waiting S seconds.
+- **Waiting:** a run waiting for a slot prints who holds each one, so start suites with
+  `run_in_background`. `make simulator-slots-status` shows the holders, every booted simulator, and
+  the recent runs.
+- **Idle devices still cost memory:** a booted simulator takes no slot but still uses about 2–3 GB.
+  `/merge-pr` shuts down the merged checkout's devices.
 
 ## Known issues
 
