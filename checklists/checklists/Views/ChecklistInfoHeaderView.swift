@@ -67,8 +67,8 @@ final class ChecklistInfoHeaderView: UIView {
       ? ChecklistHistoryCaption.install(captionView, in: self, column: column, below: notesTextView)
       : [notesTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5.0)]
 
-    // Both fields are 44pt tall, Apple's minimum touch target, with the slack inside them rather
-    // than around them so a near-miss still lands on a field.
+    // Both fields meet Apple's minimum touch target with the slack inside them rather than around
+    // them, so a near-miss still lands on a field.
     NSLayoutConstraint.activate(captionConstraints + [
       statusIcon.leadingAnchor.constraint(equalTo: column.leadingAnchor, constant: 16.0),
 

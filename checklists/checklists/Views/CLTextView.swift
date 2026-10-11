@@ -131,7 +131,8 @@ class CLTextView: UITextView {
     )
   }
 
-  // The placeholder sits where the first line of text would, so it follows the text inset.
+  // The placeholder sits on the first line of text, so it follows the text inset's top and bottom.
+  // Sides stay pinned: no caller insets them.
   private lazy var placeholderTopConstraint = placeholderLabel.topAnchor.constraint(equalTo: topAnchor)
   private lazy var placeholderBottomConstraint = placeholderLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
 
