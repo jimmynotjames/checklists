@@ -29,7 +29,6 @@ from __future__ import annotations
 import argparse
 import datetime
 import fcntl
-import filecmp
 import json
 import os
 import plistlib
@@ -394,23 +393,37 @@ def cmd_status(_args: argparse.Namespace) -> int:
     return 0
 
 
-def synced_files(directory: Path) -> set[Path]:
+def tree_files(directory: Path) -> dict[Path, bytes]:
     if not directory.is_dir():
-        return set()
+        return {}
     return {
-        path.relative_to(directory)
+        path.relative_to(directory): path.read_bytes()
         for path in directory.rglob("*")
         if path.is_file() and not SYNC_IGNORE.intersection(path.relative_to(directory).parts)
     }
 
 
+def master_files(master: Path) -> dict[Path, bytes]:
+    """The master's committed files when it is a git repo, so uncommitted edits there never leak
+    into a copy or fail a repo's gate; its working tree otherwise."""
+    head = subprocess.run(["git", "-C", str(master), "rev-parse", "--verify", "-q", "HEAD"], capture_output=True)
+    if not (master / ".git").exists() or head.returncode != 0:
+        return tree_files(master)
+    names = subprocess.run(
+        ["git", "-C", str(master), "ls-tree", "-r", "-z", "--name-only", "HEAD"], capture_output=True, check=True
+    ).stdout.decode("utf-8").split("\0")
+    return {
+        Path(name): subprocess.run(["git", "-C", str(master), "show", f"HEAD:{name}"], capture_output=True, check=True).stdout
+        for name in names
+        if name and not SYNC_IGNORE.intersection(Path(name).parts)
+    }
+
+
 def tree_differences(master: Path, copy: Path) -> list[str]:
-    ours, theirs = synced_files(master), synced_files(copy)
-    differences = [f"only in master: {rel}" for rel in sorted(ours - theirs)]
-    differences += [f"only in copy: {rel}" for rel in sorted(theirs - ours)]
-    differences += [
-        f"differs: {rel}" for rel in sorted(ours & theirs) if not filecmp.cmp(master / rel, copy / rel, shallow=False)
-    ]
+    ours, theirs = master_files(master), tree_files(copy)
+    differences = [f"only in master: {rel}" for rel in sorted(ours.keys() - theirs.keys())]
+    differences += [f"only in copy: {rel}" for rel in sorted(theirs.keys() - ours.keys())]
+    differences += [f"differs: {rel}" for rel in sorted(ours.keys() & theirs.keys()) if ours[rel] != theirs[rel]]
     return differences
 
 
@@ -419,9 +432,14 @@ def cmd_sync(args: argparse.Namespace) -> int:
     if not master.is_dir():
         print(f"simulator-slots: no master at {master}", file=sys.stderr)
         return 1
+    files = master_files(master)
     if copy.exists():
         shutil.rmtree(copy)
-    shutil.copytree(master, copy, ignore=shutil.ignore_patterns(*SYNC_IGNORE))
+    for rel, data in files.items():
+        (copy / rel).parent.mkdir(parents=True, exist_ok=True)
+        (copy / rel).write_bytes(data)
+        if os.access(master / rel, os.X_OK):
+            (copy / rel).chmod(0o755)
     print(f"simulator-slots: synced {copy} from {master} (VERSION {(copy / 'VERSION').read_text().strip()})")
     return 0
 
@@ -435,7 +453,7 @@ def cmd_sync_check(args: argparse.Namespace) -> int:
     if not differences:
         print(f"simulator-slots: {copy} matches {master}")
         return 0
-    print(f"simulator-slots: {copy} is out of sync with {master}:", file=sys.stderr)
+    print(f"simulator-slots: {copy} is out of sync with {master}'s last commit:", file=sys.stderr)
     for line in differences:
         print(f"  {line}", file=sys.stderr)
     print("  Fix: make simulator-slots-sync (copies the master over this repo's copy), then commit.", file=sys.stderr)

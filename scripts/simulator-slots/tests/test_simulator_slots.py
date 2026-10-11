@@ -116,6 +116,24 @@ class SyncTests(unittest.TestCase):
             self.assertFalse((copy / ".git").exists())
             self.assertEqual(slots.main(["sync-check", *args]), 0)
 
+    def test_a_git_master_syncs_its_last_commit_not_its_working_tree(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            master, copy = Path(tmp) / "master", Path(tmp) / "copy"
+            master.mkdir()
+            (master / "VERSION").write_text("1\n")
+            git = ["git", "-C", str(master), "-c", "user.name=t", "-c", "user.email=t@t"]
+            subprocess.run([*git, "init", "-q"], check=True)
+            subprocess.run([*git, "add", "VERSION"], check=True)
+            subprocess.run([*git, "commit", "-q", "-m", "v1"], check=True)
+            (master / "VERSION").write_text("2-uncommitted\n")
+            (master / ".pytest_cache").mkdir()
+            (master / ".pytest_cache" / "x").write_text("cache\n")
+            args = ["--into", str(copy), "--master", str(master)]
+            self.assertEqual(slots.main(["sync", *args]), 0)
+            self.assertEqual((copy / "VERSION").read_text(), "1\n")
+            self.assertFalse((copy / ".pytest_cache").exists())
+            self.assertEqual(slots.main(["sync-check", *args]), 0)
+
     def test_check_skips_without_master(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             self.assertEqual(slots.main(["sync-check", "--into", tmp, "--master", f"{tmp}/none"]), 0)

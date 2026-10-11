@@ -41,9 +41,8 @@ a request to inspect or review a PR alone is not authorization.
      squash-merge leaves the local tip un-ancestored)
    - **Stale tracking ref:** `git fetch --prune` (clears the `origin/<branch>` ref that
      `git pull --ff-only` leaves behind)
-   - **Simulators:** run `make sim-shutdown`. An idle booted device takes no slot but still uses
-     memory (AGENTS.md §"Simulator slots"). If this checkout is a worktree about to be removed, run
-     `make sim-clean` instead (§"Simulator sandbox").
+   - **Simulators:** run `make sim-shutdown` (AGENTS.md §"Simulator slots"). If this checkout is a
+     worktree about to be removed, run `make sim-clean` instead (§"Simulator sandbox").
 
 5. **Resolve the linked issue** (skip if step 2 found no issue):
    - **Complete fix** (`Closes #N`) — verify it auto-closed with

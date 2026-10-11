@@ -32,3 +32,20 @@ slots_parallel_args() {
         python3 "${ROOT}/scripts/sim_clean.py" --clones-only >&2
     fi
 }
+
+# A UI test run on this checkout's own device needs the `warmed` sentinel (test-ui.sh's header).
+# Without it, runs the already-built unit tests here first, which write it. Call after taking a
+# slot; uses the caller's COMMON_ARGS.
+warm_up_if_needed() {
+    [[ -f "${ROOT}/.build/sim/warmed" ]] && return 0
+    echo "sim: device not warmed up; running the unit tests on it first" >&2
+    xcodebuild test-without-building "${COMMON_ARGS[@]}" \
+        -resultBundlePath "${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-$$-warmup.xcresult" \
+        -parallel-testing-enabled NO \
+        -collect-test-diagnostics never \
+        -skip-testing:checklistsUITests >&2 || {
+        echo "error: the warm-up unit tests failed; run 'make test-unit' to see why." >&2
+        return 1
+    }
+    touch "${ROOT}/.build/sim/warmed"
+}

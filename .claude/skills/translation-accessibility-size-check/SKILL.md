@@ -17,7 +17,7 @@ Read `scripts/translation-accessibility-size-check/README.md` first for the loca
 bash scripts/translation-accessibility-size-check/run.sh --yes
 ```
 
-Without `--yes` it prints its resource warning and exits 2. `WORKERS=4` parallelizes up to the
+Without `--yes` it prints its resource warning and exits 2. `WORKERS=2` parallelizes up to the
 machine-wide simulator cap (AGENTS.md §"Simulator slots"). It holds this checkout's simulator lock for the whole run (AGENTS.md §"Simulator
 sandbox"), so start it with `run_in_background`. Screenshots land in `tmp/loc-size-check/` as
 `<lang>__<screen>.png`.

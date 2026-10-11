@@ -6,7 +6,7 @@
 #
 # `-parallel-testing-enabled NO` is load-bearing for more than speed: it is also what
 # keeps Swift Testing, which parallelizes within the process by default, running the
-# suite serially. So the run asks the slot pool for exactly one simulator.
+# suite serially.
 #
 # DESTINATION, SIM_DERIVED, and SIM_RESULTS_DIR are set by _destination.sh.
 set -euo pipefail
@@ -24,7 +24,6 @@ COMMON_ARGS=(
     -derivedDataPath "${SIM_DERIVED}"
 )
 
-# Build before taking a slot (AGENTS.md §"Simulator slots").
 xcodebuild build-for-testing "${COMMON_ARGS[@]}"
 simulator_slots_hold 1 test-unit "${ROOT}" "${SIM_UDID}" "[${SIM_SLUG}]"
 
