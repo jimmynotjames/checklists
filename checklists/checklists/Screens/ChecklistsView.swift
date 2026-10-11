@@ -27,6 +27,10 @@ struct ChecklistsView: View {
 
   private static let menuIconBaseSize: CGFloat = 20
 
+  private static let addButtonSize: CGFloat = 60
+  /// Between the Add button and the safe area's edges.
+  private static let addButtonMargin: CGFloat = 20
+
   /// The menu icon's side at the current Dynamic Type size, scaled the way body text scales.
   /// A bitmap does not follow Dynamic Type by itself.
   @ScaledMetric(relativeTo: .body) private var scaledMenuIconSize: CGFloat = menuIconBaseSize
@@ -129,6 +133,9 @@ struct ChecklistsView: View {
     // Insets whole rows, so Edit mode's controls and swipe actions stay beside them. `nil` below
     // the cap keeps the list's stock margins on a narrow window.
     .contentMargins(.horizontal, listColumnMargin, for: .scrollContent)
+    // Room below the last row so it can scroll clear of the Add button. None in Edit mode, where
+    // the button is hidden.
+    .contentMargins(.bottom, isEditing ? nil : Self.addButtonSize + Self.addButtonMargin, for: .scrollContent)
     .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { listWidth = $0 }
     .environment(\.editMode, $editMode)
     .appBackground()
@@ -361,7 +368,7 @@ struct ChecklistsView: View {
         .resizable()
         .scaledToFit()
         .padding(10)
-        .frame(width: 60, height: 60)
+        .frame(width: Self.addButtonSize, height: Self.addButtonSize)
         .background(Circle().fill(Colors.defaultBackgroundColor))
         .shadow(color: Colors.shadowColor.opacity(0.4), radius: 3, x: 0, y: 2)
     }
@@ -373,7 +380,7 @@ struct ChecklistsView: View {
     .accessibilityIdentifier("toolbar.addChecklist")
     // From the safe area, so the larger bottom gap is the home-indicator inset. Tune this constant;
     // never offset against `safeAreaInsets`, which pushes the button into the system's gesture strip.
-    .padding(20)
+    .padding(Self.addButtonMargin)
   }
 
   private func addChecklist() {
