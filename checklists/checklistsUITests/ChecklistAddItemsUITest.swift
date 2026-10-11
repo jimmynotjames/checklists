@@ -127,8 +127,8 @@ final class ChecklistAddItemsUITest: ChecklistDetailUITestCase {
    2. Go to the "Morning Routine" Checklist and add an item at the end with the Add button.
    3. Check that the item being typed into sits above the keyboard, not behind it.
    */
-  func testNewItemStaysAboveKeyboardInLandscape() {
-    XCUIDevice.shared.orientation = .landscapeLeft
+  @MainActor func testNewItemStaysAboveKeyboardInLandscape() {
+    rotateToLandscapeAndSettle()
     addTeardownBlock { XCUIDevice.shared.orientation = .portrait }
 
     checklistsList.staticTexts["Morning Routine"].tap()
@@ -151,6 +151,22 @@ final class ChecklistAddItemsUITest: ChecklistDetailUITestCase {
       newItem.textViews["itemNameTextView"].frame.maxY,
       coveredFrom,
       "The item being typed into is hidden behind the keyboard."
+    )
+  }
+
+  /// Turns the phone to landscape and returns once the rotation animation has finished.
+  ///
+  /// XCTest's own idle wait returns while the window is still mid-turn, and a tap synthesized then
+  /// is aimed at the half-rotated window and lost. The window's accessibility frame passes through
+  /// the in-between sizes, so wait for it to reach the portrait frame turned on its side.
+  @MainActor private func rotateToLandscapeAndSettle() {
+    let window = app.windows.firstMatch
+    let portrait = window.frame
+    XCUIDevice.shared.orientation = .landscapeLeft
+    let landscape = CGRect(x: 0, y: 0, width: portrait.height, height: portrait.width)
+    XCTAssertTrue(
+      window.wait(for: \.frame, toEqual: landscape, timeout: 5),
+      "The window didn't settle in landscape."
     )
   }
 }
