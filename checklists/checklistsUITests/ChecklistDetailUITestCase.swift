@@ -7,7 +7,8 @@
 
 import XCTest
 
-/// Shared launch and queries for the checklist-screen UI test classes. Holds no tests itself.
+/// Shared launch and queries for the checklist-screen UI test classes. Add no `test*` methods here:
+/// XCTest runs inherited tests in every subclass, relaunching the app for each.
 class ChecklistDetailUITestCase: XCTestCase {
   var app: XCUIApplication!
 
@@ -52,8 +53,7 @@ class ChecklistDetailUITestCase: XCTestCase {
   ///
   /// The percentage goes through the same `.percent` format style rather than being interpolated
   /// with a literal `%`: the separator and the symbol's side are locale-dependent ("18%", "18 %",
-  /// "%18"), and hardcoding English here is what let this expectation drift from the app in the
-  /// first place.
+  /// "%18").
   func percentCompleteString(numCheckedItems: Int, numItems: Int) -> String {
     let percent = (Double(numCheckedItems) / Double(numItems))
       .formatted(.percent.precision(.fractionLength(0)))
@@ -61,14 +61,11 @@ class ChecklistDetailUITestCase: XCTestCase {
   }
 
   /// Asserts that `parentElement` contains the circular status icon's accessibility element with the
-  /// expected percent-complete value. Tightened from a bare `.value != nil` check (which silently
-  /// passes even when no matching element exists) to a real existence check plus an equality
-  /// assertion, so a wrong or missing value actually fails the test with a useful message.
+  /// expected percent-complete value.
   ///
   /// Waits rather than checking `.exists` outright: several call sites assert immediately after a
   /// Back tap, and the destination cell's status icon isn't necessarily laid out the instant the pop
-  /// transition starts. The old `.value != nil` form could never fail, so the timing didn't matter;
-  /// now that the assertion is real, an unwaited check would flake under load.
+  /// transition starts.
   func assertPercentComplete(
     _ parentElement: XCUIElement,
     numCheckedItems: Int,
