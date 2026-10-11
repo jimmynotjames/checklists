@@ -55,7 +55,7 @@ when that's the honest answer.
 
 - `make test-unit` — runs entirely against in-memory `ModelContainer`s; it does not touch the
   simulator's real store.
-- `make test-ui` — requires a prior `make test-unit` for the warm-up sentinel. The tests don't tap
+- `make test-ui` — a run on one simulator warms it up with the unit tests first if needed. The tests don't tap
   keyboard keys, so a `kAXErrorCannotComplete` failure against one is a real regression — see
   AGENTS.md §"The software keyboard".
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Unit tests for the tooling: scripts/tests (Python) and fastlane/tests (Ruby minitest).
+# Unit tests for the tooling: scripts/tests and scripts/simulator-slots/tests (Python) and
+# fastlane/tests (Ruby minitest).
 # Both are offline and touch no simulator. The Ruby tests need Ruby 3+ (the system 2.6 can't
 # parse them); Homebrew fastlane's Ruby is used when present, and without one they are skipped
 # with a warning rather than failing a machine that has no fastlane.
@@ -9,6 +10,7 @@ cd "$ROOT"
 
 python3 -m unittest discover -s scripts/tests -q
 py_rc=$?
+python3 -m unittest discover -s scripts/simulator-slots/tests -q || py_rc=1
 
 RUBY="${RUBY:-}"
 if [[ -z "$RUBY" ]]; then

@@ -5,8 +5,9 @@ cd "$ROOT"
 
 # Ad-hoc localized large-type screenshot capture; what it does and how to read it: README.md.
 # Knobs (env):
-#   WORKERS         parallel simulator clones (default 1, serial). Each clone is a full simulator
-#                   (~1.5-2 GB) plus the app and runner; on 16 GB, 6-7 is the practical ceiling.
+#   WORKERS         simulators to ask the slot pool for (default 1, serial). The run takes what is
+#                   free, one clone each (AGENTS.md §"Simulator slots"). Ignored where the pool
+#                   is off: the run is serial.
 #   SIMULATOR_NAME  base device (default from _sim_sandbox.sh). A narrow device is the worst case
 #                   for truncation — try SIMULATOR_NAME="iPhone 17e".
 #   MAX_PX          downscale longest screenshot edge to this many px (default 1000).
@@ -37,25 +38,23 @@ source "${ROOT}/scripts/_destination.sh"   # sets DESTINATION, SIM_DERIVED, SIM_
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
 RESULT="${SIM_RESULTS_DIR}/${TIMESTAMP}-$$-loc-size.xcresult"
 
-PARALLEL_ARGS=(-parallel-testing-enabled NO)
-if [[ "${WORKERS}" -gt 1 ]]; then
-  PARALLEL_ARGS=(-parallel-testing-enabled YES -parallel-testing-worker-count "${WORKERS}")
-  # Clones an interrupted run left behind; safe under the lock _destination.sh holds.
-  python3 "${ROOT}/scripts/sim_clean.py" --clones-only
-fi
+COMMON_ARGS=(
+  -project checklists/checklists.xcodeproj
+  -scheme checklists
+  -destination "${DESTINATION}"
+  -destination-timeout 300
+  -derivedDataPath "${SIM_DERIVED}"
+)
+xcodebuild build-for-testing "${COMMON_ARGS[@]}" -quiet
+slots_parallel_args "${WORKERS}" loc-size-check
 
-echo "→ Capturing 13 locales @ xxxLarge (WORKERS=${WORKERS}) …"
+echo "→ Capturing 13 locales @ xxxLarge (${SIMULATOR_SLOTS_GRANTED} simulator(s)) …"
 # `|| RC=$?` so a failed run still names its bundle below. xcodebuild strips the TEST_RUNNER_
 # prefix and hands RUN_LOCALIZATION_SCREENSHOTS to the runner; without it the class skips.
 RC=0
-TEST_RUNNER_RUN_LOCALIZATION_SCREENSHOTS=1 xcodebuild test \
-  -project checklists/checklists.xcodeproj \
-  -scheme checklists \
-  -destination "${DESTINATION}" \
-  -destination-timeout 300 \
-  -derivedDataPath "${SIM_DERIVED}" \
+TEST_RUNNER_RUN_LOCALIZATION_SCREENSHOTS=1 xcodebuild test-without-building "${COMMON_ARGS[@]}" \
   -resultBundlePath "${RESULT}" \
-  "${PARALLEL_ARGS[@]}" \
+  ${SLOTS_PARALLEL_ARGS[@]+"${SLOTS_PARALLEL_ARGS[@]}"} \
   -collect-test-diagnostics never \
   -only-testing:checklistsUITests/LocalizationScreenshotCapture || RC=$?
 

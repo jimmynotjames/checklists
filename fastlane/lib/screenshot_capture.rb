@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "digest"
 require "json"
 require "fileutils"
 require "open3"
@@ -21,7 +22,7 @@ class ScreenshotCapture
     FileUtils.mkdir_p(directory)
     File.open(File.join(directory, "capture.lock"), "w") do |lock|
       raise "A screenshot capture is already running in this checkout" unless lock.flock(File::LOCK_EX | File::LOCK_NB)
-      capture_run(options, &block)
+      with_simulator_slot { capture_run(options, &block) }
     end
   end
 
@@ -192,6 +193,41 @@ class ScreenshotCapture
       end
     end)
     launcher.instance_variable_set(:@checklists_scoped_preparation, true)
+  end
+
+  # One slot of the machine-wide pool for the whole capture (AGENTS.md §"Simulator slots"). The
+  # holder releases it when this process exits, however it exits. Without the pool's master on this
+  # machine, the pool is off and the capture takes no slot.
+  def with_simulator_slot
+    master = ENV.fetch("SIMULATOR_SLOTS_MASTER", File.expand_path("~/dev/simulator-slots"))
+    return yield unless Dir.exist?(master)
+
+    tool = File.join(@root, "scripts", "simulator-slots", "simulator_slots.py")
+    owns = "[#{Digest::SHA1.hexdigest(File.realpath(@root))[0, 8]}]"
+    holder = IO.popen(
+      ["python3", tool, "hold", "--watch-pid", Process.pid.to_s, "--want", "1",
+       "--label", "screenshots", "--root", @root, "--owns", owns]
+    )
+    line = holder.gets
+    if line.nil?
+      holder.close
+      raise "simulator-slots granted no slot (exit #{Process.last_status&.exitstatus})"
+    end
+    run_id = line.split[1]
+    rc = 1
+    begin
+      result = yield
+      rc = 0
+      result
+    ensure
+      system("python3", tool, "result", "--run", run_id, "--rc", rc.to_s)
+      begin
+        Process.kill("TERM", holder.pid)
+      rescue Errno::ESRCH
+        nil
+      end
+      holder.close
+    end
   end
 
   def with_test_runner_environment(run_id, cache_dir)

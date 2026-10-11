@@ -16,15 +16,20 @@ cd "$ROOT"
 source "${ROOT}/scripts/_destination.sh"
 
 RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-$$-unit.xcresult"
+COMMON_ARGS=(
+    -project checklists/checklists.xcodeproj
+    -scheme checklists
+    -destination "${DESTINATION}"
+    -destination-timeout 300
+    -derivedDataPath "${SIM_DERIVED}"
+)
+
+xcodebuild build-for-testing "${COMMON_ARGS[@]}"
+take_slots 1 test-unit
 
 # `|| RC=$?` so `set -e` doesn't skip the failure listing below.
 RC=0
-xcodebuild test \
-    -project checklists/checklists.xcodeproj \
-    -scheme checklists \
-    -destination "${DESTINATION}" \
-    -destination-timeout 300 \
-    -derivedDataPath "${SIM_DERIVED}" \
+xcodebuild test-without-building "${COMMON_ARGS[@]}" \
     -resultBundlePath "${RESULT_BUNDLE}" \
     -parallel-testing-enabled NO \
     -collect-test-diagnostics never \
