@@ -26,7 +26,7 @@ COMMON_ARGS=(
 )
 
 xcodebuild build-for-testing "${COMMON_ARGS[@]}"
-simulator_slots_hold 1 test-only "${ROOT}" "${SIM_UDID}" "[${SIM_SLUG}]"
+take_slots 1 test-only
 
 if [[ "${ONLY}" == checklistsUITests/* ]]; then
     warm_up_if_needed

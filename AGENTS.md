@@ -287,9 +287,14 @@ share. The pool's state, including its size (the `max` file), is in
 `~/.local/state/simulator-slots/`. `scripts/simulator-slots/` is this repo's copy of the master in
 `~/dev/simulator-slots`.
 
+**The pool is on only where `~/dev/simulator-slots` exists** (Jimmy's machine). On any other
+clone it is off: don't look for or create that directory or the state directory. Test scripts
+take no slots and pass no parallel-testing flags, so they run serially on the checkout's own
+device, the scheme's setting. The gate's sync check is skipped, and the rest of this section
+doesn't apply.
+
 - **Changing the tool:** never edit the copy. Change the master, then run `make
-  simulator-slots-sync`. The gate fails while the two differ, and skips the check on a machine
-  without the master.
+  simulator-slots-sync`. The gate fails while the two differ.
 - **Slots per command:**
   - `test-unit` and `test-only`: 1.
   - `test-ui`: up to `UI_WORKERS`.

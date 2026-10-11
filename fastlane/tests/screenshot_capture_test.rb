@@ -44,8 +44,9 @@ class ScreenshotCaptureTest < Minitest::Test
 
   def test_capture_holds_one_slot_and_records_its_result
     Dir.mktmpdir do |state|
-      previous = ENV.fetch("SIMULATOR_SLOTS_STATE_DIR", nil)
+      previous = ENV.to_h.slice("SIMULATOR_SLOTS_STATE_DIR", "SIMULATOR_SLOTS_MASTER")
       ENV["SIMULATOR_SLOTS_STATE_DIR"] = state
+      ENV["SIMULATOR_SLOTS_MASTER"] = state # any existing directory turns the pool on
       begin
         result = @capture.send(:with_simulator_slot) { :captured }
         assert_equal :captured, result
@@ -53,7 +54,21 @@ class ScreenshotCaptureTest < Minitest::Test
         assert_equal [1], events.select { |e| e["event"] == "start" }.map { |e| e["granted"] }
         assert_equal [0], events.select { |e| e["event"] == "result" }.map { |e| e["rc"] }
       ensure
-        ENV["SIMULATOR_SLOTS_STATE_DIR"] = previous
+        %w[SIMULATOR_SLOTS_STATE_DIR SIMULATOR_SLOTS_MASTER].each { |name| ENV[name] = previous[name] }
+      end
+    end
+  end
+
+  def test_capture_takes_no_slot_without_the_master
+    Dir.mktmpdir do |state|
+      previous = ENV.to_h.slice("SIMULATOR_SLOTS_STATE_DIR", "SIMULATOR_SLOTS_MASTER")
+      ENV["SIMULATOR_SLOTS_STATE_DIR"] = state
+      ENV["SIMULATOR_SLOTS_MASTER"] = File.join(state, "absent")
+      begin
+        assert_equal :captured, @capture.send(:with_simulator_slot) { :captured }
+        refute File.exist?(File.join(state, "runs.log"))
+      ensure
+        %w[SIMULATOR_SLOTS_STATE_DIR SIMULATOR_SLOTS_MASTER].each { |name| ENV[name] = previous[name] }
       end
     end
   end

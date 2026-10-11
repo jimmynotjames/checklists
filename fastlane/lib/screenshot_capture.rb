@@ -196,8 +196,12 @@ class ScreenshotCapture
   end
 
   # One slot of the machine-wide pool for the whole capture (AGENTS.md §"Simulator slots"). The
-  # holder releases it when this process exits, however it exits.
+  # holder releases it when this process exits, however it exits. Without the pool's master on this
+  # machine, the pool is off and the capture takes no slot.
   def with_simulator_slot
+    master = ENV.fetch("SIMULATOR_SLOTS_MASTER", File.expand_path("~/dev/simulator-slots"))
+    return yield unless Dir.exist?(master)
+
     tool = File.join(@root, "scripts", "simulator-slots", "simulator_slots.py")
     owns = "[#{Digest::SHA1.hexdigest(File.realpath(@root))[0, 8]}]"
     holder = IO.popen(

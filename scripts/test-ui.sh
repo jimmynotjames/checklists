@@ -8,7 +8,8 @@
 # fresh, and xcodebuild shuts this device down to clone it.
 #
 # UI_WORKERS (default 2) is how many simulators to ask the slot pool for; the run takes what is
-# free and splits the test classes across that many clones (AGENTS.md §"Simulator slots").
+# free and splits the test classes across that many clones (AGENTS.md §"Simulator slots"). Where
+# the pool is off, it is ignored and the run is serial.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
@@ -39,7 +40,7 @@ RC=0
 # translation-accessibility-size-check).
 xcodebuild test-without-building "${COMMON_ARGS[@]}" \
     -resultBundlePath "${RESULT_BUNDLE}" \
-    "${SLOTS_PARALLEL_ARGS[@]}" \
+    ${SLOTS_PARALLEL_ARGS[@]+"${SLOTS_PARALLEL_ARGS[@]}"} \
     -collect-test-diagnostics never \
     -only-testing:checklistsUITests \
     -skip-testing:checklistsUITests/AppStoreScreenshots \

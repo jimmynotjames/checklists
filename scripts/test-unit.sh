@@ -25,7 +25,7 @@ COMMON_ARGS=(
 )
 
 xcodebuild build-for-testing "${COMMON_ARGS[@]}"
-simulator_slots_hold 1 test-unit "${ROOT}" "${SIM_UDID}" "[${SIM_SLUG}]"
+take_slots 1 test-unit
 
 # `|| RC=$?` so `set -e` doesn't skip the failure listing below.
 RC=0

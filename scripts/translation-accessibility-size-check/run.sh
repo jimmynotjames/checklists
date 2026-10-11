@@ -6,7 +6,8 @@ cd "$ROOT"
 # Ad-hoc localized large-type screenshot capture; what it does and how to read it: README.md.
 # Knobs (env):
 #   WORKERS         simulators to ask the slot pool for (default 1, serial). The run takes what is
-#                   free, one clone each (AGENTS.md §"Simulator slots").
+#                   free, one clone each (AGENTS.md §"Simulator slots"). Ignored where the pool
+#                   is off: the run is serial.
 #   SIMULATOR_NAME  base device (default from _sim_sandbox.sh). A narrow device is the worst case
 #                   for truncation — try SIMULATOR_NAME="iPhone 17e".
 #   MAX_PX          downscale longest screenshot edge to this many px (default 1000).
@@ -53,7 +54,7 @@ echo "→ Capturing 13 locales @ xxxLarge (${SIMULATOR_SLOTS_GRANTED} simulator(
 RC=0
 TEST_RUNNER_RUN_LOCALIZATION_SCREENSHOTS=1 xcodebuild test-without-building "${COMMON_ARGS[@]}" \
   -resultBundlePath "${RESULT}" \
-  "${SLOTS_PARALLEL_ARGS[@]}" \
+  ${SLOTS_PARALLEL_ARGS[@]+"${SLOTS_PARALLEL_ARGS[@]}"} \
   -collect-test-diagnostics never \
   -only-testing:checklistsUITests/LocalizationScreenshotCapture || RC=$?
 
