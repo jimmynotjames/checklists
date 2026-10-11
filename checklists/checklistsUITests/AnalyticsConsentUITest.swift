@@ -15,7 +15,7 @@ class AnalyticsConsentUITest: XCTestCase {
 
   override func tearDownWithError() throws {}
 
-  /// See checklistUITest.checklistsList.
+  /// See ChecklistDetailUITestCase.checklistsList.
   private var checklistsList: XCUIElementQuery {
     app.collectionViews
   }

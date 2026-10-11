@@ -35,7 +35,8 @@ class CircularPercentStatusIcon: UIView {
   /// Static so a SwiftUI host can declare the same text: a `Button` row folds its content into one
   /// element whose value is whatever the merge picks up from the hosted UIView, so
   /// `ChecklistRowView` states it explicitly. Only the value — the grouping stays, because
-  /// `checklistUITest` addresses the icon and the notes label as elements inside the row.
+  /// `ChecklistDetailUITestCase` and its subclasses address the icon and the notes label as elements
+  /// inside the row.
   static func accessibilityValueText(forPercentageComplete percentageComplete: CGFloat) -> String {
     // Locale-aware percent: "18%" in English, "18 %" in French, "%18" in Turkish.
     let percent = Double(percentageComplete).formatted(.percent.precision(.fractionLength(0)))

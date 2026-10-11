@@ -7,7 +7,7 @@ import XCTest
 
 /// The checklist screen's Reorder Items mode.
 ///
-/// Navigation-bar buttons are matched without naming the bar — see `checklistUITest.detailBackButton`
+/// Navigation-bar buttons are matched without naming the bar — see `ChecklistDetailUITestCase.detailBackButton`
 /// for why naming it makes a query depend on scroll position.
 class ChecklistReorderItemsUITest: XCTestCase {
   var app: XCUIApplication!
@@ -21,7 +21,7 @@ class ChecklistReorderItemsUITest: XCTestCase {
     XCTAssertTrue(app.collectionViews.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
   }
 
-  /// See `checklistUITest.checklistsList`.
+  /// See `ChecklistDetailUITestCase.checklistsList`.
   private var checklistsList: XCUIElementQuery {
     app.collectionViews
   }

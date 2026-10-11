@@ -33,7 +33,7 @@ struct ChecklistRowView: View {
           .font(.subheadline)
           .lineLimit(3)
           // UI tests match the notes label by this identifier rather than by its rendered
-          // text (see `checklistUITest`), so it has to stay exactly this string.
+          // text (see `ChecklistHeaderUITest`), so it has to stay exactly this string.
           .accessibilityIdentifier("checklistNotesLabel")
       }
     }
