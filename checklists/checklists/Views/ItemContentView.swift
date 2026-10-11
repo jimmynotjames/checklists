@@ -7,10 +7,10 @@
 
 import UIKit
 
-/// Apple's minimum touch target. The name field's text insets fill it out, so a tap above or below
-/// the text still lands on the field.
+/// Apple's minimum touch target, for both fields. Their text insets fill it out, so a tap above or
+/// below the text still lands on the field.
 private var minNameFieldHeight: CGFloat = 44.0
-private var minNotesTextViewHeight: CGFloat = 32.0
+private var minNotesTextViewHeight: CGFloat = 44.0
 
 protocol ItemContentViewDelegate: AnyObject {
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView)
@@ -79,6 +79,8 @@ class ItemContentView: UIView {
     let textView = CLTextView()
     textView.placeholderText = CommonStrings.notesPlaceholder
     textView.font = UIFont.systemFont(ofSize: 15.0)
+    // The row's bottom margin, inside the field rather than below it; see `containerBottomConstraint`.
+    textView.textContainerInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 4.0, right: 0.0)
     textView.inputAccessoryButtonTappedAction = {
       textView.resignFirstResponder()
     }
@@ -96,6 +98,9 @@ class ItemContentView: UIView {
   private let containerView = UIView()
 
   private lazy var notesTextViewHeightConstraint: NSLayoutConstraint = notesTextView.heightAnchor.constraint(equalToConstant: 0.0)
+  /// The row's bottom margin while the notes field is hidden. A shown notes field takes it as its
+  /// bottom inset instead, so it stays tappable.
+  private lazy var containerBottomConstraint: NSLayoutConstraint = bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: notesTextView.textContainerInset.bottom)
 
   private var wasInputFieldTapped: Bool = false
 
@@ -131,6 +136,7 @@ class ItemContentView: UIView {
       notesTextViewHeightConstraint = notesTextView.heightAnchor.constraint(equalToConstant: 0.0)
     }
     notesTextViewHeightConstraint.isActive = true
+    containerBottomConstraint.constant = isExpanded ? 0.0 : notesTextView.textContainerInset.bottom
   }
 
   func startEditing() {
@@ -191,7 +197,7 @@ class ItemContentView: UIView {
       [NSLayoutConstraint.constraints(withVisualFormat: "H:|-2-[checkboxButton]-(-4)-[containerView]-16-|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[checkboxButton]", options: [], metrics: nil, views: views),
 
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|[containerView]-4-|", options: [], metrics: nil, views: views),
+       [containerView.topAnchor.constraint(equalTo: topAnchor), containerBottomConstraint],
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameTextView][notesTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[nameTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[notesTextView]|", options: [], metrics: nil, views: views),

@@ -218,7 +218,7 @@ struct ItemContentViewTests {
 
     let constraint = try #require(activeHeightConstraint(on: notesTextView(in: contentView)))
     #expect(constraint.relation == .greaterThanOrEqual)
-    #expect(constraint.constant == 32.0)
+    #expect(constraint.constant == 44.0)
   }
 
   @Test("refreshHeight() collapses the notes field when the item has no notes")
