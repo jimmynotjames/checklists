@@ -49,6 +49,23 @@ struct ChecklistBulkActionsTests {
     #expect(try context.fetchChecklistsSorted().map(\.name) == ["B"])
   }
 
+  /// Two records can share an `id` until sample dedupe runs. Swipe-to-delete must remove the row the
+  /// user swiped, and once that record is gone must not fall back to its twin.
+  @Test("delete by record removes exactly that twin, and never the other")
+  func deleteByRecordSparesTwin() throws {
+    let context = try TestModelContainer.makeContext()
+    let twins = try makeChecklists(["Swiped", "Kept"], in: context)
+    twins[1].id = twins[0].id
+    try context.saveChanges(operation: .checklistEdit)
+    let swiped = twins[0].persistentModelID
+
+    #expect(context.deleteChecklists([swiped]) == 1)
+    #expect(try context.fetchChecklistsSorted().map(\.name) == ["Kept"])
+
+    #expect(context.deleteChecklists([swiped]) == 0)
+    #expect(try context.fetchChecklistsSorted().map(\.name) == ["Kept"])
+  }
+
   // MARK: - Duplicate
 
   @Test("each copy lands directly after its own source")

@@ -4,7 +4,9 @@
 //
 
 @testable import checklists
+import Foundation
 import SwiftData
+import Synchronization
 import Testing
 
 /// Covers `SampleData.dedupeChecklists(in:)`, the only code in the app that deletes records on its own
@@ -12,8 +14,8 @@ import Testing
 /// it collapses.
 @Suite("SampleData deduplication")
 struct SampleDataDedupeTests {
-  /// Seeds the fixture a second time, reproducing what a second device uploads when it seeds before
-  /// the first device's records have synced down.
+  /// Seeds the fixture a second time, reproducing a fresh install (a reinstall, or a second device)
+  /// seeding before the account's existing records have synced down.
   private func seedSecondCopy(into context: ModelContext) throws {
     try SampleData.seed(into: context)
   }
@@ -86,6 +88,27 @@ struct SampleDataDedupeTests {
     )
   }
 
+  /// Dedupe's deletions are local saves, which raise no remote-change notification; an open screen
+  /// showing a deleted copy hears about it only through this one. A no-op pass must stay silent, or
+  /// the list's observer, which runs dedupe on it, would loop.
+  @Test("posts didRemoveDuplicates only when it deleted something")
+  func postsOnlyWhenItDeleted() throws {
+    let context = try TestModelContainer.makeContext()
+    try SampleData.seed(into: context)
+    let posts = Mutex(0)
+    let token = NotificationCenter.default.addObserver(forName: SampleData.didRemoveDuplicates, object: nil, queue: nil) { _ in
+      posts.withLock { $0 += 1 }
+    }
+    defer { NotificationCenter.default.removeObserver(token) }
+
+    try SampleData.dedupeChecklists(in: context)
+    #expect(posts.withLock { $0 } == 0)
+
+    try seedSecondCopy(into: context)
+    try SampleData.dedupeChecklists(in: context)
+    #expect(posts.withLock { $0 } == 1)
+  }
+
   /// Every device must elect the same survivor, or two devices deduping at once would delete one
   /// copy each and leave the user with none.
   @Test("survivor election is deterministic")
@@ -108,27 +131,11 @@ struct SampleDataDedupeTests {
     )
   }
 
-  // MARK: - What it must refuse to touch
-
-  @Test("keeps both copies when an item was renamed")
-  func keepsBothWhenAnItemWasRenamed() throws {
-    let context = try TestModelContainer.makeContext()
-    try SampleData.seed(into: context)
-    try seedSecondCopy(into: context)
-
-    let edited = try #require(try context.fetchChecklistsSorted().first { $0.id == SampleData.morningRoutineId })
-    edited.items.first?.name = "Start the coffee maker, but louder"
-    try context.saveChanges(operation: .itemEdit)
-
-    try SampleData.dedupeChecklists(in: context)
-
-    let morningRoutines = try context.fetchChecklistsSorted().filter { $0.id == SampleData.morningRoutineId }
-    #expect(morningRoutines.count == 2, "An edited copy is the user's data and must be kept.")
-  }
+  // MARK: - An edited copy beats a fresh seed
 
   /// Checking a box is the most likely edit of all, and must be enough to protect a copy.
-  @Test("keeps both copies when checked states differ")
-  func keepsBothWhenCheckedStatesDiffer() throws {
+  @Test("an edited copy survives and the pristine copy goes when checked states differ")
+  func editedCopyWinsWhenCheckedStatesDiffer() throws {
     let context = try TestModelContainer.makeContext()
     try SampleData.seed(into: context)
     try seedSecondCopy(into: context)
@@ -139,17 +146,61 @@ struct SampleDataDedupeTests {
 
     try SampleData.dedupeChecklists(in: context)
 
-    #expect(try context.fetchChecklistsSorted().count(where: { $0.id == SampleData.preTripId }) == 2)
+    let preTrips = try context.fetchChecklistsSorted().filter { $0.id == SampleData.preTripId }
+    #expect(preTrips.count == 1)
+    #expect(preTrips.first === edited)
   }
 
-  @Test("keeps both copies when an item was added")
-  func keepsBothWhenAnItemWasAdded() throws {
+  @Test("an edited copy survives and the pristine copy goes when an item was added")
+  func editedCopyWinsWhenAnItemWasAdded() throws {
     let context = try TestModelContainer.makeContext()
     try SampleData.seed(into: context)
     try seedSecondCopy(into: context)
 
     let edited = try #require(try context.fetchChecklistsSorted().first { $0.id == SampleData.preTripId })
     try context.insert(item: Item(name: "One more thing"), at: 0, in: edited)
+
+    try SampleData.dedupeChecklists(in: context)
+
+    let preTrips = try context.fetchChecklistsSorted().filter { $0.id == SampleData.preTripId }
+    #expect(preTrips.count == 1)
+    #expect(preTrips.first === edited)
+  }
+
+  // MARK: - What it must refuse to touch
+
+  /// A copy that differs only in text — which is also how a copy seeded in another language looks —
+  /// is not proof of an edit. Both copies are kept: treating it as an edit would let two devices in
+  /// different languages each delete their own copy and leave none.
+  @Test("keeps both copies when one differs only in text")
+  func keepsBothWhenOneDiffersOnlyInText() throws {
+    let context = try TestModelContainer.makeContext()
+    try SampleData.seed(into: context)
+    try seedSecondCopy(into: context)
+
+    let otherText = try #require(try context.fetchChecklistsSorted().first { $0.id == SampleData.morningRoutineId })
+    otherText.name = "Routine du matin"
+    for item in otherText.items {
+      item.name = "Autre langue"
+    }
+    try context.saveChanges(operation: .itemEdit)
+
+    try SampleData.dedupeChecklists(in: context)
+
+    #expect(try context.fetchChecklistsSorted().count(where: { $0.id == SampleData.morningRoutineId }) == 2)
+  }
+
+  /// Two edited copies are both the user's data; there is no telling which one they meant to keep.
+  @Test("keeps both copies when both were edited")
+  func keepsBothWhenBothWereEdited() throws {
+    let context = try TestModelContainer.makeContext()
+    try SampleData.seed(into: context)
+    try seedSecondCopy(into: context)
+
+    for copy in try context.fetchChecklistsSorted() where copy.id == SampleData.preTripId {
+      copy.items.first?.status = .checked
+    }
+    try context.saveChanges(operation: .itemEdit)
 
     try SampleData.dedupeChecklists(in: context)
 

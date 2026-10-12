@@ -173,7 +173,11 @@ so the whole sequence is one testable, retryable unit rather than scattered init
 2. `LegacyRealmImporter.importIfNeeded(into:)`. Tagged `.legacyImport`.
 3. `SampleData.insertFirstTimeLaunchDataIfNeeded(into:)` — a no-op if the import (or a prior launch)
    already populated the store. Tagged `.firstLaunchSeed`.
-4. `SampleData.dedupeChecklists(in:)`, whose failure is swallowed (reason at the `try?`).
+4. `SampleData.dedupeChecklists(in:)`, whose failure is swallowed (reason at the `try?`). Step 3
+   cannot see iCloud data that has not imported yet, so every fresh install on an account that
+   already has the samples seeds a second copy. Dedupe drops redundant untouched copies once the
+   import lands (it also runs on each remote-change burst), preferring any copy whose items or
+   checks were changed; copies that differ only in text, such as another language's, are kept.
 5. Install the result as `PersistenceController.shared`.
 
 Steps 2–4 are skipped entirely under `LaunchModeContainerFactory.isRunningTests` — automated tests
@@ -360,7 +364,8 @@ still free to change.
       pushes fail against production APNs and sync silently degrades to arriving only on next
       launch, with nothing visibly broken. Verify on the actual archive rather than assuming.
 - [ ] Two-device tests: union across devices that never synced, edits propagating both ways, and a
-      pair of fresh installs collapsing to three samples rather than six.
+      pair of fresh installs collapsing to three samples rather than six, and a reinstall on an
+      account with an edited sample coming back to three with the edit intact.
 
 ## Realm removal plan
 

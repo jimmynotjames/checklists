@@ -46,9 +46,10 @@ struct ChecklistsView: View {
   /// notification in its initializer.
   @State private var remoteChangeObserver: RemoteChangeObserver?
 
-  /// The checklist the delete confirmation is currently about, held by `id` rather than by
-  /// row or by model reference. See `ModelContext.deleteChecklists(ids:)`.
-  @State private var pendingDeleteID: String?
+  /// The checklist the delete confirmation is currently about: the swiped row's own record, not its
+  /// `id`, since two records can share an `id` until sample dedupe runs and deleting by `id` could
+  /// take the other one. See `ModelContext.deleteChecklists(_:)`.
+  @State private var pendingDeleteID: PersistentIdentifier?
 
   @State private var showsResetAllConfirmation = false
 
@@ -101,7 +102,7 @@ struct ChecklistsView: View {
             // before the confirmation alert, and a cancelled confirmation must leave the row
             // visible. The red comes from an explicit tint instead.
             Button {
-              pendingDeleteID = checklist.id
+              pendingDeleteID = checklist.persistentModelID
             } label: {
               // Icon-only for the visible button, but the title is what VoiceOver reads and what
               // the UI tests match on, so it stays part of the label rather than being dropped.
@@ -203,9 +204,9 @@ struct ChecklistsView: View {
         selection.removeAll()
       }
     }
-    .alert(Text(verbatim: ""), isPresented: isPresentingDeleteConfirmation, presenting: pendingDeleteID) { checklistId in
+    .alert(Text(verbatim: ""), isPresented: isPresentingDeleteConfirmation, presenting: pendingDeleteID) { persistentID in
       Button(CommonStrings.delete, role: .destructive) {
-        confirmDelete(id: checklistId)
+        confirmDelete(persistentID)
       }
       Button(CommonStrings.cancel, role: .cancel) {}
     } message: { _ in
@@ -230,7 +231,7 @@ struct ChecklistsView: View {
     .task {
       guard remoteChangeObserver == nil else { return }
       // `@Query` already reloads on remote changes; this observer exists only to run the dedupe
-      // when another device's duplicate sample lands.
+      // when the account's copy of a sample lands.
       remoteChangeObserver = RemoteChangeObserver {
         try? SampleData.dedupeChecklists(in: context)
       }
@@ -483,9 +484,10 @@ struct ChecklistsView: View {
     )
   }
 
-  private func confirmDelete(id checklistId: String) {
-    // `0` means it is already gone — deleted on another device while the alert was up.
-    guard context.deleteChecklists(ids: [checklistId]) > 0 else { return }
+  private func confirmDelete(_ persistentID: PersistentIdentifier) {
+    // `0` means that record is already gone while the alert was up — deleted on another device, or
+    // removed by sample dedupe. Its twin, if any, is deliberately left alone.
+    guard context.deleteChecklists([persistentID]) > 0 else { return }
     analytics.track(AnalyticsEvent.checklistDeleted)
   }
 
