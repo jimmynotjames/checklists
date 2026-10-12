@@ -9,7 +9,7 @@ import SwiftData
 import Testing
 import UIKit
 
-/// Covers Reorder Items mode on the checklist screen and the VoiceOver move actions on its rows.
+/// Covers Reorder Items mode on the checklist screen and the VoiceOver actions on its rows.
 ///
 /// `.serialized` for the reason `ChecklistMenuActionTests` gives: the harness controller registers a
 /// `RemoteChangeObserver`.
@@ -86,7 +86,8 @@ struct ChecklistReorderModeTests {
       let rows = harness.table.visibleCells.compactMap { $0 as? ItemTableViewCell }
       let allInteractive = rows.allSatisfy(\.itemContentView.isUserInteractionEnabled)
       #expect(allInteractive)
-      #expect(rows.allSatisfy(\.itemContentView.checkboxButton.isEnabled))
+      let allCheckboxesEnabled = rows.allSatisfy(\.itemContentView.checkboxButton.isEnabled)
+      #expect(allCheckboxesEnabled)
       #expect(controller.tableView(harness.table, trailingSwipeActionsConfigurationForRowAt: IndexPath(row: 0, section: 0)) != nil)
     }
   }
@@ -195,7 +196,7 @@ struct ChecklistReorderModeTests {
     }
   }
 
-  // MARK: - VoiceOver moves
+  // MARK: - VoiceOver actions
 
   @Test("each row offers only the moves that go somewhere")
   func availableMovesAtTheEdges() throws {
@@ -225,24 +226,26 @@ struct ChecklistReorderModeTests {
   @Test("Reorder Items mode drops Duplicate and Delete with the swipe actions, and leaving brings them back")
   func reorderModeDropsDuplicateAndDelete() throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
-      let actionNames = {
-        let row = try #require(harness.table.cellForRow(at: IndexPath(row: 0, section: 0)) as? ItemTableViewCell)
-        return row.itemContentView.accessibilityFocusTarget.accessibilityCustomActions?.map(\.name) ?? []
+      let row = try #require(harness.table.cellForRow(at: IndexPath(row: 0, section: 0)) as? ItemTableViewCell)
+      @MainActor func actionNames() -> [String] {
+        row.itemContentView.accessibilityFocusTarget.accessibilityCustomActions?.map(\.name) ?? []
       }
       harness.viewController.setEditing(true, animated: false)
-      #expect(try actionNames() == [
+      let reordering = actionNames()
+      #expect(reordering == [
         ChecklistViewController.moveActionTitle(for: .down),
         ChecklistViewController.moveActionTitle(for: .bottom),
       ])
       harness.viewController.setEditing(false, animated: false)
-      #expect(try actionNames().suffix(2) == [CommonStrings.duplicate, CommonStrings.delete])
+      let afterwards = actionNames()
+      #expect(afterwards.suffix(2) == [CommonStrings.duplicate, CommonStrings.delete])
     }
   }
 
   @Test("the VoiceOver Delete and Duplicate actions act on their own row")
   func deleteAndDuplicateActionsWork() throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
-      func action(named name: String, onRow index: Int) throws -> UIAccessibilityCustomAction {
+      @MainActor func action(named name: String, onRow index: Int) throws -> UIAccessibilityCustomAction {
         let row = try #require(harness.table.cellForRow(at: IndexPath(row: index, section: 0)) as? ItemTableViewCell)
         let actions = row.itemContentView.accessibilityFocusTarget.accessibilityCustomActions ?? []
         return try #require(actions.first { $0.name == name })
@@ -250,11 +253,13 @@ struct ChecklistReorderModeTests {
 
       let duplicate = try action(named: CommonStrings.duplicate, onRow: 1)
       #expect(duplicate.actionHandler?(duplicate) == true)
-      #expect(try harness.persistedItemNames() == ["Milk", "Bread", "Bread", "Eggs"])
+      let afterDuplicate = try harness.persistedItemNames()
+      #expect(afterDuplicate == ["Milk", "Bread", "Bread", "Eggs"])
 
       let delete = try action(named: CommonStrings.delete, onRow: 0)
       #expect(delete.actionHandler?(delete) == true)
-      #expect(try harness.persistedItemNames() == ["Bread", "Bread", "Eggs"])
+      let afterDelete = try harness.persistedItemNames()
+      #expect(afterDelete == ["Bread", "Bread", "Eggs"])
     }
   }
 

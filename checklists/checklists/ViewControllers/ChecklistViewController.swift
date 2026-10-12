@@ -295,7 +295,7 @@ class ChecklistViewController: UIViewController {
 
   /// Reorder Items mode: a drag handle on every row, and nothing else that takes a tap. The header's
   /// name and notes, each row's checkbox and text, and the add-item footer all freeze, so the only
-  /// things that respond are the ones the mode is about. Deleting stays a swipe, outside the mode.
+  /// things that respond are the ones the mode is about. Deleting stays outside the mode.
   override func setEditing(_ editing: Bool, animated: Bool) {
     // A repeat would save the mode's own Done as the bar to restore.
     guard editing != isEditing else { return }
@@ -312,7 +312,6 @@ class ChecklistViewController: UIViewController {
     for case let cell as ItemTableViewCell in tableView.visibleCells {
       cell.itemContentView.setReordering(editing)
     }
-    // Delete and Duplicate come and go with the swipe actions they stand in for.
     refreshAccessibilityActions()
     tableView.tableFooterView?.isUserInteractionEnabled = !editing
     // The footer's content rather than the footer itself: the table puts its footer view back to
@@ -596,7 +595,7 @@ extension ChecklistViewController: UITableViewDelegate {
     false
   }
 
-  /// Handles only: Reorder Items mode does what its name says, and deleting stays a swipe.
+  /// Handles only: Reorder Items mode does what its name says, and deleting stays outside it.
   func tableView(_: UITableView, editingStyleForRowAt _: IndexPath) -> UITableViewCell.EditingStyle {
     .none
   }
@@ -927,7 +926,7 @@ extension ChecklistViewController: ItemContentViewDelegate {
   }
 }
 
-// MARK: - VoiceOver moves
+// MARK: - VoiceOver actions
 
 /// Move Up / Down / to Top / to Bottom on every row, in and out of Reorder Items mode: neither the
 /// drag handles nor the long-press drag can be used without dragging. Outside the mode, Duplicate

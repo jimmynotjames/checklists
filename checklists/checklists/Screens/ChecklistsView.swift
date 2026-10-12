@@ -297,10 +297,15 @@ struct ChecklistsView: View {
     // navigate by localized visible text.
     .accessibilityIdentifier("toolbar.mainMenu")
     .accessibilityFocused($isMainMenuButtonFocused)
-    // Not when the menu closed to open Settings: the sheet takes focus instead.
+    // After the slide-out, while the panel still covers ☰. Not when the menu closed to open
+    // Settings: the sheet takes focus instead.
     .onChange(of: router.isMainMenuVisible) { _, isVisible in
-      guard !isVisible, router.sheet == nil else { return }
-      isMainMenuButtonFocused = true
+      guard !isVisible else { return }
+      Task {
+        try? await Task.sleep(for: RootView.menuAnimationDuration + .milliseconds(100))
+        guard !router.isMainMenuVisible, router.sheet == nil else { return }
+        isMainMenuButtonFocused = true
+      }
     }
   }
 
