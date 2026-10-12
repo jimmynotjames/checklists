@@ -212,9 +212,10 @@ class ChecklistViewController: UIViewController {
   ///
   /// Internal so a test can drive it without waiting out the observer's debounce.
   func handleRemoteChange() {
-    guard !checklist.isDeleted, context.checklist(id: checklist.id) != nil else {
-      // Deleted on another device while open here. Leaving the screen up would let the user keep
-      // editing a record that no longer exists.
+    guard !checklist.isDeleted, context.checklist(checklist.persistentModelID) != nil else {
+      // Deleted on another device, or by sample dedupe, while open here. Leaving the screen up
+      // would let the user keep editing a record that no longer exists. Looked up by record, not
+      // `id`: dedupe deletes one of two records sharing an `id`, and the twin must not count.
       requestDismissal()
       return
     }

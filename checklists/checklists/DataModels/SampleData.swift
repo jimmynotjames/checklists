@@ -33,6 +33,11 @@ enum SampleData {
   /// has this set has launched before, so it already owns its data and must not be re-seeded.
   static let legacyLaunchedAtLeastOnceKey = "launchedAtLeastOnce"
 
+  /// Posted after `dedupeChecklists` deletes anything. Dedupe is a local save, so it raises no
+  /// `NSPersistentStoreRemoteChange` of its own; `RemoteChangeObserver` listens for this too, so a
+  /// screen showing a deleted copy still hears about it.
+  static let didRemoveDuplicates = Notification.Name("SampleData.didRemoveDuplicates")
+
   // MARK: - Fixture description
 
   // Plain values rather than models, so the fixture can be declared without a context and materialized the same way the importer materializes Realm data.
@@ -172,6 +177,7 @@ enum SampleData {
     guard didDelete else { return }
     AppLog.persistence.notice("dedupe: removed redundant untouched sample checklists.")
     try context.saveChanges(operation: .dedupe)
+    NotificationCenter.default.post(name: didRemoveDuplicates, object: nil)
   }
 
   /// True when `checklist` has items added, removed, checked or unchecked relative to `fixture` —
@@ -209,6 +215,11 @@ enum SampleData {
   /// `sample.*` keys are transcreated per locale, not translated (localization-spec.md):
   /// each item is what a person there would write on such a list. Once seeded the rows are data
   /// and stay in that language.
+  ///
+  /// **Changing a sample's item count or which items start checked needs new checklist ids.**
+  /// `dedupeChecklists` treats a structural difference as a user edit, so two devices on builds
+  /// with different structures would each judge the other's fresh copy edited and delete their own.
+  /// Wording changes are safe: text differences are never taken as edits.
   static func generateFirstTimeLaunchChecklists() -> [ChecklistFixture] {
     [
       ChecklistFixture(

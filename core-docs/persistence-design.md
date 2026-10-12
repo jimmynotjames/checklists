@@ -175,8 +175,9 @@ so the whole sequence is one testable, retryable unit rather than scattered init
    already populated the store. Tagged `.firstLaunchSeed`.
 4. `SampleData.dedupeChecklists(in:)`, whose failure is swallowed (reason at the `try?`). Step 3
    cannot see iCloud data that has not imported yet, so every fresh install on an account that
-   already has the samples seeds a second copy; dedupe removes the untouched copies once the import
-   lands (it also runs on each remote-change burst), keeping any copy the user edited.
+   already has the samples seeds a second copy. Dedupe drops redundant untouched copies once the
+   import lands (it also runs on each remote-change burst), preferring any copy whose items or
+   checks were changed; copies that differ only in text, such as another language's, are kept.
 5. Install the result as `PersistenceController.shared`.
 
 Steps 2–4 are skipped entirely under `LaunchModeContainerFactory.isRunningTests` — automated tests

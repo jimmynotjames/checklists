@@ -143,6 +143,23 @@ struct ChecklistScreenActionTests {
     }
   }
 
+  /// Sample dedupe deletes one of two records sharing an `id`. The surviving twin must not keep the
+  /// screen open on the deleted one.
+  @Test("a checklist deduped away dismisses the screen even though its twin survives")
+  func dedupedTwinDismissesTheScreen() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
+      var dismissed = false
+      harness.viewController.onRequestDismiss = { dismissed = true }
+      harness.modelContext.insert(Checklist(id: harness.checklist.id, name: "Twin"))
+
+      harness.modelContext.delete(harness.checklist)
+      try harness.modelContext.save()
+      harness.viewController.handleRemoteChange()
+
+      #expect(dismissed)
+    }
+  }
+
   @Test("a still-present checklist is not dismissed")
   func remoteChangeToALivingChecklistDoesNotDismiss() throws {
     try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in

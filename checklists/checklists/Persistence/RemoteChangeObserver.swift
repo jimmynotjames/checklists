@@ -15,6 +15,10 @@ import Foundation
  changed*. Observing the model objects instead (`withObservationTracking`) cannot tell our own edit
  from a merged one, so it would fire during an in-flight table view animation and fight it.
 
+ It also fires on `SampleData.didRemoveDuplicates`: sample dedupe runs in response to a merge and
+ deletes records locally, and a screen showing one of them must react as if it were deleted
+ remotely.
+
  Nothing filters by coordinator or by store, so every remote-change notification posted anywhere in
  the process arrives here, including from a container this observer's owner knows nothing about.
 
@@ -54,6 +58,12 @@ final class RemoteChangeObserver: NSObject {
       self,
       selector: #selector(storeChangedRemotely),
       name: .NSPersistentStoreRemoteChange,
+      object: nil
+    )
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(storeChangedRemotely),
+      name: SampleData.didRemoveDuplicates,
       object: nil
     )
   }

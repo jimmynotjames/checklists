@@ -4,7 +4,9 @@
 //
 
 @testable import checklists
+import Foundation
 import SwiftData
+import Synchronization
 import Testing
 
 /// Covers `SampleData.dedupeChecklists(in:)`, the only code in the app that deletes records on its own
@@ -84,6 +86,27 @@ struct SampleDataDedupeTests {
       try context.fetch(FetchDescriptor<Item>()).allSatisfy { $0.checklist != nil },
       "Cascade delete must not leave orphaned items behind."
     )
+  }
+
+  /// Dedupe's deletions are local saves, which raise no remote-change notification; an open screen
+  /// showing a deleted copy hears about it only through this one. A no-op pass must stay silent, or
+  /// the list's observer, which runs dedupe on it, would loop.
+  @Test("posts didRemoveDuplicates only when it deleted something")
+  func postsOnlyWhenItDeleted() throws {
+    let context = try TestModelContainer.makeContext()
+    try SampleData.seed(into: context)
+    let posts = Mutex(0)
+    let token = NotificationCenter.default.addObserver(forName: SampleData.didRemoveDuplicates, object: nil, queue: nil) { _ in
+      posts.withLock { $0 += 1 }
+    }
+    defer { NotificationCenter.default.removeObserver(token) }
+
+    try SampleData.dedupeChecklists(in: context)
+    #expect(posts.withLock { $0 } == 0)
+
+    try seedSecondCopy(into: context)
+    try SampleData.dedupeChecklists(in: context)
+    #expect(posts.withLock { $0 } == 1)
   }
 
   /// Every device must elect the same survivor, or two devices deduping at once would delete one
