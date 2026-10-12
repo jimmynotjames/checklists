@@ -64,7 +64,7 @@ class ChecklistMoveAndDeleteCheckedItemsUITest: XCTestCase {
     let preTripTable = app.tables["ChecklistTableView"]
     XCTAssertTrue(preTripTable.waitForExistence(timeout: 5))
     let namesBefore = itemNames(in: preTripTable)
-    preTripTable.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].tap()
+    preTripTable.children(matching: .cell).element(boundBy: 0).buttons["itemCheckbox"].tap()
 
     tapMenuEntry("checklist.menu.moveCheckedItems")
 

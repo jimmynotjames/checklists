@@ -61,6 +61,8 @@ struct ChecklistsView: View {
 
   /// Kept on the moved row after a move action, which re-sorts the list under VoiceOver.
   @AccessibilityFocusState private var focusedChecklistID: String?
+  /// Where VoiceOver goes back to when the main menu closes.
+  @AccessibilityFocusState private var isMainMenuButtonFocused: Bool
 
   /// Read back from the list so rows can center in a readable column on a wide window.
   @State private var listWidth: CGFloat = 0
@@ -294,6 +296,17 @@ struct ChecklistsView: View {
     // Locale-invariant handle for `translation-accessibility-size-check`, which cannot
     // navigate by localized visible text.
     .accessibilityIdentifier("toolbar.mainMenu")
+    .accessibilityFocused($isMainMenuButtonFocused)
+    // After the slide-out, while the panel still covers ☰. Not when the menu closed to open
+    // Settings: the sheet takes focus instead.
+    .onChange(of: router.isMainMenuVisible) { _, isVisible in
+      guard !isVisible else { return }
+      Task {
+        try? await Task.sleep(for: .seconds(RootView.menuAnimationSeconds + 0.1))
+        guard !router.isMainMenuVisible, router.sheet == nil else { return }
+        isMainMenuButtonFocused = true
+      }
+    }
   }
 
   /// Always enabled, even with no checklists: the control stays visible so people learn it exists,

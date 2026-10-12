@@ -30,7 +30,9 @@ class CheckboxButton: UIButton {
   override init(frame _: CGRect) {
     super.init(frame: .zero)
 
-    accessibilityLabel = String(localized: "checkbox.accessibilityLabel", defaultValue: "Checkbox", comment: "VoiceOver label of the tick box on each checklist item row.")
+    updateAccessibilityLabel()
+    // The label carries the item's name, so UI tests need a handle that doesn't change with it.
+    accessibilityIdentifier = "itemCheckbox"
 
     var configuration = UIButton.Configuration.plain()
     // Positions the glyph, not the tap target: the square frame below is the tap target.
@@ -68,6 +70,38 @@ class CheckboxButton: UIButton {
     fatalError("This init() not supported.")
   }
 
+  private static let blankNameStandIn = String(
+    localized: "checkbox.accessibilityLabel",
+    defaultValue: "Checkbox",
+    comment: "Stands in for the item name in the checkbox's VoiceOver label when the item has no name, as in \"Unchecked, Checkbox\"."
+  )
+
+  private var itemName = ""
+
+  /// Names the item the checkbox ticks, so VoiceOver doesn't read the same "Checkbox" on every row.
+  func setItemName(_ name: String?) {
+    itemName = name?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+    updateAccessibilityLabel()
+  }
+
+  /// The status leads and the name follows, so on a long name a listener hears the status and can
+  /// move on. That puts state in the label, against the spec's label-vs-value convention; see
+  /// `core-docs/accessibility-spec.md` §Label vs. value.
+  private func updateAccessibilityLabel() {
+    let name = itemName.isEmpty ? Self.blankNameStandIn : itemName
+    accessibilityLabel = isSelected
+      ? String(
+        localized: "checkbox.accessibilityLabel.checked",
+        defaultValue: "Checked, \(name)",
+        comment: "VoiceOver label of a ticked checklist item's checkbox. The placeholder is the item's name. Keep the status first, so a listener hears it before a long name."
+      )
+      : String(
+        localized: "checkbox.accessibilityLabel.unchecked",
+        defaultValue: "Unchecked, \(name)",
+        comment: "VoiceOver label of an unticked checklist item's checkbox. The placeholder is the item's name. Keep the status first, so a listener hears it before a long name."
+      )
+  }
+
   /// Note: Only reflects the status on screen; saving it is the caller's job.
   func setCheckboxState(with itemStatus: Item.Status) {
     switch itemStatus {
@@ -75,12 +109,11 @@ class CheckboxButton: UIButton {
       isSelected = true
       configuration?.image = Self.checkedImage
       tintColor = Colors.inactiveText
-      accessibilityValue = String(localized: "checkbox.value.checked", defaultValue: "Checked", comment: "VoiceOver value of a ticked checklist item's checkbox.")
     case .unchecked:
       isSelected = false
       configuration?.image = Self.uncheckedImage
       tintColor = .tintColor
-      accessibilityValue = String(localized: "checkbox.value.unchecked", defaultValue: "Unchecked", comment: "VoiceOver value of an unticked checklist item's checkbox.")
     }
+    updateAccessibilityLabel()
   }
 }

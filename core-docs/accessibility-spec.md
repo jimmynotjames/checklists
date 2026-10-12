@@ -9,8 +9,8 @@
 
 | Axis | Status | Notes |
 | --- | --- | --- |
-| **VoiceOver labels/values** | Partial | Most interactive controls are labelled; the remaining unlabelled controls are **#181**. Checklists, and the items inside a checklist, reorder by Move Up/Down/to Top/to Bottom actions on each row, since neither `.onMove` nor the item table's drag handles and long-press drag offer VoiceOver a way to move a row. On item rows the actions sit on the checkbox and both text views, the elements VoiceOver lands on |
-| **VoiceOver traits** | Partial | `ChecklistHistoryCaption` sets `.staticText`; `MainMenuView` sets `.isModal`, since on a wide window it is a side panel with the list still on screen beside it; everything else relies on platform defaults |
+| **VoiceOver labels/values** | Partial | Every interactive control is labelled; the remaining VoiceOver gaps are **#278**. Checklists, and the items inside a checklist, reorder by Move Up/Down/to Top/to Bottom actions on each row, since neither `.onMove` nor the item table's drag handles and long-press drag offer VoiceOver a way to move a row. On item rows the actions sit on the checkbox and both text views, the elements VoiceOver lands on, and outside Reorder Items mode they add Duplicate and Delete, since the swipe actions belong to the cell. Each item's checkbox reads its status, then the item's name, or "Checkbox" when the name is blank — §Label vs. value |
+| **VoiceOver traits** | Partial | `ChecklistHistoryCaption` sets `.staticText`; `MainMenuView` sets `.isModal`, since on a wide window it is a side panel with the list still on screen beside it, and closes on the escape gesture; VoiceOver moves to its Close button when it opens and back to ☰ when it closes. In Reorder Items mode each checkbox is disabled, so it reads as dimmed; everything else relies on platform defaults |
 | **Reduce Motion** | Implemented | Every app-authored animation has a recorded verdict — §Animation and Reduce Motion |
 | **Dynamic Type** | Partial | The checklist screen scales live through AX5; several SwiftUI layouts still break at the accessibility sizes — §Dynamic Type, **#183**. From two steps above the default text size (xxLarge) the list's Reset All and Edit mode toolbar collapse to icons, so long translations neither push Edit into an overflow menu nor clip the toolbar; they keep their names for VoiceOver and the Large Content Viewer |
 | **Dark Mode** | Not started | The app is locked to Light appearance in `Info.plist` — **#180** |
@@ -44,8 +44,10 @@ Introduce a shared helper only when a third call site needs one; two is not a pa
 ### Label vs. value
 
 State that changes belongs in `accessibilityValue`, not baked into the label — a label that encodes
-state gets re-announced wholesale on every change. `CheckboxButton` sets a static label once and
-swaps only the value (`Checked`/`Unchecked`). `CircularPercentStatusIcon` goes further and sets
+state gets re-announced wholesale on every change. `CheckboxButton` is the one exception: its
+label is "Checked, <item name>" or "Unchecked, <item name>", with no value, because VoiceOver always
+reads the label before the value and item names can be long. A listener hears the status first
+and can move on after a word or two of the name; a tick re-reads the label, which confirms it. `CircularPercentStatusIcon` goes further and sets
 `accessibilityLabel = nil` on purpose, because the percentage *is* the whole announcement — don't
 "fix" that nil.
 

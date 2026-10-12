@@ -97,7 +97,7 @@ final class ChecklistHeaderUITest: ChecklistDetailUITestCase {
     checklistsList.staticTexts["Morning Routine"].tap()
     XCTAssertTrue(tablesQuery["ChecklistTableView"].waitForExistence(timeout: 5))
 
-    let firstCheckbox = tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"]
+    let firstCheckbox = tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["itemCheckbox"]
     XCTAssertTrue(firstCheckbox.waitForExistence(timeout: 5))
     XCTAssertTrue(firstCheckbox.isHittable, "The first item is sitting underneath the header.")
   }

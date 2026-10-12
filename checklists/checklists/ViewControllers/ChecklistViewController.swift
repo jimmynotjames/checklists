@@ -300,7 +300,7 @@ class ChecklistViewController: UIViewController {
 
   /// Reorder Items mode: a drag handle on every row, and nothing else that takes a tap. The header's
   /// name and notes, each row's checkbox and text, and the add-item footer all freeze, so the only
-  /// things that respond are the ones the mode is about. Deleting stays a swipe, outside the mode.
+  /// things that respond are the ones the mode is about. Deleting stays outside the mode.
   override func setEditing(_ editing: Bool, animated: Bool) {
     // A repeat would save the mode's own Done as the bar to restore.
     guard editing != isEditing else { return }
@@ -317,6 +317,7 @@ class ChecklistViewController: UIViewController {
     for case let cell as ItemTableViewCell in tableView.visibleCells {
       cell.itemContentView.setReordering(editing)
     }
+    refreshAccessibilityActions()
     tableView.tableFooterView?.isUserInteractionEnabled = !editing
     // The footer's content rather than the footer itself: the table puts its footer view back to
     // full opacity when it animates a row move, which would bring the Add button back mid-mode.
@@ -418,7 +419,7 @@ class ChecklistViewController: UIViewController {
     UIView.animate(withDuration: 0.01, animations: updates, completion: becomeFirstResponder ? startEditingBlock : nil)
 
     updateStatusIcon()
-    refreshMoveActions()
+    refreshAccessibilityActions()
   }
 
   private func collapseEditingCellIfNecessary() {
@@ -449,7 +450,7 @@ class ChecklistViewController: UIViewController {
     tableView.deleteRows(at: [IndexPath(item: index, section: itemsSection)], with: .fade)
     updateStatusIcon()
     refreshHistoryCaption()
-    refreshMoveActions()
+    refreshAccessibilityActions()
   }
 
   /// The overflow menu's Delete Checked Items, once confirmed. Internal so a test can invoke it: a
@@ -465,7 +466,7 @@ class ChecklistViewController: UIViewController {
       properties: [AnalyticsProperty.itemsCount: checkedItems.count]
     )
     context.deleteItems(checkedItems, from: checklist)
-    // The reload re-issues every row's VoiceOver move actions, so no `refreshMoveActions` here.
+    // The reload re-issues every row's VoiceOver actions, so no `refreshAccessibilityActions` here.
     tableView.reloadData()
     updateStatusIcon()
     refreshHistoryCaption()
@@ -486,7 +487,7 @@ class ChecklistViewController: UIViewController {
     // `insertNewItem`. The new unchecked row can still move `percentageComplete` and flip
     // `isComplete`, which is why the status icon alone needs a refresh.
     updateStatusIcon()
-    refreshMoveActions()
+    refreshAccessibilityActions()
   }
 
   /// The width the header was last measured against. `view` is the table itself, so this runs on
@@ -594,7 +595,7 @@ extension ChecklistViewController: UITableViewDataSource {
     cell.itemContentView.delegate = self
     // Applied on every dequeue, so a reload — a remote merge included — keeps the mode's state.
     cell.itemContentView.setReordering(isReordering)
-    cell.itemContentView.setAccessibilityMoveActions(moveActions(for: checklist.items[indexPath.row]))
+    cell.itemContentView.setAccessibilityActions(accessibilityActions(for: checklist.items[indexPath.row]))
     return cell
   }
 
@@ -611,7 +612,7 @@ extension ChecklistViewController: UITableViewDataSource {
     if !saveMove(of: items[sourceIndexPath.row], among: items, to: destinationIndexPath.row) {
       resyncAfterFailedMove()
     }
-    refreshMoveActions()
+    refreshAccessibilityActions()
   }
 }
 
@@ -620,7 +621,7 @@ extension ChecklistViewController: UITableViewDelegate {
     false
   }
 
-  /// Handles only: Reorder Items mode does what its name says, and deleting stays a swipe.
+  /// Handles only: Reorder Items mode does what its name says, and deleting stays outside it.
   func tableView(_: UITableView, editingStyleForRowAt _: IndexPath) -> UITableViewCell.EditingStyle {
     .none
   }
@@ -864,7 +865,7 @@ extension ChecklistViewController: UITableViewDropDelegate {
         // only moved once the new order is actually saved.
         guard self.saveMove(of: items[sourceIndex], among: items, to: destinationIndexPath.row) else { return }
         tableView.moveRow(at: IndexPath(row: sourceIndex, section: destinationIndexPath.section), to: destinationIndexPath)
-        self.refreshMoveActions()
+        self.refreshAccessibilityActions()
       }
     }
   }
@@ -957,10 +958,11 @@ extension ChecklistViewController: ItemContentViewDelegate {
   }
 }
 
-// MARK: - VoiceOver moves
+// MARK: - VoiceOver actions
 
 /// Move Up / Down / to Top / to Bottom on every row, in and out of Reorder Items mode: neither the
-/// drag handles nor the long-press drag can be used without dragging.
+/// drag handles nor the long-press drag can be used without dragging. Outside the mode, Duplicate
+/// and Delete too: the swipe actions belong to the cell, which VoiceOver never lands on.
 extension ChecklistViewController {
   func availableMoves(for item: Item) -> [ChecklistMoveAction] {
     let items = checklist.items
@@ -987,7 +989,7 @@ extension ChecklistViewController {
     tableView.moveRow(at: IndexPath(row: index, section: itemsSection), to: destinationIndexPath)
     tableView.scrollToRow(at: destinationIndexPath, at: .none, animated: false)
     tableView.layoutIfNeeded()
-    refreshMoveActions()
+    refreshAccessibilityActions()
 
     let movedRow = (tableView.cellForRow(at: destinationIndexPath) as? ItemTableViewCell)?.itemContentView
     let announcement = Self.movedToPositionAnnouncement(position: destination + 1, count: count)
@@ -1006,25 +1008,40 @@ extension ChecklistViewController {
 
   /// Built per row from the item, not its index path, so it reads the saved order even in the
   /// middle of a table update. Each action looks its item up again when it fires.
-  private func moveActions(for item: Item) -> [UIAccessibilityCustomAction] {
-    let moves = availableMoves(for: item)
-    guard !moves.isEmpty else { return [] }
+  private func accessibilityActions(for item: Item) -> [UIAccessibilityCustomAction] {
+    // By identity, as in `availableMoves`: a row fading out after a delete gets no actions, and
+    // its item's properties are no longer safe to read.
+    guard checklist.items.contains(where: { $0 === item }) else { return [] }
     let id = item.id
-    return moves.map { action in
+    let moves = availableMoves(for: item).map { action in
       UIAccessibilityCustomAction(name: Self.moveActionTitle(for: action)) { [weak self] _ in
         self?.move(itemWithID: id, action) ?? false
       }
     }
+    guard !isReordering else { return moves }
+    // In the swipe actions' order, Delete outermost.
+    return moves + [
+      UIAccessibilityCustomAction(name: CommonStrings.duplicate) { [weak self] _ in
+        guard let self, let index = checklist.items.firstIndex(where: { $0.id == id }) else { return false }
+        duplicateItem(at: index)
+        return true
+      },
+      UIAccessibilityCustomAction(name: CommonStrings.delete) { [weak self] _ in
+        guard let self, let index = checklist.items.firstIndex(where: { $0.id == id }) else { return false }
+        deleteItem(at: index)
+        return true
+      },
+    ]
   }
 
-  /// Which moves a row offers depends on where it sits, so any change to the order or the count
-  /// refreshes every row on screen. Rows scrolled in later get theirs from `cellForRowAt`.
-  func refreshMoveActions() {
+  /// Which moves a row offers depends on where it sits, and Delete and Duplicate on the mode, so
+  /// any change to the order, the count or the mode refreshes every row on screen. Rows scrolled in later get theirs from `cellForRowAt`.
+  func refreshAccessibilityActions() {
     // Some suites drive the move callbacks without loading the view, so there is no table yet.
     guard isViewLoaded else { return }
     for case let cell as ItemTableViewCell in tableView.visibleCells {
       guard let item = cell.itemContentView.item else { continue }
-      cell.itemContentView.setAccessibilityMoveActions(moveActions(for: item))
+      cell.itemContentView.setAccessibilityActions(accessibilityActions(for: item))
     }
   }
 }

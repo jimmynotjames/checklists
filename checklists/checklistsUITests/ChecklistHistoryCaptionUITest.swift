@@ -41,7 +41,7 @@ final class ChecklistHistoryCaptionUITest: ChecklistDetailUITestCase {
     XCTAssertTrue(caption.waitForExistence(timeout: 5))
     XCTAssertTrue(caption.label.hasPrefix("Last updated: Never"))
 
-    tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].tap()
+    tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["itemCheckbox"].tap()
 
     // An expectation rather than reading `.label` straight after the tap: a bare read forces a
     // snapshot that blocks until the app goes idle, with no deadline of its own.
@@ -67,7 +67,7 @@ final class ChecklistHistoryCaptionUITest: ChecklistDetailUITestCase {
     // Tap every unchecked box rather than a hardcoded row, so the test survives a fixture change.
     let cells = tablesQuery.children(matching: .cell)
     for index in 0 ..< cells.count {
-      let checkbox = cells.element(boundBy: index).buttons["Checkbox"]
+      let checkbox = cells.element(boundBy: index).buttons["itemCheckbox"]
       if checkbox.exists, !checkbox.isSelected {
         checkbox.tap()
       }
