@@ -28,70 +28,74 @@ struct ContainerFailureView: View {
   }
 
   var body: some View {
-    VStack(spacing: 32) {
-      VStack(spacing: 12) {
-        Image(systemName: "externaldrive.badge.exclamationmark")
-          .font(.system(size: 44))
-          .foregroundStyle(Colors.inactiveTextColor)
-          .accessibilityHidden(true)
+    ScrollView {
+      VStack(spacing: 32) {
+        VStack(spacing: 12) {
+          Image(systemName: "externaldrive.badge.exclamationmark")
+            .font(.system(size: 44))
+            .foregroundStyle(Colors.inactiveTextColor)
+            .accessibilityHidden(true)
 
-        Text(String(localized: "containerFailure.title", defaultValue: "Couldn't open your checklists", comment: "Title of the full-screen error shown when the local database cannot be opened."))
-          .font(.title2.bold())
+          Text(String(localized: "containerFailure.title", defaultValue: "Couldn't open your checklists", comment: "Title of the full-screen error shown when the local database cannot be opened."))
+            .font(.title2.bold())
 
-        Text(String(
-          localized: "containerFailure.message",
-          defaultValue: "Something went wrong. Try restarting the app, and check whether your storage is full.",
-          comment: """
-          Body of the database-failure screen; suggests a restart and checking free storage. Word the \
-          second sentence as a gentle suggestion, not a question.
-          """
-        ))
-        .font(.body)
-      }
-      .multilineTextAlignment(.center)
-      .accessibilityElement(children: .combine)
-
-      VStack(spacing: 12) {
-        Button {
-          sendFeedbackTapped()
-        } label: {
-          Text(Self.sendFeedbackTitle)
-            .frame(maxWidth: .infinity)
+          Text(String(
+            localized: "containerFailure.message",
+            defaultValue: "Something went wrong. Try restarting the app, and check whether your storage is full.",
+            comment: """
+            Body of the database-failure screen; suggests a restart and checking free storage. Word the \
+            second sentence as a gentle suggestion, not a question.
+            """
+          ))
+          .font(.body)
         }
-        // Approximates the UIKit CLButton's glass UIButtonConfiguration.
-        .buttonStyle(.glass)
-        .controlSize(.large)
-        .accessibilityLabel(Self.sendFeedbackTitle)
-        .accessibilityHint(String(
-          localized: "containerFailure.action.sendFeedback.hint",
-          defaultValue: "Opens an email with the error details. No personal data is included.",
-          comment: "VoiceOver hint for the Send Feedback button on the database-failure screen."
-        ))
+        .multilineTextAlignment(.center)
+        .accessibilityElement(children: .combine)
 
-        if failure.allowsStoreReset {
+        VStack(spacing: 12) {
           Button {
-            // Destructive and irreversible, on a screen the user reaches while already alarmed — so
-            // it confirms first, and the confirmation says plainly what is lost rather than "are you
-            // sure?".
-            isShowingStartOverConfirmation = true
+            sendFeedbackTapped()
           } label: {
-            Text(Self.startOverTitle)
+            Text(Self.sendFeedbackTitle)
               .frame(maxWidth: .infinity)
           }
+          // Approximates the UIKit CLButton's glass UIButtonConfiguration.
           .buttonStyle(.glass)
           .controlSize(.large)
-          .tint(Colors.destructiveColor)
-          .accessibilityLabel(Self.startOverTitle)
+          .accessibilityLabel(Self.sendFeedbackTitle)
           .accessibilityHint(String(
-            localized: "containerFailure.action.startOver.hint",
-            defaultValue: "Starts the app as if it were newly installed. Any data on this device will be lost.",
-            comment: "VoiceOver hint for the Start over fresh button."
+            localized: "containerFailure.action.sendFeedback.hint",
+            defaultValue: "Opens an email with the error details. No personal data is included.",
+            comment: "VoiceOver hint for the Send Feedback button on the database-failure screen."
           ))
+
+          if failure.allowsStoreReset {
+            Button {
+              // Destructive and irreversible, on a screen the user reaches while already alarmed — so
+              // it confirms first, and the confirmation says plainly what is lost rather than "are you
+              // sure?".
+              isShowingStartOverConfirmation = true
+            } label: {
+              Text(Self.startOverTitle)
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.glass)
+            .controlSize(.large)
+            .tint(Colors.destructiveColor)
+            .accessibilityLabel(Self.startOverTitle)
+            .accessibilityHint(String(
+              localized: "containerFailure.action.startOver.hint",
+              defaultValue: "Starts the app as if it were newly installed. Any data on this device will be lost.",
+              comment: "VoiceOver hint for the Start over fresh button."
+            ))
+          }
         }
       }
+      .padding(.horizontal, 16)
     }
-    .padding(.horizontal, 16)
-    .scrollsWhenTooTall()
+    // Centred while it fits; past that it scrolls from the top, so the buttons stay reachable.
+    .defaultScrollAnchor(.center, for: .alignment)
+    .scrollBounceBehavior(.basedOnSize)
     .background(Colors.defaultBackgroundColor.ignoresSafeArea())
     .alert(
       String(localized: "containerFailure.confirm.title", defaultValue: "Start over fresh?", comment: "Title of the confirmation alert before deleting local data on the database-failure screen."),

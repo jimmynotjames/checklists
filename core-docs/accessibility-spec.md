@@ -81,8 +81,9 @@ and are still open under **#183**: one-line checklist names and a fixed 20pt rin
 `ChecklistRowView`, and fixed side-by-side rows in `MainMenuView`, `SettingsView` and `ToastView`.
 Don't fix piecemeal in unrelated PRs.
 
-`AnalyticsConsentSheet` and `ContainerFailureView` scroll once their content outgrows the screen
-(`scrollsWhenTooTall()`), so their buttons stay reachable at every size.
+`AnalyticsConsentSheet` and `ContainerFailureView` scroll once their content outgrows the screen, so
+their buttons stay reachable at every size; the consent sheet's two buttons stay pinned below its
+scrolling text.
 
 ### Identifiers are test hooks
 
