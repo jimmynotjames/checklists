@@ -18,7 +18,7 @@ struct RootView: View {
   @State private var rootWidth: CGFloat = 0
 
   /// How long the main menu takes to slide in or out.
-  static let menuAnimationDuration: Duration = .milliseconds(200)
+  static let menuAnimationSeconds: TimeInterval = 0.2
 
   /// The main menu's width once it stops covering the whole window.
   static let menuPanelWidth: CGFloat = 360
@@ -71,7 +71,7 @@ struct RootView: View {
       }
     }
     .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { rootWidth = $0 }
-    .animation(.easeInOut(duration: Self.menuAnimationDuration / .seconds(1)), value: router.isMainMenuVisible)
+    .animation(.easeInOut(duration: Self.menuAnimationSeconds), value: router.isMainMenuVisible)
     .sheet(item: $router.sheet) { route in
       Group {
         switch route {

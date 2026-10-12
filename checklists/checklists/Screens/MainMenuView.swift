@@ -117,7 +117,7 @@ struct MainMenuView: View {
     }
     .task {
       // After the slide-in, or the button isn't on screen yet to take focus.
-      try? await Task.sleep(for: RootView.menuAnimationDuration + .milliseconds(100))
+      try? await Task.sleep(for: .seconds(RootView.menuAnimationSeconds + 0.1))
       isCloseButtonFocused = true
     }
   }

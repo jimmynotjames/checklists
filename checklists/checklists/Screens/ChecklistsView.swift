@@ -302,7 +302,7 @@ struct ChecklistsView: View {
     .onChange(of: router.isMainMenuVisible) { _, isVisible in
       guard !isVisible else { return }
       Task {
-        try? await Task.sleep(for: RootView.menuAnimationDuration + .milliseconds(100))
+        try? await Task.sleep(for: .seconds(RootView.menuAnimationSeconds + 0.1))
         guard !router.isMainMenuVisible, router.sheet == nil else { return }
         isMainMenuButtonFocused = true
       }
