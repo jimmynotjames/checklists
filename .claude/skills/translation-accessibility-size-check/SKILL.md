@@ -1,11 +1,11 @@
 ---
 name: translation-accessibility-size-check
-description: "Capture and read localized screenshots at the largest Dynamic Type size to find truncation, overlap, and RTL mirroring faults. Visual review; asserts nothing."
+description: "Capture and read localized screenshots at the largest standard Dynamic Type size, xxxLarge, to find truncation, overlap, and RTL mirroring faults. Visual review; asserts nothing."
 ---
 
 # Localized large-type layout check
 
-Does the UI hold together when a long translation meets the largest Dynamic Type size? Ad-hoc,
+Does the UI hold together when a long translation meets the largest standard Dynamic Type size (xxxLarge)? Ad-hoc,
 slow, and outside the app test suites and `make gate`.
 
 ## Run it
