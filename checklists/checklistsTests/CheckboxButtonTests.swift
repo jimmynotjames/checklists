@@ -51,6 +51,18 @@ struct CheckboxButtonTests {
     button.setCheckboxState(with: .unchecked)
     #expect(!button.isSelected)
     #expect(button.accessibilityValue == "Unchecked")
+  }
+
+  @Test("the VoiceOver label is the item's name, or Checkbox when it's blank")
+  func labelIsTheItemName() {
+    let button = CheckboxButton()
     #expect(button.accessibilityLabel == "Checkbox")
+    button.setItemName("Passport")
+    #expect(button.accessibilityLabel == "Passport")
+    button.setItemName("  \n")
+    #expect(button.accessibilityLabel == "Checkbox")
+    button.setItemName(nil)
+    #expect(button.accessibilityLabel == "Checkbox")
+    #expect(button.accessibilityIdentifier == "itemCheckbox")
   }
 }

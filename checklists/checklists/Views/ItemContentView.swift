@@ -29,6 +29,7 @@ class ItemContentView: UIView {
     didSet {
       if let item {
         nameTextView.text = item.name
+        checkboxButton.setItemName(item.name)
         if let notes = item.notes {
           notesTextView.text = notes
         } else {
@@ -38,6 +39,7 @@ class ItemContentView: UIView {
         refreshHeight()
       } else {
         checkboxButton.setCheckboxState(with: .unchecked)
+        checkboxButton.setItemName(nil)
         nameTextView.text = ""
         notesTextView.text = ""
       }
@@ -50,7 +52,7 @@ class ItemContentView: UIView {
     nameTextView.isFirstResponder || notesTextView.isFirstResponder
   }
 
-  private lazy var checkboxButton: CheckboxButton = {
+  private(set) lazy var checkboxButton: CheckboxButton = {
     let button = CheckboxButton()
     button.addTarget(self, action: #selector(checkboxButtonTapped(sender:)), for: .touchUpInside)
     return button
@@ -144,16 +146,18 @@ class ItemContentView: UIView {
   }
 
   /// Reorder Items mode: the row shows as usual but takes no touches, and its text cannot be
-  /// edited. `isEditable` as well, because a VoiceOver double-tap does not go through hit-testing.
+  /// edited. `isEditable` and `isEnabled` as well, because a VoiceOver double-tap does not go
+  /// through hit-testing; disabling the checkbox also has VoiceOver read it as dimmed.
   func setReordering(_ reordering: Bool) {
     isUserInteractionEnabled = !reordering
+    checkboxButton.isEnabled = !reordering
     nameTextView.isEditable = !reordering
     notesTextView.isEditable = !reordering
   }
 
   /// Put on every element VoiceOver can land on in the row: the row itself is not one, and custom
   /// actions are not inherited from a container.
-  func setAccessibilityMoveActions(_ actions: [UIAccessibilityCustomAction]) {
+  func setAccessibilityActions(_ actions: [UIAccessibilityCustomAction]) {
     checkboxButton.accessibilityCustomActions = actions
     nameTextView.accessibilityCustomActions = actions
     notesTextView.accessibilityCustomActions = actions
@@ -237,7 +241,10 @@ extension ItemContentView: UITextViewDelegate {
     finishEditingViewIfNecessary()
   }
 
-  func textViewDidChange(_: UITextView) {
+  func textViewDidChange(_ textView: UITextView) {
+    if textView == nameTextView {
+      checkboxButton.setItemName(textView.text)
+    }
     delegate?.itemContentViewHeightUpdated(self)
   }
 

@@ -21,7 +21,9 @@ class CheckboxButton: UIButton {
   override init(frame _: CGRect) {
     super.init(frame: .zero)
 
-    accessibilityLabel = String(localized: "checkbox.accessibilityLabel", defaultValue: "Checkbox", comment: "VoiceOver label of the tick box on each checklist item row.")
+    accessibilityLabel = Self.fallbackAccessibilityLabel
+    // The label is the item's name, so UI tests need a handle that doesn't change with it.
+    accessibilityIdentifier = "itemCheckbox"
 
     var configuration = UIButton.Configuration.plain()
     // Positions the glyph, not the tap target: the 48pt frame below is the tap target.
@@ -40,6 +42,15 @@ class CheckboxButton: UIButton {
   @available(*, unavailable)
   required init?(coder _: NSCoder) {
     fatalError("This init() not supported.")
+  }
+
+  private static let fallbackAccessibilityLabel = String(localized: "checkbox.accessibilityLabel", defaultValue: "Checkbox", comment: "VoiceOver label of the tick box on each checklist item row.")
+
+  /// Labels the checkbox with the item it ticks, so VoiceOver doesn't read the same "Checkbox" on
+  /// every row.
+  func setItemName(_ name: String?) {
+    let trimmed = name?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+    accessibilityLabel = trimmed.isEmpty ? Self.fallbackAccessibilityLabel : trimmed
   }
 
   /// Note: Only reflects the status on screen; saving it is the caller's job.

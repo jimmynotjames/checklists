@@ -73,7 +73,7 @@ final class ChecklistAddItemsUITest: ChecklistDetailUITestCase {
     let numItems = checklistTableView.children(matching: .cell).count
     var numCheckedItems = 0
     for i in 0 ..< numItems {
-      numCheckedItems += (checklistTableView.children(matching: .cell).element(boundBy: i).buttons["Checkbox"].isSelected) ? 1 : 0
+      numCheckedItems += (checklistTableView.children(matching: .cell).element(boundBy: i).buttons["itemCheckbox"].isSelected) ? 1 : 0
     }
     assertPercentComplete(checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems)
 

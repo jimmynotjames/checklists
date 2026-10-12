@@ -100,7 +100,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
       "Argue politics on Facebook",
     ])
     XCTAssertFalse(
-      copyTable.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].isSelected,
+      copyTable.children(matching: .cell).element(boundBy: 0).buttons["itemCheckbox"].isSelected,
       "Copied items should arrive unchecked."
     )
   }
@@ -127,7 +127,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     checklistsList.staticTexts["Pre-Trip Checklist"].tap()
     let preTripTable = app.tables["ChecklistTableView"]
     XCTAssertTrue(preTripTable.waitForExistence(timeout: 5))
-    preTripTable.children(matching: .cell).element(boundBy: 0).buttons["Checkbox"].tap()
+    preTripTable.children(matching: .cell).element(boundBy: 0).buttons["itemCheckbox"].tap()
 
     tapCopyCheckedItemsEntry()
 

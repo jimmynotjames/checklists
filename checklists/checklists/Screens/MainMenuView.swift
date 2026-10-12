@@ -18,6 +18,9 @@ struct MainMenuView: View {
   /// Toolbar items step aside on their own, but this close button is plain content.
   @State private var windowControlsInset: CGSize = .zero
 
+  /// VoiceOver starts on the close button rather than staying on the hidden ☰ behind the panel.
+  @AccessibilityFocusState private var isCloseButtonFocused: Bool
+
   /// 21 is the `StopIcon` asset's size.
   private static let closeIconSlack: CGFloat = (44 - 21) / 2
 
@@ -36,6 +39,7 @@ struct MainMenuView: View {
           .contentShape(Rectangle())
       }
       .accessibilityLabel(String(localized: "mainMenu.close.accessibilityLabel", defaultValue: "Close menu", comment: "VoiceOver label for the X button that dismisses the main menu."))
+      .accessibilityFocused($isCloseButtonFocused)
       .padding(.top, 8 - Self.closeIconSlack)
       // Never under the stock 16: a window without controls can still report a small corner inset
       // for its rounded corner.
@@ -104,8 +108,13 @@ struct MainMenuView: View {
     // trait needs a container to apply to, or SwiftUI hands it down to each row.
     .accessibilityElement(children: .contain)
     .accessibilityAddTraits(.isModal)
+    // The two-finger scrub that closes any other panel.
+    .accessibilityAction(.escape) {
+      router.isMainMenuVisible = false
+    }
     .task {
       analytics.track(AnalyticsEvent.mainMenuViewed)
+      isCloseButtonFocused = true
     }
   }
 
