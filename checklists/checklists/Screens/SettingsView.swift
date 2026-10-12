@@ -122,17 +122,10 @@ struct SettingsView: View {
         }
         openURL(url)
       } label: {
-        Label {
-          Text(String(localized: "settings.info.privacyPolicy", defaultValue: "Privacy Policy", comment: "Row in Settings that opens the app's privacy policy web page."))
-            .foregroundStyle(.primary)
-        } icon: {
-          Image("PrivacyPolicyIcon25x25")
-            .renderingMode(.template)
-            .resizable()
-            .scaledToFit()
-            .frame(width: 24, height: 24)
-            .foregroundStyle(Color.accentColor)
-        }
+        Label(
+          String(localized: "settings.info.privacyPolicy", defaultValue: "Privacy Policy", comment: "Row in Settings that opens the app's privacy policy web page."),
+          systemImage: "hand.raised"
+        )
       }
     } header: {
       // Title case, matching how the other Form headers here are written.

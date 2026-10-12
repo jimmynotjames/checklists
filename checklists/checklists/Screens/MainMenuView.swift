@@ -48,56 +48,61 @@ struct MainMenuView: View {
       // rows rather than as a fourth item.
       .padding(.bottom, 8 - Self.closeIconSlack)
 
-      MainMenuRow(
-        title: String(localized: "mainMenu.feedback", defaultValue: "Feedback", comment: "Main-menu row that opens a pre-addressed feedback email."),
-        iconName: "MainMenuFeedbackIcon"
-      ) {
-        analytics.track(AnalyticsEvent.feedbackTapped)
-        var components = URLComponents()
-        components.scheme = "mailto"
-        components.path = "jimmyho.appfeedback@gmail.com"
-        components.queryItems = [
-          URLQueryItem(
-            name: "subject",
-            value: String(
-              localized: "mainMenu.feedback.mail.subject",
-              defaultValue: "Feedback for reChecklist App",
-              comment: "Subject line of the feedback email opened from the main menu. Keep the app name reChecklist verbatim."
-            )
-          ),
-          URLQueryItem(name: "body", value: feedbackBody),
-        ]
-        guard let url = components.url else { assertionFailure(); return }
-        openURL(url)
-      }
+      // Rows scroll under the pinned close button once they outgrow the panel: as the landscape side
+      // panel at the largest text sizes, three wrapped rows run taller than the screen.
+      ScrollView {
+        VStack(alignment: .leading, spacing: 16) {
+          MainMenuRow(
+            title: String(localized: "mainMenu.feedback", defaultValue: "Feedback", comment: "Main-menu row that opens a pre-addressed feedback email."),
+            iconName: "MainMenuFeedbackIcon"
+          ) {
+            analytics.track(AnalyticsEvent.feedbackTapped)
+            var components = URLComponents()
+            components.scheme = "mailto"
+            components.path = "jimmyho.appfeedback@gmail.com"
+            components.queryItems = [
+              URLQueryItem(
+                name: "subject",
+                value: String(
+                  localized: "mainMenu.feedback.mail.subject",
+                  defaultValue: "Feedback for reChecklist App",
+                  comment: "Subject line of the feedback email opened from the main menu. Keep the app name reChecklist verbatim."
+                )
+              ),
+              URLQueryItem(name: "body", value: feedbackBody),
+            ]
+            guard let url = components.url else { assertionFailure(); return }
+            openURL(url)
+          }
 
-      MainMenuRow(
-        title: String(localized: "mainMenu.rateInAppStore", defaultValue: "Rate in App Store", comment: "Main-menu row that opens the App Store review page."),
-        iconName: "MainMenuRateInAppStoreIcon"
-      ) {
-        analytics.track(AnalyticsEvent.rateAppTapped)
-        guard let url = URL(string: "https://itunes.apple.com/app/id1475724536?action=write-review")
-        else { assertionFailure(); return }
-        openURL(url)
-      }
+          MainMenuRow(
+            title: String(localized: "mainMenu.rateInAppStore", defaultValue: "Rate in App Store", comment: "Main-menu row that opens the App Store review page."),
+            iconName: "MainMenuRateInAppStoreIcon"
+          ) {
+            analytics.track(AnalyticsEvent.rateAppTapped)
+            guard let url = URL(string: "https://itunes.apple.com/app/id1475724536?action=write-review")
+            else { assertionFailure(); return }
+            openURL(url)
+          }
 
-      MainMenuRow(
-        title: CommonStrings.settingsTitle,
-        iconName: "MainMenuSettingsIcon"
-      ) {
-        // The menu must vanish instantly here so it isn't still animating out behind the
-        // Settings sheet coming up.
-        var transaction = Transaction()
-        transaction.disablesAnimations = true
-        withTransaction(transaction) {
-          router.isMainMenuVisible = false
+          MainMenuRow(
+            title: CommonStrings.settingsTitle,
+            iconName: "MainMenuSettingsIcon"
+          ) {
+            // The menu must vanish instantly here so it isn't still animating out behind the
+            // Settings sheet coming up.
+            var transaction = Transaction()
+            transaction.disablesAnimations = true
+            withTransaction(transaction) {
+              router.isMainMenuVisible = false
+            }
+            router.sheet = .settings
+          }
+          // Locale-invariant handle for the localized large-type check.
+          .accessibilityIdentifier("mainMenu.settings")
         }
-        router.sheet = .settings
       }
-      // Locale-invariant handle for the localized large-type check.
-      .accessibilityIdentifier("mainMenu.settings")
-
-      Spacer()
+      .scrollBounceBehavior(.basedOnSize)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     .onGeometryChange(for: CGSize.self) { $0.containerCornerInsets.topLeading } action: {
