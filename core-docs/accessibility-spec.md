@@ -79,9 +79,12 @@ category stops it without shrinking the symbol below its default size; the
 header's status ring, which stays 24pt; and fixed margins.
 
 **SwiftUI screens** use semantic font tokens, but several layouts break at the accessibility sizes
-and are still open under **#183**: one-line checklist names and a fixed 20pt ring in
-`ChecklistRowView`, and fixed side-by-side rows in `MainMenuView`, `SettingsView` and `ToastView`.
-Don't fix piecemeal in unrelated PRs.
+and are still open under **#183**: fixed side-by-side rows in `MainMenuView`, `SettingsView` and
+`ToastView`. Don't fix piecemeal in unrelated PRs.
+
+`ChecklistRowView` wraps a checklist's name rather than truncating it; its notes stay a three-line
+preview. The status ring grows with the name's `.headline` to at most 1.5× (30pt, from AX1), so
+it never crowds the name, and stays centred on the name's first line.
 
 `AnalyticsConsentSheet` and `ContainerFailureView` scroll once their content outgrows the screen, so
 their buttons stay reachable at every size; the consent sheet's two buttons stay pinned below its

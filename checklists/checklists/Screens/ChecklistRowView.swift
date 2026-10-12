@@ -14,18 +14,19 @@ import SwiftUI
 struct ChecklistRowView: View {
   let checklist: Checklist
 
+  /// Where the ring stops growing: 30pt, reached at AX1. Beyond that a ring sized to the
+  /// name would crowd it, taking width the name needs at the largest sizes.
+  static let maximumRingScale: CGFloat = 1.5
+
+  @ScaledMetric(relativeTo: .headline) private var ringScale: CGFloat = 1.0
+
   var body: some View {
     VStack(alignment: .leading, spacing: 8) {
-      HStack(spacing: 7) {
+      HStack(alignment: .firstTextBaseline, spacing: 7) {
         // Deliberately 7, not the standard 8: keeps the ring tight against the name.
-        StatusIconView(percentageComplete: checklist.percentageComplete)
-          // See `CircularPercentStatusIcon.accessibilityValueText` for why the row states this.
-          .accessibilityValue(
-            CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: checklist.percentageComplete)
-          )
+        ring
         Text(checklist.name)
           .font(.headline)
-          .lineLimit(1)
       }
 
       if let notes = checklist.notes, !notes.isEmpty {
@@ -37,6 +38,24 @@ struct ChecklistRowView: View {
           .accessibilityIdentifier("checklistNotesLabel")
       }
     }
+  }
+
+  /// The ring, laid over one invisible line of the name's font. The line gives the ring the name's
+  /// first baseline, so the stack centres it on the first line however many lines the name wraps to.
+  /// The cap keeps the ring inside that line's height at every size.
+  private var ring: some View {
+    let scale = min(ringScale, Self.maximumRingScale)
+    return Text(verbatim: " ")
+      .font(.headline)
+      .hidden()
+      .frame(width: CircularPercentStatusIcon.diameter(for: .row, scale: scale))
+      .overlay {
+        StatusIconView(percentageComplete: checklist.percentageComplete, scale: scale)
+          // See `CircularPercentStatusIcon.accessibilityValueText` for why the row states this.
+          .accessibilityValue(
+            CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: checklist.percentageComplete)
+          )
+      }
   }
 }
 
@@ -54,5 +73,15 @@ struct ChecklistRowView: View {
   #Preview("Nearly done") {
     ChecklistRowView(checklist: PreviewSupport.checklist(id: SampleData.morningRoutineId))
       .padding()
+  }
+
+  // A long name and long notes, for checking the wrap and the ring with the canvas's Dynamic Type
+  // control.
+  #Preview("Long name and notes") {
+    ScrollView {
+      ChecklistRowView(checklist: PreviewSupport.longContentChecklist())
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+    }
   }
 #endif
