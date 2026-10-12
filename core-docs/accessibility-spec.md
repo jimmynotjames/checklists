@@ -12,7 +12,7 @@
 | **VoiceOver labels/values** | Partial | Every interactive control is labelled; the remaining VoiceOver gaps are **#278**. Checklists, and the items inside a checklist, reorder by Move Up/Down/to Top/to Bottom actions on each row, since neither `.onMove` nor the item table's drag handles and long-press drag offer VoiceOver a way to move a row. On item rows the actions sit on the checkbox and both text views, the elements VoiceOver lands on, and outside Reorder Items mode they add Duplicate and Delete, since the swipe actions belong to the cell. Each item's checkbox reads its status, then the item's name, or "Checkbox" when the name is blank — §Label vs. value |
 | **VoiceOver traits** | Partial | `ChecklistHistoryCaption` sets `.staticText`; `MainMenuView` sets `.isModal`, since on a wide window it is a side panel with the list still on screen beside it, and closes on the escape gesture; VoiceOver moves to its Close button when it opens and back to ☰ when it closes. In Reorder Items mode each checkbox is disabled, so it reads as dimmed; everything else relies on platform defaults |
 | **Reduce Motion** | Implemented | Every app-authored animation has a recorded verdict — §Animation and Reduce Motion |
-| **Dynamic Type** | Partial | Every screen scales through AX5; the main menu still breaks as a landscape side panel, a live size change has not been checked on a device, and the screenshot audit has never captured an AX size — §Dynamic Type, **#183**. From two steps above the default text size (xxLarge) the list's Reset All and Edit mode toolbar collapse to icons, so long translations neither push Edit into an overflow menu nor clip the toolbar; they keep their names for VoiceOver and the Large Content Viewer |
+| **Dynamic Type** | Partial | Every screen scales through AX5 with no known layout breaks; a live size change has not been checked on a device, and the screenshot audit has never captured an AX size — §Dynamic Type, **#183**. From two steps above the default text size (xxLarge) the list's Reset All and Edit mode toolbar collapse to icons, so long translations neither push Edit into an overflow menu nor clip the toolbar; they keep their names for VoiceOver and the Large Content Viewer |
 | **Dark Mode** | Not started | The app is locked to Light appearance in `Info.plist` — **#180** |
 | **Increase Contrast** | Not started | **#182** |
 | **Touch targets (44×44)** | Implemented | `ToastView`, `CopyCheckedItemsView`, `MainMenuView`'s close button, the checklist header's name and notes fields, and each item's name and notes fields enforce a 44pt minimum, and `ChecklistsView`'s last row scrolls clear of the Add button. A toast may sit over rows while it is up, by design: a tap anywhere on it dismisses it |
@@ -78,11 +78,11 @@ accepted: neither turning off the button's accessibility image scaling nor cappi
 category stops it without shrinking the symbol below its default size; the
 header's status ring, which stays 24pt; and fixed margins.
 
-**SwiftUI screens** use semantic font tokens, and their rows wrap cleanly through AX5 in portrait.
-Settings row icons are SF Symbols, so they grow with their text; the main menu's custom icons stay a
-fixed size. Still open under **#183**: `MainMenuView` doesn't scroll, so as the 360pt landscape side
-panel at AX5 its rows run out of height and truncate in long locales ("Einstellun…" in German). A
-toast with an action button is unchecked at AX sizes; no toast has one yet.
+**SwiftUI screens** use semantic font tokens, and their rows wrap rather than truncate. Settings row
+icons are SF Symbols, so they grow with their text; the main menu's custom icons stay a fixed size.
+`MainMenuView`'s rows scroll under its pinned close button once they outgrow the panel, as the
+landscape side panel does at AX5 in long locales. `ToastView` moves an action button under the
+message at accessibility sizes, where beside it the message would be left a few letters wide.
 
 `ChecklistRowView` wraps a checklist's name rather than truncating it; its notes stay a three-line
 preview. The status ring grows with the name's `.headline` to at most 1.5× (30pt, from AX1), so

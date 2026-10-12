@@ -17,8 +17,18 @@ struct ToastView: View {
   let onDismiss: () -> Void
   let onAction: () -> Void
 
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+  /// Beside the message at standard sizes; under it at accessibility sizes, where a side-by-side
+  /// action leaves the message a column a few letters wide.
+  private var layout: AnyLayout {
+    dynamicTypeSize.isAccessibilitySize
+      ? AnyLayout(VStackLayout(alignment: .trailing, spacing: 4))
+      : AnyLayout(HStackLayout(spacing: 12))
+  }
+
   var body: some View {
-    HStack(spacing: 12) {
+    layout {
       HStack(spacing: 12) {
         Image(systemName: toast.style.symbolName)
           .font(.headline)
@@ -51,7 +61,8 @@ struct ToastView: View {
       }
     }
     .padding(.leading, 16)
-    .padding(.trailing, toast.action == nil ? 16 : 8)
+    // 8 beside a side-by-side action, whose 44pt minimum width already leaves room around "Undo".
+    .padding(.trailing, toast.action == nil || dynamicTypeSize.isAccessibilitySize ? 16 : 8)
     .padding(.vertical, 12)
     .background(
       RoundedRectangle(cornerRadius: 14, style: .continuous)
