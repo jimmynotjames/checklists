@@ -110,25 +110,6 @@ struct SampleDataDedupeTests {
 
   // MARK: - An edited copy beats a fresh seed
 
-  /// The reinstall case: the account's original was edited, and the fresh install's seed is the
-  /// redundant one. The edited copy is the user's data and must be the one kept.
-  @Test("an edited copy survives and the pristine copy goes when an item was renamed")
-  func editedCopyWinsWhenAnItemWasRenamed() throws {
-    let context = try TestModelContainer.makeContext()
-    try SampleData.seed(into: context)
-    try seedSecondCopy(into: context)
-
-    let edited = try #require(try context.fetchChecklistsSorted().first { $0.id == SampleData.morningRoutineId })
-    edited.items.first?.name = "Start the coffee maker, but louder"
-    try context.saveChanges(operation: .itemEdit)
-
-    try SampleData.dedupeChecklists(in: context)
-
-    let morningRoutines = try context.fetchChecklistsSorted().filter { $0.id == SampleData.morningRoutineId }
-    #expect(morningRoutines.count == 1)
-    #expect(morningRoutines.first === edited, "An edited copy is the user's data and must be kept.")
-  }
-
   /// Checking a box is the most likely edit of all, and must be enough to protect a copy.
   @Test("an edited copy survives and the pristine copy goes when checked states differ")
   func editedCopyWinsWhenCheckedStatesDiffer() throws {
@@ -164,6 +145,27 @@ struct SampleDataDedupeTests {
   }
 
   // MARK: - What it must refuse to touch
+
+  /// A copy that differs only in text — which is also how a copy seeded in another language looks —
+  /// is not proof of an edit. Both copies are kept: treating it as an edit would let two devices in
+  /// different languages each delete their own copy and leave none.
+  @Test("keeps both copies when one differs only in text")
+  func keepsBothWhenOneDiffersOnlyInText() throws {
+    let context = try TestModelContainer.makeContext()
+    try SampleData.seed(into: context)
+    try seedSecondCopy(into: context)
+
+    let otherText = try #require(try context.fetchChecklistsSorted().first { $0.id == SampleData.morningRoutineId })
+    otherText.name = "Routine du matin"
+    for item in otherText.items {
+      item.name = "Autre langue"
+    }
+    try context.saveChanges(operation: .itemEdit)
+
+    try SampleData.dedupeChecklists(in: context)
+
+    #expect(try context.fetchChecklistsSorted().count(where: { $0.id == SampleData.morningRoutineId }) == 2)
+  }
 
   /// Two edited copies are both the user's data; there is no telling which one they meant to keep.
   @Test("keeps both copies when both were edited")

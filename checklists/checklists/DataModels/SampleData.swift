@@ -120,15 +120,17 @@ enum SampleData {
    import arrives. A reinstall, a second device, or two devices racing on day one therefore leave the
    account holding two or more copies of a sample.
 
-   **The rule, per sample id.** A copy is *pristine* when it is identical to the fixture —
-   name, notes, item names, item notes, checked states, order. Every other copy is kept. Pristine
-   copies are deleted whenever a non-pristine copy exists (the user's own edited original wins over a
-   fresh seed); otherwise all but one elected survivor are deleted.
+   **The rule, per sample id.** A copy is *pristine* when it is identical to the fixture — name,
+   notes, item names, item notes, checked states, order. A copy is *edited* when its item count or
+   checked states differ from the fixture. Pristine copies are deleted whenever an edited copy exists
+   (the user's own original wins over a fresh seed); otherwise all but one elected survivor are
+   deleted. Nothing else is ever deleted.
 
-   **Why it is safe.** Only a copy identical to the fixture is ever deleted, so dropping one loses
-   nothing. That holds only for the *current* language: the fixture is resolved at call time, so a
-   copy seeded in another language never matches and is always kept. That is deliberate — two
-   samples in different languages are rare and cosmetic, and keeping both is the cheaper failure.
+   **Why "edited" ignores text.** The fixture is resolved in the current language, so a copy seeded
+   in another language never matches it. Judging edits by text would let two devices in different
+   languages each see the other's copy as edited and delete their own, leaving none. Item count and
+   checked states are the same in every language, so such copies are simply both kept — rare and
+   cosmetic. So is a copy whose only edit is to text: it is kept beside the pristine one.
 
    It cannot reach a user's own checklists: those carry random per-device ids that never collide.
    In particular this does **not** touch the two-device *upgrade* case, where each device's imported
@@ -138,8 +140,13 @@ enum SampleData {
    before another's deletion has synced. If they disagreed about which copy to keep they would delete
    one each and the user would end up with none. The copies are identical, but their *items* carry
    random ids, so the sorted item-id fingerprint differs between copies and reads the same on every
-   device. The lowest one is never deleted unless a non-pristine copy exists, and non-pristine copies
-   are never deleted, so every device converges and at least one copy always remains.
+   device, and every device elects the same survivor.
+
+   **The one gap.** Devices judge from what they have synced so far. If, during a day-one race, the
+   user edits one fresh copy before the other device has seen that edit, one device deletes the
+   other copy because of the edit while the other deletes the edited copy as a non-survivor, and
+   that sample is lost with the edit. It needs two fresh installs and an edit within seconds;
+   closing it would cost a deferred second pass, which it is not worth.
    */
   @MainActor
   static func dedupeChecklists(in context: ModelContext) throws {
@@ -152,7 +159,7 @@ enum SampleData {
     for fixture in fixtures {
       let copies = stored.filter { $0.id == fixture.id }
       let pristine = copies.filter { matchesPristineFixture($0, fixture) }
-      let anyEdited = pristine.count < copies.count
+      let anyEdited = copies.contains { isEditedByStructure($0, fixture) }
       let survivor = anyEdited ? nil : pristine.min { itemFingerprint(of: $0) < itemFingerprint(of: $1) }
       for duplicate in pristine where duplicate !== survivor {
         context.delete(duplicate)
@@ -165,6 +172,14 @@ enum SampleData {
     guard didDelete else { return }
     AppLog.persistence.notice("dedupe: removed redundant untouched sample checklists.")
     try context.saveChanges(operation: .dedupe)
+  }
+
+  /// True when `checklist` has items added, removed, checked or unchecked relative to `fixture` —
+  /// differences that read the same in every language, unlike its text.
+  private static func isEditedByStructure(_ checklist: Checklist, _ fixture: ChecklistFixture) -> Bool {
+    let items = checklist.items
+    guard items.count == fixture.items.count else { return true }
+    return zip(items, fixture.items).contains { item, expected in (item.status == .checked) != expected.isChecked }
   }
 
   /// True when `checklist` is exactly as this app seeded it — nothing added, removed, renamed,

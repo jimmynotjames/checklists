@@ -46,10 +46,9 @@ struct ChecklistsView: View {
   /// notification in its initializer.
   @State private var remoteChangeObserver: RemoteChangeObserver?
 
-  /// The checklist the delete confirmation is currently about, held by `id` rather than by
-  /// row or by model reference. See `ModelContext.deleteChecklists(ids:)`.
-  /// The swiped row's own record, not its `id`: two records can share an `id` until sample dedupe
-  /// runs, and deleting by `id` could take the other one.
+  /// The checklist the delete confirmation is currently about: the swiped row's own record, not its
+  /// `id`, since two records can share an `id` until sample dedupe runs and deleting by `id` could
+  /// take the other one. See `ModelContext.deleteChecklists(_:)`.
   @State private var pendingDeleteID: PersistentIdentifier?
 
   @State private var showsResetAllConfirmation = false
@@ -205,9 +204,9 @@ struct ChecklistsView: View {
         selection.removeAll()
       }
     }
-    .alert(Text(verbatim: ""), isPresented: isPresentingDeleteConfirmation, presenting: pendingDeleteID) { checklistId in
+    .alert(Text(verbatim: ""), isPresented: isPresentingDeleteConfirmation, presenting: pendingDeleteID) { persistentID in
       Button(CommonStrings.delete, role: .destructive) {
-        confirmDelete(id: checklistId)
+        confirmDelete(persistentID)
       }
       Button(CommonStrings.cancel, role: .cancel) {}
     } message: { _ in
@@ -232,7 +231,7 @@ struct ChecklistsView: View {
     .task {
       guard remoteChangeObserver == nil else { return }
       // `@Query` already reloads on remote changes; this observer exists only to run the dedupe
-      // when another device's duplicate sample lands.
+      // when the account's copy of a sample lands.
       remoteChangeObserver = RemoteChangeObserver {
         try? SampleData.dedupeChecklists(in: context)
       }
@@ -485,9 +484,10 @@ struct ChecklistsView: View {
     )
   }
 
-  private func confirmDelete(id checklistId: PersistentIdentifier) {
-    // `0` means it is already gone — deleted on another device while the alert was up.
-    guard context.deleteChecklists([checklistId]) > 0 else { return }
+  private func confirmDelete(_ persistentID: PersistentIdentifier) {
+    // `0` means that record is already gone while the alert was up — deleted on another device, or
+    // removed by sample dedupe. Its twin, if any, is deliberately left alone.
+    guard context.deleteChecklists([persistentID]) > 0 else { return }
     analytics.track(AnalyticsEvent.checklistDeleted)
   }
 
