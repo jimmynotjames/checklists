@@ -62,7 +62,12 @@ struct AnalyticsConsentSheet: View {
         .accessibilityElement(children: .combine)
 
         Spacer()
-
+      }
+      .padding(.horizontal, 24)
+      .scrollsWhenTooTall()
+      // Pinned below the scrolling text, so both choices stay on screen at every text size; at the
+      // largest sizes the text scrolls under them.
+      .safeAreaInset(edge: .bottom) {
         VStack(spacing: 12) {
           Button {
             controller.accept()
@@ -99,10 +104,11 @@ struct AnalyticsConsentSheet: View {
             comment: "VoiceOver hint for the decline button on the analytics consent sheet."
           ))
         }
+        .padding(.horizontal, 24)
+        .padding(.top, 12)
+        .padding(.bottom, 32)
+        .background(Colors.defaultBackgroundColor.ignoresSafeArea())
       }
-      .padding(.horizontal, 24)
-      .padding(.bottom, 32)
-      .scrollsWhenTooTall()
       .appBackground()
       .navigationBarTitleDisplayMode(.inline)
     }
