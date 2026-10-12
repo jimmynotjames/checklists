@@ -15,27 +15,24 @@ import UIKit
 struct StatusIconView: UIViewRepresentable {
   var percentageComplete: CGFloat
   var iconType: CircularPercentStatusIcon.IconType = .row
+  /// Multiplies the icon's size; see `CircularPercentStatusIcon.scale`.
+  var scale: CGFloat = 1.0
 
   func makeUIView(context _: Context) -> CircularPercentStatusIcon {
     let icon = CircularPercentStatusIcon(iconType: iconType)
+    icon.scale = scale
     icon.percentageComplete = percentageComplete
     return icon
   }
 
   func updateUIView(_ uiView: CircularPercentStatusIcon, context _: Context) {
+    uiView.scale = scale
     uiView.percentageComplete = percentageComplete
   }
 
   func sizeThatFits(_: ProposedViewSize, uiView _: CircularPercentStatusIcon, context _: Context) -> CGSize? {
-    // Matches CircularPercentStatusIcon.configureDimensions: 2 * radius per variant.
-    // The radii themselves (10.0 / 12.0) are private to that class, so they're hardcoded
-    // here rather than referenced — keep these in sync if configureDimensions changes.
-    switch iconType {
-    case .row:
-      CGSize(width: 20, height: 20)
-    case .header:
-      CGSize(width: 24, height: 24)
-    }
+    let diameter = CircularPercentStatusIcon.diameter(for: iconType, scale: scale)
+    return CGSize(width: diameter, height: diameter)
   }
 }
 
@@ -46,6 +43,16 @@ struct StatusIconView: UIViewRepresentable {
       StatusIconView(percentageComplete: 0.33)
       StatusIconView(percentageComplete: 0.83)
       StatusIconView(percentageComplete: 1)
+    }
+    .padding()
+  }
+
+  #Preview("Row, scaled 1.5x") {
+    HStack {
+      StatusIconView(percentageComplete: 0, scale: 1.5)
+      StatusIconView(percentageComplete: 0.33, scale: 1.5)
+      StatusIconView(percentageComplete: 0.83, scale: 1.5)
+      StatusIconView(percentageComplete: 1, scale: 1.5)
     }
     .padding()
   }

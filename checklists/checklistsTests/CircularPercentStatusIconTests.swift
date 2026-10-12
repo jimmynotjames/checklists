@@ -105,7 +105,27 @@ struct CircularPercentStatusIconTests {
     #expect(size == CGSize(width: 24.0, height: 24.0)) // radius 12.0
   }
 
-  // No test mutates `iconType` on a live instance: without a window, `systemLayoutSizeFitting`
-  // doesn't reliably re-solve after `setNeedsUpdateConstraints()` — a harness limitation, not a
-  // product bug.
+  @Test("diameter(for:scale:) matches the laid-out size")
+  func diameterMatchesLaidOutSize() {
+    #expect(CircularPercentStatusIcon.diameter(for: .row) == 20.0)
+    #expect(CircularPercentStatusIcon.diameter(for: .header) == 24.0)
+    #expect(CircularPercentStatusIcon.diameter(for: .row, scale: 1.5) == 30.0)
+  }
+
+  /// `StatusIconView` resizes a live icon as the text size changes. The icon must swap its size
+  /// constraints rather than add a second pair, which would conflict with the first.
+  @Test("changing scale on a live icon resizes it and keeps one pair of size constraints")
+  func changingScaleReplacesSizeConstraints() {
+    let icon = CircularPercentStatusIcon(iconType: .row)
+    icon.updateConstraintsIfNeeded()
+    icon.scale = 1.5
+    icon.updateConstraintsIfNeeded()
+
+    let sizeConstraints = icon.constraints.filter {
+      $0.firstItem === icon && ($0.firstAttribute == .width || $0.firstAttribute == .height)
+    }
+    #expect(sizeConstraints.count == 2)
+    #expect(sizeConstraints.allSatisfy { $0.constant == 30.0 })
+    #expect(icon.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize) == CGSize(width: 30.0, height: 30.0))
+  }
 }

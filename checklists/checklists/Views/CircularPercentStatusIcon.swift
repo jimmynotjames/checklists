@@ -16,10 +16,27 @@ class CircularPercentStatusIcon: UIView {
   }
 
   var iconType: IconType {
+    didSet { applyDimensions() }
+  }
+
+  /// Multiplies the icon's size, ring and all. `StatusIconView` sets it from the text size so the
+  /// ring keeps pace with a checklist's name; the header leaves it at 1.
+  var scale: CGFloat = 1.0 {
     didSet {
-      configureDimensions(iconType: iconType)
-      setNeedsUpdateConstraints()
-      setNeedsDisplay()
+      guard scale != oldValue else { return }
+      applyDimensions()
+    }
+  }
+
+  /// The icon's width and height for a type at a scale: twice its radius.
+  static func diameter(for iconType: IconType, scale: CGFloat = 1.0) -> CGFloat {
+    2 * baseRadius(for: iconType) * scale
+  }
+
+  private static func baseRadius(for iconType: IconType) -> CGFloat {
+    switch iconType {
+    case .row: 10.0
+    case .header: 12.0
     }
   }
 
@@ -63,13 +80,14 @@ class CircularPercentStatusIcon: UIView {
   required init(iconType: IconType) {
     self.iconType = iconType
     super.init(frame: .zero)
-    configureDimensions(iconType: iconType)
+    configureDimensions()
     commonInit()
   }
 
   override func updateConstraints() {
     NSLayoutConstraint.deactivate(heightWidthAnchorConstraints)
-    NSLayoutConstraint.activate([heightAnchor.constraint(equalToConstant: 2 * radius), widthAnchor.constraint(equalToConstant: 2 * radius)])
+    heightWidthAnchorConstraints = [heightAnchor.constraint(equalToConstant: 2 * radius), widthAnchor.constraint(equalToConstant: 2 * radius)]
+    NSLayoutConstraint.activate(heightWidthAnchorConstraints)
     super.updateConstraints()
   }
 
@@ -80,7 +98,7 @@ class CircularPercentStatusIcon: UIView {
   required init?(coder aDecoder: NSCoder) {
     iconType = .header
     super.init(coder: aDecoder)
-    configureDimensions(iconType: iconType)
+    configureDimensions()
     commonInit()
   }
 
@@ -110,17 +128,26 @@ class CircularPercentStatusIcon: UIView {
     layer.addSublayer(innerPercentCircleLayer)
   }
 
-  private func configureDimensions(iconType: IconType) {
+  private func configureDimensions() {
+    radius = Self.baseRadius(for: iconType) * scale
     switch iconType {
     case .row:
-      radius = 10.0
-      innerRadius = 7.5
-      outerRingLineWidth = 0.5
+      innerRadius = 7.5 * scale
+      outerRingLineWidth = 0.5 * scale
     case .header:
-      radius = 12.0
-      innerRadius = 9.5
-      outerRingLineWidth = 1.0
+      innerRadius = 9.5 * scale
+      outerRingLineWidth = 1.0 * scale
     }
+  }
+
+  /// Re-derives everything sized from the radius after `iconType` or `scale` changes.
+  private func applyDimensions() {
+    configureDimensions()
+    layer.borderWidth = outerRingLineWidth
+    layer.cornerRadius = radius
+    setInnerCircle(percentageComplete: percentageComplete)
+    invalidateIntrinsicContentSize()
+    setNeedsUpdateConstraints()
   }
 
   private func setInnerCircle(percentageComplete: CGFloat) {
