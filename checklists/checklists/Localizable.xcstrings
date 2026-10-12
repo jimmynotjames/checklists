@@ -2,7 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     "checkbox.accessibilityLabel" : {
-      "comment" : "VoiceOver label of the tick box on each checklist item row.",
+      "comment" : "Stands in for the item name in the checkbox's VoiceOver label when the item has no name, as in \"Unchecked, Checkbox\".",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -306,612 +306,612 @@
         }
       }
     },
-    "checkbox.value.checked" : {
-      "comment" : "VoiceOver value of a ticked checklist item's checkbox.",
+    "checkbox.accessibilityLabel.checked" : {
+      "comment" : "VoiceOver label of a ticked checklist item's checkbox. The placeholder is the item's name. Keep the status first, so a listener hears it before a long name.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "محدد"
+            "value" : "محدد، %@"
           }
         },
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "চেক করা"
+            "value" : "চেক করা, %@"
           }
         },
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Marcat"
+            "value" : "Marcat, %@"
           }
         },
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zaškrtnuto"
+            "value" : "Zaškrtnuto, %@"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afkrydset"
+            "value" : "Afkrydset, %@"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abgehakt"
+            "value" : "Abgehakt, %@"
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Επιλεγμένο"
+            "value" : "Επιλεγμένο, %@"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Checked"
+            "value" : "Checked, %@"
           }
         },
         "en-AU" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ticked"
+            "value" : "Ticked, %@"
           }
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Checked"
+            "value" : "Checked, %@"
           }
         },
         "en-GB" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ticked"
+            "value" : "Ticked, %@"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Marcado"
+            "value" : "Marcado, %@"
           }
         },
         "es-MX" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Marcado"
+            "value" : "Marcado, %@"
           }
         },
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Merkitty"
+            "value" : "Merkitty, %@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coché"
+            "value" : "Coché, %@"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coché"
+            "value" : "Coché, %@"
           }
         },
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ચેક કરેલ"
+            "value" : "ચેક કરેલ, %@"
           }
         },
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "מסומן"
+            "value" : "מסומן, %@"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "चेक किया गया"
+            "value" : "चेक किया गया, %@"
           }
         },
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Označeno"
+            "value" : "Označeno, %@"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bejelölt"
+            "value" : "Bejelölt, %@"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dicentang"
+            "value" : "Dicentang, %@"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spuntato"
+            "value" : "Spuntato, %@"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "チェック済み"
+            "value" : "チェック済み、%@"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಗುರುತಿಸಲಾಗಿದೆ"
+            "value" : "ಗುರುತಿಸಲಾಗಿದೆ, %@"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "체크됨"
+            "value" : "체크됨, %@"
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ചെക്ക് ചെയ്‌തത്"
+            "value" : "ചെക്ക് ചെയ്‌തത്, %@"
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "चेक केलेले"
+            "value" : "चेक केलेले, %@"
           }
         },
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ditanda"
+            "value" : "Ditanda, %@"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avkrysset"
+            "value" : "Avkrysset, %@"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afgevinkt"
+            "value" : "Afgevinkt, %@"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଚେକ୍ କରାଯାଇଛି"
+            "value" : "ଚେକ୍ କରାଯାଇଛି, %@"
           }
         },
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਚੈੱਕ ਕੀਤਾ"
+            "value" : "ਚੈੱਕ ਕੀਤਾ, %@"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zaznaczone"
+            "value" : "Zaznaczone, %@"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Marcado"
+            "value" : "Marcado, %@"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Assinalado"
+            "value" : "Assinalado, %@"
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bifat"
+            "value" : "Bifat, %@"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Отмечено"
+            "value" : "Отмечено, %@"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zaškrtnuté"
+            "value" : "Zaškrtnuté, %@"
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Označeno"
+            "value" : "Označeno, %@"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Markerad"
+            "value" : "Markerad, %@"
           }
         },
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "தேர்வுசெய்யப்பட்டது"
+            "value" : "தேர்வுசெய்யப்பட்டது, %@"
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "చెక్ చేయబడింది"
+            "value" : "చెక్ చేయబడింది, %@"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ทำเครื่องหมายแล้ว"
+            "value" : "ทำเครื่องหมายแล้ว, %@"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İşaretli"
+            "value" : "İşaretli, %@"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Позначено"
+            "value" : "Позначено, %@"
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "چیک شدہ"
+            "value" : "چیک شدہ، %@"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã đánh dấu"
+            "value" : "Đã đánh dấu, %@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已勾选"
+            "value" : "已勾选，%@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已勾選"
+            "value" : "已勾選，%@"
           }
         }
       }
     },
-    "checkbox.value.unchecked" : {
-      "comment" : "VoiceOver value of an unticked checklist item's checkbox.",
+    "checkbox.accessibilityLabel.unchecked" : {
+      "comment" : "VoiceOver label of an unticked checklist item's checkbox. The placeholder is the item's name. Keep the status first, so a listener hears it before a long name.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "غير محدد"
+            "value" : "غير محدد، %@"
           }
         },
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "চেক না করা"
+            "value" : "চেক না করা, %@"
           }
         },
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Desmarcat"
+            "value" : "Desmarcat, %@"
           }
         },
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nezaškrtnuto"
+            "value" : "Nezaškrtnuto, %@"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ikke afkrydset"
+            "value" : "Ikke afkrydset, %@"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nicht abgehakt"
+            "value" : "Nicht abgehakt, %@"
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Μη επιλεγμένο"
+            "value" : "Μη επιλεγμένο, %@"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unchecked"
+            "value" : "Unchecked, %@"
           }
         },
         "en-AU" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unticked"
+            "value" : "Unticked, %@"
           }
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unchecked"
+            "value" : "Unchecked, %@"
           }
         },
         "en-GB" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unticked"
+            "value" : "Unticked, %@"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Desmarcado"
+            "value" : "Desmarcado, %@"
           }
         },
         "es-MX" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sin marcar"
+            "value" : "Sin marcar, %@"
           }
         },
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Merkitsemätön"
+            "value" : "Merkitsemätön, %@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Non coché"
+            "value" : "Non coché, %@"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Non coché"
+            "value" : "Non coché, %@"
           }
         },
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "અનચેક કરેલ"
+            "value" : "અનચેક કરેલ, %@"
           }
         },
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "לא מסומן"
+            "value" : "לא מסומן, %@"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "चेक नहीं किया गया"
+            "value" : "चेक नहीं किया गया, %@"
           }
         },
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Neoznačeno"
+            "value" : "Neoznačeno, %@"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nem bejelölt"
+            "value" : "Nem bejelölt, %@"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tidak dicentang"
+            "value" : "Tidak dicentang, %@"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Non spuntato"
+            "value" : "Non spuntato, %@"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "未チェック"
+            "value" : "未チェック、%@"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಗುರುತಿಸಲಾಗಿಲ್ಲ"
+            "value" : "ಗುರುತಿಸಲಾಗಿಲ್ಲ, %@"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "체크 안 됨"
+            "value" : "체크 안 됨, %@"
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ചെക്ക് ചെയ്യാത്തത്"
+            "value" : "ചെക്ക് ചെയ്യാത്തത്, %@"
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "चेक न केलेले"
+            "value" : "चेक न केलेले, %@"
           }
         },
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tidak ditanda"
+            "value" : "Tidak ditanda, %@"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ikke avkrysset"
+            "value" : "Ikke avkrysset, %@"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Niet afgevinkt"
+            "value" : "Niet afgevinkt, %@"
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଚେକ୍ କରାଯାଇନାହିଁ"
+            "value" : "ଚେକ୍ କରାଯାଇନାହିଁ, %@"
           }
         },
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਚੈੱਕ ਨਹੀਂ ਕੀਤਾ"
+            "value" : "ਚੈੱਕ ਨਹੀਂ ਕੀਤਾ, %@"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Niezaznaczone"
+            "value" : "Niezaznaczone, %@"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Desmarcado"
+            "value" : "Desmarcado, %@"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Não assinalado"
+            "value" : "Não assinalado, %@"
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nebifat"
+            "value" : "Nebifat, %@"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не отмечено"
+            "value" : "Не отмечено, %@"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nezaškrtnuté"
+            "value" : "Nezaškrtnuté, %@"
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Neoznačeno"
+            "value" : "Neoznačeno, %@"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inte markerad"
+            "value" : "Inte markerad, %@"
           }
         },
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "தேர்வுசெய்யப்படாதது"
+            "value" : "தேர்வுசெய்யப்படாதது, %@"
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "చెక్ చేయబడలేదు"
+            "value" : "చెక్ చేయబడలేదు, %@"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ไม่ได้ทำเครื่องหมาย"
+            "value" : "ไม่ได้ทำเครื่องหมาย, %@"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İşaretsiz"
+            "value" : "İşaretsiz, %@"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не позначено"
+            "value" : "Не позначено, %@"
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "غیر چیک شدہ"
+            "value" : "غیر چیک شدہ، %@"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chưa đánh dấu"
+            "value" : "Chưa đánh dấu, %@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "未勾选"
+            "value" : "未勾选，%@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "未勾選"
+            "value" : "未勾選，%@"
           }
         }
       }
