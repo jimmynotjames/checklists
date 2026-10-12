@@ -25,6 +25,10 @@ protocol ItemContentViewDelegate: AnyObject {
 }
 
 class ItemContentView: UIView {
+  private static let nameTextStyle: UIFont.TextStyle = .title2
+  /// The name field's top inset: the row's top margin, inside the field.
+  private static let nameTopInset: CGFloat = 10.0
+
   var item: Item? {
     didSet {
       if let item {
@@ -59,9 +63,10 @@ class ItemContentView: UIView {
   private lazy var nameTextView: CLTextView = {
     let textView = CLTextView()
     textView.delegate = self
-    textView.font = UIFont.systemFont(ofSize: 22.0, weight: .regular)
+    textView.font = .preferredFont(forTextStyle: Self.nameTextStyle)
+    textView.adjustsFontForContentSizeCategory = true
     // The row's top margin and the gap down to the notes, inside the field rather than around it.
-    textView.textContainerInset = UIEdgeInsets(top: 10.0, left: 0.0, bottom: 8.0, right: 0.0)
+    textView.textContainerInset = UIEdgeInsets(top: Self.nameTopInset, left: 0.0, bottom: 8.0, right: 0.0)
     textView.inputAccessoryButtonTappedAction = {
       textView.resignFirstResponder()
     }
@@ -78,7 +83,8 @@ class ItemContentView: UIView {
   private lazy var notesTextView: CLTextView = {
     let textView = CLTextView()
     textView.placeholderText = CommonStrings.notesPlaceholder
-    textView.font = UIFont.systemFont(ofSize: 15.0)
+    textView.font = .preferredFont(forTextStyle: .subheadline)
+    textView.adjustsFontForContentSizeCategory = true
     // The row's bottom margin, inside the field rather than below it; see `containerBottomConstraint`.
     textView.textContainerInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 4.0, right: 0.0)
     textView.inputAccessoryButtonTappedAction = {
@@ -100,7 +106,26 @@ class ItemContentView: UIView {
   private lazy var notesTextViewHeightConstraint: NSLayoutConstraint = notesTextView.heightAnchor.constraint(equalToConstant: 0.0)
   /// The row's bottom margin while the notes field is hidden. A shown notes field takes it as its
   /// bottom inset instead, so it stays tappable.
-  private lazy var containerBottomConstraint: NSLayoutConstraint = bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: notesTextView.textContainerInset.bottom)
+  ///
+  /// Below required, so a checkbox taller than the text it sits beside can push the row down past it.
+  private lazy var containerBottomConstraint: NSLayoutConstraint = {
+    let constraint = bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: notesTextView.textContainerInset.bottom)
+    constraint.priority = .defaultHigh
+    return constraint
+  }()
+
+  /// Holds the checkbox on the centre line of the name's first line, which moves with the text size.
+  /// Below required, so at small sizes, where that centre sits closer to the top than half the
+  /// checkbox, the checkbox stops at the row's top edge instead.
+  private lazy var checkboxCenterConstraint: NSLayoutConstraint = {
+    let constraint = checkboxButton.centerYAnchor.constraint(equalTo: nameTextView.topAnchor, constant: nameFirstLineCenterY)
+    constraint.priority = UILayoutPriority(999.0)
+    return constraint
+  }()
+
+  private var nameFirstLineCenterY: CGFloat {
+    Self.nameTopInset + UIFont.preferredFont(forTextStyle: Self.nameTextStyle, compatibleWith: traitCollection).lineHeight / 2.0
+  }
 
   private var wasInputFieldTapped: Bool = false
 
@@ -117,6 +142,11 @@ class ItemContentView: UIView {
     addSubview(checkboxButton) // checkbox needs to be in front due to overlapping tap targets, so prefer checkbox.
 
     installConstraints()
+
+    // The fonts rescale themselves; the checkbox's line-up has to be told.
+    registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (view: Self, _) in
+      view.checkboxCenterConstraint.constant = view.nameFirstLineCenterY
+    }
   }
 
   @available(*, unavailable)
@@ -195,7 +225,9 @@ class ItemContentView: UIView {
 
     NSLayoutConstraint.activate(
       [NSLayoutConstraint.constraints(withVisualFormat: "H:|-2-[checkboxButton]-(-4)-[containerView]-16-|", options: [], metrics: nil, views: views),
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|[checkboxButton]", options: [], metrics: nil, views: views),
+       [checkboxCenterConstraint,
+        checkboxButton.topAnchor.constraint(greaterThanOrEqualTo: topAnchor),
+        bottomAnchor.constraint(greaterThanOrEqualTo: checkboxButton.bottomAnchor)],
 
        [containerView.topAnchor.constraint(equalTo: topAnchor), containerBottomConstraint],
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameTextView][notesTextView]|", options: [], metrics: nil, views: views),
@@ -263,9 +295,13 @@ extension ItemContentView: UITextViewDelegate {
   import SwiftUI
 
   // The Weekend Getaway fixture's first four items cover every row state: unchecked, unchecked with
-  // notes, checked, checked with notes. The last row is the blank scratch row the add button leaves.
+  // notes, checked, checked with notes. Then a long name over a long note, to wrap both at large text
+  // sizes, and last the blank scratch row the add button leaves. Scrolls, so every row stays
+  // reachable at the accessibility sizes.
   #Preview("Row states") {
-    let items = Array(PreviewSupport.checklist(id: SampleData.weekendGetawayId).items.prefix(4)) + [Item()]
+    let fixtureItems = Array(PreviewSupport.checklist(id: SampleData.weekendGetawayId).items.prefix(4))
+    let longItem = Item(name: fixtureItems[2].name, notes: fixtureItems[1].notes)
+    let items = fixtureItems + [longItem, Item()]
     let stack = UIStackView(arrangedSubviews: items.map { item in
       let row = ItemContentView()
       row.item = item
@@ -274,13 +310,23 @@ extension ItemContentView: UITextViewDelegate {
     stack.axis = .vertical
     stack.translatesAutoresizingMaskIntoConstraints = false
 
+    let scrollView = UIScrollView()
+    scrollView.translatesAutoresizingMaskIntoConstraints = false
+    scrollView.addSubview(stack)
+
     let viewController = UIViewController()
     viewController.view.backgroundColor = .systemBackground
-    viewController.view.addSubview(stack)
+    viewController.view.addSubview(scrollView)
     NSLayoutConstraint.activate([
-      stack.topAnchor.constraint(equalTo: viewController.view.safeAreaLayoutGuide.topAnchor),
-      stack.leadingAnchor.constraint(equalTo: viewController.view.leadingAnchor),
-      stack.trailingAnchor.constraint(equalTo: viewController.view.trailingAnchor),
+      scrollView.topAnchor.constraint(equalTo: viewController.view.safeAreaLayoutGuide.topAnchor),
+      scrollView.bottomAnchor.constraint(equalTo: viewController.view.bottomAnchor),
+      scrollView.leadingAnchor.constraint(equalTo: viewController.view.leadingAnchor),
+      scrollView.trailingAnchor.constraint(equalTo: viewController.view.trailingAnchor),
+      stack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+      stack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+      stack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+      stack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+      stack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
     ])
     return viewController
   }

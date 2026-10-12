@@ -30,6 +30,27 @@ struct CheckboxButtonTests {
     #expect(button.bounds.contains(glyph.frame))
   }
 
+  @Test("grows with the text size, but no further than 60pt")
+  func tapTargetScalesWithACap() {
+    let button = CheckboxButton()
+    button.translatesAutoresizingMaskIntoConstraints = false
+    let container = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+    container.addSubview(button)
+    NSLayoutConstraint.activate([
+      button.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+      button.topAnchor.constraint(equalTo: container.topAnchor),
+    ])
+    let window = UIWindow(frame: container.frame)
+    window.addSubview(container)
+    window.traitOverrides.preferredContentSizeCategory = .accessibilityExtraExtraExtraLarge
+    container.layoutIfNeeded()
+    #expect(button.frame.size == CGSize(width: 60.0, height: 60.0))
+
+    window.traitOverrides.preferredContentSizeCategory = .extraSmall
+    container.layoutIfNeeded()
+    #expect(button.frame.size == CGSize(width: 48.0, height: 48.0), "Never smaller than the default tap target.")
+  }
+
   @Test("draws an image in both states")
   func imagesResolveInBothStates() {
     let button = CheckboxButton()

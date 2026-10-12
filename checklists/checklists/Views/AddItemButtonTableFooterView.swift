@@ -46,7 +46,8 @@ class AddItemButtonTableFooterView: UIView {
       [NSLayoutConstraint.constraints(withVisualFormat: "V:|[contentView]|", metrics: metrics, views: views),
        [contentView.leadingAnchor.constraint(equalTo: column.leadingAnchor, constant: 8.0),
         contentView.trailingAnchor.constraint(equalTo: column.trailingAnchor, constant: -8.0)],
-       NSLayoutConstraint.constraints(withVisualFormat: "V:|-spacing-[addButton(==buttonHeight)]-spacing-|", metrics: metrics, views: views),
+       // A floor: the button's title follows the text size, and the frame grows with it.
+       NSLayoutConstraint.constraints(withVisualFormat: "V:|-spacing-[addButton(>=buttonHeight)]-spacing-|", metrics: metrics, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|-spacing-[addButton]-spacing-|", metrics: metrics, views: views)].flatMap(\.self)
     )
     adjustFrameHeight()
@@ -58,12 +59,19 @@ class AddItemButtonTableFooterView: UIView {
   }
 
   /// `UITableView.tableFooterView` needs its frame height set manually for correct layout.
-  func adjustFrameHeight() {
-    guard
-      let spacing = metrics["spacing"],
-      let buttonHeight = metrics["buttonHeight"]
-    else { assertionFailure(); return }
-    frame.size.height = CGFloat(spacing * 2.0 + buttonHeight)
+  ///
+  /// - Returns: whether the height changed. The table reads a footer's height only when it is
+  ///   assigned, so on a change the caller reassigns it.
+  @discardableResult
+  func adjustFrameHeight() -> Bool {
+    let height = systemLayoutSizeFitting(
+      UIView.layoutFittingCompressedSize,
+      withHorizontalFittingPriority: .fittingSizeLevel,
+      verticalFittingPriority: .fittingSizeLevel
+    ).height
+    guard abs(height - frame.height) > 0.5 else { return false }
+    frame.size.height = height
+    return true
   }
 
   @objc func buttonTapped() {

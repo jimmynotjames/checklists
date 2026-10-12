@@ -340,8 +340,11 @@ struct ChecklistTimestampTests {
 
   // MARK: - Caption
 
-  @Test("the stated caption height covers what the caption actually renders")
-  func captionHeightCoversRenderedCaption() {
+  @Test(
+    "the stated caption height covers what the caption actually renders",
+    arguments: [UIContentSizeCategory.large, .accessibilityExtraExtraExtraLarge]
+  )
+  func captionHeightCoversRenderedCaption(textSize: UIContentSizeCategory) {
     // `ChecklistHistoryCaption.height` is what the header's constraint chain reserves. If it ever
     // undershoots, the table lays the first item underneath the header.
     let checklist = Checklist(name: "Packing")
@@ -349,6 +352,11 @@ struct ChecklistTimestampTests {
     checklist.recordCompletion(at: completedAt)
     let view = ChecklistHistoryCaption.makeView()
     ChecklistHistoryCaption.refresh(view, for: checklist)
+    // In a window, so the labels' fonts follow the overridden text size.
+    let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+    window.traitOverrides.preferredContentSizeCategory = textSize
+    window.addSubview(view)
+    view.layoutIfNeeded()
 
     // Roughly the header's content width on the narrowest supported phone.
     let rendered = view.systemLayoutSizeFitting(
@@ -356,7 +364,7 @@ struct ChecklistTimestampTests {
       withHorizontalFittingPriority: .required,
       verticalFittingPriority: .fittingSizeLevel
     ).height
-    #expect(ChecklistHistoryCaption.height >= rendered)
+    #expect(ChecklistHistoryCaption.height(compatibleWith: view.traitCollection) >= rendered)
   }
 
   @Test("neither caption line can be dropped, however long the other runs")

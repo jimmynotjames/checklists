@@ -58,7 +58,7 @@ struct ChecklistScreen: View {
     // still laid out inside the container safe area — leaving the strips above and below it showing
     // the presenting background rather than the table's own `Colors.defaultBackground`. Not a full
     // `ignoresSafeArea()`: giving the table real safe-area insets would shift `scrollViewDidScroll`'s
-    // hardcoded title threshold.
+    // title threshold.
     .background(Colors.defaultBackgroundColor.ignoresSafeArea())
     // First-run consent trigger (`analytics-spec.md §Strict-opt-in jurisdictions`): the moment
     // right before `checklist_name` could first be transmitted. `isNewChecklist` is load-bearing —
@@ -193,14 +193,24 @@ private final class ChecklistNavigationController: UINavigationController {
 }
 
 #if DEBUG
+  // Between them these cover every text element on the screen; step through the canvas's Dynamic
+  // Type sizes on each, and use the live preview to edit, enter Reorder Items mode, and scroll the
+  // name into the navigation bar.
+
   #Preview("Existing checklist") {
     ChecklistScreen(checklist: PreviewSupport.checklist()) {}
       .previewEnvironment()
   }
 
+  #Preview("Long name and notes") {
+    ChecklistScreen(checklist: PreviewSupport.longContentChecklist()) {}
+      .previewEnvironment(container: PreviewSupport.scratchContainer)
+  }
+
+  // Blank, so the name and notes placeholders show; no history caption on the create sheet.
   #Preview("New checklist") {
-    ChecklistScreen(checklist: PreviewSupport.checklist(), isNewChecklist: true) {}
-      .previewEnvironment()
+    ChecklistScreen(checklist: PreviewSupport.blankChecklist(), isNewChecklist: true) {}
+      .previewEnvironment(container: PreviewSupport.scratchContainer)
   }
 
 #endif

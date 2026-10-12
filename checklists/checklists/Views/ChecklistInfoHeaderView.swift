@@ -16,6 +16,14 @@ final class ChecklistInfoHeaderView: UIView {
   let notesTextView = CLTextView()
   let captionView = ChecklistHistoryCaption.makeView()
 
+  /// The name's size at AX3, where it stops growing: past that a name of a few words no longer fits
+  /// the width of a phone, and the field is a single line. Up to AX4 it stays at least the size of
+  /// the notes below it.
+  private static let maximumNamePointSize: CGFloat = 45.0
+
+  /// Restated on each text-size change; nil on the create sheet, which has no caption.
+  private var captionHeightConstraint: NSLayoutConstraint?
+
   /// - Parameter showsHistoryCaption: false on the create sheet, where both caption lines could
   ///   only ever read "Never". Fixed for the view's lifetime so the header cannot grow under the
   ///   reader partway through creating a checklist.
@@ -25,7 +33,11 @@ final class ChecklistInfoHeaderView: UIView {
     backgroundColor = Colors.defaultBackground
 
     nameTextField.placeholder = String(localized: "checklist.name.placeholder", defaultValue: "Name", comment: "Placeholder of the checklist name field in the detail header.")
-    nameTextField.font = .systemFont(ofSize: 24.0, weight: .semibold)
+    nameTextField.font = UIFontMetrics(forTextStyle: .title2).scaledFont(
+      for: .systemFont(ofSize: 24.0, weight: .semibold),
+      maximumPointSize: Self.maximumNamePointSize
+    )
+    nameTextField.adjustsFontForContentSizeCategory = true
     nameTextField.returnKeyType = .done
     nameTextField.enablesReturnKeyAutomatically = true
     nameTextField.clearButtonMode = .whileEditing
@@ -36,7 +48,8 @@ final class ChecklistInfoHeaderView: UIView {
       comment: "VoiceOver label read before the checklist name field. Keep the trailing space and colon."
     )
 
-    notesTextView.font = .systemFont(ofSize: 16.0)
+    notesTextView.font = .preferredFont(forTextStyle: .callout)
+    notesTextView.adjustsFontForContentSizeCategory = true
     notesTextView.backgroundColor = .clear
     // The gap below the notes, inside the field so a tap just under the last line still lands on
     // it. Wider than the gap above: under a block of notes a tighter one makes the history caption
@@ -63,21 +76,27 @@ final class ChecklistInfoHeaderView: UIView {
 
     // Whichever of the two closes the height owns the bottom anchor. With no caption that is the
     // notes, and the header collapses to the height it has without the feature.
-    let captionConstraints: [NSLayoutConstraint] = showsHistoryCaption
-      ? ChecklistHistoryCaption.install(captionView, in: self, column: column, below: notesTextView)
-      : [notesTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5.0)]
+    let captionConstraints: [NSLayoutConstraint]
+    if showsHistoryCaption {
+      let installed = ChecklistHistoryCaption.install(captionView, in: self, column: column, below: notesTextView)
+      captionConstraints = installed.constraints
+      captionHeightConstraint = installed.height
+    } else {
+      captionConstraints = [notesTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5.0)]
+    }
 
     // Both fields meet Apple's minimum touch target with the slack inside them rather than around
     // them, so a near-miss still lands on a field.
     NSLayoutConstraint.activate(captionConstraints + [
       statusIcon.leadingAnchor.constraint(equalTo: column.leadingAnchor, constant: 16.0),
 
-      // A text field centres its text vertically, so it stays on the status ring's centre line.
+      // A text field centres its text vertically, so it stays on the status ring's centre line, and
+      // grows evenly around text larger than the touch target.
       nameTextField.topAnchor.constraint(equalTo: topAnchor, constant: 16.0),
       nameTextField.leadingAnchor.constraint(equalTo: statusIcon.trailingAnchor, constant: 10.0),
       nameTextField.trailingAnchor.constraint(equalTo: column.trailingAnchor, constant: -16.0),
       nameTextField.centerYAnchor.constraint(equalTo: statusIcon.centerYAnchor),
-      nameTextField.heightAnchor.constraint(equalToConstant: 44.0),
+      nameTextField.heightAnchor.constraint(greaterThanOrEqualToConstant: 44.0),
 
       // Abutting: the name field's own slack is the gap between the two.
       notesTextView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor),
@@ -85,6 +104,17 @@ final class ChecklistInfoHeaderView: UIView {
       notesTextView.trailingAnchor.constraint(equalTo: column.trailingAnchor, constant: -16.0),
       notesTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 44.0),
     ])
+
+    // The fonts rescale themselves; the caption's stated height has to be told. Re-measuring the
+    // header is the view controller's job, since only it knows the table.
+    registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (view: Self, _) in
+      view.captionHeightConstraint?.constant = ChecklistHistoryCaption.height(compatibleWith: view.traitCollection)
+    }
+  }
+
+  /// Where the name's text ends, in this view's coordinates: the field centres one line of it.
+  var nameTextBottom: CGFloat {
+    nameTextField.frame.midY + (nameTextField.font?.lineHeight ?? 0.0) / 2.0
   }
 
   /// Sizes this header for `tableView` and reinstalls it as the table's header.
@@ -94,7 +124,7 @@ final class ChecklistInfoHeaderView: UIView {
   /// while its table is still zero-wide, so a header measured there comes out too short and draws
   /// over the first rows.
   ///
-  /// Call from `viewDidLayoutSubviews`, and again whenever the content changes.
+  /// Call from `viewDidLayoutSubviews`, and again whenever the content or the text size changes.
   func resize(in tableView: UITableView) {
     assert(translatesAutoresizingMaskIntoConstraints, "Measuring assumes this header owns its frame.")
     guard tableView.bounds.width > 0.0 else { return }

@@ -8,11 +8,20 @@
 import UIKit
 
 class CheckboxButton: UIButton {
-  /// The 18pt is tuned by eye against the button's configuration, which draws a symbol larger
-  /// than a bare `UIImageView` given the same configuration would.
-  private static let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 18.0, weight: .regular)
-  private static let uncheckedImage = UIImage(systemName: "square", withConfiguration: symbolConfiguration)
-  private static let checkedImage = UIImage(systemName: "checkmark.square.fill", withConfiguration: symbolConfiguration)
+  /// The glyph and tap target at the default text size. The 18pt is tuned by eye against the
+  /// button's configuration, which draws a symbol larger than a bare `UIImageView` given the same
+  /// configuration would.
+  private static let baseSymbolPointSize: CGFloat = 18.0
+  private static let baseSide: CGFloat = 48.0
+  /// Both grow with the item name's text style up to this factor, reached at xxxLarge: enough to stay
+  /// in proportion with the text beside them, without crowding the name off a narrow row. They never
+  /// shrink below their default, which keeps the tap target at least 48pt at the small sizes.
+  private static let maximumScale: CGFloat = 1.25
+  private static let uncheckedImage = UIImage(systemName: "square")
+  private static let checkedImage = UIImage(systemName: "checkmark.square.fill")
+
+  private lazy var widthConstraint = widthAnchor.constraint(equalToConstant: Self.baseSide)
+  private lazy var heightConstraint = heightAnchor.constraint(equalToConstant: Self.baseSide)
 
   convenience init() {
     self.init(frame: .zero)
@@ -24,17 +33,34 @@ class CheckboxButton: UIButton {
     accessibilityLabel = String(localized: "checkbox.accessibilityLabel", defaultValue: "Checkbox", comment: "VoiceOver label of the tick box on each checklist item row.")
 
     var configuration = UIButton.Configuration.plain()
-    // Positions the glyph, not the tap target: the 48pt frame below is the tap target.
+    // Positions the glyph, not the tap target: the square frame below is the tap target.
     configuration.contentInsets = NSDirectionalEdgeInsets(top: 12.0, leading: 12.0, bottom: 12.0, trailing: 12.0)
     configuration.image = Self.uncheckedImage
     self.configuration = configuration
     // Off, so the plain style adds no selected background or pressed fade: the icon and tint are the state.
     automaticallyUpdatesConfiguration = false
 
-    // The only required size constraints. The symbol plus insets is not 48×48, so required content
-    // hugging or compression resistance would contradict these and leave Auto Layout to break one.
-    [heightAnchor.constraint(equalToConstant: 48.0),
-     widthAnchor.constraint(equalToConstant: 48.0)].forEach { $0.isActive = true }
+    // The only required size constraints. The symbol plus insets is not the frame's size, so required
+    // content hugging or compression resistance would contradict these and leave Auto Layout to break one.
+    NSLayoutConstraint.activate([widthConstraint, heightConstraint])
+    applyTextSize()
+
+    registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (button: Self, _) in
+      button.applyTextSize()
+    }
+  }
+
+  private func applyTextSize() {
+    let scale = min(
+      max(UIFontMetrics(forTextStyle: .title2).scaledValue(for: 1.0, compatibleWith: traitCollection), 1.0),
+      Self.maximumScale
+    )
+    configuration?.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(
+      pointSize: Self.baseSymbolPointSize * scale,
+      weight: .regular
+    )
+    widthConstraint.constant = Self.baseSide * scale
+    heightConstraint.constant = Self.baseSide * scale
   }
 
   @available(*, unavailable)

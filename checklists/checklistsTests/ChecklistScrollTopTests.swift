@@ -68,7 +68,7 @@ struct ChecklistScrollTopTests {
 /// Covers the hand-off from the header's name field to the navigation bar's title, which fires on
 /// distance scrolled rather than on a raw content offset (#145).
 ///
-/// The threshold is 52.0, just clear of the name field at 22-54 in the header. The title branches
+/// With the view unloaded the threshold is `titleThresholdY`'s stand-in, 52.0. The title branches
 /// touch only `navigationItem`, so `scrollViewDidScroll` can be driven directly without loading
 /// the view.
 @Suite("Swapping the checklist name into the navigation bar")
