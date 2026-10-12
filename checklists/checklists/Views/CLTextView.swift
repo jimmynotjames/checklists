@@ -86,6 +86,9 @@ class CLTextView: UITextView {
     label.textColor = placeholderTextColor
     label.backgroundColor = .clear
     label.isUserInteractionEnabled = false
+    // Follows a text-size change on its own: UIKit rescales the text view's font without going
+    // through the `font` setter above, so the mirroring there would miss it.
+    label.adjustsFontForContentSizeCategory = true
     return label
   }()
 

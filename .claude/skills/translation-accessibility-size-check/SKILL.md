@@ -33,8 +33,8 @@ The run cannot fail on a layout fault. Open every screenshot and look for:
 - a translation so long the screen stops being usable: send it back through
   `translate-new-strings`; it isn't a layout bug.
 
-The checklist detail screen uses fixed fonts, so ignore its type size; still check it for length
-and mirroring.
+The forced type size may not reach the UIKit checklist detail screen (README §Known limitation): if
+its text is no larger than the default, check it for length and mirroring only.
 
 ## Record the outcome
 

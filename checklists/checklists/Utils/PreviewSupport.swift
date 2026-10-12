@@ -19,6 +19,10 @@
     /// For the empty-list state, which the seeded container cannot show.
     static let emptyContainer: ModelContainer = make(InMemoryModelContainer.makeEmpty)
 
+    /// For checklists a preview builds itself, so they never show in the previews that read
+    /// `container` or `emptyContainer`.
+    static let scratchContainer: ModelContainer = make(InMemoryModelContainer.makeEmpty)
+
     static let router = Router()
 
     /// Never `UserDefaults.standard`: a preview toggling analytics consent must not leave a
@@ -34,6 +38,30 @@
         fatalError("PreviewSupport fixture is missing checklist \(id).")
       }
       return checklist
+    }
+
+    /// A new checklist with nothing typed yet, as the create sheet opens with. In `scratchContainer`.
+    static func blankChecklist() -> Checklist {
+      let checklist = Checklist()
+      scratchContainer.mainContext.insert(checklist)
+      return checklist
+    }
+
+    /// The Weekend Getaway fixture with header notes added, so every text element on the checklist
+    /// screen has text: a long name, notes running to several lines, and rows with and without notes
+    /// in both states. In `scratchContainer`.
+    static func longContentChecklist() -> Checklist {
+      let source = checklist(id: SampleData.weekendGetawayId)
+      let scratch = scratchContainer.mainContext
+      let copy = Checklist(name: source.name, notes: source.items.compactMap(\.notes).joined(separator: " "))
+      scratch.insert(copy)
+      for (offset, sourceItem) in source.items.enumerated() {
+        let item = Item(name: sourceItem.name, notes: sourceItem.notes, sortKey: Double(offset + 1))
+        item.status = sourceItem.status
+        scratch.insert(item)
+        item.checklist = copy
+      }
+      return copy
     }
 
     static func syncStatus(

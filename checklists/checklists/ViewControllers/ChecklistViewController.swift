@@ -198,6 +198,11 @@ class ChecklistViewController: UIViewController {
     tableFooterView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
 
     configureNavigationBar()
+
+    registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (viewController: Self, _) in
+      viewController.textSizeDidChange()
+    }
+
     if checklist.items.isEmpty {
       try? context.insert(item: Item(), at: 0, in: checklist)
     }
@@ -490,6 +495,13 @@ class ChecklistViewController: UIViewController {
 
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    if footerNeedsResize, let footer = tableView.tableFooterView as? AddItemButtonTableFooterView {
+      footerNeedsResize = false
+      // Like the header, the table reads the footer's height only on assignment.
+      if footer.adjustFrameHeight() {
+        tableView.tableFooterView = footer
+      }
+    }
     guard tableView.bounds.width != lastHeaderWidth else { return }
     lastHeaderWidth = tableView.bounds.width
     checklistInfoHeaderView?.resize(in: tableView)
@@ -500,6 +512,20 @@ class ChecklistViewController: UIViewController {
   private func headerContentDidChange() {
     lastHeaderWidth = 0.0
     checklistInfoHeaderView?.resize(in: tableView)
+  }
+
+  /// Set by a text-size change; the footer re-measures in the next layout pass.
+  private var footerNeedsResize = false
+
+  /// Every font on this screen rescales itself, and the table re-measures its rows, but the header
+  /// and footer are frame-sized: they only change height when re-measured and reassigned.
+  ///
+  /// This runs in the trait pass, before the views below have their new fonts, so it measures
+  /// nothing itself: the next layout pass does, once they have them.
+  private func textSizeDidChange() {
+    lastHeaderWidth = 0.0
+    footerNeedsResize = true
+    view.setNeedsLayout()
   }
 
   func updateStatusIcon() {
@@ -633,6 +659,13 @@ extension ChecklistViewController: UITableViewDelegate {
 }
 
 extension ChecklistViewController: UIScrollViewDelegate {
+  /// How far the list scrolls before the name moves into the navigation bar: to the bottom of the
+  /// name's text, which moves with the text size. `52.0`, where that bottom sits at the default size,
+  /// stands in before the header exists.
+  var titleThresholdY: CGFloat {
+    checklistInfoHeaderView?.nameTextBottom ?? 52.0
+  }
+
   /// Drag-to-dismiss. `keyboardDismissMode` is the stock way to get this, but on iOS 26 both
   /// `.onDragWithAccessory` and `.interactiveWithAccessory` hide the keyboard without resigning the
   /// field, which strands the Done accessory at the bottom of the screen.
@@ -644,10 +677,9 @@ extension ChecklistViewController: UIScrollViewDelegate {
       endEditingAfterDragDismiss()
     }
     // Measured from the table's real top rather than a literal zero, so the threshold below means
-    // the distance actually scrolled: `52.0` clears the name field, which sits at 22-54 in the
-    // header.
+    // the distance actually scrolled.
     let scrolledY: CGFloat = scrollView.contentOffset.y + scrollView.adjustedContentInset.top
-    let thresholdY: CGFloat = 52.0
+    let thresholdY: CGFloat = titleThresholdY
 
     if isResetting == true, Self.isAtTop(scrollView) {
       isResetting = false

@@ -6,10 +6,6 @@ ran.
 
 Format: date, what was captured, what was found, what was done about it.
 
-The detail screen's fixed fonts are a known limitation
-(`scripts/translation-accessibility-size-check/README.md` §Known limitation), not a
-new finding.
-
 ## Runs
 
 ### 2026-09-19 — baseline

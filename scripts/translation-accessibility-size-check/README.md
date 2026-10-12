@@ -49,10 +49,12 @@ check nobody ran.
 
 ## Known limitation
 
-The checklist detail screen is UIKit and uses fixed fonts, so it does not scale
-with Dynamic Type. Its screenshots are still worth reading for translation
-length and right-to-left mirroring, but not for type size. See
-`core-docs/accessibility-spec.md` §Dynamic Type and issue #183.
+`TestDynamicTypeOverride` forces the type size through SwiftUI's
+`dynamicTypeSize`. The checklist detail screen is UIKit, hosted in a
+`UIViewControllerRepresentable`, and no run has confirmed that the forced size
+reaches it. If its text is no larger than at the default size, its screenshots
+are still worth reading for translation length and right-to-left mirroring, but
+not for type size.
 
 ## Dependencies worth knowing about
 

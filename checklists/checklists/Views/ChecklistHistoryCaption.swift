@@ -22,9 +22,9 @@ enum ChecklistHistoryCaption {
     return formatter
   }()
 
-  private static let font: UIFont = .systemFont(ofSize: 14.0)
+  private static let textStyle: UIFont.TextStyle = .footnote
 
-  /// Always two, so the header is a fixed height wherever the caption shows.
+  /// Always two, so at any one text size the header is a fixed height wherever the caption shows.
   private static let lineCount = 2
 
   /// The caption's two lines, both always present — "Never" on a list that has never been run.
@@ -75,9 +75,8 @@ enum ChecklistHistoryCaption {
     let label = UILabel()
     label.numberOfLines = 1
     label.lineBreakMode = .byTruncatingTail
-    // A fixed size rather than a text style: nothing else on this screen scales with the user's text
-    // size, so a lone label that did would outgrow its neighbours — `accessibility-spec.md §Dynamic Type`.
-    label.font = font
+    label.font = .preferredFont(forTextStyle: textStyle)
+    label.adjustsFontForContentSizeCategory = true
     label.textColor = .secondaryLabel
     return label
   }
@@ -93,27 +92,35 @@ enum ChecklistHistoryCaption {
   }
 
   /// Adds `view` to `header` and returns the constraints placing it below `notesView`, inside
-  /// `column`, the header's content column.
+  /// `column`, the header's content column. `height` is among them, returned apart so the header
+  /// can restate it when the text size changes.
   ///
   /// The caption owns the bottom anchor that closes the header's height, and so its own height is
-  /// stated rather than intrinsic — every height in that chain is a constant.
-  static func install(_ view: UIStackView, in header: UIView, column: UILayoutGuide, below notesView: UIView) -> [NSLayoutConstraint] {
+  /// stated rather than intrinsic: its labels are empty until `refresh`, and an empty label has no
+  /// height.
+  static func install(
+    _ view: UIStackView,
+    in header: UIView,
+    column: UILayoutGuide,
+    below notesView: UIView
+  ) -> (constraints: [NSLayoutConstraint], height: NSLayoutConstraint) {
     header.addSubview(view)
     view.translatesAutoresizingMaskIntoConstraints = false
-    return [
+    let heightConstraint = view.heightAnchor.constraint(equalToConstant: height(compatibleWith: header.traitCollection))
+    return ([
       // Flush: the gap above the caption is the notes view's bottom inset, so it stays tappable.
       view.topAnchor.constraint(equalTo: notesView.bottomAnchor),
       // The column's leading edge, where the status ring also sits.
       view.leadingAnchor.constraint(equalTo: column.leadingAnchor, constant: 16.0),
       view.trailingAnchor.constraint(equalTo: column.trailingAnchor, constant: -16.0),
-      view.heightAnchor.constraint(equalToConstant: height),
+      heightConstraint,
       // Matches the table's `sectionHeaderHeight`, the other half of the gap down to the first row.
       view.bottomAnchor.constraint(equalTo: header.bottomAnchor, constant: -8.0),
-    ]
+    ], heightConstraint)
   }
 
-  /// The exact height the caption occupies.
-  static var height: CGFloat {
-    ceil(font.lineHeight) * CGFloat(lineCount)
+  /// The exact height the caption occupies at `traits`' text size.
+  static func height(compatibleWith traits: UITraitCollection) -> CGFloat {
+    ceil(UIFont.preferredFont(forTextStyle: textStyle, compatibleWith: traits).lineHeight) * CGFloat(lineCount)
   }
 }

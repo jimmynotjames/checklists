@@ -101,7 +101,8 @@ extension ChecklistViewController {
       // The word and semibold weight of ChecklistsView's Done; the `.done` style would draw a filled
       // checkmark button instead.
       let doneItem = UIBarButtonItem(title: CommonStrings.done, style: .plain, target: self, action: #selector(reorderDoneTapped))
-      let semibold = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .body).pointSize, weight: .semibold)
+      let bodySize = UIFont.preferredFont(forTextStyle: .body, compatibleWith: traitCollection).pointSize
+      let semibold = UIFont.systemFont(ofSize: bodySize, weight: .semibold)
       doneItem.setTitleTextAttributes([.font: semibold], for: .normal)
       doneItem.setTitleTextAttributes([.font: semibold], for: .highlighted)
       doneItem.tintColor = .tintColor
