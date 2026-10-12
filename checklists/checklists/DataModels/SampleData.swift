@@ -14,10 +14,11 @@ import SwiftData
  **This data set is also the UI test fixture.** `SampleDataTests` asserts its exact shape and
  `checklistsUITests` navigates by these names, so changing the content means updating both.
 
- The checklist identifiers are fixed constants rather than fresh UUIDs. Two devices signed into the
- same iCloud account each seed themselves on first launch, before either has synced; with random
- identifiers that produces two of everything and no way to tell the copies apart. Fixed identifiers
- turn it into an ordinary duplicate-record problem, which `dedupeChecklists` resolves.
+ The checklist identifiers are fixed constants rather than fresh UUIDs. Any fresh install seeds
+ before its first iCloud import can arrive, so a reinstall, or a second device, on an account that
+ already holds the samples seeds them again; with random identifiers that produces two of everything
+ and no way to tell the copies apart. Fixed identifiers turn it into an ordinary duplicate-record
+ problem, which `dedupeChecklists` resolves.
  */
 enum SampleData {
   // Stable for the life of the app. Never regenerate these.
@@ -63,8 +64,9 @@ enum SampleData {
       return
     }
 
-    // Belt and braces for the sync case: if anything is already here, this is not a first launch
-    // in any meaningful sense, whatever the flags say.
+    // If anything is already here, this is not a first launch in any meaningful sense, whatever the
+    // flags say. This does *not* catch the sync case: on a fresh install it runs before the first
+    // iCloud import, so the store is always empty. `dedupeChecklists` cleans up after that.
     guard try context.fetchCount(FetchDescriptor<Checklist>()) == 0 else {
       userDefaults.set(true, forKey: seededFlagKey)
       return
@@ -112,28 +114,32 @@ enum SampleData {
   // MARK: - Duplicate sample cleanup
 
   /**
-   Collapses duplicate copies of the built-in samples that two devices can each create before their
-   first sync, and deletes nothing else.
+   Removes redundant copies of the built-in samples, and deletes nothing else.
 
-   **The case it exists for.** Two devices both install fresh and race, each seeding the same
-   three fixed ids before either's upload reaches the other — the account then holds two of each.
+   **The case it exists for.** Every fresh install seeds the three fixed ids before its first iCloud
+   import arrives. A reinstall, a second device, or two devices racing on day one therefore leave the
+   account holding two or more copies of a sample.
 
-   **Why it is safe.** A copy is removed only when it is identical to the fixture this app ships —
-   name, notes, item names, item notes, checked states, order — *and* another identical copy shares
-   its `id`. Two such records were written seconds apart by this code and never seen by anyone, so
-   they are indistinguishable and dropping one loses nothing by definition. Any edit at all makes a
-   copy stop matching, and then both are kept.
+   **The rule, per sample id.** A copy is *pristine* when it is identical to the fixture —
+   name, notes, item names, item notes, checked states, order. Every other copy is kept. Pristine
+   copies are deleted whenever a non-pristine copy exists (the user's own edited original wins over a
+   fresh seed); otherwise all but one elected survivor are deleted.
+
+   **Why it is safe.** Only a copy identical to the fixture is ever deleted, so dropping one loses
+   nothing. That holds only for the *current* language: the fixture is resolved at call time, so a
+   copy seeded in another language never matches and is always kept. That is deliberate — two
+   samples in different languages are rare and cosmetic, and keeping both is the cheaper failure.
 
    It cannot reach a user's own checklists: those carry random per-device ids that never collide.
    In particular this does **not** touch the two-device *upgrade* case, where each device's imported
    checklists keep the random ids Realm gave them — that data must union, and it does.
 
-   **Why the survivor is elected rather than just "the first one".** Both devices run this, possibly
-   before either's deletion has synced. If they disagreed about which copy to keep they would delete
-   one each and the user would end up with none. The two checklists are identical, but their *items*
-   carry random ids, so the sorted item-id fingerprint is a value that differs between the copies and
-   reads the same on every device. Both devices therefore elect the same survivor and converge on
-   exactly one, whether they run seconds or days apart.
+   **Why the survivor is elected rather than just "the first one".** Every device runs this, possibly
+   before another's deletion has synced. If they disagreed about which copy to keep they would delete
+   one each and the user would end up with none. The copies are identical, but their *items* carry
+   random ids, so the sorted item-id fingerprint differs between copies and reads the same on every
+   device. The lowest one is never deleted unless a non-pristine copy exists, and non-pristine copies
+   are never deleted, so every device converges and at least one copy always remains.
    */
   @MainActor
   static func dedupeChecklists(in context: ModelContext) throws {
@@ -144,11 +150,11 @@ enum SampleData {
     var didDelete = false
 
     for fixture in fixtures {
-      let identicalCopies = stored.filter { $0.id == fixture.id && matchesPristineFixture($0, fixture) }
-      guard identicalCopies.count > 1 else { continue }
-
-      let survivor = identicalCopies.min { itemFingerprint(of: $0) < itemFingerprint(of: $1) }
-      for duplicate in identicalCopies where duplicate !== survivor {
+      let copies = stored.filter { $0.id == fixture.id }
+      let pristine = copies.filter { matchesPristineFixture($0, fixture) }
+      let anyEdited = pristine.count < copies.count
+      let survivor = anyEdited ? nil : pristine.min { itemFingerprint(of: $0) < itemFingerprint(of: $1) }
+      for duplicate in pristine where duplicate !== survivor {
         context.delete(duplicate)
         didDelete = true
       }
@@ -157,7 +163,7 @@ enum SampleData {
     // Never save when nothing changed: a no-op save on a synced store is a pointless write that
     // every other device has to merge.
     guard didDelete else { return }
-    AppLog.persistence.notice("dedupe: collapsed duplicate untouched sample checklists.")
+    AppLog.persistence.notice("dedupe: removed redundant untouched sample checklists.")
     try context.saveChanges(operation: .dedupe)
   }
 

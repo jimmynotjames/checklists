@@ -48,7 +48,9 @@ struct ChecklistsView: View {
 
   /// The checklist the delete confirmation is currently about, held by `id` rather than by
   /// row or by model reference. See `ModelContext.deleteChecklists(ids:)`.
-  @State private var pendingDeleteID: String?
+  /// The swiped row's own record, not its `id`: two records can share an `id` until sample dedupe
+  /// runs, and deleting by `id` could take the other one.
+  @State private var pendingDeleteID: PersistentIdentifier?
 
   @State private var showsResetAllConfirmation = false
 
@@ -101,7 +103,7 @@ struct ChecklistsView: View {
             // before the confirmation alert, and a cancelled confirmation must leave the row
             // visible. The red comes from an explicit tint instead.
             Button {
-              pendingDeleteID = checklist.id
+              pendingDeleteID = checklist.persistentModelID
             } label: {
               // Icon-only for the visible button, but the title is what VoiceOver reads and what
               // the UI tests match on, so it stays part of the label rather than being dropped.
@@ -483,9 +485,9 @@ struct ChecklistsView: View {
     )
   }
 
-  private func confirmDelete(id checklistId: String) {
+  private func confirmDelete(id checklistId: PersistentIdentifier) {
     // `0` means it is already gone — deleted on another device while the alert was up.
-    guard context.deleteChecklists(ids: [checklistId]) > 0 else { return }
+    guard context.deleteChecklists([checklistId]) > 0 else { return }
     analytics.track(AnalyticsEvent.checklistDeleted)
   }
 

@@ -15,7 +15,17 @@ extension ModelContext {
   /// - Returns: how many were found and deleted.
   @discardableResult
   func deleteChecklists(ids: Set<String>) -> Int {
-    let found = ids.compactMap { checklist(id: $0) }
+    delete(found: ids.compactMap { checklist(id: $0) })
+  }
+
+  /// Deletes exactly these records, and never a different record that shares one's `id`.
+  /// - Returns: how many were found and deleted.
+  @discardableResult
+  func deleteChecklists(_ persistentIDs: Set<PersistentIdentifier>) -> Int {
+    delete(found: persistentIDs.compactMap { checklist($0) })
+  }
+
+  private func delete(found: [Checklist]) -> Int {
     // The items go with each one: the relationship's cascade delete rule handles that.
     for checklist in found {
       delete(checklist)

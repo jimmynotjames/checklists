@@ -12,8 +12,8 @@ import Testing
 /// it collapses.
 @Suite("SampleData deduplication")
 struct SampleDataDedupeTests {
-  /// Seeds the fixture a second time, reproducing what a second device uploads when it seeds before
-  /// the first device's records have synced down.
+  /// Seeds the fixture a second time, reproducing a fresh install (a reinstall, or a second device)
+  /// seeding before the account's existing records have synced down.
   private func seedSecondCopy(into context: ModelContext) throws {
     try SampleData.seed(into: context)
   }
@@ -108,10 +108,12 @@ struct SampleDataDedupeTests {
     )
   }
 
-  // MARK: - What it must refuse to touch
+  // MARK: - An edited copy beats a fresh seed
 
-  @Test("keeps both copies when an item was renamed")
-  func keepsBothWhenAnItemWasRenamed() throws {
+  /// The reinstall case: the account's original was edited, and the fresh install's seed is the
+  /// redundant one. The edited copy is the user's data and must be the one kept.
+  @Test("an edited copy survives and the pristine copy goes when an item was renamed")
+  func editedCopyWinsWhenAnItemWasRenamed() throws {
     let context = try TestModelContainer.makeContext()
     try SampleData.seed(into: context)
     try seedSecondCopy(into: context)
@@ -123,12 +125,13 @@ struct SampleDataDedupeTests {
     try SampleData.dedupeChecklists(in: context)
 
     let morningRoutines = try context.fetchChecklistsSorted().filter { $0.id == SampleData.morningRoutineId }
-    #expect(morningRoutines.count == 2, "An edited copy is the user's data and must be kept.")
+    #expect(morningRoutines.count == 1)
+    #expect(morningRoutines.first === edited, "An edited copy is the user's data and must be kept.")
   }
 
   /// Checking a box is the most likely edit of all, and must be enough to protect a copy.
-  @Test("keeps both copies when checked states differ")
-  func keepsBothWhenCheckedStatesDiffer() throws {
+  @Test("an edited copy survives and the pristine copy goes when checked states differ")
+  func editedCopyWinsWhenCheckedStatesDiffer() throws {
     let context = try TestModelContainer.makeContext()
     try SampleData.seed(into: context)
     try seedSecondCopy(into: context)
@@ -139,17 +142,40 @@ struct SampleDataDedupeTests {
 
     try SampleData.dedupeChecklists(in: context)
 
-    #expect(try context.fetchChecklistsSorted().count(where: { $0.id == SampleData.preTripId }) == 2)
+    let preTrips = try context.fetchChecklistsSorted().filter { $0.id == SampleData.preTripId }
+    #expect(preTrips.count == 1)
+    #expect(preTrips.first === edited)
   }
 
-  @Test("keeps both copies when an item was added")
-  func keepsBothWhenAnItemWasAdded() throws {
+  @Test("an edited copy survives and the pristine copy goes when an item was added")
+  func editedCopyWinsWhenAnItemWasAdded() throws {
     let context = try TestModelContainer.makeContext()
     try SampleData.seed(into: context)
     try seedSecondCopy(into: context)
 
     let edited = try #require(try context.fetchChecklistsSorted().first { $0.id == SampleData.preTripId })
     try context.insert(item: Item(name: "One more thing"), at: 0, in: edited)
+
+    try SampleData.dedupeChecklists(in: context)
+
+    let preTrips = try context.fetchChecklistsSorted().filter { $0.id == SampleData.preTripId }
+    #expect(preTrips.count == 1)
+    #expect(preTrips.first === edited)
+  }
+
+  // MARK: - What it must refuse to touch
+
+  /// Two edited copies are both the user's data; there is no telling which one they meant to keep.
+  @Test("keeps both copies when both were edited")
+  func keepsBothWhenBothWereEdited() throws {
+    let context = try TestModelContainer.makeContext()
+    try SampleData.seed(into: context)
+    try seedSecondCopy(into: context)
+
+    for copy in try context.fetchChecklistsSorted() where copy.id == SampleData.preTripId {
+      copy.items.first?.status = .checked
+    }
+    try context.saveChanges(operation: .itemEdit)
 
     try SampleData.dedupeChecklists(in: context)
 
