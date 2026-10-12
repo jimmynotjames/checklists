@@ -102,6 +102,7 @@ struct AnalyticsConsentSheet: View {
       }
       .padding(.horizontal, 24)
       .padding(.bottom, 32)
+      .scrollsWhenTooTall()
       .appBackground()
       .navigationBarTitleDisplayMode(.inline)
     }

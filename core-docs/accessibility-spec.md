@@ -78,8 +78,9 @@ header's status ring, which stays 24pt; and fixed margins.
 
 **SwiftUI screens** use semantic font tokens, but several layouts break at the accessibility sizes
 and are still open under **#183**: one-line checklist names and a fixed 20pt ring in
-`ChecklistRowView`, no scrolling on `AnalyticsConsentSheet` and `ContainerFailureView`, and fixed
-side-by-side rows in `MainMenuView`, `SettingsView` and `ToastView`. Don't fix piecemeal in
+`ChecklistRowView`, and fixed side-by-side rows in `MainMenuView`, `SettingsView` and `ToastView`.
+`AnalyticsConsentSheet` and `ContainerFailureView` scroll once their content outgrows the screen
+(`scrollsWhenTooTall()`), so their buttons stay reachable. Don't fix piecemeal in
 unrelated PRs.
 
 ### Identifiers are test hooks

@@ -91,7 +91,7 @@ struct ContainerFailureView: View {
       }
     }
     .padding(.horizontal, 16)
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .scrollsWhenTooTall()
     .background(Colors.defaultBackgroundColor.ignoresSafeArea())
     .alert(
       String(localized: "containerFailure.confirm.title", defaultValue: "Start over fresh?", comment: "Title of the confirmation alert before deleting local data on the database-failure screen."),
