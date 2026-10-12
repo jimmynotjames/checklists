@@ -81,8 +81,8 @@ and are still open under **#183**: fixed side-by-side rows in `MainMenuView`, `S
 `ToastView`. Don't fix piecemeal in unrelated PRs.
 
 `ChecklistRowView` wraps a checklist's name rather than truncating it; its notes stay a three-line
-preview. The status ring grows with the name's `.headline` to at most 1.5× (30pt, from about
-xxxLarge), so it never crowds the name, and stays centred on the name's first line.
+preview. The status ring grows with the name's `.headline` to at most 1.5× (30pt, from AX1), so
+it never crowds the name, and stays centred on the name's first line.
 
 `AnalyticsConsentSheet` and `ContainerFailureView` scroll once their content outgrows the screen, so
 their buttons stay reachable at every size; the consent sheet's two buttons stay pinned below its

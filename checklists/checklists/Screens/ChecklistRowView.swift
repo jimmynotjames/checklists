@@ -7,9 +7,6 @@ import SwiftUI
 
 /// One row of the checklists list: status ring, name, and up to three lines of notes.
 ///
-/// The name wraps rather than truncating, so a long name stays readable at large text sizes. The
-/// ring grows with the name up to `maximumRingScale`, and stays centred on the name's first line.
-///
 /// Reading `checklist.percentageComplete` in `body` is what subscribes this row to the
 /// checklist's items through SwiftData's Observation support: when an item's status changes
 /// on another screen — the detail screen's checkboxes, or "Reset All" — the ring here
@@ -17,7 +14,7 @@ import SwiftUI
 struct ChecklistRowView: View {
   let checklist: Checklist
 
-  /// Where the ring stops growing: 30pt, reached at about xxxLarge. Beyond that a ring sized to the
+  /// Where the ring stops growing: 30pt, reached at AX1. Beyond that a ring sized to the
   /// name would crowd it, taking width the name needs at the largest sizes.
   static let maximumRingScale: CGFloat = 1.5
 
