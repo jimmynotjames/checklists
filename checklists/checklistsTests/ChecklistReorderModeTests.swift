@@ -274,8 +274,8 @@ struct ChecklistReorderModeTests {
   )
   func moveIsSavedAndAnnounced(action: ChecklistMoveAction, from index: Int, expected: [String], position: Int) throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
-      var announcements: [String] = []
-      harness.viewController.moveFeedback = { _, announcement in announcements.append(announcement) }
+      var announcements: [String?] = []
+      harness.viewController.accessibilityFeedback = { _, announcement in announcements.append(announcement) }
       let id = harness.checklist.items[index].id
 
       #expect(harness.viewController.move(itemWithID: id, action))
@@ -291,7 +291,7 @@ struct ChecklistReorderModeTests {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
       struct SaveFailed: Error {}
       var announced = false
-      harness.viewController.moveFeedback = { _, _ in announced = true }
+      harness.viewController.accessibilityFeedback = { _, _ in announced = true }
       harness.viewController.saveItemMove = { _, _, _ in throw SaveFailed() }
       let id = harness.checklist.items[0].id
 

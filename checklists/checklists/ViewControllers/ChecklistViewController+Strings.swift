@@ -179,4 +179,43 @@ extension ChecklistViewController {
       """
     )
   }
+
+  static let itemDeletedAnnouncement = String(
+    localized: "item.accessibility.deleted",
+    defaultValue: "Item deleted",
+    comment: """
+    VoiceOver announcement after an item inside a checklist is deleted with the swipe or VoiceOver \
+    Delete action. VoiceOver then moves to a neighbouring item, or to the Add button when none are \
+    left. Keep it short.
+    """
+  )
+
+  static let itemDuplicatedAnnouncement = String(
+    localized: "item.accessibility.duplicated",
+    defaultValue: "Item duplicated",
+    comment: """
+    VoiceOver announcement after an item inside a checklist is duplicated. The copy is placed \
+    directly below the original. Keep it short.
+    """
+  )
+
+  static let allItemsUncheckedAnnouncement = String(
+    localized: "item.accessibility.allUnchecked",
+    defaultValue: "All items unchecked",
+    comment: """
+    VoiceOver announcement after the checklist's Reset button unticks every item in the checklist. \
+    Keep it short.
+    """
+  )
+
+  static func checkedItemsDeletedAnnouncement(count: Int) -> String {
+    String(
+      localized: "item.accessibility.checkedItemsDeleted",
+      defaultValue: "\(count) items deleted",
+      comment: """
+      VoiceOver announcement after the overflow menu's Delete Checked Items removes the ticked items \
+      from a checklist. The placeholder is how many were deleted. Keep it short.
+      """
+    )
+  }
 }

@@ -100,3 +100,16 @@ nonisolated enum ChecklistMoveAction: CaseIterable {
     }
   }
 }
+
+/// Where VoiceOver goes after a row is deleted, on either list screen.
+///
+/// Free of SwiftData, like `ChecklistMoveAction`, so the edge rules can be tested without a
+/// container.
+nonisolated enum DeletionFocus {
+  /// The row that slid into the deleted row's place, else the row above it, counted among the rows
+  /// left; `nil` when none are left.
+  static func neighbourIndex(afterRemoving index: Int, remainingCount: Int) -> Int? {
+    guard remainingCount > 0 else { return nil }
+    return min(index, remainingCount - 1)
+  }
+}

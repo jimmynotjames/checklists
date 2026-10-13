@@ -17,7 +17,7 @@
 | **Increase Contrast** | Not started | **#182** |
 | **Touch targets (44×44)** | Implemented | `ToastView`, `CopyCheckedItemsView`, `MainMenuView`'s close button, the checklist header's name and notes fields, and each item's name and notes fields enforce a 44pt minimum, and `ChecklistsView`'s last row scrolls clear of the Add button. A toast may sit over rows while it is up, by design: a tap anywhere on it dismisses it |
 | **Color-only signaling** | N/A — none | Completion state is an icon swap plus a spoken value, never tint alone |
-| **Screen-change announcements** | Partial | `LoadingView` posts `.screenChanged`; `ToastPresenterModifier` and both screens' move actions post announcements; nothing else does |
+| **Screen-change announcements** | Partial | `LoadingView` posts `.screenChanged`; `ToastPresenterModifier` posts announcements; both screens' moves, and the checklist screen's deletes, duplicates and resets, tell VoiceOver what changed — §Announcements and focus |
 | **Automated a11y tests** | Not started | No audit-API coverage; UI tests use accessibility attributes only as element hooks |
 
 `UIAccessibility.isVoiceOverRunning` is read by `ToastPresenter`. The other flags
@@ -91,6 +91,23 @@ it never crowds the name, and stays centred on the name's first line.
 `AnalyticsConsentSheet` and `ContainerFailureView` scroll once their content outgrows the screen, so
 their buttons stay reachable at every size; the consent sheet's two buttons stay pinned below its
 scrolling text.
+
+### Announcements and focus
+
+After an action changes content, VoiceOver gets the two signals a sighted user gets: what changed,
+in a few words, and where to carry on. Announcements give a count, never an item's name, which can be
+long and which the user just acted on.
+
+- **Focus moves the VoiceOver cursor only** — never the selection or the scroll position — so
+  nothing changes on screen when VoiceOver is off. The announcement follows focus after a beat, so
+  VoiceOver reading the refocused element doesn't cut it off.
+- **After a delete** VoiceOver lands on the row that took the deleted one's place, else the row
+  above, else the Add button (`DeletionFocus`).
+- **After a duplicate** it stays on the original, as selection does in Photos and Files; the copy is
+  the next row down.
+- **Checklist screen:** the swipe and VoiceOver Delete, Duplicate, Reset (only when it unticked
+  something) and Delete Checked Items (with a count, focus on the first row left) announce. Backspace
+  on an empty row doesn't: it moves editing to the row above.
 
 ### Identifiers are test hooks
 
