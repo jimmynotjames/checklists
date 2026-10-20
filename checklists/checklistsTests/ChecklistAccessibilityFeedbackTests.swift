@@ -15,7 +15,7 @@ struct ChecklistAccessibilityFeedbackTests {
   private static let threeItems: [(name: String, isChecked: Bool)] = [("Milk", false), ("Bread", true), ("Eggs", false)]
 
   private struct Feedback {
-    let focus: UIView?
+    let focus: NSObject?
     let announcement: String?
   }
 
@@ -120,5 +120,30 @@ struct DeletionFocusTests {
   )
   func neighbour(removed index: Int, remaining: Int, expected: Int?) {
     #expect(DeletionFocus.neighbourIndex(afterRemoving: index, remainingCount: remaining) == expected)
+  }
+}
+
+/// Reorder Items mode swaps the bar item VoiceOver was on, so the screen points VoiceOver at its
+/// replacement.
+@Suite("Reorder Items mode VoiceOver focus", .serialized)
+struct ReorderModeFocusTests {
+  @Test("VoiceOver goes to Done in the mode, and back to ⋯ once it ends")
+  func focusMovesWithTheMode() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
+      let controller = harness.viewController
+      let more = try #require(controller.moreBarButtonItem)
+      var focused: [NSObject?] = []
+      controller.reorderModeFocusDelay = nil
+      controller.accessibilityFeedback = { focus, _ in focused.append(focus) }
+
+      controller.setEditing(true, animated: false)
+      let done = try #require(focused.last as? UIBarButtonItem)
+      #expect(done.accessibilityIdentifier == "checklist.reorderDone")
+
+      controller.setEditing(false, animated: false)
+      #expect(focused.count == 2)
+      let afterwards = focused.compactMap(\.self).last
+      #expect(afterwards === more)
+    }
   }
 }

@@ -108,6 +108,10 @@ long and which the user just acted on.
 - **Checklist screen:** the swipe and VoiceOver Delete, Duplicate, Reset (only when it unticked
   something) and Delete Checked Items (with a count, focus on the first row left) announce. Backspace
   on an empty row doesn't: it moves editing to the row above.
+- **Reorder Items mode** swaps the bar item VoiceOver was on, so VoiceOver moves to Done on the way
+  in and back to ⋯ on the way out, after the bar has relaid and the ⋯ menu has closed. The post
+  names the `UIBarButtonItem` itself, which VoiceOver resolves to the button the bar draws: the
+  bar's own views are private, and in a unit-test host they carry no identifier to find them by.
 - **Checklists list:** a confirmed delete, the swipe Duplicate, Reset All (only when it unticked
   something) and Edit mode's Delete, Duplicate and Reset (with a count) announce. Focus moves after a
   confirmation alert or Edit mode's exit has finished, since the system moves VoiceOver itself as an

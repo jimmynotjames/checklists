@@ -121,6 +121,27 @@ extension ChecklistViewController {
     setEditing(false, animated: true)
   }
 
+  /// Done in Reorder Items mode, ⋯ outside it. The item VoiceOver was on has just been swapped away,
+  /// which would leave it somewhere arbitrary.
+  var reorderModeFocusTarget: UIBarButtonItem? {
+    isReordering ? navigationItem.rightBarButtonItems?.first : moreBarButtonItem
+  }
+
+  /// Posted with the bar item itself; see `core-docs/accessibility-spec.md` §Announcements and focus.
+  func moveVoiceOverToReorderModeButton() {
+    reorderModeFocusTask?.cancel()
+    guard let delay = reorderModeFocusDelay else {
+      postAccessibilityFeedback(focus: reorderModeFocusTarget, announcement: nil)
+      return
+    }
+    reorderModeFocusTask = Task { [weak self] in
+      try? await Task.sleep(for: delay)
+      // Not once the screen has gone, nor after a quicker toggle has taken over.
+      guard !Task.isCancelled, let self, viewIfLoaded?.window != nil else { return }
+      postAccessibilityFeedback(focus: reorderModeFocusTarget, announcement: nil)
+    }
+  }
+
   /// A checked-items entry, and the notice explaining why a tap on it did nothing.
   ///
   /// Each entry is always present and always live, even with nothing ticked: hiding or dimming it

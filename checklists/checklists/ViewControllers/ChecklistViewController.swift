@@ -117,9 +117,17 @@ class ChecklistViewController: UIViewController {
   /// init time.
   var saveItemMove: ((Item, [Item], Int) throws -> Void)?
 
-  /// Overrides what a move, delete, duplicate or reset tells VoiceOver: the element to focus and the
-  /// announcement. `nil` — the normal case — posts both for real. Set by tests to observe them.
-  var accessibilityFeedback: ((UIView?, String?) -> Void)?
+  /// Overrides what this screen tells VoiceOver after an action or a mode change: the element or bar
+  /// item to focus, and the announcement. `nil` — the normal case — posts both for real. Set by tests
+  /// to observe them.
+  var accessibilityFeedback: ((NSObject?, String?) -> Void)?
+
+  /// How long after Reorder Items mode starts or ends VoiceOver is moved: long enough for the bar to
+  /// relay and, on the way in, the ⋯ menu to close. `nil` moves it at once; set by tests, which
+  /// cannot wait on the delay.
+  var reorderModeFocusDelay: Duration? = .milliseconds(500)
+  /// The pending move, so a quick toggle back replaces it rather than stacking a second.
+  var reorderModeFocusTask: Task<Void, Never>?
 
   /// The bar as it was before Reorder Items mode cleared it down to Done. Put back as-is on the way
   /// out rather than rebuilt: `configureNavigationBar` reads `isNewChecklist`, which `viewDidAppear`
@@ -311,6 +319,7 @@ class ChecklistViewController: UIViewController {
     super.setEditing(editing, animated: animated)
     tableView.setEditing(editing, animated: animated)
     applyReorderModeToNavigationBar(editing, animated: animated)
+    moveVoiceOverToReorderModeButton()
 
     checklistNameTextField.isEnabled = !editing
     checklistNotesTextView.isEditable = !editing
@@ -1014,7 +1023,7 @@ extension ChecklistViewController {
 
   /// Moves VoiceOver to `focus`, when there is one, then speaks `announcement`. Neither shows when
   /// VoiceOver is off.
-  func postAccessibilityFeedback(focus: UIView?, announcement: String?) {
+  func postAccessibilityFeedback(focus: NSObject?, announcement: String?) {
     if let accessibilityFeedback {
       accessibilityFeedback(focus, announcement)
       return
