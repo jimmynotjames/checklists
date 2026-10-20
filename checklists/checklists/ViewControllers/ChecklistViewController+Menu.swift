@@ -66,6 +66,9 @@ extension ChecklistViewController {
     guard !isReordering, let moreBarButtonItem, let primaryBarButtonItem, let editingDoneBarButtonItem else { return }
     let slotItem = isEditingText ? editingDoneBarButtonItem : primaryBarButtonItem
     guard navigationItem.rightBarButtonItems?.last !== slotItem else { return }
+    if navigationItem.rightBarButtonItems?.last === editingDoneBarButtonItem {
+      resetIgnoresTapsUntil = ProcessInfo.processInfo.systemUptime + 0.5
+    }
     // Trailing-first: the menu sits at the outer edge, the slot next to the title.
     navigationItem.setRightBarButtonItems([moreBarButtonItem, slotItem], animated: animated)
   }

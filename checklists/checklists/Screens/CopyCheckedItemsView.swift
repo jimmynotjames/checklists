@@ -61,8 +61,8 @@ struct CopyCheckedItemsView: View {
           }
           .tint(Color.accentColor)
         }
-        // Done at the trailing edge in the tint colour. Tap-outside still dismisses; this matters
-        // because the field sits above the destinations, so the keyboard covers them.
+        // Tap-outside still dismisses; this matters because the field sits above the
+        // destinations, so the keyboard covers them.
         ToolbarItemGroup(placement: .keyboard) {
           Spacer()
           Button(CommonStrings.done) {

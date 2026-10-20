@@ -59,6 +59,11 @@ class ChecklistViewController: UIViewController {
   var primaryBarButtonItem: UIBarButtonItem?
   var editingDoneBarButtonItem: UIBarButtonItem?
 
+  /// Until when, in `ProcessInfo.systemUptime`, Reset ignores taps after taking its slot back from
+  /// the editing Done: a quick second tap on Done would otherwise land on Reset, which unchecks
+  /// everything with no confirmation.
+  var resetIgnoresTapsUntil: TimeInterval = 0
+
   /// Which overflow-menu entry is currently showing "No checked items." under it, if any. See
   /// `showNoItemsCheckedNotice(under:)`.
   var noItemsCheckedNoticeEntry: CheckedItemsMenuEntry?
@@ -375,6 +380,7 @@ class ChecklistViewController: UIViewController {
   }
 
   @objc func resetButtonTapped() {
+    guard ProcessInfo.processInfo.systemUptime >= resetIgnoresTapsUntil else { return }
     analytics.track(AnalyticsEvent.checklistReset)
 
     // Nothing ticked means nothing to update: a Reset on an untouched list must not date it.
@@ -830,8 +836,11 @@ extension ChecklistViewController {
   /// Waits a turn before putting the slot back: moving between fields ends one and begins the next
   /// in the same turn, and swapping on each would flicker the button. Common modes, so a list drag
   /// that ends editing doesn't leave Done up until the drag lets go.
-  @objc func textEditingDidEnd(_ notification: Notification) {
-    guard (notification.object as? UIView)?.isDescendant(of: view) == true else { return }
+  ///
+  /// Unfiltered, unlike the begin side: a row's field can already be out of the view when it
+  /// resigns (a reload for a text-size change, a swipe-delete), and the update reads the screen's
+  /// own fields afresh anyway.
+  @objc func textEditingDidEnd(_: Notification) {
     RunLoop.main.perform(inModes: [.common]) { [weak self] in
       MainActor.assumeIsolated {
         self?.updatePrimaryBarButtonItem(animated: true)

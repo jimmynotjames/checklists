@@ -96,6 +96,33 @@ struct ChecklistEditingDoneTests {
     }
   }
 
+  /// Reset takes the editing Done's place, so a quick second tap on Done would otherwise reset the
+  /// checklist.
+  @Test("Reset ignores a tap just after it takes the slot back, and takes one after that")
+  func resetIgnoresATapRightAfterTheSwap() throws {
+    try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
+      let controller = harness.viewController
+      harness.header.nameTextField.becomeFirstResponder()
+      controller.editingDoneTapped()
+      settle()
+
+      controller.resetButtonTapped()
+      #expect(harness.checklist.items[1].status == .checked)
+
+      RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.6))
+      controller.resetButtonTapped()
+      #expect(harness.checklist.items[1].status == .unchecked)
+    }
+  }
+
+  @Test("Reset takes a tap straight away on a screen nobody has typed in")
+  func resetWorksWithoutAnEdit() throws {
+    try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
+      harness.viewController.resetButtonTapped()
+      #expect(harness.checklist.items[1].status == .unchecked)
+    }
+  }
+
   /// Return hands focus from one row to a new one below it; the slot must not blink to Reset and
   /// back on the way.
   @Test("Return on an item's name keeps the editing Done throughout the hand-off")

@@ -32,7 +32,14 @@ extension XCUIApplication {
 
   /// Ends any typing, then closes the create sheet: two taps, since while typing the slot holds the
   /// editing Done instead.
+  ///
+  /// Waits for either button first: the sheet focuses its name field once it has appeared, so a
+  /// check made too early would see the sheet's Done just before the editing Done replaces it.
   func finishCreateSheet(file: StaticString = #filePath, line: UInt = #line) {
+    let eitherDone = navigationBars.buttons.matching(
+      NSPredicate(format: "identifier IN %@", ["checklist.done", "checklist.editingDone"])
+    ).firstMatch
+    XCTAssertTrue(eitherDone.waitForExistence(timeout: 5), "The create sheet's bar has no Done.", file: file, line: line)
     if checklistEditingDoneButton.exists {
       tapChecklistEditingDone(file: file, line: line)
     }

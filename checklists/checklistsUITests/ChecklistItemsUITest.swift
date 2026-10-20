@@ -47,7 +47,6 @@ final class ChecklistItemsUITest: ChecklistDetailUITestCase {
   /// While a field is being typed into, the row just above the keyboard still takes a tap: nothing
   /// rides above the keyboard to swallow it, and Done lives in the navigation bar instead.
   @MainActor func testCheckboxJustAboveKeyboardTakesTapWhileEditing() throws {
-    // 11 items, none checked: enough to reach the keyboard.
     checklistsList.staticTexts["Pre-Trip Checklist"].tap()
     let checklistTable = app.tables["ChecklistTableView"]
     XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))

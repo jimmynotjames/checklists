@@ -551,7 +551,7 @@
       }
     },
     "Done": {
-      "context": "Keyboard-accessory button that ends text editing and dismisses the keyboard — the standard iOS 'Done'. Trap: it does NOT mean an item is finished/completed; it means 'finish editing'. Use the exact wording Apple uses for the iOS keyboard Done button, and keep it distinct from any word chosen for a completed checklist item.",
+      "context": "Button that ends text editing or an editing mode — the standard iOS 'Done'. Trap: it does NOT mean an item is finished/completed; it means 'finish editing'. Use the exact wording Apple uses for the iOS keyboard Done button, and keep it distinct from any word chosen for a completed checklist item.",
       "en": "Done",
       "partOfSpeech": "verb",
       "sourceKeys": [
