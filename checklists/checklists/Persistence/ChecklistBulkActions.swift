@@ -60,21 +60,21 @@ extension ModelContext {
 
   /// Unchecks every item in `checklists` with a single save.
   ///
-  /// - Returns: whether any item was checked, and so whether anything was saved.
+  /// - Returns: how many checklists had an item checked; nothing was saved when it is `0`.
   @discardableResult
-  func resetChecklists(_ checklists: [Checklist]) -> Bool {
+  func resetChecklists(_ checklists: [Checklist]) -> Int {
     let now = Date.now
-    var didReset = false
+    var resetCount = 0
     // The `where` call is the reset itself, not a filter — SwiftLint's `for_where` requires this
     // shape. Only a list that had something to reset is dated.
     for checklist in checklists where checklist.uncheckAllItems() {
       checklist.recordUpdate(at: now)
-      didReset = true
+      resetCount += 1
     }
-    if didReset {
+    if resetCount > 0 {
       saveChangesIgnoringFailure(operation: .itemUpdate)
     }
-    return didReset
+    return resetCount
   }
 }
 
@@ -111,5 +111,11 @@ nonisolated enum DeletionFocus {
   static func neighbourIndex(afterRemoving index: Int, remainingCount: Int) -> Int? {
     guard remainingCount > 0 else { return nil }
     return min(index, remainingCount - 1)
+  }
+
+  /// The id among `ids` that VoiceOver goes to once the one at `index` is deleted; `nil` when it was
+  /// the only one.
+  static func neighbourID(afterRemoving index: Int, from ids: [String]) -> String? {
+    neighbourIndex(afterRemoving: index, remainingCount: ids.count - 1).map { ids[$0 >= index ? $0 + 1 : $0] }
   }
 }

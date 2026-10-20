@@ -59,10 +59,14 @@ struct ChecklistsView: View {
   /// The Edit mode toolbar action waiting on its confirmation alert.
   @State private var pendingBulkAction: ChecklistsBulkAction?
 
-  /// Kept on the moved row after a move action, which re-sorts the list under VoiceOver.
+  /// Where VoiceOver goes after a move (the moved row, as the list re-sorts) or a delete (its neighbour).
   @AccessibilityFocusState private var focusedChecklistID: String?
   /// Where VoiceOver goes back to when the main menu closes.
   @AccessibilityFocusState private var isMainMenuButtonFocused: Bool
+  /// Where VoiceOver goes after an Edit mode action, which takes the bottom toolbar away with it.
+  @AccessibilityFocusState private var isEditButtonFocused: Bool
+  /// Where VoiceOver goes when deleting a checklist leaves none.
+  @AccessibilityFocusState private var isAddButtonFocused: Bool
 
   /// Read back from the list so rows can center in a readable column on a wide window.
   @State private var listWidth: CGFloat = 0
@@ -224,7 +228,9 @@ struct ChecklistsView: View {
     }
     .alert(Text(verbatim: ""), isPresented: $showsResetAllConfirmation) {
       Button(Self.resetAllTitle, role: .destructive) {
-        context.resetChecklists(Array(checklists))
+        if context.resetChecklists(Array(checklists)) > 0 {
+          postAccessibilityFeedback(Self.allResetAnnouncement, afterAlert: true)
+        }
       }
       Button(CommonStrings.cancel, role: .cancel) {}
     } message: {
@@ -355,6 +361,7 @@ struct ChecklistsView: View {
     }
     .tint(Color.accentColor)
     .accessibilityIdentifier("toolbar.edit")
+    .accessibilityFocused($isEditButtonFocused)
   }
 
   private func bulkActionButton(
@@ -392,6 +399,7 @@ struct ChecklistsView: View {
       comment: "VoiceOver label for the round floating button that creates a checklist."
     ))
     .accessibilityIdentifier("toolbar.addChecklist")
+    .accessibilityFocused($isAddButtonFocused)
     // From the safe area, so the larger bottom gap is the home-indicator inset. Tune this constant;
     // never offset against `safeAreaInsets`, which pushes the button into the system's gesture strip.
     .padding(Self.addButtonMargin)
@@ -438,21 +446,17 @@ struct ChecklistsView: View {
     } catch {
       return // `saveChanges` told the person, and the order has been put back.
     }
+    // At once, not after the beat: the list re-sorts in this same update, and focus has to follow
+    // the row while it moves.
     focusedChecklistID = checklist.id
-    let announcement = String(
+    postAccessibilityFeedback(String(
       localized: "checklists.accessibility.movedToPosition",
       defaultValue: "Moved to position \(destination + 1) of \(count)",
       comment: """
       VoiceOver announcement after a checklist is moved with a Move Up/Down/to Top/to Bottom \
       action. First placeholder is its new position counting from 1, second the number of checklists.
       """
-    )
-    // Posted after a beat: the list re-sorts and focus is restored in the same update, and an
-    // announcement made during that is cut off by VoiceOver reading the refocused row.
-    Task {
-      try? await Task.sleep(for: .milliseconds(500))
-      AccessibilityNotification.Announcement(announcement).post()
-    }
+    ))
   }
 
   private static func title(for action: ChecklistMoveAction) -> String {
@@ -498,10 +502,20 @@ struct ChecklistsView: View {
   }
 
   private func confirmDelete(_ persistentID: PersistentIdentifier) {
+    let ids = checklists.map(\.id)
+    let index = checklists.firstIndex { $0.persistentModelID == persistentID }
     // `0` means that record is already gone while the alert was up — deleted on another device, or
     // removed by sample dedupe. Its twin, if any, is deliberately left alone.
     guard context.deleteChecklists([persistentID]) > 0 else { return }
     analytics.track(AnalyticsEvent.checklistDeleted)
+    let neighbour = index.flatMap { DeletionFocus.neighbourID(afterRemoving: $0, from: ids) }
+    postAccessibilityFeedback(Self.deletedAnnouncement, afterAlert: true) {
+      if let neighbour {
+        focusedChecklistID = neighbour
+      } else {
+        isAddButtonFocused = true
+      }
+    }
   }
 
   // MARK: - Duplicating
@@ -518,6 +532,7 @@ struct ChecklistsView: View {
       AnalyticsEvent.checklistDuplicated,
       properties: [AnalyticsProperty.source: ChecklistDuplicationSource.swipe.rawValue]
     )
+    postAccessibilityFeedback(Self.duplicatedAnnouncement)
   }
 
   // MARK: - Edit mode actions
@@ -537,17 +552,17 @@ struct ChecklistsView: View {
   private func perform(_ action: ChecklistsBulkAction) {
     let ids = liveSelection
     guard !ids.isEmpty else { return }
-    let didChange = switch action {
+    let changedCount = switch action {
     case .delete:
-      context.deleteChecklists(ids: ids) > 0
+      context.deleteChecklists(ids: ids)
     case .duplicate:
-      context.duplicateChecklists(ids: ids) > 0
+      context.duplicateChecklists(ids: ids)
     case .reset:
       context.resetChecklists(checklists.filter { ids.contains($0.id) })
     }
     // Like the single-row paths: a save that failed outright has already told the person, and
-    // nothing happened to measure.
-    if didChange {
+    // nothing happened to measure or announce.
+    if changedCount > 0 {
       analytics.track(
         AnalyticsEvent.checklistsBulkActionPerformed,
         properties: [
@@ -558,6 +573,42 @@ struct ChecklistsView: View {
     }
     withAnimation {
       editMode = .inactive
+    }
+    guard changedCount > 0 else { return }
+    // Edit, because the bottom toolbar VoiceOver was on has gone with Edit mode.
+    postAccessibilityFeedback(Self.bulkAnnouncement(for: action, count: changedCount), afterAlert: true) {
+      isEditButtonFocused = true
+    }
+  }
+
+  // MARK: - VoiceOver feedback
+
+  /// Moves VoiceOver with `focus`, when given, then says `announcement`. Neither shows when
+  /// VoiceOver is off.
+  ///
+  /// `afterAlert` waits for a confirmation alert or Edit mode's exit to finish first: the system
+  /// moves VoiceOver itself as an alert closes, which would undo the focus and cut off the words.
+  private func postAccessibilityFeedback(
+    _ announcement: String,
+    afterAlert: Bool = false,
+    focus: (() -> Void)? = nil
+  ) {
+    Task {
+      if afterAlert {
+        try? await Task.sleep(for: .milliseconds(500))
+      }
+      if let focus {
+        // Cleared first, then set a turn later: a focus state still holding its target from an
+        // earlier move or action would not move VoiceOver when set to the same value.
+        focusedChecklistID = nil
+        isEditButtonFocused = false
+        isAddButtonFocused = false
+        await Task.yield()
+        focus()
+      }
+      // After a beat, or VoiceOver reading the refocused element cuts it off.
+      try? await Task.sleep(for: .milliseconds(500))
+      AccessibilityNotification.Announcement(announcement).post()
     }
   }
 

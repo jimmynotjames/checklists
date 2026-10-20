@@ -17,7 +17,7 @@
 | **Increase Contrast** | Not started | **#182** |
 | **Touch targets (44×44)** | Implemented | `ToastView`, `CopyCheckedItemsView`, `MainMenuView`'s close button, the checklist header's name and notes fields, and each item's name and notes fields enforce a 44pt minimum, and `ChecklistsView`'s last row scrolls clear of the Add button. A toast may sit over rows while it is up, by design: a tap anywhere on it dismisses it |
 | **Color-only signaling** | N/A — none | Completion state is an icon swap plus a spoken value, never tint alone |
-| **Screen-change announcements** | Partial | `LoadingView` posts `.screenChanged`; `ToastPresenterModifier` posts announcements; both screens' moves, and the checklist screen's deletes, duplicates and resets, tell VoiceOver what changed — §Announcements and focus |
+| **Screen-change announcements** | Partial | `LoadingView` posts `.screenChanged`; `ToastPresenterModifier` posts announcements; both screens' moves, deletes, duplicates and resets tell VoiceOver what changed — §Announcements and focus |
 | **Automated a11y tests** | Not started | No audit-API coverage; UI tests use accessibility attributes only as element hooks |
 
 `UIAccessibility.isVoiceOverRunning` is read by `ToastPresenter`. The other flags
@@ -108,6 +108,12 @@ long and which the user just acted on.
 - **Checklist screen:** the swipe and VoiceOver Delete, Duplicate, Reset (only when it unticked
   something) and Delete Checked Items (with a count, focus on the first row left) announce. Backspace
   on an empty row doesn't: it moves editing to the row above.
+- **Checklists list:** a confirmed delete, the swipe Duplicate, Reset All (only when it unticked
+  something) and Edit mode's Delete, Duplicate and Reset (with a count) announce. Focus moves after a
+  confirmation alert or Edit mode's exit has finished, since the system moves VoiceOver itself as an
+  alert closes. After an Edit mode action it goes to Edit, because the bottom toolbar it was on is
+  gone; when a delete leaves no checklists it goes to the Add button, since the list has no empty
+  state.
 
 ### Identifiers are test hooks
 
