@@ -31,7 +31,8 @@ nonisolated enum CommonStrings {
     localized: "common.action.done",
     defaultValue: "Done",
     comment: """
-    Ends editing: the keyboard accessory button, the nav bar button that leaves Edit mode on the \
+    Ends editing: the button above the keyboard when naming a new checklist to copy or move \
+    checked items into, the nav bar button that leaves Edit mode on the \
     list of checklists (it reads Edit until tapped), and the nav bar button that leaves Reorder \
     Items mode on a checklist's screen.
     """

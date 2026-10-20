@@ -38,7 +38,7 @@ struct CopyCheckedItemsView: View {
   @State private var newChecklistName = ""
   /// Deliberately never set true on appearance. The field is opt-in — most people came for a
   /// destination below it, and a keyboard rising on arrival would cover the list they came for.
-  /// The binding exists so the accessory Done button has something to clear.
+  /// The binding exists so the keyboard toolbar's Done has something to clear.
   @FocusState private var isNamingFocused: Bool
 
   var body: some View {
@@ -61,9 +61,7 @@ struct CopyCheckedItemsView: View {
           }
           .tint(Color.accentColor)
         }
-        // The same affordance every multi-line field in the app already has from `CLTextView`'s
-        // accessory bar — flexible space, then Done at the trailing edge in the tint colour —
-        // rebuilt here because this field is SwiftUI. Tap-outside still dismisses; this matters
+        // Done at the trailing edge in the tint colour. Tap-outside still dismisses; this matters
         // because the field sits above the destinations, so the keyboard covers them.
         ToolbarItemGroup(placement: .keyboard) {
           Spacer()

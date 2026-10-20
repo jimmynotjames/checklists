@@ -38,7 +38,7 @@ final class ChecklistAddItemsUITest: ChecklistDetailUITestCase {
 
     // Remove those items with Delete key and nothing else.
     app.pressDeleteKey(7)
-    app.toolbars["Toolbar"].buttons["Done"].tap()
+    app.tapChecklistEditingDone()
 
     // Test that original state was restored.
     let itemNameTextView1bValue = try XCTUnwrap(checklisttableviewTable.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String)
@@ -53,7 +53,7 @@ final class ChecklistAddItemsUITest: ChecklistDetailUITestCase {
     itemNotesTextView2.tap()
     app.typeText("Make sure key in planter.")
     itemNotesTextView2.pressDeleteKey(30)
-    app.toolbars["Toolbar"].buttons["Done"].tap()
+    app.tapChecklistEditingDone()
 
     // Check that Name field still preserved.
     itemNameTextView2bValue = try XCTUnwrap(checklisttableviewTable.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].value as? String)
@@ -103,7 +103,7 @@ final class ChecklistAddItemsUITest: ChecklistDetailUITestCase {
 
     lastItemNameTextView.pressReturnKey()
     app.typeText(newItemName2)
-    app.toolbars["Toolbar"].buttons["Done"].tap()
+    app.tapChecklistEditingDone()
 
     XCTAssert(checklistTableView.children(matching: .cell).count == numItems + 2)
     assertPercentComplete(checklistTableView, numCheckedItems: numCheckedItems, numItems: numItems + 2) // Check that circular status icon updated.
@@ -144,12 +144,9 @@ final class ChecklistAddItemsUITest: ChecklistDetailUITestCase {
     XCTAssertTrue(keyboard.waitForExistence(timeout: 5), "Keyboard didn't appear for the new item.")
     let newItem = checklistTableView.children(matching: .cell).element(boundBy: numItems)
     XCTAssertTrue(newItem.waitForExistence(timeout: 5), "New item row didn't appear.")
-    // The Done bar rides above the keyboard and covers rows just the same.
-    let doneBar = app.toolbars.containing(.button, identifier: "Done").firstMatch
-    let coveredFrom = doneBar.exists ? min(doneBar.frame.minY, keyboard.frame.minY) : keyboard.frame.minY
     XCTAssertLessThanOrEqual(
       newItem.textViews["itemNameTextView"].frame.maxY,
-      coveredFrom,
+      keyboard.frame.minY,
       "The item being typed into is hidden behind the keyboard."
     )
   }

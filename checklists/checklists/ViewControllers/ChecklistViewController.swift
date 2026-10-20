@@ -54,6 +54,11 @@ class ChecklistViewController: UIViewController {
   /// way UIKit offers to change a menu that is already presented.
   var moreBarButtonItem: UIBarButtonItem?
 
+  /// The bar slot beside the overflow menu: Reset, or the create sheet's Done. Typing in any field
+  /// lends the slot to `editingDoneBarButtonItem`; see `updatePrimaryBarButtonItem(animated:)`.
+  var primaryBarButtonItem: UIBarButtonItem?
+  var editingDoneBarButtonItem: UIBarButtonItem?
+
   /// Which overflow-menu entry is currently showing "No checked items." under it, if any. See
   /// `showNoItemsCheckedNotice(under:)`.
   var noItemsCheckedNoticeEntry: CheckedItemsMenuEntry?
@@ -178,6 +183,12 @@ class ChecklistViewController: UIViewController {
     // Floating, docking, and resizing the window all move the keyboard without a show or hide.
     NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardAppear(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardDisappear(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    // Field focus rather than the keyboard drives the bar's Done, so it also shows with a hardware
+    // keyboard. Notifications, because no one delegate hears all four fields begin.
+    NotificationCenter.default.addObserver(self, selector: #selector(textEditingDidBegin(_:)), name: UITextField.textDidBeginEditingNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(textEditingDidBegin(_:)), name: UITextView.textDidBeginEditingNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(textEditingDidEnd(_:)), name: UITextField.textDidEndEditingNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(textEditingDidEnd(_:)), name: UITextView.textDidEndEditingNotification, object: nil)
 
     tableView.accessibilityIdentifier = "ChecklistTableView"
     tableView.delegate = self
@@ -201,10 +212,6 @@ class ChecklistViewController: UIViewController {
 
     setUpHeaderView()
     tableView.tableHeaderView = checklistInfoHeaderView
-
-    checklistNotesTextView.inputAccessoryButtonTappedAction = { [weak self] in
-      self?.checklistNotesTextView.resignFirstResponder()
-    }
 
     let tableFooterView = AddItemButtonTableFooterView(frame: .zero)
     tableFooterView.delegate = self
@@ -253,10 +260,7 @@ class ChecklistViewController: UIViewController {
     // Never yank the table out from under an active edit; the merged values are already in the
     // model and will show on the next natural reload.
     // Nor in the middle of a row drag, which a reload cuts short or leaves out of step.
-    guard !tableView.hasActiveDrag, !tableView.hasUncommittedUpdates,
-          findEditingCell() == nil,
-          !checklistNameTextField.isFirstResponder,
-          !checklistNotesTextView.isFirstResponder
+    guard !tableView.hasActiveDrag, !tableView.hasUncommittedUpdates, !isEditingText
     else { return }
 
     checklistNameTextField.text = checklist.name
@@ -332,6 +336,9 @@ class ChecklistViewController: UIViewController {
     if editing {
       // Commits whatever is being typed before the field it belongs to stops responding.
       view.endEditing(true)
+      // Now rather than on the usual next turn, so the bar the mode saves is the one without the
+      // editing Done.
+      updatePrimaryBarButtonItem(animated: false)
     }
     super.setEditing(editing, animated: animated)
     tableView.setEditing(editing, animated: animated)
@@ -705,7 +712,7 @@ extension ChecklistViewController: UIScrollViewDelegate {
 
   /// Drag-to-dismiss. `keyboardDismissMode` is the stock way to get this, but on iOS 26 both
   /// `.onDragWithAccessory` and `.interactiveWithAccessory` hide the keyboard without resigning the
-  /// field, which strands the Done accessory at the bottom of the screen.
+  /// field, which leaves the bar's Done showing with no keyboard to dismiss.
   ///
   /// Only a deliberate downward drag counts, so scrolling up to read the rest of the list leaves an
   /// edit in progress alone.
@@ -807,6 +814,29 @@ extension ChecklistViewController {
       }
     }
     return nil
+  }
+
+  /// Whether any field on this screen is being typed into: the checklist's name or notes, or an
+  /// item's.
+  var isEditingText: Bool {
+    checklistNameTextField.isFirstResponder || checklistNotesTextView.isFirstResponder || findEditingCell() != nil
+  }
+
+  @objc func textEditingDidBegin(_ notification: Notification) {
+    guard (notification.object as? UIView)?.isDescendant(of: view) == true else { return }
+    updatePrimaryBarButtonItem(animated: true)
+  }
+
+  /// Waits a turn before putting the slot back: moving between fields ends one and begins the next
+  /// in the same turn, and swapping on each would flicker the button. Common modes, so a list drag
+  /// that ends editing doesn't leave Done up until the drag lets go.
+  @objc func textEditingDidEnd(_ notification: Notification) {
+    guard (notification.object as? UIView)?.isDescendant(of: view) == true else { return }
+    RunLoop.main.perform(inModes: [.common]) { [weak self] in
+      MainActor.assumeIsolated {
+        self?.updatePrimaryBarButtonItem(animated: true)
+      }
+    }
   }
 }
 

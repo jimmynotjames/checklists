@@ -43,8 +43,35 @@ extension ChecklistViewController {
       UIBarButtonItem(title: Self.resetButtonTitle, style: .plain, target: self, action: #selector(resetButtonTapped))
     }
     primaryItem.tintColor = .tintColor
-    // Trailing-first: the menu sits at the outer edge, Done or Reset next to the title.
-    navigationItem.rightBarButtonItems = [moreItem, primaryItem]
+    if isNewChecklist {
+      // Locale-invariant handle for UI tests, apart from the editing Done, which reads "Done" too.
+      primaryItem.accessibilityIdentifier = "checklist.done"
+    }
+    primaryBarButtonItem = primaryItem
+
+    // In the bar, not above the keyboard: on iOS 26 a keyboard toolbar spans the full width and
+    // swallows taps on the rows behind its clear glass.
+    let editingDoneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(editingDoneTapped))
+    editingDoneItem.tintColor = .tintColor
+    editingDoneItem.accessibilityIdentifier = "checklist.editingDone"
+    editingDoneBarButtonItem = editingDoneItem
+
+    updatePrimaryBarButtonItem(animated: false)
+  }
+
+  /// Lends the slot beside the menu to the editing Done while a field is being typed into, and puts
+  /// Reset or the create sheet's Done back once none is. Reorder Items mode owns the whole bar while
+  /// it is on, and puts back what it found.
+  func updatePrimaryBarButtonItem(animated: Bool) {
+    guard !isReordering, let moreBarButtonItem, let primaryBarButtonItem, let editingDoneBarButtonItem else { return }
+    let slotItem = isEditingText ? editingDoneBarButtonItem : primaryBarButtonItem
+    guard navigationItem.rightBarButtonItems?.last !== slotItem else { return }
+    // Trailing-first: the menu sits at the outer edge, the slot next to the title.
+    navigationItem.setRightBarButtonItems([moreBarButtonItem, slotItem], animated: animated)
+  }
+
+  @objc func editingDoneTapped() {
+    view.endEditing(true)
   }
 
   func makeMoreMenu() -> UIMenu {
