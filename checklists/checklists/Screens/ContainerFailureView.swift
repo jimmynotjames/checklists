@@ -21,6 +21,7 @@ struct ContainerFailureView: View {
   @Environment(\.openURL) private var openURL
   @Environment(\.analytics) private var analytics
   @State private var isShowingStartOverConfirmation = false
+  @AccessibilityFocusState private var isMessageFocused: Bool
 
   init(failure: ContainerCreationFailure, onStoreReset: @escaping () -> Void) {
     self.failure = failure
@@ -51,6 +52,8 @@ struct ContainerFailureView: View {
         }
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isHeader)
+        .accessibilityFocused($isMessageFocused)
 
         VStack(spacing: 12) {
           Button {
@@ -97,6 +100,14 @@ struct ContainerFailureView: View {
     .defaultScrollAnchor(.center, for: .alignment)
     .scrollBounceBehavior(.basedOnSize)
     .background(Colors.defaultBackgroundColor.ignoresSafeArea())
+    // The screen replaces the app unasked; see `core-docs/accessibility-spec.md` §Announcements and
+    // focus. After a beat, so the view is in VoiceOver's tree by then, and with focus set as well as
+    // posted, so the message is read even if the post resolves before the tree has caught up.
+    .task {
+      try? await Task.sleep(for: .milliseconds(500))
+      AccessibilityNotification.ScreenChanged(nil).post()
+      isMessageFocused = true
+    }
     .alert(
       String(localized: "containerFailure.confirm.title", defaultValue: "Start over fresh?", comment: "Title of the confirmation alert before deleting local data on the database-failure screen."),
       isPresented: $isShowingStartOverConfirmation

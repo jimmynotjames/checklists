@@ -10,14 +10,14 @@
 | Axis | Status | Notes |
 | --- | --- | --- |
 | **VoiceOver labels/values** | Partial | Every interactive control is labelled; the remaining VoiceOver gaps are **#278**. Checklists, and the items inside a checklist, reorder by Move Up/Down/to Top/to Bottom actions on each row, since neither `.onMove` nor the item table's drag handles and long-press drag offer VoiceOver a way to move a row. On item rows the actions sit on the checkbox and both text views, the elements VoiceOver lands on, and outside Reorder Items mode they add Duplicate and Delete, since the swipe actions belong to the cell. Each item's checkbox reads its status, then the item's name, or "Checkbox" when the name is blank — §Label vs. value |
-| **VoiceOver traits** | Partial | `ChecklistHistoryCaption` sets `.staticText`; `MainMenuView` sets `.isModal`, since on a wide window it is a side panel with the list still on screen beside it, and closes on the escape gesture; VoiceOver moves to its Close button when it opens and back to ☰ when it closes. In Reorder Items mode each checkbox is disabled, so it reads as dimmed; everything else relies on platform defaults |
+| **VoiceOver traits** | Partial | `ChecklistHistoryCaption` sets `.staticText`; `ContainerFailureView`'s title and message are one element with `.isHeader`; `MainMenuView` sets `.isModal`, since on a wide window it is a side panel with the list still on screen beside it, and closes on the escape gesture; VoiceOver moves to its Close button when it opens and back to ☰ when it closes. In Reorder Items mode each checkbox is disabled, so it reads as dimmed; everything else relies on platform defaults |
 | **Reduce Motion** | Implemented | Every app-authored animation has a recorded verdict — §Animation and Reduce Motion |
 | **Dynamic Type** | Implemented | Every screen scales through AX5 with no known layout breaks — §Dynamic Type. Accepted as untested: a live size change on a device, and an AX-size pass in the screenshot audit (it forces xxxLarge). From two steps above the default text size (xxLarge) ChecklistsView's Reset All and Edit mode toolbar collapse to icons, so long translations neither push Edit into an overflow menu nor clip the toolbar; they keep their names for VoiceOver and the Large Content Viewer |
 | **Dark Mode** | Not started | The app is locked to Light appearance in `Info.plist` — **#180** |
 | **Increase Contrast** | Not started | **#182** |
 | **Touch targets (44×44)** | Implemented | `ToastView`, `CopyCheckedItemsView`, `MainMenuView`'s close button, the checklist header's name and notes fields, and each item's name and notes fields enforce a 44pt minimum, and `ChecklistsView`'s last row scrolls clear of the Add button. A toast may sit over rows while it is up, by design: a tap anywhere on it dismisses it |
 | **Color-only signaling** | N/A — none | Completion state is an icon swap plus a spoken value, never tint alone |
-| **Screen-change announcements** | Partial | `LoadingView` posts `.screenChanged`; `ToastPresenterModifier` posts announcements; both screens' moves, deletes, duplicates and resets tell VoiceOver what changed — §Announcements and focus |
+| **Screen-change announcements** | Partial | `LoadingView` and `ContainerFailureView` post `.screenChanged`; `ToastPresenterModifier` posts announcements; both screens' moves, deletes, duplicates and resets tell VoiceOver what changed — §Announcements and focus |
 | **Automated a11y tests** | Not started | No audit-API coverage; UI tests use accessibility attributes only as element hooks |
 
 `UIAccessibility.isVoiceOverRunning` is read by `ToastPresenter`. The other flags
@@ -112,6 +112,11 @@ long and which the user just acted on.
   in and back to ⋯ on the way out, after the bar has relaid and the ⋯ menu has closed. The post
   names the `UIBarButtonItem` itself, which VoiceOver resolves to the button the bar draws: the
   bar's own views are private, and in a unit-test host they carry no identifier to find them by.
+- **The failure screen** (`ContainerFailureView`) replaces the app unasked, so after a beat it posts
+  `.screenChanged` with no string and puts VoiceOver on its title and message, one element, which is
+  read once. A string would be read and then the element again. `LoadingView` passes its text as the
+  string instead; nothing on it is interactive. A failed Start over fresh leaves the same screen up
+  and says nothing new.
 - **Checklists list:** a confirmed delete, the swipe Duplicate, Reset All (only when it unticked
   something) and Edit mode's Delete, Duplicate and Reset (with a count) announce. Focus moves after a
   confirmation alert or Edit mode's exit has finished, since the system moves VoiceOver itself as an
