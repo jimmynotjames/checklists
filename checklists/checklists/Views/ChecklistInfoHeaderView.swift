@@ -47,6 +47,8 @@ final class ChecklistInfoHeaderView: UIView {
       defaultValue: "Checklist Name: ",
       comment: "VoiceOver label read before the checklist name field. Keep the trailing space and colon."
     )
+    // The screen's heading, since the bar shows no title until the name scrolls under it.
+    nameTextField.accessibilityTraits.insert(.header)
 
     notesTextView.font = .preferredFont(forTextStyle: .callout)
     notesTextView.adjustsFontForContentSizeCategory = true

@@ -146,8 +146,10 @@ struct ChecklistsView: View {
     .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { listWidth = $0 }
     .environment(\.editMode, $editMode)
     .appBackground()
-    .navigationTitle(Text(verbatim: ""))
+    // Named for VoiceOver, but not drawn.
+    .navigationTitle(Self.screenTitle)
     .navigationBarTitleDisplayMode(.inline)
+    .toolbar(removing: .title)
     .overlay(alignment: .bottom) {
       // Hidden rather than disabled: the bottom toolbar takes its place, and a new checklist
       // appearing mid-selection would only confuse it.

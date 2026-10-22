@@ -59,6 +59,8 @@ struct AnalyticsConsentSheet: View {
           }
           .multilineTextAlignment(.center)
           .accessibilityElement(children: .combine)
+          // The sheet's heading, read with its explanation as one element.
+          .accessibilityAddTraits(.isHeader)
         }
         .padding(.horizontal, 24)
       }

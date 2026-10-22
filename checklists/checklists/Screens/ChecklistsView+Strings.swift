@@ -5,8 +5,18 @@
 
 import Foundation
 
-/// What the list of checklists says to VoiceOver after a delete, a duplicate or a reset.
+/// What the list of checklists says to VoiceOver: its name, and what changed after a delete, a
+/// duplicate or a reset.
 extension ChecklistsView {
+  static let screenTitle = String(
+    localized: "checklists.title",
+    defaultValue: "Checklists",
+    comment: """
+    Name of the app's main screen, the list of all checklists. Not drawn on screen: VoiceOver reads \
+    it as the screen's title. A plural noun, not a verb.
+    """
+  )
+
   static let deletedAnnouncement = String(
     localized: "checklists.accessibility.deleted",
     defaultValue: "Checklist deleted",
