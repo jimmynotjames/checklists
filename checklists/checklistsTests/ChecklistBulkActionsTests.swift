@@ -105,7 +105,7 @@ struct ChecklistBulkActionsTests {
     let context = try TestModelContainer.makeContext()
     let lists = try makeChecklists(["A", "B"], checked: true, in: context)
 
-    #expect(context.resetChecklists([lists[0]]))
+    #expect(context.resetChecklists([lists[0]]) == 1)
 
     #expect(lists[0].items.allSatisfy { $0.status == .unchecked })
     #expect(lists[1].items.allSatisfy { $0.status == .checked })
@@ -116,8 +116,8 @@ struct ChecklistBulkActionsTests {
     let context = try TestModelContainer.makeContext()
     let lists = try makeChecklists(["A"], in: context)
 
-    #expect(!context.resetChecklists(lists))
-    #expect(!context.resetChecklists([]))
+    #expect(context.resetChecklists(lists) == 0)
+    #expect(context.resetChecklists([]) == 0)
   }
 
   // MARK: - Move actions

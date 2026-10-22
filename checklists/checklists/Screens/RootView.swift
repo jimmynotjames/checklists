@@ -107,7 +107,8 @@ struct RootView: View {
   }
 
   /// A route can stop resolving between being appended and being rendered (e.g. the record was
-  /// deleted on another device). Render nothing and quietly pop rather than crashing.
+  /// deleted on another device). Render nothing and quietly pop rather than crashing. Quietly, unlike
+  /// the open screen catching the same deletion first, which says why (`Toast.checklistDeletedElsewhere`).
   private var unresolvedPushDestination: some View {
     Color.clear.onAppear {
       guard !router.path.isEmpty else { return }

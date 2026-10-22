@@ -142,10 +142,13 @@ struct CopyCheckedItemsView: View {
   /// while this sheet is up, and without re-asking, committing would put a brand-new empty
   /// checklist at the top of the list, count a `checklist_items_copied` or `checklist_items_moved`,
   /// and say it worked.
-  /// Leaving quietly is the honest response: the person's own list is unchanged either way.
+  /// Leaving is the honest response: the person's own list is unchanged either way. The toast says
+  /// why, since the sheet otherwise just closes on a tap.
   private func hasSomethingToCopy() -> Bool {
     guard source.checkedItems.isEmpty else { return true }
     dismiss()
+    // After the dismissal, like `finish`, so the root layer draws and announces it.
+    toasts?.show(.noCheckedItemsLeft)
     return false
   }
 

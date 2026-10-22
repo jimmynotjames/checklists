@@ -40,6 +40,16 @@ class ChecklistViewController: UIViewController {
   /// nothing.
   var onRequestTransferCheckedItems: ((String, CheckedItemsTransferMode) -> Void)?
 
+  /// Set by the SwiftUI host (`ChecklistScreen`). Called once as the screen closes because another
+  /// device deleted its checklist, for the host to say why.
+  var onRemoteDeletion: (() -> Void)?
+  /// Whether this screen has asked to close, so a deletion arriving as a store change while it
+  /// leaves — its own, or another device's just as the person left — isn't announced. Every way out
+  /// goes through `requestDismissal`, which sets it.
+  var hasRequestedDismissal = false
+  /// Read at load: once the record is deleted, its properties are no longer safe to read.
+  private var checklistID: String?
+
   /// The overflow menu's bar item, kept so its menu can be rebuilt while it is on screen — the one
   /// way UIKit offers to change a menu that is already presented.
   var moreBarButtonItem: UIBarButtonItem?
@@ -117,9 +127,17 @@ class ChecklistViewController: UIViewController {
   /// init time.
   var saveItemMove: ((Item, [Item], Int) throws -> Void)?
 
-  /// Overrides what a VoiceOver move tells VoiceOver: the element to focus and the announcement.
-  /// `nil` — the normal case — posts both for real. Set by tests to observe them.
-  var moveFeedback: ((UIView?, String) -> Void)?
+  /// Overrides what this screen tells VoiceOver after an action or a mode change: the element or bar
+  /// item to focus, and the announcement. `nil` — the normal case — posts both for real. Set by tests
+  /// to observe them.
+  var accessibilityFeedback: ((NSObject?, String?) -> Void)?
+
+  /// How long after Reorder Items mode starts or ends VoiceOver is moved: long enough for the bar to
+  /// relay and, on the way in, the ⋯ menu to close. `nil` moves it at once; set by tests, which
+  /// cannot wait on the delay.
+  var reorderModeFocusDelay: Duration? = .milliseconds(500)
+  /// The pending move, so a quick toggle back replaces it rather than stacking a second.
+  var reorderModeFocusTask: Task<Void, Never>?
 
   /// The bar as it was before Reorder Items mode cleared it down to Done. Put back as-is on the way
   /// out rather than rebuilt: `configureNavigationBar` reads `isNewChecklist`, which `viewDidAppear`
@@ -207,6 +225,7 @@ class ChecklistViewController: UIViewController {
       try? context.insert(item: Item(), at: 0, in: checklist)
     }
 
+    checklistID = checklist.id
     // Refreshes when another device's changes are merged in via CloudKit sync.
     remoteChangeObserver = RemoteChangeObserver { [weak self] in
       self?.handleRemoteChange()
@@ -221,7 +240,13 @@ class ChecklistViewController: UIViewController {
       // Deleted on another device, or by sample dedupe, while open here. Leaving the screen up
       // would let the user keep editing a record that no longer exists. Looked up by record, not
       // `id`: dedupe deletes one of two records sharing an `id`, and the twin must not count.
+      // Said only for another device's delete, and once: dedupe leaves the same checklist under its
+      // twin, and this screen's own Delete Checklist has already asked to close.
+      let deletedElsewhere = !hasRequestedDismissal && checklistID.map { context.checklist(id: $0) == nil } ?? false
       requestDismissal()
+      if deletedElsewhere {
+        onRemoteDeletion?()
+      }
       return
     }
 
@@ -311,6 +336,7 @@ class ChecklistViewController: UIViewController {
     super.setEditing(editing, animated: animated)
     tableView.setEditing(editing, animated: animated)
     applyReorderModeToNavigationBar(editing, animated: animated)
+    moveVoiceOverToReorderModeButton()
 
     checklistNameTextField.isEnabled = !editing
     checklistNotesTextView.isEditable = !editing
@@ -338,11 +364,7 @@ class ChecklistViewController: UIViewController {
   }
 
   @objc func doneButtonTapped() {
-    if let onRequestDismiss {
-      onRequestDismiss()
-    } else {
-      dismiss(animated: true, completion: nil)
-    }
+    requestDismissal()
   }
 
   @objc func resetButtonTapped() {
@@ -353,6 +375,8 @@ class ChecklistViewController: UIViewController {
     if checklist.uncheckAllItems() {
       context.saveStatusChange(to: checklist, wasComplete: wasComplete)
       refreshHistoryCaption()
+      // Only when something changed: on a list with nothing ticked, nothing changes on screen either.
+      postAccessibilityFeedback(focus: nil, announcement: Self.allItemsUncheckedAnnouncement)
     }
     updateStatusIcon()
 
@@ -441,7 +465,10 @@ class ChecklistViewController: UIViewController {
     }
   }
 
-  func deleteItem(at index: Int) {
+  /// `announcesResult` is for the swipe and VoiceOver Delete, which move VoiceOver to the row that
+  /// takes the deleted one's place. Backspace on an empty row leaves it off: it moves editing to the
+  /// row above itself.
+  func deleteItem(at index: Int, announcesResult: Bool = false) {
     let items = checklist.items
     guard index >= 0, index < items.count else { assertionFailure(); return }
     let wasComplete = checklist.isComplete
@@ -451,6 +478,9 @@ class ChecklistViewController: UIViewController {
     updateStatusIcon()
     refreshHistoryCaption()
     refreshAccessibilityActions()
+    guard announcesResult else { return }
+    let neighbour = DeletionFocus.neighbourIndex(afterRemoving: index, remainingCount: checklist.items.count)
+    postAccessibilityFeedback(focus: focusTargetAfterRemoval(neighbour: neighbour), announcement: Self.itemDeletedAnnouncement)
   }
 
   /// The overflow menu's Delete Checked Items, once confirmed. Internal so a test can invoke it: a
@@ -470,6 +500,11 @@ class ChecklistViewController: UIViewController {
     tableView.reloadData()
     updateStatusIcon()
     refreshHistoryCaption()
+    // The reload drops whatever row VoiceOver was on, so it starts again from the top.
+    postAccessibilityFeedback(
+      focus: focusTargetAfterRemoval(neighbour: checklist.items.isEmpty ? nil : 0),
+      announcement: Self.checkedItemsDeletedAnnouncement(count: checkedItems.count)
+    )
   }
 
   /// Copies the item at `index` and places the copy directly beneath it. See
@@ -488,6 +523,7 @@ class ChecklistViewController: UIViewController {
     // `isComplete`, which is why the status icon alone needs a refresh.
     updateStatusIcon()
     refreshAccessibilityActions()
+    postAccessibilityFeedback(focus: nil, announcement: Self.itemDuplicatedAnnouncement)
   }
 
   /// The width the header was last measured against. `view` is the table itself, so this runs on
@@ -638,7 +674,7 @@ extension ChecklistViewController: UITableViewDelegate {
     guard !isReordering else { return nil }
 
     let deleteAction = UIContextualAction(style: .destructive, title: nil) { [weak self] _, _, completion in
-      self?.deleteItem(at: indexPath.row)
+      self?.deleteItem(at: indexPath.row, announcesResult: true)
       completion(true)
     }
     deleteAction.image = UIImage(systemName: "trash")
@@ -991,19 +1027,46 @@ extension ChecklistViewController {
     tableView.layoutIfNeeded()
     refreshAccessibilityActions()
 
-    let movedRow = (tableView.cellForRow(at: destinationIndexPath) as? ItemTableViewCell)?.itemContentView
-    let announcement = Self.movedToPositionAnnouncement(position: destination + 1, count: count)
-    if let moveFeedback {
-      moveFeedback(movedRow?.accessibilityFocusTarget, announcement)
-    } else {
-      UIAccessibility.post(notification: .layoutChanged, argument: movedRow?.accessibilityFocusTarget)
-      // Posted after a beat, or VoiceOver reading the refocused row cuts it off.
-      Task {
-        try? await Task.sleep(for: .milliseconds(500))
-        UIAccessibility.post(notification: .announcement, argument: announcement)
-      }
-    }
+    postAccessibilityFeedback(
+      focus: rowFocusTarget(at: destination),
+      announcement: Self.movedToPositionAnnouncement(position: destination + 1, count: count)
+    )
     return true
+  }
+
+  /// Moves VoiceOver to `focus`, when there is one, then speaks `announcement`. Neither shows when
+  /// VoiceOver is off.
+  func postAccessibilityFeedback(focus: NSObject?, announcement: String?) {
+    if let accessibilityFeedback {
+      accessibilityFeedback(focus, announcement)
+      return
+    }
+    Task {
+      // A turn later, so a swipe or custom action that triggered this has finished first: VoiceOver
+      // re-seats its cursor when the element that ran the action goes away.
+      if let focus {
+        UIAccessibility.post(notification: .layoutChanged, argument: focus)
+      }
+      guard let announcement else { return }
+      // Posted after a beat, or VoiceOver reading the refocused element cuts it off.
+      try? await Task.sleep(for: .milliseconds(500))
+      UIAccessibility.post(notification: .announcement, argument: announcement)
+    }
+  }
+
+  /// The element VoiceOver lands on for the row at `index`, when that row is on screen.
+  func rowFocusTarget(at index: Int) -> UIView? {
+    (tableView.cellForRow(at: IndexPath(row: index, section: itemsSection)) as? ItemTableViewCell)?
+      .itemContentView.accessibilityFocusTarget
+  }
+
+  /// Where VoiceOver goes once rows are gone: the row at `index`, or the Add button when no rows are
+  /// left. Never scrolls, so nothing changes on screen when VoiceOver is off; a row off screen gets
+  /// no focus, and VoiceOver stays where it puts itself.
+  func focusTargetAfterRemoval(neighbour index: Int?) -> UIView? {
+    tableView.layoutIfNeeded()
+    guard let index else { return (tableView.tableFooterView as? AddItemButtonTableFooterView)?.addButton }
+    return rowFocusTarget(at: index)
   }
 
   /// Built per row from the item, not its index path, so it reads the saved order even in the
@@ -1028,7 +1091,7 @@ extension ChecklistViewController {
       },
       UIAccessibilityCustomAction(name: CommonStrings.delete) { [weak self] _ in
         guard let self, let index = checklist.items.firstIndex(where: { $0.id == id }) else { return false }
-        deleteItem(at: index)
+        deleteItem(at: index, announcesResult: true)
         return true
       },
     ]

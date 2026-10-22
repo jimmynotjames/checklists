@@ -121,6 +121,27 @@ extension ChecklistViewController {
     setEditing(false, animated: true)
   }
 
+  /// Done in Reorder Items mode, ⋯ outside it. The item VoiceOver was on has just been swapped away,
+  /// which would leave it somewhere arbitrary.
+  var reorderModeFocusTarget: UIBarButtonItem? {
+    isReordering ? navigationItem.rightBarButtonItems?.first : moreBarButtonItem
+  }
+
+  /// Posted with the bar item itself; see `core-docs/accessibility-spec.md` §Announcements and focus.
+  func moveVoiceOverToReorderModeButton() {
+    reorderModeFocusTask?.cancel()
+    guard let delay = reorderModeFocusDelay else {
+      postAccessibilityFeedback(focus: reorderModeFocusTarget, announcement: nil)
+      return
+    }
+    reorderModeFocusTask = Task { [weak self] in
+      try? await Task.sleep(for: delay)
+      // Not once the screen has gone, nor after a quicker toggle has taken over.
+      guard !Task.isCancelled, let self, viewIfLoaded?.window != nil else { return }
+      postAccessibilityFeedback(focus: reorderModeFocusTarget, announcement: nil)
+    }
+  }
+
   /// A checked-items entry, and the notice explaining why a tap on it did nothing.
   ///
   /// Each entry is always present and always live, even with nothing ticked: hiding or dimming it
@@ -189,7 +210,8 @@ extension ChecklistViewController {
   /// from `ToastPresenter`, whose dwell is an initializer parameter.
   private static let noItemsCheckedNoticeDuration: Duration = .seconds(3)
 
-  private func checkedItemsEntryTapped(_ entry: CheckedItemsMenuEntry) {
+  /// Internal so a test can invoke it, like the actions in this extension's doc comment.
+  func checkedItemsEntryTapped(_ entry: CheckedItemsMenuEntry) {
     // Commits in-progress edits first; see `duplicateChecklist`.
     view.endEditing(true)
     guard !checklist.checkedItems.isEmpty else {
@@ -218,6 +240,8 @@ extension ChecklistViewController {
     noItemsCheckedNoticeDismissal?.cancel()
     noItemsCheckedNoticeEntry = entry
     refreshMoreMenu()
+    // The notice is a disabled row, which VoiceOver does not read out by itself appearing.
+    postAccessibilityFeedback(focus: nil, announcement: Self.noItemsCheckedNotice)
     noItemsCheckedNoticeDismissal = Task { [weak self] in
       try? await Task.sleep(for: Self.noItemsCheckedNoticeDuration)
       guard !Task.isCancelled, let self, noItemsCheckedNoticeEntry != nil else { return }
@@ -303,6 +327,7 @@ extension ChecklistViewController {
   /// Implements the contract on `onRequestDismiss`'s doc comment; also the fallback for the
   /// pure-UIKit case that leaves it unset.
   func requestDismissal() {
+    hasRequestedDismissal = true
     if let onRequestDismiss {
       onRequestDismiss()
     } else if let navigationController, navigationController.viewControllers.count > 1 {

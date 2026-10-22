@@ -88,6 +88,8 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   /// Optional on purpose: previews and tests build this screen without the app around it, and a
   /// missing coordinator should mean "no prompt", never a crash. `ChecklistsApp` always injects it.
   @Environment(RatingPromptCoordinator.self) private var ratingPrompt: RatingPromptCoordinator?
+  /// Optional for the same reason as `ratingPrompt`.
+  @Environment(ToastPresenter.self) private var toasts: ToastPresenter?
 
   func makeCoordinator() -> Coordinator {
     Coordinator(onRequestDismiss: onRequestDismiss, transferGeneration: transferGeneration)
@@ -101,6 +103,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
     viewController.onRequestDismiss = onRequestDismiss
     viewController.onRequestOpenDuplicate = onRequestOpenDuplicate
     viewController.onRequestTransferCheckedItems = onRequestTransferCheckedItems
+    viewController.onRemoteDeletion = { [toasts] in toasts?.show(.checklistDeletedElsewhere) }
     viewController.analytics = analytics
     viewController.ratingPrompt = ratingPrompt
     if !isNewChecklist {
@@ -108,7 +111,8 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
       // Chevron-only, with no back title, is the intended look.
       let backButton = UIBarButtonItem(
         image: UIImage(systemName: "chevron.backward"),
-        primaryAction: UIAction { _ in onRequestDismiss() }
+        // Through the controller, so it knows it is leaving; see `hasRequestedDismissal`.
+        primaryAction: UIAction { [weak viewController] _ in viewController?.requestDismissal() }
       )
       // iOS 26 renders bar buttons in `labelColor` unless the item itself carries a tint.
       backButton.tintColor = .tintColor
@@ -152,7 +156,12 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
 
     @objc func edgeSwipeBegan(_ gesture: UIScreenEdgePanGestureRecognizer) {
       guard gesture.state == .began else { return }
-      onRequestDismiss()
+      // Through the controller when there is one, as the back button does.
+      if let viewController {
+        viewController.requestDismissal()
+      } else {
+        onRequestDismiss()
+      }
     }
 
     /// Reorder Items mode hides the back button, and an edge swipe would be the way out it stands in for.
