@@ -30,10 +30,12 @@ final class ChecklistItemsUITest: ChecklistDetailUITestCase {
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["itemCheckbox"].isSelected == false)
     assertPercentComplete(tablesQuery["ChecklistTableView"], numCheckedItems: 0, numItems: 11) // Check that circular status icon updated. 0/11 -> 0%
 
-    // Check 2 different items, Verify again
+    // Check 2 different items, Verify again. Reset leaves the list at the top, where the last row is
+    // below the screen and has no checkbox in the accessibility tree, so scroll down to reach it.
     tablesQuery.children(matching: .cell).element(boundBy: 2).buttons["itemCheckbox"].tap()
-    tablesQuery.children(matching: .cell).element(boundBy: 10).buttons["itemCheckbox"].tap()
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 2).buttons["itemCheckbox"].isSelected == true)
+    tablesQuery["ChecklistTableView"].swipeUp()
+    tablesQuery.children(matching: .cell).element(boundBy: 10).buttons["itemCheckbox"].tap()
     XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 10).buttons["itemCheckbox"].isSelected == true)
 
     // Go Back. Verify circular status is updated on main Checklists page.
