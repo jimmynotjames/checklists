@@ -14,3 +14,4 @@ enough data. What counts as flaky and when to log it: AGENTS.md §"Reading a tes
 
 | Date | Test | File:line | Failure | Run (suite, branch@sha, bundle) | Isolated rerun | Hunch |
 |---|---|---|---|---|---|---|
+| 2026-10-22 | `ChecklistItemsUITest/testChecklistReordering1` | `checklists/checklistsUITests/ChecklistItemsUITest.swift:140` | XCTAssertTrue failed | `make test-only` class run, u/jimmyho/claude-code/fix-checkboxes-and-reset-test@d5153ec, `tmp/ui-items-class.log` | Passed 3/3 (`ITERATIONS=3`) | Unknown; not investigated |
