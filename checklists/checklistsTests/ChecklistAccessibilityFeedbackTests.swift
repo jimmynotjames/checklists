@@ -162,3 +162,14 @@ struct ReorderModeFocusTests {
     }
   }
 }
+
+/// The bar shows no title until the name scrolls under it, so the name field is the screen's heading.
+@Suite("Checklist screen heading", .serialized)
+struct ChecklistHeadingTests {
+  @Test("the name field is a heading")
+  func nameFieldIsAHeading() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
+      #expect(harness.header.nameTextField.accessibilityTraits.contains(.header))
+    }
+  }
+}

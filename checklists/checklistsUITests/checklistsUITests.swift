@@ -135,6 +135,11 @@ class checklistsUITests: XCTestCase {
     cancel.tap()
   }
 
+  /// The bar draws no title, but VoiceOver still needs to hear which screen this is.
+  func testListIsNamedForVoiceOver() {
+    XCTAssertTrue(app.navigationBars["Checklists"].exists, "The list's title should be in the accessibility tree.")
+  }
+
   private func enterEditMode() {
     let edit = app.buttons["toolbar.edit"]
     XCTAssertTrue(edit.waitForExistence(timeout: 5), "The Edit button didn't appear.")

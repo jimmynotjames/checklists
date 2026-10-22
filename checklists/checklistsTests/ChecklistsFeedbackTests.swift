@@ -32,3 +32,30 @@ struct ChecklistsFeedbackTests {
     #expect(announcements.allSatisfy { $0.contains("3") })
   }
 }
+
+/// The confirmation alerts name what they act on, so VoiceOver reads more than "This cannot be undone".
+@Suite("Checklists list confirmation titles")
+struct ChecklistsConfirmationTitleTests {
+  @Test("the delete title names the checklist")
+  func deleteTitleNamesTheChecklist() {
+    let name = String("Weekend packing")
+    #expect(ChecklistsView.deleteConfirmationTitle(name: name).contains(name))
+  }
+
+  @Test("a blank name reads as the default checklist name")
+  func blankNameFallsBack() {
+    #expect(
+      ChecklistsView.deleteConfirmationTitle(name: "")
+        == ChecklistsView.deleteConfirmationTitle(name: CommonStrings.defaultChecklistName)
+    )
+  }
+
+  @Test("bulk titles carry the count and tell delete from reset")
+  func bulkTitlesCarryTheCount() {
+    let delete = ChecklistsView.bulkConfirmationTitle(for: .delete, count: 3)
+    let reset = ChecklistsView.bulkConfirmationTitle(for: .reset, count: 3)
+    #expect(delete.contains("3"))
+    #expect(reset.contains("3"))
+    #expect(delete != reset)
+  }
+}
