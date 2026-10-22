@@ -50,6 +50,9 @@ struct ChecklistsView: View {
   /// `id`, since two records can share an `id` until sample dedupe runs and deleting by `id` could
   /// take the other one. See `ModelContext.deleteChecklists(_:)`.
   @State private var pendingDeleteID: PersistentIdentifier?
+  /// The delete alert's title, fixed when the alert opens. Worked out live, it would fall back to the
+  /// untitled name as the alert closes, once the confirmed checklist is gone.
+  @State private var deleteConfirmationTitle = ""
 
   @State private var showsResetAllConfirmation = false
 
@@ -58,6 +61,9 @@ struct ChecklistsView: View {
   @State private var selection = Set<String>()
   /// The Edit mode toolbar action waiting on its confirmation alert.
   @State private var pendingBulkAction: ChecklistsBulkAction?
+  /// The bulk alert's title, fixed when the alert opens, for the same reason as
+  /// `deleteConfirmationTitle`: confirming clears the selection while the alert is still closing.
+  @State private var bulkConfirmationTitle = ""
 
   /// Where VoiceOver goes after a move (the moved row, as the list re-sorts) or a delete (its neighbour).
   @AccessibilityFocusState private var focusedChecklistID: String?
@@ -108,6 +114,7 @@ struct ChecklistsView: View {
             // before the confirmation alert, and a cancelled confirmation must leave the row
             // visible. The red comes from an explicit tint instead.
             Button {
+              deleteConfirmationTitle = Self.deleteConfirmationTitle(name: checklist.name)
               pendingDeleteID = checklist.persistentModelID
             } label: {
               // Icon-only for the visible button, but the title is what VoiceOver reads and what
@@ -190,7 +197,7 @@ struct ChecklistsView: View {
           tint: Colors.destructiveColor,
           id: "editBar.delete"
         ) {
-          pendingBulkAction = .delete
+          confirm(.delete)
         }
       }
       ToolbarSpacer(.flexible, placement: .bottomBar)
@@ -202,7 +209,7 @@ struct ChecklistsView: View {
       ToolbarSpacer(.flexible, placement: .bottomBar)
       ToolbarItem(placement: .bottomBar) {
         bulkActionButton(Self.resetSelectedTitle, systemImage: "arrow.counterclockwise", id: "editBar.reset") {
-          pendingBulkAction = .reset
+          confirm(.reset)
         }
       }
     }
@@ -212,7 +219,7 @@ struct ChecklistsView: View {
         selection.removeAll()
       }
     }
-    .alert(Text(verbatim: ""), isPresented: isPresentingDeleteConfirmation, presenting: pendingDeleteID) { persistentID in
+    .alert(Text(deleteConfirmationTitle), isPresented: isPresentingDeleteConfirmation, presenting: pendingDeleteID) { persistentID in
       Button(CommonStrings.delete, role: .destructive) {
         confirmDelete(persistentID)
       }
@@ -220,7 +227,7 @@ struct ChecklistsView: View {
     } message: { _ in
       Text(CommonStrings.irreversibleConfirmation)
     }
-    .alert(Text(verbatim: ""), isPresented: isPresentingBulkConfirmation, presenting: pendingBulkAction) { action in
+    .alert(Text(bulkConfirmationTitle), isPresented: isPresentingBulkConfirmation, presenting: pendingBulkAction) { action in
       Button(action == .delete ? CommonStrings.delete : Self.resetSelectedTitle, role: .destructive) {
         perform(action)
       }
@@ -228,7 +235,7 @@ struct ChecklistsView: View {
     } message: { _ in
       Text(CommonStrings.irreversibleConfirmation)
     }
-    .alert(Text(verbatim: ""), isPresented: $showsResetAllConfirmation) {
+    .alert(Text(Self.resetAllConfirmationTitle), isPresented: $showsResetAllConfirmation) {
       Button(Self.resetAllTitle, role: .destructive) {
         if context.resetChecklists(Array(checklists)) > 0 {
           postAccessibilityFeedback(Self.allResetAnnouncement, afterAlert: true)
@@ -538,6 +545,12 @@ struct ChecklistsView: View {
   }
 
   // MARK: - Edit mode actions
+
+  /// Asks before a bulk action that can't be undone, titled with how many it will act on.
+  private func confirm(_ action: ChecklistsBulkAction) {
+    bulkConfirmationTitle = Self.bulkConfirmationTitle(for: action, count: liveSelection.count)
+    pendingBulkAction = action
+  }
 
   private var isPresentingBulkConfirmation: Binding<Bool> {
     Binding(

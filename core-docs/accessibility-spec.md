@@ -122,7 +122,8 @@ long and which the user just acted on.
   confirmation alert or Edit mode's exit has finished, since the system moves VoiceOver itself as an
   alert closes. After an Edit mode action it goes to Edit, because the bottom toolbar it was on is
   gone; when a delete leaves no checklists it goes to the Add button, since the list has no empty
-  state.
+  state. Its confirmation alerts name what they act on in the title — the checklist, or how many are
+  selected — so VoiceOver reads more than "This cannot be undone."
 - **Toasts** are announced once per toast, so a repeat with the same words is spoken again, and a
   toast raised as a sheet closes waits until the sheet is gone (`ToastPresenter.announcementDelay`),
   since VoiceOver moving back to the screen would cut it off. Under VoiceOver a toast stays until
