@@ -123,6 +123,15 @@ long and which the user just acted on.
   alert closes. After an Edit mode action it goes to Edit, because the bottom toolbar it was on is
   gone; when a delete leaves no checklists it goes to the Add button, since the list has no empty
   state.
+- **Rarer outcomes.**
+  - The overflow menu's "No checked items." row is announced as it appears; a disabled row isn't read
+    out by appearing.
+  - When the open checklist is deleted on another device, it closes with a toast saying so, for
+    everyone. There's no toast for sample dedupe, whose surviving twin is the same checklist, nor for
+    the screen's own Delete Checklist coming back as a store change.
+  - The Copy or Move Checked Items sheet closing because nothing is checked any more shows a toast.
+  - Settings' iCloud row isn't announced when Checking gives way to a result: VoiceOver reads the
+    current value whenever it lands there.
 
 ### Identifiers are test hooks
 

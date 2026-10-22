@@ -49936,6 +49936,616 @@
         }
       }
     },
+    "toast.checklistDeletedElsewhere" : {
+      "comment" : "Info toast shown as an open checklist closes by itself, because the same checklist was deleted on another of the person's devices and the deletion synced. Explains why the screen went away. Appears briefly at the bottom of the list of checklists, with no button.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حُذفت قائمة التحقق هذه على جهاز آخر."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "এই চেকলিস্টটি অন্য একটি ডিভাইসে মুছে ফেলা হয়েছে।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aquesta llista s'ha eliminat en un altre dispositiu."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tento seznam byl smazán na jiném zařízení."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne tjekliste blev slettet på en anden enhed."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Checkliste wurde auf einem anderen Gerät gelöscht."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Αυτή η λίστα ελέγχου διαγράφηκε από άλλη συσκευή."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This checklist was deleted on another device."
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This checklist was deleted on another device."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This checklist was deleted on another device."
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Checklist was deleted on another device."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta lista se ha eliminado en otro dispositivo."
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta lista se eliminó en otro dispositivo."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tämä tarkistuslista poistettiin toisella laitteella."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette liste a été supprimée sur un autre appareil."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette liste de vérification a été supprimée sur un autre appareil."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "આ ચેકલિસ્ટ બીજા ડિવાઇસ પર ડિલીટ કરવામાં આવી હતી."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "הרשימה הזו נמחקה במכשיר אחר."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह चेकलिस्ट किसी दूसरे डिवाइस पर डिलीट कर दी गई थी।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ovaj je popis izbrisan na drugom uređaju."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ezt a listát egy másik eszközön törölték."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daftar periksa ini dihapus di perangkat lain."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questa checklist è stata eliminata su un altro dispositivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このチェックリストは、ほかのデバイスで削除されました。"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಈ ಚೆಕ್‌ಲಿಸ್ಟ್ ಅನ್ನು ಮತ್ತೊಂದು ಸಾಧನದಲ್ಲಿ ಅಳಿಸಲಾಗಿದೆ."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 체크리스트가 다른 기기에서 삭제되었어요."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ഈ ചെക്ക്‌ലിസ്റ്റ് മറ്റൊരു ഉപകരണത്തിൽ ഇല്ലാതാക്കി."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ही चेकलिस्ट दुसऱ्या डिव्हाइसवर हटवली गेली."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senarai semak ini telah dipadam pada peranti lain."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne sjekklisten ble slettet på en annen enhet."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze checklist is verwijderd op een ander apparaat."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଏହି ଚେକଲିଷ୍ଟ ଅନ୍ୟ ଏକ ଡିଭାଇସରେ ଡିଲିଟ୍ ହୋଇଛି।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਇਹ ਚੈੱਕਲਿਸਟ ਕਿਸੇ ਹੋਰ ਡੀਵਾਈਸ ਉੱਤੇ ਮਿਟਾ ਦਿੱਤੀ ਗਈ ਸੀ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta lista została usunięta na innym urządzeniu."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Checklist foi excluído em outro dispositivo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta lista foi eliminada noutro dispositivo."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Această listă de verificare a fost ștearsă pe alt dispozitiv."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот чек-лист удалён на другом устройстве."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tento zoznam bol odstránený na inom zariadení."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta kontrolni seznam je bil izbrisan v drugi napravi."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checklistan raderades på en annan enhet."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "இந்த செக்லிஸ்ட் மற்றொரு சாதனத்தில் நீக்கப்பட்டது."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ఈ చెక్‌లిస్ట్ మరో పరికరంలో తొలగించబడింది"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เช็กลิสต์นี้ถูกลบบนอุปกรณ์เครื่องอื่นแล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu Kontrol Listesi başka bir cihazda silindi."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цей чекліст видалено на іншому пристрої."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "یہ چیک لسٹ کسی دوسرے آلے پر حذف کر دی گئی تھی۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danh sách kiểm tra này đã bị xóa trên một thiết bị khác."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这份清单已在另一台设备上删除。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這份檢查清單已在另一部裝置上刪除。"
+          }
+        }
+      }
+    },
+    "toast.copyCheckedItems.nothingChecked" : {
+      "comment" : "Info toast shown when the Copy or Move Checked Items sheet closes after the person picks a destination, because the items were unchecked in the meantime, for example on another device. \"Left\" signals that there were checked items when the sheet opened. Appears briefly at the bottom of the screen, with no button.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يتبقَّ أي عناصر محددة للنسخ أو النقل."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "কপি বা সরানোর মতো কোনো চেক করা আইটেম আর নেই।"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ja no queden elements marcats per copiar ni moure."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nezbývají žádné zaškrtnuté položky ke zkopírování ani přesunutí."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen afkrydsede emner tilbage at kopiere eller flytte."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine abgehakten Einträge mehr zum Kopieren oder Bewegen."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Δεν έμειναν επιλεγμένα στοιχεία για αντιγραφή ή μετακίνηση."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No checked items left to copy or move."
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No ticked items left to copy or move."
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No checked items left to copy or move."
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No ticked items left to copy or move."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya no quedan elementos marcados para copiar o mover."
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya no quedan elementos marcados para copiar ni mover."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ei merkittyjä kohteita kopioitavaksi tai siirrettäväksi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus aucun élément coché à copier ni à déplacer."
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun élément coché à copier ou à déplacer."
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "કૉપિ કે મૂવ કરવા માટે કોઈ ચેક કરેલ આઇટમ બાકી નથી."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "אין עוד פריטים מסומנים להעתקה או להעברה."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कॉपी या मूव करने के लिए कोई चेक किया गया आइटम नहीं बचा।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nema više označenih stavki za kopiranje ili premještanje."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nincs több bejelölt elem a másoláshoz vagy áthelyezéshez."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada item dicentang yang tersisa untuk disalin atau dipindahkan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun elemento spuntato da copiare o spostare."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コピーまたは移動できるチェック済みの項目はありません。"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ನಕಲಿಸಲು ಅಥವಾ ಸರಿಸಲು ಗುರುತಿಸಿದ ಐಟಂಗಳು ಉಳಿದಿಲ್ಲ."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복사하거나 이동할 체크된 항목이 더 없어요."
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "പകർത്താനോ നീക്കാനോ ചെക്ക് ചെയ്‌ത ഇനങ്ങളൊന്നും ബാക്കിയില്ല."
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कॉपी किंवा हलवण्यासाठी चेक केलेले आयटम उरले नाहीत."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiada lagi item yang ditanda untuk disalin atau dialihkan."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen avkryssede elementer igjen å kopiere eller flytte."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geen afgevinkte onderdelen meer om te kopiëren of te verplaatsen."
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "କପି କିମ୍ବା ମୁଭ୍ କରିବାକୁ ଆଉ କୌଣସି ଚେକ୍ କରାଯାଇଥିବା ଆଇଟମ୍ ନାହିଁ।"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਕਾਪੀ ਜਾਂ ਮੂਵ ਕਰਨ ਲਈ ਕੋਈ ਚੈੱਕ ਕੀਤੀ ਆਈਟਮ ਨਹੀਂ ਬਚੀ।"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie zostały żadne zaznaczone pozycje do skopiowania ani przeniesienia."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não há mais itens marcados para copiar ou mover."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Já não há itens assinalados para copiar ou mover."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nu au mai rămas elemente bifate de copiat sau mutat."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отмеченных пунктов для копирования или перемещения не осталось."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nezostali žiadne zaškrtnuté položky na kopírovanie ani presun."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ni več označenih elementov za kopiranje ali premik."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inga markerade objekt kvar att kopiera eller flytta."
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "நகலெடுக்க அல்லது நகர்த்த தேர்வுசெய்யப்பட்ட உருப்படிகள் எதுவும் இல்லை."
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "కాపీ చేయడానికి లేదా తరలించడానికి చెక్ చేసిన అంశాలు ఏవీ లేవు"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไม่มีรายการที่ทำเครื่องหมายแล้วเหลือให้คัดลอกหรือย้าย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopyalanacak ya da taşınacak işaretli öğe kalmadı."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не залишилося позначених пунктів для копіювання чи переміщення."
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "کاپی یا منتقل کرنے کے لیے کوئی چیک شدہ آئٹم باقی نہیں۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không còn mục nào đã đánh dấu để sao chép hoặc di chuyển."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已没有可拷贝或移动的已勾选项目。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有剩下可拷貝或移動的已勾選項目。"
+          }
+        }
+      }
+    },
     "toast.saveFailed" : {
       "comment" : "Error toast shown when a change could not be written to the device. Full storage is the likely cause but not a certain one — a damaged database fails the same way — so the second sentence must stay a guess (\"may\"), never a statement of fact. Appears briefly at the bottom of the screen with no button. Keep it short; it can appear after any edit (adding, ticking, renaming, deleting).",
       "localizations" : {

@@ -107,6 +107,21 @@ struct ChecklistAccessibilityFeedbackTests {
   }
 }
 
+@Suite("Checklist menu VoiceOver feedback", .serialized)
+struct ChecklistMenuFeedbackTests {
+  @Test("tapping a checked-items entry with nothing ticked announces the notice")
+  func noCheckedItemsNoticeIsAnnounced() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
+      var announcements: [String?] = []
+      harness.viewController.accessibilityFeedback = { _, announcement in announcements.append(announcement) }
+
+      harness.viewController.checkedItemsEntryTapped(.copy)
+
+      #expect(announcements == [ChecklistViewController.noItemsCheckedNotice])
+    }
+  }
+}
+
 @Suite("Focus after a deletion")
 struct DeletionFocusTests {
   @Test(

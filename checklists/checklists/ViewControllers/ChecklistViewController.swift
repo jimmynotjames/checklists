@@ -40,6 +40,16 @@ class ChecklistViewController: UIViewController {
   /// nothing.
   var onRequestTransferCheckedItems: ((String, CheckedItemsTransferMode) -> Void)?
 
+  /// Set by the SwiftUI host (`ChecklistScreen`). Called once as the screen closes because another
+  /// device deleted its checklist, for the host to say why.
+  var onRemoteDeletion: (() -> Void)?
+  /// Whether this screen has asked to close, so a deletion arriving as a store change while it
+  /// leaves — its own, or another device's just as the person left — isn't announced. Every way out
+  /// goes through `requestDismissal`, which sets it.
+  var hasRequestedDismissal = false
+  /// Read at load: once the record is deleted, its properties are no longer safe to read.
+  private var checklistID: String?
+
   /// The overflow menu's bar item, kept so its menu can be rebuilt while it is on screen — the one
   /// way UIKit offers to change a menu that is already presented.
   var moreBarButtonItem: UIBarButtonItem?
@@ -215,6 +225,7 @@ class ChecklistViewController: UIViewController {
       try? context.insert(item: Item(), at: 0, in: checklist)
     }
 
+    checklistID = checklist.id
     // Refreshes when another device's changes are merged in via CloudKit sync.
     remoteChangeObserver = RemoteChangeObserver { [weak self] in
       self?.handleRemoteChange()
@@ -229,7 +240,13 @@ class ChecklistViewController: UIViewController {
       // Deleted on another device, or by sample dedupe, while open here. Leaving the screen up
       // would let the user keep editing a record that no longer exists. Looked up by record, not
       // `id`: dedupe deletes one of two records sharing an `id`, and the twin must not count.
+      // Said only for another device's delete, and once: dedupe leaves the same checklist under its
+      // twin, and this screen's own Delete Checklist has already asked to close.
+      let deletedElsewhere = !hasRequestedDismissal && checklistID.map { context.checklist(id: $0) == nil } ?? false
       requestDismissal()
+      if deletedElsewhere {
+        onRemoteDeletion?()
+      }
       return
     }
 
@@ -347,11 +364,7 @@ class ChecklistViewController: UIViewController {
   }
 
   @objc func doneButtonTapped() {
-    if let onRequestDismiss {
-      onRequestDismiss()
-    } else {
-      dismiss(animated: true, completion: nil)
-    }
+    requestDismissal()
   }
 
   @objc func resetButtonTapped() {

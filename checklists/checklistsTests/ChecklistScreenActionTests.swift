@@ -160,6 +160,54 @@ struct ChecklistScreenActionTests {
     }
   }
 
+  /// The host shows a toast from this, so it must fire for another device's delete only, and once.
+  @Test("another device's delete is reported once, however many changes arrive")
+  func remoteDeletionIsReportedOnce() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
+      var reports = 0
+      harness.viewController.onRequestDismiss = {}
+      harness.viewController.onRemoteDeletion = { reports += 1 }
+
+      harness.modelContext.delete(harness.checklist)
+      try harness.modelContext.save()
+      harness.viewController.handleRemoteChange()
+      harness.viewController.handleRemoteChange()
+
+      #expect(reports == 1)
+    }
+  }
+
+  @Test("a checklist deduped away is not reported as deleted elsewhere")
+  func dedupedTwinIsNotReported() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
+      var reported = false
+      harness.viewController.onRequestDismiss = {}
+      harness.viewController.onRemoteDeletion = { reported = true }
+      harness.modelContext.insert(Checklist(id: harness.checklist.id, name: "Twin"))
+
+      harness.modelContext.delete(harness.checklist)
+      try harness.modelContext.save()
+      harness.viewController.handleRemoteChange()
+
+      #expect(!reported)
+    }
+  }
+
+  /// The screen's own Delete Checklist comes back as a store change while the screen leaves.
+  @Test("this screen's own delete is not reported as deleted elsewhere")
+  func ownDeleteIsNotReported() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
+      var reported = false
+      harness.viewController.onRequestDismiss = {}
+      harness.viewController.onRemoteDeletion = { reported = true }
+
+      harness.viewController.deleteChecklist()
+      harness.viewController.handleRemoteChange()
+
+      #expect(!reported)
+    }
+  }
+
   @Test("a still-present checklist is not dismissed")
   func remoteChangeToALivingChecklistDoesNotDismiss() throws {
     try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in

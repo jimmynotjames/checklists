@@ -84,3 +84,38 @@ extension Toast {
     )
   }
 }
+
+/// Shown by `ChecklistScreen` as the checklist on screen closes because another device deleted it.
+extension Toast {
+  static var checklistDeletedElsewhere: Toast {
+    Toast(
+      message: LocalizedStringResource(
+        "toast.checklistDeletedElsewhere",
+        defaultValue: "This checklist was deleted on another device.",
+        comment: """
+        Info toast shown as an open checklist closes by itself, because the same checklist was \
+        deleted on another of the person's devices and the deletion synced. Explains why the screen \
+        went away. Appears briefly at the bottom of the list of checklists, with no button.
+        """
+      )
+    )
+  }
+}
+
+/// Shown by `CopyCheckedItemsView` when it closes because nothing is checked any more.
+extension Toast {
+  static var noCheckedItemsLeft: Toast {
+    Toast(
+      message: LocalizedStringResource(
+        "toast.copyCheckedItems.nothingChecked",
+        defaultValue: "No checked items left to copy or move.",
+        comment: """
+        Info toast shown when the Copy or Move Checked Items sheet closes after the person picks a \
+        destination, because the items were unchecked in the meantime, for example on another \
+        device. "Left" signals that there were checked items when the sheet opened. Appears briefly \
+        at the bottom of the screen, with no button.
+        """
+      )
+    )
+  }
+}

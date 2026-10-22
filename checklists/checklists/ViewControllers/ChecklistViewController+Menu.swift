@@ -210,7 +210,8 @@ extension ChecklistViewController {
   /// from `ToastPresenter`, whose dwell is an initializer parameter.
   private static let noItemsCheckedNoticeDuration: Duration = .seconds(3)
 
-  private func checkedItemsEntryTapped(_ entry: CheckedItemsMenuEntry) {
+  /// Internal so a test can invoke it, like the actions in this extension's doc comment.
+  func checkedItemsEntryTapped(_ entry: CheckedItemsMenuEntry) {
     // Commits in-progress edits first; see `duplicateChecklist`.
     view.endEditing(true)
     guard !checklist.checkedItems.isEmpty else {
@@ -239,6 +240,8 @@ extension ChecklistViewController {
     noItemsCheckedNoticeDismissal?.cancel()
     noItemsCheckedNoticeEntry = entry
     refreshMoreMenu()
+    // The notice is a disabled row, which VoiceOver does not read out by itself appearing.
+    postAccessibilityFeedback(focus: nil, announcement: Self.noItemsCheckedNotice)
     noItemsCheckedNoticeDismissal = Task { [weak self] in
       try? await Task.sleep(for: Self.noItemsCheckedNoticeDuration)
       guard !Task.isCancelled, let self, noItemsCheckedNoticeEntry != nil else { return }
@@ -324,6 +327,7 @@ extension ChecklistViewController {
   /// Implements the contract on `onRequestDismiss`'s doc comment; also the fallback for the
   /// pure-UIKit case that leaves it unset.
   func requestDismissal() {
+    hasRequestedDismissal = true
     if let onRequestDismiss {
       onRequestDismiss()
     } else if let navigationController, navigationController.viewControllers.count > 1 {
