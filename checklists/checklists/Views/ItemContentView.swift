@@ -69,9 +69,6 @@ class ItemContentView: UIView {
     textView.adjustsFontForContentSizeCategory = true
     // The row's top margin and the gap down to the notes, inside the field rather than around it.
     textView.textContainerInset = UIEdgeInsets(top: Self.nameTopInset, left: 0.0, bottom: 8.0, right: 0.0)
-    textView.inputAccessoryButtonTappedAction = {
-      textView.resignFirstResponder()
-    }
     textView.returnKeyType = .next
     textView.accessibilityIdentifier = "itemNameTextView"
     textView.accessibilityLabel = String(
@@ -89,9 +86,6 @@ class ItemContentView: UIView {
     textView.adjustsFontForContentSizeCategory = true
     // The row's bottom margin, inside the field rather than below it; see `containerBottomConstraint`.
     textView.textContainerInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 4.0, right: 0.0)
-    textView.inputAccessoryButtonTappedAction = {
-      textView.resignFirstResponder()
-    }
     textView.returnKeyType = .default
     textView.delegate = self
     textView.accessibilityIdentifier = "itemNotesTextView"

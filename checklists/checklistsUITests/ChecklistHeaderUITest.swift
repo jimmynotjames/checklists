@@ -69,7 +69,7 @@ final class ChecklistHeaderUITest: ChecklistDetailUITestCase {
     let notes = loremIspum + "\n" + loremIspum
     app.typeText(notes)
 
-    app.toolbars["Toolbar"].buttons["Done"].tap()
+    app.tapChecklistEditingDone()
 
     checklistTableView.swipeUp()
 
@@ -91,7 +91,7 @@ final class ChecklistHeaderUITest: ChecklistDetailUITestCase {
 
     tablesQuery.textViews["checklistNotesTextView"].tap()
     app.typeText((1 ... 6).map { "Notes line \($0)." }.joined(separator: "\n"))
-    app.toolbars["Toolbar"].buttons["Done"].tap()
+    app.tapChecklistEditingDone()
 
     detailBackButton.tap()
     checklistsList.staticTexts["Morning Routine"].tap()

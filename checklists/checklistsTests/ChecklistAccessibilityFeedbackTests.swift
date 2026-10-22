@@ -148,7 +148,7 @@ struct ReorderModeFocusTests {
       let controller = harness.viewController
       let more = try #require(controller.moreBarButtonItem)
       var focused: [NSObject?] = []
-      controller.reorderModeFocusDelay = nil
+      controller.barSwapFocusDelay = nil
       controller.accessibilityFeedback = { focus, _ in focused.append(focus) }
 
       controller.setEditing(true, animated: false)

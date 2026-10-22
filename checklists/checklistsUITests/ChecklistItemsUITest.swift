@@ -44,6 +44,32 @@ final class ChecklistItemsUITest: ChecklistDetailUITestCase {
     assertPercentComplete(checklistsList.cells.element(boundBy: 2), numCheckedItems: 2, numItems: 11)
   }
 
+  /// While a field is being typed into, the row just above the keyboard still takes a tap: nothing
+  /// rides above the keyboard to swallow it, and Done lives in the navigation bar instead.
+  @MainActor func testCheckboxJustAboveKeyboardTakesTapWhileEditing() throws {
+    checklistsList.staticTexts["Pre-Trip Checklist"].tap()
+    let checklistTable = app.tables["ChecklistTableView"]
+    XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))
+
+    checklistTable.textViews["checklistNotesTextView"].tap()
+    let keyboard = app.keyboards.firstMatch
+    XCTAssertTrue(keyboard.waitForExistence(timeout: 5), "Keyboard didn't appear for the notes.")
+    XCTAssertTrue(app.checklistEditingDoneButton.waitForExistence(timeout: 5), "The bar didn't swap in its editing Done.")
+
+    // The lowest checkbox still clear of the keyboard: the one a keyboard toolbar would sit over.
+    let keyboardTop = keyboard.frame.minY
+    let cells = checklistTable.children(matching: .cell)
+    let lowestCheckbox = (0 ..< cells.count)
+      .map { cells.element(boundBy: $0).buttons["itemCheckbox"] }
+      .filter { $0.exists && $0.frame.maxY <= keyboardTop }
+      .max { $0.frame.maxY < $1.frame.maxY }
+    let checkbox = try XCTUnwrap(lowestCheckbox, "No checkbox sits above the keyboard.")
+    XCTAssertFalse(checkbox.isSelected)
+
+    checkbox.tap()
+    XCTAssertTrue(checkbox.wait(for: \.isSelected, toEqual: true, timeout: 5), "The tap above the keyboard didn't reach the checkbox.")
+  }
+
   func testItemDeletion() {
     checklistsList.staticTexts["Morning Routine"].tap()
 

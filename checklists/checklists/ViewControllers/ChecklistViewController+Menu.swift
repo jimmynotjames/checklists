@@ -20,7 +20,8 @@ extension ChecklistViewController {
   }
 
   /// Picks the menu's wording for this screen's mode and builds the trailing bar items. The create
-  /// sheet gets Done, an existing checklist gets Reset; both get the overflow menu at the outer edge.
+  /// sheet gets Done at the outer edge, beyond the overflow menu, as a sheet's confirming action
+  /// sits; an existing checklist gets Reset on the title side of the menu.
   func configureNavigationBar() {
     showsDiscardWording = isNewChecklist
     let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: makeMoreMenu())
@@ -43,8 +44,47 @@ extension ChecklistViewController {
       UIBarButtonItem(title: Self.resetButtonTitle, style: .plain, target: self, action: #selector(resetButtonTapped))
     }
     primaryItem.tintColor = .tintColor
-    // Trailing-first: the menu sits at the outer edge, Done or Reset next to the title.
-    navigationItem.rightBarButtonItems = [moreItem, primaryItem]
+    if isNewChecklist {
+      // Locale-invariant handle for UI tests, apart from the editing Done, which reads "Done" too.
+      primaryItem.accessibilityIdentifier = "checklist.done"
+    }
+    primaryBarButtonItem = primaryItem
+
+    // In the bar, not above the keyboard: on iOS 26 a keyboard toolbar spans the full width and
+    // swallows taps on the rows behind its clear glass.
+    let editingDoneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(editingDoneTapped))
+    editingDoneItem.tintColor = .tintColor
+    editingDoneItem.accessibilityIdentifier = "checklist.editingDone"
+    // Its own pill, as Notes draws it, rather than one shared with the menu.
+    editingDoneItem.sharesBackground = false
+    editingDoneBarButtonItem = editingDoneItem
+
+    updateEditingDoneBarButtonItem(animated: false)
+  }
+
+  /// While a field is being typed into, adds the editing Done at the outer edge and leaves the rest
+  /// where it was, as Notes does. On the create sheet it stands in for the sheet's own Done, which
+  /// already sits there. Reorder Items mode owns the whole bar while it is on, and puts back what it
+  /// found.
+  func updateEditingDoneBarButtonItem(animated: Bool) {
+    guard !isReordering, let moreBarButtonItem, let primaryBarButtonItem, let editingDoneBarButtonItem else { return }
+    // Trailing-first: index 0 is the outer edge.
+    let items: [UIBarButtonItem] = switch (showsDiscardWording, isEditingText) {
+    case (true, true): [editingDoneBarButtonItem, moreBarButtonItem]
+    case (true, false): [primaryBarButtonItem, moreBarButtonItem]
+    case (false, true): [editingDoneBarButtonItem, moreBarButtonItem, primaryBarButtonItem]
+    case (false, false): [moreBarButtonItem, primaryBarButtonItem]
+    }
+    let current = navigationItem.rightBarButtonItems ?? []
+    guard !current.elementsEqual(items, by: ===) else { return }
+    navigationItem.setRightBarButtonItems(items, animated: animated)
+  }
+
+  @objc func editingDoneTapped() {
+    view.endEditing(true)
+    // The button VoiceOver was on is about to go; VoiceOver moves to what takes its place at the
+    // outer edge: the create sheet's own Done, or ⋯.
+    moveVoiceOverAfterBarSwap(to: showsDiscardWording ? primaryBarButtonItem : moreBarButtonItem)
   }
 
   func makeMoreMenu() -> UIMenu {
@@ -121,24 +161,25 @@ extension ChecklistViewController {
     setEditing(false, animated: true)
   }
 
-  /// Done in Reorder Items mode, ⋯ outside it. The item VoiceOver was on has just been swapped away,
-  /// which would leave it somewhere arbitrary.
-  var reorderModeFocusTarget: UIBarButtonItem? {
+  /// Done in Reorder Items mode, ⋯ outside it: where VoiceOver goes when the mode swaps away the
+  /// item it was on, which would leave it somewhere arbitrary.
+  var barSwapFocusTarget: UIBarButtonItem? {
     isReordering ? navigationItem.rightBarButtonItems?.first : moreBarButtonItem
   }
 
   /// Posted with the bar item itself; see `core-docs/accessibility-spec.md` §Announcements and focus.
-  func moveVoiceOverToReorderModeButton() {
-    reorderModeFocusTask?.cancel()
-    guard let delay = reorderModeFocusDelay else {
-      postAccessibilityFeedback(focus: reorderModeFocusTarget, announcement: nil)
+  /// `target` names the item outright; `nil` reads `barSwapFocusTarget` once the bar has relaid.
+  func moveVoiceOverAfterBarSwap(to target: UIBarButtonItem? = nil) {
+    barSwapFocusTask?.cancel()
+    guard let delay = barSwapFocusDelay else {
+      postAccessibilityFeedback(focus: target ?? barSwapFocusTarget, announcement: nil)
       return
     }
-    reorderModeFocusTask = Task { [weak self] in
+    barSwapFocusTask = Task { [weak self] in
       try? await Task.sleep(for: delay)
       // Not once the screen has gone, nor after a quicker toggle has taken over.
       guard !Task.isCancelled, let self, viewIfLoaded?.window != nil else { return }
-      postAccessibilityFeedback(focus: reorderModeFocusTarget, announcement: nil)
+      postAccessibilityFeedback(focus: target ?? barSwapFocusTarget, announcement: nil)
     }
   }
 

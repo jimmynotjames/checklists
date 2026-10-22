@@ -76,19 +76,19 @@ class checklistCreateUITest: XCTestCase {
     // Create Item 3 via Add Button without dismissing keyboard from prior.
     checklistTable.buttons["Add"].tap()
     app.typeText(item3Name)
-    app.toolbars["Toolbar"].buttons["Done"].tap()
+    app.tapChecklistEditingDone()
 
     // Create Item 4 via Add button after dismissing keyboard from prior.
     checklistTable.buttons["Add"].tap()
     app.typeText(item4Name)
-    app.toolbars["Toolbar"].buttons["Done"].tap()
+    app.tapChecklistEditingDone()
 
     // Add Checklist Notes back at the top
     checklistTable.textViews["checklistNotesTextView"].tap()
     app.typeText(checklistNotes)
 
     // Finish and dismiss modal
-    app.navigationBars.buttons["Done"].tap()
+    app.finishCreateSheet()
 
     // Go back in to Checklist to check stuff.
     let mindfulnessRow = checklistsList.staticTexts["Mindfulness Checklist"]
@@ -113,7 +113,7 @@ class checklistCreateUITest: XCTestCase {
     itemNotesTextView.press(forDuration: 0.5)
     app.menuItems["Select All"].tap()
     app.menuItems["Cut"].tap()
-    app.toolbars["Toolbar"].buttons["Done"].tap()
+    app.tapChecklistEditingDone()
 
     XCTAssert((cell.textViews["itemNotesTextView"].value as? String ?? "").isEmpty)
 
@@ -152,7 +152,7 @@ class checklistCreateUITest: XCTestCase {
     // Create Item 4 via Add button after dismissing keyboard from prior.
     app.pressReturnKey()
     app.typeText(item4Name)
-    app.toolbars["Toolbar"].buttons["Done"].tap()
+    app.tapChecklistEditingDone()
 
     // Pop back in at Item 1 and insert something.
     checklistTable.children(matching: .cell).element(boundBy: 0).tap()
@@ -175,7 +175,7 @@ class checklistCreateUITest: XCTestCase {
     XCTAssert((cell.textViews["itemNameTextView"].value as? String ?? "") == item4Name)
 
     // Finish and dismiss modal
-    app.navigationBars.buttons["Done"].tap()
+    app.finishCreateSheet()
   }
 
   /// Trailing empty Items should be auto-deleted.
@@ -198,11 +198,11 @@ class checklistCreateUITest: XCTestCase {
 
     // Final state: { empty, item1, empty, empty }
 
-    app.toolbars["Toolbar"].buttons["Done"].tap()
+    app.tapChecklistEditingDone()
     XCTAssert(checklistTable.children(matching: .cell).count == 4)
 
     // Finish and dismiss modal, go back to check stuff
-    app.navigationBars.buttons["Done"].tap()
+    app.finishCreateSheet()
     let mindfulnessRow = checklistsList.staticTexts["Mindfulness Checklist"]
     XCTAssertTrue(mindfulnessRow.waitForExistence(timeout: 5))
     mindfulnessRow.tap()
@@ -216,7 +216,7 @@ class checklistCreateUITest: XCTestCase {
 
     // Remove the text only, leaving Item with empty field.
     item1NameTextView.pressDeleteKey(item1Name.count)
-    app.toolbars["Toolbar"].buttons["Done"].tap()
+    app.tapChecklistEditingDone()
 
     // Finish and dismiss modal, go back to check stuff
     app.navigationBars.buttons["Back"].tap()
@@ -236,7 +236,7 @@ class checklistCreateUITest: XCTestCase {
       evaluatedWith: app.textFields["checklistNameField"]
     )
     wait(for: [sheetPresented], timeout: 5)
-    app.navigationBars.buttons["Done"].tap()
+    app.finishCreateSheet()
 
     let untitled = checklistsList.cells.element(boundBy: 0).staticTexts["untitled checklist"]
     XCTAssertTrue(untitled.waitForExistence(timeout: 5))
@@ -254,7 +254,7 @@ class checklistCreateUITest: XCTestCase {
 
     // Remove all items plus some more delete key tapping for good measure.
     app.pressDeleteKey(8)
-    app.navigationBars.buttons["Done"].tap()
+    app.finishCreateSheet()
 
     XCTAssertTrue(app.staticTexts[checklistName].waitForExistence(timeout: 5))
     app.staticTexts[checklistName].tap()
@@ -279,7 +279,7 @@ class checklistCreateUITest: XCTestCase {
     app.pressReturnKey()
     app.typeText(itemName3)
 
-    app.navigationBars.buttons["Done"].tap()
+    app.finishCreateSheet()
     XCTAssertTrue(app.staticTexts[checklistName].waitForExistence(timeout: 5))
     app.staticTexts[checklistName].tap()
 
