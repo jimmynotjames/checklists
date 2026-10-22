@@ -19,6 +19,26 @@ struct ToastView: View {
 
   @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
+  private static let dismissActionTitle = String(
+    localized: "toast.accessibilityAction.dismiss",
+    defaultValue: "Dismiss",
+    comment: """
+    VoiceOver action on a short message card shown at the bottom of the screen, such as "Copied \
+    items to Groceries". Removes the card. Under VoiceOver the card stays until removed, so this \
+    is how a VoiceOver user clears it. Keep it to one word if your language allows.
+    """
+  )
+
+  private static let dismissHint = String(
+    localized: "toast.accessibilityHint",
+    defaultValue: "Dismisses the message.",
+    comment: """
+    VoiceOver hint read after a short message card at the bottom of the screen, such as "Copied \
+    items to Groceries". Says what activating the card does: it goes away. Describe the result, \
+    not the gesture.
+    """
+  )
+
   /// Beside the message at standard sizes; under it at accessibility sizes, where a side-by-side
   /// action leaves the message a column a few letters wide.
   private var layout: AnyLayout {
@@ -47,6 +67,14 @@ struct ToastView: View {
       // the handler raised.
       .contentShape(Rectangle())
       .onTapGesture(perform: onDismiss)
+      // Under VoiceOver a toast stays until dismissed, so the tap above needs spoken equivalents:
+      // a double-tap, the Actions rotor and the escape scrub. The action button stays its own
+      // element, outside this group.
+      .accessibilityElement(children: .combine)
+      .accessibilityHint(Self.dismissHint)
+      .accessibilityAction(.default, onDismiss)
+      .accessibilityAction(named: Self.dismissActionTitle, onDismiss)
+      .accessibilityAction(.escape, onDismiss)
 
       if let action = toast.action {
         Button(action: onAction) {

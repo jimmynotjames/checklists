@@ -35,6 +35,9 @@ private struct ToastLayer: ViewModifier {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.scenePhase) private var scenePhase
 
+  /// When the last sheet started closing, so an announcement raised as it goes can wait it out.
+  @State private var sheetClosedAt: ContinuousClock.Instant?
+
   func body(content: Content) -> some View {
     content
       .overlay(alignment: .bottom) {
@@ -59,9 +62,17 @@ private struct ToastLayer: ViewModifier {
       // and animate every other change in the same update turn — the bug `MainMenuView` already
       // needed `Transaction(disablesAnimations: true)` to work around.
       .animation(.easeInOut(duration: 0.25), value: presenter.current?.id)
-      // Keyed on the message, not the toast: a repeat of what is already up replaces the toast
-      // but says nothing new, and VoiceOver should not read it twice.
-      .onChange(of: announcedMessage) { _, _ in announceCurrent() }
+      // Keyed on the toast, not its message: a repeat with the same words is still news — a
+      // second copy into the same checklist, a second failed save — and under VoiceOver the first
+      // never timed out, so keying on the words would leave the second unspoken. A replaced
+      // toast's pending announcement is cancelled with it.
+      .task(id: announcedToastID) { await announceCurrent() }
+      // `dismiss()` clears `router.sheet` as the slide-out starts, in the same update that
+      // raises a "Copied to…" toast.
+      .onChange(of: router.sheet == nil) { _, closed in
+        guard isRoot, closed else { return }
+        sheetClosedAt = .now
+      }
       // A toast raised just before the app suspends would otherwise still be there on return,
       // then vanish at a moment unrelated to anything the person did.
       .onChange(of: scenePhase) { _, phase in
@@ -85,14 +96,25 @@ private struct ToastLayer: ViewModifier {
     isRoot ? router.sheet == nil : router.sheet != nil
   }
 
-  private var announcedMessage: LocalizedStringResource? {
-    isRoot ? presenter.current?.message : nil
+  private var announcedToastID: UUID? {
+    isRoot ? presenter.current?.id : nil
   }
 
   /// `.announcement`, never `.screenChanged`: the latter moves VoiceOver focus, which for
   /// something transient strands the person somewhere they did not ask to be.
-  private func announceCurrent() {
-    guard isRoot, let toast = presenter.current else { return }
+  ///
+  /// A toast raised as a sheet closes — "Copied to…" — waits the sheet out, because VoiceOver
+  /// moving back to the screen underneath would cut the announcement off.
+  private func announceCurrent() async {
+    guard isRoot, let id = presenter.current?.id else { return }
+    // SwiftUI does not promise to run the `.onChange` above before this task, so give it the
+    // turn before reading its stamp.
+    await Task.yield()
+    let delay = ToastPresenter.announcementDelay(sinceSheetClosed: sheetClosedAt.map { .now - $0 })
+    if delay > .zero {
+      try? await Task.sleep(for: delay)
+    }
+    guard !Task.isCancelled, let toast = presenter.current, toast.id == id else { return }
     var announcement = AttributedString(String(localized: toast.message))
     announcement.accessibilitySpeechAnnouncementPriority = .high
     AccessibilityNotification.Announcement(announcement).post()

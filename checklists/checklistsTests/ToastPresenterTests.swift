@@ -7,7 +7,7 @@
 import Foundation
 import Testing
 
-/// Covers `ToastPresenter`'s display durations and its dismissal lifecycle.
+/// Covers `ToastPresenter`'s display durations, announcement timing and its dismissal lifecycle.
 ///
 /// Nothing here waits on a clock. The duration rule is pure, and the lifecycle is driven through
 /// the injected `sleep`: one that suspends until cancelled holds a toast open, one that returns
@@ -75,6 +75,22 @@ struct ToastPresenterTests {
       isVoiceOverRunning: true
     )
     #expect(duration == nil, "A transient timer races the announcement.")
+  }
+
+  // MARK: - Announcement timing
+
+  @Test("a toast with no sheet closing is announced straight away")
+  func announcedAtOnceWithoutASheet() {
+    #expect(ToastPresenter.announcementDelay(sinceSheetClosed: nil) == .zero)
+    #expect(ToastPresenter.announcementDelay(sinceSheetClosed: ToastPresenter.sheetDismissalAllowance) == .zero)
+    #expect(ToastPresenter.announcementDelay(sinceSheetClosed: .seconds(30)) == .zero)
+  }
+
+  @Test("a toast raised as a sheet closes waits out the rest of the slide-out")
+  func waitsOutAClosingSheet() {
+    let allowance = ToastPresenter.sheetDismissalAllowance
+    #expect(ToastPresenter.announcementDelay(sinceSheetClosed: .zero) == allowance)
+    #expect(ToastPresenter.announcementDelay(sinceSheetClosed: .milliseconds(100)) == allowance - .milliseconds(100))
   }
 
   // MARK: - Lifecycle

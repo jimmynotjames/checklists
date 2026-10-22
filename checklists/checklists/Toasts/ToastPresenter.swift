@@ -83,6 +83,17 @@ final class ToastPresenter {
 
   // MARK: - Policy
 
+  /// How long a sheet takes to slide away and VoiceOver to settle on the screen beneath it. A
+  /// toast's announcement posted inside this window is cut off by that refocus.
+  nonisolated static let sheetDismissalAllowance: Duration = .milliseconds(600)
+
+  /// How long to hold a toast's announcement, given how long ago a sheet started closing (`nil`
+  /// when none has).
+  nonisolated static func announcementDelay(sinceSheetClosed elapsed: Duration?) -> Duration {
+    guard let elapsed, elapsed < sheetDismissalAllowance else { return .zero }
+    return sheetDismissalAllowance - elapsed
+  }
+
   /// How long `toast` should stay up, or `nil` to stay until dismissed.
   nonisolated static func displayDuration(
     for toast: Toast,

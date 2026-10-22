@@ -123,6 +123,11 @@ long and which the user just acted on.
   alert closes. After an Edit mode action it goes to Edit, because the bottom toolbar it was on is
   gone; when a delete leaves no checklists it goes to the Add button, since the list has no empty
   state.
+- **Toasts** are announced once per toast, so a repeat with the same words is spoken again, and a
+  toast raised as a sheet closes waits until the sheet is gone (`ToastPresenter.announcementDelay`),
+  since VoiceOver moving back to the screen would cut it off. Under VoiceOver a toast stays until
+  dismissed, so the message is one element whose double-tap, Dismiss action and escape scrub all
+  dismiss it, with a hint saying so. An Undo button stays its own element.
 - **Rarer outcomes.**
   - The overflow menu's "No checked items." row is announced as it appears; a disabled row isn't read
     out by appearing.
