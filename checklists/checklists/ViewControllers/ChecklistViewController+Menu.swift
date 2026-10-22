@@ -21,7 +21,7 @@ extension ChecklistViewController {
 
   /// Picks the menu's wording for this screen's mode and builds the trailing bar items. The create
   /// sheet gets Done at the outer edge, beyond the overflow menu, as a sheet's confirming action
-  /// sits; an existing checklist gets Reset inside the menu.
+  /// sits; an existing checklist gets Reset on the title side of the menu.
   func configureNavigationBar() {
     showsDiscardWording = isNewChecklist
     let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: makeMoreMenu())
@@ -82,8 +82,9 @@ extension ChecklistViewController {
 
   @objc func editingDoneTapped() {
     view.endEditing(true)
-    // The button VoiceOver was on is about to go.
-    moveVoiceOverAfterBarSwap()
+    // The button VoiceOver was on is about to go; VoiceOver moves to what takes its place at the
+    // outer edge: the create sheet's own Done, or ⋯.
+    moveVoiceOverAfterBarSwap(to: showsDiscardWording ? primaryBarButtonItem : moreBarButtonItem)
   }
 
   func makeMoreMenu() -> UIMenu {
@@ -160,25 +161,25 @@ extension ChecklistViewController {
     setEditing(false, animated: true)
   }
 
-  /// Done in Reorder Items mode, ⋯ outside it. The item VoiceOver was on has just been swapped away
-  /// (entering or leaving the mode, or tapping the editing Done), which would leave it somewhere
-  /// arbitrary.
+  /// Done in Reorder Items mode, ⋯ outside it: where VoiceOver goes when the mode swaps away the
+  /// item it was on, which would leave it somewhere arbitrary.
   var barSwapFocusTarget: UIBarButtonItem? {
     isReordering ? navigationItem.rightBarButtonItems?.first : moreBarButtonItem
   }
 
   /// Posted with the bar item itself; see `core-docs/accessibility-spec.md` §Announcements and focus.
-  func moveVoiceOverAfterBarSwap() {
+  /// `target` names the item outright; `nil` reads `barSwapFocusTarget` once the bar has relaid.
+  func moveVoiceOverAfterBarSwap(to target: UIBarButtonItem? = nil) {
     barSwapFocusTask?.cancel()
     guard let delay = barSwapFocusDelay else {
-      postAccessibilityFeedback(focus: barSwapFocusTarget, announcement: nil)
+      postAccessibilityFeedback(focus: target ?? barSwapFocusTarget, announcement: nil)
       return
     }
     barSwapFocusTask = Task { [weak self] in
       try? await Task.sleep(for: delay)
       // Not once the screen has gone, nor after a quicker toggle has taken over.
       guard !Task.isCancelled, let self, viewIfLoaded?.window != nil else { return }
-      postAccessibilityFeedback(focus: barSwapFocusTarget, announcement: nil)
+      postAccessibilityFeedback(focus: target ?? barSwapFocusTarget, announcement: nil)
     }
   }
 

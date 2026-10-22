@@ -30,7 +30,7 @@ struct ChecklistEditingDoneTests {
   private static let createIdle = ["checklist.done", "checklist.more"]
   private static let createTyping = ["checklist.editingDone", "checklist.more"]
 
-  /// Gives the deferred hand-back its turn of the run loop.
+  /// Gives the deferred bar update its turn of the run loop.
   private func settle() {
     RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.05))
   }
@@ -39,7 +39,7 @@ struct ChecklistEditingDoneTests {
     try #require(harness.table.cellForRow(at: IndexPath(row: 0, section: 0)) as? ItemTableViewCell)
   }
 
-  @Test("Reset sits inside the menu while nothing is being typed")
+  @Test("Reset sits on the title side of the menu while nothing is being typed")
   func idleBar() throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
       #expect(bar(harness.viewController) == Self.pushedIdle)
@@ -104,12 +104,13 @@ struct ChecklistEditingDoneTests {
     }
   }
 
-  /// The button VoiceOver was on goes with the edit, so VoiceOver moves to the menu beside it.
-  @Test("tapping the editing Done moves VoiceOver to the menu")
-  func editingDoneMovesVoiceOverToTheMenu() throws {
-    try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
+  /// The button VoiceOver was on goes with the edit, so VoiceOver moves to what takes its place at
+  /// the outer edge: the menu, or on the create sheet, the sheet's own Done.
+  @Test("tapping the editing Done moves VoiceOver to what takes its place", arguments: [false, true])
+  func editingDoneMovesVoiceOverToItsReplacement(isNewChecklist: Bool) throws {
+    try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: isNewChecklist) { harness in
       let controller = harness.viewController
-      let more = try #require(controller.moreBarButtonItem)
+      let replacement = try #require(isNewChecklist ? controller.primaryBarButtonItem : controller.moreBarButtonItem)
       var focused: [NSObject?] = []
       controller.barSwapFocusDelay = nil
       controller.accessibilityFeedback = { focus, _ in focused.append(focus) }
@@ -118,7 +119,7 @@ struct ChecklistEditingDoneTests {
       controller.editingDoneTapped()
 
       #expect(focused.count == 1)
-      #expect(focused.first.flatMap(\.self) === more)
+      #expect(focused.first.flatMap(\.self) === replacement)
     }
   }
 

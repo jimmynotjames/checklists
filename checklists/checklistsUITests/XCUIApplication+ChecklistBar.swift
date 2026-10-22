@@ -22,7 +22,7 @@ extension XCUIApplication {
     navigationBars.buttons["checklist.done"]
   }
 
-  /// Taps the editing Done and waits for the bar to hand its slot back.
+  /// Taps the editing Done and waits for it to leave the bar.
   func tapChecklistEditingDone(file: StaticString = #filePath, line: UInt = #line) {
     let button = checklistEditingDoneButton
     XCTAssertTrue(button.waitForExistence(timeout: 5), "The editing Done isn't in the bar.", file: file, line: line)
@@ -30,8 +30,8 @@ extension XCUIApplication {
     XCTAssertTrue(button.waitForNonExistence(timeout: 5), "The editing Done stayed after ending editing.", file: file, line: line)
   }
 
-  /// Ends any typing, then closes the create sheet: two taps, since while typing the slot holds the
-  /// editing Done instead.
+  /// Ends any typing, then closes the create sheet: two taps, since while typing the editing Done
+  /// stands in for the sheet's own at the outer edge.
   ///
   /// Waits for either button first: the sheet focuses its name field once it has appeared, so a
   /// check made too early would see the sheet's Done just before the editing Done replaces it.

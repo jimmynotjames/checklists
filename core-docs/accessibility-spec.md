@@ -110,7 +110,8 @@ long and which the user just acted on.
   on an empty row doesn't: it moves editing to the row above.
 - **Reorder Items mode** swaps the bar item VoiceOver was on, so VoiceOver moves to Done on the way
   in and back to ⋯ on the way out, after the bar has relaid and the ⋯ menu has closed. Tapping the
-  Done that typing adds to the bar takes that Done away, so VoiceOver moves to ⋯ then too. The post
+  Done that typing adds to the bar takes that Done away, so VoiceOver moves to what takes its place
+  at the outer edge: ⋯, or the create sheet's own Done. The post
   names the `UIBarButtonItem` itself, which VoiceOver resolves to the button the bar draws: the
   bar's own views are private, and in a unit-test host they carry no identifier to find them by.
 - **The failure screen** (`ContainerFailureView`) replaces the app unasked, so after a beat it posts
