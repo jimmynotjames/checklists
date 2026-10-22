@@ -109,7 +109,8 @@ long and which the user just acted on.
   something) and Delete Checked Items (with a count, focus on the first row left) announce. Backspace
   on an empty row doesn't: it moves editing to the row above.
 - **Reorder Items mode** swaps the bar item VoiceOver was on, so VoiceOver moves to Done on the way
-  in and back to ⋯ on the way out, after the bar has relaid and the ⋯ menu has closed. The post
+  in and back to ⋯ on the way out, after the bar has relaid and the ⋯ menu has closed. Tapping the
+  Done that typing adds to the bar takes that Done away, so VoiceOver moves to ⋯ then too. The post
   names the `UIBarButtonItem` itself, which VoiceOver resolves to the button the bar draws: the
   bar's own views are private, and in a unit-test host they carry no identifier to find them by.
 - **The failure screen** (`ContainerFailureView`) replaces the app unasked, so after a beat it posts
@@ -158,7 +159,7 @@ full two-family sweep, and the reasoning behind each verdict.
 | `ChecklistsView` Edit mode on/off (`withAnimation`) | **Left alone.** The system's own edit-mode reveal of selection circles and handles; Apple's list apps don't suppress it |
 | `ChecklistViewController` Reorder Items mode on/off (`setEditing(_:animated:)`, add-item footer fade) | **Left alone.** The system's reveal of drag handles, plus an opacity fade |
 | `ChecklistViewController` nav-title fade on scroll | **Left alone.** Opacity, not simulated movement |
-| `ChecklistViewController.updatePrimaryBarButtonItem` editing-Done swap (`setRightBarButtonItems(_:animated:)`) | **Left alone.** The system's cross-fade of bar items: opacity, not simulated movement |
+| `ChecklistViewController.updateEditingDoneBarButtonItem` editing Done coming and going (`setRightBarButtonItems(_:animated:)`) | **Left alone.** The system's own bar relayout; Notes adds its editing Done the same way |
 | `CircularPercentStatusIcon.setInnerCircle`, `CheckboxButton.setCheckboxState` | **Not animated.** Direct property assignment, outside any animation context |
 | `ProgressView` spinners (`LoadingView`, `SettingsView`) | System-owned. Progress indicators are not suppressed under Reduce Motion, by Apple's design |
 

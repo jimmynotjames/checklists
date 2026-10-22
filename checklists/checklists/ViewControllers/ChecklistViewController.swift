@@ -54,15 +54,10 @@ class ChecklistViewController: UIViewController {
   /// way UIKit offers to change a menu that is already presented.
   var moreBarButtonItem: UIBarButtonItem?
 
-  /// The bar slot beside the overflow menu: Reset, or the create sheet's Done. Typing in any field
-  /// lends the slot to `editingDoneBarButtonItem`; see `updatePrimaryBarButtonItem(animated:)`.
+  /// Reset, or the create sheet's Done; and the Done that typing in any field adds at the outer
+  /// edge. See `updateEditingDoneBarButtonItem(animated:)`.
   var primaryBarButtonItem: UIBarButtonItem?
   var editingDoneBarButtonItem: UIBarButtonItem?
-
-  /// Until when, in `ProcessInfo.systemUptime`, Reset ignores taps after taking its slot back from
-  /// the editing Done: a quick second tap on Done would otherwise land on Reset, which unchecks
-  /// everything with no confirmation.
-  var resetIgnoresTapsUntil: TimeInterval = 0
 
   /// Which overflow-menu entry is currently showing "No checked items." under it, if any. See
   /// `showNoItemsCheckedNotice(under:)`.
@@ -142,12 +137,12 @@ class ChecklistViewController: UIViewController {
   /// to observe them.
   var accessibilityFeedback: ((NSObject?, String?) -> Void)?
 
-  /// How long after Reorder Items mode starts or ends VoiceOver is moved: long enough for the bar to
-  /// relay and, on the way in, the ⋯ menu to close. `nil` moves it at once; set by tests, which
+  /// How long after the bar's items are swapped VoiceOver is moved: long enough for the bar to relay
+  /// and, entering Reorder Items mode, the ⋯ menu to close. `nil` moves it at once; set by tests, which
   /// cannot wait on the delay.
-  var reorderModeFocusDelay: Duration? = .milliseconds(500)
+  var barSwapFocusDelay: Duration? = .milliseconds(500)
   /// The pending move, so a quick toggle back replaces it rather than stacking a second.
-  var reorderModeFocusTask: Task<Void, Never>?
+  var barSwapFocusTask: Task<Void, Never>?
 
   /// The bar as it was before Reorder Items mode cleared it down to Done. Put back as-is on the way
   /// out rather than rebuilt: `configureNavigationBar` reads `isNewChecklist`, which `viewDidAppear`
@@ -342,13 +337,13 @@ class ChecklistViewController: UIViewController {
       // Commits whatever is being typed before the field it belongs to stops responding.
       view.endEditing(true)
       // Now rather than on the usual next turn, so the bar the mode saves is the one without the
-      // editing Done.
-      updatePrimaryBarButtonItem(animated: false)
+      // editing Done in it.
+      updateEditingDoneBarButtonItem(animated: false)
     }
     super.setEditing(editing, animated: animated)
     tableView.setEditing(editing, animated: animated)
     applyReorderModeToNavigationBar(editing, animated: animated)
-    moveVoiceOverToReorderModeButton()
+    moveVoiceOverAfterBarSwap()
 
     checklistNameTextField.isEnabled = !editing
     checklistNotesTextView.isEditable = !editing
@@ -380,7 +375,6 @@ class ChecklistViewController: UIViewController {
   }
 
   @objc func resetButtonTapped() {
-    guard ProcessInfo.processInfo.systemUptime >= resetIgnoresTapsUntil else { return }
     analytics.track(AnalyticsEvent.checklistReset)
 
     // Nothing ticked means nothing to update: a Reset on an untouched list must not date it.
@@ -830,11 +824,11 @@ extension ChecklistViewController {
 
   @objc func textEditingDidBegin(_ notification: Notification) {
     guard (notification.object as? UIView)?.isDescendant(of: view) == true else { return }
-    updatePrimaryBarButtonItem(animated: true)
+    updateEditingDoneBarButtonItem(animated: true)
   }
 
-  /// Waits a turn before putting the slot back: moving between fields ends one and begins the next
-  /// in the same turn, and swapping on each would flicker the button. Common modes, so a list drag
+  /// Waits a turn before taking the editing Done away: moving between fields ends one and begins the
+  /// next in the same turn, and updating the bar on each would flicker the button. Common modes, so a list drag
   /// that ends editing doesn't leave Done up until the drag lets go.
   ///
   /// Unfiltered, unlike the begin side: a row's field can already be out of the view when it
@@ -843,7 +837,7 @@ extension ChecklistViewController {
   @objc func textEditingDidEnd(_: Notification) {
     RunLoop.main.perform(inModes: [.common]) { [weak self] in
       MainActor.assumeIsolated {
-        self?.updatePrimaryBarButtonItem(animated: true)
+        self?.updateEditingDoneBarButtonItem(animated: true)
       }
     }
   }

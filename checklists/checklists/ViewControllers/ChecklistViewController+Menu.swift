@@ -20,7 +20,8 @@ extension ChecklistViewController {
   }
 
   /// Picks the menu's wording for this screen's mode and builds the trailing bar items. The create
-  /// sheet gets Done, an existing checklist gets Reset; both get the overflow menu at the outer edge.
+  /// sheet gets Done at the outer edge, beyond the overflow menu, as a sheet's confirming action
+  /// sits; an existing checklist gets Reset inside the menu.
   func configureNavigationBar() {
     showsDiscardWording = isNewChecklist
     let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: makeMoreMenu())
@@ -54,27 +55,35 @@ extension ChecklistViewController {
     let editingDoneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(editingDoneTapped))
     editingDoneItem.tintColor = .tintColor
     editingDoneItem.accessibilityIdentifier = "checklist.editingDone"
+    // Its own pill, as Notes draws it, rather than one shared with the menu.
+    editingDoneItem.sharesBackground = false
     editingDoneBarButtonItem = editingDoneItem
 
-    updatePrimaryBarButtonItem(animated: false)
+    updateEditingDoneBarButtonItem(animated: false)
   }
 
-  /// Lends the slot beside the menu to the editing Done while a field is being typed into, and puts
-  /// Reset or the create sheet's Done back once none is. Reorder Items mode owns the whole bar while
-  /// it is on, and puts back what it found.
-  func updatePrimaryBarButtonItem(animated: Bool) {
+  /// While a field is being typed into, adds the editing Done at the outer edge and leaves the rest
+  /// where it was, as Notes does. On the create sheet it stands in for the sheet's own Done, which
+  /// already sits there. Reorder Items mode owns the whole bar while it is on, and puts back what it
+  /// found.
+  func updateEditingDoneBarButtonItem(animated: Bool) {
     guard !isReordering, let moreBarButtonItem, let primaryBarButtonItem, let editingDoneBarButtonItem else { return }
-    let slotItem = isEditingText ? editingDoneBarButtonItem : primaryBarButtonItem
-    guard navigationItem.rightBarButtonItems?.last !== slotItem else { return }
-    if navigationItem.rightBarButtonItems?.last === editingDoneBarButtonItem {
-      resetIgnoresTapsUntil = ProcessInfo.processInfo.systemUptime + 0.5
+    // Trailing-first: index 0 is the outer edge.
+    let items: [UIBarButtonItem] = switch (showsDiscardWording, isEditingText) {
+    case (true, true): [editingDoneBarButtonItem, moreBarButtonItem]
+    case (true, false): [primaryBarButtonItem, moreBarButtonItem]
+    case (false, true): [editingDoneBarButtonItem, moreBarButtonItem, primaryBarButtonItem]
+    case (false, false): [moreBarButtonItem, primaryBarButtonItem]
     }
-    // Trailing-first: the menu sits at the outer edge, the slot next to the title.
-    navigationItem.setRightBarButtonItems([moreBarButtonItem, slotItem], animated: animated)
+    let current = navigationItem.rightBarButtonItems ?? []
+    guard !current.elementsEqual(items, by: ===) else { return }
+    navigationItem.setRightBarButtonItems(items, animated: animated)
   }
 
   @objc func editingDoneTapped() {
     view.endEditing(true)
+    // The button VoiceOver was on is about to go.
+    moveVoiceOverAfterBarSwap()
   }
 
   func makeMoreMenu() -> UIMenu {
@@ -151,24 +160,25 @@ extension ChecklistViewController {
     setEditing(false, animated: true)
   }
 
-  /// Done in Reorder Items mode, ⋯ outside it. The item VoiceOver was on has just been swapped away,
-  /// which would leave it somewhere arbitrary.
-  var reorderModeFocusTarget: UIBarButtonItem? {
+  /// Done in Reorder Items mode, ⋯ outside it. The item VoiceOver was on has just been swapped away
+  /// (entering or leaving the mode, or tapping the editing Done), which would leave it somewhere
+  /// arbitrary.
+  var barSwapFocusTarget: UIBarButtonItem? {
     isReordering ? navigationItem.rightBarButtonItems?.first : moreBarButtonItem
   }
 
   /// Posted with the bar item itself; see `core-docs/accessibility-spec.md` §Announcements and focus.
-  func moveVoiceOverToReorderModeButton() {
-    reorderModeFocusTask?.cancel()
-    guard let delay = reorderModeFocusDelay else {
-      postAccessibilityFeedback(focus: reorderModeFocusTarget, announcement: nil)
+  func moveVoiceOverAfterBarSwap() {
+    barSwapFocusTask?.cancel()
+    guard let delay = barSwapFocusDelay else {
+      postAccessibilityFeedback(focus: barSwapFocusTarget, announcement: nil)
       return
     }
-    reorderModeFocusTask = Task { [weak self] in
+    barSwapFocusTask = Task { [weak self] in
       try? await Task.sleep(for: delay)
       // Not once the screen has gone, nor after a quicker toggle has taken over.
       guard !Task.isCancelled, let self, viewIfLoaded?.window != nil else { return }
-      postAccessibilityFeedback(focus: reorderModeFocusTarget, announcement: nil)
+      postAccessibilityFeedback(focus: barSwapFocusTarget, announcement: nil)
     }
   }
 

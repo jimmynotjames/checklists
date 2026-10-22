@@ -8,9 +8,9 @@ import XCTest
 /// The checklist screen's navigation-bar buttons that come and go with typing. Matched by
 /// identifier, without naming the bar: see `ChecklistDetailUITestCase.detailBackButton`.
 ///
-/// While a field is being typed into, the editing Done takes the slot beside the overflow menu, and
-/// it reads "Done" just as the create sheet's own Done does, so a `buttons["Done"]` query matches
-/// whichever of the two is showing.
+/// While a field is being typed into, the editing Done sits at the bar's outer edge, in place of the
+/// create sheet's own Done there. It reads "Done" just as that one does, so a `buttons["Done"]`
+/// query matches whichever of the two is showing.
 extension XCUIApplication {
   /// Ends typing on the checklist screen.
   var checklistEditingDoneButton: XCUIElement {

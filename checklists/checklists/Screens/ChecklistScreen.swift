@@ -9,8 +9,8 @@ import UIKit
 
 /// SwiftUI host for the still-UIKit `ChecklistViewController`, embedded in its own `UINavigationController` because it drives a real UIKit nav bar directly:
 ///   - its scroll handler animates `navigationItem.title` in and out past a threshold,
-///   - it swaps the trailing bar items based on `isNewChecklist` (Done plus an overflow menu holding Reorder Items and Discard on the create sheet; Reset plus the full menu otherwise), and lends
-/// Done's or Reset's slot to an editing Done while a field is being typed into.
+///   - it swaps the trailing bar items based on `isNewChecklist` (an overflow menu holding Reorder Items and Discard, then Done at the outer edge, on the create sheet; Reset plus the full menu
+///     otherwise), and adds an editing Done at the outer edge while a field is being typed into, in place of the create sheet's Done.
 /// When pushed, the caller hides SwiftUI's navigation bar for this destination so only the
 /// embedded bar shows.
 ///

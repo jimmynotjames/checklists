@@ -8,8 +8,8 @@ import Foundation
 import Testing
 import UIKit
 
-/// Covers the navigation bar's editing Done: the slot beside the overflow menu while a field on the
-/// checklist screen is being typed into.
+/// Covers the navigation bar's editing Done: added at the outer edge while a field on the checklist
+/// screen is being typed into, as Notes does it.
 ///
 /// `.serialized` for the reason `ChecklistMenuActionTests` gives: the harness controller registers a
 /// `RemoteChangeObserver`.
@@ -17,16 +17,20 @@ import UIKit
 struct ChecklistEditingDoneTests {
   private static let threeItems: [(name: String, isChecked: Bool)] = [("Milk", false), ("Bread", true), ("Eggs", false)]
 
-  /// The slot beside the overflow menu, which sits at the outer edge.
-  private func slotItem(_ controller: ChecklistViewController) -> UIBarButtonItem? {
-    controller.navigationItem.rightBarButtonItems?.last
+  /// The trailing bar items, outer edge first, each named by its identifier, or "Reset" for Reset,
+  /// which carries none.
+  private func bar(_ controller: ChecklistViewController) -> [String] {
+    (controller.navigationItem.rightBarButtonItems ?? []).map {
+      $0.title == ChecklistViewController.resetButtonTitle ? "Reset" : $0.accessibilityIdentifier ?? "?"
+    }
   }
 
-  private func isEditingDone(_ item: UIBarButtonItem?) -> Bool {
-    item?.accessibilityIdentifier == "checklist.editingDone"
-  }
+  private static let pushedIdle = ["checklist.more", "Reset"]
+  private static let pushedTyping = ["checklist.editingDone", "checklist.more", "Reset"]
+  private static let createIdle = ["checklist.done", "checklist.more"]
+  private static let createTyping = ["checklist.editingDone", "checklist.more"]
 
-  /// Gives the slot's deferred hand-back its turn of the run loop.
+  /// Gives the deferred hand-back its turn of the run loop.
   private func settle() {
     RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.05))
   }
@@ -35,18 +39,15 @@ struct ChecklistEditingDoneTests {
     try #require(harness.table.cellForRow(at: IndexPath(row: 0, section: 0)) as? ItemTableViewCell)
   }
 
-  @Test("the slot holds Reset beside the menu while nothing is being typed")
-  func idleBarHoldsReset() throws {
+  @Test("Reset sits inside the menu while nothing is being typed")
+  func idleBar() throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
-      let items = harness.viewController.navigationItem.rightBarButtonItems ?? []
-      #expect(items.count == 2)
-      #expect(items.first?.accessibilityIdentifier == "checklist.more")
-      #expect(items.last?.title == ChecklistViewController.resetButtonTitle)
+      #expect(bar(harness.viewController) == Self.pushedIdle)
     }
   }
 
-  @Test("typing in the name, the notes or an item lends the slot to the editing Done, and ending puts Reset back", arguments: ["name", "notes", "item"])
-  func typingSwapsTheSlot(field: String) throws {
+  @Test("typing in the name, the notes or an item adds the editing Done at the outer edge, and ending takes it away", arguments: ["name", "notes", "item"])
+  func typingAddsTheEditingDone(field: String) throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
       let controller = harness.viewController
       switch field {
@@ -55,28 +56,35 @@ struct ChecklistEditingDoneTests {
       default: try firstRow(harness).itemContentView.startEditing()
       }
 
-      #expect(isEditingDone(slotItem(controller)))
-      #expect(controller.navigationItem.rightBarButtonItems?.first?.accessibilityIdentifier == "checklist.more")
+      #expect(bar(controller) == Self.pushedTyping)
 
       controller.view.endEditing(true)
       settle()
 
-      #expect(slotItem(controller)?.title == ChecklistViewController.resetButtonTitle)
+      #expect(bar(controller) == Self.pushedIdle)
     }
   }
 
-  @Test("the create sheet's Done gives way to the editing Done and comes back")
+  @Test("on the create sheet, the editing Done stands in for the sheet's own at the outer edge")
   func createSheetDoneComesBack() throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: true) { harness in
       let controller = harness.viewController
-      #expect(slotItem(controller)?.accessibilityIdentifier == "checklist.done")
+      #expect(bar(controller) == Self.createIdle)
 
       harness.header.nameTextField.becomeFirstResponder()
-      #expect(isEditingDone(slotItem(controller)))
+      #expect(bar(controller) == Self.createTyping)
 
       controller.view.endEditing(true)
       settle()
-      #expect(slotItem(controller)?.accessibilityIdentifier == "checklist.done")
+      #expect(bar(controller) == Self.createIdle)
+    }
+  }
+
+  @Test("the editing Done has a pill of its own")
+  func editingDoneHasItsOwnPill() throws {
+    try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
+      let editingDone = try #require(harness.viewController.editingDoneBarButtonItem)
+      #expect(!editingDone.sharesBackground)
     }
   }
 
@@ -92,38 +100,29 @@ struct ChecklistEditingDoneTests {
 
       #expect(!nameField.isFirstResponder)
       #expect(harness.checklist.name == "Pantry")
-      #expect(slotItem(harness.viewController)?.title == ChecklistViewController.resetButtonTitle)
+      #expect(bar(harness.viewController) == Self.pushedIdle)
     }
   }
 
-  /// Reset takes the editing Done's place, so a quick second tap on Done would otherwise reset the
-  /// checklist.
-  @Test("Reset ignores a tap just after it takes the slot back, and takes one after that")
-  func resetIgnoresATapRightAfterTheSwap() throws {
+  /// The button VoiceOver was on goes with the edit, so VoiceOver moves to the menu beside it.
+  @Test("tapping the editing Done moves VoiceOver to the menu")
+  func editingDoneMovesVoiceOverToTheMenu() throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
       let controller = harness.viewController
+      let more = try #require(controller.moreBarButtonItem)
+      var focused: [NSObject?] = []
+      controller.barSwapFocusDelay = nil
+      controller.accessibilityFeedback = { focus, _ in focused.append(focus) }
       harness.header.nameTextField.becomeFirstResponder()
+
       controller.editingDoneTapped()
-      settle()
 
-      controller.resetButtonTapped()
-      #expect(harness.checklist.items[1].status == .checked)
-
-      RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.6))
-      controller.resetButtonTapped()
-      #expect(harness.checklist.items[1].status == .unchecked)
+      #expect(focused.count == 1)
+      #expect(focused.first.flatMap(\.self) === more)
     }
   }
 
-  @Test("Reset takes a tap straight away on a screen nobody has typed in")
-  func resetWorksWithoutAnEdit() throws {
-    try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
-      harness.viewController.resetButtonTapped()
-      #expect(harness.checklist.items[1].status == .unchecked)
-    }
-  }
-
-  /// Return hands focus from one row to a new one below it; the slot must not blink to Reset and
+  /// Return hands focus from one row to a new one below it; the editing Done must not blink out and
   /// back on the way.
   @Test("Return on an item's name keeps the editing Done throughout the hand-off")
   func returnHandOffKeepsTheEditingDone() throws {
@@ -133,34 +132,30 @@ struct ChecklistEditingDoneTests {
       row.itemContentView.startEditing()
 
       controller.itemContentViewDidReturnOnNameField(row.itemContentView)
-      var slotsSeen: [Bool] = []
+      var barsSeen: [[String]] = []
       for _ in 0 ..< 40 {
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.005))
-        slotsSeen.append(isEditingDone(slotItem(controller)))
+        barsSeen.append(bar(controller))
       }
 
       #expect(harness.checklist.items.count == 4)
-      let neverReset = slotsSeen.allSatisfy(\.self)
-      #expect(neverReset)
+      let alwaysTyping = barsSeen.allSatisfy { $0 == Self.pushedTyping }
+      #expect(alwaysTyping)
     }
   }
 
-  @Test("Reorder Items mode entered mid-edit leaves with Reset, not the editing Done")
-  func reorderMidEditRestoresReset() throws {
+  @Test("Reorder Items mode entered mid-edit leaves with the idle bar, not the editing Done")
+  func reorderMidEditRestoresTheIdleBar() throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
       let controller = harness.viewController
       harness.header.nameTextField.becomeFirstResponder()
 
       controller.enterReorderMode()
       settle()
-      let reorderBar = controller.navigationItem.rightBarButtonItems ?? []
-      #expect(reorderBar.count == 1)
-      #expect(reorderBar.first?.accessibilityIdentifier == "checklist.reorderDone")
+      #expect(bar(controller) == ["checklist.reorderDone"])
 
       controller.setEditing(false, animated: false)
-      let items = controller.navigationItem.rightBarButtonItems ?? []
-      #expect(items.count == 2)
-      #expect(items.last?.title == ChecklistViewController.resetButtonTitle)
+      #expect(bar(controller) == Self.pushedIdle)
     }
   }
 }
