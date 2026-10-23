@@ -24,7 +24,7 @@ struct AnalyticsConsentControllerTests {
       spy.calls == [
         .track(AnalyticsEvent.analyticsConsentChanged, ["new_value": "true", "old_value": "false"]),
         .setAnalyticsOptInAt,
-      ]
+      ],
     )
     #expect(settings.analyticsOptIn)
     #expect(settings.analyticsOptInExplicitlySet)
@@ -61,7 +61,7 @@ struct AnalyticsConsentControllerTests {
       """
       Without an explicit false, the sheet would re-present on every checklist open. A \
       swipe-to-dismiss routes to this same method, so it shares this coverage.
-      """
+      """,
     )
   }
 
@@ -78,7 +78,7 @@ struct AnalyticsConsentControllerTests {
       spy.calls == [
         .track(AnalyticsEvent.analyticsConsentChanged, ["new_value": "false", "old_value": "true"]),
         .reset,
-      ]
+      ],
     )
     #expect(!settings.analyticsOptIn)
   }
@@ -110,7 +110,7 @@ struct AnalyticsConsentControllerTests {
       spy.calls == [
         .track(AnalyticsEvent.analyticsConsentChanged, ["new_value": "true", "old_value": "false"]),
         .setAnalyticsOptInAt,
-      ]
+      ],
     )
     #expect(settings.analyticsOptIn)
   }

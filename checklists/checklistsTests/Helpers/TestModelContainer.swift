@@ -22,12 +22,12 @@ enum TestModelContainer {
     let configuration = ModelConfiguration(
       schema: SchemaV1.swiftDataSchema,
       isStoredInMemoryOnly: true,
-      cloudKitDatabase: .none
+      cloudKitDatabase: .none,
     )
     return try ModelContainer(
       for: SchemaV1.swiftDataSchema,
       migrationPlan: ChecklistsMigrationPlan.self,
-      configurations: configuration
+      configurations: configuration,
     )
   }
 

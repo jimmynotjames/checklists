@@ -29,7 +29,7 @@ struct ChecklistTimestampTests {
   private func makeChecklist(
     itemCount: Int,
     checkedCount: Int = 0,
-    in context: ModelContext
+    in context: ModelContext,
   ) throws -> Checklist {
     let checklist = Checklist(name: "Packing", sortKey: 1.0)
     context.insert(checklist)
@@ -342,7 +342,7 @@ struct ChecklistTimestampTests {
 
   @Test(
     "the stated caption height covers what the caption actually renders",
-    arguments: [UIContentSizeCategory.large, .accessibilityExtraExtraExtraLarge]
+    arguments: [UIContentSizeCategory.large, .accessibilityExtraExtraExtraLarge],
   )
   func captionHeightCoversRenderedCaption(textSize: UIContentSizeCategory) {
     // `ChecklistHistoryCaption.height` is what the header's constraint chain reserves. If it ever
@@ -362,7 +362,7 @@ struct ChecklistTimestampTests {
     let rendered = view.systemLayoutSizeFitting(
       CGSize(width: 327.0, height: UIView.layoutFittingCompressedSize.height),
       withHorizontalFittingPriority: .required,
-      verticalFittingPriority: .fittingSizeLevel
+      verticalFittingPriority: .fittingSizeLevel,
     ).height
     #expect(ChecklistHistoryCaption.height(compatibleWith: view.traitCollection) >= rendered)
   }

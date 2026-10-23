@@ -29,7 +29,7 @@ struct ConsentGateTests {
 
     #expect(
       spy.calls.isEmpty,
-      "An opted-out install must never reach the wrapped client through any of these."
+      "An opted-out install must never reach the wrapped client through any of these.",
     )
   }
 
@@ -58,7 +58,7 @@ struct ConsentGateTests {
           .setAnalyticsOptInAt,
           .setRatingPromptFirstEligibleAt(Self.stamp),
           .setRatingPromptLastRequestedAt(Self.stamp),
-        ]
+        ],
     )
   }
 
@@ -91,14 +91,14 @@ struct ConsentGateTests {
     gate.track(AnalyticsEvent.appOpened, properties: nil)
     #expect(
       spy.calls == [.track(AnalyticsEvent.appOpened, nil)],
-      "Flipping the closure's answer must change behaviour without reconstructing the gate."
+      "Flipping the closure's answer must change behaviour without reconstructing the gate.",
     )
 
     optedIn = false
     gate.track(AnalyticsEvent.appOpened, properties: nil)
     #expect(
       spy.calls == [.track(AnalyticsEvent.appOpened, nil)],
-      "Flipping back to opted-out must suppress again, proving the answer isn't cached from the first read."
+      "Flipping back to opted-out must suppress again, proving the answer isn't cached from the first read.",
     )
   }
 }

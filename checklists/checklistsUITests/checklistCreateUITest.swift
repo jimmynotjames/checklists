@@ -234,7 +234,7 @@ class checklistCreateUITest: XCTestCase {
     // `viewDidAppear`, so wait for that before tapping.
     let sheetPresented = expectation(
       for: NSPredicate(format: "hasKeyboardFocus == true"),
-      evaluatedWith: app.textFields["checklistNameField"]
+      evaluatedWith: app.textFields["checklistNameField"],
     )
     wait(for: [sheetPresented], timeout: 5)
     app.finishCreateSheet()

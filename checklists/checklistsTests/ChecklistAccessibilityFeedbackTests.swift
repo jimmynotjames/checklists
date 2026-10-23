@@ -21,7 +21,7 @@ struct ChecklistAccessibilityFeedbackTests {
 
   @Test(
     "the row that takes the deleted one's place gets VoiceOver, else the one above it",
-    arguments: [(1, 1), (2, 1), (0, 0)]
+    arguments: [(1, 1), (2, 1), (0, 0)],
   )
   func deleteFocusesTheNeighbour(deleted index: Int, focused neighbour: Int) throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
@@ -131,7 +131,7 @@ struct DeletionFocusTests {
       (1, 2, 1),
       (2, 2, 1),
       (0, 0, nil),
-    ]
+    ],
   )
   func neighbour(removed index: Int, remaining: Int, expected: Int?) {
     #expect(DeletionFocus.neighbourIndex(afterRemoving: index, remainingCount: remaining) == expected)

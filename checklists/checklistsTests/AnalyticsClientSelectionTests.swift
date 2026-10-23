@@ -36,14 +36,14 @@ struct AnalyticsClientSelectionTests {
   @Test("the -UITests1 launch argument is detected as running tests")
   func uiTestLaunchArgumentIsDetectedAsRunningTests() {
     #expect(
-      LaunchModeContainerFactory.isRunningTests(arguments: ["-UITests1"], environment: [:])
+      LaunchModeContainerFactory.isRunningTests(arguments: ["-UITests1"], environment: [:]),
     )
   }
 
   @Test("the IS_TESTING environment variable is detected as running tests")
   func isTestingEnvironmentVariableIsDetectedAsRunningTests() {
     #expect(
-      LaunchModeContainerFactory.isRunningTests(arguments: [], environment: ["IS_TESTING": "1"])
+      LaunchModeContainerFactory.isRunningTests(arguments: [], environment: ["IS_TESTING": "1"]),
     )
   }
 
@@ -52,15 +52,15 @@ struct AnalyticsClientSelectionTests {
     #expect(
       LaunchModeContainerFactory.isRunningTests(
         arguments: ["-UITests1"],
-        environment: ["IS_TESTING": "1"]
-      )
+        environment: ["IS_TESTING": "1"],
+      ),
     )
   }
 
   @Test("neither signal present is not detected as running tests")
   func neitherSignalPresentIsNotDetectedAsRunningTests() {
     #expect(
-      !LaunchModeContainerFactory.isRunningTests(arguments: [], environment: [:])
+      !LaunchModeContainerFactory.isRunningTests(arguments: [], environment: [:]),
     )
   }
 
@@ -69,8 +69,8 @@ struct AnalyticsClientSelectionTests {
     #expect(
       !LaunchModeContainerFactory.isRunningTests(
         arguments: ["-SomeOtherFlag"],
-        environment: ["PATH": "/usr/bin"]
-      )
+        environment: ["PATH": "/usr/bin"],
+      ),
     )
   }
 }

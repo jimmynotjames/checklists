@@ -36,7 +36,7 @@ struct AppOpenTrackerTests {
     _ = tracker.shouldFire(for: .inactive)
     #expect(
       !tracker.shouldFire(for: .active),
-      "The notification shade and app switcher are not app opens."
+      "The notification shade and app switcher are not app opens.",
     )
   }
 

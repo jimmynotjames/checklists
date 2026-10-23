@@ -24,14 +24,14 @@ enum LaunchModeContainerFactory {
   static var isRunningTests: Bool {
     isRunningTests(
       arguments: CommandLine.arguments,
-      environment: ProcessInfo.processInfo.environment
+      environment: ProcessInfo.processInfo.environment,
     )
   }
 
   static func make() throws -> ContainerLaunchResult {
     try make(
       arguments: CommandLine.arguments,
-      environment: ProcessInfo.processInfo.environment
+      environment: ProcessInfo.processInfo.environment,
     )
   }
 
@@ -41,7 +41,7 @@ enum LaunchModeContainerFactory {
 
   static func make(
     arguments: [String],
-    environment: [String: String]
+    environment: [String: String],
   ) throws -> ContainerLaunchResult {
     if isRunningTests(arguments: arguments, environment: environment) {
       if let json = environment[screenshotSeedJSONKey] {
@@ -54,7 +54,7 @@ enum LaunchModeContainerFactory {
           return try ContainerLaunchResult(
             container: InMemoryModelContainer.makeSeeded(with: seed),
             backing: .localFallback,
-            fallbackError: nil
+            fallbackError: nil,
           )
         #else
           throw ScreenshotLaunchError.requiresDebugBuild
@@ -65,7 +65,7 @@ enum LaunchModeContainerFactory {
       return try ContainerLaunchResult(
         container: InMemoryModelContainer.makeSeeded(),
         backing: .localFallback,
-        fallbackError: nil
+        fallbackError: nil,
       )
     }
     return try ProductionContainerFactory.make()

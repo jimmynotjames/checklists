@@ -42,7 +42,7 @@ struct ChecklistViewLifecycleTests {
   @Test("trailing blank rows are trimmed on leaving")
   func trailingBlankRowsAreTrimmed() throws {
     try ChecklistScreenHarness.withController(
-      items: [("Milk", false), ("", false), ("", false)]
+      items: [("Milk", false), ("", false), ("", false)],
     ) { harness in
       harness.viewController.viewDidDisappear(false)
 
@@ -72,7 +72,7 @@ struct ChecklistViewLifecycleTests {
   @Test("a blank row between two items survives")
   func blankRowBetweenItemsSurvives() throws {
     try ChecklistScreenHarness.withController(
-      items: [("Milk", false), ("", false), ("Bread", false)]
+      items: [("Milk", false), ("", false), ("Bread", false)],
     ) { harness in
       harness.viewController.viewDidDisappear(false)
 
@@ -85,7 +85,7 @@ struct ChecklistViewLifecycleTests {
   @Test("a trailing real item stops the trim")
   func trailingRealItemStopsTheTrim() throws {
     try ChecklistScreenHarness.withController(
-      items: [("Milk", false), ("Bread", false)]
+      items: [("Milk", false), ("Bread", false)],
     ) { harness in
       harness.viewController.viewDidDisappear(false)
 
@@ -98,7 +98,7 @@ struct ChecklistViewLifecycleTests {
   @Test("an all-blank checklist keeps exactly one row")
   func allBlankChecklistKeepsOneRow() throws {
     try ChecklistScreenHarness.withController(
-      items: [("", false), ("", false), ("", false)]
+      items: [("", false), ("", false), ("", false)],
     ) { harness in
       harness.viewController.viewDidDisappear(false)
 

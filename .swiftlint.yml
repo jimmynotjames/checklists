@@ -17,8 +17,16 @@ opt_in_rules:
   - modifier_order
   - contains_over_first_not_nil
   - vertical_whitespace_closing_braces
+  # Swift concurrency
+  - unhandled_throwing_task
+  # SwiftUI and accessibility
+  - private_swiftui_state
+  - accessibility_label_for_image
+  - accessibility_trait_for_button
 
 excluded:
+  - tmp
+  - .claude
   - .build
   - build
   - DerivedData
@@ -30,6 +38,8 @@ line_length:
   ignores_urls: true
   ignores_function_declarations: true
   ignores_comments: true
+  # An os_log message must stay one literal to keep its privacy annotations, so it can't be split.
+  ignores_interpolated_strings: true
 
 function_body_length:
   warning: 120

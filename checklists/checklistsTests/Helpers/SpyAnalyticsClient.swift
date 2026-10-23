@@ -41,7 +41,13 @@ final class SpyAnalyticsClient: AnalyticsClient {
   // MARK: - Convenience accessors
 
   var trackedEventNames: [String] {
-    calls.compactMap { if case let .track(name, _) = $0 { name } else { nil } }
+    calls.compactMap {
+      if case let .track(name, _) = $0 {
+        name
+      } else {
+        nil
+      }
+    }
   }
 
   /// The properties of the first `track` of `event`, stringified so assertions can compare them

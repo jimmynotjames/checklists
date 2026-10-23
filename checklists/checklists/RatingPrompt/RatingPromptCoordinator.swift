@@ -35,7 +35,7 @@ final class RatingPromptCoordinator {
   init(
     state: RatingPromptState,
     analytics: any AnalyticsClient,
-    calendar: Calendar = .autoupdatingCurrent
+    calendar: Calendar = .autoupdatingCurrent,
   ) {
     self.state = state
     self.analytics = analytics
@@ -51,7 +51,7 @@ final class RatingPromptCoordinator {
   /// once-per-version guard without a clock or a bundle.
   func recordItemChecked(
     now: Date = Date(),
-    appVersion: String = RatingPromptCoordinator.currentAppVersion
+    appVersion: String = RatingPromptCoordinator.currentAppVersion,
   ) {
     advanceCounters(now: now)
 
@@ -75,7 +75,7 @@ final class RatingPromptCoordinator {
   /// (the once-per-version guard), clears the pending flag, and fires `rating_prompt_requested`.
   func consumePendingRequest(
     now: Date = Date(),
-    appVersion: String = RatingPromptCoordinator.currentAppVersion
+    appVersion: String = RatingPromptCoordinator.currentAppVersion,
   ) {
     guard isRequestPending else { return }
     isRequestPending = false
@@ -85,7 +85,7 @@ final class RatingPromptCoordinator {
       properties: [
         AnalyticsProperty.timeSinceFirstEligibleBucket:
           Self.timeSinceFirstEligibleBucket(firstEligibleAt: state.firstEligibleAt, now: now),
-      ]
+      ],
     )
     analytics.setRatingPromptLastRequestedAt(now)
   }
@@ -104,7 +104,7 @@ final class RatingPromptCoordinator {
   nonisolated static func shouldRequestReview(
     isRequestPending: Bool,
     isOnChecklistsList: Bool,
-    sceneIsActive: Bool
+    sceneIsActive: Bool,
   ) -> Bool {
     isRequestPending && isOnChecklistsList && sceneIsActive
   }

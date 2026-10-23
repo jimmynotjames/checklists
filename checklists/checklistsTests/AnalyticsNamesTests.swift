@@ -91,12 +91,12 @@ struct AnalyticsNamesTests {
     #expect(
       name.first?.isLowercase == true,
       "\"\(name)\" must start with a lowercase letter.",
-      sourceLocation: sourceLocation
+      sourceLocation: sourceLocation,
     )
     #expect(
       name.allSatisfy { ($0.isLowercase && $0.isLetter) || $0.isNumber || $0 == "_" },
       "\"\(name)\" is not flat snake_case.",
-      sourceLocation: sourceLocation
+      sourceLocation: sourceLocation,
     )
   }
 
@@ -104,7 +104,7 @@ struct AnalyticsNamesTests {
   func eventNamesAreDistinct() {
     #expect(
       Set(Self.allEvents).count == Self.allEvents.count,
-      "Two events share a name; they would merge in Mixpanel."
+      "Two events share a name; they would merge in Mixpanel.",
     )
   }
 

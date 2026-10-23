@@ -84,7 +84,7 @@ struct SampleDataDedupeTests {
     #expect(try context.fetch(FetchDescriptor<Item>()).count == 29)
     #expect(
       try context.fetch(FetchDescriptor<Item>()).allSatisfy { $0.checklist != nil },
-      "Cascade delete must not leave orphaned items behind."
+      "Cascade delete must not leave orphaned items behind.",
     )
   }
 
@@ -127,7 +127,7 @@ struct SampleDataDedupeTests {
     let survivor = try #require(try context.checklist(id: SampleData.morningRoutineId))
     #expect(
       survivor.items.map(\.id).sorted().joined(separator: ",") == expectedSurvivorItemIds,
-      "The survivor must be chosen by a rule every device computes identically."
+      "The survivor must be chosen by a rule every device computes identically.",
     )
   }
 

@@ -27,7 +27,7 @@ final class ChecklistHistoryCaptionUITest: ChecklistDetailUITestCase {
 
     XCTAssertFalse(
       app.staticTexts["checklistMetadataLabel"].exists,
-      "The create sheet should not carry a caption that can only say Never."
+      "The create sheet should not carry a caption that can only say Never.",
     )
   }
 
@@ -47,7 +47,7 @@ final class ChecklistHistoryCaptionUITest: ChecklistDetailUITestCase {
     // snapshot that blocks until the app goes idle, with no deadline of its own.
     let captionChanged = expectation(
       for: NSPredicate(format: "NOT (label BEGINSWITH %@)", "Last updated: Never"),
-      evaluatedWith: caption
+      evaluatedWith: caption,
     )
     captionChanged.expectationDescription = "the caption tracks a tick live, without reopening the screen"
     wait(for: [captionChanged], timeout: 5)
@@ -95,11 +95,11 @@ final class ChecklistHistoryCaptionUITest: ChecklistDetailUITestCase {
     XCTAssertTrue(captionAfterReset.waitForExistence(timeout: 5))
     XCTAssertTrue(
       captionAfterReset.label.contains("Last completed: "),
-      "Reset clears the checkmarks, not the record that a run finished. Got: \(captionAfterReset.label)"
+      "Reset clears the checkmarks, not the record that a run finished. Got: \(captionAfterReset.label)",
     )
     XCTAssertFalse(
       captionAfterReset.label.hasSuffix("Never"),
-      "Reset must not erase the completion date. Got: \(captionAfterReset.label)"
+      "Reset must not erase the completion date. Got: \(captionAfterReset.label)",
     )
   }
 }

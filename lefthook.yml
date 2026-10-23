@@ -24,7 +24,7 @@ pre-commit:
       run: bash scripts/check-large-files.sh {staged_files}
 
     gitleaks:
-      run: gitleaks protect --staged --no-banner
+      run: gitleaks git --pre-commit --staged --no-banner
 
 pre-push:
   commands:

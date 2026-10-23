@@ -16,12 +16,12 @@ struct LoadingView: View {
   private let message = String(
     localized: "loading.message",
     defaultValue: "Migrating databases… need a moment…",
-    comment: "Shown with a spinner on the one launch that copies data out of the pre-2025 database format."
+    comment: "Shown with a spinner on the one launch that copies data out of the pre-2025 database format.",
   )
   private let cloudSyncNote = String(
     localized: "loading.cloudSyncNote",
     defaultValue: "Your checklists will now sync across your devices through iCloud.",
-    comment: "Footnote under the migration message when the migrated data will start syncing through iCloud."
+    comment: "Footnote under the migration message when the migrated data will start syncing through iCloud.",
   )
 
   init(showsCloudSyncNote: Bool) {

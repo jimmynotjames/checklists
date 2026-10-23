@@ -88,7 +88,7 @@ struct SettingsView: View {
         get: { settings.analyticsOptIn },
         set: { newValue in
           AnalyticsConsentController(settings: settings, analytics: analytics).setOptIn(newValue)
-        }
+        },
       )) {
         Text(String(localized: "settings.analytics.toggle", defaultValue: "Share Anonymous Usage Data", comment: "Label of the analytics opt-in toggle in Settings."))
       }
@@ -96,7 +96,7 @@ struct SettingsView: View {
       .accessibilityHint(String(
         localized: "settings.analytics.toggle.hint",
         defaultValue: "Allows the app to send anonymous usage data to help improve the app. No checklist item names, item notes, or Apple or iCloud identifiers are ever included.",
-        comment: "VoiceOver hint for the analytics opt-in toggle."
+        comment: "VoiceOver hint for the analytics opt-in toggle.",
       ))
     } header: {
       Text(String(localized: "settings.analytics.header", defaultValue: "Diagnostics & Analytics", comment: "Section header above the analytics opt-in toggle in Settings."))
@@ -104,7 +104,7 @@ struct SettingsView: View {
       Text(String(
         localized: "settings.analytics.footer",
         defaultValue: "Anonymous usage data helps troubleshoot issues and understand usage. Data is never linked to your Apple Account. Never included: checklist item names, item notes, or any Apple or iCloud identifiers.",
-        comment: "Footer under the analytics section explaining what usage data is and is not collected."
+        comment: "Footer under the analytics section explaining what usage data is and is not collected.",
       ))
       .foregroundStyle(Colors.inactiveTextColor)
     }
@@ -124,7 +124,7 @@ struct SettingsView: View {
       } label: {
         Label(
           String(localized: "settings.info.privacyPolicy", defaultValue: "Privacy Policy", comment: "Row in Settings that opens the app's privacy policy web page."),
-          systemImage: "hand.raised"
+          systemImage: "hand.raised",
         )
       }
       // A Button so the tap is tracked, but it leaves the app for a web page, which VoiceOver
@@ -134,7 +134,7 @@ struct SettingsView: View {
       .accessibilityHint(String(
         localized: "settings.info.privacyPolicy.accessibilityHint",
         defaultValue: "Opens in your web browser.",
-        comment: "VoiceOver hint for the Privacy Policy row in Settings, which opens the privacy policy web page in the default browser."
+        comment: "VoiceOver hint for the Privacy Policy row in Settings, which opens the privacy policy web page in the default browser.",
       ))
     } header: {
       // Title case, matching how the other Form headers here are written.
@@ -184,7 +184,7 @@ struct SettingsView: View {
       .previewEnvironment(syncStatus: PreviewSupport.syncStatus(
         containerBacking: .cloudKit,
         accountStatus: .available,
-        syncActivity: [.export: SyncOperationState(lastSuccess: .now.addingTimeInterval(-300), latestFailure: nil)]
+        syncActivity: [.export: SyncOperationState(lastSuccess: .now.addingTimeInterval(-300), latestFailure: nil)],
       ))
   }
 
@@ -208,7 +208,7 @@ struct SettingsView: View {
       .previewEnvironment(syncStatus: PreviewSupport.syncStatus(
         containerBacking: .cloudKit,
         accountStatus: .available,
-        syncActivity: [.export: SyncOperationState(lastSuccess: nil, latestFailure: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.quotaExceeded.rawValue))]
+        syncActivity: [.export: SyncOperationState(lastSuccess: nil, latestFailure: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.quotaExceeded.rawValue))],
       ))
   }
 
@@ -217,7 +217,7 @@ struct SettingsView: View {
       .previewEnvironment(syncStatus: PreviewSupport.syncStatus(
         containerBacking: .cloudKit,
         accountStatus: .available,
-        syncActivity: [.export: SyncOperationState(lastSuccess: nil, latestFailure: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.internalError.rawValue))]
+        syncActivity: [.export: SyncOperationState(lastSuccess: nil, latestFailure: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.internalError.rawValue))],
       ))
   }
 #endif

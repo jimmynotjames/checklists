@@ -54,7 +54,7 @@ struct MainMenuView: View {
         VStack(alignment: .leading, spacing: 16) {
           MainMenuRow(
             title: String(localized: "mainMenu.feedback", defaultValue: "Feedback", comment: "Main-menu row that opens a pre-addressed feedback email."),
-            iconName: "MainMenuFeedbackIcon"
+            iconName: "MainMenuFeedbackIcon",
           ) {
             analytics.track(AnalyticsEvent.feedbackTapped)
             var components = URLComponents()
@@ -66,8 +66,8 @@ struct MainMenuView: View {
                 value: String(
                   localized: "mainMenu.feedback.mail.subject",
                   defaultValue: "Feedback for reChecklist App",
-                  comment: "Subject line of the feedback email opened from the main menu. Keep the app name reChecklist verbatim."
-                )
+                  comment: "Subject line of the feedback email opened from the main menu. Keep the app name reChecklist verbatim.",
+                ),
               ),
               URLQueryItem(name: "body", value: feedbackBody),
             ]
@@ -77,7 +77,7 @@ struct MainMenuView: View {
 
           MainMenuRow(
             title: String(localized: "mainMenu.rateInAppStore", defaultValue: "Rate in App Store", comment: "Main-menu row that opens the App Store review page."),
-            iconName: "MainMenuRateInAppStoreIcon"
+            iconName: "MainMenuRateInAppStoreIcon",
           ) {
             analytics.track(AnalyticsEvent.rateAppTapped)
             guard let url = URL(string: "https://itunes.apple.com/app/id1475724536?action=write-review")
@@ -87,7 +87,7 @@ struct MainMenuView: View {
 
           MainMenuRow(
             title: CommonStrings.settingsTitle,
-            iconName: "MainMenuSettingsIcon"
+            iconName: "MainMenuSettingsIcon",
           ) {
             // The menu must vanish instantly here so it isn't still animating out behind the
             // Settings sheet coming up.
@@ -134,7 +134,7 @@ struct MainMenuView: View {
       syncStatus: syncStatus,
       appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0",
       build: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "0",
-      osVersion: UIDevice.current.systemVersion
+      osVersion: UIDevice.current.systemVersion,
     )
     return "\n\n\n\(report)"
   }

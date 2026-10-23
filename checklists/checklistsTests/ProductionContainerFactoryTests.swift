@@ -30,7 +30,7 @@ struct ProductionContainerFactoryTests {
       local: { _ in
         localAttempted = true
         return stubContainer
-      }
+      },
     )
 
     #expect(result.backing == .cloudKit)
@@ -50,13 +50,13 @@ struct ProductionContainerFactoryTests {
       local: { configuration in
         configurationOfferedToLocal = configuration
         return stubContainer
-      }
+      },
     )
 
     #expect(result.backing == .localFallback)
     #expect(
       configurationOfferedToLocal?.url == ProductionContainerFactory.storeURL(),
-      "The fallback must open the same file, so a local-only session is promoted in place once iCloud returns."
+      "The fallback must open the same file, so a local-only session is promoted in place once iCloud returns.",
     )
   }
 
@@ -77,7 +77,7 @@ struct ProductionContainerFactoryTests {
     let error = #expect(throws: (any Error).self) {
       try ProductionContainerFactory.make(
         cloud: { _ in throw failingError },
-        local: { _ in throw failingError }
+        local: { _ in throw failingError },
       )
     }
     let nsError = error as NSError?

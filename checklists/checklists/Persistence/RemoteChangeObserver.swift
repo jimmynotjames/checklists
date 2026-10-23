@@ -46,7 +46,7 @@ final class RemoteChangeObserver: NSObject {
   init(
     coalescingDelay: Duration = .milliseconds(200),
     maximumDelay: Duration = .seconds(1),
-    onChange: @escaping () -> Void
+    onChange: @escaping () -> Void,
   ) {
     self.onChange = onChange
     self.coalescingDelay = coalescingDelay
@@ -58,13 +58,13 @@ final class RemoteChangeObserver: NSObject {
       self,
       selector: #selector(storeChangedRemotely),
       name: .NSPersistentStoreRemoteChange,
-      object: nil
+      object: nil,
     )
     NotificationCenter.default.addObserver(
       self,
       selector: #selector(storeChangedRemotely),
       name: SampleData.didRemoveDuplicates,
-      object: nil
+      object: nil,
     )
   }
 

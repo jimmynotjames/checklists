@@ -16,8 +16,8 @@ extension ModelContext {
   func fetchChecklistsSorted() throws -> [Checklist] {
     try fetch(
       FetchDescriptor<Checklist>(
-        sortBy: [SortDescriptor(\.sortKey), SortDescriptor(\.id)]
-      )
+        sortBy: [SortDescriptor(\.sortKey), SortDescriptor(\.id)],
+      ),
     )
   }
 

@@ -23,7 +23,7 @@ struct ICloudStatusLoaderTests {
   ])
   func everyAccountStatusCaseMaps(
     ckStatus: CKAccountStatus,
-    expected: SyncStatus.AccountStatus
+    expected: SyncStatus.AccountStatus,
   ) async {
     let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .checking)
     let loader = ICloudStatusLoader(accountStatus: { ckStatus })
@@ -81,7 +81,7 @@ struct ICloudStatusLoaderTests {
 
     #expect(
       syncStatus.accountStatus == .available,
-      "A cancelled query must leave the status alone rather than publishing a superseded answer."
+      "A cancelled query must leave the status alone rather than publishing a superseded answer.",
     )
   }
 

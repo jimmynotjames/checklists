@@ -48,11 +48,11 @@ extension SyncStatus {
       title: String(
         localized: "settings.icloud.checking",
         defaultValue: "Checking…",
-        comment: "iCloud status row while the account status is still being looked up; shown next to a spinner."
+        comment: "iCloud status row while the account status is still being looked up; shown next to a spinner.",
       ),
       footer: nil,
       symbolName: nil,
-      isWarning: false
+      isWarning: false,
     )
   }
 
@@ -61,11 +61,11 @@ extension SyncStatus {
       title: String(
         localized: "settings.icloud.active",
         defaultValue: "iCloud Sync is Active",
-        comment: "iCloud status row: checklists are syncing through iCloud."
+        comment: "iCloud status row: checklists are syncing through iCloud.",
       ),
       footer: lastSyncedFooter,
       symbolName: "checkmark.icloud",
-      isWarning: false
+      isWarning: false,
     )
   }
 
@@ -74,15 +74,15 @@ extension SyncStatus {
       title: String(
         localized: "settings.icloud.unavailable",
         defaultValue: "iCloud Not Available",
-        comment: "iCloud status row: no iCloud account is signed in on this device."
+        comment: "iCloud status row: no iCloud account is signed in on this device.",
       ),
       footer: String(
         localized: "settings.icloud.footer.unavailable",
         defaultValue: "Sign in to iCloud in Settings to sync your checklists across devices.",
-        comment: "Footer under the iCloud section when no iCloud account is signed in. 'Settings' here means the iOS Settings app."
+        comment: "Footer under the iCloud section when no iCloud account is signed in. 'Settings' here means the iOS Settings app.",
       ),
       symbolName: "xmark.icloud",
-      isWarning: true
+      isWarning: true,
     )
   }
 
@@ -91,15 +91,15 @@ extension SyncStatus {
       title: String(
         localized: "settings.icloud.paused",
         defaultValue: "iCloud Sync Paused",
-        comment: "iCloud status row: the app fell back to a local-only store this launch."
+        comment: "iCloud status row: the app fell back to a local-only store this launch.",
       ),
       footer: String(
         localized: "settings.icloud.footer.paused",
         defaultValue: "Your checklists are saved on this device only. Restart the app to retry iCloud sync.",
-        comment: "Footer under the iCloud section when sync is paused for this launch."
+        comment: "Footer under the iCloud section when sync is paused for this launch.",
       ),
       symbolName: "exclamationmark.icloud",
-      isWarning: true
+      isWarning: true,
     )
   }
 
@@ -108,15 +108,15 @@ extension SyncStatus {
       title: String(
         localized: "settings.icloud.restricted",
         defaultValue: "iCloud Restricted",
-        comment: "iCloud status row: the account is signed in but restricted. Adjacent to 'settings.icloud.unavailable' (no account) and 'settings.icloud.needsAttention' (account needs attention) — keep distinct from both."
+        comment: "iCloud status row: the account is signed in but restricted. Adjacent to 'settings.icloud.unavailable' (no account) and 'settings.icloud.needsAttention' (account needs attention) — keep distinct from both.",
       ),
       footer: String(
         localized: "settings.icloud.footer.restricted",
         defaultValue: "iCloud is turned off on this device by Screen Time or your organization. Your checklists are saved on this device only.",
-        comment: "Footer under the iCloud section when the iCloud account is restricted, e.g. by Screen Time or an organization's device management."
+        comment: "Footer under the iCloud section when the iCloud account is restricted, e.g. by Screen Time or an organization's device management.",
       ),
       symbolName: "xmark.icloud",
-      isWarning: true
+      isWarning: true,
     )
   }
 
@@ -125,15 +125,15 @@ extension SyncStatus {
       title: String(
         localized: "settings.icloud.needsAttention",
         defaultValue: "iCloud Needs Attention",
-        comment: "iCloud status row: signed in but temporarily unavailable, e.g. needs Apple Account re-confirmation. Distinct from 'settings.icloud.restricted' — resolvable, not a standing restriction."
+        comment: "iCloud status row: signed in but temporarily unavailable, e.g. needs Apple Account re-confirmation. Distinct from 'settings.icloud.restricted' — resolvable, not a standing restriction.",
       ),
       footer: String(
         localized: "settings.icloud.footer.needsAttention",
         defaultValue: "Open Settings and confirm your Apple Account to resume syncing.",
-        comment: "Footer under the iCloud section when the account is temporarily unavailable. 'Settings' here means the iOS Settings app."
+        comment: "Footer under the iCloud section when the account is temporarily unavailable. 'Settings' here means the iOS Settings app.",
       ),
       symbolName: "exclamationmark.icloud",
-      isWarning: true
+      isWarning: true,
     )
   }
 
@@ -142,15 +142,15 @@ extension SyncStatus {
       title: String(
         localized: "settings.icloud.couldNotCheck",
         defaultValue: "Couldn't Check iCloud",
-        comment: "iCloud status row: checking the account status failed, e.g. no network. Distinct from 'settings.icloud.unavailable' — a failed check, not a missing account."
+        comment: "iCloud status row: checking the account status failed, e.g. no network. Distinct from 'settings.icloud.unavailable' — a failed check, not a missing account.",
       ),
       footer: String(
         localized: "settings.icloud.footer.couldNotCheck",
         defaultValue: "Check your internet connection. Your checklists are saved on this device.",
-        comment: "Footer under the iCloud section when the account status couldn't be determined."
+        comment: "Footer under the iCloud section when the account status couldn't be determined.",
       ),
       symbolName: "exclamationmark.icloud",
-      isWarning: true
+      isWarning: true,
     )
   }
 
@@ -159,15 +159,15 @@ extension SyncStatus {
       title: String(
         localized: "settings.icloud.storageFull",
         defaultValue: "iCloud Storage Full",
-        comment: "iCloud status row: a sync event failed because iCloud storage is full."
+        comment: "iCloud status row: a sync event failed because iCloud storage is full.",
       ),
       footer: String(
         localized: "settings.icloud.footer.storageFull",
         defaultValue: "Free up iCloud storage in Settings to resume syncing. Your checklists are saved on this device.",
-        comment: "Footer under the iCloud section when iCloud storage is full. 'Settings' here means the iOS Settings app."
+        comment: "Footer under the iCloud section when iCloud storage is full. 'Settings' here means the iOS Settings app.",
       ),
       symbolName: "exclamationmark.icloud",
-      isWarning: true
+      isWarning: true,
     )
   }
 
@@ -176,15 +176,15 @@ extension SyncStatus {
       title: String(
         localized: "settings.icloud.syncInterrupted",
         defaultValue: "iCloud Sync Interrupted",
-        comment: "iCloud status row: a sync event failed for a reason other than storage. Distinct from 'settings.icloud.paused' — signed in and CloudKit-backed this launch, but a sync operation failed."
+        comment: "iCloud status row: a sync event failed for a reason other than storage. Distinct from 'settings.icloud.paused' — signed in and CloudKit-backed this launch, but a sync operation failed.",
       ),
       footer: String(
         localized: "settings.icloud.footer.syncInterrupted",
         defaultValue: "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback from the menu.",
-        comment: "Footer under the iCloud section when a sync operation failed for a reason other than storage."
+        comment: "Footer under the iCloud section when a sync operation failed for a reason other than storage.",
       ),
       symbolName: "exclamationmark.icloud",
-      isWarning: true
+      isWarning: true,
     )
   }
 
@@ -195,7 +195,7 @@ extension SyncStatus {
     return String(
       localized: "settings.icloud.footer.lastSynced",
       defaultValue: "Last synced \(lastSuccess.formatted(.relative(presentation: .named)))",
-      comment: "Footer under the iCloud section when sync is active; the placeholder is a relative time like '5 minutes ago'."
+      comment: "Footer under the iCloud section when sync is active; the placeholder is a relative time like '5 minutes ago'.",
     )
   }
 }

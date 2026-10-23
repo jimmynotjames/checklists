@@ -70,7 +70,7 @@ class AnalyticsConsentUITest: XCTestCase {
 
     XCTAssertTrue(
       consentAcceptButton.waitForExistence(timeout: 5),
-      "Consent sheet did not appear for a strict-jurisdiction region."
+      "Consent sheet did not appear for a strict-jurisdiction region.",
     )
   }
 
@@ -85,7 +85,7 @@ class AnalyticsConsentUITest: XCTestCase {
     swipeSheetDownToDismiss()
     XCTAssertFalse(
       consentAcceptButton.waitForExistence(timeout: 3),
-      "Sheet should be dismissed after a swipe-down."
+      "Sheet should be dismissed after a swipe-down.",
     )
 
     returnToChecklistsListIfNeeded()
@@ -93,7 +93,7 @@ class AnalyticsConsentUITest: XCTestCase {
 
     XCTAssertFalse(
       consentAcceptButton.waitForExistence(timeout: 3),
-      "Swipe-to-dismiss must count as a decline, or the sheet re-presents on every checklist open."
+      "Swipe-to-dismiss must count as a decline, or the sheet re-presents on every checklist open.",
     )
   }
 
@@ -109,7 +109,7 @@ class AnalyticsConsentUITest: XCTestCase {
 
     XCTAssertFalse(
       consentAcceptButton.waitForExistence(timeout: 3),
-      "Declining must mark the choice explicit, or the sheet re-presents."
+      "Declining must mark the choice explicit, or the sheet re-presents.",
     )
   }
 
@@ -122,11 +122,11 @@ class AnalyticsConsentUITest: XCTestCase {
     // checklist failed entirely, since the sheet would then also be absent for the wrong reason.
     XCTAssertTrue(
       app.tables["ChecklistTableView"].waitForExistence(timeout: 5),
-      "Checklist detail screen did not appear."
+      "Checklist detail screen did not appear.",
     )
     XCTAssertFalse(
       consentAcceptButton.waitForExistence(timeout: 3),
-      "Auto-opt-in regions must never see the first-run sheet."
+      "Auto-opt-in regions must never see the first-run sheet.",
     )
   }
 
@@ -153,15 +153,15 @@ class AnalyticsConsentUITest: XCTestCase {
     checklistRow.tap()
     XCTAssertTrue(
       app.tables["ChecklistTableView"].waitForExistence(timeout: 5),
-      "Seeded checklist detail screen did not appear."
+      "Seeded checklist detail screen did not appear.",
     )
     XCTAssertFalse(
       consentAcceptButton.waitForExistence(timeout: 3),
-      "Screenshot launch must start with an explicit opt-out in a strict region."
+      "Screenshot launch must start with an explicit opt-out in a strict region.",
     )
     XCTAssertFalse(
       consentDeclineButton.waitForExistence(timeout: 1),
-      "Screenshot launch must not present either consent action."
+      "Screenshot launch must not present either consent action.",
     )
   }
 }

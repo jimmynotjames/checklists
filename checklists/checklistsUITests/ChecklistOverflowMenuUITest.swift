@@ -16,7 +16,7 @@ final class ChecklistOverflowMenuUITest: ChecklistDetailUITestCase {
   /// behind it carries Reset.
   private var duplicateSheetNavigationBar: XCUIElement {
     app.navigationBars.containing(
-      NSPredicate(format: "identifier IN %@", ["checklist.done", "checklist.editingDone"])
+      NSPredicate(format: "identifier IN %@", ["checklist.done", "checklist.editingDone"]),
     ).firstMatch
   }
 
@@ -50,7 +50,7 @@ final class ChecklistOverflowMenuUITest: ChecklistDetailUITestCase {
     XCTAssertFalse(app.alerts.firstMatch.exists, "Duplicating shouldn't raise a confirmation.")
     XCTAssertTrue(
       visibleChecklistNames().contains("Morning Routine copy"),
-      "The sheet should be showing the copy, named after the original."
+      "The sheet should be showing the copy, named after the original.",
     )
 
     app.finishCreateSheet()

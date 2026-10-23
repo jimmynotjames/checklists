@@ -17,7 +17,7 @@ struct ChecklistsFeedbackTests {
       (1, ["a", "b", "c"], "c"),
       (2, ["a", "b", "c"], "b"),
       (0, ["a"], nil),
-    ]
+    ],
   )
   func neighbour(removed index: Int, ids: [String], expected: String?) {
     #expect(DeletionFocus.neighbourID(afterRemoving: index, from: ids) == expected)
@@ -46,7 +46,7 @@ struct ChecklistsConfirmationTitleTests {
   func blankNameFallsBack() {
     #expect(
       ChecklistsView.deleteConfirmationTitle(name: "")
-        == ChecklistsView.deleteConfirmationTitle(name: CommonStrings.defaultChecklistName)
+        == ChecklistsView.deleteConfirmationTitle(name: CommonStrings.defaultChecklistName),
     )
   }
 

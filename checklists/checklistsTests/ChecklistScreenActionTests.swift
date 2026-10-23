@@ -19,7 +19,7 @@ struct ChecklistScreenActionTests {
   @Test("reset unchecks every item and records the update")
   func resetUnchecksEveryItem() throws {
     try ChecklistScreenHarness.withController(
-      items: [("Milk", true), ("Bread", true)]
+      items: [("Milk", true), ("Bread", true)],
     ) { harness in
       harness.viewController.resetButtonTapped()
 
@@ -38,14 +38,14 @@ struct ChecklistScreenActionTests {
   @Test("resetting an untouched checklist does not date it")
   func resetOnUntouchedChecklistDoesNotDateIt() throws {
     try ChecklistScreenHarness.withController(
-      items: [("Milk", false), ("Bread", false)]
+      items: [("Milk", false), ("Bread", false)],
     ) { harness in
       harness.viewController.resetButtonTapped()
 
       #expect(harness.checklist.lastUpdated == nil)
       #expect(
         harness.analytics.count(of: AnalyticsEvent.checklistReset) == 1,
-        "The action still happened, even though it changed nothing."
+        "The action still happened, even though it changed nothing.",
       )
     }
   }
@@ -72,7 +72,7 @@ struct ChecklistScreenActionTests {
   @Test("checking an item saves its status and dates the checklist")
   func checkingAnItemSavesAndDates() throws {
     try ChecklistScreenHarness.withController(
-      items: [("Milk", false), ("Bread", false)]
+      items: [("Milk", false), ("Bread", false)],
     ) { harness in
       let itemContentView = ItemContentView()
       itemContentView.item = harness.checklist.items[0]
@@ -92,7 +92,7 @@ struct ChecklistScreenActionTests {
   @Test("checking the last outstanding item completes the checklist")
   func checkingTheLastItemCompletesTheChecklist() throws {
     try ChecklistScreenHarness.withController(
-      items: [("Milk", true), ("Bread", false)]
+      items: [("Milk", true), ("Bread", false)],
     ) { harness in
       let itemContentView = ItemContentView()
       itemContentView.item = try #require(harness.checklist.items.first { $0.name == "Bread" })
@@ -110,14 +110,14 @@ struct ChecklistScreenActionTests {
   @Test("duplicating an item places the copy directly beneath it")
   func duplicatingAnItemPlacesTheCopyBeneathIt() throws {
     try ChecklistScreenHarness.withController(
-      items: [("Milk", true), ("Bread", false)]
+      items: [("Milk", true), ("Bread", false)],
     ) { harness in
       harness.viewController.duplicateItem(at: 0)
 
       #expect(harness.itemNames == ["Milk", "Milk", "Bread"])
       #expect(
         harness.checklist.items[1].status == .unchecked,
-        "A copy has not been done yet, whatever the original's state."
+        "A copy has not been done yet, whatever the original's state.",
       )
       let persisted = try harness.persistedItemNames()
       #expect(persisted == ["Milk", "Milk", "Bread"], "The copy is saved, not just staged.")

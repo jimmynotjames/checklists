@@ -71,7 +71,7 @@ struct CloudKitSyncMonitorTests {
     monitor.handle(SyncEventSnapshot(
       operation: .export,
       endDate: .now,
-      error: SyncErrorCode(domain: "CKErrorDomain", code: 25)
+      error: SyncErrorCode(domain: "CKErrorDomain", code: 25),
     ))
 
     #expect(syncStatus.syncActivity[.export]?.latestFailure == SyncErrorCode(domain: "CKErrorDomain", code: 25))
@@ -116,12 +116,12 @@ struct CloudKitSyncMonitorTests {
     monitor.handle(SyncEventSnapshot(
       operation: .export,
       endDate: .now,
-      error: SyncErrorCode(domain: "CKErrorDomain", code: 25)
+      error: SyncErrorCode(domain: "CKErrorDomain", code: 25),
     ))
     monitor.handle(SyncEventSnapshot(
       operation: .export,
       endDate: .now,
-      error: SyncErrorCode(domain: "CKErrorDomain", code: 2)
+      error: SyncErrorCode(domain: "CKErrorDomain", code: 2),
     ))
 
     #expect(spy.count(of: AnalyticsEvent.cloudkitSyncFailed) == 2)

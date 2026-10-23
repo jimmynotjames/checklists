@@ -28,7 +28,7 @@ final class CloudKitSyncMonitor {
     observer = NotificationCenter.default.addObserver(
       forName: NSPersistentCloudKitContainer.eventChangedNotification,
       object: nil,
-      queue: nil
+      queue: nil,
     ) { [weak self] notification in
       guard let snapshot = SyncEventSnapshot(notification) else { return }
       // The notification arrives off the main actor; hop before touching `syncStatus`.
@@ -50,7 +50,7 @@ final class CloudKitSyncMonitor {
   func handle(_ snapshot: SyncEventSnapshot) {
     syncStatus.record(snapshot)
     AppLog.cloudKit.info(
-      "cloudkit.sync.event: \(snapshot.operation.rawValue, privacy: .public) \(snapshot.error == nil, privacy: .public) \(snapshot.error?.domain ?? "-", privacy: .public) \(snapshot.error?.code ?? 0, privacy: .public)"
+      "cloudkit.sync.event: \(snapshot.operation.rawValue, privacy: .public) \(snapshot.error == nil, privacy: .public) \(snapshot.error?.domain ?? "-", privacy: .public) \(snapshot.error?.code ?? 0, privacy: .public)",
     )
 
     guard let error = snapshot.error else { return }
@@ -62,7 +62,7 @@ final class CloudKitSyncMonitor {
         AnalyticsProperty.syncOperation: snapshot.operation.rawValue,
         AnalyticsProperty.errorDomain: error.domain,
         AnalyticsProperty.errorCode: error.code,
-      ]
+      ],
     )
   }
 }
@@ -93,7 +93,7 @@ extension SyncEventSnapshot {
     self.init(
       operation: SyncOperation(event.type),
       endDate: endDate,
-      error: event.error.map(SyncErrorCode.init(unwrapping:))
+      error: event.error.map(SyncErrorCode.init(unwrapping:)),
     )
   }
 }

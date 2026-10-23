@@ -37,7 +37,7 @@ struct RatingPromptCoordinatorTests {
     let coordinator = RatingPromptCoordinator(
       state: state,
       analytics: ConsentGatedAnalyticsClient(wrapping: spy, isOptedIn: { optedIn }),
-      calendar: Self.utcCalendar
+      calendar: Self.utcCalendar,
     )
     return Harness(coordinator: coordinator, state: state, spy: spy)
   }
@@ -173,7 +173,7 @@ struct RatingPromptCoordinatorTests {
     #expect(harness.state.lastRequestedVersion == "1.0")
     #expect(
       harness.spy.properties(forFirst: AnalyticsEvent.ratingPromptRequested)
-        == [AnalyticsProperty.timeSinceFirstEligibleBucket: "<7d"]
+        == [AnalyticsProperty.timeSinceFirstEligibleBucket: "<7d"],
     )
     #expect(harness.spy.calls.last == .setRatingPromptLastRequestedAt(requestedAt))
   }
@@ -205,7 +205,7 @@ struct RatingPromptCoordinatorTests {
     driveToEligible(harness.coordinator)
     harness.coordinator.consumePendingRequest(now: day(12))
     #expect(
-      harness.spy.trackedEventNames == [AnalyticsEvent.ratingPromptEligible, AnalyticsEvent.ratingPromptRequested]
+      harness.spy.trackedEventNames == [AnalyticsEvent.ratingPromptEligible, AnalyticsEvent.ratingPromptRequested],
     )
   }
 

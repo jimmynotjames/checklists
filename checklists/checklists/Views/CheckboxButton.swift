@@ -55,11 +55,11 @@ class CheckboxButton: UIButton {
   private func applyTextSize() {
     let scale = min(
       max(UIFontMetrics(forTextStyle: .title2).scaledValue(for: 1.0, compatibleWith: traitCollection), 1.0),
-      Self.maximumScale
+      Self.maximumScale,
     )
     configuration?.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(
       pointSize: Self.baseSymbolPointSize * scale,
-      weight: .regular
+      weight: .regular,
     )
     widthConstraint.constant = Self.baseSide * scale
     heightConstraint.constant = Self.baseSide * scale
@@ -73,7 +73,7 @@ class CheckboxButton: UIButton {
   private static let blankNameStandIn = String(
     localized: "checkbox.accessibilityLabel",
     defaultValue: "Checkbox",
-    comment: "Stands in for the item name in the checkbox's VoiceOver label when the item has no name, as in \"Unchecked, Checkbox\"."
+    comment: "Stands in for the item name in the checkbox's VoiceOver label when the item has no name, as in \"Unchecked, Checkbox\".",
   )
 
   private var itemName = ""
@@ -93,12 +93,12 @@ class CheckboxButton: UIButton {
       ? String(
         localized: "checkbox.accessibilityLabel.checked",
         defaultValue: "Checked, \(name)",
-        comment: "VoiceOver label of a ticked checklist item's checkbox. The placeholder is the item's name. Keep the status first, so a listener hears it before a long name."
+        comment: "VoiceOver label of a ticked checklist item's checkbox. The placeholder is the item's name. Keep the status first, so a listener hears it before a long name.",
       )
       : String(
         localized: "checkbox.accessibilityLabel.unchecked",
         defaultValue: "Unchecked, \(name)",
-        comment: "VoiceOver label of an unticked checklist item's checkbox. The placeholder is the item's name. Keep the status first, so a listener hears it before a long name."
+        comment: "VoiceOver label of an unticked checklist item's checkbox. The placeholder is the item's name. Keep the status first, so a listener hears it before a long name.",
       )
   }
 

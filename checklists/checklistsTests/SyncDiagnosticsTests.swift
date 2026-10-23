@@ -38,7 +38,7 @@ struct SyncDiagnosticsTests {
     let syncStatus = SyncStatus(
       containerBacking: .localFallback,
       accountStatus: .available,
-      fallbackError: SyncErrorCode(domain: "NSCocoaErrorDomain", code: 134_060)
+      fallbackError: SyncErrorCode(domain: "NSCocoaErrorDomain", code: 134_060),
     )
     let report = SyncDiagnostics.report(syncStatus: syncStatus, appVersion: "1.3", build: "45", osVersion: "26.1")
     #expect(report.contains("Launch fallback: NSCocoaErrorDomain 134060"))
@@ -68,7 +68,7 @@ struct SyncDiagnosticsTests {
     syncStatus.record(SyncEventSnapshot(
       operation: .export,
       endDate: Date(timeIntervalSince1970: 100),
-      error: SyncErrorCode(domain: "CKErrorDomain", code: 25)
+      error: SyncErrorCode(domain: "CKErrorDomain", code: 25),
     ))
     let report = SyncDiagnostics.report(syncStatus: syncStatus, appVersion: "1.3", build: "45", osVersion: "26.1")
     #expect(report.contains("export: failed CKErrorDomain 25 (last ok 1970-01-01T00:00:00Z)"))
@@ -80,7 +80,7 @@ struct SyncDiagnosticsTests {
     syncStatus.record(SyncEventSnapshot(
       operation: .import,
       endDate: Date(timeIntervalSince1970: 0),
-      error: SyncErrorCode(domain: "CKErrorDomain", code: 2)
+      error: SyncErrorCode(domain: "CKErrorDomain", code: 2),
     ))
     let report = SyncDiagnostics.report(syncStatus: syncStatus, appVersion: "1.3", build: "45", osVersion: "26.1")
     #expect(report.contains("import: failed CKErrorDomain 2 (no prior success)"))

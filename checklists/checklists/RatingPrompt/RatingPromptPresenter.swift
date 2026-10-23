@@ -40,7 +40,7 @@ private struct RatingPromptPresenter: ViewModifier {
     RatingPromptCoordinator.shouldRequestReview(
       isRequestPending: coordinator.isRequestPending,
       isOnChecklistsList: isOnChecklistsList,
-      sceneIsActive: scenePhase == .active
+      sceneIsActive: scenePhase == .active,
     )
   }
 

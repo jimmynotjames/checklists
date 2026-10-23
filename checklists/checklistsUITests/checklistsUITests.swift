@@ -68,7 +68,7 @@ class checklistsUITests: XCTestCase {
     duplicateAction.tap()
     XCTAssertTrue(
       listQuery.staticTexts["\(sourceName) copy 2"].waitForExistence(timeout: 5),
-      "The second copy didn't get a name of its own."
+      "The second copy didn't get a name of its own.",
     )
   }
 

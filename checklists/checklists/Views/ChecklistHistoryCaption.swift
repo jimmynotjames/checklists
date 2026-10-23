@@ -33,12 +33,12 @@ enum ChecklistHistoryCaption {
       String(
         localized: "checklist.history.lastUpdated",
         defaultValue: "Last updated: \(value(of: checklist.lastUpdated))",
-        comment: "Caption line under a checklist's notes; the placeholder is a formatted date and time, or the word for Never."
+        comment: "Caption line under a checklist's notes; the placeholder is a formatted date and time, or the word for Never.",
       ),
       String(
         localized: "checklist.history.lastCompleted",
         defaultValue: "Last completed: \(value(of: checklist.lastCompleted))",
-        comment: "Caption line under a checklist's notes; the placeholder is a formatted date and time, or the word for Never."
+        comment: "Caption line under a checklist's notes; the placeholder is a formatted date and time, or the word for Never.",
       ),
     ]
   }
@@ -48,7 +48,7 @@ enum ChecklistHistoryCaption {
       return String(
         localized: "checklist.history.never",
         defaultValue: "Never",
-        comment: "Stands in for the date in the Last updated / Last completed caption when the checklist has never been touched."
+        comment: "Stands in for the date in the Last updated / Last completed caption when the checklist has never been touched.",
       )
     }
     return dateFormatter.string(from: date)
@@ -99,7 +99,7 @@ enum ChecklistHistoryCaption {
       VoiceOver reads the two caption lines under a checklist's notes as one announcement. The first \
       placeholder is the Last updated line, the second the Last completed line. Join them as two \
       sentences with your language's sentence break, e.g. "。".
-      """
+      """,
     )
   }
 
@@ -114,7 +114,7 @@ enum ChecklistHistoryCaption {
     _ view: UIStackView,
     in header: UIView,
     column: UILayoutGuide,
-    below notesView: UIView
+    below notesView: UIView,
   ) -> (constraints: [NSLayoutConstraint], height: NSLayoutConstraint) {
     header.addSubview(view)
     view.translatesAutoresizingMaskIntoConstraints = false

@@ -56,7 +56,7 @@ struct LegacyRealmImporterTests {
     fixtureURL: URL,
     checklists: [FixtureChecklist],
     unlinkedChecklistNames: [String] = [],
-    includeGroup: Bool = true
+    includeGroup: Bool = true,
   ) throws {
     let realm = try Realm(configuration: legacyConfiguration(fixtureURL: fixtureURL))
     try realm.write {
@@ -96,13 +96,13 @@ struct LegacyRealmImporterTests {
     into context: ModelContext,
     fixtureURL: URL,
     userDefaults: UserDefaults,
-    analytics: any AnalyticsClient = ConsoleAnalyticsClient()
+    analytics: any AnalyticsClient = ConsoleAnalyticsClient(),
   ) throws {
     try LegacyRealmImporter.importIfNeeded(
       into: context,
       userDefaults: userDefaults,
       configuration: legacyConfiguration(fixtureURL: fixtureURL),
-      analytics: analytics
+      analytics: analytics,
     )
   }
 
@@ -210,7 +210,7 @@ struct LegacyRealmImporterTests {
       try writeFixture(
         fixtureURL: fixtureURL,
         checklists: [FixtureChecklist(name: "Linked")],
-        unlinkedChecklistNames: ["Orphan"]
+        unlinkedChecklistNames: ["Orphan"],
       )
       let context = try TestModelContainer.makeContext()
 
@@ -339,7 +339,7 @@ struct LegacyRealmImporterTests {
           FixtureChecklist(name: "First", items: [FixtureItem(name: "a")], sortNumber: 1.0),
           FixtureChecklist(name: "Second", sortNumber: 2.0),
         ],
-        includeGroup: false
+        includeGroup: false,
       )
       let context = try TestModelContainer.makeContext()
 

@@ -33,7 +33,7 @@ struct AnalyticsSettingsTests {
 
     #expect(
       store.object(forKey: AnalyticsSettings.analyticsOptInKey) == nil,
-      "Writing the locale-resolved default would make every install look like it had already decided."
+      "Writing the locale-resolved default would make every install look like it had already decided.",
     )
   }
 
@@ -77,7 +77,7 @@ struct AnalyticsSettingsTests {
     let store = AnalyticsSettings.makeStore(
       arguments: ["-UITests1"],
       environment: [:],
-      persistentStore: InMemoryKeyValueStore()
+      persistentStore: InMemoryKeyValueStore(),
     )
     let settings = AnalyticsSettings(store: store)
 
@@ -91,7 +91,7 @@ struct AnalyticsSettingsTests {
     let ordinaryStore = AnalyticsSettings.makeStore(
       arguments: ["-UITests1"],
       environment: [:],
-      persistentStore: InMemoryKeyValueStore()
+      persistentStore: InMemoryKeyValueStore(),
     )
     let screenshotSettings = AnalyticsSettings(store: screenshotStore)
     let ordinarySettings = AnalyticsSettings(store: ordinaryStore)
@@ -109,16 +109,16 @@ struct AnalyticsSettingsTests {
     let jsonOnlyStore = AnalyticsSettings.makeStore(
       arguments: ["-UITests1"],
       environment: [LaunchModeContainerFactory.screenshotSeedJSONKey: "{}"],
-      persistentStore: InMemoryKeyValueStore()
+      persistentStore: InMemoryKeyValueStore(),
     )
     let localeOnlyStore = AnalyticsSettings.makeStore(
       arguments: ["-UITests1"],
       environment: [LaunchModeContainerFactory.screenshotSeedLocaleKey: "de-DE"],
-      persistentStore: InMemoryKeyValueStore()
+      persistentStore: InMemoryKeyValueStore(),
     )
     let emptyLocaleStore = makeScreenshotStore(
       arguments: ["-UITests1"],
-      environment: [LaunchModeContainerFactory.screenshotSeedLocaleKey: ""]
+      environment: [LaunchModeContainerFactory.screenshotSeedLocaleKey: ""],
     )
 
     #expect(!AnalyticsSettings(store: jsonOnlyStore).analyticsOptInExplicitlySet)
@@ -160,13 +160,13 @@ struct AnalyticsSettingsTests {
     let settings = AnalyticsSettings(store: store)
 
     #expect(
-      store.object(forKey: AnalyticsSettings.analyticsDistinctIdKey) as? String == settings.analyticsDistinctId
+      store.object(forKey: AnalyticsSettings.analyticsDistinctIdKey) as? String == settings.analyticsDistinctId,
     )
   }
 
   private func assertScreenshotConsent(
     arguments: [String],
-    environment: [String: String]
+    environment: [String: String],
   ) {
     let store = makeScreenshotStore(arguments: arguments, environment: environment)
     let settings = AnalyticsSettings(store: store)
@@ -177,7 +177,7 @@ struct AnalyticsSettingsTests {
     #else
       #expect(
         !settings.analyticsOptInExplicitlySet,
-        "Release builds must not contain screenshot consent seeding."
+        "Release builds must not contain screenshot consent seeding.",
       )
     #endif
   }
@@ -185,7 +185,7 @@ struct AnalyticsSettingsTests {
   private func makeScreenshotStore(
     arguments: [String],
     environment: [String: String],
-    persistentStore: KeyValueStore = InMemoryKeyValueStore()
+    persistentStore: KeyValueStore = InMemoryKeyValueStore(),
   ) -> KeyValueStore {
     var screenshotEnvironment = environment
     screenshotEnvironment[LaunchModeContainerFactory.screenshotSeedJSONKey] = "{}"
@@ -194,7 +194,7 @@ struct AnalyticsSettingsTests {
     return AnalyticsSettings.makeStore(
       arguments: arguments,
       environment: screenshotEnvironment,
-      persistentStore: persistentStore
+      persistentStore: persistentStore,
     )
   }
 }

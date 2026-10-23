@@ -19,7 +19,7 @@ struct ChecklistAnalyticsPropertiesTests {
     in context: ModelContext,
     name: String,
     notes: String? = nil,
-    items: [(name: String, notes: String?)] = []
+    items: [(name: String, notes: String?)] = [],
   ) -> Checklist {
     let checklist = Checklist(name: name, notes: notes, sortKey: 1.0)
     context.insert(checklist)
@@ -40,7 +40,7 @@ struct ChecklistAnalyticsPropertiesTests {
       in: context,
       name: "Camping",
       notes: "four nights",
-      items: [("Tent", "the green one"), ("Stove", nil), ("Matches", "")]
+      items: [("Tent", "the green one"), ("Stove", nil), ("Matches", "")],
     )
 
     let properties = checklist.analyticsViewedProperties
@@ -50,7 +50,7 @@ struct ChecklistAnalyticsPropertiesTests {
     #expect(properties[AnalyticsProperty.itemsCount] as? Int == 3)
     #expect(
       properties[AnalyticsProperty.itemsWithNotesCount] as? Int == 1,
-      "An empty-string note is not a note."
+      "An empty-string note is not a note.",
     )
   }
 
@@ -85,7 +85,7 @@ struct ChecklistAnalyticsPropertiesTests {
       in: context,
       name: "Trip",
       notes: "SECRET_CHECKLIST_NOTE",
-      items: [("SECRET_ITEM_NAME", "SECRET_ITEM_NOTE")]
+      items: [("SECRET_ITEM_NAME", "SECRET_ITEM_NOTE")],
     )
 
     let rendered = checklist.analyticsViewedProperties

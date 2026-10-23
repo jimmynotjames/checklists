@@ -30,7 +30,7 @@ enum StoreReset {
     storeURL: URL = ProductionContainerFactory.storeURL(),
     realmURL: URL? = LegacyRealmImporter.legacyStoreURL,
     userDefaults: UserDefaults = .standard,
-    fileManager: FileManager = .default
+    fileManager: FileManager = .default,
   ) {
     AppLog.persistence.warning("storeReset.begin")
 
@@ -69,7 +69,7 @@ enum StoreReset {
       } catch {
         let nsError = error as NSError
         AppLog.persistence.error(
-          "storeReset.removeFailed: \(nsError.domain, privacy: .public) \(nsError.code, privacy: .public)"
+          "storeReset.removeFailed: \(nsError.domain, privacy: .public) \(nsError.code, privacy: .public)",
         )
       }
     }

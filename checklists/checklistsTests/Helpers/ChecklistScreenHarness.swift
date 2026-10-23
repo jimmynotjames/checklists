@@ -64,7 +64,7 @@ enum ChecklistScreenHarness {
     name: String = "Groceries",
     items: [(name: String, isChecked: Bool)] = [],
     isNewChecklist: Bool = false,
-    _ body: (Context) throws -> T
+    _ body: (Context) throws -> T,
   ) throws -> T {
     let container = try TestModelContainer.make()
     let modelContext = ModelContext(container)
@@ -109,8 +109,8 @@ enum ChecklistScreenHarness {
         viewController: viewController,
         checklist: checklist,
         modelContext: modelContext,
-        analytics: analytics
-      )
+        analytics: analytics,
+      ),
     )
   }
 }

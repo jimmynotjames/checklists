@@ -32,7 +32,7 @@ struct ToastPresenterTests {
   private func toast(_ text: String, withAction: Bool = false) -> Toast {
     Toast(
       message: message(text),
-      action: withAction ? ToastAction(title: message("Undo")) {} : nil
+      action: withAction ? ToastAction(title: message("Undo")) {} : nil,
     )
   }
 
@@ -45,7 +45,9 @@ struct ToastPresenterTests {
   /// Yields until `isSatisfied`, bounded so a stuck expectation fails rather than hangs.
   private func settle(until isSatisfied: () -> Bool) async -> Bool {
     for _ in 0 ..< 100 {
-      if isSatisfied() { return true }
+      if isSatisfied() {
+        return true
+      }
       await Task.yield()
     }
     return isSatisfied()
@@ -60,7 +62,7 @@ struct ToastPresenterTests {
     let withAction = try #require(ToastPresenter.displayDuration(
       for: toast("deleted", withAction: true),
       base: base,
-      isVoiceOverRunning: false
+      isVoiceOverRunning: false,
     ))
     #expect(plain == base)
     #expect(withAction == ToastPresenter.actionDisplayDuration)
@@ -72,7 +74,7 @@ struct ToastPresenterTests {
     let duration = ToastPresenter.displayDuration(
       for: toast("copied"),
       base: .seconds(2),
-      isVoiceOverRunning: true
+      isVoiceOverRunning: true,
     )
     #expect(duration == nil, "A transient timer races the announcement.")
   }

@@ -16,8 +16,12 @@ import UIKit
 ///
 /// Pure and `nonisolated` so it can be tested without a device or a running app.
 nonisolated func orientationAnalyticsValue(_ orientation: UIDeviceOrientation) -> String? {
-  if orientation.isPortrait { return "portrait" }
-  if orientation.isLandscape { return "landscape" }
+  if orientation.isPortrait {
+    return "portrait"
+  }
+  if orientation.isLandscape {
+    return "landscape"
+  }
   return nil
 }
 

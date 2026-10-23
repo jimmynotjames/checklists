@@ -25,7 +25,7 @@ struct PersistenceAnalyticsTests {
       try ProductionContainerFactory.make(
         cloud: { _ in throw failure },
         local: { _ in throw failure },
-        analytics: spy
+        analytics: spy,
       )
     }
 
@@ -42,7 +42,7 @@ struct PersistenceAnalyticsTests {
       try ProductionContainerFactory.make(
         cloud: { _ in throw failure },
         local: { _ in throw failure },
-        analytics: spy
+        analytics: spy,
       )
     }
 
@@ -52,12 +52,12 @@ struct PersistenceAnalyticsTests {
     let domain = spy.rawProperty(
       AnalyticsProperty.errorDomain,
       forFirst: AnalyticsEvent.persistenceFatalError,
-      as: String.self
+      as: String.self,
     )
     let code = spy.rawProperty(
       AnalyticsProperty.errorCode,
       forFirst: AnalyticsEvent.persistenceFatalError,
-      as: Int.self
+      as: Int.self,
     )
     #expect(domain == "NSCocoaErrorDomain")
     #expect(code == 134_060)
@@ -77,14 +77,14 @@ struct PersistenceAnalyticsTests {
     let failure = NSError(
       domain: "NSCocoaErrorDomain",
       code: 134_060,
-      userInfo: [NSLocalizedFailureReasonErrorKey: "a-checklist-item-the-user-typed"]
+      userInfo: [NSLocalizedFailureReasonErrorKey: "a-checklist-item-the-user-typed"],
     )
 
     #expect(throws: (any Error).self) {
       try ProductionContainerFactory.make(
         cloud: { _ in throw failure },
         local: { _ in throw failure },
-        analytics: spy
+        analytics: spy,
       )
     }
 
@@ -105,7 +105,7 @@ struct PersistenceAnalyticsTests {
     _ = try ProductionContainerFactory.make(
       cloud: { _ in stubContainer },
       local: { _ in stubContainer },
-      analytics: spy
+      analytics: spy,
     )
 
     #expect(spy.calls.isEmpty)
@@ -122,7 +122,7 @@ struct PersistenceAnalyticsTests {
     let result = try ProductionContainerFactory.make(
       cloud: { _ in throw cloudFailure },
       local: { _ in stubContainer },
-      analytics: spy
+      analytics: spy,
     )
 
     #expect(result.backing == .localFallback)
@@ -140,7 +140,7 @@ struct PersistenceAnalyticsTests {
     let result = try ProductionContainerFactory.make(
       cloud: { _ in stubContainer },
       local: { _ in stubContainer },
-      analytics: spy
+      analytics: spy,
     )
 
     #expect(result.fallbackError == nil)
@@ -154,7 +154,7 @@ struct PersistenceAnalyticsTests {
     let spy = SpyAnalyticsClient()
     let coordinator = AppStartupCoordinator(
       makeContainer: { throw NSError(domain: "NSCocoaErrorDomain", code: 134_060) },
-      analytics: spy
+      analytics: spy,
     )
 
     guard case .failed = coordinator.run() else {
@@ -169,19 +169,19 @@ struct PersistenceAnalyticsTests {
     let domain = spy.rawProperty(
       AnalyticsProperty.errorDomain,
       forFirst: AnalyticsEvent.startupFailed,
-      as: String.self
+      as: String.self,
     )
     let code = spy.rawProperty(
       AnalyticsProperty.errorCode,
       forFirst: AnalyticsEvent.startupFailed,
-      as: Int.self
+      as: Int.self,
     )
     #expect(domain == "NSCocoaErrorDomain")
     #expect(code == 134_060)
     let stage = spy.rawProperty(
       AnalyticsProperty.startupStage,
       forFirst: AnalyticsEvent.startupFailed,
-      as: String.self
+      as: String.self,
     )
     #expect(stage == ContainerCreationFailure.Stage.storeOpen.rawValue)
   }
@@ -198,10 +198,10 @@ struct PersistenceAnalyticsTests {
         throw NSError(
           domain: "NSCocoaErrorDomain",
           code: 134_060,
-          userInfo: [NSLocalizedFailureReasonErrorKey: "a-checklist-item-the-user-typed"]
+          userInfo: [NSLocalizedFailureReasonErrorKey: "a-checklist-item-the-user-typed"],
         )
       },
-      analytics: spy
+      analytics: spy,
     )
 
     _ = coordinator.run()
@@ -228,10 +228,18 @@ struct PersistenceAnalyticsTests {
     let thrown = NSError(domain: "TestDomain", code: 7)
     let coordinator = AppStartupCoordinator(
       makeContainer: { ContainerLaunchResult(container: stubContainer, backing: .localFallback, fallbackError: nil) },
-      importLegacyData: { _ in if failsOnImport { throw thrown } },
-      seedFirstLaunchData: { _ in if !failsOnImport { throw thrown } },
+      importLegacyData: { _ in
+        if failsOnImport {
+          throw thrown
+        }
+      },
+      seedFirstLaunchData: { _ in
+        if !failsOnImport {
+          throw thrown
+        }
+      },
       runsPostOpenStages: true,
-      analytics: spy
+      analytics: spy,
     )
 
     guard case let .failed(failure) = coordinator.run() else {
@@ -246,7 +254,7 @@ struct PersistenceAnalyticsTests {
     let sent = spy.rawProperty(
       AnalyticsProperty.startupStage,
       forFirst: AnalyticsEvent.startupFailed,
-      as: String.self
+      as: String.self,
     )
     #expect(sent == stage.rawValue)
   }
@@ -266,7 +274,7 @@ struct PersistenceAnalyticsTests {
         throw PersistenceError(operation: .sampleSeed, errorDomain: "NSCocoaErrorDomain", errorCode: 134_030)
       },
       runsPostOpenStages: true,
-      analytics: SpyAnalyticsClient()
+      analytics: SpyAnalyticsClient(),
     )
 
     guard case let .failed(failure) = coordinator.run() else {
@@ -289,7 +297,7 @@ struct PersistenceAnalyticsTests {
     let stubContainer = try TestModelContainer.make()
     let coordinator = AppStartupCoordinator(
       makeContainer: { ContainerLaunchResult(container: stubContainer, backing: .localFallback, fallbackError: nil) },
-      analytics: spy
+      analytics: spy,
     )
 
     guard case .ready = coordinator.run() else {

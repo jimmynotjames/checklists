@@ -1,4 +1,4 @@
-.PHONY: system format format-changed lint lint-changed i18n-check i18n-sync i18n-sync-check uitest-check doc-check build test-unit test-ui test-only test-scripts gate verify-secrets hooks-install initialize-sims sim-udid sim-show sim-run sim-status sim-shutdown sim-clean simulator-slots-check simulator-slots-sync simulator-slots-status
+.PHONY: system tool-versions-check format format-changed lint lint-changed i18n-check i18n-sync i18n-sync-check uitest-check doc-check build test-unit test-ui test-only test-scripts gate verify-secrets hooks-install initialize-sims sim-udid sim-show sim-run sim-status sim-shutdown sim-clean simulator-slots-check simulator-slots-sync simulator-slots-status
 
 system:
 	bash scripts/system-setup.sh
@@ -6,6 +6,10 @@ system:
 # -- Formatting and linting ---------------------------------------------------
 # *-changed targets are what `make gate` runs. Repo-wide format/lint are manual
 # only — AGENTS.md §"Lint policy".
+# Installed swiftformat/swiftlint/gitleaks/lefthook must match config/lint-tools.env.
+tool-versions-check:
+	bash scripts/check-tool-versions.sh
+
 format:
 	swiftformat .
 

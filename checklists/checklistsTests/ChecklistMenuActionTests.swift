@@ -25,7 +25,7 @@ struct ChecklistMenuActionTests {
   @Test("deleting removes the checklist and its items")
   func deleteRemovesTheChecklistAndItsItems() throws {
     try ChecklistScreenHarness.withController(
-      items: [("Milk", false), ("Bread", false)]
+      items: [("Milk", false), ("Bread", false)],
     ) { harness in
       harness.viewController.deleteChecklist()
 
@@ -61,7 +61,7 @@ struct ChecklistMenuActionTests {
   @Test("deleting checked items removes the ticked rows and keeps the rest")
   func deleteCheckedItemsKeepsTheUnchecked() throws {
     try ChecklistScreenHarness.withController(
-      items: [("Milk", true), ("Bread", false), ("Eggs", true), ("Tea", false)]
+      items: [("Milk", true), ("Bread", false), ("Eggs", true), ("Tea", false)],
     ) { harness in
       harness.viewController.deleteCheckedItems()
 
@@ -70,7 +70,7 @@ struct ChecklistMenuActionTests {
       #expect(persisted == ["Bread", "Tea"], "The deletion is saved, not just staged.")
       #expect(harness.table.numberOfRows(inSection: 0) == 2)
       let count = harness.analytics.properties(forFirst: AnalyticsEvent.checklistCheckedItemsDeleted)?[
-        AnalyticsProperty.itemsCount
+        AnalyticsProperty.itemsCount,
       ]
       #expect(count == "2")
     }
@@ -81,7 +81,7 @@ struct ChecklistMenuActionTests {
   @Test("deleting every item leaves an empty, uncompleted list")
   func deleteCheckedItemsCanEmptyTheList() throws {
     try ChecklistScreenHarness.withController(
-      items: [("Milk", true), ("Bread", true)]
+      items: [("Milk", true), ("Bread", true)],
     ) { harness in
       harness.viewController.deleteCheckedItems()
 
@@ -93,7 +93,7 @@ struct ChecklistMenuActionTests {
   @Test("with nothing checked, nothing is deleted or reported")
   func deleteCheckedItemsWithNothingChecked() throws {
     try ChecklistScreenHarness.withController(
-      items: [("Milk", false), ("Bread", false)]
+      items: [("Milk", false), ("Bread", false)],
     ) { harness in
       harness.viewController.deleteCheckedItems()
 
@@ -129,7 +129,7 @@ struct ChecklistMenuActionTests {
   func duplicatingAddsACopyAndOpensIt() throws {
     try ChecklistScreenHarness.withController(
       name: "Packing",
-      items: [("Passport", true), ("Charger", false)]
+      items: [("Passport", true), ("Charger", false)],
     ) { harness in
       var openedId: String?
       harness.viewController.onRequestOpenDuplicate = { openedId = $0 }
@@ -143,7 +143,7 @@ struct ChecklistMenuActionTests {
       #expect(copy.items.map(\.name) == ["Passport", "Charger"], "Order carries over.")
       #expect(
         copy.items.allSatisfy { $0.status == .unchecked },
-        "A duplicate has never been run, so nothing is ticked."
+        "A duplicate has never been run, so nothing is ticked.",
       )
       #expect(openedId == copy.id)
       #expect(harness.analytics.count(of: AnalyticsEvent.checklistDuplicated) == 1)
@@ -155,7 +155,7 @@ struct ChecklistMenuActionTests {
   func uncommittedNameIsCommittedBeforeCopying() throws {
     try ChecklistScreenHarness.withController(
       name: "Packing",
-      items: [("Passport", false)]
+      items: [("Passport", false)],
     ) { harness in
       harness.header.nameTextField.text = "Trip"
       harness.header.nameTextField.becomeFirstResponder()
@@ -177,7 +177,7 @@ struct ChecklistMenuActionTests {
       harness.viewController.duplicateChecklist()
 
       let source = harness.analytics.properties(forFirst: AnalyticsEvent.checklistDuplicated)?[
-        AnalyticsProperty.source
+        AnalyticsProperty.source,
       ]
       #expect(source == ChecklistDuplicationSource.menu.rawValue)
     }

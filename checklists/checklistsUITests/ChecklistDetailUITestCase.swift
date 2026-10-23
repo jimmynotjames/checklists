@@ -77,7 +77,7 @@ class ChecklistDetailUITestCase: XCTestCase {
       XCTWaiter().wait(for: [shown], timeout: 5), .completed,
       "Row \(index) shows \"\(nameTextView.value as? String ?? "nil")\", not \"\(name)\".",
       file: file,
-      line: line
+      line: line,
     )
   }
 
@@ -104,7 +104,7 @@ class ChecklistDetailUITestCase: XCTestCase {
     numCheckedItems: Int,
     numItems: Int,
     file: StaticString = #filePath,
-    line: UInt = #line
+    line: UInt = #line,
   ) {
     let expected = percentCompleteString(numCheckedItems: numCheckedItems, numItems: numItems)
     let element = parentElement.otherElements[expected]
@@ -112,7 +112,7 @@ class ChecklistDetailUITestCase: XCTestCase {
       element.waitForExistence(timeout: 5),
       "No percent-complete element found with accessibility value \"\(expected)\"",
       file: file,
-      line: line
+      line: line,
     )
     XCTAssertEqual(element.value as? String, expected, file: file, line: line)
   }

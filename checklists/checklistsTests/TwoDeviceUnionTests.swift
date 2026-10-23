@@ -46,7 +46,7 @@ struct TwoDeviceUnionTests {
     fixtureDirectory: URL,
     named deviceName: String,
     checklists: [(String, [String])],
-    checkedItemNames: Set<String> = []
+    checkedItemNames: Set<String> = [],
   ) throws -> Realm.Configuration {
     let url = fixtureDirectory.appendingPathComponent("\(deviceName).realm")
     let configuration = LegacyRealmImporter.legacyConfiguration(fileURL: url)
@@ -99,11 +99,11 @@ struct TwoDeviceUnionTests {
     try withFixture { fixtureDirectory, freshDefaults in
       let deviceA = try writeDeviceStore(
         fixtureDirectory: fixtureDirectory, named: "iPad",
-        checklists: [("Garden", ["Water tomatoes", "Prune roses"])]
+        checklists: [("Garden", ["Water tomatoes", "Prune roses"])],
       )
       let deviceB = try writeDeviceStore(
         fixtureDirectory: fixtureDirectory, named: "iPhone",
-        checklists: [("Groceries", ["Milk", "Bread"])]
+        checklists: [("Groceries", ["Milk", "Bread"])],
       )
 
       let context = try ModelContext(TestModelContainer.make())
@@ -153,17 +153,17 @@ struct TwoDeviceUnionTests {
         fixtureDirectory: fixtureDirectory,
         named: "iPhone",
         checklists: [("Morning Routine", itemNames)],
-        checkedItemNames: ["START COFFEE MAKER", "Yoga/meditation"]
+        checkedItemNames: ["START COFFEE MAKER", "Yoga/meditation"],
       )
 
       let context = try ModelContext(TestModelContainer.make())
       try LegacyRealmImporter.importIfNeeded(
         into: context, userDefaults: freshDefaults(), configuration: deviceA,
-        sortKeyBase: 1 * LegacyRealmImporter.sortKeyBlockSize
+        sortKeyBase: 1 * LegacyRealmImporter.sortKeyBlockSize,
       )
       try LegacyRealmImporter.importIfNeeded(
         into: context, userDefaults: freshDefaults(), configuration: deviceB,
-        sortKeyBase: 5 * LegacyRealmImporter.sortKeyBlockSize
+        sortKeyBase: 5 * LegacyRealmImporter.sortKeyBlockSize,
       )
       try SampleData.dedupeChecklists(in: context)
 
@@ -171,7 +171,7 @@ struct TwoDeviceUnionTests {
       #expect(morningRoutines.count == 2, "Both devices' copies are real state and must both survive.")
       #expect(
         morningRoutines.map { checklist in checklist.items.count(where: { $0.status == .checked }) } == [0, 2],
-        "Each copy keeps its own checked states; neither is overwritten by the other."
+        "Each copy keeps its own checked states; neither is overwritten by the other.",
       )
     }
   }
@@ -191,16 +191,16 @@ struct TwoDeviceUnionTests {
       let context = try ModelContext(TestModelContainer.make())
       try LegacyRealmImporter.importIfNeeded(
         into: context, userDefaults: freshDefaults(), configuration: deviceA,
-        sortKeyBase: 2 * LegacyRealmImporter.sortKeyBlockSize
+        sortKeyBase: 2 * LegacyRealmImporter.sortKeyBlockSize,
       )
       try LegacyRealmImporter.importIfNeeded(
         into: context, userDefaults: freshDefaults(), configuration: deviceB,
-        sortKeyBase: 7 * LegacyRealmImporter.sortKeyBlockSize
+        sortKeyBase: 7 * LegacyRealmImporter.sortKeyBlockSize,
       )
 
       #expect(
         try context.fetchChecklistsSorted().map(\.name) == ["A1", "A2", "A3", "B1", "B2", "B3"],
-        "Each device's list must be an unbroken run in its original order."
+        "Each device's list must be an unbroken run in its original order.",
       )
     }
   }
@@ -215,11 +215,11 @@ struct TwoDeviceUnionTests {
       // B imported first, but lands in the higher block.
       try LegacyRealmImporter.importIfNeeded(
         into: context, userDefaults: freshDefaults(), configuration: deviceB,
-        sortKeyBase: 9 * LegacyRealmImporter.sortKeyBlockSize
+        sortKeyBase: 9 * LegacyRealmImporter.sortKeyBlockSize,
       )
       try LegacyRealmImporter.importIfNeeded(
         into: context, userDefaults: freshDefaults(), configuration: deviceA,
-        sortKeyBase: 1 * LegacyRealmImporter.sortKeyBlockSize
+        sortKeyBase: 1 * LegacyRealmImporter.sortKeyBlockSize,
       )
 
       #expect(try context.fetchChecklistsSorted().map(\.name) == ["A1", "A2", "B1", "B2"])
@@ -254,7 +254,7 @@ struct TwoDeviceUnionTests {
     let distinct = Set(draws)
     #expect(
       Double(distinct.count) / Double(draws.count) > 0.9,
-      "Block collisions should be rare; a collision merely interleaves, but it should not be common."
+      "Block collisions should be rare; a collision merely interleaves, but it should not be common.",
     )
   }
 

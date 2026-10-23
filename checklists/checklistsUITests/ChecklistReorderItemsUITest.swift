@@ -72,7 +72,7 @@ class ChecklistReorderItemsUITest: XCTestCase {
     checklistsList.staticTexts["Morning Routine"].tap()
     XCTAssertTrue(checklistTableView.waitForExistence(timeout: 5))
     let reopenedFirst = try XCTUnwrap(
-      checklistTableView.children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"].value as? String
+      checklistTableView.children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"].value as? String,
     )
     XCTAssertEqual(reopenedFirst, movedName)
   }
