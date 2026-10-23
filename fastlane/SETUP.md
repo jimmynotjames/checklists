@@ -27,7 +27,8 @@ every locale from an explicit locale override when present, or from English othe
 
 The other storefront directories hold transcreated overrides for `subtitle`,
 `keywords`, `description`, and `release_notes`. `name` and the URLs are copied
-from English unchanged: the store name is the bare brand. Those files are generated
+from English unchanged: the store name is the bare brand, except in `ja`, whose
+hand-authored `name.txt` is listed in `PASSTHROUGH_OVERRIDES`. Those files are generated
 by the `appstore-translate-metadata` skill and never hand-authored; edit the English
 source and re-run the skill. `python3 scripts/translate_metadata/check_metadata.py`
 gates the set, and the `push_metadata` lane refuses to upload until it passes.

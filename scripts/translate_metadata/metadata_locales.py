@@ -91,6 +91,13 @@ PASSTHROUGH_FIELDS: list[str] = [
     "support_url",
 ]
 
+# Passthrough fields a storefront authors itself instead of copying from en-US.
+# merge.py leaves these files alone. ja: App Store Connect rejects the bare brand as a
+# Japanese name because another app already holds it there.
+PASSTHROUGH_OVERRIDES: dict[str, frozenset[str]] = {
+    "ja": frozenset({"name"}),
+}
+
 # Static, field-level guidance injected into every prompt. Explains what each field is
 # for and how to transcreate it, rather than translate it.
 FIELD_GUIDANCE: dict[str, str] = {

@@ -32,7 +32,9 @@ Transcreated per storefront (with App Store Connect limits):
 
 Passthrough fields, copied verbatim from `en-US` by `merge.py` and never sent to the model:
 `name` (the store name is the bare brand), `marketing_url`, `privacy_url`, `support_url`.
-`merge.py --skip-urls` skips all four. The catalog-level `copyright.txt` is left untouched.
+`merge.py --skip-urls` skips all four. A storefront listed in `PASSTHROUGH_OVERRIDES`
+(`metadata_locales.py`) authors those fields itself and `merge.py` leaves them alone; `ja`
+has its own `name` because the bare brand is taken in Japan. The catalog-level `copyright.txt` is left untouched.
 
 A translatable field that is blank or absent in `en-US` is unused; `merge.py` deletes it
 from every storefront.

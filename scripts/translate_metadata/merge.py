@@ -35,6 +35,7 @@ OUTPUTS_DIR = REPO_ROOT / "tmp" / "metadata-outputs"
 sys.path.insert(0, str(Path(__file__).parent))
 from metadata_locales import (  # noqa: E402
     PASSTHROUGH_FIELDS,
+    PASSTHROUGH_OVERRIDES,
     SOURCE_LOCALE,
     STOREFRONT_LOCALES,
     TRANSLATABLE_FIELDS,
@@ -89,10 +90,14 @@ def copy_passthrough(storefront: str) -> int:
     Byte-for-byte, deliberately: a passthrough field is the English file, so a
     storefront copy that differs from the source even by a trailing newline is a
     divergence nobody asked for, and `appstore_metadata.py prepare` hands the
-    source bytes to deliver unchanged.
+    source bytes to deliver unchanged. Fields in PASSTHROUGH_OVERRIDES for this
+    storefront are authored in place and skipped.
     """
     copied = 0
+    overridden = PASSTHROUGH_OVERRIDES.get(storefront, frozenset())
     for field in PASSTHROUGH_FIELDS:
+        if field in overridden:
+            continue
         src = METADATA_DIR / SOURCE_LOCALE / f"{field}.txt"
         if not src.exists():
             continue
