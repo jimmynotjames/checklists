@@ -9,7 +9,7 @@
 
 | Axis | Status | Notes |
 | --- | --- | --- |
-| **VoiceOver labels/values** | Partial | Every interactive control is labelled; the remaining VoiceOver gaps are **#278**. Checklists, and the items inside a checklist, reorder by Move Up/Down/to Top/to Bottom actions on each row, since neither `.onMove` nor the item table's drag handles and long-press drag offer VoiceOver a way to move a row. On item rows the actions sit on the checkbox and both text views (the notes field once it shows), the elements VoiceOver lands on, and outside Reorder Items mode they add Duplicate and Delete, since the swipe actions belong to the cell. Each item's checkbox reads its status, then the item's name, or "Checkbox" when the name is blank — §Label vs. value. `MainMenuView`'s row icons are decorative. An item's notes field is hidden from VoiceOver while collapsed, as it is on screen: on an item without notes it appears, and becomes reachable, once the name is being edited |
+| **VoiceOver labels/values** | Implemented, unheard | Every interactive control is labelled, checked through the accessibility tree; none of it has been heard on a device. The open question there is whether a checkbox reads its state twice, once in its label and again as the selected trait. Checklists, and the items inside a checklist, reorder by Move Up/Down/to Top/to Bottom actions on each row, since neither `.onMove` nor the item table's drag handles and long-press drag offer VoiceOver a way to move a row. On item rows the actions sit on the checkbox and both text views (the notes field once it shows), the elements VoiceOver lands on, and outside Reorder Items mode they add Duplicate and Delete, since the swipe actions belong to the cell. Each item's checkbox reads its status, then the item's name, or "Checkbox" when the name is blank — §Label vs. value. `MainMenuView`'s row icons are decorative. An item's notes field is hidden from VoiceOver while collapsed, as it is on screen: on an item without notes it appears, and becomes reachable, once the name is being edited |
 | **VoiceOver traits** | Partial | `ChecklistHistoryCaption` sets `.staticText`; `ContainerFailureView`'s and `AnalyticsConsentSheet`'s title and message are one element with `.isHeader`; the checklist screen's name field carries `.header`, since its bar shows no title until the name scrolls under it; `ChecklistsView` has a navigation title that VoiceOver reads but the bar doesn't draw (`.toolbar(removing: .title)`); `MainMenuView` sets `.isModal`, since on a wide window it is a side panel with the list still on screen beside it, and closes on the escape gesture; VoiceOver moves to its Close button when it opens and back to ☰ when it closes. Settings' Privacy Policy row is a `Button`, so the tap is tracked, but carries `.isLink` in place of `.isButton`, with a hint that it opens in the web browser. In Reorder Items mode each checkbox is disabled, so it reads as dimmed; everything else relies on platform defaults |
 | **Reduce Motion** | Implemented | Every app-authored animation has a recorded verdict — §Animation and Reduce Motion |
 | **Dynamic Type** | Implemented | Every screen scales through AX5 with no known layout breaks — §Dynamic Type. Accepted as untested: a live size change on a device, and an AX-size pass in the screenshot audit (it forces xxxLarge). From two steps above the default text size (xxLarge) ChecklistsView's Reset All and Edit mode toolbar collapse to icons, so long translations neither push Edit into an overflow menu nor clip the toolbar; they keep their names for VoiceOver and the Large Content Viewer. Edit keeps its word, with a Large Content Viewer of its own. ☰ has no Large Content Viewer, by choice: it is a single icon, and a tap shows what it does |
@@ -18,7 +18,7 @@
 | **Touch targets (44×44)** | Implemented | `ToastView`, `CopyCheckedItemsView`, `MainMenuView`'s close button, the checklist header's name and notes fields, and each item's name and notes fields enforce a 44pt minimum, and `ChecklistsView`'s last row scrolls clear of the Add button. A toast may sit over rows while it is up, by design: a tap anywhere on it dismisses it |
 | **Color-only signaling** | N/A — none | Completion state is an icon swap plus a spoken value, never tint alone |
 | **Screen-change announcements** | Partial | `LoadingView` and `ContainerFailureView` post `.screenChanged`; `ToastPresenterModifier` posts announcements; both screens' moves, deletes, duplicates and resets tell VoiceOver what changed — §Announcements and focus |
-| **Automated a11y tests** | Not started | No audit-API coverage; UI tests use accessibility attributes only as element hooks |
+| **Automated a11y tests** | Implemented | `AccessibilityAuditUITest` runs Xcode's accessibility audit in `make test-ui` on each screen it lists, at the default text size, with every audit type but contrast (#180, #182). An issue fails the test unless it is in the class's `knownIssues`, each with its reason |
 
 `UIAccessibility.isVoiceOverRunning` is read by `ToastPresenter`. The other flags
 (`isReduceTransparency`, `isBoldTextEnabled`, `shouldDifferentiateWithoutColor`,
@@ -183,10 +183,10 @@ Motion.
 
 `make gate` proves nothing about accessibility behavior, and the unit tests cover only slices of it,
 such as VoiceOver values and the checklist screen's Dynamic Type layout (`ChecklistDynamicTypeTests`).
-Real checks are manual, in the simulator:
+Beyond the audit, real checks are manual, in the simulator:
 
 - VoiceOver: Settings → Accessibility → VoiceOver.
 - Reduce Motion / Dynamic Type: Settings → Accessibility → Motion / Display & Text Size.
-- Xcode's **Accessibility Inspector** audit is the cheapest broad sweep and is not wired into CI.
+- Xcode's accessibility audit runs in `make test-ui` (`AccessibilityAuditUITest`). It reads the accessibility tree, not speech; a new screen gets its own test there.
 
 State in the PR what you actually toggled.
