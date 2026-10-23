@@ -82,7 +82,8 @@ TRANSLATABLE_FIELDS: list[str] = [
 ]
 
 # Copied verbatim from en-US, never sent to a model. `name` is here because this app's
-# store name is the bare brand: there is no descriptor to transcreate. Move it into
+# store name is the bare brand (see PASSTHROUGH_OVERRIDES for storefronts where it
+# cannot be): there is no descriptor to transcreate. Move it into
 # TRANSLATABLE_FIELDS if a localized descriptor is ever added.
 PASSTHROUGH_FIELDS: list[str] = [
     "name",

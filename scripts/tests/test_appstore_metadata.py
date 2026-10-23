@@ -60,7 +60,7 @@ class AppStoreMetadataTests(unittest.TestCase):
             (self.source / "en-US" / "description.txt").read_text(),
         )
         self.assertEqual(
-            (prepared / "ja" / "name.txt").read_text(),
+            (prepared / "de-DE" / "name.txt").read_text(),
             (self.source / "en-US" / "name.txt").read_text(),
         )
         self.assertEqual(
