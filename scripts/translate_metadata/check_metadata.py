@@ -107,8 +107,7 @@ def main(argv: list[str]) -> int:
         print(f"ERROR: no authored en-US fields under {METADATA_DIR / SOURCE_LOCALE}.", file=sys.stderr)
         return 1
 
-    # Copied verbatim from en-US rather than transcreated: the URLs, plus `name`,
-    # which is the bare brand for this app.
+    # Not transcreated: the URLs and `name`, copied from en-US unless overridden.
     source_passthrough = [f for f in PASSTHROUGH_FIELDS if read_field(SOURCE_LOCALE, f)]
 
     issues: list[str] = [

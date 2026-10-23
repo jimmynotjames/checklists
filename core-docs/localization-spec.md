@@ -12,7 +12,7 @@
 | --- | --- |
 | **In-app strings** | 50 locales (English source + 49), fully translated, audited |
 | **First-launch sample data** | Localized through the catalog, transcreated per locale |
-| **App Store listing** | 49 storefronts transcreated; `name` and URLs copied from English |
+| **App Store listing** | 49 storefronts transcreated; `name` and URLs copied from English except where `PASSTHROUGH_OVERRIDES` lets a storefront author its own |
 | **Screenshot seeds** | Generated for all 50 from the catalog |
 | **Screenshot capture** | All 50 active; a full run is release-time work |
 | **Plurals** | Plural variants in the catalog where a count is shown (`pluralize_keys.py`) |

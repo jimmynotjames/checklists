@@ -99,6 +99,15 @@ class MetadataMergeBlankFieldTests(unittest.TestCase):
         self._merge("es-ES", {"subtitle": "Listas reutilizables"})
         self.assertEqual((self.metadata / "es-ES" / "name.txt").read_bytes(), b"reChecklist\n")
 
+    def test_overridden_passthrough_field_is_left_alone(self) -> None:
+        folder = self.metadata / "ja"
+        folder.mkdir()
+        (folder / "name.txt").write_text("reChecklist - 繰り返しチェックリスト\n", encoding="utf-8")
+        self._merge("ja", {"subtitle": "再利用できるチェックリスト"})
+        self.assertEqual(
+            (folder / "name.txt").read_text(encoding="utf-8"), "reChecklist - 繰り返しチェックリスト\n"
+        )
+
 
 class CheckMetadataEmptyFileTests(unittest.TestCase):
     """The gate fails on an empty storefront file, which `prepare` would reject at upload."""

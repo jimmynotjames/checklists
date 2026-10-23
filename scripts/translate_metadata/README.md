@@ -31,8 +31,9 @@ Transcreated per storefront (with App Store Connect limits):
 | `release_notes` | 4000 | "What's New" text. |
 
 Passthrough fields, copied verbatim from `en-US` by `merge.py` and never sent to the model:
-`name` (the store name is the bare brand), `marketing_url`, `privacy_url`, `support_url`.
-`merge.py --skip-urls` skips all four. The catalog-level `copyright.txt` is left untouched.
+`name`, `marketing_url`, `privacy_url`, `support_url`. `merge.py --skip-urls` skips all
+four. A field listed for a storefront in `PASSTHROUGH_OVERRIDES` (`metadata_locales.py`) is
+authored in that storefront's folder and `merge.py` leaves it alone. The catalog-level `copyright.txt` is left untouched.
 
 A translatable field that is blank or absent in `en-US` is unused; `merge.py` deletes it
 from every storefront.

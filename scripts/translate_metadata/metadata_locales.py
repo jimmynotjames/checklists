@@ -82,7 +82,8 @@ TRANSLATABLE_FIELDS: list[str] = [
 ]
 
 # Copied verbatim from en-US, never sent to a model. `name` is here because this app's
-# store name is the bare brand: there is no descriptor to transcreate. Move it into
+# store name is the bare brand (see PASSTHROUGH_OVERRIDES for storefronts where it
+# cannot be): there is no descriptor to transcreate. Move it into
 # TRANSLATABLE_FIELDS if a localized descriptor is ever added.
 PASSTHROUGH_FIELDS: list[str] = [
     "name",
@@ -90,6 +91,22 @@ PASSTHROUGH_FIELDS: list[str] = [
     "privacy_url",
     "support_url",
 ]
+
+# Passthrough fields a storefront authors itself instead of copying from en-US.
+# merge.py leaves these files alone. ja: App Store Connect rejects the bare brand as a
+# Japanese name because another app already holds it there.
+PASSTHROUGH_OVERRIDES: dict[str, frozenset[str]] = {
+    "ja": frozenset({"name"}),
+}
+
+
+def store_name(metadata_dir: Path, storefront: str) -> str:
+    """The storefront's App Store name: its own `name.txt`, else en-US's."""
+    for locale in (storefront, SOURCE_LOCALE):
+        path = metadata_dir / locale / "name.txt"
+        if path.exists() and path.read_text(encoding="utf-8").strip():
+            return path.read_text(encoding="utf-8").strip()
+    return ""
 
 # Static, field-level guidance injected into every prompt. Explains what each field is
 # for and how to transcreate it, rather than translate it.

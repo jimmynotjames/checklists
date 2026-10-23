@@ -46,6 +46,11 @@ class MetadataLocaleTests(unittest.TestCase):
         self.assertIn("name", meta.PASSTHROUGH_FIELDS)
         self.assertNotIn("name", meta.TRANSLATABLE_FIELDS)
 
+    def test_passthrough_overrides_name_real_storefronts_and_fields(self) -> None:
+        for storefront, fields in meta.PASSTHROUGH_OVERRIDES.items():
+            self.assertIn(storefront, meta.STOREFRONT_LOCALES)
+            self.assertLessEqual(fields, set(meta.PASSTHROUGH_FIELDS))
+
     def test_storefronts_exclude_the_source_and_cover_every_target(self) -> None:
         self.assertNotIn(meta.SOURCE_LOCALE, meta.STOREFRONT_LOCALES)
         self.assertEqual(len(meta.STOREFRONT_LOCALES), 49)

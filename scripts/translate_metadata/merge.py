@@ -4,7 +4,8 @@ Merge per-storefront transcreation JSON files into the fastlane metadata tree.
 
 For each target storefront, reads tmp/metadata-outputs/{storefront}.json and
 writes each field to fastlane/metadata/{storefront}/{field}.txt. Also copies the
-PASSTHROUGH_FIELDS (name and URLs) verbatim from en-US into each storefront folder.
+PASSTHROUGH_FIELDS (name and URLs) verbatim from en-US into each storefront folder,
+except fields the storefront authors itself under PASSTHROUGH_OVERRIDES.
 
 A field that is blank or absent in en-US is unused: after merging, its file is
 deleted from every target storefront, because `appstore_metadata.py prepare`
@@ -35,6 +36,7 @@ OUTPUTS_DIR = REPO_ROOT / "tmp" / "metadata-outputs"
 sys.path.insert(0, str(Path(__file__).parent))
 from metadata_locales import (  # noqa: E402
     PASSTHROUGH_FIELDS,
+    PASSTHROUGH_OVERRIDES,
     SOURCE_LOCALE,
     STOREFRONT_LOCALES,
     TRANSLATABLE_FIELDS,
@@ -92,7 +94,10 @@ def copy_passthrough(storefront: str) -> int:
     source bytes to deliver unchanged.
     """
     copied = 0
+    overridden = PASSTHROUGH_OVERRIDES.get(storefront, frozenset())
     for field in PASSTHROUGH_FIELDS:
+        if field in overridden:
+            continue
         src = METADATA_DIR / SOURCE_LOCALE / f"{field}.txt"
         if not src.exists():
             continue
