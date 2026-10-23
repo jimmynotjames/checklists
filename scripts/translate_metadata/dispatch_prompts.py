@@ -19,6 +19,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+METADATA_DIR = REPO_ROOT / "fastlane" / "metadata"
 INPUTS_DIR = REPO_ROOT / "tmp" / "metadata-inputs"
 PROMPTS_DIR = REPO_ROOT / "tmp" / "metadata-prompts"
 OUTPUTS_DIR = REPO_ROOT / "tmp" / "metadata-outputs"
@@ -31,6 +32,7 @@ from metadata_locales import (  # noqa: E402
     FIELD_BYTE_LIMITS,
     FIELD_GUIDANCE,
     STOREFRONT_NAMES,
+    store_name,
 )
 from prompt_render import compact_json, render  # noqa: E402  (translate_catalog; metadata_locales puts it on the path)
 
@@ -125,6 +127,7 @@ def render_prompt(template: str, storefront: str, prompt_source: dict) -> str:
             "LOCALE_CODE": storefront,
             "CULTURAL_NOTE": CULTURAL_NOTES.get(storefront, _GENERIC_NOTE),
             "SOURCE_JSON": compact_json(prompt_source),
+            "STORE_NAME": store_name(METADATA_DIR, storefront),
         },
         sections,
         known={"subtitle", "keywords", "prose"},

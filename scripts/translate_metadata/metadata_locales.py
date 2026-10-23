@@ -99,6 +99,15 @@ PASSTHROUGH_OVERRIDES: dict[str, frozenset[str]] = {
     "ja": frozenset({"name"}),
 }
 
+
+def store_name(metadata_dir: Path, storefront: str) -> str:
+    """The storefront's App Store name: its own `name.txt`, else en-US's."""
+    for locale in (storefront, SOURCE_LOCALE):
+        path = metadata_dir / locale / "name.txt"
+        if path.exists() and path.read_text(encoding="utf-8").strip():
+            return path.read_text(encoding="utf-8").strip()
+    return ""
+
 # Static, field-level guidance injected into every prompt. Explains what each field is
 # for and how to transcreate it, rather than translate it.
 FIELD_GUIDANCE: dict[str, str] = {

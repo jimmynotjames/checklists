@@ -46,6 +46,7 @@ from metadata_locales import (  # noqa: E402
     STOREFRONT_NAMES,
     STOREFRONT_TO_RUNTIME,
     TRANSLATABLE_FIELDS,
+    store_name,
 )
 from prompt_render import compact_json, render  # noqa: E402
 
@@ -86,6 +87,7 @@ def render_audit_prompt(template: str, storefront: str, source: dict, current: d
             "REGIONAL_NOTE": CULTURAL_NOTES.get(storefront, _GENERIC_NOTE),
             "SOURCE_JSON": compact_json(source),
             "CURRENT_JSON": compact_json(current),
+            "STORE_NAME": store_name(METADATA_DIR, storefront),
         },
         {"rtl"} if rtl else set(),
         known={"rtl"},

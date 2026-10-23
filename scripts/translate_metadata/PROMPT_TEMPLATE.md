@@ -45,7 +45,7 @@ When a limit forces a choice, keep the higher-priority message and drop the lowe
 <!-- if subtitle -->
 ## Subtitle
 
-The 30-character `subtitle` is tight: a clean, punchy line that fits beats a literal one that doesn't. Lead with **reuse/repeatability**, as the English does, even when a lower-priority benefit translates more neatly. People read it and search indexes it, so it must work as both. Two habits spoil it:
+It sits directly under this storefront's app name, **{STORE_NAME}** (fixed; not yours to change), so don't repeat the name's words. The 30-character `subtitle` is tight: a clean, punchy line that fits beats a literal one that doesn't. Lead with **reuse/repeatability**, as the English does, even when a lower-priority benefit translates more neatly. People read it and search indexes it, so it must work as both. Two habits spoil it:
 - **Calquing "reusable":** many languages reserve their formal "reusable" adjective for physical goods (bags, containers); on a list it reads oddly and earns nothing in search. Say the reuse idea as people say it here, even as a short phrase.
 - **Dropping the category:** pure modifiers with no word for *checklist* or *list* leave the strongest indexed field nothing to match. Fit the category term in unless that makes the line unnatural.
 
@@ -61,7 +61,7 @@ The 30-character `subtitle` is tight: a clean, punchy line that fits beats a lit
 
 **Don't spend the budget on the anti-positioning above.** *To-do*, *task*, *chore*, or *habit* pull the listing toward task managers and habit trackers, in the most crowded queries. Use one only when it is genuinely how locals name a checklist. When tight, a to-do term is the first cut and a reuse term the last.
 
-**`name`, `subtitle`, and `keywords` are one search index,** whose words Apple recombines into multi-word queries:
+**`name`, `subtitle`, and `keywords` are one search index,** whose words Apple recombines into multi-word queries. This storefront's `name` is **{STORE_NAME}**.
 - **Never spend a keyword on a word already in `name` or `subtitle`;** subtract those first. This means the same *form*, not the same lemma: if the subtitle has the head noun only inflected (a plural, a case), the base or singular form still earns a slot, because coverage is the stronger rule. Likewise a bare adjective needs its noun somewhere to combine with.
 - **Unbundle multi-word phrases into single comma-separated words.** "packing list" wastes a byte on the space and blocks recombination; `packing,list` still forms the phrase, plus bonus combinations. Keep a multi-word entry only when splitting destroys the meaning.
 
