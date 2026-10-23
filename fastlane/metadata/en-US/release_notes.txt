@@ -1,1 +1,1 @@
-Added percentage-complete indicators to see progress at a glance!
+Now syncs across your devices with iCloud, speaks multiple languages, and lets you duplicate checklists and move checked items between them.
