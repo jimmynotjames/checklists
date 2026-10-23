@@ -48,6 +48,39 @@ class ChecklistDetailUITestCase: XCTestCase {
     app.navigationBars.buttons["Back"]
   }
 
+  /// Long-presses `row` and drops it on `target`, the way a user drag-reorders a ChecklistScreen row.
+  ///
+  /// The press is on the row's checkbox, the one part of a row that is neither an editable text view
+  /// nor a screen edge. The name and notes have a long press of their own, which starts editing
+  /// instead of lifting the row, and which of the two wins comes down to timing. The edge margins are
+  /// taken by the back swipe on the left and the grabbable scroll indicator on the right. The
+  /// checkbox doesn't toggle: the lift cancels its touch, and failing that the finger lifts far
+  /// outside it.
+  ///
+  /// The hold is long and the move slow because the first lift after launch can take longer than a
+  /// user's half-second; moving before it lands cancels the long press, and nothing is dragged. The
+  /// closing hold lets the table settle on the destination row before the drop.
+  func dragRow(_ row: XCUIElement, onto target: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
+    let center = CGVector(dx: 0.5, dy: 0.5)
+    row.buttons["itemCheckbox"].coordinate(withNormalizedOffset: center)
+      .press(forDuration: 1.5, thenDragTo: target.coordinate(withNormalizedOffset: center), withVelocity: .slow, thenHoldForDuration: 0.5)
+    XCTAssertFalse(app.keyboards.firstMatch.exists, "The press began editing instead of lifting the row.", file: file, line: line)
+  }
+
+  /// Waits for row `index` of `table` to show `name`. A drop moves its row only once the dragged
+  /// item has loaded (`ChecklistViewController.tableView(_:performDropWith:)`), which can land after
+  /// the gesture's idle wait.
+  func waitForItemName(_ name: String, atRow index: Int, in table: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
+    let nameTextView = table.children(matching: .cell).element(boundBy: index).textViews["itemNameTextView"]
+    let shown = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", name), object: nameTextView)
+    XCTAssertEqual(
+      XCTWaiter().wait(for: [shown], timeout: 5), .completed,
+      "Row \(index) shows \"\(nameTextView.value as? String ?? "nil")\", not \"\(name)\".",
+      file: file,
+      line: line
+    )
+  }
+
   /// Mirrors `CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete:)`, which the
   /// UI test target cannot call — it runs in its own process and does not link the app module.
   ///
