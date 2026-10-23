@@ -1,1 +1,1 @@
-packlista,inköpslista,lista,återkommande,upprepa,rutin,resa,semester,flytt,packa,minneslista
+packlista,inköpslista,checklista,återkommande,rutin,morgonrutin,packa,minneslista,checklist

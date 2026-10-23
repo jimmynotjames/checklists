@@ -1,1 +1,1 @@
-checklist,packing,repeat,shopping,reusable,പട്ടിക,യാത്ര,വീണ്ടും
+checklist,ചെക്ക്‌ലിസ്റ്റ്,repeat,packing,shopping,routine,list,travel

@@ -1,1 +1,1 @@
-Am adăugat indicatori procentuali, ca să vedeți dintr-o privire cât ați bifat din fiecare listă.
+Acum se sincronizează între dispozitive prin iCloud, funcționează în mai multe limbi și vă permite să duplicați liste și să mutați elementele bifate dintr-o listă în alta.

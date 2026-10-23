@@ -1,1 +1,1 @@
-Đã thêm chỉ báo phần trăm hoàn thành, nhìn một cái là biết tiến độ.
+Giờ đây ứng dụng đồng bộ giữa các thiết bị của bạn qua iCloud, hỗ trợ nhiều ngôn ngữ, đồng thời cho phép nhân bản danh sách và chuyển các mục đã đánh dấu từ danh sách này sang danh sách khác.

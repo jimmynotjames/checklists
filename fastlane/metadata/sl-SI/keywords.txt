@@ -1,1 +1,1 @@
-kontrolni,checklist,pakiranje,kovček,nakupovalni,potovanje,rutina,večkratno,ponavljanje
+kontrolni,seznam,spisek,checklist,pakiranje,kovček,nakupovalni,potovanje,rutina,ponavljajoči

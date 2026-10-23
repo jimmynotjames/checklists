@@ -1,1 +1,1 @@
-Pribudli ukazovatele percenta dokončenia, takže pokrok vidíte na prvý pohľad.
+Teraz sa synchronizuje medzi vašimi zariadeniami cez iCloud, hovorí viacerými jazykmi a umožňuje duplikovať zoznamy a presúvať medzi nimi odškrtnuté položky.

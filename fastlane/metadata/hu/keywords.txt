@@ -1,1 +1,1 @@
-bevásárlólista,pakolólista,ismétlődő,checklist,lista,csomagolás,rutin,utazás,visszatérő
+bevásárlólista,pakolólista,ismétlődő,checklist,ellenőrzőlista,bőrönd,rutin,sablon

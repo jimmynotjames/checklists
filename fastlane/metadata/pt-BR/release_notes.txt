@@ -1,1 +1,1 @@
-Agora as listas mostram a porcentagem concluída, para você ver o progresso num relance.
+Agora o app sincroniza entre seus dispositivos pelo iCloud, está disponível em vários idiomas e permite duplicar checklists e mover itens marcados de um para outro.

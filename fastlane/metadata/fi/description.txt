@@ -1,3 +1,5 @@
-Opettele uusi rutiini tai harjoittele monimutkaista suoritusta, kunnes se sujuu itsestään. Yksikään tärkeä vaihe ei jää enää huomaamatta.
+Opettele uusi rutiini tai harjoittele monivaiheista tehtävää, kunnes se sujuu kuin itsestään. Yksikään tärkeä vaihe ei enää unohdu.
 
-Käytä myös toistuviin listoihin: mökkireissun pakkaukset, ruokaostokset, työn vakiorutiinit tai pelien grindaus.
+Sopii myös toistuviin listoihin, kuten mökkireissun pakkauslistaan, kauppalistaan, työjuttuihin tai pelien grindaamiseen.
+
+Listat synkronoituvat laitteidesi välillä iCloudin kautta. Voit monistaa listan tai siirtää rastimasi kohdat toiselle listalle. Saatavilla useilla kielillä, ja mukana on VoiceOver-tuki ja suuren tekstin tuki.

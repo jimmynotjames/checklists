@@ -1,1 +1,1 @@
-muistilista,checklist,pakkauslista,ostoslista,uudelleen,toisto,rutiini,matka,lista,nollaa
+muistilista,checklist,toistuva,pakkauslista,kauppalista,ostoslista,lista,rutiini,matkalista

@@ -1,1 +1,1 @@
-checklist,list,repeat,packing,shopping,सूची,दोहराएं,सामान
+checklist,list,repeat,packing,shopping,routine,सूची,पैकिंग,रूटीन
