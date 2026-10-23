@@ -114,6 +114,8 @@ long and which the user just acted on.
   at the outer edge: ⋯, or the create sheet's own Done. The post
   names the `UIBarButtonItem` itself, which VoiceOver resolves to the button the bar draws: the
   bar's own views are private, and in a unit-test host they carry no identifier to find them by.
+- **The Copy/Move Checked Items sheet** shows the same Done while its name field is being typed
+  into. Nothing takes its place when it goes, so after a beat VoiceOver moves back to the name field.
 - **The failure screen** (`ContainerFailureView`) replaces the app unasked, so after a beat it posts
   `.screenChanged` with no string and puts VoiceOver on its title and message, one element, which is
   read once. A string would be read and then the element again. `LoadingView` passes its text as the
@@ -167,6 +169,7 @@ full two-family sweep, and the reasoning behind each verdict.
 | `ChecklistViewController` Reorder Items mode on/off (`setEditing(_:animated:)`, add-item footer fade) | **Left alone.** The system's reveal of drag handles, plus an opacity fade |
 | `ChecklistViewController` nav-title fade on scroll | **Left alone.** Opacity, not simulated movement |
 | `ChecklistViewController.updateEditingDoneBarButtonItem` editing Done coming and going (`setRightBarButtonItems(_:animated:)`) | **Left alone.** The system's own bar relayout; Notes adds its editing Done the same way |
+| `CopyCheckedItemsView` Done coming and going with the name field's focus | **Left alone.** The system's own toolbar transition, as above |
 | `CircularPercentStatusIcon.setInnerCircle`, `CheckboxButton.setCheckboxState` | **Not animated.** Direct property assignment, outside any animation context |
 | `ProgressView` spinners (`LoadingView`, `SettingsView`) | System-owned. Progress indicators are not suppressed under Reduce Motion, by Apple's design |
 

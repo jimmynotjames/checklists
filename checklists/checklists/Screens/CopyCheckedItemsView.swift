@@ -38,8 +38,10 @@ struct CopyCheckedItemsView: View {
   @State private var newChecklistName = ""
   /// Deliberately never set true on appearance. The field is opt-in — most people came for a
   /// destination below it, and a keyboard rising on arrival would cover the list they came for.
-  /// The binding exists so the keyboard toolbar's Done has something to clear.
   @FocusState private var isNamingFocused: Bool
+  /// Where VoiceOver goes once the bar's Done has gone with the keyboard: back to the field just
+  /// named, rather than wherever the vanished button leaves it.
+  @AccessibilityFocusState private var isNameFieldVoiceOverFocused: Bool
 
   var body: some View {
     NavigationStack {
@@ -55,20 +57,33 @@ struct CopyCheckedItemsView: View {
       .navigationTitle(title)
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
-        ToolbarItem(placement: .topBarTrailing) {
+        // Leading, as a sheet's cancel sits, so the trailing edge is free for Done while typing.
+        ToolbarItem(placement: .topBarLeading) {
           Button(role: .close) {
             dismiss()
           }
           .tint(Color.accentColor)
         }
-        // Tap-outside still dismisses; this matters because the field sits above the
-        // destinations, so the keyboard covers them.
-        ToolbarItemGroup(placement: .keyboard) {
-          Spacer()
-          Button(CommonStrings.done) {
-            isNamingFocused = false
+        // In the bar, as ChecklistScreen has it, not above the keyboard: a keyboard toolbar spans
+        // the full width and swallows taps on the destinations behind its clear glass. Ends typing
+        // only; the arrow beside the field is what commits.
+        if isNamingFocused {
+          ToolbarItem(placement: .topBarTrailing) {
+            Button(role: .confirm) {
+              isNamingFocused = false
+              Task {
+                // Cleared first, then set a turn later: a focus state still holding its target from
+                // an earlier tap would not move VoiceOver when set to the same value.
+                isNameFieldVoiceOverFocused = false
+                await Task.yield()
+                // After the bar has relaid without the button VoiceOver was on.
+                try? await Task.sleep(for: .milliseconds(500))
+                isNameFieldVoiceOverFocused = true
+              }
+            }
+            .tint(Color.accentColor)
+            .accessibilityIdentifier("copyDestination.editingDone")
           }
-          .tint(Color.accentColor)
         }
       }
     }
@@ -88,6 +103,7 @@ struct CopyCheckedItemsView: View {
       HStack {
         TextField(Self.namePlaceholder, text: $newChecklistName)
           .focused($isNamingFocused)
+          .accessibilityFocused($isNameFieldVoiceOverFocused)
           .submitLabel(.done)
           .onSubmit(createChecklistAndCopy)
           .accessibilityIdentifier("copyDestination.newChecklistName")

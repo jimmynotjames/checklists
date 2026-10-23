@@ -175,4 +175,72 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
       "With nothing to copy there is nothing to pick a destination for."
     )
   }
+
+  // MARK: - Typing a name
+
+  private var editingDoneButton: XCUIElement {
+    app.navigationBars.buttons["copyDestination.editingDone"]
+  }
+
+  /// The ✓ ends typing and nothing else: the keyboard goes, the sheet stays, nothing is copied.
+  func testDoneEndsTypingWithoutCopying() {
+    checklistsList.staticTexts["Morning Routine"].tap()
+    XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
+    tapCopyCheckedItemsEntry()
+
+    let nameField = app.textFields["copyDestination.newChecklistName"]
+    XCTAssertTrue(nameField.waitForExistence(timeout: 5), "The destination picker didn't appear.")
+    XCTAssertFalse(editingDoneButton.exists, "Done should only show while the name is being typed.")
+    nameField.tap()
+    XCTAssertTrue(editingDoneButton.waitForExistence(timeout: 5), "Focusing the name didn't bring Done into the bar.")
+
+    editingDoneButton.tap()
+
+    XCTAssertTrue(editingDoneButton.waitForNonExistence(timeout: 5), "Done stayed after ending typing.")
+    XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5), "The keyboard stayed up.")
+    XCTAssertTrue(nameField.exists, "Done should leave the picker up, with nothing copied.")
+  }
+
+  /// While the name is being typed, a destination row just above the keyboard still takes a tap:
+  /// nothing rides above the keyboard to swallow it.
+  @MainActor func testDestinationJustAboveKeyboardTakesTapWhileTyping() throws {
+    // Enough destinations that one reaches down to the keyboard; the seed alone has two.
+    for name in ["Packing A", "Packing B", "Packing C", "Packing D", "Packing E"] {
+      app.buttons["Add new checklist."].tap()
+      XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
+      app.typeText(name)
+      app.finishCreateSheet()
+      XCTAssertTrue(checklistsList.staticTexts[name].waitForExistence(timeout: 5))
+    }
+
+    checklistsList.staticTexts["Morning Routine"].tap()
+    XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
+    tapCopyCheckedItemsEntry()
+
+    let nameField = app.textFields["copyDestination.newChecklistName"]
+    XCTAssertTrue(nameField.waitForExistence(timeout: 5), "The destination picker didn't appear.")
+    nameField.tap()
+    let keyboard = app.keyboards.firstMatch
+    XCTAssertTrue(keyboard.waitForExistence(timeout: 5), "Keyboard didn't appear for the name.")
+    XCTAssertTrue(editingDoneButton.waitForExistence(timeout: 5), "Focusing the name didn't bring Done into the bar.")
+
+    // A point in the band a keyboard toolbar occupies: centred 68pt above the keyboard, as the bar
+    // this replaced measured. Tapped there rather than at the row's centre, which can fall below it.
+    let bandY = keyboard.frame.minY - 68
+    let rows = app.buttons.matching(
+      NSPredicate(format: "identifier BEGINSWITH 'copyDestination.' AND NOT identifier IN %@", [
+        "copyDestination.createNewChecklist", "copyDestination.editingDone",
+      ])
+    )
+    let rowInBand = (0 ..< rows.count)
+      .map { rows.element(boundBy: $0) }
+      .first { $0.frame.minY <= bandY && $0.frame.maxY >= bandY }
+    let row = try XCTUnwrap(rowInBand, "No destination reaches the band above the keyboard.")
+
+    row.coordinate(withNormalizedOffset: .zero)
+      .withOffset(CGVector(dx: 40, dy: bandY - row.frame.minY))
+      .tap()
+
+    XCTAssertTrue(nameField.waitForNonExistence(timeout: 5), "The tap above the keyboard didn't reach the destination.")
+  }
 }
