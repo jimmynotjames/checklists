@@ -3,7 +3,7 @@
 **Status: SwiftData with CloudKit sync** (`ProductionContainerFactory.cloudKitEnabled`), with a
 local-only store as the fallback whenever the CloudKit store will not open. **The pre-flight
 checklist below is therefore live, not hypothetical** — in particular, an App Store build talks
-only to the CloudKit **Production** environment, so the schema must be deployed there before 1.2
+only to the CloudKit **Production** environment, so the schema must be deployed there before 2.0
 ships.
 
 This document is canonical for the data model, the constraints it was designed against, the
