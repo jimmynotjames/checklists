@@ -87,8 +87,20 @@ enum ChecklistHistoryCaption {
     for (label, line) in zip(view.arrangedSubviews.compactMap { $0 as? UILabel }, lines) {
       label.text = line
     }
-    // Read as two sentences rather than one run-on line.
-    view.accessibilityLabel = lines.joined(separator: ". ")
+    view.accessibilityLabel = spokenText(lastUpdated: lines[0], lastCompleted: lines[1])
+  }
+
+  /// Both lines as VoiceOver reads them: two sentences rather than one run-on line.
+  static func spokenText(lastUpdated: String, lastCompleted: String) -> String {
+    String(
+      localized: "checklist.history.accessibilityLabel",
+      defaultValue: "\(lastUpdated). \(lastCompleted)",
+      comment: """
+      VoiceOver reads the two caption lines under a checklist's notes as one announcement. The first \
+      placeholder is the Last updated line, the second the Last completed line. Join them as two \
+      sentences with your language's sentence break, e.g. "。".
+      """
+    )
   }
 
   /// Adds `view` to `header` and returns the constraints placing it below `notesView`, inside
