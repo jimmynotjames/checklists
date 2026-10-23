@@ -367,6 +367,9 @@ struct ChecklistsView: View {
     } label: {
       Text(isEditing ? CommonStrings.done : Self.editTitle)
         .fontWeight(isEditing ? .semibold : .regular)
+        // Bar text doesn't grow with the text size, so at the largest sizes this is how its name
+        // gets read, as Reset All's is in `barLabel`.
+        .accessibilityShowsLargeContentViewer()
     }
     .tint(Color.accentColor)
     .accessibilityIdentifier("toolbar.edit")
