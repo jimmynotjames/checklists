@@ -148,17 +148,17 @@ jobs:
     needs: [lint, secrets, check-large-files, i18n-gates]
     steps:
       - uses: actions/checkout@v7
-      - name: Select Xcode 27.0
+      - name: Select Xcode 27.1
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: "27.0"
+          xcode-version: "27.1"
       - name: Cache SwiftPM packages
         uses: actions/cache@v4
         with:
           path: .build/DerivedData/SourcePackages
-          key: spm-${{ runner.os }}-xcode27.0-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          key: spm-${{ runner.os }}-xcode27.1-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: |
-            spm-${{ runner.os }}-xcode27.0-
+            spm-${{ runner.os }}-xcode27.1-
       # Mirrors scripts/build.sh.
       - name: xcodebuild build
         run: |
