@@ -15,7 +15,7 @@ struct ContainerCreationFailureTests {
   func plainErrorPassesThroughDomainAndCode() {
     let failure = ContainerCreationFailure(
       underlying: NSError(domain: "NSCocoaErrorDomain", code: 134_060),
-      stage: .storeOpen
+      stage: .storeOpen,
     )
 
     #expect(failure.stage == .storeOpen)
@@ -30,7 +30,7 @@ struct ContainerCreationFailureTests {
   func persistenceErrorIsUnwrapped() {
     let failure = ContainerCreationFailure(
       underlying: PersistenceError(operation: .legacyImport, errorDomain: "NSCocoaErrorDomain", errorCode: 134_030),
-      stage: .legacyImport
+      stage: .legacyImport,
     )
 
     #expect(failure.errorDomain == "NSCocoaErrorDomain")
@@ -47,9 +47,9 @@ struct ContainerCreationFailureTests {
         expectedChecklists: 3,
         foundChecklists: 2,
         expectedItems: 9,
-        foundItems: 9
+        foundItems: 9,
       ),
-      stage: .legacyImport
+      stage: .legacyImport,
     )
 
     #expect(failure.stage == .legacyImport)
@@ -63,7 +63,7 @@ struct ContainerCreationFailureTests {
     let failure = ContainerCreationFailure(
       stage: .legacyImport,
       errorDomain: "NSCocoaErrorDomain",
-      errorCode: 134_060
+      errorCode: 134_060,
     )
 
     #expect(failure.diagnosticDescription == "legacy_import NSCocoaErrorDomain 134060")

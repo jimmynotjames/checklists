@@ -31,7 +31,7 @@ final class AnalyticsConsentController {
     settings.analyticsOptIn = true
     analytics.track(
       AnalyticsEvent.analyticsConsentChanged,
-      properties: [AnalyticsProperty.newValue: true, AnalyticsProperty.oldValue: oldValue]
+      properties: [AnalyticsProperty.newValue: true, AnalyticsProperty.oldValue: oldValue],
     )
     analytics.setAnalyticsOptInAt()
   }
@@ -51,13 +51,13 @@ final class AnalyticsConsentController {
       settings.analyticsOptIn = true
       analytics.track(
         AnalyticsEvent.analyticsConsentChanged,
-        properties: [AnalyticsProperty.newValue: true, AnalyticsProperty.oldValue: false]
+        properties: [AnalyticsProperty.newValue: true, AnalyticsProperty.oldValue: false],
       )
       analytics.setAnalyticsOptInAt()
     } else {
       analytics.track(
         AnalyticsEvent.analyticsConsentChanged,
-        properties: [AnalyticsProperty.newValue: false, AnalyticsProperty.oldValue: true]
+        properties: [AnalyticsProperty.newValue: false, AnalyticsProperty.oldValue: true],
       )
       analytics.reset()
       settings.analyticsOptIn = false

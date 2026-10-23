@@ -21,6 +21,7 @@ fi
 
 printf '%s\n' "==> Installing lefthook, swiftlint, swiftformat, gitleaks (brew; idempotent)"
 brew install lefthook swiftlint swiftformat gitleaks
+bash scripts/check-tool-versions.sh || die "Lint tool versions differ from config/lint-tools.env (see above)."
 
 if ! command -v python3 >/dev/null 2>&1; then
 	die "python3 not on PATH. Install Xcode Command Line Tools or: brew install python@3.12"

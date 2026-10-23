@@ -98,7 +98,7 @@ struct ChecklistsApp: App {
         }
       }
       #if DEBUG
-        // On the Group so the loading and failure screens scale too; see `TestDynamicTypeOverride`.
+      // On the Group so the loading and failure screens scale too; see `TestDynamicTypeOverride`.
       .modifier(TestDynamicTypeOverride())
       #endif
       .environment(\.analytics, analytics)
@@ -154,7 +154,7 @@ struct ChecklistsApp: App {
     guard
       !shouldUseConsoleClient(
         isRunningTests: LaunchModeContainerFactory.isRunningTests,
-        isTokenConfigured: MixpanelTokenSource.isConfigured
+        isTokenConfigured: MixpanelTokenSource.isConfigured,
       )
     else {
       return ConsoleAnalyticsClient()
@@ -163,7 +163,7 @@ struct ChecklistsApp: App {
       token: MixpanelTokenSource.activeToken,
       // Captured strongly on purpose: this is the only path by which the persisted `distinct_id`
       // reaches Mixpanel, and `settings` lives for the app's lifetime anyway.
-      distinctIdProvider: { settings.analyticsDistinctId }
+      distinctIdProvider: { settings.analyticsDistinctId },
     )
   }
 

@@ -35,6 +35,7 @@ run_step() {
   fi
 }
 
+run_step tool-versions-check
 run_step format-changed
 run_step lint-changed
 # Before the build: it is the cheapest step and catches an unkeyed or untranslated
@@ -59,4 +60,4 @@ run_step build
 # Reads the strings the build just extracted, so it can only run after it.
 run_step i18n-sync-check
 
-printf '\nGATE PASSED (format-changed, lint-changed, i18n-check, uitest-check, doc-check, simulator-slots-check, test-scripts, build, i18n-sync-check)%s. Full log: %s\n' "$skipped" "$LOG"
+printf '\nGATE PASSED (tool-versions-check, format-changed, lint-changed, i18n-check, uitest-check, doc-check, simulator-slots-check, test-scripts, build, i18n-sync-check)%s. Full log: %s\n' "$skipped" "$LOG"

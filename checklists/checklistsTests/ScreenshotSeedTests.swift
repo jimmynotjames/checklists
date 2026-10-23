@@ -30,7 +30,7 @@
 
         for (itemIndex, itemPair) in zip(
           screenshotChecklist.items,
-          sampleChecklist.items
+          sampleChecklist.items,
         ).enumerated() {
           let (screenshotItem, sampleItem) = itemPair
           #expect(screenshotItem.name == sampleItem.name)
@@ -55,7 +55,7 @@
           "IS_TESTING": "1",
           LaunchModeContainerFactory.screenshotSeedJSONKey: json,
           LaunchModeContainerFactory.screenshotSeedLocaleKey: "en-US",
-        ]
+        ],
       )
 
       guard case .localFallback = result.backing else {
@@ -73,7 +73,7 @@
       #expect(
         checklists.map { checklist in
           checklist.items.count(where: { $0.status == .checked })
-        } == [5, 4, 3]
+        } == [5, 4, 3],
       )
     }
 
@@ -81,14 +81,14 @@
     func ordinaryUITestLaunchStillUsesProductionSampleFixture() throws {
       let result = try LaunchModeContainerFactory.make(
         arguments: ["-UITests1"],
-        environment: [:]
+        environment: [:],
       )
       let checklists = try result.container.mainContext.fetchChecklistsSorted()
 
       #expect(
         checklists.map { checklist in
           checklist.items.count(where: { $0.status == .checked })
-        } == [5, 4, 0]
+        } == [5, 4, 0],
       )
     }
 
@@ -126,11 +126,11 @@
         #expect(seed.checklists.map(\.id) == english.checklists.map(\.id), "\(locale): ids")
         #expect(
           seed.checklists.map(\.items.count) == english.checklists.map(\.items.count),
-          "\(locale): item counts"
+          "\(locale): item counts",
         )
         #expect(
           seed.checklists.map(checkedCount) == english.checklists.map(checkedCount),
-          "\(locale): checked pattern"
+          "\(locale): checked pattern",
         )
       }
     }

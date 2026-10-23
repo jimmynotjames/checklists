@@ -11,7 +11,7 @@ extension ChecklistViewController {
   static let resetButtonTitle = String(
     localized: "checklist.action.reset",
     defaultValue: "Reset",
-    comment: "Navigation bar button on the checklist detail screen that unchecks every item so the list can be run again."
+    comment: "Navigation bar button on the checklist detail screen that unchecks every item so the list can be run again.",
   )
 
   // MARK: Overflow menu
@@ -24,13 +24,13 @@ extension ChecklistViewController {
     creating one. Shows drag handles for putting this checklist's items in a new order; a Done \
     button leaves. It does not edit the items' text and does not sort them, so avoid a verb that \
     could read as sorting.
-    """
+    """,
   )
 
   static let moreMenuAccessibilityLabel = String(
     localized: "checklist.menu.more.accessibilityLabel",
     defaultValue: "More",
-    comment: "VoiceOver label for the ellipsis button in the checklist detail screen's navigation bar that opens the overflow menu."
+    comment: "VoiceOver label for the ellipsis button in the checklist detail screen's navigation bar that opens the overflow menu.",
   )
 
   static let duplicateChecklistMenuTitle = String(
@@ -40,7 +40,7 @@ extension ChecklistViewController {
     Overflow-menu entry on an existing checklist's detail screen that makes a copy of it. \
     Not destructive and not confirmed: it opens the copy straight away. It sits above the \
     Delete Checklist entry, so the two must not read alike.
-    """
+    """,
   )
 
   static let copyCheckedItemsMenuTitle = String(
@@ -52,7 +52,7 @@ extension ChecklistViewController {
     ellipsis — it is what promises that sheet. It sits directly under the Duplicate Checklist \
     entry and must not read alike: that one copies the whole list, this one copies a selection \
     into a different list. "to…" means to a different checklist, never "here" or "into this one".
-    """
+    """,
   )
 
   static let moveCheckedItemsMenuTitle = String(
@@ -65,7 +65,7 @@ extension ChecklistViewController {
     sits directly under the Copy Checked Items to… entry and must not read alike: that one leaves \
     the items here, this one takes them away. Use the same word for checked items as that entry. \
     "to…" means to a different checklist, never "here" or "into this one".
-    """
+    """,
   )
 
   static let noItemsCheckedNotice = String(
@@ -77,7 +77,7 @@ extension ChecklistViewController {
     fades again after a moment. Not a button — it says why nothing happened. Echo the wording of \
     those entries: it should read as "there are none of the thing that entry acts on", so reuse \
     their word for checked items rather than picking a synonym. Keep it to a few words.
-    """
+    """,
   )
 
   static let deleteCheckedItemsMenuTitle = String(
@@ -88,7 +88,7 @@ extension ChecklistViewController {
     follows. Removes the items the person has ticked from this checklist and keeps the rest. It \
     sits directly above the Delete Checklist entry and must not read alike: this one keeps the \
     checklist. Use the same word for checked items as the Copy Checked Items to… entry.
-    """
+    """,
   )
 
   /// Plural variants live in the String Catalog, keyed off `count`.
@@ -100,14 +100,14 @@ extension ChecklistViewController {
       Alert message before deleting the ticked items from a checklist, shown after the Delete \
       Checked Items menu entry. The placeholder is how many items will be deleted, always at least \
       one. The alert's buttons are Cancel and Delete.
-      """
+      """,
     )
   }
 
   static let deleteChecklistMenuTitle = String(
     localized: "checklist.menu.deleteChecklist",
     defaultValue: "Delete Checklist",
-    comment: "Overflow-menu entry on an existing checklist's detail screen. Destructive; a confirmation follows."
+    comment: "Overflow-menu entry on an existing checklist's detail screen. Destructive; a confirmation follows.",
   )
 
   /// "Discard", not "Delete": nothing about the create sheet's checklist has been kept yet.
@@ -118,13 +118,13 @@ extension ChecklistViewController {
     Overflow-menu entry on the new-checklist sheet that throws the new checklist away. \
     Destructive; a confirmation follows. It must read differently from the Delete Checklist \
     entry, which removes a kept list: this one abandons something never kept.
-    """
+    """,
   )
 
   static let discardConfirmationMessage = String(
     localized: "checklist.confirm.discard.message",
     defaultValue: "Discard this checklist? This cannot be undone.",
-    comment: "Alert message before discarding a brand-new checklist from its create sheet."
+    comment: "Alert message before discarding a brand-new checklist from its create sheet.",
   )
 
   static let discardActionTitle = String(
@@ -134,7 +134,7 @@ extension ChecklistViewController {
     Confirmation button that throws away a brand-new checklist. It sits beside Cancel on the \
     same alert, so it must not be the word your language uses for Cancel, and it is not Delete \
     either: this checklist was never kept. Prefer the sense of abandon or throw away. Keep it short.
-    """
+    """,
   )
 
   // MARK: VoiceOver moves
@@ -145,25 +145,25 @@ extension ChecklistViewController {
       String(
         localized: "item.accessibilityAction.moveUp",
         defaultValue: "Move Up",
-        comment: "VoiceOver action on an item row inside a checklist: moves the item one place up."
+        comment: "VoiceOver action on an item row inside a checklist: moves the item one place up.",
       )
     case .down:
       String(
         localized: "item.accessibilityAction.moveDown",
         defaultValue: "Move Down",
-        comment: "VoiceOver action on an item row inside a checklist: moves the item one place down."
+        comment: "VoiceOver action on an item row inside a checklist: moves the item one place down.",
       )
     case .top:
       String(
         localized: "item.accessibilityAction.moveToTop",
         defaultValue: "Move to Top",
-        comment: "VoiceOver action on an item row inside a checklist: moves the item to the start of the checklist."
+        comment: "VoiceOver action on an item row inside a checklist: moves the item to the start of the checklist.",
       )
     case .bottom:
       String(
         localized: "item.accessibilityAction.moveToBottom",
         defaultValue: "Move to Bottom",
-        comment: "VoiceOver action on an item row inside a checklist: moves the item to the end of the checklist."
+        comment: "VoiceOver action on an item row inside a checklist: moves the item to the end of the checklist.",
       )
     }
   }
@@ -176,7 +176,7 @@ extension ChecklistViewController {
       VoiceOver announcement after an item inside a checklist is moved with a Move Up/Down/to \
       Top/to Bottom action. First placeholder is its new position counting from 1, second the \
       number of items in the checklist.
-      """
+      """,
     )
   }
 
@@ -187,7 +187,7 @@ extension ChecklistViewController {
     VoiceOver announcement after an item inside a checklist is deleted with the swipe or VoiceOver \
     Delete action. VoiceOver then moves to a neighbouring item, or to the Add button when none are \
     left. Keep it short.
-    """
+    """,
   )
 
   static let itemDuplicatedAnnouncement = String(
@@ -196,7 +196,7 @@ extension ChecklistViewController {
     comment: """
     VoiceOver announcement after an item inside a checklist is duplicated. The copy is placed \
     directly below the original. Keep it short.
-    """
+    """,
   )
 
   static let allItemsUncheckedAnnouncement = String(
@@ -205,7 +205,7 @@ extension ChecklistViewController {
     comment: """
     VoiceOver announcement after the checklist's Reset button unticks every item in the checklist. \
     Keep it short.
-    """
+    """,
   )
 
   static func checkedItemsDeletedAnnouncement(count: Int) -> String {
@@ -215,7 +215,7 @@ extension ChecklistViewController {
       comment: """
       VoiceOver announcement after the overflow menu's Delete Checked Items removes the ticked items \
       from a checklist. The placeholder is how many were deleted. Keep it short.
-      """
+      """,
     )
   }
 }

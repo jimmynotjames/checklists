@@ -41,7 +41,7 @@ struct ChecklistScreen: View {
       // The picker does the copying or moving itself and dismisses without navigating, so this and
       // `transferGeneration` are the whole of the host's involvement — see `CopyCheckedItemsView`.
       onRequestTransferCheckedItems: { id, mode in router.sheet = .transferCheckedItems(sourceID: id, mode: mode) },
-      transferGeneration: transferGeneration
+      transferGeneration: transferGeneration,
     )
     .onChange(of: router.sheet) { oldSheet, newSheet in
       // Matched before `checklist` is read: on the create sheet, Discard clears the sheet after
@@ -65,8 +65,8 @@ struct ChecklistScreen: View {
     // in the `.newChecklist` route this view *is* the presented sheet, so presenting the consent
     // sheet there would replace the sheet the person is already looking at.
     .task {
-      guard !isNewChecklist else { return }
-      guard ConsentJurisdiction.kind(for: Locale.current.region?.identifier) == .required,
+      guard !isNewChecklist,
+            ConsentJurisdiction.kind(for: Locale.current.region?.identifier) == .required,
             !settings.analyticsOptInExplicitlySet else { return }
       router.sheet = .analyticsConsent
     }
@@ -112,14 +112,14 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
       let backButton = UIBarButtonItem(
         image: UIImage(systemName: "chevron.backward"),
         // Through the controller, so it knows it is leaving; see `hasRequestedDismissal`.
-        primaryAction: UIAction { [weak viewController] _ in viewController?.requestDismissal() }
+        primaryAction: UIAction { [weak viewController] _ in viewController?.requestDismissal() },
       )
       // iOS 26 renders bar buttons in `labelColor` unless the item itself carries a tint.
       backButton.tintColor = .tintColor
       backButton.accessibilityLabel = String(
         localized: "checklist.back.accessibilityLabel",
         defaultValue: "Back",
-        comment: "VoiceOver label for the chevron-only back button on the checklist detail screen."
+        comment: "VoiceOver label for the chevron-only back button on the checklist detail screen.",
       )
       viewController.navigationItem.leftBarButtonItem = backButton
     }
@@ -132,7 +132,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
       // phase of the stock gesture is lost.
       let edgeSwipe = UIScreenEdgePanGestureRecognizer(
         target: context.coordinator,
-        action: #selector(Coordinator.edgeSwipeBegan(_:))
+        action: #selector(Coordinator.edgeSwipeBegan(_:)),
       )
       edgeSwipe.edges = .left
       edgeSwipe.delegate = context.coordinator

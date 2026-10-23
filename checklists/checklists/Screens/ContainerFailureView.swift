@@ -46,7 +46,7 @@ struct ContainerFailureView: View {
             comment: """
             Body of the database-failure screen; suggests a restart and checking free storage. Word the \
             second sentence as a gentle suggestion, not a question.
-            """
+            """,
           ))
           .font(.body)
         }
@@ -69,7 +69,7 @@ struct ContainerFailureView: View {
           .accessibilityHint(String(
             localized: "containerFailure.action.sendFeedback.hint",
             defaultValue: "Opens an email with the error details. No personal data is included.",
-            comment: "VoiceOver hint for the Send Feedback button on the database-failure screen."
+            comment: "VoiceOver hint for the Send Feedback button on the database-failure screen.",
           ))
 
           if failure.allowsStoreReset {
@@ -89,7 +89,7 @@ struct ContainerFailureView: View {
             .accessibilityHint(String(
               localized: "containerFailure.action.startOver.hint",
               defaultValue: "Starts the app as if it were newly installed. Any data on this device will be lost.",
-              comment: "VoiceOver hint for the Start over fresh button."
+              comment: "VoiceOver hint for the Start over fresh button.",
             ))
           }
         }
@@ -110,12 +110,12 @@ struct ContainerFailureView: View {
     }
     .alert(
       String(localized: "containerFailure.confirm.title", defaultValue: "Start over fresh?", comment: "Title of the confirmation alert before deleting local data on the database-failure screen."),
-      isPresented: $isShowingStartOverConfirmation
+      isPresented: $isShowingStartOverConfirmation,
     ) {
       Button(CommonStrings.cancel, role: .cancel) {}
       Button(
         String(localized: "containerFailure.confirm.action", defaultValue: "Start Over", comment: "Destructive confirmation button: deletes local data and relaunches as a new install."),
-        role: .destructive
+        role: .destructive,
       ) {
         analytics.track(AnalyticsEvent.startupStoreReset)
         StoreReset.startOverFresh()
@@ -125,7 +125,7 @@ struct ContainerFailureView: View {
       Text(String(
         localized: "containerFailure.confirm.message",
         defaultValue: "This starts the app as if it were newly installed. Any data on this device will be lost. This cannot be undone.",
-        comment: "Message of the confirmation alert before deleting local data."
+        comment: "Message of the confirmation alert before deleting local data.",
       ))
     }
   }
@@ -133,13 +133,13 @@ struct ContainerFailureView: View {
   private static let sendFeedbackTitle = String(
     localized: "containerFailure.action.sendFeedback",
     defaultValue: "Send Feedback",
-    comment: "Button on the database-failure screen that opens a pre-filled support email."
+    comment: "Button on the database-failure screen that opens a pre-filled support email.",
   )
 
   private static let startOverTitle = String(
     localized: "containerFailure.action.startOver",
     defaultValue: "Start over fresh",
-    comment: "Destructive button on the database-failure screen: deletes the local data and relaunches as a new install."
+    comment: "Destructive button on the database-failure screen: deletes the local data and relaunches as a new install.",
   )
 
   private func sendFeedbackTapped() {
@@ -151,7 +151,7 @@ struct ContainerFailureView: View {
     components.queryItems = [
       URLQueryItem(
         name: "subject",
-        value: String(localized: "containerFailure.mail.subject", defaultValue: "Checklists data error", comment: "Subject line of the support email opened from the database-failure screen.")
+        value: String(localized: "containerFailure.mail.subject", defaultValue: "Checklists data error", comment: "Subject line of the support email opened from the database-failure screen."),
       ),
       URLQueryItem(name: "body", value: "Error: \(failure.diagnosticDescription)"),
     ]
@@ -163,14 +163,14 @@ struct ContainerFailureView: View {
 #if DEBUG
   #Preview("Store failure") {
     ContainerFailureView(
-      failure: ContainerCreationFailure(stage: .storeOpen, errorDomain: "NSCocoaErrorDomain", errorCode: 134_060)
+      failure: ContainerCreationFailure(stage: .storeOpen, errorDomain: "NSCocoaErrorDomain", errorCode: 134_060),
     ) {}
   }
 
   // The store opened here, so the same screen offers feedback without the destructive reset.
   #Preview("Import failure") {
     ContainerFailureView(
-      failure: ContainerCreationFailure(stage: .legacyImport, errorDomain: "NSCocoaErrorDomain", errorCode: 134_060)
+      failure: ContainerCreationFailure(stage: .legacyImport, errorDomain: "NSCocoaErrorDomain", errorCode: 134_060),
     ) {}
   }
 #endif

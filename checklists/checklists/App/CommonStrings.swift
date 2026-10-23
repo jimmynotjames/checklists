@@ -18,13 +18,13 @@ nonisolated enum CommonStrings {
   static let cancel = String(
     localized: "common.action.cancel",
     defaultValue: "Cancel",
-    comment: "Dismisses a confirmation alert without doing anything."
+    comment: "Dismisses a confirmation alert without doing anything.",
   )
 
   static let delete = String(
     localized: "common.action.delete",
     defaultValue: "Delete",
-    comment: "Destructive action: removes a checklist or an item. Swipe action, Edit mode toolbar button on the list of checklists, and confirmation button."
+    comment: "Destructive action: removes a checklist or an item. Swipe action, Edit mode toolbar button on the list of checklists, and confirmation button.",
   )
 
   static let done = String(
@@ -34,25 +34,25 @@ nonisolated enum CommonStrings {
     Ends editing: the nav bar button that leaves Edit mode on the \
     list of checklists (it reads Edit until tapped), and the nav bar button that leaves Reorder \
     Items mode on a checklist's screen.
-    """
+    """,
   )
 
   static let duplicate = String(
     localized: "common.action.duplicate",
     defaultValue: "Duplicate",
-    comment: "Makes a copy of a checklist or an item. Swipe action, and Edit mode toolbar button on the list of checklists; VoiceOver reads it as the button's name."
+    comment: "Makes a copy of a checklist or an item. Swipe action, and Edit mode toolbar button on the list of checklists; VoiceOver reads it as the button's name.",
   )
 
   static let notesPlaceholder = String(
     localized: "common.notes.placeholder",
     defaultValue: "Notes",
-    comment: "Placeholder of the optional notes field on an item and on a checklist header."
+    comment: "Placeholder of the optional notes field on an item and on a checklist header.",
   )
 
   static let settingsTitle = String(
     localized: "common.settings.title",
     defaultValue: "Settings",
-    comment: "Title of the Settings screen and the main-menu row that opens it."
+    comment: "Title of the Settings screen and the main-menu row that opens it.",
   )
 
   /// Written into the store as a checklist's name, not shown as a label, so it stays in whatever
@@ -61,7 +61,7 @@ nonisolated enum CommonStrings {
   static let defaultChecklistName = String(
     localized: "checklist.defaultName",
     defaultValue: "untitled checklist",
-    comment: "Name stored for a checklist saved with an empty name field. Lowercase in English; it is data once saved."
+    comment: "Name stored for a checklist saved with an empty name field. Lowercase in English; it is data once saved.",
   )
 
   /// Keyed under `checklists.` rather than `common.` because renaming a key costs every locale a
@@ -69,6 +69,6 @@ nonisolated enum CommonStrings {
   static let irreversibleConfirmation = String(
     localized: "checklists.confirm.irreversible",
     defaultValue: "Are you sure? This cannot be undone.",
-    comment: "Alert message under the delete, reset and reset-all confirmations on the checklist list, and under the delete-checklist confirmation on a checklist's own screen."
+    comment: "Alert message under the delete, reset and reset-all confirmations on the checklist list, and under the delete-checklist confirmation on a checklist's own screen.",
   )
 }

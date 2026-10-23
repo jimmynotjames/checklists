@@ -1,5 +1,14 @@
 # https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md
---swiftversion 6.0
+# Compiler version (Xcode 27.1 ships Swift 6.4) and language mode are separate settings; the
+# language mode defaults to 5 unless set.
+--swift-version 6.4
+--language-mode 6
+# Also guards hook and manual runs, which skip the gate's exact check against config/lint-tools.env.
+--min-version 0.64.1
+--unknown-options error
+# Test names are IDs that make test-only, failure lists and docs refer to; renaming them to
+# raw identifiers is its own change.
+--test-case-name-format preserve
 --indent 2
 --importgrouping alpha
 --wraparguments before-first
@@ -17,5 +26,5 @@
 # statements, so the two oscillate and swiftlint-fix (run last in pre-commit) wins — leaving
 # code that `swiftformat --lint` then rejects. Disable here so swiftformat defers.
 --disable wrapMultilineStatementBraces
-# build/ and DerivedData/ are gitignored scratch.
---exclude build,DerivedData,.build
+# build/, tmp/ and .claude/ (agent worktrees) are scratch (.build and DerivedData are excluded by default).
+--exclude build,tmp,.claude

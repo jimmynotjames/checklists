@@ -35,7 +35,7 @@ final class ChecklistInfoHeaderView: UIView {
     nameTextField.placeholder = String(localized: "checklist.name.placeholder", defaultValue: "Name", comment: "Placeholder of the checklist name field in the detail header.")
     nameTextField.font = UIFontMetrics(forTextStyle: .title2).scaledFont(
       for: .systemFont(ofSize: 24.0, weight: .semibold),
-      maximumPointSize: Self.maximumNamePointSize
+      maximumPointSize: Self.maximumNamePointSize,
     )
     nameTextField.adjustsFontForContentSizeCategory = true
     nameTextField.returnKeyType = .done
@@ -45,7 +45,7 @@ final class ChecklistInfoHeaderView: UIView {
     nameTextField.accessibilityLabel = String(
       localized: "checklist.name.accessibilityLabel",
       defaultValue: "Checklist Name: ",
-      comment: "VoiceOver label read before the checklist name field. Keep the trailing space and colon."
+      comment: "VoiceOver label read before the checklist name field. Keep the trailing space and colon.",
     )
     // The screen's heading, since the bar shows no title until the name scrolls under it.
     nameTextField.accessibilityTraits.insert(.header)
@@ -62,7 +62,7 @@ final class ChecklistInfoHeaderView: UIView {
     notesTextView.accessibilityLabel = String(
       localized: "checklist.notes.accessibilityLabel",
       defaultValue: "Checklist Notes: ",
-      comment: "VoiceOver label read before the checklist notes field. Keep the trailing space and colon."
+      comment: "VoiceOver label read before the checklist notes field. Keep the trailing space and colon.",
     )
     // Required on both sides pins this self-sizing text view, and so this header, to its content
     // height.
@@ -133,7 +133,7 @@ final class ChecklistInfoHeaderView: UIView {
     let height = systemLayoutSizeFitting(
       CGSize(width: tableView.bounds.width, height: UIView.layoutFittingCompressedSize.height),
       withHorizontalFittingPriority: .required,
-      verticalFittingPriority: .fittingSizeLevel
+      verticalFittingPriority: .fittingSizeLevel,
     ).height
     // Reassigning is what makes the table re-read the height, and it triggers another layout pass,
     // so only do it on a real change or this recurses. The width term covers rotation.

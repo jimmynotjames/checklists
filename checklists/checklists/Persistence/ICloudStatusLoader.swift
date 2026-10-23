@@ -29,7 +29,9 @@ struct ICloudStatusLoader {
     #if DEBUG
       // Xcode previews inject the status they want to show. The live CKContainer query would
       // overwrite it — and on an account-less simulator it hangs, pinning the row to its spinner.
-      if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" { return }
+      if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" {
+        return
+      }
     #endif
 
     syncStatus.accountQueriesStarted += 1
@@ -67,7 +69,7 @@ struct ICloudStatusLoader {
     old: SyncStatus.AccountStatus,
     new: SyncStatus.AccountStatus,
     syncStatus: SyncStatus,
-    analytics: any AnalyticsClient
+    analytics: any AnalyticsClient,
   ) {
     guard old == .checking, new != .checking, !syncStatus.hasReportedInitialAccountStatus else { return }
     syncStatus.hasReportedInitialAccountStatus = true
@@ -76,7 +78,7 @@ struct ICloudStatusLoader {
       properties: [
         AnalyticsProperty.containerBacking: syncStatus.containerBacking.rawValue,
         AnalyticsProperty.icloudAccount: new.rawValue,
-      ]
+      ],
     )
   }
 

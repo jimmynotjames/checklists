@@ -59,7 +59,7 @@ enum SampleData {
 
   static func insertFirstTimeLaunchDataIfNeeded(
     into context: ModelContext,
-    userDefaults: UserDefaults = .standard
+    userDefaults: UserDefaults = .standard,
   ) throws {
     guard !userDefaults.bool(forKey: seededFlagKey) else { return }
 
@@ -92,7 +92,7 @@ enum SampleData {
         id: fixture.id,
         name: fixture.name,
         notes: fixture.notes,
-        sortKey: checklistSortKey
+        sortKey: checklistSortKey,
       )
       context.insert(checklist)
 
@@ -227,16 +227,16 @@ enum SampleData {
         name: String(
           localized: "sample.morningRoutine.name",
           defaultValue: "Morning Routine",
-          comment: "Demo checklist 1 of 3: name of the everyday morning-routine list every new install starts with."
+          comment: "Demo checklist 1 of 3: name of the everyday morning-routine list every new install starts with.",
         ),
         items: [
           ItemFixture(
             name: String(
               localized: "sample.morningRoutine.item1",
               defaultValue: "START COFFEE MAKER",
-              comment: "Morning routine demo item 1 of 6. Deliberately in capitals, like a hand-written reminder. Swap the drink or appliance for the local morning norm."
+              comment: "Morning routine demo item 1 of 6. Deliberately in capitals, like a hand-written reminder. Swap the drink or appliance for the local morning norm.",
             ),
-            isChecked: true
+            isChecked: true,
           ),
           ItemFixture(name: String(localized: "sample.morningRoutine.item2", defaultValue: "Yoga/meditation", comment: "Morning routine demo item 2 of 6."), isChecked: true),
           ItemFixture(name: String(localized: "sample.morningRoutine.item3", defaultValue: "Traffic and weather reports", comment: "Morning routine demo item 3 of 6."), isChecked: true),
@@ -246,11 +246,11 @@ enum SampleData {
             name: String(
               localized: "sample.morningRoutine.item6",
               defaultValue: "Argue politics on Facebook",
-              comment: "Morning routine demo item 6 of 6. Wry, self-aware joke; keep the tone and name the network people there actually argue on."
+              comment: "Morning routine demo item 6 of 6. Wry, self-aware joke; keep the tone and name the network people there actually argue on.",
             ),
-            isChecked: true
+            isChecked: true,
           ),
-        ]
+        ],
       ),
       ChecklistFixture(
         id: weekendGetawayId,
@@ -262,8 +262,8 @@ enum SampleData {
             notes: String(
               localized: "sample.weekendGetaway.item2.notes",
               defaultValue: "Proper ID (ID for air travel, international, driver license for roadtrip, etc.)",
-              comment: "Note under the Wallet/ID packing item. Adapt to the documents people there carry for flights, border crossings, and driving."
-            )
+              comment: "Note under the Wallet/ID packing item. Adapt to the documents people there carry for flights, border crossings, and driving.",
+            ),
           ),
           ItemFixture(name: String(localized: "sample.weekendGetaway.item3", defaultValue: "Prescriptions, medicines, supplements", comment: "Weekend packing demo item 3 of 12."), isChecked: true),
           ItemFixture(
@@ -271,27 +271,27 @@ enum SampleData {
             notes: String(
               localized: "sample.weekendGetaway.item4.notes",
               defaultValue: "Small liquids only in separate bag if flying and in carry-on.",
-              comment: "Note under the toiletries packing item about the airline liquids rule."
+              comment: "Note under the toiletries packing item about the airline liquids rule.",
             ),
-            isChecked: true
+            isChecked: true,
           ),
           ItemFixture(name: String(localized: "sample.weekendGetaway.item5", defaultValue: "Sun screen", comment: "Weekend packing demo item 5 of 12.")),
           ItemFixture(name: String(localized: "sample.weekendGetaway.item6", defaultValue: "Headphones", comment: "Weekend packing demo item 6 of 12.")),
           ItemFixture(name: String(
             localized: "sample.weekendGetaway.item7",
             defaultValue: "Book, iPad, Kindle...",
-            comment: "Weekend packing demo item 7 of 12: things to read. Keep Apple product names as Apple writes them; swap Kindle for the local e-reader if another dominates."
+            comment: "Weekend packing demo item 7 of 12: things to read. Keep Apple product names as Apple writes them; swap Kindle for the local e-reader if another dominates.",
           )),
           ItemFixture(name: String(
             localized: "sample.weekendGetaway.item8",
             defaultValue: "Rain/wind items",
-            comment: "Weekend packing demo item 8 of 12: rain and wind gear. Adapt to the local climate."
+            comment: "Weekend packing demo item 8 of 12: rain and wind gear. Adapt to the local climate.",
           )),
           ItemFixture(name: String(localized: "sample.weekendGetaway.item9", defaultValue: "Sunglasses", comment: "Weekend packing demo item 9 of 12."), isChecked: true),
           ItemFixture(name: String(localized: "sample.weekendGetaway.item10", defaultValue: "Sunhat", comment: "Weekend packing demo item 10 of 12."), isChecked: true),
           ItemFixture(name: String(localized: "sample.weekendGetaway.item11", defaultValue: "Swimsuit", comment: "Weekend packing demo item 11 of 12.")),
           ItemFixture(name: String(localized: "sample.weekendGetaway.item12", defaultValue: "Pool shoes", comment: "Weekend packing demo item 12 of 12.")),
-        ]
+        ],
       ),
       ChecklistFixture(
         id: preTripId,
@@ -301,7 +301,7 @@ enum SampleData {
           ItemFixture(name: String(
             localized: "sample.preTrip.item2",
             defaultValue: "Post office: hold mail",
-            comment: "Pre-trip demo item 2 of 11: pausing postal delivery. Adapt to what a local does about mail before a trip, or a different pre-trip errand if that service does not exist there."
+            comment: "Pre-trip demo item 2 of 11: pausing postal delivery. Adapt to what a local does about mail before a trip, or a different pre-trip errand if that service does not exist there.",
           )),
           ItemFixture(name: String(localized: "sample.preTrip.item3", defaultValue: "Pet care arrangements", comment: "Pre-trip demo item 3 of 11.")),
           ItemFixture(name: String(localized: "sample.preTrip.item4", defaultValue: "Plant care, housesitting arrangements", comment: "Pre-trip demo item 4 of 11.")),
@@ -314,12 +314,12 @@ enum SampleData {
             notes: String(
               localized: "sample.preTrip.item9.notes",
               defaultValue: "Or set minimum temp to prevent freezing pipes.",
-              comment: "Note under the heater item. Adapt to the local climate; a warm-climate locale may replace the freezing-pipes concern."
-            )
+              comment: "Note under the heater item. Adapt to the local climate; a warm-climate locale may replace the freezing-pipes concern.",
+            ),
           ),
           ItemFixture(name: String(localized: "sample.preTrip.item10", defaultValue: "Check stoves, oven are off", comment: "Pre-trip demo item 10 of 11.")),
           ItemFixture(name: String(localized: "sample.preTrip.item11", defaultValue: "Lock doors and windows", comment: "Pre-trip demo item 11 of 11.")),
-        ]
+        ],
       ),
     ]
   }

@@ -26,7 +26,7 @@ struct ToastView: View {
     VoiceOver action on a short message card shown at the bottom of the screen, such as "Copied \
     items to Groceries". Removes the card. Under VoiceOver the card stays until removed, so this \
     is how a VoiceOver user clears it. Keep it to one word if your language allows.
-    """
+    """,
   )
 
   private static let dismissHint = String(
@@ -36,7 +36,7 @@ struct ToastView: View {
     VoiceOver hint read after a short message card at the bottom of the screen, such as "Copied \
     items to Groceries". Says what activating the card does: it goes away. Describe the result, \
     not the gesture.
-    """
+    """,
   )
 
   /// Beside the message at standard sizes; under it at accessibility sizes, where a side-by-side
@@ -49,6 +49,8 @@ struct ToastView: View {
 
   var body: some View {
     layout {
+      // A status message, not a button: VoiceOver reads it with the dismiss hint and actions below.
+      // swiftlint:disable:next accessibility_trait_for_button
       HStack(spacing: 12) {
         Image(systemName: toast.style.symbolName)
           .font(.headline)
@@ -96,7 +98,7 @@ struct ToastView: View {
       RoundedRectangle(cornerRadius: 14, style: .continuous)
         .fill(Colors.darkBlueGrayColor)
         // The floating-button treatment from `ChecklistsView`, so the two read as one system.
-        .shadow(color: Colors.shadowColor.opacity(0.4), radius: 3, x: 0, y: 2)
+        .shadow(color: Colors.shadowColor.opacity(0.4), radius: 3, x: 0, y: 2),
     )
     // Locale-invariant handle so UI tests can wait a toast out rather than tapping through it.
     .accessibilityIdentifier("toast")
@@ -126,8 +128,8 @@ struct ToastView: View {
       toast: Toast(
         message: previewMessage("Checklist deleted"),
         style: .warning,
-        action: ToastAction(title: previewMessage("Undo")) {}
-      )
+        action: ToastAction(title: previewMessage("Undo")) {},
+      ),
     ) {} onAction: {}
       .padding(16)
       .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -139,8 +141,8 @@ struct ToastView: View {
       toast: Toast(
         message: previewMessage("Copied items to Saturday Morning Deep Clean Checklist"),
         style: .success,
-        action: ToastAction(title: previewMessage("Undo")) {}
-      )
+        action: ToastAction(title: previewMessage("Undo")) {},
+      ),
     ) {} onAction: {}
       .padding(16)
       .frame(maxWidth: .infinity, maxHeight: .infinity)

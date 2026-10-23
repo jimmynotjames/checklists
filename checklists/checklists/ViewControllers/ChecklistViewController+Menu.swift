@@ -328,7 +328,7 @@ extension ChecklistViewController {
     }
     analytics.track(
       AnalyticsEvent.checklistDuplicated,
-      properties: [AnalyticsProperty.source: ChecklistDuplicationSource.menu.rawValue]
+      properties: [AnalyticsProperty.source: ChecklistDuplicationSource.menu.rawValue],
     )
     onRequestOpenDuplicate?(copy.id)
   }

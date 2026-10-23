@@ -71,7 +71,7 @@ final class SyncStatus {
   init(
     containerBacking: ContainerBacking,
     accountStatus: AccountStatus = .checking,
-    fallbackError: SyncErrorCode? = nil
+    fallbackError: SyncErrorCode? = nil,
   ) {
     self.containerBacking = containerBacking
     self.accountStatus = accountStatus
@@ -122,7 +122,9 @@ extension SyncStatus {
   private var syncFailureRowState: RowState? {
     let failures = syncActivity.values.compactMap(\.latestFailure)
     guard !failures.isEmpty else { return nil }
-    if failures.contains(where: Self.isStorageFull) { return .storageFull }
+    if failures.contains(where: Self.isStorageFull) {
+      return .storageFull
+    }
     guard failures.contains(where: { !Self.isIgnoredTransientFailure($0) }) else { return nil }
     return .syncInterrupted
   }

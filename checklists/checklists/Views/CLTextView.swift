@@ -105,7 +105,7 @@ class CLTextView: UITextView {
 
     NSLayoutConstraint.activate(
       NSLayoutConstraint.constraints(withVisualFormat: "H:|[placeholderLabel]|", options: [], metrics: nil, views: views)
-        + [placeholderTopConstraint, placeholderBottomConstraint]
+        + [placeholderTopConstraint, placeholderBottomConstraint],
     )
   }
 

@@ -195,7 +195,7 @@ struct ChecklistsView: View {
           CommonStrings.delete,
           systemImage: "trash",
           tint: Colors.destructiveColor,
-          id: "editBar.delete"
+          id: "editBar.delete",
         ) {
           confirm(.delete)
         }
@@ -256,7 +256,7 @@ struct ChecklistsView: View {
     .onAppear {
       analytics.track(
         AnalyticsEvent.checklistsViewed,
-        properties: [AnalyticsProperty.checklistsCount: checklists.count]
+        properties: [AnalyticsProperty.checklistsCount: checklists.count],
       )
       analytics.refreshCohortPeopleProperties(checklistsCount: checklists.count)
     }
@@ -306,7 +306,7 @@ struct ChecklistsView: View {
     .accessibilityLabel(String(
       localized: "checklists.menu.misc.accessibilityLabel",
       defaultValue: "Miscellaneous Menu",
-      comment: "VoiceOver label for the toolbar button that opens the main menu (feedback, rating, settings)."
+      comment: "VoiceOver label for the toolbar button that opens the main menu (feedback, rating, settings).",
     ))
     // Locale-invariant handle for `translation-accessibility-size-check`, which cannot
     // navigate by localized visible text.
@@ -381,7 +381,7 @@ struct ChecklistsView: View {
     systemImage: String,
     tint: Color = .accentColor,
     id: String,
-    action: @escaping () -> Void
+    action: @escaping () -> Void,
   ) -> some View {
     Button(action: action) {
       barLabel(title, systemImage: systemImage)
@@ -408,7 +408,7 @@ struct ChecklistsView: View {
     .accessibilityLabel(String(
       localized: "checklists.add.accessibilityLabel",
       defaultValue: "Add new checklist.",
-      comment: "VoiceOver label for the round floating button that creates a checklist."
+      comment: "VoiceOver label for the round floating button that creates a checklist.",
     ))
     .accessibilityIdentifier("toolbar.addChecklist")
     .accessibilityFocused($isAddButtonFocused)
@@ -467,7 +467,7 @@ struct ChecklistsView: View {
       comment: """
       VoiceOver announcement after a checklist is moved with a Move Up/Down/to Top/to Bottom \
       action. First placeholder is its new position counting from 1, second the number of checklists.
-      """
+      """,
     ))
   }
 
@@ -477,25 +477,25 @@ struct ChecklistsView: View {
       String(
         localized: "checklists.accessibilityAction.moveUp",
         defaultValue: "Move Up",
-        comment: "VoiceOver action on a checklist row: moves it one place up the list."
+        comment: "VoiceOver action on a checklist row: moves it one place up the list.",
       )
     case .down:
       String(
         localized: "checklists.accessibilityAction.moveDown",
         defaultValue: "Move Down",
-        comment: "VoiceOver action on a checklist row: moves it one place down the list."
+        comment: "VoiceOver action on a checklist row: moves it one place down the list.",
       )
     case .top:
       String(
         localized: "checklists.accessibilityAction.moveToTop",
         defaultValue: "Move to Top",
-        comment: "VoiceOver action on a checklist row: moves it to the start of the list."
+        comment: "VoiceOver action on a checklist row: moves it to the start of the list.",
       )
     case .bottom:
       String(
         localized: "checklists.accessibilityAction.moveToBottom",
         defaultValue: "Move to Bottom",
-        comment: "VoiceOver action on a checklist row: moves it to the end of the list."
+        comment: "VoiceOver action on a checklist row: moves it to the end of the list.",
       )
     }
   }
@@ -509,7 +509,7 @@ struct ChecklistsView: View {
         if !isPresented {
           pendingDeleteID = nil
         }
-      }
+      },
     )
   }
 
@@ -542,7 +542,7 @@ struct ChecklistsView: View {
     }
     analytics.track(
       AnalyticsEvent.checklistDuplicated,
-      properties: [AnalyticsProperty.source: ChecklistDuplicationSource.swipe.rawValue]
+      properties: [AnalyticsProperty.source: ChecklistDuplicationSource.swipe.rawValue],
     )
     postAccessibilityFeedback(Self.duplicatedAnnouncement)
   }
@@ -562,7 +562,7 @@ struct ChecklistsView: View {
         if !isPresented {
           pendingBulkAction = nil
         }
-      }
+      },
     )
   }
 
@@ -586,7 +586,7 @@ struct ChecklistsView: View {
         properties: [
           AnalyticsProperty.bulkAction: action.rawValue,
           AnalyticsProperty.selectedCount: ids.count,
-        ]
+        ],
       )
     }
     withAnimation {
@@ -609,7 +609,7 @@ struct ChecklistsView: View {
   private func postAccessibilityFeedback(
     _ announcement: String,
     afterAlert: Bool = false,
-    focus: (() -> Void)? = nil
+    focus: (() -> Void)? = nil,
   ) {
     Task {
       if afterAlert {
@@ -635,19 +635,19 @@ struct ChecklistsView: View {
   private static let editTitle = String(
     localized: "checklists.action.edit",
     defaultValue: "Edit",
-    comment: "Nav bar button that enters Edit mode on the list of checklists (select, reorder, delete, duplicate, reset). Becomes Done while editing."
+    comment: "Nav bar button that enters Edit mode on the list of checklists (select, reorder, delete, duplicate, reset). Becomes Done while editing.",
   )
 
   private static let resetAllTitle = String(
     localized: "checklists.action.resetAll",
     defaultValue: "Reset All",
-    comment: "Unchecks every item in every checklist. Nav bar button beside Edit, and its confirmation button; clears progress, never deletes lists."
+    comment: "Unchecks every item in every checklist. Nav bar button beside Edit, and its confirmation button; clears progress, never deletes lists.",
   )
 
   private static let resetSelectedTitle = String(
     localized: "checklists.action.resetSelected",
     defaultValue: "Reset",
-    comment: "Edit mode toolbar button, beside Delete and Duplicate, and its confirmation button: unchecks every item in the selected checklists. Clears progress, never deletes lists."
+    comment: "Edit mode toolbar button, beside Delete and Duplicate, and its confirmation button: unchecks every item in the selected checklists. Clears progress, never deletes lists.",
   )
 }
 

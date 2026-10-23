@@ -23,13 +23,13 @@ struct AnalyticsConsentSheet: View {
   private static let acceptTitle = String(
     localized: "consent.action.accept",
     defaultValue: "Share Anonymous Usage Data",
-    comment: "Accept button on the analytics consent sheet; turns anonymous usage data on."
+    comment: "Accept button on the analytics consent sheet; turns anonymous usage data on.",
   )
 
   private static let declineTitle = String(
     localized: "consent.action.decline",
     defaultValue: "Not Now",
-    comment: "Decline button on the analytics consent sheet; keeps usage data off."
+    comment: "Decline button on the analytics consent sheet; keeps usage data off.",
   )
 
   var body: some View {
@@ -52,7 +52,7 @@ struct AnalyticsConsentSheet: View {
               Data is never linked to your Apple Account. Never included: checklist item names, \
               item notes, or any Apple or iCloud identifiers. You can change this anytime in Settings.
               """,
-              comment: "Body of the analytics consent sheet explaining what is and is not collected."
+              comment: "Body of the analytics consent sheet explaining what is and is not collected.",
             ))
             .font(.body)
             .foregroundStyle(Colors.inactiveTextColor)
@@ -86,7 +86,7 @@ struct AnalyticsConsentSheet: View {
           .accessibilityHint(String(
             localized: "consent.action.accept.hint",
             defaultValue: "Turns on anonymous usage data to help improve the app. No checklist item names, item notes, or Apple or iCloud identifiers are ever included.",
-            comment: "VoiceOver hint for the accept button on the analytics consent sheet."
+            comment: "VoiceOver hint for the accept button on the analytics consent sheet.",
           ))
 
           Button {
@@ -103,7 +103,7 @@ struct AnalyticsConsentSheet: View {
           .accessibilityHint(String(
             localized: "consent.action.decline.hint",
             defaultValue: "Keeps anonymous usage data off. This can be changed later in Settings.",
-            comment: "VoiceOver hint for the decline button on the analytics consent sheet."
+            comment: "VoiceOver hint for the decline button on the analytics consent sheet.",
           ))
         }
         .padding(.horizontal, 24)

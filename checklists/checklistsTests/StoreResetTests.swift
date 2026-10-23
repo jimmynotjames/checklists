@@ -33,7 +33,7 @@ struct StoreResetTests {
       storeURL: storeURL,
       realmURL: realmURL,
       userDefaults: userDefaults,
-      fileManager: .default
+      fileManager: .default,
     )
   }
 
@@ -51,7 +51,7 @@ struct StoreResetTests {
       for url in [storeURL] + sidecars {
         #expect(
           !FileManager.default.fileExists(atPath: url.path),
-          "An orphaned sidecar is worse than none: SQLite can try to recover from a stray WAL."
+          "An orphaned sidecar is worse than none: SQLite can try to recover from a stray WAL.",
         )
       }
     }
@@ -88,7 +88,7 @@ struct StoreResetTests {
       reset(
         storeURL: directory.appendingPathComponent("default.store"),
         realmURL: directory.appendingPathComponent("default.realm"),
-        userDefaults: userDefaults
+        userDefaults: userDefaults,
       )
 
       #expect(!userDefaults.bool(forKey: SampleData.seededFlagKey))
@@ -107,7 +107,7 @@ struct StoreResetTests {
       reset(
         storeURL: directory.appendingPathComponent("default.store"),
         realmURL: directory.appendingPathComponent("default.realm"),
-        userDefaults: userDefaults
+        userDefaults: userDefaults,
       )
 
       #expect(userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
@@ -126,13 +126,13 @@ struct StoreResetTests {
       reset(
         storeURL: directory.appendingPathComponent("default.store"),
         realmURL: directory.appendingPathComponent("default.realm"),
-        userDefaults: userDefaults
+        userDefaults: userDefaults,
       )
 
       #expect(!userDefaults.bool(forKey: AnalyticsSettings.analyticsOptInKey))
       #expect(
         userDefaults.string(forKey: AnalyticsSettings.analyticsDistinctIdKey)
-          == "11111111-1111-1111-1111-111111111111"
+          == "11111111-1111-1111-1111-111111111111",
       )
     }
   }
@@ -145,7 +145,7 @@ struct StoreResetTests {
       reset(
         storeURL: directory.appendingPathComponent("absent.store"),
         realmURL: directory.appendingPathComponent("absent.realm"),
-        userDefaults: userDefaults
+        userDefaults: userDefaults,
       )
 
       #expect(!userDefaults.bool(forKey: SampleData.seededFlagKey))

@@ -25,7 +25,7 @@ struct ChecklistDuplicationTests {
     itemCount: Int,
     checkedCount: Int = 0,
     sortKey: Double = 1.0,
-    in context: ModelContext
+    in context: ModelContext,
   ) throws -> Checklist {
     let checklist = Checklist(name: name, notes: "Before the ferry.", sortKey: sortKey)
     context.insert(checklist)

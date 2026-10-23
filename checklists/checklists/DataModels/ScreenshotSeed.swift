@@ -51,7 +51,7 @@
           id: fixture.id,
           name: fixture.name,
           notes: fixture.notes,
-          sortKey: checklistSortKey
+          sortKey: checklistSortKey,
         )
         context.insert(checklist)
 
@@ -60,7 +60,7 @@
           let item = Item(
             name: itemFixture.name,
             notes: itemFixture.notes,
-            sortKey: itemSortKey
+            sortKey: itemSortKey,
           )
           item.status = itemFixture.isChecked ? .checked : .unchecked
           context.insert(item)

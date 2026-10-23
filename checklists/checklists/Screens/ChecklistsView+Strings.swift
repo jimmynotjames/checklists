@@ -14,7 +14,7 @@ extension ChecklistsView {
     comment: """
     Name of the app's main screen, the list of all checklists. Not drawn on screen: VoiceOver reads \
     it as the screen's title. A plural noun, not a verb.
-    """
+    """,
   )
 
   static let deletedAnnouncement = String(
@@ -23,7 +23,7 @@ extension ChecklistsView {
     comment: """
     VoiceOver announcement after a checklist is deleted from the list of checklists. VoiceOver then \
     moves to a neighbouring checklist, or to the Add button when none are left. Keep it short.
-    """
+    """,
   )
 
   static let duplicatedAnnouncement = String(
@@ -32,7 +32,7 @@ extension ChecklistsView {
     comment: """
     VoiceOver announcement after a checklist is duplicated with its swipe action. The copy appears \
     directly below the original. Keep it short.
-    """
+    """,
   )
 
   static let allResetAnnouncement = String(
@@ -41,7 +41,7 @@ extension ChecklistsView {
     comment: """
     VoiceOver announcement after Reset All unchecks every item in every checklist. "Reset" matches \
     the Reset All button; nothing is deleted. Keep it short.
-    """
+    """,
   )
 
   static func bulkAnnouncement(for action: ChecklistsBulkAction, count: Int) -> String {
@@ -53,7 +53,7 @@ extension ChecklistsView {
         comment: """
         VoiceOver announcement after Edit mode's Delete removes the selected checklists. The \
         placeholder is how many were deleted. Keep it short.
-        """
+        """,
       )
     case .duplicate:
       String(
@@ -62,7 +62,7 @@ extension ChecklistsView {
         comment: """
         VoiceOver announcement after Edit mode's Duplicate copies the selected checklists. The \
         placeholder is how many were copied. Keep it short.
-        """
+        """,
       )
     case .reset:
       String(
@@ -72,7 +72,7 @@ extension ChecklistsView {
         VoiceOver announcement after Edit mode's Reset unchecks every item in the selected \
         checklists. "Reset" matches the button; nothing is deleted. The placeholder is how many \
         checklists were reset. Keep it short.
-        """
+        """,
       )
     }
   }
@@ -94,7 +94,7 @@ extension ChecklistsView {
       placeholder is the checklist's name, which the person typed, so it can be long; quote it the \
       way your language quotes a name. The message under it says this cannot be undone, and the \
       buttons are Cancel and Delete.
-      """
+      """,
     )
   }
 
@@ -109,7 +109,7 @@ extension ChecklistsView {
         Title of the alert after Edit mode's Delete, with checklists selected. The placeholder is \
         how many will be deleted, always at least one. The message under it says this cannot be \
         undone, and the buttons are Cancel and Delete.
-        """
+        """,
       )
     case .reset:
       String(
@@ -119,7 +119,7 @@ extension ChecklistsView {
         Title of the alert after Edit mode's Reset, with checklists selected. Reset unchecks every \
         item in them; nothing is deleted. Use the same verb as the Reset button. The placeholder is \
         how many will be reset, always at least one. The buttons are Cancel and Reset.
-        """
+        """,
       )
     }
   }
@@ -131,6 +131,6 @@ extension ChecklistsView {
     Title of the alert after the Reset All button on the list of checklists. Reset unchecks every \
     item in every checklist; nothing is deleted. Use the same verb as the Reset All button. The \
     buttons are Cancel and Reset All.
-    """
+    """,
   )
 }

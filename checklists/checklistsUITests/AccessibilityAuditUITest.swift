@@ -32,7 +32,7 @@ class AccessibilityAuditUITest: XCTestCase {
       label: String? = nil,
       detailContains: String? = nil,
       inAlert: Bool = false,
-      reason: String
+      reason: String,
     ) {
       self.screens = screens
       self.types = types
@@ -48,7 +48,7 @@ class AccessibilityAuditUITest: XCTestCase {
     KnownIssue(
       types: .dynamicType,
       identifier: "toolbar.edit",
-      reason: "Bar text never scales with the text size; the button's Large Content Viewer covers it."
+      reason: "Bar text never scales with the text size; the button's Large Content Viewer covers it.",
     ),
     KnownIssue(
       screens: ["copyCheckedItemsSheet"],
@@ -57,31 +57,31 @@ class AccessibilityAuditUITest: XCTestCase {
       reason: """
       Accepted: at the largest sizes a long translation of the placeholder may truncate. Wrapping it \
       would take a vertical field, where Return adds a line instead of committing.
-      """
+      """,
     ),
     KnownIssue(
       screens: ["settings"],
       types: .textClipped,
       label: "iCloud Not Available",
-      reason: "False positive: the status wraps at the largest sizes rather than clipping."
+      reason: "False positive: the status wraps at the largest sizes rather than clipping.",
     ),
     KnownIssue(
       screens: ["settings"],
       types: .dynamicType,
       label: "Info",
-      reason: "False positive: the section header scales like the others in Settings."
+      reason: "False positive: the section header scales like the others in Settings.",
     ),
     KnownIssue(
       screens: ["resetAllAlert"],
       types: [.dynamicType, .elementDetection],
       inAlert: true,
-      reason: "The alert's labels belong to UIAlertController, which the app can't restyle."
+      reason: "The alert's labels belong to UIAlertController, which the app can't restyle.",
     ),
     KnownIssue(
       screens: ["createSheet", "checklistEditingItem"],
       types: .sufficientElementDescription,
       detailContains: "TUIPredictionViewCell",
-      reason: "The keyboard's suggestion bar is system UI; it shows up only some runs."
+      reason: "The keyboard's suggestion bar is system UI; it shows up only some runs.",
     ),
   ]
 
@@ -99,11 +99,7 @@ class AccessibilityAuditUITest: XCTestCase {
   /// Audits the current screen. An issue in `knownIssues` passes, logged with its reason; any other
   /// fails the test.
   private func audit(_ screen: String) throws {
-    // A loop, not `map(\.label)`: `label` is main-actor isolated, so the key path doesn't compile here.
-    var alertText = Set<String>()
-    for text in app.alerts.staticTexts.allElementsBoundByIndex {
-      alertText.insert(text.label)
-    }
+    let alertText = Set(app.alerts.staticTexts.allElementsBoundByIndex.map { $0.label })
     try app.performAccessibilityAudit(for: Self.auditTypes) { issue in
       var identifier = ""
       var label = ""

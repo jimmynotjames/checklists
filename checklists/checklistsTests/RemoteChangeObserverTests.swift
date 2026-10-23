@@ -62,7 +62,7 @@ struct RemoteChangeObserverTests {
     try await confirmation("deadline callback fired", expectedCount: 1...) { callbackFired in
       let observer = RemoteChangeObserver(
         coalescingDelay: .milliseconds(50),
-        maximumDelay: .milliseconds(120)
+        maximumDelay: .milliseconds(120),
       ) {
         firstFiredAt = firstFiredAt ?? ContinuousClock.now
         callbackFired()
@@ -90,7 +90,7 @@ struct RemoteChangeObserverTests {
     try await confirmation("debounced callback fired") { callbackFired in
       let observer = RemoteChangeObserver(
         coalescingDelay: .milliseconds(100),
-        maximumDelay: .seconds(5)
+        maximumDelay: .seconds(5),
       ) {
         firedAt = ContinuousClock.now
         callbackFired()
@@ -120,7 +120,7 @@ struct RemoteChangeObserverTests {
     try await confirmation("deadline and trailing callbacks fired", expectedCount: 2...) { callbackFired in
       let observer = RemoteChangeObserver(
         coalescingDelay: .milliseconds(50),
-        maximumDelay: .milliseconds(100)
+        maximumDelay: .milliseconds(100),
       ) {
         firstFiredAt = firstFiredAt ?? ContinuousClock.now
         callbackFired()

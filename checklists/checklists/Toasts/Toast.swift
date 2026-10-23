@@ -78,9 +78,9 @@ extension Toast {
         second sentence must stay a guess ("may"), never a statement of fact. Appears briefly at \
         the bottom of the screen with no button. Keep it short; it can appear after any edit \
         (adding, ticking, renaming, deleting).
-        """
+        """,
       ),
-      style: .error
+      style: .error,
     )
   }
 }
@@ -96,8 +96,8 @@ extension Toast {
         Info toast shown as an open checklist closes by itself, because the same checklist was \
         deleted on another of the person's devices and the deletion synced. Explains why the screen \
         went away. Appears briefly at the bottom of the list of checklists, with no button.
-        """
-      )
+        """,
+      ),
     )
   }
 }
@@ -114,8 +114,8 @@ extension Toast {
         destination, because the items were unchecked in the meantime, for example on another \
         device. "Left" signals that there were checked items when the sheet opened. Appears briefly \
         at the bottom of the screen, with no button.
-        """
-      )
+        """,
+      ),
     )
   }
 }

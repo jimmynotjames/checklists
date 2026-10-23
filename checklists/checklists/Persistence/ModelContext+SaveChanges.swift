@@ -52,7 +52,9 @@ extension ModelContext {
       try save()
     } catch let error as NSError {
       AppLog.persistence.error(
-        "Save failed during \(operation.rawValue, privacy: .public): \(error.domain, privacy: .public) \(error.code, privacy: .public) \(error.localizedDescription, privacy: .public) | \(error.description, privacy: .private)"
+        // One literal so os_log keeps the privacy annotations; it can't be split to fit.
+        // swiftlint:disable:next line_length
+        "Save failed during \(operation.rawValue, privacy: .public): \(error.domain, privacy: .public) \(error.code, privacy: .public) \(error.localizedDescription, privacy: .public) | \(error.description, privacy: .private)",
       )
       analytics.track(
         AnalyticsEvent.persistenceWriteFailed,
@@ -60,7 +62,7 @@ extension ModelContext {
           AnalyticsProperty.errorDomain: error.domain,
           AnalyticsProperty.errorCode: error.code,
           AnalyticsProperty.errorOperation: operation.rawValue,
-        ]
+        ],
       )
       SaveFailureNotifier.saveFailed(during: operation)
       throw PersistenceError(operation: operation, errorDomain: error.domain, errorCode: error.code)
@@ -91,7 +93,7 @@ extension ModelContext {
     to checklist: Checklist,
     wasComplete: Bool,
     at date: Date = .now,
-    analytics: any AnalyticsClient = AppAnalytics.shared
+    analytics: any AnalyticsClient = AppAnalytics.shared,
   ) {
     checklist.recordUpdate(at: date)
     if !wasComplete, checklist.isComplete {
@@ -110,7 +112,7 @@ extension ModelContext {
     from checklist: Checklist,
     wasComplete: Bool,
     at date: Date = .now,
-    analytics: any AnalyticsClient = AppAnalytics.shared
+    analytics: any AnalyticsClient = AppAnalytics.shared,
   ) {
     saveChangesIgnoringFailure(operation: .delete, analytics: analytics)
     // The checklist itself can be gone — deleted on another device while this screen was open — in

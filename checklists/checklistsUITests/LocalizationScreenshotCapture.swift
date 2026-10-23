@@ -34,7 +34,7 @@ final class LocalizationScreenshotCapture: XCTestCase {
     try super.setUpWithError()
     try XCTSkipUnless(
       ProcessInfo.processInfo.environment["RUN_LOCALIZATION_SCREENSHOTS"] == "1",
-      "Localization screenshots run only through scripts/translation-accessibility-size-check/run.sh."
+      "Localization screenshots run only through scripts/translation-accessibility-size-check/run.sh.",
     )
     continueAfterFailure = true
   }
@@ -225,7 +225,7 @@ final class LocalizationScreenshotCapture: XCTestCase {
   @MainActor private func capture(
     _ screen: String,
     _ lang: String,
-    navigate: (XCUIApplication) -> Bool
+    navigate: (XCUIApplication) -> Bool,
   ) {
     let app = launch(lang)
     guard navigate(app) else {

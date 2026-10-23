@@ -30,7 +30,7 @@ extension ModelContext {
   func copyCheckedItems(
     of source: Checklist,
     intoChecklistNamed name: String,
-    among siblings: [Checklist]
+    among siblings: [Checklist],
   ) throws -> Checklist {
     let destination = Checklist(name: name)
     insert(destination)
@@ -111,7 +111,7 @@ extension ModelContext {
   func moveCheckedItems(
     of source: Checklist,
     intoChecklistNamed name: String,
-    among siblings: [Checklist]
+    among siblings: [Checklist],
   ) throws -> Checklist {
     let originals = source.checkedItems
     let destination = try copyCheckedItems(of: source, intoChecklistNamed: name, among: siblings)

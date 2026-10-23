@@ -14,7 +14,7 @@ final class AppStoreScreenshots: XCTestCase {
     try super.setUpWithError()
     try XCTSkipUnless(
       ProcessInfo.processInfo.environment["RUN_APP_STORE_SCREENSHOTS"] == "1",
-      "App Store screenshots run only through the explicit screenshot workflow."
+      "App Store screenshots run only through the explicit screenshot workflow.",
     )
     continueAfterFailure = false
   }
@@ -33,7 +33,7 @@ final class AppStoreScreenshots: XCTestCase {
     XCTAssertEqual(
       catalog.metadata.locale,
       locale,
-      "Screenshot catalog locale does not match the active snapshot locale."
+      "Screenshot catalog locale does not match the active snapshot locale.",
     )
     XCTAssertFalse(catalog.metadata.primaryLocale.isEmpty, "Screenshot catalog primaryLocale is empty.")
 
@@ -61,7 +61,7 @@ final class AppStoreScreenshots: XCTestCase {
     let detailTable = app.tables["ChecklistTableView"]
     XCTAssertTrue(
       detailTable.waitForExistence(timeout: 15),
-      "Pre-Trip checklist detail did not appear."
+      "Pre-Trip checklist detail did not appear.",
     )
     assertConsentSheetIsAbsent(in: app)
     snapshot("02_pre_trip")
@@ -74,11 +74,11 @@ final class AppStoreScreenshots: XCTestCase {
     let decline = app.buttons["analyticsConsentSheet.decline"]
     XCTAssertFalse(
       accept.waitForExistence(timeout: 3),
-      "Analytics consent appeared over the screenshot detail screen."
+      "Analytics consent appeared over the screenshot detail screen.",
     )
     XCTAssertFalse(
       decline.waitForExistence(timeout: 1),
-      "Analytics consent appeared over the screenshot detail screen."
+      "Analytics consent appeared over the screenshot detail screen.",
     )
   }
 
@@ -97,7 +97,7 @@ final class AppStoreScreenshots: XCTestCase {
     ]
     let url = try XCTUnwrap(
       candidates.compactMap(\.self).first,
-      "No ScreenshotSeeds/\(locale).json catalog is bundled for the active locale."
+      "No ScreenshotSeeds/\(locale).json catalog is bundled for the active locale.",
     )
     let data = try Data(contentsOf: url)
     let metadata = try JSONDecoder().decode(CatalogMetadata.self, from: data)

@@ -82,7 +82,7 @@ class ChecklistMoveAndDeleteCheckedItemsUITest: XCTestCase {
     XCTAssertEqual(
       itemNames(in: preTripTable),
       Array(namesBefore.dropFirst()),
-      "The moved item should be gone from the source without leaving the screen."
+      "The moved item should be gone from the source without leaving the screen.",
     )
 
     detailBackButton.tap()
@@ -106,7 +106,7 @@ class ChecklistMoveAndDeleteCheckedItemsUITest: XCTestCase {
     XCTAssertTrue(cancel.waitForExistence(timeout: 5), "Deleting checked items should ask first.")
     XCTAssertTrue(
       app.alerts.staticTexts["Delete 5 checked items? This cannot be undone."].exists,
-      "The confirmation should say how many items will go."
+      "The confirmation should say how many items will go.",
     )
     cancel.tap()
     XCTAssertEqual(itemNames(in: table).count, 6)
@@ -133,7 +133,7 @@ class ChecklistMoveAndDeleteCheckedItemsUITest: XCTestCase {
       XCTAssertFalse(app.alerts.firstMatch.exists, "With nothing checked there is nothing to confirm.")
       XCTAssertFalse(
         app.buttons["copyDestination.createNewChecklist"].exists,
-        "With nothing checked there is nothing to pick a destination for."
+        "With nothing checked there is nothing to pick a destination for.",
       )
       // Closes the menu, which stayed up to show the notice, before the next entry is tried. Waits
       // on the entry, not the notice: the notice also leaves on its own timer with the menu still

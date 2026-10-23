@@ -96,9 +96,9 @@ struct RootView: View {
         }
       }
       #if DEBUG
-        // Sheets present in their own environment and do not inherit the root's
-        // dynamicTypeSize, so the override has to be reapplied here or the
-        // large-type check would silently photograph settings at the default size.
+      // Sheets present in their own environment and do not inherit the root's
+      // dynamicTypeSize, so the override has to be reapplied here or the
+      // large-type check would silently photograph settings at the default size.
       .modifier(TestDynamicTypeOverride())
       #endif
       // The sheet's own toast layer; see `ToastPresenterModifier`.

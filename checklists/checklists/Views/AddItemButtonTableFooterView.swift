@@ -48,7 +48,7 @@ class AddItemButtonTableFooterView: UIView {
         contentView.trailingAnchor.constraint(equalTo: column.trailingAnchor, constant: -8.0)],
        // A floor: the button's title follows the text size, and the frame grows with it.
        NSLayoutConstraint.constraints(withVisualFormat: "V:|-spacing-[addButton(>=buttonHeight)]-spacing-|", metrics: metrics, views: views),
-       NSLayoutConstraint.constraints(withVisualFormat: "H:|-spacing-[addButton]-spacing-|", metrics: metrics, views: views)].flatMap(\.self)
+       NSLayoutConstraint.constraints(withVisualFormat: "H:|-spacing-[addButton]-spacing-|", metrics: metrics, views: views)].flatMap(\.self),
     )
     adjustFrameHeight()
   }
@@ -67,7 +67,7 @@ class AddItemButtonTableFooterView: UIView {
     let height = systemLayoutSizeFitting(
       UIView.layoutFittingCompressedSize,
       withHorizontalFittingPriority: .fittingSizeLevel,
-      verticalFittingPriority: .fittingSizeLevel
+      verticalFittingPriority: .fittingSizeLevel,
     ).height
     guard abs(height - frame.height) > 0.5 else { return false }
     frame.size.height = height

@@ -53,7 +53,7 @@ struct ChecklistRowView: View {
         StatusIconView(percentageComplete: checklist.percentageComplete, scale: scale)
           // See `CircularPercentStatusIcon.accessibilityValueText` for why the row states this.
           .accessibilityValue(
-            CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: checklist.percentageComplete)
+            CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: checklist.percentageComplete),
           )
       }
   }

@@ -42,7 +42,7 @@ struct SyncStatusTests {
   ], [ContainerBacking.cloudKit, .localFallback])
   func rowStateForAccountStatus(
     pair: (accountStatus: SyncStatus.AccountStatus, expected: SyncStatus.RowState),
-    backing: ContainerBacking
+    backing: ContainerBacking,
   ) {
     let syncStatus = SyncStatus(containerBacking: backing, accountStatus: pair.accountStatus)
     #expect(syncStatus.rowState == pair.expected)
@@ -56,7 +56,7 @@ struct SyncStatusTests {
     syncStatus.record(SyncEventSnapshot(
       operation: .export,
       endDate: .now,
-      error: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.quotaExceeded.rawValue)
+      error: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.quotaExceeded.rawValue),
     ))
     #expect(syncStatus.rowState == .storageFull)
   }
@@ -67,7 +67,7 @@ struct SyncStatusTests {
     syncStatus.record(SyncEventSnapshot(
       operation: .setup,
       endDate: .now,
-      error: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.internalError.rawValue)
+      error: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.internalError.rawValue),
     ))
     #expect(syncStatus.rowState == .syncInterrupted)
   }
@@ -76,14 +76,14 @@ struct SyncStatusTests {
     "transient network failures never change the row",
     arguments: [
       CKError.Code.networkUnavailable, .networkFailure, .serviceUnavailable, .requestRateLimited, .zoneBusy,
-    ]
+    ],
   )
   func rowStateIgnoresTransientFailures(code: CKError.Code) {
     let syncStatus = SyncStatus(containerBacking: .cloudKit, accountStatus: .available)
     syncStatus.record(SyncEventSnapshot(
       operation: .import,
       endDate: .now,
-      error: SyncErrorCode(domain: CKErrorDomain, code: code.rawValue)
+      error: SyncErrorCode(domain: CKErrorDomain, code: code.rawValue),
     ))
     #expect(syncStatus.rowState == .available)
   }
@@ -94,12 +94,12 @@ struct SyncStatusTests {
     syncStatus.record(SyncEventSnapshot(
       operation: .import,
       endDate: .now,
-      error: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.internalError.rawValue)
+      error: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.internalError.rawValue),
     ))
     syncStatus.record(SyncEventSnapshot(
       operation: .export,
       endDate: .now,
-      error: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.quotaExceeded.rawValue)
+      error: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.quotaExceeded.rawValue),
     ))
     #expect(syncStatus.rowState == .storageFull)
   }
@@ -110,7 +110,7 @@ struct SyncStatusTests {
     syncStatus.record(SyncEventSnapshot(
       operation: .export,
       endDate: .now,
-      error: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.internalError.rawValue)
+      error: SyncErrorCode(domain: CKErrorDomain, code: CKError.Code.internalError.rawValue),
     ))
     #expect(syncStatus.rowState == .paused)
   }
@@ -135,7 +135,7 @@ struct SyncStatusTests {
       (.couldNotCheck, true),
       (.storageFull, true),
       (.syncInterrupted, true),
-    ]
+    ],
   )
   func presentationFooterDecision(pair: (state: SyncStatus.RowState, hasFooter: Bool)) {
     let syncStatus = SyncStatus(containerBacking: .cloudKit)
@@ -190,7 +190,7 @@ struct SyncStatusTests {
     syncStatus.record(SyncEventSnapshot(
       operation: .export,
       endDate: .now,
-      error: SyncErrorCode(domain: "CKErrorDomain", code: 25)
+      error: SyncErrorCode(domain: "CKErrorDomain", code: 25),
     ))
 
     #expect(syncStatus.syncActivity[.import]?.lastSuccess == successDate)

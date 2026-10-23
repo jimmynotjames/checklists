@@ -42,7 +42,7 @@ final class ToastPresenter {
   init(
     autoDismissDelay: Duration = .seconds(3),
     isVoiceOverRunning: @escaping @MainActor () -> Bool = { UIAccessibility.isVoiceOverRunning },
-    sleep: @escaping @Sendable (Duration) async -> Void = { try? await Task.sleep(for: $0) }
+    sleep: @escaping @Sendable (Duration) async -> Void = { try? await Task.sleep(for: $0) },
   ) {
     self.autoDismissDelay = autoDismissDelay
     self.isVoiceOverRunning = isVoiceOverRunning
@@ -67,7 +67,7 @@ final class ToastPresenter {
     guard let delay = Self.displayDuration(
       for: toast,
       base: autoDismissDelay,
-      isVoiceOverRunning: isVoiceOverRunning()
+      isVoiceOverRunning: isVoiceOverRunning(),
     ) else {
       dismissal = nil
       return
@@ -98,7 +98,7 @@ final class ToastPresenter {
   nonisolated static func displayDuration(
     for toast: Toast,
     base: Duration,
-    isVoiceOverRunning: Bool
+    isVoiceOverRunning: Bool,
   ) -> Duration? {
     // Sticky under VoiceOver: any timer short enough to feel transient races the announcement.
     guard !isVoiceOverRunning else { return nil }

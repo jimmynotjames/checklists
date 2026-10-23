@@ -65,7 +65,7 @@ extension ModelContext {
     at index: Int,
     among others: [T],
     restoringSortKeysOf snapshotSource: [T],
-    save: () throws -> Void
+    save: () throws -> Void,
   ) throws {
     let snapshot = snapshotSource.map { ($0, $0.sortKey) }
     place(element, at: index, among: others)
@@ -84,7 +84,7 @@ extension ModelContext {
     _ checklist: Checklist,
     at index: Int,
     among siblings: [Checklist],
-    save: () throws -> Void
+    save: () throws -> Void,
   ) throws {
     insert(checklist)
     do {

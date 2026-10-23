@@ -87,10 +87,9 @@ enum LegacyRealmImporter {
   static func isNeeded(
     userDefaults: UserDefaults = .standard,
     fileManager: FileManager = .default,
-    fileURL: URL? = nil
+    fileURL: URL? = nil,
   ) -> Bool {
-    guard !userDefaults.bool(forKey: completedFlagKey) else { return false }
-    guard let url = fileURL ?? Realm.Configuration.defaultConfiguration.fileURL else { return false }
+    guard !userDefaults.bool(forKey: completedFlagKey), let url = fileURL ?? Realm.Configuration.defaultConfiguration.fileURL else { return false }
     return fileManager.fileExists(atPath: url.path)
   }
 
@@ -115,7 +114,7 @@ enum LegacyRealmImporter {
         AppLog.persistence.warning("legacyImport: store has no Group and no checklists; nothing to import.")
       } else {
         AppLog.persistence.warning(
-          "legacyImport: store has no Group; recovering \(unlinked.count, privacy: .public) checklist(s) by sortNumber."
+          "legacyImport: store has no Group; recovering \(unlinked.count, privacy: .public) checklist(s) by sortNumber.",
         )
       }
       return unlinked.map(snapshot(of:))
@@ -139,7 +138,7 @@ enum LegacyRealmImporter {
       notes: checklist.notes,
       items: Array(checklist.items).map { item in
         ItemSnapshot(id: item.id, name: item.name, notes: item.notes, statusRaw: item.statusRaw)
-      }
+      },
     )
   }
 
@@ -188,7 +187,7 @@ enum LegacyRealmImporter {
   static func upsert(
     _ snapshots: [ChecklistSnapshot],
     into context: ModelContext,
-    sortKeyBase: Double = randomImportSortKeyBase()
+    sortKeyBase: Double = randomImportSortKeyBase(),
   ) throws {
     guard !snapshots.isEmpty else { return }
 
@@ -201,7 +200,7 @@ enum LegacyRealmImporter {
         id: snapshot.id,
         name: snapshot.name,
         notes: snapshot.notes,
-        sortKey: checklistSortKey
+        sortKey: checklistSortKey,
       )
       context.insert(checklist)
 
@@ -211,7 +210,7 @@ enum LegacyRealmImporter {
           id: itemSnapshot.id,
           name: itemSnapshot.name,
           notes: itemSnapshot.notes,
-          sortKey: itemSortKey
+          sortKey: itemSortKey,
         )
         // Copied raw rather than through `status`, so a value the old build never produced is
         // preserved as-is instead of being silently rewritten to "unchecked".
@@ -233,7 +232,7 @@ enum LegacyRealmImporter {
     fileManager: FileManager = .default,
     configuration: Realm.Configuration = legacyConfiguration(),
     sortKeyBase: Double = randomImportSortKeyBase(),
-    analytics: any AnalyticsClient = AppAnalytics.shared
+    analytics: any AnalyticsClient = AppAnalytics.shared,
   ) throws {
     guard isNeeded(userDefaults: userDefaults, fileManager: fileManager, fileURL: configuration.fileURL) else { return }
 
@@ -256,7 +255,7 @@ enum LegacyRealmImporter {
     let elapsedMilliseconds = Int(Date().timeIntervalSince(startedAt) * 1000)
     let itemCount = snapshots.reduce(0) { $0 + $1.items.count }
     AppLog.persistence.log(
-      "legacyImport.completed: \(snapshots.count, privacy: .public) checklists, \(itemCount, privacy: .public) items, \(elapsedMilliseconds, privacy: .public) ms"
+      "legacyImport.completed: \(snapshots.count, privacy: .public) checklists, \(itemCount, privacy: .public) items, \(elapsedMilliseconds, privacy: .public) ms",
     )
   }
 
@@ -274,7 +273,7 @@ enum LegacyRealmImporter {
   private static func abandonIfOutOfAttempts(
     _ error: any Error,
     userDefaults: UserDefaults,
-    analytics: any AnalyticsClient
+    analytics: any AnalyticsClient,
   ) throws {
     let attempts = userDefaults.integer(forKey: failedAttemptsKey) + 1
     userDefaults.set(attempts, forKey: failedAttemptsKey)
@@ -282,21 +281,21 @@ enum LegacyRealmImporter {
     let nsError = error as NSError
     guard attempts >= maximumAttempts else {
       AppLog.persistence.error(
-        "legacyImport.failed: attempt \(attempts, privacy: .public), \(nsError.domain, privacy: .public) \(nsError.code, privacy: .public)"
+        "legacyImport.failed: attempt \(attempts, privacy: .public), \(nsError.domain, privacy: .public) \(nsError.code, privacy: .public)",
       )
       throw error
     }
 
     userDefaults.set(true, forKey: completedFlagKey)
     AppLog.persistence.error(
-      "legacyImport.abandoned: \(attempts, privacy: .public) attempts, \(nsError.domain, privacy: .public) \(nsError.code, privacy: .public)"
+      "legacyImport.abandoned: \(attempts, privacy: .public) attempts, \(nsError.domain, privacy: .public) \(nsError.code, privacy: .public)",
     )
     analytics.track(
       AnalyticsEvent.legacyImportAbandoned,
       properties: [
         AnalyticsProperty.errorDomain: nsError.domain,
         AnalyticsProperty.errorCode: nsError.code,
-      ]
+      ],
     )
   }
 
@@ -315,13 +314,13 @@ enum LegacyRealmImporter {
     let expectedItems = snapshots.reduce(0) { $0 + $1.items.count }
     guard foundChecklists == snapshots.count, foundItems == expectedItems else {
       AppLog.persistence.fault(
-        "legacyImport.verificationFailed: checklists \(foundChecklists, privacy: .public)/\(snapshots.count, privacy: .public), items \(foundItems, privacy: .public)/\(expectedItems, privacy: .public)"
+        "legacyImport.verificationFailed: checklists \(foundChecklists, privacy: .public)/\(snapshots.count, privacy: .public), items \(foundItems, privacy: .public)/\(expectedItems, privacy: .public)",
       )
       throw ImportError.verificationFailed(
         expectedChecklists: snapshots.count,
         foundChecklists: foundChecklists,
         expectedItems: expectedItems,
-        foundItems: foundItems
+        foundItems: foundItems,
       )
     }
   }

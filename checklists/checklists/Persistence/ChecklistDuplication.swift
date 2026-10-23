@@ -15,7 +15,7 @@ extension ModelContext {
   func duplicate(checklist source: Checklist, among siblings: [Checklist]) throws -> Checklist {
     let copy = Checklist(
       name: ChecklistCopyNaming.name(forCopyOf: source.name, existingNames: Set(siblings.map(\.name))),
-      notes: source.notes
+      notes: source.notes,
     )
     // No history stamps: persistence-design.md §Duplication.
     insert(copy)
@@ -78,7 +78,7 @@ nonisolated enum ChecklistCopyNaming {
       data, not a label, and is never re-translated afterwards. Pair it with \
       checklists.duplicate.nameNumbered, which disambiguates a second copy. Keep the added word \
       short: it sits after a name the user chose.
-      """
+      """,
     )
     // Only an exact clash is disambiguated. The suffix is never parsed back out of a name, so a
     // copy of a copy is "… copy copy" rather than "… copy 2" — recognising the suffix would mean
@@ -93,7 +93,7 @@ nonisolated enum ChecklistCopyNaming {
         The first placeholder is the original's name, the second a counter starting at 2. Stored \
         as the new checklist's name, so it is data and is never re-translated. Match the wording \
         of checklists.duplicate.name exactly, or two copies of one list will not read as a series.
-        """
+        """,
       )
       number += 1
     }

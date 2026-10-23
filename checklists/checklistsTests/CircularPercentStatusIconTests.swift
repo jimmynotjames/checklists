@@ -58,7 +58,7 @@ struct CircularPercentStatusIconTests {
       icon.percentageComplete = percentageComplete
       #expect(
         icon.accessibilityValue ==
-          CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: percentageComplete)
+          CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: percentageComplete),
       )
     }
   }
@@ -67,11 +67,11 @@ struct CircularPercentStatusIconTests {
   func accessibilityValueTextRoundsToNearestWhole() {
     #expect(
       CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: 2.0 / 11.0) ==
-        "Checklist 18% complete"
+        "Checklist 18% complete",
     )
     #expect(
       CircularPercentStatusIcon.accessibilityValueText(forPercentageComplete: 1.0) ==
-        "Checklist 100% complete"
+        "Checklist 100% complete",
     )
   }
 

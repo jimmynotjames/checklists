@@ -85,7 +85,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     XCTAssertTrue(checklistsList.staticTexts["untitled checklist"].waitForExistence(timeout: 5))
     XCTAssertTrue(
       checklistsList.cells.element(boundBy: 0).staticTexts["untitled checklist"].exists,
-      "A checklist made out of a subset goes to the top, where a new checklist goes."
+      "A checklist made out of a subset goes to the top, where a new checklist goes.",
     )
 
     // The five checked items came over, in order; "Journaling", the one left unchecked, did not.
@@ -101,7 +101,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     ])
     XCTAssertFalse(
       copyTable.children(matching: .cell).element(boundBy: 0).buttons["itemCheckbox"].isSelected,
-      "Copied items should arrive unchecked."
+      "Copied items should arrive unchecked.",
     )
   }
 
@@ -172,7 +172,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     XCTAssertTrue(app.buttons["Duplicate Checklist"].exists, "The menu should still be up around the notice.")
     XCTAssertFalse(
       app.buttons["copyDestination.createNewChecklist"].exists,
-      "With nothing to copy there is nothing to pick a destination for."
+      "With nothing to copy there is nothing to pick a destination for.",
     )
   }
 
@@ -230,7 +230,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     let rows = app.buttons.matching(
       NSPredicate(format: "identifier BEGINSWITH 'copyDestination.' AND NOT identifier IN %@", [
         "copyDestination.createNewChecklist", "copyDestination.editingDone",
-      ])
+      ]),
     )
     let rowInBand = (0 ..< rows.count)
       .map { rows.element(boundBy: $0) }

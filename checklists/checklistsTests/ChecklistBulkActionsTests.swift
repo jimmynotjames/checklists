@@ -20,7 +20,7 @@ struct ChecklistBulkActionsTests {
   private func makeChecklists(
     _ names: [String],
     checked: Bool = false,
-    in context: ModelContext
+    in context: ModelContext,
   ) throws -> [Checklist] {
     let checklists = names.enumerated().map { index, name in
       Checklist(name: name, sortKey: Double(index + 1))

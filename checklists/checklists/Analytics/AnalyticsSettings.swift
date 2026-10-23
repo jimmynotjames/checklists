@@ -58,7 +58,7 @@ final class AnalyticsSettings {
     makeStore(
       arguments: CommandLine.arguments,
       environment: ProcessInfo.processInfo.environment,
-      persistentStore: UserDefaults.standard
+      persistentStore: UserDefaults.standard,
     )
   }
 
@@ -70,7 +70,7 @@ final class AnalyticsSettings {
   static func makeStore(
     arguments: [String],
     environment: [String: String],
-    persistentStore: @autoclosure () -> KeyValueStore
+    persistentStore: @autoclosure () -> KeyValueStore,
   ) -> KeyValueStore {
     guard LaunchModeContainerFactory.isRunningTests(arguments: arguments, environment: environment) else {
       return persistentStore()
@@ -91,8 +91,12 @@ final class AnalyticsSettings {
     guard let object = store.object(forKey: analyticsOptInKey) else {
       return ConsentJurisdiction.kind(for: Locale.current.region?.identifier) == .autoOptin
     }
-    if let value = object as? Bool { return value }
-    if let number = object as? NSNumber { return number.boolValue }
+    if let value = object as? Bool {
+      return value
+    }
+    if let number = object as? NSNumber {
+      return number.boolValue
+    }
     return ConsentJurisdiction.kind(for: Locale.current.region?.identifier) == .autoOptin
   }
 

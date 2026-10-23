@@ -37,7 +37,7 @@ extension XCUIApplication {
   /// check made too early would see the sheet's Done just before the editing Done replaces it.
   func finishCreateSheet(file: StaticString = #filePath, line: UInt = #line) {
     let eitherDone = navigationBars.buttons.matching(
-      NSPredicate(format: "identifier IN %@", ["checklist.done", "checklist.editingDone"])
+      NSPredicate(format: "identifier IN %@", ["checklist.done", "checklist.editingDone"]),
     ).firstMatch
     XCTAssertTrue(eitherDone.waitForExistence(timeout: 5), "The create sheet's bar has no Done.", file: file, line: line)
     if checklistEditingDoneButton.exists {

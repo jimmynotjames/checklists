@@ -147,7 +147,7 @@ final class ChecklistAddItemsUITest: ChecklistDetailUITestCase {
     XCTAssertLessThanOrEqual(
       newItem.textViews["itemNameTextView"].frame.maxY,
       keyboard.frame.minY,
-      "The item being typed into is hidden behind the keyboard."
+      "The item being typed into is hidden behind the keyboard.",
     )
   }
 
@@ -163,7 +163,7 @@ final class ChecklistAddItemsUITest: ChecklistDetailUITestCase {
     let landscape = CGRect(x: 0, y: 0, width: portrait.height, height: portrait.width)
     XCTAssertTrue(
       window.wait(for: \.frame, toEqual: landscape, timeout: 5),
-      "The window didn't settle in landscape."
+      "The window didn't settle in landscape.",
     )
   }
 }

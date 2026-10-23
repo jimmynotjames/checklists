@@ -39,7 +39,7 @@ final class AppStartupCoordinator {
     importLegacyData: @escaping StageWork = { try LegacyRealmImporter.importIfNeeded(into: $0) },
     seedFirstLaunchData: @escaping StageWork = { try SampleData.insertFirstTimeLaunchDataIfNeeded(into: $0) },
     runsPostOpenStages: Bool = !LaunchModeContainerFactory.isRunningTests,
-    analytics: any AnalyticsClient = AppAnalytics.shared
+    analytics: any AnalyticsClient = AppAnalytics.shared,
   ) {
     self.makeContainer = makeContainer
     self.importLegacyData = importLegacyData
@@ -76,8 +76,8 @@ final class AppStartupCoordinator {
         PersistenceController(
           modelContainer: container,
           containerBacking: result.backing,
-          fallbackError: result.fallbackError
-        )
+          fallbackError: result.fallbackError,
+        ),
       )
       AppLog.bootstrap.info("bootstrap.ready: backing=\(String(describing: result.backing), privacy: .public)")
       return .ready(container: container, backing: result.backing)
@@ -92,7 +92,7 @@ final class AppStartupCoordinator {
           AnalyticsProperty.errorDomain: failure.errorDomain,
           AnalyticsProperty.errorCode: failure.errorCode,
           AnalyticsProperty.startupStage: failure.stage.rawValue,
-        ]
+        ],
       )
       return .failed(failure)
     }
@@ -106,7 +106,7 @@ final class AppStartupCoordinator {
   /// untagged failure reaching a screen whose whole purpose is that startup never crashes.
   private func tagging<T>(
     _ stage: ContainerCreationFailure.Stage,
-    _ work: () throws -> T
+    _ work: () throws -> T,
   ) throws(ContainerCreationFailure) -> T {
     do {
       return try work()

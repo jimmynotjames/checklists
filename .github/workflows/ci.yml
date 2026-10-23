@@ -19,18 +19,18 @@ permissions:
 
 jobs:
   # --- Tier 1: lint/format parity with pre-commit (ubuntu) -------------------
-  # Pinned here; system-setup.sh installs whatever brew has. Runs REPO-WIDE, unlike
-  # the local gate (AGENTS.md §"Lint policy").
+  # Versions come from config/lint-tools.env. Runs REPO-WIDE, unlike the local gate
+  # (AGENTS.md §"Lint policy").
   lint:
     runs-on: ubuntu-latest
-    env:
-      SWIFTLINT_VERSION: "0.63.2"
-      SWIFTFORMAT_VERSION: "0.61.1"
     steps:
       - uses: actions/checkout@v7
 
+      - name: Load pinned tool versions
+        run: grep -E '^[A-Z_]+=' config/lint-tools.env >> "$GITHUB_ENV"
+
       - name: Cache pinned SwiftFormat/SwiftLint binaries
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         id: cache-lint-tools
         with:
           path: |
@@ -68,14 +68,14 @@ jobs:
   # Full-history scan. Green != no secrets — AGENTS.md §"Known issues".
   secrets:
     runs-on: ubuntu-latest
-    env:
-      GITLEAKS_VERSION: "8.30.1"
     steps:
       - uses: actions/checkout@v7
         with:
-          fetch-depth: 0 # full history so `detect` can scan the whole tree
+          fetch-depth: 0 # full history so `gitleaks git` can scan every commit
+      - name: Load pinned tool versions
+        run: grep -E '^[A-Z_]+=' config/lint-tools.env >> "$GITHUB_ENV"
       - name: Cache pinned gitleaks binary
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         id: cache-gitleaks
         with:
           path: gitleaks
@@ -87,10 +87,10 @@ jobs:
             "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
           tar -xzf gitleaks.tar.gz gitleaks
           chmod +x gitleaks
-      - name: gitleaks detect
+      - name: gitleaks git
         run: |
           ./gitleaks version
-          ./gitleaks detect --no-banner --redact
+          ./gitleaks git --no-banner --redact
 
   # --- check-large-files: reject oversized files added/changed in the PR -----
   # Mirrors the pre-commit hook (scripts/check-large-files.sh), which only ever
@@ -122,7 +122,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0  # check_doc_pointers diffs against main for its history scan
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: check_translations.py
@@ -153,7 +153,7 @@ jobs:
         with:
           xcode-version: "27.1"
       - name: Cache SwiftPM packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .build/DerivedData/SourcePackages
           key: spm-${{ runner.os }}-xcode27.1-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}

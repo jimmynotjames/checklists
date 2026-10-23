@@ -50,7 +50,7 @@ enum ProductionContainerFactory {
   static func make(
     cloud: MakeContainer = realContainer,
     local: MakeContainer = realContainer,
-    analytics: any AnalyticsClient = AppAnalytics.shared
+    analytics: any AnalyticsClient = AppAnalytics.shared,
   ) throws -> ContainerLaunchResult {
     var fallbackError: SyncErrorCode?
 
@@ -62,7 +62,7 @@ enum ProductionContainerFactory {
       } catch let error as NSError {
         // Not treated as an error: the local store is a working app, just an unsynced one.
         AppLog.cloudKit.notice(
-          "cloudkit.container.localFallback: \(error.domain, privacy: .public) \(error.code, privacy: .public)"
+          "cloudkit.container.localFallback: \(error.domain, privacy: .public) \(error.code, privacy: .public)",
         )
         // A sibling call, not derived from the OSLog line above: analytics-spec.md §OSLog boundary.
         analytics.track(
@@ -70,7 +70,7 @@ enum ProductionContainerFactory {
           properties: [
             AnalyticsProperty.errorDomain: error.domain,
             AnalyticsProperty.errorCode: error.code,
-          ]
+          ],
         )
         fallbackError = SyncErrorCode(domain: error.domain, code: error.code)
       }
@@ -81,14 +81,14 @@ enum ProductionContainerFactory {
       return ContainerLaunchResult(container: container, backing: .localFallback, fallbackError: fallbackError)
     } catch let error as NSError {
       AppLog.cloudKit.error(
-        "cloudkit.container.failed: \(error.domain, privacy: .public) \(error.code, privacy: .public) \(error.localizedDescription, privacy: .public)"
+        "cloudkit.container.failed: \(error.domain, privacy: .public) \(error.code, privacy: .public) \(error.localizedDescription, privacy: .public)",
       )
       analytics.track(
         AnalyticsEvent.persistenceFatalError,
         properties: [
           AnalyticsProperty.errorDomain: error.domain,
           AnalyticsProperty.errorCode: error.code,
-        ]
+        ],
       )
       throw error
     }
@@ -99,7 +99,7 @@ enum ProductionContainerFactory {
     try ModelContainer(
       for: SchemaV1.swiftDataSchema,
       migrationPlan: ChecklistsMigrationPlan.self,
-      configurations: configuration
+      configurations: configuration,
     )
   }
 }

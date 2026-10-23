@@ -134,7 +134,7 @@ struct ChecklistReorderModeTests {
       harness.viewController.tableView(
         harness.table,
         moveRowAt: IndexPath(row: 2, section: 0),
-        to: IndexPath(row: 0, section: 0)
+        to: IndexPath(row: 0, section: 0),
       )
 
       #expect(footer.contentView.alpha == 0)
@@ -188,7 +188,7 @@ struct ChecklistReorderModeTests {
       harness.viewController.tableView(
         harness.table,
         moveRowAt: IndexPath(row: 2, section: 0),
-        to: IndexPath(row: 0, section: 0)
+        to: IndexPath(row: 0, section: 0),
       )
 
       let saved = try harness.persistedItemNames()
@@ -270,7 +270,7 @@ struct ChecklistReorderModeTests {
       (.down, 1, ["Milk", "Eggs", "Bread"], 3),
       (.top, 2, ["Eggs", "Milk", "Bread"], 1),
       (.bottom, 0, ["Bread", "Eggs", "Milk"], 3),
-    ]
+    ],
   )
   func moveIsSavedAndAnnounced(action: ChecklistMoveAction, from index: Int, expected: [String], position: Int) throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in

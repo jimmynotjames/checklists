@@ -67,7 +67,7 @@
     static func syncStatus(
       containerBacking: ContainerBacking = .cloudKit,
       accountStatus: SyncStatus.AccountStatus = .available,
-      syncActivity: [SyncOperation: SyncOperationState] = [:]
+      syncActivity: [SyncOperation: SyncOperationState] = [:],
     ) -> SyncStatus {
       let status = SyncStatus(containerBacking: containerBacking, accountStatus: accountStatus)
       status.syncActivity = syncActivity
@@ -103,7 +103,7 @@
       router: Router = PreviewSupport.router,
       syncStatus: SyncStatus = PreviewSupport.syncStatus(),
       analyticsSettings: AnalyticsSettings = PreviewSupport.analyticsSettings,
-      toasts: ToastPresenter = ToastPresenter()
+      toasts: ToastPresenter = ToastPresenter(),
     ) -> some View {
       modelContainer(container)
         .environment(router)

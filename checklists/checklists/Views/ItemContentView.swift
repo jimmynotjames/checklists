@@ -74,7 +74,7 @@ class ItemContentView: UIView {
     textView.accessibilityLabel = String(
       localized: "item.name.accessibilityLabel",
       defaultValue: "checklist item: ",
-      comment: "VoiceOver label read before an item's name in the editable item row. Keep the trailing space and colon."
+      comment: "VoiceOver label read before an item's name in the editable item row. Keep the trailing space and colon.",
     )
     return textView
   }()
@@ -92,7 +92,7 @@ class ItemContentView: UIView {
     textView.accessibilityLabel = String(
       localized: "item.notes.accessibilityLabel",
       defaultValue: "optional notes: ",
-      comment: "VoiceOver label read before an item's notes in the editable item row. Keep the trailing space and colon."
+      comment: "VoiceOver label read before an item's notes in the editable item row. Keep the trailing space and colon.",
     )
     return textView
   }()
@@ -254,7 +254,7 @@ class ItemContentView: UIView {
        NSLayoutConstraint.constraints(withVisualFormat: "V:|[nameTextView][notesTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[nameTextView]|", options: [], metrics: nil, views: views),
        NSLayoutConstraint.constraints(withVisualFormat: "H:|[notesTextView]|", options: [], metrics: nil, views: views),
-       [nameTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: minNameFieldHeight), notesTextViewHeightConstraint]].flatMap(\.self)
+       [nameTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: minNameFieldHeight), notesTextViewHeightConstraint]].flatMap(\.self),
     )
   }
 

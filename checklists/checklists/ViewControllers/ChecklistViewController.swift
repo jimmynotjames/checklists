@@ -500,7 +500,7 @@ class ChecklistViewController: UIViewController {
     guard !checkedItems.isEmpty else { return }
     analytics.track(
       AnalyticsEvent.checklistCheckedItemsDeleted,
-      properties: [AnalyticsProperty.itemsCount: checkedItems.count]
+      properties: [AnalyticsProperty.itemsCount: checkedItems.count],
     )
     context.deleteItems(checkedItems, from: checklist)
     // The reload re-issues every row's VoiceOver actions, so no `refreshAccessibilityActions` here.
@@ -510,7 +510,7 @@ class ChecklistViewController: UIViewController {
     // The reload drops whatever row VoiceOver was on, so it starts again from the top.
     postAccessibilityFeedback(
       focus: focusTargetAfterRemoval(neighbour: checklist.items.isEmpty ? nil : 0),
-      announcement: Self.checkedItemsDeletedAnnouncement(count: checkedItems.count)
+      announcement: Self.checkedItemsDeletedAnnouncement(count: checkedItems.count),
     )
   }
 
@@ -783,7 +783,7 @@ extension ChecklistViewController {
       top: tableView.adjustedContentInset.top,
       left: 0.0,
       bottom: keyboardHeight,
-      right: 0.0
+      right: 0.0,
     ))
 
     let cellFrame = tableView.convert(cell.frame, from: cell.superview)
@@ -1062,7 +1062,7 @@ extension ChecklistViewController {
 
     postAccessibilityFeedback(
       focus: rowFocusTarget(at: destination),
-      announcement: Self.movedToPositionAnnouncement(position: destination + 1, count: count)
+      announcement: Self.movedToPositionAnnouncement(position: destination + 1, count: count),
     )
     return true
   }

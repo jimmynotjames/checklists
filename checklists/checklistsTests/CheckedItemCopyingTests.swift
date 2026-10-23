@@ -27,7 +27,7 @@ struct CheckedItemCopyingTests {
     itemCount: Int,
     checkedIndices: Set<Int> = [],
     sortKey: Double = 1.0,
-    in context: ModelContext
+    in context: ModelContext,
   ) throws -> Checklist {
     let checklist = Checklist(name: name, notes: "Before the ferry.", sortKey: sortKey)
     context.insert(checklist)
@@ -127,7 +127,7 @@ struct CheckedItemCopyingTests {
     let destination = try context.copyCheckedItems(
       of: first,
       intoChecklistNamed: "Ferry",
-      among: [first, second, third]
+      among: [first, second, third],
     )
 
     let orderedIds: [String] = try context.fetchChecklistsSorted().map(\.id)

@@ -245,13 +245,13 @@ struct CopyCheckedItemsView: View {
     comment: """
     Title of the sheet that asks where to copy the items someone has ticked. The sheet is reached \
     from the checklist detail screen's Copy Checked Items to… menu entry; keep the two consistent.
-    """
+    """,
   )
 
   private static let newSectionHeader = String(
     localized: "checklist.copy.newSection.header",
     defaultValue: "New Checklist",
-    comment: "Header over the row that creates a checklist to copy or move the ticked items into. The row holds an optional name field."
+    comment: "Header over the row that creates a checklist to copy or move the ticked items into. The row holds an optional name field.",
   )
 
   private static let namePlaceholder = String(
@@ -260,19 +260,19 @@ struct CopyCheckedItemsView: View {
     comment: """
     Placeholder in the field naming a new checklist to copy or move the ticked items into. Optional is \
     literal: committing it blank is allowed and the checklist is saved under checklist.defaultName.
-    """
+    """,
   )
 
   private static let copyCreateAccessibilityLabel = String(
     localized: "checklist.copy.create.accessibilityLabel",
     defaultValue: "Create checklist and copy items",
-    comment: "VoiceOver label for the button beside the name field that creates the new checklist and copies the ticked items into it."
+    comment: "VoiceOver label for the button beside the name field that creates the new checklist and copies the ticked items into it.",
   )
 
   private static let existingSectionHeader = String(
     localized: "checklist.copy.existingSection.header",
     defaultValue: "Existing Checklists",
-    comment: "Header over the list of checklists the ticked items can be copied or moved into. The checklist they come from is not among them."
+    comment: "Header over the list of checklists the ticked items can be copied or moved into. The checklist they come from is not among them.",
   )
 
   private static func confirmation(forCopyingInto name: String) -> LocalizedStringResource {
@@ -283,7 +283,7 @@ struct CopyCheckedItemsView: View {
       Toast shown after the ticked items are copied. The placeholder is the destination \
       checklist's name, which may be a name the person typed or the default untitled one. It \
       appears briefly and is also read aloud by VoiceOver, so keep it to one short line.
-      """
+      """,
     )
   }
 
@@ -295,13 +295,13 @@ struct CopyCheckedItemsView: View {
     chosen checklist and removed from this one. Reached from the checklist detail screen's Move \
     Checked Items to… menu entry; keep the two consistent, and keep it distinct from \
     checklist.copy.title, which leaves the items where they were.
-    """
+    """,
   )
 
   private static let moveCreateAccessibilityLabel = String(
     localized: "checklist.move.create.accessibilityLabel",
     defaultValue: "Create checklist and move items",
-    comment: "VoiceOver label for the button beside the name field that creates the new checklist and moves the ticked items into it."
+    comment: "VoiceOver label for the button beside the name field that creates the new checklist and moves the ticked items into it.",
   )
 
   private static func confirmation(forMovingInto name: String) -> LocalizedStringResource {
@@ -313,7 +313,7 @@ struct CopyCheckedItemsView: View {
       one. The placeholder is the destination checklist's name, which may be a name the person \
       typed or the default untitled one. It appears briefly and is also read aloud by VoiceOver, \
       so keep it to one short line.
-      """
+      """,
     )
   }
 }
