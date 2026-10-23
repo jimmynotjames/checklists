@@ -35,7 +35,6 @@ run_step() {
   fi
 }
 
-# A different formatter version rewrites code differently from everyone else's.
 run_step tool-versions-check
 run_step format-changed
 run_step lint-changed

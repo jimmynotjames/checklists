@@ -1,4 +1,4 @@
 # Applies on top of the repo-root .swiftformat for this folder.
 # preferKeyPath turns `{ $0.label }` into `\.label`, which doesn't compile outside the main
-# actor: XCUIElement's properties are main-actor isolated and these tests are nonisolated (#325).
+# actor: XCUIElement's properties are main-actor isolated and these tests are nonisolated.
 --disable preferKeyPath

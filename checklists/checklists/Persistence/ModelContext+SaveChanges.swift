@@ -52,6 +52,8 @@ extension ModelContext {
       try save()
     } catch let error as NSError {
       AppLog.persistence.error(
+        // One literal so os_log keeps the privacy annotations; it can't be split to fit.
+        // swiftlint:disable:next line_length
         "Save failed during \(operation.rawValue, privacy: .public): \(error.domain, privacy: .public) \(error.code, privacy: .public) \(error.localizedDescription, privacy: .public) | \(error.description, privacy: .private)",
       )
       analytics.track(

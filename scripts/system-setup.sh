@@ -21,8 +21,6 @@ fi
 
 printf '%s\n' "==> Installing lefthook, swiftlint, swiftformat, gitleaks (brew; idempotent)"
 brew install lefthook swiftlint swiftformat gitleaks
-# Homebrew installs only its current version; a mismatch means bump config/lint-tools.env
-# (after reviewing the new release) or wait for brew to catch up.
 bash scripts/check-tool-versions.sh || die "Lint tool versions differ from config/lint-tools.env (see above)."
 
 if ! command -v python3 >/dev/null 2>&1; then

@@ -6,7 +6,6 @@ system:
 # -- Formatting and linting ---------------------------------------------------
 # *-changed targets are what `make gate` runs. Repo-wide format/lint are manual
 # only — AGENTS.md §"Lint policy".
-# Installed swiftformat/swiftlint/gitleaks/lefthook must match config/lint-tools.env.
 tool-versions-check:
 	bash scripts/check-tool-versions.sh
 

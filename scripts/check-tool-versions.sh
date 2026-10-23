@@ -15,7 +15,7 @@ check() {
     failed=1
     return
   fi
-  have="$("$tool" "${@:3}" 2>/dev/null | head -1 | sed -E 's/^[^0-9]*//; s/[[:space:]].*$//')"
+  have="$("$tool" "${@:3}" 2>/dev/null | head -1 | sed -E 's/^[^0-9]*//; s/[[:space:]].*$//' || true)"
   if [[ "$have" != "$want" ]]; then
     printf 'error: %s is %s, config/lint-tools.env pins %s; run brew upgrade %s (or update the pin)\n' \
       "$tool" "${have:-unknown}" "$want" "$tool" >&2

@@ -19,8 +19,8 @@ permissions:
 
 jobs:
   # --- Tier 1: lint/format parity with pre-commit (ubuntu) -------------------
-  # Versions come from config/lint-tools.env, the same pins the local gate checks. Runs
-  # REPO-WIDE, unlike the local gate (AGENTS.md §"Lint policy").
+  # Versions come from config/lint-tools.env. Runs REPO-WIDE, unlike the local gate
+  # (AGENTS.md §"Lint policy").
   lint:
     runs-on: ubuntu-latest
     steps:

@@ -3,9 +3,8 @@
 # language mode defaults to 5 unless set.
 --swift-version 6.4
 --language-mode 6
-# Pinned in config/lint-tools.env; this stops an older swiftformat formatting differently.
+# Also guards hook and manual runs, which skip the gate's exact check against config/lint-tools.env.
 --min-version 0.64.1
-# A renamed or removed option fails loudly instead of silently doing nothing.
 --unknown-options error
 # Test names are IDs that make test-only, failure lists and docs refer to; renaming them to
 # raw identifiers is its own change.

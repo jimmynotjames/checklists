@@ -38,8 +38,6 @@ line_length:
   ignores_urls: true
   ignores_function_declarations: true
   ignores_comments: true
-  # An os_log message must stay one literal to keep its privacy annotations, so it can't be split.
-  ignores_interpolated_strings: true
 
 function_body_length:
   warning: 120
