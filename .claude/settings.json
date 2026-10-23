@@ -13,7 +13,6 @@
     ]
   },
   "permissions": {
-    "defaultMode": "acceptEdits",
     "allow": [
       "Skill(create-pr)",
       "Skill(create-pr-for-issue)",
