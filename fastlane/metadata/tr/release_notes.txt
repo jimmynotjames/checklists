@@ -1,1 +1,1 @@
-Tamamlanma yüzdesi göstergeleri eklendi; ilerlemenizi bir bakışta görün.
+Artık iCloud ile tüm cihazlarınızda eşitleniyor ve birçok dilde kullanılabiliyor; ayrıca listeleri çoğaltabilir, işaretli maddeleri bir listeden diğerine taşıyabilirsiniz.

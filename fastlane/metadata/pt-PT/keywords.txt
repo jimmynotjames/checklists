@@ -1,1 +1,1 @@
-checklist,lista,verificação,recorrente,reutilizar,mala,viagem,compras,supermercado,rotina,férias
+checklist,lista,recorrente,reutilizar,repetir,mala,viagem,compras,supermercado,rotina,férias,casa

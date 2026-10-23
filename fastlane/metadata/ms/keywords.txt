@@ -1,1 +1,1 @@
-checklist,berulang,ulang,list,rutin,bungkus,barang,beli,belah,perjalanan,pakej,harian,kerja
+checklist,berulang,ulang,list,rutin,kemas,barang,beli,belah,percutian,perjalanan,harian,dapur,pagi

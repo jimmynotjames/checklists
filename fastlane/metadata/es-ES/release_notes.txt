@@ -1,1 +1,1 @@
-Ahora cada lista muestra su porcentaje completado, para ver el avance de un vistazo.
+Ahora se sincroniza entre tus dispositivos con iCloud, está disponible en varios idiomas y te permite duplicar listas y pasar los elementos marcados de una a otra.

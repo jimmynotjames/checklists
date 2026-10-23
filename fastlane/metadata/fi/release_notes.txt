@@ -1,1 +1,1 @@
-Lisäsimme prosenttiosuudet, joista näet edistymisen yhdellä silmäyksellä.
+Nyt listat synkronoituvat laitteidesi välillä iCloudin kautta, sovellus on saatavilla useilla kielillä ja voit monistaa listoja sekä siirtää rastittuja kohtia listalta toiselle.

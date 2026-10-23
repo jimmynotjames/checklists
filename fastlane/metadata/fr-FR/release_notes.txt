@@ -1,1 +1,1 @@
-Des indicateurs de progression en pourcentage vous montrent désormais d'un coup d'œil où vous en êtes.
+reChecklist se synchronise désormais entre vos appareils via iCloud, parle plusieurs langues et vous permet de dupliquer vos listes comme de déplacer les éléments cochés de l'une à l'autre.

@@ -1,1 +1,1 @@
-Dodali smo pokazatelje postotka dovršenosti kako biste napredak vidjeli na prvi pogled.
+Sada se sinkronizira na svim vašim uređajima putem iClouda, dostupna je na više jezika te omogućuje dupliciranje popisa i premještanje označenih stavki iz jednog u drugi.

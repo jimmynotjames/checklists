@@ -1,1 +1,1 @@
-Voortgang in procenten toegevoegd, zo zie je in één oogopslag hoe ver je bent.
+Synchroniseert nu via iCloud tussen je apparaten, is beschikbaar in meerdere talen en laat je checklists dupliceren en afgevinkte items tussen lijsten verplaatsen.
