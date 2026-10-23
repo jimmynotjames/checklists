@@ -80,6 +80,10 @@ struct ItemContentViewTests {
     try #require(findTextView(identifier: "itemNotesTextView", in: contentView))
   }
 
+  private func isReachable(_ view: UIView, in contentView: ItemContentView) -> Bool {
+    contentView.accessibilityElements?.contains { ($0 as? UIView) === view } == true
+  }
+
   private func activeHeightConstraint(on view: UIView) -> NSLayoutConstraint? {
     view.constraints.first { $0.isActive && $0.firstAttribute == .height && $0.firstItem === view }
   }
@@ -243,5 +247,38 @@ struct ItemContentViewTests {
     let constraint = try #require(activeHeightConstraint(on: notesTextView(in: contentView)))
     #expect(constraint.relation == .equal)
     #expect(constraint.constant == 0.0)
+  }
+
+  // MARK: - VoiceOver reaches the notes field only while it shows
+
+  @Test("a collapsed notes field is hidden from VoiceOver")
+  func collapsedNotesFieldIsHiddenFromVoiceOver() throws {
+    let contentView = ItemContentView()
+    contentView.item = Item(name: "Test")
+
+    contentView.refreshHeight()
+
+    #expect(try !isReachable(notesTextView(in: contentView), in: contentView))
+  }
+
+  @Test("a notes field with notes is reachable by VoiceOver")
+  func notesFieldWithNotesIsReachable() throws {
+    let contentView = ItemContentView()
+    contentView.item = Item(name: "Test", notes: "some notes")
+
+    contentView.refreshHeight()
+
+    #expect(try isReachable(notesTextView(in: contentView), in: contentView))
+  }
+
+  @Test("an empty notes field becomes reachable once the row expands for editing")
+  func emptyNotesFieldIsReachableWhenExpanded() throws {
+    let contentView = ItemContentView()
+    contentView.item = Item(name: "Test")
+    contentView.refreshHeight()
+
+    contentView.updateTextViewHeight(isExpanded: true)
+
+    #expect(try isReachable(notesTextView(in: contentView), in: contentView))
   }
 }

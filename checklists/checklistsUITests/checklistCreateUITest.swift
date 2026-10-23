@@ -115,7 +115,8 @@ class checklistCreateUITest: XCTestCase {
     app.menuItems["Cut"].tap()
     app.tapChecklistEditingDone()
 
-    XCTAssert((cell.textViews["itemNotesTextView"].value as? String ?? "").isEmpty)
+    // Emptied, the notes field collapses and leaves the accessibility tree.
+    XCTAssertFalse(cell.textViews["itemNotesTextView"].waitForExistence(timeout: 2), "Emptied notes should collapse the notes field.")
 
     cell = checklistTable.children(matching: .cell).element(boundBy: 2)
     XCTAssert((cell.textViews["itemNameTextView"].value as? String ?? "") == item3Name)
