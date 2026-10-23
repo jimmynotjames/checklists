@@ -178,7 +178,6 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
 
   // MARK: - Typing a name
 
-  /// The sheet's Done while the name field is focused, in the navigation bar.
   private var editingDoneButton: XCUIElement {
     app.navigationBars.buttons["copyDestination.editingDone"]
   }
@@ -225,20 +224,22 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     XCTAssertTrue(keyboard.waitForExistence(timeout: 5), "Keyboard didn't appear for the name.")
     XCTAssertTrue(editingDoneButton.waitForExistence(timeout: 5), "Focusing the name didn't bring Done into the bar.")
 
-    // The lowest destination still clear of the keyboard: the one a keyboard toolbar would sit over.
-    let keyboardTop = keyboard.frame.minY
+    // A point in the band a keyboard toolbar occupies: centred 68pt above the keyboard, as the bar
+    // this replaced measured. Tapped there rather than at the row's centre, which can fall below it.
+    let bandY = keyboard.frame.minY - 68
     let rows = app.buttons.matching(
       NSPredicate(format: "identifier BEGINSWITH 'copyDestination.' AND NOT identifier IN %@", [
         "copyDestination.createNewChecklist", "copyDestination.editingDone",
       ])
     )
-    let lowestRow = (0 ..< rows.count)
+    let rowInBand = (0 ..< rows.count)
       .map { rows.element(boundBy: $0) }
-      .filter { $0.frame.maxY <= keyboardTop }
-      .max { $0.frame.maxY < $1.frame.maxY }
-    let row = try XCTUnwrap(lowestRow, "No destination sits above the keyboard.")
+      .first { $0.frame.minY <= bandY && $0.frame.maxY >= bandY }
+    let row = try XCTUnwrap(rowInBand, "No destination reaches the band above the keyboard.")
 
-    row.tap()
+    row.coordinate(withNormalizedOffset: .zero)
+      .withOffset(CGVector(dx: 40, dy: bandY - row.frame.minY))
+      .tap()
 
     XCTAssertTrue(nameField.waitForNonExistence(timeout: 5), "The tap above the keyboard didn't reach the destination.")
   }

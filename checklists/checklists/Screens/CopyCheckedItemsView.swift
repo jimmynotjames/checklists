@@ -38,7 +38,6 @@ struct CopyCheckedItemsView: View {
   @State private var newChecklistName = ""
   /// Deliberately never set true on appearance. The field is opt-in — most people came for a
   /// destination below it, and a keyboard rising on arrival would cover the list they came for.
-  /// Also what shows the bar's Done while someone is typing, and what that Done clears.
   @FocusState private var isNamingFocused: Bool
   /// Where VoiceOver goes once the bar's Done has gone with the keyboard: back to the field just
   /// named, rather than wherever the vanished button leaves it.
@@ -73,6 +72,10 @@ struct CopyCheckedItemsView: View {
             Button(role: .confirm) {
               isNamingFocused = false
               Task {
+                // Cleared first, then set a turn later: a focus state still holding its target from
+                // an earlier tap would not move VoiceOver when set to the same value.
+                isNameFieldVoiceOverFocused = false
+                await Task.yield()
                 // After the bar has relaid without the button VoiceOver was on.
                 try? await Task.sleep(for: .milliseconds(500))
                 isNameFieldVoiceOverFocused = true
