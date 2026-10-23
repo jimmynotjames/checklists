@@ -149,7 +149,9 @@ private struct MainMenuRow: View {
   var body: some View {
     Button(action: action) {
       HStack(spacing: 8) {
-        Image(iconName)
+        // The title carries the meaning. Otherwise the icon is an image element of its own, named
+        // after its asset.
+        Image(decorative: iconName)
           .resizable()
           .scaledToFit()
           .frame(width: 44, height: 44)

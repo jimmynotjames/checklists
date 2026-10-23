@@ -163,6 +163,29 @@ class ItemContentView: UIView {
     }
     notesTextViewHeightConstraint.isActive = true
     containerBottomConstraint.constant = isExpanded ? 0.0 : notesTextView.textContainerInset.bottom
+
+    // Never while it has the keyboard: a row collapses mid-edit when Add item is tapped, and
+    // dropping the focused field would strand VoiceOver. It goes once editing ends and the row
+    // collapses again.
+    let hidesNotes = !isExpanded && !notesTextView.isFirstResponder
+    guard isNotesHiddenFromAccessibility != hidesNotes else { return }
+    isNotesHiddenFromAccessibility = hidesNotes
+    // Only for a row on screen: one being configured while the table scrolls is read as it appears.
+    guard window != nil else { return }
+    UIAccessibility.post(notification: .layoutChanged, argument: nil)
+  }
+
+  /// A collapsed notes field is zero-height, so VoiceOver would otherwise stop on an invisible field
+  /// in every row without notes. It returns with the field, once the name is being edited.
+  private var isNotesHiddenFromAccessibility = false
+
+  /// Listed, because un-hiding a field with `accessibilityElementsHidden` doesn't reach the
+  /// accessibility tree inside a table cell. Leading to trailing, as VoiceOver reads the row by
+  /// position: the checkbox sits at the leading edge.
+  override var accessibilityElements: [Any]? {
+    get { isNotesHiddenFromAccessibility ? [checkboxButton, nameTextView] : [checkboxButton, nameTextView, notesTextView] }
+    // Derived from the notes field's state; nothing sets it.
+    set { _ = newValue }
   }
 
   func startEditing() {

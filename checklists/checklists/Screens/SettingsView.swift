@@ -127,6 +127,15 @@ struct SettingsView: View {
           systemImage: "hand.raised"
         )
       }
+      // A Button so the tap is tracked, but it leaves the app for a web page, which VoiceOver
+      // announces as a link.
+      .accessibilityRemoveTraits(.isButton)
+      .accessibilityAddTraits(.isLink)
+      .accessibilityHint(String(
+        localized: "settings.info.privacyPolicy.accessibilityHint",
+        defaultValue: "Opens in your web browser.",
+        comment: "VoiceOver hint for the Privacy Policy row in Settings, which opens the privacy policy web page in the default browser."
+      ))
     } header: {
       // Title case, matching how the other Form headers here are written.
       Text(String(localized: "settings.info.header", defaultValue: "Info", comment: "Section header above the Privacy Policy row in Settings."))

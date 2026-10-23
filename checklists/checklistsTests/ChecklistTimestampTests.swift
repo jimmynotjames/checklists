@@ -412,4 +412,16 @@ struct ChecklistTimestampTests {
     #expect(lines.last?.hasPrefix("Last completed: ") == true)
     #expect(lines.allSatisfy { !$0.hasSuffix("Never") })
   }
+
+  @Test("VoiceOver reads both caption lines, joined by the translated sentence break")
+  func captionSpeaksBothLines() {
+    let checklist = Checklist(name: "Packing")
+    checklist.recordUpdate(at: updatedAt)
+    let view = ChecklistHistoryCaption.makeView()
+    ChecklistHistoryCaption.refresh(view, for: checklist)
+
+    let lines = ChecklistHistoryCaption.lines(for: checklist)
+    #expect(view.accessibilityLabel == ChecklistHistoryCaption.spokenText(lastUpdated: lines[0], lastCompleted: lines[1]))
+    #expect(lines.allSatisfy { view.accessibilityLabel?.contains($0) == true })
+  }
 }

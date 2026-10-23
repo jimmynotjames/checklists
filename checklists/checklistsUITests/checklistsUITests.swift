@@ -140,6 +140,25 @@ class checklistsUITests: XCTestCase {
     XCTAssertTrue(app.navigationBars["Checklists"].exists, "The list's title should be in the accessibility tree.")
   }
 
+  /// An icon that isn't decorative is an image element named after its asset, "MainMenuFeedbackIcon".
+  func testMenuRowsReadOnlyTheirNames() {
+    app.buttons["toolbar.mainMenu"].tap()
+    for title in ["Feedback", "Rate in App Store", "Settings"] {
+      XCTAssertTrue(app.buttons[title].waitForExistence(timeout: 5), "The \(title) row should be labelled with its name alone.")
+    }
+    for asset in ["MainMenuFeedbackIcon", "MainMenuRateInAppStoreIcon", "MainMenuSettingsIcon"] {
+      XCTAssertFalse(app.images[asset].exists, "The \(asset) icon should be decorative.")
+    }
+  }
+
+  /// It leaves the app for a web page, so VoiceOver should call it a link, not a button.
+  func testPrivacyPolicyIsALink() {
+    app.buttons["toolbar.mainMenu"].tap()
+    app.buttons["mainMenu.settings"].tap()
+    XCTAssertTrue(app.links["Privacy Policy"].waitForExistence(timeout: 5), "Privacy Policy should be a link.")
+    XCTAssertFalse(app.buttons["Privacy Policy"].exists, "Privacy Policy shouldn't also be a button.")
+  }
+
   private func enterEditMode() {
     let edit = app.buttons["toolbar.edit"]
     XCTAssertTrue(edit.waitForExistence(timeout: 5), "The Edit button didn't appear.")
