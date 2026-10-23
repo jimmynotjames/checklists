@@ -9,34 +9,35 @@ import XCTest
 
 /// Existing items: ticking and resetting, the swipe actions, renaming, and drag reordering.
 final class ChecklistItemsUITest: ChecklistDetailUITestCase {
-  func testCheckboxesAndReset() {
+  @MainActor func testCheckboxesAndReset() {
     // Go into Pre-Trip Checklist. 11 elements, none checked.
     checklistsList.staticTexts["Pre-Trip Checklist"].tap()
 
     let tablesQuery = app.tables
     XCTAssertTrue(tablesQuery["ChecklistTableView"].waitForExistence(timeout: 5))
+    // Check 2 of the items. Verify that they were checked. Verify status icon updated. Each tap
+    // waits for its result before the next: right after a tap, a cell looked up by index can
+    // resolve to the wrong row.
     tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["itemCheckbox"].tap()
+    XCTAssertTrue(tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["itemCheckbox"].wait(for: \.isSelected, toEqual: true, timeout: 5))
     tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["itemCheckbox"].tap()
-
-    // Check 2 of the items. Verify that they were checked. Verify status icon updated
-    XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["itemCheckbox"].isSelected == true)
-    XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["itemCheckbox"].isSelected == true)
+    XCTAssertTrue(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["itemCheckbox"].wait(for: \.isSelected, toEqual: true, timeout: 5))
     assertPercentComplete(tablesQuery["ChecklistTableView"], numCheckedItems: 2, numItems: 11) // Check that circular status icon updated. 2/11 -> 18%
 
     // Reset checklist. Verify again.
     app.navigationBars.buttons["Reset"].tap()
 
-    XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["itemCheckbox"].isSelected == false)
-    XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["itemCheckbox"].isSelected == false)
+    XCTAssertTrue(tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["itemCheckbox"].wait(for: \.isSelected, toEqual: false, timeout: 5))
+    XCTAssertTrue(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["itemCheckbox"].wait(for: \.isSelected, toEqual: false, timeout: 5))
     assertPercentComplete(tablesQuery["ChecklistTableView"], numCheckedItems: 0, numItems: 11) // Check that circular status icon updated. 0/11 -> 0%
 
     // Check 2 different items, Verify again. Reset leaves the list at the top, where the last row is
     // below the screen and has no checkbox in the accessibility tree, so scroll down to reach it.
     tablesQuery.children(matching: .cell).element(boundBy: 2).buttons["itemCheckbox"].tap()
-    XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 2).buttons["itemCheckbox"].isSelected == true)
+    XCTAssertTrue(tablesQuery.children(matching: .cell).element(boundBy: 2).buttons["itemCheckbox"].wait(for: \.isSelected, toEqual: true, timeout: 5))
     tablesQuery["ChecklistTableView"].swipeUp()
     tablesQuery.children(matching: .cell).element(boundBy: 10).buttons["itemCheckbox"].tap()
-    XCTAssert(tablesQuery.children(matching: .cell).element(boundBy: 10).buttons["itemCheckbox"].isSelected == true)
+    XCTAssertTrue(tablesQuery.children(matching: .cell).element(boundBy: 10).buttons["itemCheckbox"].wait(for: \.isSelected, toEqual: true, timeout: 5))
 
     // Go Back. Verify circular status is updated on main Checklists page.
     detailBackButton.tap()

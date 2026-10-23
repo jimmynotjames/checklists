@@ -59,17 +59,20 @@ final class ChecklistHistoryCaptionUITest: ChecklistDetailUITestCase {
    3. Verify both lines are there.
    4. Reset, leave and come back again: the completion line outlives the reset.
    */
-  func testHistoryCaptionAfterCompletingAndResetting() {
+  @MainActor func testHistoryCaptionAfterCompletingAndResetting() {
     checklistsList.staticTexts["Morning Routine"].tap()
     let tablesQuery = app.tables
     XCTAssertTrue(tablesQuery["ChecklistTableView"].waitForExistence(timeout: 5))
 
     // Tap every unchecked box rather than a hardcoded row, so the test survives a fixture change.
+    // Each tap waits to land before the next row is looked up by index; see
+    // `ChecklistItemsUITest.testCheckboxesAndReset`.
     let cells = tablesQuery.children(matching: .cell)
     for index in 0 ..< cells.count {
       let checkbox = cells.element(boundBy: index).buttons["itemCheckbox"]
       if checkbox.exists, !checkbox.isSelected {
         checkbox.tap()
+        XCTAssertTrue(checkbox.wait(for: \.isSelected, toEqual: true, timeout: 5), "Row \(index) didn't check.")
       }
     }
 
