@@ -154,16 +154,13 @@ final class ChecklistItemsUITest: ChecklistDetailUITestCase {
 
     // Go to last Item and move to index 8.
     checklistTableView.swipeUp()
-    let item8NameTextView = checklistTableView.children(matching: .cell).element(boundBy: 7).textViews["itemNameTextView"]
-    let item12NameTextView = checklistTableView.children(matching: .cell).element(boundBy: 11).textViews["itemNameTextView"]
+    let cells = checklistTableView.children(matching: .cell)
+    let item12Name = try XCTUnwrap(cells.element(boundBy: 11).textViews["itemNameTextView"].value as? String)
 
-    let item12Name = try XCTUnwrap(item12NameTextView.value as? String)
-
-    item12NameTextView.press(forDuration: 0.75, thenDragTo: item8NameTextView)
+    dragRow(cells.element(boundBy: 11), onto: cells.element(boundBy: 7))
 
     // Now the original last item should now be at index 7.
-    var item7Value = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: 7).textViews["itemNameTextView"].value as? String)
-    XCTAssert(item12Name == item7Value)
+    waitForItemName(item12Name, atRow: 7, in: checklistTableView)
 
     // For good measure, go Back to main page, then back into Checklist, and see if all elements are still ordered correctly.
     // NOTE: the nav bar title only shows the checklist name once the table view is scrolled past a
@@ -173,7 +170,7 @@ final class ChecklistItemsUITest: ChecklistDetailUITestCase {
     detailBackButton.tap()
     checklistsList.staticTexts["Weekend Getaway Essentials"].tap()
     checklistTableView.swipeUp()
-    item7Value = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: 7).textViews["itemNameTextView"].value as? String)
+    let item7Value = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: 7).textViews["itemNameTextView"].value as? String)
     XCTAssert(item12Name == item7Value)
   }
 
@@ -183,14 +180,13 @@ final class ChecklistItemsUITest: ChecklistDetailUITestCase {
     XCTAssertTrue(checklistTableView.waitForExistence(timeout: 5))
 
     // Go to last Item and move to index 0.
-    let fromNameTextView = checklistTableView.children(matching: .cell).element(boundBy: 5).textViews["itemNameTextView"]
-    let toNameTextView = checklistTableView.children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"]
+    let cells = checklistTableView.children(matching: .cell)
+    let fromName = try XCTUnwrap(cells.element(boundBy: 5).textViews["itemNameTextView"].value as? String)
+    let item1Name = try XCTUnwrap(cells.element(boundBy: 0).textViews["itemNameTextView"].value as? String)
+    let item2Name = try XCTUnwrap(cells.element(boundBy: 1).textViews["itemNameTextView"].value as? String)
 
-    let fromName = try XCTUnwrap(fromNameTextView.value as? String)
-    let item1Name = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"].value as? String)
-    let item2Name = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String)
-
-    fromNameTextView.press(forDuration: 0.75, thenDragTo: toNameTextView)
+    dragRow(cells.element(boundBy: 5), onto: cells.element(boundBy: 0))
+    waitForItemName(fromName, atRow: 0, in: checklistTableView)
 
     var atIndex0 = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"].value as? String)
     var atIndex1 = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String)
