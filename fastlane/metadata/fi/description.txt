@@ -1,5 +1,5 @@
-Opettele uusi rutiini tai harjoittele monivaiheista tehtävää, kunnes se sujuu kuin itsestään. Yksikään tärkeä vaihe ei enää unohdu.
+Opettele uusi rutiini tai harjoittele monimutkaista tehtävää, kunnes se sujuu itsestään. Yksikään tärkeä vaihe ei enää unohdu.
 
-Sopii myös toistuviin listoihin, kuten mökkireissun pakkauslistaan, kauppalistaan, työjuttuihin tai pelien grindaamiseen.
+Sopii myös toistuviin listoihin, kuten pakkaus- ja kauppalistoihin, mökin sulkemiseen, työjuttuihin tai pelien grindaukseen.
 
-Listat synkronoituvat laitteidesi välillä iCloudin kautta. Voit monistaa listan tai siirtää rastimasi kohdat toiselle listalle. Saatavilla useilla kielillä, ja mukana on VoiceOver-tuki ja suuren tekstin tuki.
+Synkronoituu iCloudin kautta kaikkiin laitteisiisi. Monista lista tai siirrä rastimasi kohdat toiseen listaan. Voit viedä listan PDF-tiedostona. Tukee useita kieliä sekä VoiceOveria ja suurta tekstikokoa.

@@ -1,1 +1,1 @@
-Listái mostantól az iCloud révén minden eszközén szinkronban maradnak, az app több nyelven is használható, a listákat pedig lemásolhatja, és a kipipált tételeket áthelyezheti közöttük.
+Listái mostantól az iCloud segítségével minden eszközén szinkronban maradnak, és az alkalmazás több nyelven is elérhető. Listáit lemásolhatja, a kipipált tételeket áthelyezheti közöttük, és PDF-be is exportálhatja őket.

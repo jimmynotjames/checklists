@@ -1,1 +1,1 @@
-Seznami se zdaj prek iClouda sinhronizirajo med vašimi napravami, aplikacija je na voljo v več jezikih, sezname pa lahko podvojite in odkljukane postavke prestavljate med njimi.
+Zdaj se sinhronizira med vašimi napravami prek storitve iCloud in je na voljo v več jezikih. Sezname lahko podvojite, odkljukane postavke premikate med njimi in jih izvozite v PDF.

@@ -1,1 +1,1 @@
-Agora o app sincroniza entre seus dispositivos pelo iCloud, está disponível em vários idiomas e permite duplicar checklists e mover itens marcados de um para outro.
+Agora sincroniza entre seus dispositivos pelo iCloud e fala vários idiomas. Duplique listas, mova itens marcados de uma para outra e exporte tudo em PDF.

@@ -1,1 +1,1 @@
-Synchroniseert nu via iCloud tussen je apparaten, is beschikbaar in meerdere talen en laat je checklists dupliceren en afgevinkte items tussen lijsten verplaatsen.
+reChecklist synchroniseert nu via iCloud op al je apparaten en werkt in meerdere talen. Dupliceer checklists, zet afgevinkte items over van de ene naar de andere en exporteer ze als pdf.

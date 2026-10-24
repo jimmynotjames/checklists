@@ -1,1 +1,1 @@
-checklist,liste,cocher,aide-mémoire,récurrent,bagages,valise,voyage,épicerie,magasinage,routine
+checklist,liste,vérification,cocher,aide-mémoire,récurrent,bagages,voyage,épicerie,routine

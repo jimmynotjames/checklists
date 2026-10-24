@@ -1,1 +1,1 @@
-Teraz sa synchronizuje medzi vašimi zariadeniami cez iCloud, hovorí viacerými jazykmi a umožňuje duplikovať zoznamy a presúvať medzi nimi odškrtnuté položky.
+Aplikácia sa teraz synchronizuje medzi vašimi zariadeniami cez iCloud a hovorí viacerými jazykmi. Zoznamy môžete duplikovať, presúvať medzi nimi odškrtnuté položky a exportovať ich do PDF.
