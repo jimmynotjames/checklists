@@ -1,4 +1,5 @@
-"""A checkout's simulator is retired once a newer iOS runtime is installed, and only then."""
+"""A checkout's simulator is retired once a newer iOS runtime that hosts its device type is
+installed, and only then."""
 
 from __future__ import annotations
 
@@ -14,6 +15,7 @@ from sim_retire_stale import stale_devices  # noqa: E402
 NAME = "iPhone 17 [a1b2c3d4]"
 IOS_26_5 = "com.apple.CoreSimulator.SimRuntime.iOS-26-5"
 IOS_27_0 = "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
+IPHONE_17 = "com.apple.CoreSimulator.SimDeviceType.iPhone-17"
 
 
 def _runtime(identifier: str, version: str, available: bool = True) -> dict:
@@ -21,7 +23,13 @@ def _runtime(identifier: str, version: str, available: bool = True) -> dict:
 
 
 def _device(name: str = NAME, udid: str = "U1", available: bool = True) -> dict:
-    return {"name": name, "udid": udid, "state": "Shutdown", "isAvailable": available}
+    return {
+        "name": name,
+        "udid": udid,
+        "state": "Shutdown",
+        "isAvailable": available,
+        "deviceTypeIdentifier": IPHONE_17,
+    }
 
 
 class StaleDeviceTests(unittest.TestCase):
@@ -30,6 +38,26 @@ class StaleDeviceTests(unittest.TestCase):
         found = stale_devices(NAME, {IOS_26_5: [_device()]}, runtimes)
         self.assertEqual([d["udid"] for d, _ in found], ["U1"])
         self.assertIn("iOS 26.5", found[0][1])
+
+    def test_newer_runtime_without_this_device_type_is_not_the_target(self) -> None:
+        ios_27_1 = {
+            **_runtime("com.apple.CoreSimulator.SimRuntime.iOS-27-1", "27.1"),
+            "supportedDeviceTypes": [{"identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-Duo"}],
+        }
+        runtimes = [_runtime(IOS_27_0, "27.0"), ios_27_1]
+        self.assertEqual(stale_devices(NAME, {IOS_27_0: [_device()]}, runtimes), [])
+
+    def test_newer_runtime_with_this_device_type_is_the_target(self) -> None:
+        hosts = {"supportedDeviceTypes": [{"identifier": IPHONE_17}]}
+        ios_27_1 = {**_runtime("com.apple.CoreSimulator.SimRuntime.iOS-27-1", "27.1"), **hosts}
+        runtimes = [{**_runtime(IOS_27_0, "27.0"), **hosts}, ios_27_1]
+        found = stale_devices(NAME, {IOS_27_0: [_device()]}, runtimes)
+        self.assertEqual([d["udid"] for d, _ in found], ["U1"])
+
+    def test_device_without_a_type_is_left_alone(self) -> None:
+        runtimes = [_runtime(IOS_26_5, "26.5"), _runtime(IOS_27_0, "27.0")]
+        device = {k: v for k, v in _device().items() if k != "deviceTypeIdentifier"}
+        self.assertEqual(stale_devices(NAME, {IOS_26_5: [device]}, runtimes), [])
 
     def test_device_on_newest_runtime_is_kept(self) -> None:
         runtimes = [_runtime(IOS_26_5, "26.5"), _runtime(IOS_27_0, "27.0")]

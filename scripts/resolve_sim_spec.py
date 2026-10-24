@@ -37,11 +37,17 @@ def selected_sdk_version() -> str | None:
     return out.strip() or None
 
 
-def newest_ios_runtime(runtimes: list[dict], sdk_version: str | None = None) -> dict | None:
+def newest_ios_runtime(
+    runtimes: list[dict],
+    sdk_version: str | None = None,
+    device_type_id: str | None = None,
+) -> dict | None:
     """The highest-versioned available iOS runtime from `simctl list runtimes -j`.
 
     Runtimes above `sdk_version` (major.minor) come from another installed Xcode, such as a
-    beta, that the selected one can't target, so they are skipped.
+    beta, that the selected one can't target, so they are skipped. So are runtimes that don't
+    list `device_type_id` among their `supportedDeviceTypes`: a runtime can ship with only some
+    devices, and `simctl create` rejects the rest.
     """
     cap = runtime_version(sdk_version)[:2] if sdk_version else None
     ios = [
@@ -50,8 +56,15 @@ def newest_ios_runtime(runtimes: list[dict], sdk_version: str | None = None) -> 
         if r.get("isAvailable")
         and "iOS" in r.get("name", "")
         and (cap is None or runtime_version(r["version"])[:2] <= cap)
+        and (device_type_id is None or supports(r, device_type_id))
     ]
     return max(ios, key=lambda r: runtime_version(r["version"]), default=None)
+
+
+def supports(runtime: dict, device_type_id: str) -> bool:
+    """Whether `runtime` can host `device_type_id`; true when simctl lists no device types."""
+    types = runtime.get("supportedDeviceTypes")
+    return types is None or any(t.get("identifier") == device_type_id for t in types)
 
 
 def runtime_version(version: str) -> tuple[int, ...]:
@@ -94,10 +107,12 @@ def main() -> None:
         print(f"error: no device type found for '{name}'", file=sys.stderr)
         sys.exit(1)
 
-    # -- Runtime resolution (newest available iOS) --
+    # -- Runtime resolution (newest available iOS that hosts the device type) --
     runtime_id: str | None = None
     try:
-        newest = newest_ios_runtime(simctl_json("list", "runtimes").get("runtimes", []), selected_sdk_version())
+        newest = newest_ios_runtime(
+            simctl_json("list", "runtimes").get("runtimes", []), selected_sdk_version(), device_type_id
+        )
         if newest:
             runtime_id = newest["identifier"]
     except Exception as e:
@@ -105,7 +120,7 @@ def main() -> None:
         sys.exit(1)
 
     if runtime_id is None:
-        print("error: no available iOS runtime found", file=sys.stderr)
+        print(f"error: no available iOS runtime hosts {device_type_id}", file=sys.stderr)
         sys.exit(1)
 
     print(device_type_id)
