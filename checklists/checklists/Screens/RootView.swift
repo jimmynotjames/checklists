@@ -93,6 +93,12 @@ struct RootView: View {
           } else {
             unresolvedSheetDestination
           }
+        case let .exportPDF(checklistID):
+          if let checklist = context.checklist(id: checklistID) {
+            ExportPDFView(checklist: checklist)
+          } else {
+            unresolvedSheetDestination
+          }
         }
       }
       #if DEBUG

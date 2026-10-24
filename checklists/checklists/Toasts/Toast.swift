@@ -119,3 +119,21 @@ extension Toast {
     )
   }
 }
+
+/// Shown by `ExportPDFView` when the PDF could not be made or written.
+extension Toast {
+  static var pdfExportFailed: Toast {
+    Toast(
+      message: LocalizedStringResource(
+        "toast.pdfExportFailed",
+        defaultValue: "Couldn't create the PDF.",
+        comment: """
+        Error toast shown on the Export as PDF sheet when making the PDF file of a checklist \
+        failed, for example because the device is out of storage. The sheet stays open so the \
+        person can try again. Appears briefly at the bottom of the screen, with no button.
+        """,
+      ),
+      style: .error,
+    )
+  }
+}

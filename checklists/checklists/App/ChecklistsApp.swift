@@ -25,6 +25,7 @@ struct ChecklistsApp: App {
   /// Built in `init()` because it takes the gated client: its events go through the consent gate,
   /// while its eligibility counters (`RatingPromptState`) are deliberately not gated.
   @State private var ratingPrompt: RatingPromptCoordinator
+  @State private var savedHeaders = SavedHeadersStore()
 
   @Environment(\.scenePhase) private var scenePhase
 
@@ -75,6 +76,7 @@ struct ChecklistsApp: App {
             .environment(PersistenceController.shared.syncStatus)
             .environment(ratingPrompt)
             .environment(toasts)
+            .environment(savedHeaders)
             // App-lifetime iCloud account check, so analytics and the Feedback diagnostics have it
             // without Settings ever opening. persistence-design.md §Sync status.
             .task {

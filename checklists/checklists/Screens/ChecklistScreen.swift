@@ -41,6 +41,7 @@ struct ChecklistScreen: View {
       // The picker does the copying or moving itself and dismisses without navigating, so this and
       // `transferGeneration` are the whole of the host's involvement — see `CopyCheckedItemsView`.
       onRequestTransferCheckedItems: { id, mode in router.sheet = .transferCheckedItems(sourceID: id, mode: mode) },
+      onRequestExportPDF: { id in router.sheet = .exportPDF(checklistID: id) },
       transferGeneration: transferGeneration,
     )
     .onChange(of: router.sheet) { oldSheet, newSheet in
@@ -79,6 +80,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   let onRequestDismiss: () -> Void
   let onRequestOpenDuplicate: (String) -> Void
   let onRequestTransferCheckedItems: (String, CheckedItemsTransferMode) -> Void
+  let onRequestExportPDF: (String) -> Void
   let transferGeneration: Int
 
   @Environment(\.analytics) private var analytics
@@ -103,6 +105,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
     viewController.onRequestDismiss = onRequestDismiss
     viewController.onRequestOpenDuplicate = onRequestOpenDuplicate
     viewController.onRequestTransferCheckedItems = onRequestTransferCheckedItems
+    viewController.onRequestExportPDF = onRequestExportPDF
     viewController.onRemoteDeletion = { [toasts] in toasts?.show(.checklistDeletedElsewhere) }
     viewController.analytics = analytics
     viewController.ratingPrompt = ratingPrompt

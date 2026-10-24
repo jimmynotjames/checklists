@@ -137,6 +137,23 @@ struct StoreResetTests {
     }
   }
 
+  /// Saved Headers are typed by hand and kept on purpose, and the reset only exists to get past a
+  /// damaged checklist store, which they are no part of.
+  @Test("does not remove the Saved Headers")
+  func doesNotRemoveTheSavedHeaders() throws {
+    try withFixture { directory, userDefaults in
+      SavedHeadersStore(store: userDefaults).save("Acme Plumbing")
+
+      reset(
+        storeURL: directory.appendingPathComponent("default.store"),
+        realmURL: directory.appendingPathComponent("default.realm"),
+        userDefaults: userDefaults,
+      )
+
+      #expect(SavedHeadersStore(store: userDefaults).headers == ["Acme Plumbing"])
+    }
+  }
+
   /// The failure it exists for may well be a store that was never created, so absent files must be
   /// a no-op rather than a second failure on top of the first.
   @Test("succeeds when nothing is there to delete")

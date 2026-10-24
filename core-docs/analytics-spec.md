@@ -48,6 +48,7 @@ A dashboard is justified by a question here. The IDs are stable; board names cit
 | 3.10 | How often does an upgrader's old data end up out of reach? | `startup_failed` at `legacy_import`, `legacy_import_abandoned` |
 | 3.11 | Is sync working, and when it isn't, why? | `icloud_status_checked`, `cloudkit_container_fell_back`, `cloudkit_sync_failed` |
 | 3.12 | Do people duplicate several items in a row? | `checklist_item_duplicated`, per session |
+| 3.13 | Do people hand checklists to someone else as a record, and do they reuse a Header? | `checklist_pdf_exported` with `has_header` and `saved_header_inserted`, `checklist_pdf_header_saved` |
 
 3.9 stops at the request: `requestReview` reports neither whether the dialog showed nor what was
 chosen, and no custom pre-prompt manufactures that signal. The bar is three constants on
@@ -70,8 +71,8 @@ with its rationale recorded here. The app code sends exactly:
 - **Event properties:** `checklists_count`, `items_count`, `items_with_notes_count`, `notes_length`
   (integers, never content); `checklist_name` (§Free-text exception); `source`, `destination`,
   `orientation`, `error_operation`, `startup_stage`, `container_backing`, `icloud_account`,
-  `sync_operation`, `bulk_action` (app-owned enumerations); `selected_count` (an integer); `error_domain`, `error_code` (an `NSError`'s domain and
-  code, never its `userInfo`); `new_value`, `old_value` (booleans); `time_since_first_eligible_bucket`
+  `sync_operation`, `bulk_action` (app-owned enumerations); `selected_count`, `checked_items_count` (integers); `error_domain`, `error_code` (an `NSError`'s domain and
+  code, never its `userInfo`); `new_value`, `old_value`, `has_header`, `date_changed`, `saved_header_inserted` (booleans); `time_since_first_eligible_bucket`
   (a bucket, not a timestamp).
 - **Super properties:** `app_version`, `app_build`, `device_class`, `locale`, `region`,
   `consent_jurisdiction`. `locale` and `region` are device *settings*, not a position.
@@ -91,6 +92,7 @@ paragraph when bumping the SDK.
 | Never sent | Instead / why |
 | --- | --- |
 | **Item names, item notes, checklist notes** | `items_count`, `items_with_notes_count`, `notes_length` |
+| **PDF Header and Saved Header text** | `has_header`, `saved_header_inserted` |
 | Apple identifiers (IDFA, IDFV, device name) | No tracking |
 | IP-derived geolocation (`$city`, `$region`, `mp_country_code`) | `useIPAddressForGeoLocation = false`; the region *setting* is the location signal, so no location type is declared in `PrivacyInfo.xcprivacy` |
 | iCloud account ids, CloudKit record names | Identity is the app UUID only |
@@ -237,6 +239,8 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `checklist_item_duplicated` | An item is duplicated from its swipe action | — |
 | `checklists_edit_mode_entered` | The list's Edit button is tapped | — |
 | `checklists_bulk_action_performed` | An Edit mode toolbar action runs and changes something; once per action, not per checklist; `checklist_duplicated` and `checklist_deleted` don't also fire | `bulk_action`, `selected_count` |
+| `checklist_pdf_exported` | The share sheet opened by the checklist menu's Export as PDF… completes; not on opening the export sheet, and not on a cancelled share | `items_count`, `checked_items_count`, `has_header`, `date_changed`, `saved_header_inserted` |
+| `checklist_pdf_header_saved` | The export sheet's Save for Reuse is chosen, from its button or the Saved Headers menu | — |
 | `rate_app_tapped` | "Rate in App Store" tapped | — |
 | `feedback_tapped` | "Send feedback" tapped, main menu **or** failure screen | — |
 | `privacy_policy_tapped` | The privacy policy is opened | — |
@@ -264,7 +268,11 @@ The rating-prompt events fire from `RatingPromptCoordinator`; its doc comment ha
 | `checklists_count` | Int | Raw |
 | `checklist_name` | String | **User content**, `AnalyticsText.truncated` |
 | `notes_length` | Int | Characters in the checklist's notes; 0 when absent |
-| `items_count` | Int | Items in the checklist; on `checklist_checked_items_deleted`, the items deleted |
+| `items_count` | Int | Items in the checklist; on `checklist_checked_items_deleted`, the items deleted; on `checklist_pdf_exported`, the items printed (blank rows excluded) |
+| `checked_items_count` | Int | Checked items printed |
+| `has_header` | Bool | The PDF has a Header (non-empty after trimming) |
+| `date_changed` | Bool | The printed date differs from the sheet's default of now, to the minute |
+| `saved_header_inserted` | Bool | A Saved Header was inserted at least once before exporting |
 | `items_with_notes_count` | Int | Items with non-nil, non-empty notes |
 | `source` | String | `menu` / `swipe` |
 | `destination` | String | `new` / `existing` |

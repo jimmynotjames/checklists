@@ -8,8 +8,9 @@ import UIKit
 /// The trailing navigation items, the overflow menu, the actions behind it, and the dismissal
 /// Delete Checklist shares with the remote-deletion path.
 ///
-/// `enterReorderMode`, `duplicateChecklist`, `transferCheckedItems(_:)` and `deleteChecklist` are
-/// internal so a test can invoke them: a `UIAction` handler cannot be fired directly.
+/// `enterReorderMode`, `duplicateChecklist`, `transferCheckedItems(_:)`, `exportPDF` and
+/// `deleteChecklist` are internal so a test can invoke them: a `UIAction` handler cannot be fired
+/// directly.
 extension ChecklistViewController {
   /// The overflow-menu entries that act on the checked items, each of which can show "No checked
   /// items." under itself.
@@ -95,8 +96,8 @@ extension ChecklistViewController {
     }
     // On the create sheet too: people often put items in order right after typing a batch of them.
     let reorderSection = UIMenu(options: .displayInline, children: [reorderItemsAction])
-    // Nothing on the create sheet's checklist has been kept yet — copying, moving or pruning a
-    // draft nobody has decided to keep is not an action that means anything.
+    // Nothing on the create sheet's checklist has been kept yet — copying, moving, exporting or
+    // pruning a draft nobody has decided to keep is not an action that means anything.
     guard !showsDiscardWording else {
       return UIMenu(children: [reorderSection, UIMenu(options: .displayInline, children: [deleteAction])])
     }
@@ -105,7 +106,8 @@ extension ChecklistViewController {
       self?.duplicateChecklist()
     }
     // Inline sections, so the destructive entries keep a gap above them and a thumb reaching for
-    // Move cannot land on a Delete.
+    // Move cannot land on a Delete. Export gets a section of its own: the three above it move
+    // things between checklists inside the app, while it sends something out of the app.
     return UIMenu(children: [
       reorderSection,
       UIMenu(options: .displayInline, children: [
@@ -113,8 +115,26 @@ extension ChecklistViewController {
         checkedItemsElement(for: .copy),
         checkedItemsElement(for: .move),
       ]),
+      UIMenu(options: .displayInline, children: [exportPDFAction]),
       UIMenu(options: .displayInline, children: [checkedItemsElement(for: .delete), deleteAction]),
     ])
+  }
+
+  /// Always live, even with nothing checked or no items: a PDF showing nothing checked is still a
+  /// valid record.
+  private var exportPDFAction: UIAction {
+    let action = UIAction(title: Self.exportPDFMenuTitle, image: UIImage(systemName: "square.and.arrow.up")) { [weak self] _ in
+      self?.exportPDF()
+    }
+    // Locale-invariant handle for UI tests.
+    action.accessibilityIdentifier = "checklist.menu.exportPDF"
+    return action
+  }
+
+  func exportPDF() {
+    // Commits in-progress edits first, so the PDF shows what is on screen; see `duplicateChecklist`.
+    view.endEditing(true)
+    onRequestExportPDF?(checklist.id)
   }
 
   private var reorderItemsAction: UIAction {

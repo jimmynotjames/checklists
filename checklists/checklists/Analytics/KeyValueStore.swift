@@ -5,7 +5,8 @@
 
 import Foundation
 
-/// Minimal key-value persistence seam used by `AnalyticsSettings` and `RatingPromptState`.
+/// Minimal key-value persistence seam used by `AnalyticsSettings`, `RatingPromptState` and
+/// `SavedHeadersStore`.
 ///
 /// Exists so the backing store is a one-line swap: production uses `UserDefaults.standard`, and
 /// test launches and unit tests use `InMemoryKeyValueStore`.

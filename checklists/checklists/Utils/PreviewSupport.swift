@@ -94,7 +94,7 @@
     /// environment it finds in the app. `\.analytics` is deliberately absent — it already
     /// defaults to `ConsoleAnalyticsClient`.
     ///
-    /// `toasts` is a fresh instance per call rather than a `PreviewSupport` fixture, deliberately
+    /// `toasts` and `savedHeaders` are fresh instances per call rather than `PreviewSupport` fixtures, deliberately
     /// unlike `router` above: default-argument expressions are evaluated per call, and a shared
     /// presenter would leave one preview's toast showing in its neighbours — the leak `RootView`'s
     /// "Main menu open" preview already works around for `Router`.
@@ -104,12 +104,14 @@
       syncStatus: SyncStatus = PreviewSupport.syncStatus(),
       analyticsSettings: AnalyticsSettings = PreviewSupport.analyticsSettings,
       toasts: ToastPresenter = ToastPresenter(),
+      savedHeaders: SavedHeadersStore = SavedHeadersStore(store: InMemoryKeyValueStore()),
     ) -> some View {
       modelContainer(container)
         .environment(router)
         .environment(syncStatus)
         .environment(analyticsSettings)
         .environment(toasts)
+        .environment(savedHeaders)
     }
   }
 #endif
