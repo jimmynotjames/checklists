@@ -17,7 +17,6 @@ import SwiftUI
       content.preferredColorScheme(Self.forced)
     }
 
-    /// The forced scheme, or `nil` when not under test or unset/unrecognized.
     static var forced: ColorScheme? {
       let env = ProcessInfo.processInfo.environment
       guard env["IS_TESTING"] != nil || CommandLine.arguments.contains("-UITests1") else { return nil }

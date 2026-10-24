@@ -100,8 +100,6 @@ struct RootView: View {
       // dynamicTypeSize, so the override has to be reapplied here or the
       // large-type check would silently photograph settings at the default size.
       .modifier(TestDynamicTypeOverride())
-      // The same for appearance; see `TestAppearanceOverride`.
-      .modifier(TestAppearanceOverride())
       #endif
       // The sheet's own toast layer; see `ToastPresenterModifier`.
       .toastOverlay()
