@@ -1,1 +1,1 @@
-Now syncs across your devices with iCloud, speaks multiple languages, and lets you duplicate checklists and move checked items between them.
+Now syncs across your devices with iCloud and speaks multiple languages. Duplicate checklists, move checked items between them, and export them to PDF.
