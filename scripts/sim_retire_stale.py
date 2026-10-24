@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Delete a named simulator unless it runs the newest iOS the selected Xcode can target.
+"""Delete a named simulator unless it runs the newest iOS the selected Xcode can target that
+hosts its device type.
 
 Devices get their runtime only at creation, so the caller recreates them after an Xcode switch.
 Also retires a device whose runtime is uninstalled; leaves one whose runtime is merely
@@ -46,7 +47,10 @@ def stale_devices(
         for d in runtime_devices:
             if d.get("name") != name:
                 continue
-            target = newest_ios_runtime(runtimes, sdk_version, d.get("deviceTypeIdentifier"))
+            device_type = d.get("deviceTypeIdentifier")
+            if device_type is None:
+                continue
+            target = newest_ios_runtime(runtimes, sdk_version, device_type)
             if target is None:
                 continue
             runtime = by_id.get(runtime_id)

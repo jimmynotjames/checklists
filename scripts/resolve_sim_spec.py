@@ -120,7 +120,7 @@ def main() -> None:
         sys.exit(1)
 
     if runtime_id is None:
-        print("error: no available iOS runtime found", file=sys.stderr)
+        print(f"error: no available iOS runtime hosts {device_type_id}", file=sys.stderr)
         sys.exit(1)
 
     print(device_type_id)

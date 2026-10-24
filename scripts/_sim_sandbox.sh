@@ -78,7 +78,7 @@ _ensure_sim_booted() {
     local spec device_type runtime
     spec="$(python3 "${ROOT}/scripts/resolve_sim_spec.py" --name "${SIMULATOR_NAME}")" || {
         echo "sim-sandbox: error: could not resolve device spec for '${SIMULATOR_NAME}'" >&2
-        echo "sim-sandbox: install the latest iOS runtime in Xcode, or set SIMULATOR_UDID to an existing device" >&2
+        echo "sim-sandbox: install an iOS runtime that offers this device, pick another with SIMULATOR_NAME, or set SIMULATOR_UDID to an existing device" >&2
         exit 1
     }
     device_type="$(printf '%s\n' "${spec}" | head -1)"
