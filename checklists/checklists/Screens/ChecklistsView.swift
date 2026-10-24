@@ -402,7 +402,7 @@ struct ChecklistsView: View {
         .scaledToFit()
         .padding(10)
         .frame(width: Self.addButtonSize, height: Self.addButtonSize)
-        .background(Circle().fill(Colors.defaultBackgroundColor))
+        .background(Circle().fill(Colors.surfaceColor))
         .shadow(color: Colors.shadowColor.opacity(0.4), radius: 3, x: 0, y: 2)
     }
     .accessibilityLabel(String(

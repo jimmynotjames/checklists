@@ -104,13 +104,18 @@ struct CopyCheckedItemsView: View {
   private var newChecklistSection: some View {
     Section {
       HStack {
-        TextField(Self.namePlaceholder, text: $newChecklistName)
-          .focused($isNamingFocused)
-          .accessibilityFocused($isNameFieldVoiceOverFocused)
-          .submitLabel(.done)
-          .onSubmit(createChecklistAndCopy)
-          .accessibilityIdentifier("copyDestination.newChecklistName")
-          .foregroundStyle(Colors.primaryTextColor)
+        // The palette's placeholder: iOS's own fails 4.5:1 on the row.
+        TextField(
+          Self.namePlaceholder,
+          text: $newChecklistName,
+          prompt: Text(Self.namePlaceholder).foregroundStyle(Colors.placeholderTextColor),
+        )
+        .focused($isNamingFocused)
+        .accessibilityFocused($isNameFieldVoiceOverFocused)
+        .submitLabel(.done)
+        .onSubmit(createChecklistAndCopy)
+        .accessibilityIdentifier("copyDestination.newChecklistName")
+        .foregroundStyle(Colors.primaryTextColor)
         // Visible and enabled whether or not anything has been typed: a blank field is a legal
         // choice — it commits under the default name — so someone who never types still needs
         // something to tap. Return commits too.

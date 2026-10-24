@@ -8,8 +8,8 @@ import SwiftUI
 /// The toast card itself, with no opinion about where it sits (`ToastPresenterModifier`) or how
 /// long it lives (`ToastPresenter`).
 ///
-/// Dark on a light-only app, matching `MainMenuView`'s panel: it separates from the content
-/// underneath on its own, where a light card would lean entirely on its shadow to do that.
+/// On `darkBlueGray`, matching `MainMenuView`'s panel: it differs from the page in both appearances,
+/// so it separates from the content underneath without leaning on its shadow.
 struct ToastView: View {
   let toast: Toast
   /// Tapping the card anywhere but the action button dismisses it, whatever kind of toast it is.

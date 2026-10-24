@@ -12,11 +12,12 @@ extension Colors {
   static let defaultBackgroundColor = Color(.defaultBackground)
   static let primaryTextColor = Color(.primaryText)
   static let inactiveTextColor = Color(.inactiveText)
+  static let placeholderTextColor = Color(.placeholderText)
   /// The menu panel and toast card.
   static let darkBlueGrayColor = Color(.darkBlueGray)
   /// Text and icons drawn on `darkBlueGrayColor`.
   static let panelForegroundColor = Color(.panelForeground)
-  /// A raised surface on the page: grouped `Form` rows.
+  /// A raised surface on the page: grouped `Form` rows and the floating add button.
   static let surfaceColor = Color(.surface)
   static let destructiveColor = Color(.salmonRed)
   static let accentFillColor = Color(.accentFill)
