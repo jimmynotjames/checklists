@@ -100,6 +100,7 @@ struct ChecklistsApp: App {
       #if DEBUG
       // On the Group so the loading and failure screens scale too; see `TestDynamicTypeOverride`.
       .modifier(TestDynamicTypeOverride())
+      .modifier(TestAppearanceOverride())
       #endif
       .environment(\.analytics, analytics)
       .environment(analyticsSettings)

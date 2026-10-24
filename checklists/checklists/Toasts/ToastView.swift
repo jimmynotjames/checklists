@@ -60,7 +60,7 @@ struct ToastView: View {
 
         Text(toast.message)
           .font(.subheadline)
-          .foregroundStyle(Colors.defaultBackgroundColor)
+          .foregroundStyle(Colors.panelForegroundColor)
           .fixedSize(horizontal: false, vertical: true)
           .frame(maxWidth: .infinity, alignment: .leading)
       }
@@ -87,7 +87,7 @@ struct ToastView: View {
         }
         // Not the accent colour: it is rgb(55,130,136) against a rgb(51,110,145) card, about
         // 1.2:1. The weight is what marks this as the action, the way `MainMenuView`'s rows do.
-        .tint(Colors.defaultBackgroundColor)
+        .tint(Colors.panelForegroundColor)
       }
     }
     .padding(.leading, 16)

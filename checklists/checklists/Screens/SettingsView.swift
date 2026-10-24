@@ -17,10 +17,13 @@ struct SettingsView: View {
   var body: some View {
     NavigationStack {
       Form {
-        iCloudSection
-        analyticsSection
-        infoSection
-        aboutSection
+        Group {
+          iCloudSection
+          analyticsSection
+          infoSection
+          aboutSection
+        }
+        .formRowBackground()
       }
       .appBackground()
       .navigationTitle(CommonStrings.settingsTitle)
@@ -46,6 +49,7 @@ struct SettingsView: View {
       iCloudStatusRow
     } header: {
       Text(String(localized: "settings.icloud.header", defaultValue: "iCloud Sync", comment: "Section header above the iCloud sync status row in Settings."))
+        .foregroundStyle(Colors.inactiveTextColor)
     } footer: {
       iCloudFooter
     }
@@ -57,6 +61,7 @@ struct SettingsView: View {
     if let symbolName = presentation.symbolName {
       Label {
         Text(presentation.title)
+          .foregroundStyle(Colors.primaryTextColor)
       } icon: {
         Image(systemName: symbolName)
           .foregroundStyle(presentation.isWarning ? Colors.warningColor : Colors.successColor)
@@ -65,6 +70,7 @@ struct SettingsView: View {
     } else {
       HStack {
         Text(presentation.title)
+          .foregroundStyle(Colors.primaryTextColor)
         Spacer()
         ProgressView()
       }
@@ -91,6 +97,7 @@ struct SettingsView: View {
         },
       )) {
         Text(String(localized: "settings.analytics.toggle", defaultValue: "Share Anonymous Usage Data", comment: "Label of the analytics opt-in toggle in Settings."))
+          .foregroundStyle(Colors.primaryTextColor)
       }
       .tint(Color.accentColor)
       .accessibilityHint(String(
@@ -100,6 +107,7 @@ struct SettingsView: View {
       ))
     } header: {
       Text(String(localized: "settings.analytics.header", defaultValue: "Diagnostics & Analytics", comment: "Section header above the analytics opt-in toggle in Settings."))
+        .foregroundStyle(Colors.inactiveTextColor)
     } footer: {
       Text(String(
         localized: "settings.analytics.footer",
@@ -139,6 +147,7 @@ struct SettingsView: View {
     } header: {
       // Title case, matching how the other Form headers here are written.
       Text(String(localized: "settings.info.header", defaultValue: "Info", comment: "Section header above the Privacy Policy row in Settings."))
+        .foregroundStyle(Colors.inactiveTextColor)
     }
   }
 
@@ -148,9 +157,10 @@ struct SettingsView: View {
     Section {
       HStack {
         Text(String(localized: "settings.about.version", defaultValue: "Version", comment: "Label next to the app's version and build number in Settings."))
+          .foregroundStyle(Colors.primaryTextColor)
         Spacer()
         Text(verbatim: SettingsManager.versionBuildString)
-          .foregroundStyle(.secondary)
+          .foregroundStyle(Colors.inactiveTextColor)
           .monospacedDigit()
       }
       .accessibilityElement(children: .combine)

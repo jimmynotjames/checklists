@@ -44,6 +44,7 @@ struct AnalyticsConsentSheet: View {
           VStack(spacing: 12) {
             Text(String(localized: "consent.title", defaultValue: "Help Improve the App?", comment: "Title of the one-time analytics consent sheet."))
               .font(.title2.bold())
+              .foregroundStyle(Colors.primaryTextColor)
 
             Text(String(
               localized: "consent.body",

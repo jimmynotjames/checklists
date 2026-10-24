@@ -87,6 +87,8 @@ class CLTextView: UITextView {
     textContainer.lineFragmentPadding = 0.0
 
     backgroundColor = .clear
+    // Item rows override this per checked state.
+    textColor = Colors.primaryText
 
     setUpSubviews()
 

@@ -39,6 +39,7 @@ struct ContainerFailureView: View {
 
           Text(String(localized: "containerFailure.title", defaultValue: "Couldn't open your checklists", comment: "Title of the full-screen error shown when the local database cannot be opened."))
             .font(.title2.bold())
+            .foregroundStyle(Colors.primaryTextColor)
 
           Text(String(
             localized: "containerFailure.message",
@@ -49,6 +50,7 @@ struct ContainerFailureView: View {
             """,
           ))
           .font(.body)
+          .foregroundStyle(Colors.primaryTextColor)
         }
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .combine)

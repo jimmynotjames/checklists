@@ -32,7 +32,7 @@ struct MainMenuView: View {
         router.isMainMenuVisible = false
       } label: {
         Image("StopIcon")
-          .foregroundStyle(Colors.defaultBackgroundColor)
+          .foregroundStyle(Colors.panelForegroundColor)
           // The paddings below give back the slack on each side, so the icon draws where it did
           // and only the tappable area grows.
           .frame(width: 44, height: 44)
@@ -158,7 +158,7 @@ private struct MainMenuRow: View {
 
         Text(title)
           .font(.title2.weight(.medium))
-          .foregroundStyle(Colors.defaultBackgroundColor)
+          .foregroundStyle(Colors.panelForegroundColor)
 
         Spacer()
       }
