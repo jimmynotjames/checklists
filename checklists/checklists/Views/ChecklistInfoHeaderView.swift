@@ -32,7 +32,11 @@ final class ChecklistInfoHeaderView: UIView {
     translatesAutoresizingMaskIntoConstraints = true
     backgroundColor = Colors.defaultBackground
 
-    nameTextField.placeholder = String(localized: "checklist.name.placeholder", defaultValue: "Name", comment: "Placeholder of the checklist name field in the detail header.")
+    // Our gray, not UIKit's: the system placeholder color is about 1.7:1 on `defaultBackground`.
+    nameTextField.attributedPlaceholder = NSAttributedString(
+      string: String(localized: "checklist.name.placeholder", defaultValue: "Name", comment: "Placeholder of the checklist name field in the detail header."),
+      attributes: [.foregroundColor: Colors.placeholderText],
+    )
     nameTextField.font = UIFontMetrics(forTextStyle: .title2).scaledFont(
       for: .systemFont(ofSize: 24.0, weight: .semibold),
       maximumPointSize: Self.maximumNamePointSize,
