@@ -7,8 +7,8 @@ import Foundation
 
 /// Minimal key-value persistence seam used by `AnalyticsSettings` and `RatingPromptState`.
 ///
-/// Exists so the backing store is a one-line swap: production uses `UserDefaults.standard`, and
-/// test launches and unit tests use `InMemoryKeyValueStore`.
+/// Exists so tests can swap the backing store: production uses `UserDefaults.standard`, and test
+/// launches and unit tests use `InMemoryKeyValueStore`.
 protocol KeyValueStore: AnyObject {
   func object(forKey key: String) -> Any?
   func set(_ value: Bool, forKey defaultName: String)

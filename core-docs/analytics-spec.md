@@ -125,9 +125,10 @@ profile.
 It lives in `UserDefaults.standard`, so consent and identity are **per device**, which
 `TARGETED_DEVICE_FAMILY = 1` makes nearly per person. They stay out of iCloud on purpose:
 consent jurisdiction is decided per device, and a synced id would be a User ID on the privacy label.
-Moving a key to `NSUbiquitousKeyValueStore` is more than a store swap. It also needs the
+Moving a key to `NSUbiquitousKeyValueStore` needs the
 `com.apple.developer.ubiquity-kvstore-identifier` entitlement, a read-through migration, a
-change-notification hook that `KeyValueStore` lacks, and a conflict rule per key.
+change-notification hook that `KeyValueStore` lacks and each consumer re-reads on, and a conflict
+rule per key.
 
 `RatingPromptState` uses the same seam and store but is **not** analytics state and **not**
 consent-gated: an opted-out install earns its prompt on the same schedule; only the two events are
