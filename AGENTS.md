@@ -227,9 +227,10 @@ the fix:
   Info.plist — `analytics-spec.md §Build hygiene`.
 - Ignore the `swiftui_2024` branch (origin only) unless asked about it by name. It is an unmerged
   UIKit→SwiftUI migration; exploring it wastes tokens.
-- Don't propose dark-mode checks or dark colour variants: `Info.plist` pins Light appearance.
-  System semantic colours always resolve to their light values, so match a new surface to `Colors`
-  explicitly.
+- Don't colour text or surfaces with system semantic colours (`.label`, `.secondary`, the system
+  placeholder, grouped cell backgrounds). The app follows the system light/dark setting, and every
+  colour comes from `Colors`, whose colorsets in `Colors.xcassets` each carry a light and a dark
+  value. A new role gets its own colorset with both; iOS's grays fail 4.5:1 on the light `defaultBackground`.
 - Don't delete the MoreMenuIcon32x32 image set as dead; it is kept on purpose.
 
 ## Simulator sandbox

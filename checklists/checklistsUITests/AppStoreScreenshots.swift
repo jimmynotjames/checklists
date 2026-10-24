@@ -40,9 +40,9 @@ final class AppStoreScreenshots: XCTestCase {
     app.launchEnvironment["IS_TESTING"] = "1"
     app.launchEnvironment["SEED_SCREENSHOTS_JSON"] = catalog.json
     app.launchEnvironment["SCREENSHOT_SEED_LOCALE"] = locale
+    // The listing shows the light appearance; see `TestAppearanceOverride`.
+    app.launchEnvironment["FORCE_APPEARANCE"] = "light"
     app.launchArguments += [
-      "-AppleInterfaceStyle",
-      "Light",
       "-UIPreferredContentSizeCategoryName",
       UIContentSizeCategory.large.rawValue,
     ]

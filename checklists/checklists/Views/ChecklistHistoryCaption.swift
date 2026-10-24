@@ -77,7 +77,7 @@ enum ChecklistHistoryCaption {
     label.lineBreakMode = .byTruncatingTail
     label.font = .preferredFont(forTextStyle: textStyle)
     label.adjustsFontForContentSizeCategory = true
-    // Not `.secondaryLabel`, which is about 3.3:1 on `defaultBackground`.
+    // Not `.secondaryLabel`, which is about 3.3:1 on the light `defaultBackground`.
     label.textColor = Colors.inactiveText
     return label
   }

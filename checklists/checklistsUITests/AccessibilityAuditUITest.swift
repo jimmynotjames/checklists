@@ -7,10 +7,15 @@ import XCTest
 
 /// Xcode's accessibility audit on every screen, one test each, so a regression fails `make test-ui`.
 ///
-/// Contrast is left out until the app has a dark appearance and Increase Contrast (#180, #182).
-/// Anything the audit raises fails the test unless it is in `knownIssues`.
+/// Contrast is left out until Increase Contrast lands (#182). Anything the audit raises fails the test
+/// unless it is in `knownIssues`.
 class AccessibilityAuditUITest: XCTestCase {
   var app: XCUIApplication!
+
+  /// The `FORCE_APPEARANCE` each launch passes; see `TestAppearanceOverride`.
+  class var appearance: String {
+    "light"
+  }
 
   private static let auditTypes: XCUIAccessibilityAuditType = .all.subtracting(.contrast)
 
@@ -92,6 +97,7 @@ class AccessibilityAuditUITest: XCTestCase {
   private func launch(locale: String? = nil) {
     app = XCUIApplication()
     app.launchArguments = ["-UITests1"] + (locale.map { ["-AppleLocale", $0] } ?? [])
+    app.launchEnvironment["FORCE_APPEARANCE"] = Self.appearance
     app.launch()
     XCTAssertTrue(app.collectionViews.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
   }
