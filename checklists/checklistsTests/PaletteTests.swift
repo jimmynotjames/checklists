@@ -89,7 +89,7 @@ struct PaletteTests {
     Pair(name: "the Delete swipe glyph", foreground: .white, background: Colors.destructiveFill, minimum: 3),
   ]
 
-  /// Pairs that fail in light today; Increase Contrast (#182) owns them.
+  /// Pairs that fail in light today; Increase Contrast (#345) owns them.
   private static let darkOnlyPairs = [
     Pair(name: "accent text on the page", foreground: Colors.accent, background: Colors.defaultBackground, minimum: 4.5),
     Pair(name: "accent text in a Form row", foreground: Colors.accent, background: surface, minimum: 4.5),
