@@ -13,9 +13,7 @@ Record merged: no
 - [x] Editable App Store version 2.0 confirmed
 - [x] Metadata uploaded or deliberately unchanged
 
-Metadata note: Uploaded 2026-10-24 from ce58445 (#339) with `fastlane ios push_metadata
-app_version:2.0`: all 50 locales, no errors, against the editable 2.0 version (not live, no
-version update). Text fields and URLs only; no `promotional_text`.
+Metadata note: Uploaded 2026-10-24, all locales, no errors.
 
 ## Candidate
 
