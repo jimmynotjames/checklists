@@ -37,16 +37,17 @@ def stale_devices(
     """Devices named `name` that are not on the target iOS runtime, with the reason.
 
     `devices` and `runtimes` are the parsed `simctl list devices -j` / `runtimes -j` bodies.
-    Returns nothing when no target runtime is installed: there is nothing to rebuild onto.
+    The target is the newest runtime that hosts the device's own type. Leaves a device alone when
+    no target runtime is installed: there is nothing to rebuild onto.
     """
-    target = newest_ios_runtime(runtimes, sdk_version)
-    if target is None:
-        return []
     by_id = {r["identifier"]: r for r in runtimes}
     found = []
     for runtime_id, runtime_devices in devices.items():
         for d in runtime_devices:
             if d.get("name") != name:
+                continue
+            target = newest_ios_runtime(runtimes, sdk_version, d.get("deviceTypeIdentifier"))
+            if target is None:
                 continue
             runtime = by_id.get(runtime_id)
             if runtime is None:

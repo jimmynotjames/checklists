@@ -242,7 +242,8 @@ worktree, so run `make sim-clean` in a worktree before removing it. The device i
 device shares the hash. `SIMULATOR_NAME` picks a different base device; `SIMULATOR_UDID` pins a
 device and skips sandbox management. `make sim-status` shows the device and the lock holder;
 `make sim-clean` deletes every device and parallel-testing clone carrying this checkout's hash.
-When the device isn't on the newest iOS runtime the selected Xcode can target,
+When the device isn't on the newest iOS runtime the selected Xcode can target that hosts its device
+type,
 `scripts/sim_retire_stale.py` deletes it before use so it is recreated; the screenshot device gets
 the same treatment.
 

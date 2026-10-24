@@ -31,6 +31,16 @@ class StaleDeviceTests(unittest.TestCase):
         self.assertEqual([d["udid"] for d, _ in found], ["U1"])
         self.assertIn("iOS 26.5", found[0][1])
 
+    def test_newer_runtime_without_this_device_type_is_not_the_target(self) -> None:
+        iphone_17 = "com.apple.CoreSimulator.SimDeviceType.iPhone-17"
+        ios_27_1 = {
+            **_runtime("com.apple.CoreSimulator.SimRuntime.iOS-27-1", "27.1"),
+            "supportedDeviceTypes": [{"identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-Duo"}],
+        }
+        runtimes = [_runtime(IOS_27_0, "27.0"), ios_27_1]
+        device = {**_device(), "deviceTypeIdentifier": iphone_17}
+        self.assertEqual(stale_devices(NAME, {IOS_27_0: [device]}, runtimes), [])
+
     def test_device_on_newest_runtime_is_kept(self) -> None:
         runtimes = [_runtime(IOS_26_5, "26.5"), _runtime(IOS_27_0, "27.0")]
         self.assertEqual(stale_devices(NAME, {IOS_27_0: [_device()]}, runtimes), [])
