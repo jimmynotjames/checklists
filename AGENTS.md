@@ -230,7 +230,7 @@ the fix:
 - Don't colour text or surfaces with system semantic colours (`.label`, `.secondary`, the system
   placeholder, grouped cell backgrounds). The app follows the system light/dark setting, and every
   colour comes from `Colors`, whose colorsets in `Colors.xcassets` each carry a light and a dark
-  value. A new role gets its own colorset with both; iOS's grays fail 4.5:1 on `defaultBackground`.
+  value. A new role gets its own colorset with both; iOS's grays fail 4.5:1 on the light `defaultBackground`.
 - Don't delete the MoreMenuIcon32x32 image set as dead; it is kept on purpose.
 
 ## Simulator sandbox

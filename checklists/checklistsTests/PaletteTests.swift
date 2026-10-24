@@ -96,7 +96,9 @@ struct PaletteTests {
     Pair(name: "the success toast icon", foreground: success, background: Colors.darkBlueGray, minimum: 3),
     Pair(name: "the warning toast icon", foreground: warning, background: Colors.darkBlueGray, minimum: 3),
     Pair(name: "the error toast icon", foreground: Colors.destructive, background: Colors.darkBlueGray, minimum: 3),
-    Pair(name: "the iCloud status icon", foreground: success, background: surface, minimum: 3),
+    Pair(name: "destructive text on the page", foreground: Colors.destructive, background: Colors.defaultBackground, minimum: 4.5),
+    Pair(name: "the iCloud synced icon", foreground: success, background: surface, minimum: 3),
+    Pair(name: "the iCloud warning icon", foreground: warning, background: surface, minimum: 3),
   ]
 
   @Test("text and essential icons meet their contrast minimum in both appearances")

@@ -2,8 +2,6 @@
 import Testing
 import UIKit
 
-/// The ring's layers hold a resolved `CGColor`, so they have to be re-set when the appearance
-/// changes while the screen is open.
 @Suite("Progress ring appearance", .serialized)
 struct CircularPercentStatusIconAppearanceTests {
   @Test("the header ring takes the dark accent when the screen turns dark")
@@ -21,6 +19,8 @@ struct CircularPercentStatusIconAppearanceTests {
       harness.viewController.view.layoutIfNeeded()
       #expect(icon.traitCollection.userInterfaceStyle == .dark)
       #expect(icon.layer.borderColor == darkAccent)
+      let fill = try #require(icon.layer.sublayers?.compactMap { $0 as? CAShapeLayer }.first)
+      #expect(fill.fillColor == darkAccent)
     }
   }
 }

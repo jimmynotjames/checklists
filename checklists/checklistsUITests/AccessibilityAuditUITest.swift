@@ -7,8 +7,8 @@ import XCTest
 
 /// Xcode's accessibility audit on every screen, one test each, so a regression fails `make test-ui`.
 ///
-/// Contrast is left out until Increase Contrast lands (#182). Runs in light; `AccessibilityAuditDarkUITest`
-/// runs the same audits in dark. Anything the audit raises fails the test unless it is in `knownIssues`.
+/// Contrast is left out until Increase Contrast lands (#182). Anything the audit raises fails the test
+/// unless it is in `knownIssues`.
 class AccessibilityAuditUITest: XCTestCase {
   var app: XCUIApplication!
 

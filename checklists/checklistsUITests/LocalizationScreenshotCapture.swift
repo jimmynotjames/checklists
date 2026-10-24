@@ -186,6 +186,8 @@ final class LocalizationScreenshotCapture: XCTestCase {
     app.launchArguments = ["-UITests1", "-AppleLanguages", "(\(lang))", "-AppleLocale", localeID(lang)]
     app.launchEnvironment["IS_TESTING"] = "1"
     app.launchEnvironment["FORCE_DYNAMIC_TYPE"] = "xxxLarge"
+    // Fixed, so runs compare whatever the simulator's own setting is.
+    app.launchEnvironment["FORCE_APPEARANCE"] = "light"
     app.launch()
     return app
   }
