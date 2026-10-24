@@ -8,7 +8,7 @@ import Foundation
 import PDFKit
 import Testing
 
-/// Covers the PDF the renderer writes: pagination, paper, title metadata and the page footer.
+/// Covers the PDF the renderer writes: pagination, paper and title metadata.
 /// PDFKit reads the result back; the app itself never uses it.
 @Suite("Checklist PDF renderer")
 struct ChecklistPDFRendererTests {
@@ -52,16 +52,5 @@ struct ChecklistPDFRendererTests {
 
     #expect(abs(bounds.width - paperSize.pageSize.width) < 1)
     #expect(abs(bounds.height - paperSize.pageSize.height) < 1)
-  }
-
-  @Test("every page carries its page number and the total")
-  func footerOnEveryPage() throws {
-    let pdf = try document(snapshot(notes: Self.longNotes))
-    let pageCount = pdf.pageCount
-
-    for index in 0 ..< pageCount {
-      let text = try #require(pdf.page(at: index)?.string)
-      #expect(text.contains(ChecklistPDFRenderer.footerText(page: index + 1, of: pageCount)))
-    }
   }
 }

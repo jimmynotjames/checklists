@@ -16,8 +16,7 @@ enum ChecklistPDFContent {
   static let secondaryFont = UIFont.systemFont(ofSize: 12)
   static let itemFont = UIFont.systemFont(ofSize: 14)
   static let primaryColor = UIColor.black
-  /// `nonisolated` so the page footer, drawn by an unisolated UIKit renderer, can share it.
-  nonisolated static let secondaryColor = UIColor(white: 0.3, alpha: 1)
+  static let secondaryColor = UIColor(white: 0.3, alpha: 1)
 
   /// The checkbox and the gap after it, which wrapped item lines and item notes indent by so they
   /// line up under the item's text.

@@ -13,13 +13,11 @@ import UIKit
 enum ChecklistPDFRenderer {
   /// Three-quarters of an inch on every side.
   static let margin: CGFloat = 54
-  private static let footerHeight: CGFloat = 24
 
   static func render(_ snapshot: ChecklistPDFSnapshot) -> Data {
     let paperRect = CGRect(origin: .zero, size: snapshot.paperSize.pageSize)
     let printableRect = paperRect.insetBy(dx: margin, dy: margin)
     let pageRenderer = PageRenderer(paperRect: paperRect, printableRect: printableRect)
-    pageRenderer.footerHeight = footerHeight
     let text = ChecklistPDFContent.attributedString(for: snapshot, contentWidth: printableRect.width)
     pageRenderer.addPrintFormatter(UISimpleTextPrintFormatter(attributedText: text), startingAtPageAt: 0)
 
@@ -34,17 +32,6 @@ enum ChecklistPDFRenderer {
         pageRenderer.drawPage(at: page, in: context.pdfContextBounds)
       }
     }
-  }
-
-  nonisolated static func footerText(page: Int, of pageCount: Int) -> String {
-    String(
-      localized: "pdf.footer.pageNumber",
-      defaultValue: "Page \(page) of \(pageCount)",
-      comment: """
-      Small footer printed at the bottom of every page of an exported checklist PDF. The first \
-      number is this page, the second the total number of pages. Printed, not shown in the app.
-      """,
-    )
   }
 
   /// `UIPrintPageRenderer` reads its paper from a print job; outside one, the only way to give it
@@ -66,22 +53,6 @@ enum ChecklistPDFRenderer {
 
     override var printableRect: CGRect {
       printable
-    }
-
-    /// Centred, so it needs no mirroring for a right-to-left page.
-    override func drawFooterForPage(at pageIndex: Int, in footerRect: CGRect) {
-      let style = NSMutableParagraphStyle()
-      style.alignment = .center
-      let footer = NSAttributedString(
-        string: ChecklistPDFRenderer.footerText(page: pageIndex + 1, of: numberOfPages),
-        attributes: [
-          .font: UIFont.systemFont(ofSize: 9),
-          .foregroundColor: ChecklistPDFContent.secondaryColor,
-          .paragraphStyle: style,
-        ],
-      )
-      let height = footer.size().height
-      footer.draw(in: CGRect(x: footerRect.minX, y: footerRect.maxY - height, width: footerRect.width, height: height))
     }
   }
 }
