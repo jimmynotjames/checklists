@@ -47,7 +47,6 @@ struct ChecklistPDFContentTests {
     ])
   }
 
-  /// A scratch row is not a task, and an empty box on a receipt would read as skipped work.
   @Test("blank scratch rows are left out")
   func blankRowsAreLeftOut() throws {
     let (_, checklist) = try makeChecklist(name: "Quality check", items: [.init(name: "Shut off water", notes: nil, isChecked: true), .init(name: "", notes: nil, isChecked: false)])

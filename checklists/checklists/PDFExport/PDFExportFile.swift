@@ -10,8 +10,8 @@ import Foundation
 nonisolated enum PDFExportFile {
   static let rootDirectory = FileManager.default.temporaryDirectory.appending(path: "PDFExport", directoryHint: .isDirectory)
 
-  /// Each file gets a folder of its own, so it can carry the readable name the recipient sees
-  /// without colliding with another export of the same checklist on the same day.
+  /// In a folder of its own, so the file keeps the readable name the recipient sees and `remove`
+  /// takes away exactly one export.
   ///
   /// Clears out earlier exports first: a crash while the share sheet was up would otherwise leave
   /// one behind.
@@ -25,7 +25,6 @@ nonisolated enum PDFExportFile {
     return url
   }
 
-  /// Removes the file and the folder made for it.
   static func remove(_ url: URL) {
     try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
   }

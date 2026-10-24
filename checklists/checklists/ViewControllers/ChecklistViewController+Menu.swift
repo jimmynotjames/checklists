@@ -142,7 +142,12 @@ extension ChecklistViewController {
     do {
       url = try makePDFExportFile(for: snapshot)
     } catch {
-      AppLog.persistence.error("Could not write the exported PDF: \(error.localizedDescription, privacy: .public)")
+      // The description can name the file, and so the checklist, so only the domain and code are
+      // public.
+      let nsError = error as NSError
+      AppLog.persistence.error(
+        "Could not write the exported PDF: \(nsError.domain, privacy: .public) \(nsError.code, privacy: .public) \(nsError.localizedDescription, privacy: .private)",
+      )
       onPDFExportFailed?()
       return
     }
@@ -160,7 +165,6 @@ extension ChecklistViewController {
     }
   }
 
-  /// Renders the PDF and writes it to a temporary file named for the checklist and today's date.
   func makePDFExportFile(for snapshot: ChecklistPDFSnapshot) throws -> URL {
     let data = ChecklistPDFRenderer.render(snapshot)
     return try PDFExportFile.write(data, fileName: PDFFileName.make(title: snapshot.title, date: .now, timeZone: .current))

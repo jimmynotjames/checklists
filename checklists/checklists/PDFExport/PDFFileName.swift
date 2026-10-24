@@ -11,7 +11,7 @@ nonisolated enum PDFFileName {
   /// extension.
   private static let maxTitleBytes = 200
 
-  /// `<title> <yyyy-MM-dd>.pdf`, dated with the date the person chose, not the export time.
+  /// `<title> <yyyy-MM-dd>.pdf`, so several exports of one checklist stay apart.
   static func make(title: String, date: Date, timeZone: TimeZone) -> String {
     let formatter = DateFormatter()
     // Fixed, not localized: a sortable machine date reads the same in every language.

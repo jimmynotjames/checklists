@@ -12,15 +12,15 @@ import Testing
 struct PDFFileNameTests {
   private let utc = TimeZone.gmt
 
-  @Test("the name is the checklist name and the chosen date")
+  @Test("the name is the checklist name and the date")
   func nameIsTitleAndDate() {
     let date = Date(timeIntervalSince1970: 1_792_756_800) // 2026-10-23 12:00 UTC
 
     #expect(PDFFileName.make(title: "Quality check", date: date, timeZone: utc) == "Quality check 2026-10-23.pdf")
   }
 
-  /// Late evening in Los Angeles is already the next day in UTC; the file should carry the day
-  /// the person picked.
+  /// Late evening in Los Angeles is already the next day in UTC; the file should carry the local
+  /// day.
   @Test("the date is the day in the chosen time zone")
   func dateUsesTheTimeZone() throws {
     let date = Date(timeIntervalSince1970: 1_792_803_600) // 2026-10-24 01:00 UTC, the evening before in LA

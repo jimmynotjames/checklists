@@ -125,7 +125,6 @@ struct ChecklistMenuActionTests {
 
   // MARK: - Export as PDF
 
-  /// The PDF shows what is on screen, not the last value that happened to be saved.
   @Test("an uncommitted name is committed before exporting")
   func uncommittedNameIsCommittedBeforeExporting() throws {
     try ChecklistScreenHarness.withController(name: "Packing", items: [("Passport", false)]) { harness in
@@ -135,6 +134,8 @@ struct ChecklistMenuActionTests {
       harness.viewController.exportPDF()
 
       #expect(harness.checklist.name == "Trip")
+      // The harness window has no scene to present the share sheet in, so nothing deletes the file.
+      try? FileManager.default.removeItem(at: PDFExportFile.rootDirectory)
     }
   }
 

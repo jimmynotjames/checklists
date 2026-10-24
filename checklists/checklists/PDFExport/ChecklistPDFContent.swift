@@ -114,10 +114,14 @@ enum ChecklistPDFContent {
   private static func checkbox(isChecked: Bool) -> NSTextAttachment {
     let side = checkboxSide
     let attachment = NSTextAttachment()
-    attachment.image = checkboxImage(isChecked: isChecked, side: side)
+    attachment.image = isChecked ? checkedImage : uncheckedImage
     attachment.bounds = CGRect(x: 0, y: (itemFont.capHeight - side) / 2, width: side, height: side)
     return attachment
   }
+
+  /// Built once each and shared by every row.
+  private static let checkedImage = checkboxImage(isChecked: true, side: checkboxSide)
+  private static let uncheckedImage = checkboxImage(isChecked: false, side: checkboxSide)
 
   /// Flattened to a bitmap first: the print formatter fills a symbol image's whole box with the
   /// text colour, so an unflattened checkbox prints as a solid square whether it is ticked or not.

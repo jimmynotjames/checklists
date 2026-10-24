@@ -32,14 +32,17 @@ enum PDFShareSheet {
         finish(completed)
         return
       }
-      // Checked again once any dismissal has had time to start: some destinations close the
-      // share sheet along with their own screen.
+      // Watched until it is gone: some destinations close the share sheet along with their own
+      // screen, which reports nothing further. A share sheet that stays up reports again when it
+      // closes, and that ends the watch.
       Task { @MainActor [weak activity] in
-        try? await Task.sleep(for: .milliseconds(600))
-        if let activity, isStillPresented(activity) {
-          return
+        while !isFinished {
+          try? await Task.sleep(for: .milliseconds(500))
+          guard let activity, isStillPresented(activity) else {
+            finish(false)
+            return
+          }
         }
-        finish(false)
       }
     }
     presenter.present(activity, animated: true)
