@@ -37,7 +37,7 @@ struct ChecklistPDFContentTests {
       rows: rows,
       isRightToLeft: isRightToLeft,
       locale: Locale(identifier: "en_GB"),
-      timeZone: TimeZone(identifier: "UTC")!,
+      timeZone: .gmt,
       paperSize: .a4,
     )
   }

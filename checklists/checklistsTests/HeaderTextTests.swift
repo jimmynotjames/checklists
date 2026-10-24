@@ -42,9 +42,9 @@ struct HeaderTextTests {
   /// Swift's default count, as the spec says: an emoji is one character, not two UTF-16 units.
   @Test("the limit counts characters, so an emoji counts once")
   func limitCountsCharacters() {
-    let capped = HeaderText.capped(String(repeating: "🔧", count: HeaderText.characterLimit + 5))
+    let current = String(repeating: "🔧", count: HeaderText.characterLimit - 2)
 
-    #expect(capped.count == HeaderText.characterLimit)
+    #expect(HeaderText.appendix(inserting: "🔧🔧🔧", into: current) == "\n🔧")
   }
 
   @Test("normalizing trims surrounding whitespace and keeps inner line breaks")

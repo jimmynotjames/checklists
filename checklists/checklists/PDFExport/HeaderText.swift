@@ -12,10 +12,6 @@ nonisolated enum HeaderText {
   /// as one.
   static let characterLimit = 30000
 
-  static func capped(_ text: String) -> String {
-    String(text.prefix(characterLimit))
-  }
-
   /// What is saved, compared and printed, so "Acme" and "Acme⏎" are one Saved Header.
   static func normalized(_ text: String) -> String {
     text.trimmingCharacters(in: .whitespacesAndNewlines)

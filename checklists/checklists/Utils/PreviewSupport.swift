@@ -94,7 +94,10 @@
     /// environment it finds in the app. `\.analytics` is deliberately absent — it already
     /// defaults to `ConsoleAnalyticsClient`.
     ///
-    /// `toasts` and `savedHeaders` are fresh instances per call rather than `PreviewSupport` fixtures, deliberately
+    /// `savedHeaders` is a fresh, empty store per call, so one preview's Saved Headers never show in
+    /// another's.
+    ///
+    /// `toasts` is a fresh instance per call rather than a `PreviewSupport` fixture, deliberately
     /// unlike `router` above: default-argument expressions are evaluated per call, and a shared
     /// presenter would leave one preview's toast showing in its neighbours — the leak `RootView`'s
     /// "Main menu open" preview already works around for `Router`.

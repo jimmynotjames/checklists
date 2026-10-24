@@ -123,7 +123,7 @@ struct ChecklistMenuActionTests {
     }
   }
 
-  // MARK: - Duplicate
+  // MARK: - Export as PDF
 
   @Test("the export entry hands the host this checklist")
   func exportEntryHandsOverTheChecklist() throws {
@@ -153,7 +153,6 @@ struct ChecklistMenuActionTests {
     }
   }
 
-  /// Between moving things inside the app and the deletes: it sends something out of the app.
   @Test("Export as PDF… has its own section, between copy and move and the deletes")
   func exportEntryHasItsOwnSection() throws {
     try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
@@ -167,7 +166,6 @@ struct ChecklistMenuActionTests {
     }
   }
 
-  /// Nothing on the create sheet has been kept yet, so there is nothing to hand anyone.
   @Test("the create sheet's menu has no export entry")
   func createSheetHasNoExportEntry() throws {
     try ChecklistScreenHarness.withController(items: [("Milk", false)], isNewChecklist: true) { harness in
@@ -180,6 +178,8 @@ struct ChecklistMenuActionTests {
       #expect(identifiers.contains("checklist.menu.reorderItems"))
     }
   }
+
+  // MARK: - Duplicate
 
   @Test("duplicating adds a copy and opens it")
   func duplicatingAddsACopyAndOpensIt() throws {

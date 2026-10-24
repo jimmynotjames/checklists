@@ -98,7 +98,7 @@ struct ExportPDFView: View {
   private var savedHeadersMenu: some View {
     Menu {
       Section {
-        // Newest first, as the store keeps them. Long entries are truncated by the menu itself.
+        // Long entries are truncated by the menu itself.
         ForEach(savedHeaders.headers, id: \.self) { saved in
           Button(saved) {
             editorProxy.append(saved)
@@ -137,17 +137,19 @@ struct ExportPDFView: View {
   // MARK: - Export
 
   private func export() async {
+    isExporting = true
+    // One frame, so the progress indicator is on screen before rendering holds the main thread.
+    try? await Task.sleep(for: .milliseconds(20))
     // A merge from another device can delete the checklist while this sheet is up, and the
     // screen under it closes without closing this. Same response as `CopyCheckedItemsView`'s.
-    // Looked up by record, as `ChecklistViewController.handleRemoteChange` does.
+    // Looked up by record, as `ChecklistViewController.handleRemoteChange` does, and after the
+    // wait above, with nothing suspending between it and the read below.
     guard !checklist.isDeleted, context.checklist(checklist.persistentModelID) != nil else {
+      isExporting = false
       dismiss()
       toasts?.show(.checklistDeletedElsewhere)
       return
     }
-    isExporting = true
-    // One frame, so the progress indicator is on screen before rendering holds the main thread.
-    try? await Task.sleep(for: .milliseconds(20))
 
     let snapshot = ChecklistPDFSnapshot.make(
       from: checklist,

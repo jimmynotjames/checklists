@@ -76,7 +76,7 @@ struct HeaderTextEditor: UIViewRepresentable {
     }
 
     /// Holds the field to `HeaderText.characterLimit`. An edit that would pass it goes in cut to
-    /// fit, so a long paste keeps its first 30,000 characters rather than being refused outright.
+    /// fit, so a long paste keeps what fits rather than being refused outright.
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText replacement: String) -> Bool {
       let current = textView.text ?? ""
       guard let replaced = Range(range, in: current) else { return true }

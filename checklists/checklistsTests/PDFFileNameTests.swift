@@ -10,7 +10,7 @@ import Testing
 /// Covers the exported file's name, which the recipient sees on the attachment and in Files.
 @Suite("PDF file name")
 struct PDFFileNameTests {
-  private let utc = TimeZone(identifier: "UTC")!
+  private let utc = TimeZone.gmt
 
   @Test("the name is the checklist name and the chosen date")
   func nameIsTitleAndDate() {

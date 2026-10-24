@@ -46,7 +46,6 @@ final class ChecklistExportPDFUITest: ChecklistDetailUITestCase {
     XCTAssertFalse(headerField.exists)
   }
 
-  /// Nothing on the create sheet has been kept yet, so there is nothing to hand anyone.
   func testCreateSheetMenuHasNoExportEntry() {
     app.buttons["Add new checklist."].tap()
     XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5), "The create sheet didn't open.")
