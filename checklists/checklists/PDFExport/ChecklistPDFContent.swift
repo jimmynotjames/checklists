@@ -7,13 +7,12 @@ import UIKit
 
 /// Lays an exported checklist out as one attributed string, which the renderer flows across pages.
 ///
-/// Spare and minimal in the system font: the name, the chosen date, the Header, a divider, then
-/// the checklist exactly as it stands. Colours are fixed rather than the app's palette, because a
+/// Spare and minimal in the system font: the name, a divider, then the checklist exactly as it
+/// stands, notes first. Colours are fixed rather than the app's palette, because a
 /// PDF is printed and forwarded, not shown in the app's appearance; dark grey rather than a light
 /// grey keeps secondary text readable on paper.
 enum ChecklistPDFContent {
   static let titleFont = UIFont.systemFont(ofSize: 24, weight: .bold)
-  static let dateFont = UIFont.systemFont(ofSize: 17, weight: .semibold)
   static let secondaryFont = UIFont.systemFont(ofSize: 12)
   static let itemFont = UIFont.systemFont(ofSize: 14)
   static let primaryColor = UIColor.black
@@ -33,11 +32,7 @@ enum ChecklistPDFContent {
     let direction: NSWritingDirection = snapshot.isRightToLeft ? .rightToLeft : .leftToRight
     let result = NSMutableAttributedString()
 
-    result.append(paragraph(snapshot.title, font: titleFont, color: primaryColor, direction: direction, spacingAfter: 4))
-    result.append(paragraph(dateString(for: snapshot), font: dateFont, color: primaryColor, direction: direction, spacingAfter: 12))
-    if !snapshot.header.isEmpty {
-      result.append(paragraph(snapshot.header, font: secondaryFont, color: secondaryColor, direction: direction, spacingAfter: 12))
-    }
+    result.append(paragraph(snapshot.title, font: titleFont, color: primaryColor, direction: direction, spacingAfter: 12))
     result.append(divider(width: contentWidth, direction: direction))
     if let notes = snapshot.checklistNotes {
       result.append(paragraph(notes, font: secondaryFont, color: secondaryColor, direction: direction, spacingAfter: 12))
@@ -46,16 +41,6 @@ enum ChecklistPDFContent {
       result.append(item(row, direction: direction))
     }
     return result
-  }
-
-  /// "Friday, 23 October 2026 at 2:15 PM PDT" in the person's own language and order: no label,
-  /// because the date is the one the person chose for the record, not necessarily when it was made.
-  static func dateString(for snapshot: ChecklistPDFSnapshot) -> String {
-    let formatter = DateFormatter()
-    formatter.locale = snapshot.locale
-    formatter.timeZone = snapshot.timeZone
-    formatter.setLocalizedDateFormatFromTemplate("EEEEdMMMMyjmmz")
-    return formatter.string(from: snapshot.date)
   }
 
   // MARK: - Pieces

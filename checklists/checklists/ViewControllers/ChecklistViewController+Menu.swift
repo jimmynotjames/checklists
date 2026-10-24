@@ -8,9 +8,9 @@ import UIKit
 /// The trailing navigation items, the overflow menu, the actions behind it, and the dismissal
 /// Delete Checklist shares with the remote-deletion path.
 ///
-/// `enterReorderMode`, `duplicateChecklist`, `transferCheckedItems(_:)`, `exportPDF` and
-/// `deleteChecklist` are internal so a test can invoke them: a `UIAction` handler cannot be fired
-/// directly.
+/// `enterReorderMode`, `duplicateChecklist`, `transferCheckedItems(_:)`, `exportPDF`,
+/// `makePDFExportFile` and `deleteChecklist` are internal so a test can invoke them: a `UIAction`
+/// handler cannot be fired directly.
 extension ChecklistViewController {
   /// The overflow-menu entries that act on the checked items, each of which can show "No checked
   /// items." under itself.
@@ -131,10 +131,39 @@ extension ChecklistViewController {
     return action
   }
 
+  /// Straight to the share sheet, with no sheet of options first: the screen behind the menu is
+  /// what prints, so it is the preview, and anything to add, such as the client's details, goes in
+  /// the checklist's notes.
   func exportPDF() {
     // Commits in-progress edits first, so the PDF shows what is on screen; see `duplicateChecklist`.
     view.endEditing(true)
-    onRequestExportPDF?(checklist.id)
+    let snapshot = ChecklistPDFSnapshot.make(from: checklist, isRightToLeft: view.effectiveUserInterfaceLayoutDirection == .rightToLeft)
+    let url: URL
+    do {
+      url = try makePDFExportFile(for: snapshot)
+    } catch {
+      AppLog.persistence.error("Could not write the exported PDF: \(error.localizedDescription, privacy: .public)")
+      onPDFExportFailed?()
+      return
+    }
+    PDFShareSheet.present(url: url, from: self, sourceItem: moreBarButtonItem) { [weak self] completed in
+      PDFExportFile.remove(url)
+      guard completed, let self else { return }
+      // Counts only: never anything from the checklist (analytics-spec.md §Deny-list).
+      analytics.track(
+        AnalyticsEvent.checklistPDFExported,
+        properties: [
+          AnalyticsProperty.itemsCount: snapshot.rows.count,
+          AnalyticsProperty.checkedItemsCount: snapshot.rows.count(where: \.isChecked),
+        ],
+      )
+    }
+  }
+
+  /// Renders the PDF and writes it to a temporary file named for the checklist and today's date.
+  func makePDFExportFile(for snapshot: ChecklistPDFSnapshot) throws -> URL {
+    let data = ChecklistPDFRenderer.render(snapshot)
+    return try PDFExportFile.write(data, fileName: PDFFileName.make(title: snapshot.title, date: .now, timeZone: .current))
   }
 
   private var reorderItemsAction: UIAction {

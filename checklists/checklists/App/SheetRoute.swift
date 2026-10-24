@@ -18,8 +18,6 @@ enum SheetRoute: Hashable, Identifiable {
   /// The destination picker for "Copy Checked Items to…" and "Move Checked Items to…", carrying
   /// the id of the checklist the items are leaving.
   case transferCheckedItems(sourceID: String, mode: CheckedItemsTransferMode)
-  /// The export sheet behind "Export as PDF…", carrying the id of the checklist being exported.
-  case exportPDF(checklistID: String)
 
   var id: Self {
     self

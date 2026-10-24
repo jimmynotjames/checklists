@@ -125,31 +125,29 @@ struct ChecklistMenuActionTests {
 
   // MARK: - Export as PDF
 
-  @Test("the export entry hands the host this checklist")
-  func exportEntryHandsOverTheChecklist() throws {
-    try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
-      var requestedIds: [String] = []
-      harness.viewController.onRequestExportPDF = { requestedIds.append($0) }
-
-      harness.viewController.exportPDF()
-
-      #expect(requestedIds == [harness.checklist.id])
-    }
-  }
-
   /// The PDF shows what is on screen, not the last value that happened to be saved.
-  @Test("an uncommitted name is committed before the export sheet opens")
+  @Test("an uncommitted name is committed before exporting")
   func uncommittedNameIsCommittedBeforeExporting() throws {
     try ChecklistScreenHarness.withController(name: "Packing", items: [("Passport", false)]) { harness in
       harness.header.nameTextField.text = "Trip"
       harness.header.nameTextField.becomeFirstResponder()
-      var nameWhenRequested: String?
-      let checklist = harness.checklist
-      harness.viewController.onRequestExportPDF = { _ in nameWhenRequested = checklist.name }
 
       harness.viewController.exportPDF()
 
-      #expect(nameWhenRequested == "Trip")
+      #expect(harness.checklist.name == "Trip")
+    }
+  }
+
+  @Test("the exported file is named for the checklist and today's date")
+  func exportedFileIsNamedForTheChecklistAndToday() throws {
+    try ChecklistScreenHarness.withController(name: "Packing", items: [("Passport", false)]) { harness in
+      let snapshot = ChecklistPDFSnapshot.make(from: harness.checklist, isRightToLeft: false)
+
+      let url = try harness.viewController.makePDFExportFile(for: snapshot)
+      defer { PDFExportFile.remove(url) }
+
+      #expect(url.lastPathComponent == PDFFileName.make(title: "Packing", date: .now, timeZone: .current))
+      #expect(FileManager.default.fileExists(atPath: url.path(percentEncoded: false)))
     }
   }
 

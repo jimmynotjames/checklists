@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Everything an exported PDF shows, copied out of the checklist when Export is tapped.
+/// Everything an exported PDF shows, copied out of the checklist when Export as PDF… is chosen.
 ///
 /// A value, so the PDF is of the checklist as it was at that moment, and so nothing downstream
 /// touches SwiftData models.
@@ -18,37 +18,24 @@ nonisolated struct ChecklistPDFSnapshot: Equatable {
 
   /// Never empty: an unnamed checklist carries the app's untitled fallback.
   let title: String
-  let date: Date
-  /// Trimmed; empty when there is none, and then the PDF has no Header.
-  let header: String
   let checklistNotes: String?
   let rows: [Row]
   /// The app's language direction, not the text's: a Hebrew-language app mirrors the whole page,
   /// checkboxes included, even for a checklist written in English.
   let isRightToLeft: Bool
-  let locale: Locale
-  let timeZone: TimeZone
   let paperSize: PaperSize
 
   init(
     title: String,
-    date: Date,
-    header: String,
     checklistNotes: String?,
     rows: [Row],
     isRightToLeft: Bool,
-    locale: Locale = .current,
-    timeZone: TimeZone = .current,
     paperSize: PaperSize = PaperSize.forRegion(Locale.current.region?.identifier),
   ) {
     self.title = title
-    self.date = date
-    self.header = HeaderText.normalized(header)
     self.checklistNotes = Self.nonEmpty(checklistNotes)
     self.rows = rows
     self.isRightToLeft = isRightToLeft
-    self.locale = locale
-    self.timeZone = timeZone
     self.paperSize = paperSize
   }
 
@@ -57,11 +44,7 @@ nonisolated struct ChecklistPDFSnapshot: Equatable {
   @MainActor
   static func make(
     from checklist: Checklist,
-    date: Date,
-    header: String,
     isRightToLeft: Bool,
-    locale: Locale = .current,
-    timeZone: TimeZone = .current,
     paperSize: PaperSize = PaperSize.forRegion(Locale.current.region?.identifier),
   ) -> ChecklistPDFSnapshot {
     let rows = checklist.items.filter { !$0.isBlank }.map { item in
@@ -69,13 +52,9 @@ nonisolated struct ChecklistPDFSnapshot: Equatable {
     }
     return ChecklistPDFSnapshot(
       title: checklist.name.isEmpty ? CommonStrings.defaultChecklistName : checklist.name,
-      date: date,
-      header: header,
       checklistNotes: checklist.notes,
       rows: rows,
       isRightToLeft: isRightToLeft,
-      locale: locale,
-      timeZone: timeZone,
       paperSize: paperSize,
     )
   }

@@ -12,17 +12,17 @@ import Testing
 /// PDFKit reads the result back; the app itself never uses it.
 @Suite("Checklist PDF renderer")
 struct ChecklistPDFRendererTests {
-  private func snapshot(header: String = "", paperSize: PaperSize = .a4) -> ChecklistPDFSnapshot {
+  private func snapshot(notes: String? = nil, paperSize: PaperSize = .a4) -> ChecklistPDFSnapshot {
     ChecklistPDFSnapshot(
       title: "Quality check",
-      date: Date(timeIntervalSince1970: 1_792_756_800),
-      header: header,
-      checklistNotes: nil,
+      checklistNotes: notes,
       rows: [.init(name: "Shut off water", notes: nil, isChecked: true)],
       isRightToLeft: false,
       paperSize: paperSize,
     )
   }
+
+  private static let longNotes = String(repeating: "Acme Plumbing Ltd, licence 12345. ", count: 900)
 
   private func document(_ snapshot: ChecklistPDFSnapshot) throws -> PDFDocument {
     try #require(PDFDocument(data: ChecklistPDFRenderer.render(snapshot)))
@@ -33,11 +33,9 @@ struct ChecklistPDFRendererTests {
     #expect(try document(snapshot()).pageCount == 1)
   }
 
-  @Test("a Header at the character limit flows onto further pages")
-  func longHeaderPaginates() throws {
-    let header = String(repeating: "Acme Plumbing Ltd, licence 12345. ", count: HeaderText.characterLimit / 34)
-
-    #expect(try document(snapshot(header: header)).pageCount > 5)
+  @Test("long notes flow onto further pages")
+  func longNotesPaginate() throws {
+    #expect(try document(snapshot(notes: Self.longNotes)).pageCount > 5)
   }
 
   @Test("the PDF's title is the checklist name")
@@ -58,8 +56,7 @@ struct ChecklistPDFRendererTests {
 
   @Test("every page carries its page number and the total")
   func footerOnEveryPage() throws {
-    let header = String(repeating: "Acme Plumbing Ltd, licence 12345. ", count: 400)
-    let pdf = try document(snapshot(header: header))
+    let pdf = try document(snapshot(notes: Self.longNotes))
     let pageCount = pdf.pageCount
 
     for index in 0 ..< pageCount {

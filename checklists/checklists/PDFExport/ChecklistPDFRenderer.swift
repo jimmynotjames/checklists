@@ -7,8 +7,8 @@ import UIKit
 
 /// Turns a snapshot into PDF data, paginated.
 ///
-/// UIKit's print formatter does the pagination, so a Header at the character limit flows onto as
-/// many pages as it needs with no layout code here. SwiftUI's `ImageRenderer` draws a single page,
+/// UIKit's print formatter does the pagination, so long notes or a long checklist flow onto as
+/// many pages as they need with no layout code here. SwiftUI's `ImageRenderer` draws a single page,
 /// and PDFKit only reads PDFs, so neither can lay one out.
 enum ChecklistPDFRenderer {
   /// Three-quarters of an inch on every side.

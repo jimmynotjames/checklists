@@ -13,8 +13,6 @@ import UIKit
 /// out from it.
 @Suite("Checklist PDF content")
 struct ChecklistPDFContentTests {
-  private let date = Date(timeIntervalSince1970: 1_792_756_800) // 2026-10-23 12:00 UTC
-
   private func makeChecklist(name: String, notes: String? = nil, items: [ChecklistPDFSnapshot.Row]) throws -> (ModelContext, Checklist) {
     let context = try TestModelContainer.makeContext()
     let checklist = Checklist(name: name, notes: notes)
@@ -28,18 +26,8 @@ struct ChecklistPDFContentTests {
     return (context, checklist)
   }
 
-  private func snapshot(header: String = "", notes: String? = nil, rows: [ChecklistPDFSnapshot.Row] = [], isRightToLeft: Bool = false) -> ChecklistPDFSnapshot {
-    ChecklistPDFSnapshot(
-      title: "Quality check",
-      date: date,
-      header: header,
-      checklistNotes: notes,
-      rows: rows,
-      isRightToLeft: isRightToLeft,
-      locale: Locale(identifier: "en_GB"),
-      timeZone: .gmt,
-      paperSize: .a4,
-    )
+  private func snapshot(notes: String? = nil, rows: [ChecklistPDFSnapshot.Row] = [], isRightToLeft: Bool = false) -> ChecklistPDFSnapshot {
+    ChecklistPDFSnapshot(title: "Quality check", checklistNotes: notes, rows: rows, isRightToLeft: isRightToLeft, paperSize: .a4)
   }
 
   // MARK: - Snapshot
@@ -51,7 +39,7 @@ struct ChecklistPDFContentTests {
       .init(name: "Check heater", notes: "Not applicable: no heater.", isChecked: false),
     ])
 
-    let snapshot = ChecklistPDFSnapshot.make(from: checklist, date: date, header: "", isRightToLeft: false)
+    let snapshot = ChecklistPDFSnapshot.make(from: checklist, isRightToLeft: false)
 
     #expect(snapshot.rows == [
       .init(name: "Shut off water", notes: nil, isChecked: true),
@@ -64,7 +52,7 @@ struct ChecklistPDFContentTests {
   func blankRowsAreLeftOut() throws {
     let (_, checklist) = try makeChecklist(name: "Quality check", items: [.init(name: "Shut off water", notes: nil, isChecked: true), .init(name: "", notes: nil, isChecked: false)])
 
-    let snapshot = ChecklistPDFSnapshot.make(from: checklist, date: date, header: "", isRightToLeft: false)
+    let snapshot = ChecklistPDFSnapshot.make(from: checklist, isRightToLeft: false)
 
     #expect(snapshot.rows.map(\.name) == ["Shut off water"])
   }
@@ -73,43 +61,34 @@ struct ChecklistPDFContentTests {
   func unnamedChecklistUsesTheFallback() throws {
     let (_, checklist) = try makeChecklist(name: "", items: [])
 
-    let snapshot = ChecklistPDFSnapshot.make(from: checklist, date: date, header: "", isRightToLeft: false)
+    let snapshot = ChecklistPDFSnapshot.make(from: checklist, isRightToLeft: false)
 
     #expect(snapshot.title == CommonStrings.defaultChecklistName)
   }
 
-  @Test("whitespace-only notes and Header count as none")
+  @Test("whitespace-only notes count as none")
   func whitespaceCountsAsNone() throws {
     let (_, checklist) = try makeChecklist(name: "Quality check", notes: " \n", items: [.init(name: "Shut off water", notes: "  ", isChecked: false)])
 
-    let snapshot = ChecklistPDFSnapshot.make(from: checklist, date: date, header: "\n\n ", isRightToLeft: false)
+    let snapshot = ChecklistPDFSnapshot.make(from: checklist, isRightToLeft: false)
 
     #expect(snapshot.checklistNotes == nil)
-    #expect(snapshot.header.isEmpty)
     #expect(snapshot.rows.first?.notes == nil)
   }
 
   // MARK: - Layout
 
-  @Test("the text runs name, date, Header, checklist notes, then items")
+  @Test("the text runs name, checklist notes, then items")
   func textRunsInOrder() {
     let text = ChecklistPDFContent.attributedString(
-      for: snapshot(header: "Acme Plumbing", notes: "Bring washers.", rows: [.init(name: "Shut off water", notes: "Done at the street.", isChecked: true)]),
+      for: snapshot(notes: "Acme Plumbing, licence 12345", rows: [.init(name: "Shut off water", notes: "Done at the street.", isChecked: true)]),
       contentWidth: 480,
     ).string
 
-    let order = ["Quality check", "Friday", "Acme Plumbing", "Bring washers.", "Shut off water", "Done at the street."]
+    let order = ["Quality check", "Acme Plumbing, licence 12345", "Shut off water", "Done at the street."]
       .map { text.range(of: $0)?.lowerBound }
     #expect(order.allSatisfy { $0 != nil })
     #expect(order.compactMap(\.self) == order.compactMap(\.self).sorted())
-  }
-
-  @Test("an empty Header leaves no Header text and no gap for one")
-  func emptyHeaderIsAbsent() {
-    let withHeader = ChecklistPDFContent.attributedString(for: snapshot(header: "Acme"), contentWidth: 480)
-    let without = ChecklistPDFContent.attributedString(for: snapshot(), contentWidth: 480)
-
-    #expect(without.string.components(separatedBy: "\n").count == withHeader.string.components(separatedBy: "\n").count - 1)
   }
 
   /// One per item for the checkbox and one for the gap after it, plus the divider.
@@ -138,16 +117,5 @@ struct ChecklistPDFContentTests {
       }
     }
     #expect(directions == [.rightToLeft])
-  }
-
-  /// Checked by its parts: ICU owns the punctuation and the zone's name, which shift between OS
-  /// releases.
-  @Test("the date is long and localized, with weekday, time and time zone")
-  func dateIsLongAndLocalized() {
-    let text = ChecklistPDFContent.dateString(for: snapshot())
-
-    for part in ["Friday", "23 October 2026", "12:00", "GMT"] {
-      #expect(text.contains(part), "\(text)")
-    }
   }
 }
