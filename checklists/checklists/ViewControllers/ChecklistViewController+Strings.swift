@@ -68,6 +68,17 @@ extension ChecklistViewController {
     """,
   )
 
+  static let exportPDFMenuTitle = String(
+    localized: "checklist.menu.exportPDF",
+    defaultValue: "Export as PDF…",
+    comment: """
+    Overflow-menu entry on an existing checklist's detail screen. Turns this checklist into a PDF \
+    document and opens the system share sheet with it, to send to someone else, for example as a \
+    record of work done for a client. Keep the trailing ellipsis — it promises the share sheet. \
+    "PDF" is the file format; keep it as is.
+    """,
+  )
+
   static let noItemsCheckedNotice = String(
     localized: "checklist.menu.copyCheckedItems.noCheckedItems",
     defaultValue: "No checked items.",

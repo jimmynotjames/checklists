@@ -103,6 +103,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
     viewController.onRequestDismiss = onRequestDismiss
     viewController.onRequestOpenDuplicate = onRequestOpenDuplicate
     viewController.onRequestTransferCheckedItems = onRequestTransferCheckedItems
+    viewController.onPDFExportFailed = { [toasts] in toasts?.show(.pdfExportFailed) }
     viewController.onRemoteDeletion = { [toasts] in toasts?.show(.checklistDeletedElsewhere) }
     viewController.analytics = analytics
     viewController.ratingPrompt = ratingPrompt

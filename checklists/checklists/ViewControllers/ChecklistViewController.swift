@@ -40,6 +40,10 @@ class ChecklistViewController: UIViewController {
   /// nothing.
   var onRequestTransferCheckedItems: ((String, CheckedItemsTransferMode) -> Void)?
 
+  /// Set by the SwiftUI host (`ChecklistScreen`). Called when Export as PDF… could not make or
+  /// write the PDF, for the host to say so.
+  var onPDFExportFailed: (() -> Void)?
+
   /// Set by the SwiftUI host (`ChecklistScreen`). Called once as the screen closes because another
   /// device deleted its checklist, for the host to say why.
   var onRemoteDeletion: (() -> Void)?

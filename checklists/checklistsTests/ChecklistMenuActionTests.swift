@@ -123,6 +123,61 @@ struct ChecklistMenuActionTests {
     }
   }
 
+  // MARK: - Export as PDF
+
+  @Test("an uncommitted name is committed before exporting")
+  func uncommittedNameIsCommittedBeforeExporting() throws {
+    try ChecklistScreenHarness.withController(name: "Packing", items: [("Passport", false)]) { harness in
+      harness.header.nameTextField.text = "Trip"
+      harness.header.nameTextField.becomeFirstResponder()
+
+      harness.viewController.exportPDF()
+
+      #expect(harness.checklist.name == "Trip")
+      // The harness window has no scene to present the share sheet in, so nothing deletes the file.
+      try? FileManager.default.removeItem(at: PDFExportFile.rootDirectory)
+    }
+  }
+
+  @Test("the exported file is named for the checklist and today's date")
+  func exportedFileIsNamedForTheChecklistAndToday() throws {
+    try ChecklistScreenHarness.withController(name: "Packing", items: [("Passport", false)]) { harness in
+      let snapshot = ChecklistPDFSnapshot.make(from: harness.checklist, isRightToLeft: false)
+
+      let url = try harness.viewController.makePDFExportFile(for: snapshot)
+      defer { PDFExportFile.remove(url) }
+
+      #expect(url.lastPathComponent == PDFFileName.make(title: "Packing", date: .now, timeZone: .current))
+      #expect(FileManager.default.fileExists(atPath: url.path(percentEncoded: false)))
+    }
+  }
+
+  @Test("Export as PDF… has its own section, between copy and move and the deletes")
+  func exportEntryHasItsOwnSection() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
+      let sections = harness.viewController.makeMoreMenu().children.compactMap { $0 as? UIMenu }
+
+      #expect(sections.count == 4)
+      let exportSection = try #require(sections.dropFirst(2).first)
+      let entry = try #require(exportSection.children.first as? UIAction)
+      #expect(exportSection.children.count == 1)
+      #expect(entry.accessibilityIdentifier == "checklist.menu.exportPDF")
+    }
+  }
+
+  @Test("the create sheet's menu has no export entry")
+  func createSheetHasNoExportEntry() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false)], isNewChecklist: true) { harness in
+      let identifiers = harness.viewController.makeMoreMenu().children
+        .compactMap { $0 as? UIMenu }
+        .flatMap(\.children)
+        .compactMap { ($0 as? UIAction)?.accessibilityIdentifier }
+
+      #expect(!identifiers.contains("checklist.menu.exportPDF"))
+      #expect(identifiers.contains("checklist.menu.reorderItems"))
+    }
+  }
+
   // MARK: - Duplicate
 
   @Test("duplicating adds a copy and opens it")

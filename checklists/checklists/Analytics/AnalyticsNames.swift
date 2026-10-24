@@ -39,6 +39,7 @@ nonisolated enum AnalyticsEvent {
   static let checklistItemDuplicated = "checklist_item_duplicated"
   static let checklistsEditModeEntered = "checklists_edit_mode_entered"
   static let checklistsBulkActionPerformed = "checklists_bulk_action_performed"
+  static let checklistPDFExported = "checklist_pdf_exported"
 
   // MARK: Errors
 
@@ -92,6 +93,10 @@ nonisolated enum AnalyticsProperty {
 
   static let bulkAction = "bulk_action"
   static let selectedCount = "selected_count"
+
+  // MARK: checklist_pdf_exported
+
+  static let checkedItemsCount = "checked_items_count"
 
   // MARK: Errors and failures
 
