@@ -27,7 +27,7 @@ extension UserDefaults: KeyValueStore {
   }
 }
 
-/// Unused: without the `ubiquity-kvstore-identifier` entitlement it would not sync
+/// Unused: this state stays per device, and adopting this store takes more than this conformance
 /// (core-docs/analytics-spec.md §Identity). Its native integer setter takes `Int64`, hence the
 /// `Int` bridge.
 extension NSUbiquitousKeyValueStore: KeyValueStore {
