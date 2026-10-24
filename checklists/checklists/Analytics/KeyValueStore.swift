@@ -7,8 +7,8 @@ import Foundation
 
 /// Minimal key-value persistence seam used by `AnalyticsSettings` and `RatingPromptState`.
 ///
-/// Exists so the backing store is a one-line swap: production uses `UserDefaults.standard`, and
-/// test launches and unit tests use `InMemoryKeyValueStore`.
+/// Exists so tests can swap the backing store: production uses `UserDefaults.standard`, and test
+/// launches and unit tests use `InMemoryKeyValueStore`.
 protocol KeyValueStore: AnyObject {
   func object(forKey key: String) -> Any?
   func set(_ value: Bool, forKey defaultName: String)
@@ -27,7 +27,7 @@ extension UserDefaults: KeyValueStore {
   }
 }
 
-/// Unused: without the `ubiquity-kvstore-identifier` entitlement it would not sync
+/// Unused: this state stays per device, and adopting this store takes more than this conformance
 /// (core-docs/analytics-spec.md §Identity). Its native integer setter takes `Int64`, hence the
 /// `Int` bridge.
 extension NSUbiquitousKeyValueStore: KeyValueStore {
