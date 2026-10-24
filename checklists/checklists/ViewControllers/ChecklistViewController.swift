@@ -689,7 +689,7 @@ extension ChecklistViewController: UITableViewDelegate {
       completion(true)
     }
     deleteAction.image = UIImage(systemName: "trash")
-    deleteAction.backgroundColor = Colors.destructive
+    deleteAction.backgroundColor = Colors.destructiveFill
     deleteAction.accessibilityLabel = CommonStrings.delete
 
     let duplicateAction = UIContextualAction(style: .normal, title: nil) { [weak self] _, _, completion in
@@ -697,7 +697,7 @@ extension ChecklistViewController: UITableViewDelegate {
       completion(true)
     }
     duplicateAction.image = UIImage(systemName: "plus.square.on.square")
-    duplicateAction.backgroundColor = Colors.accent
+    duplicateAction.backgroundColor = Colors.accentFill
     duplicateAction.accessibilityLabel = CommonStrings.duplicate
 
     let configuration = UISwipeActionsConfiguration(actions: [deleteAction, duplicateAction])

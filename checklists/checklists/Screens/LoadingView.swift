@@ -38,6 +38,7 @@ struct LoadingView: View {
 
       Text(message)
         .font(.body)
+        .foregroundStyle(Colors.primaryTextColor)
 
       if showsCloudSyncNote {
         Text(cloudSyncNote)

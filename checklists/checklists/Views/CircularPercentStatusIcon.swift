@@ -68,7 +68,11 @@ class CircularPercentStatusIcon: UIView {
     )
   }
 
-  private let color: CGColor = Colors.accent.cgColor
+  /// Layers hold a resolved `CGColor`, so this is re-read whenever the appearance changes.
+  private var color: CGColor {
+    Colors.accent.resolvedColor(with: traitCollection).cgColor
+  }
+
   private var radius: CGFloat!
   private var innerRadius: CGFloat!
   private var outerRingLineWidth: CGFloat!
@@ -126,6 +130,11 @@ class CircularPercentStatusIcon: UIView {
     setContentCompressionResistancePriority(.required, for: .vertical)
 
     layer.addSublayer(innerPercentCircleLayer)
+
+    registerForTraitChanges([UITraitUserInterfaceStyle.self, UITraitAccessibilityContrast.self]) { (view: Self, _) in
+      view.layer.borderColor = view.color
+      view.innerPercentCircleLayer.fillColor = view.color
+    }
   }
 
   private func configureDimensions() {

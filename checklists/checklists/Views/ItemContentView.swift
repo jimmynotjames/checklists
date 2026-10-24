@@ -339,7 +339,7 @@ extension ItemContentView: UITextViewDelegate {
     scrollView.addSubview(stack)
 
     let viewController = UIViewController()
-    viewController.view.backgroundColor = .systemBackground
+    viewController.view.backgroundColor = Colors.defaultBackground
     viewController.view.addSubview(scrollView)
     NSLayoutConstraint.activate([
       scrollView.topAnchor.constraint(equalTo: viewController.view.safeAreaLayoutGuide.topAnchor),

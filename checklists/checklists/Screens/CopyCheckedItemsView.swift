@@ -46,12 +46,15 @@ struct CopyCheckedItemsView: View {
   var body: some View {
     NavigationStack {
       Form {
-        newChecklistSection
-        // Omitted rather than shown empty: with only one checklist in the app there is no
-        // destination but a new one, and a header over nothing reads as something missing.
-        if !destinations.isEmpty {
-          existingChecklistsSection
+        Group {
+          newChecklistSection
+          // Omitted rather than shown empty: with only one checklist in the app there is no
+          // destination but a new one, and a header over nothing reads as something missing.
+          if !destinations.isEmpty {
+            existingChecklistsSection
+          }
         }
+        .formRowBackground()
       }
       .appBackground()
       .navigationTitle(title)
@@ -107,6 +110,7 @@ struct CopyCheckedItemsView: View {
           .submitLabel(.done)
           .onSubmit(createChecklistAndCopy)
           .accessibilityIdentifier("copyDestination.newChecklistName")
+          .foregroundStyle(Colors.primaryTextColor)
         // Visible and enabled whether or not anything has been typed: a blank field is a legal
         // choice — it commits under the default name — so someone who never types still needs
         // something to tap. Return commits too.
@@ -125,6 +129,7 @@ struct CopyCheckedItemsView: View {
       }
     } header: {
       Text(Self.newSectionHeader)
+        .foregroundStyle(Colors.inactiveTextColor)
     }
   }
 
@@ -135,6 +140,7 @@ struct CopyCheckedItemsView: View {
           copyCheckedItems(into: checklist)
         } label: {
           Text(displayName(of: checklist))
+            .foregroundStyle(Colors.primaryTextColor)
             // The label is only as wide as its text, so widen it to make the whole row tappable
             // rather than just the words — as `ChecklistsView`'s rows do.
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -145,6 +151,7 @@ struct CopyCheckedItemsView: View {
       }
     } header: {
       Text(Self.existingSectionHeader)
+        .foregroundStyle(Colors.inactiveTextColor)
     }
   }
 

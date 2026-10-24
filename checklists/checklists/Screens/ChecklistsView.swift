@@ -122,7 +122,7 @@ struct ChecklistsView: View {
               Label(CommonStrings.delete, systemImage: "trash")
                 .labelStyle(.iconOnly)
             }
-            .tint(Colors.destructiveColor)
+            .tint(Colors.destructiveFillColor)
             // Locale-invariant handle for `translation-accessibility-size-check`, which cannot
             // match localized label text, and positional lookup on the revealed buttons is not
             // reliable straight after the swipe.
@@ -136,7 +136,7 @@ struct ChecklistsView: View {
               Label(CommonStrings.duplicate, systemImage: "plus.square.on.square")
                 .labelStyle(.iconOnly)
             }
-            .tint(Color.accentColor)
+            .tint(Colors.accentFillColor)
             .accessibilityIdentifier("checklistRow.duplicate")
           }
       }

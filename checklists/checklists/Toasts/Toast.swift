@@ -57,7 +57,7 @@ nonisolated enum ToastStyle {
   /// isolated like everything else in the target.
   @MainActor var tint: Color {
     switch self {
-    case .info: Colors.defaultBackgroundColor
+    case .info: Colors.panelForegroundColor
     case .success: Colors.successColor
     case .warning: Colors.warningColor
     case .error: Colors.destructiveColor

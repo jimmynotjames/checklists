@@ -8,7 +8,7 @@ import SwiftUI
 /// The toast card itself, with no opinion about where it sits (`ToastPresenterModifier`) or how
 /// long it lives (`ToastPresenter`).
 ///
-/// Dark on a light-only app, matching `MainMenuView`'s surface: it separates from the content
+/// Dark on a light-only app, matching `MainMenuView`'s panel: it separates from the content
 /// underneath on its own, where a light card would lean entirely on its shadow to do that.
 struct ToastView: View {
   let toast: Toast
@@ -60,7 +60,7 @@ struct ToastView: View {
 
         Text(toast.message)
           .font(.subheadline)
-          .foregroundStyle(Colors.defaultBackgroundColor)
+          .foregroundStyle(Colors.panelForegroundColor)
           .fixedSize(horizontal: false, vertical: true)
           .frame(maxWidth: .infinity, alignment: .leading)
       }
@@ -87,7 +87,7 @@ struct ToastView: View {
         }
         // Not the accent colour: it is rgb(55,130,136) against a rgb(51,110,145) card, about
         // 1.2:1. The weight is what marks this as the action, the way `MainMenuView`'s rows do.
-        .tint(Colors.defaultBackgroundColor)
+        .tint(Colors.panelForegroundColor)
       }
     }
     .padding(.leading, 16)

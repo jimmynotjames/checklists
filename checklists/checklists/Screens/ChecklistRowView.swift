@@ -27,11 +27,13 @@ struct ChecklistRowView: View {
         ring
         Text(checklist.name)
           .font(.headline)
+          .foregroundStyle(Colors.primaryTextColor)
       }
 
       if let notes = checklist.notes, !notes.isEmpty {
         Text(notes)
           .font(.subheadline)
+          .foregroundStyle(Colors.primaryTextColor)
           .lineLimit(3)
           // UI tests match the notes label by this identifier rather than by its rendered
           // text (see `ChecklistHeaderUITest`), so it has to stay exactly this string.

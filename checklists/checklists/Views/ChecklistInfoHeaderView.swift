@@ -37,6 +37,7 @@ final class ChecklistInfoHeaderView: UIView {
       string: String(localized: "checklist.name.placeholder", defaultValue: "Name", comment: "Placeholder of the checklist name field in the detail header."),
       attributes: [.foregroundColor: Colors.placeholderText],
     )
+    nameTextField.textColor = Colors.primaryText
     nameTextField.font = UIFontMetrics(forTextStyle: .title2).scaledFont(
       for: .systemFont(ofSize: 24.0, weight: .semibold),
       maximumPointSize: Self.maximumNamePointSize,

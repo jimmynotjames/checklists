@@ -98,18 +98,22 @@
     /// unlike `router` above: default-argument expressions are evaluated per call, and a shared
     /// presenter would leave one preview's toast showing in its neighbours — the leak `RootView`'s
     /// "Main menu open" preview already works around for `Router`.
+    ///
+    /// `colorScheme` forces an appearance; `nil` follows the canvas's own setting.
     func previewEnvironment(
       container: ModelContainer = PreviewSupport.container,
       router: Router = PreviewSupport.router,
       syncStatus: SyncStatus = PreviewSupport.syncStatus(),
       analyticsSettings: AnalyticsSettings = PreviewSupport.analyticsSettings,
       toasts: ToastPresenter = ToastPresenter(),
+      colorScheme: ColorScheme? = nil,
     ) -> some View {
       modelContainer(container)
         .environment(router)
         .environment(syncStatus)
         .environment(analyticsSettings)
         .environment(toasts)
+        .preferredColorScheme(colorScheme)
     }
   }
 #endif
