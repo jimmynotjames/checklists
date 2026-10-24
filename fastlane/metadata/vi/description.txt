@@ -1,5 +1,5 @@
-Tập một nếp sinh hoạt mới hay luyện một việc phức tạp cho đến khi quen tay. Từ nay, không còn sót bước quan trọng nào nữa.
+Làm quen với một quy trình mới, hoặc luyện một việc phức tạp cho đến khi thành thạo. Không còn sót bước quan trọng nào nữa.
 
-Cũng tiện cho những danh sách dùng đi dùng lại, như soạn đồ đi xa, đi chợ, việc ở chỗ làm hay cày game.
+Dùng được cả cho những danh sách lặp đi lặp lại, như đồ cần mang khi đi xa, danh sách đi chợ, việc ở chỗ làm hay những buổi cày game.
 
-Đồng bộ giữa các thiết bị của bạn qua iCloud. Nhân bản một danh sách, hoặc chuyển những mục đã đánh dấu sang danh sách khác. Hỗ trợ nhiều ngôn ngữ, cùng VoiceOver và cỡ chữ lớn.
+Đồng bộ giữa các thiết bị của bạn qua iCloud. Nhân bản một danh sách, hoặc chuyển những mục đã đánh dấu sang danh sách khác. Xuất ra PDF. Hỗ trợ nhiều ngôn ngữ, cùng VoiceOver và chữ cỡ lớn.

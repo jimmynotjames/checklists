@@ -1,1 +1,1 @@
-reChecklist se synchronise désormais entre vos appareils via iCloud, parle plusieurs langues et vous permet de dupliquer vos listes comme de déplacer les éléments cochés de l'une à l'autre.
+L'app se synchronise désormais sur tous vos appareils via iCloud et parle plusieurs langues. Dupliquez vos listes, déplacez les éléments cochés de l'une à l'autre et exportez-les en PDF.

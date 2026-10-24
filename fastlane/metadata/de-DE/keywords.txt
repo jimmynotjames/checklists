@@ -1,1 +1,1 @@
-liste,packliste,einkaufsliste,wiederholen,wiederkehrend,vorlage,routine,reise,abhaken,urlaub,umzug
+checkliste,checklist,packliste,einkaufszettel,einkaufsliste,wiederkehrend,vorlage,routine,abhaken

@@ -1,1 +1,1 @@
-checklista,checklist,zakupy,pakowanie,walizka,rutyna,cykliczna,wielokrotna,odhaczanie,podróż
+checklista,lista,kontrolna,powtarzalna,zakupy,zakupów,pakowanie,walizka,rutyna,poranna,podróż

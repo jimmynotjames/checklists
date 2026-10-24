@@ -1,1 +1,1 @@
-checklist,list,packing,repeat,reusable,routine,shopping,ಪಟ್ಟಿ,ಪ್ರಯಾಣ,trip
+checklist,packing,repeat,reusable,routine,grocery,shopping,ದಿನಸಿ,ಪಟ್ಟಿ,trip

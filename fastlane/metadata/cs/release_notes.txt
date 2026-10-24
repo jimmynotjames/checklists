@@ -1,1 +1,1 @@
-Nově se synchronizuje mezi vašimi zařízeními přes iCloud, mluví několika jazyky a seznamy teď můžete duplikovat a odškrtnuté položky mezi nimi přesouvat.
+Nově se synchronizuje mezi vašimi zařízeními přes iCloud a funguje v několika jazycích. Seznamy můžete duplikovat, přesouvat mezi nimi zaškrtnuté položky a exportovat je do PDF.
