@@ -60,9 +60,8 @@ class ChecklistReorderItemsUITest: XCTestCase {
     let movedName = try XCTUnwrap(lastRow.textViews["itemNameTextView"].value as? String)
     let handle = lastRow.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Reorder'")).firstMatch
     XCTAssertTrue(handle.waitForExistence(timeout: 5), "The row's drag handle didn't appear.")
-    // Slow, with a hold before the drop, so the table settles on the destination; and the drop is
-    // waited for rather than read at once. See `ChecklistDetailUITestCase.dragRow` and
-    // `waitForItemName`, which this class doesn't inherit.
+    // Slow, with a hold before the drop, so the table settles on the destination. See
+    // `ChecklistDetailUITestCase.dragRow` and `waitForItemName`, which this class doesn't inherit.
     handle.press(forDuration: 0.5, thenDragTo: firstRow, withVelocity: .slow, thenHoldForDuration: 0.5)
 
     let firstName = firstRow.textViews["itemNameTextView"]

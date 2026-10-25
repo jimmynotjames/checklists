@@ -5,8 +5,9 @@
 
 import XCTest
 
-/// The checklist screen's navigation-bar buttons that come and go with typing. Matched by
-/// identifier, without naming the bar: see `ChecklistDetailUITestCase.detailBackButton`.
+/// Opening and closing the create sheet, and the checklist screen's navigation-bar buttons that come
+/// and go with typing. Bar buttons are matched by identifier, without naming the bar: see
+/// `ChecklistDetailUITestCase.detailBackButton`.
 ///
 /// While a field is being typed into, the editing Done sits at the bar's outer edge, in place of the
 /// create sheet's own Done there. It reads "Done" just as that one does, so a `buttons["Done"]`

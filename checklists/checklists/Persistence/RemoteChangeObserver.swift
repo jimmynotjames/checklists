@@ -19,8 +19,9 @@ import Foundation
  deletes records locally, and a screen showing one of them must react as if it were deleted
  remotely.
 
- Nothing filters by coordinator or by store, so every remote-change notification posted anywhere in
- the process arrives here, including from a container this observer's owner knows nothing about.
+ Nothing filters by coordinator or by store, so every remote-change notification posted on its
+ notification center arrives here — on `.default`, from anywhere in the process, including a
+ container this observer's owner knows nothing about.
 
  Changes arrive in bursts — a merge writes many records in quick succession — so the callback is
  debounced: each notification restarts a `coalescingDelay` wait, and the callback runs once the
