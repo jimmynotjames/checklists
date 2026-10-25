@@ -80,7 +80,7 @@ struct MainMenuView: View {
             iconName: "MainMenuRateInAppStoreIcon",
           ) {
             analytics.track(AnalyticsEvent.rateAppTapped)
-            guard let url = URL(string: "https://itunes.apple.com/app/id1475724536?action=write-review")
+            guard let url = URL(string: "https://apps.apple.com/app/id1475724536?action=write-review")
             else { assertionFailure(); return }
             openURL(url)
           }
