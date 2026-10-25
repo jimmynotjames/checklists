@@ -23,7 +23,6 @@ struct ChecklistsView: View {
   @Environment(\.modelContext) private var context
   @Environment(Router.self) private var router
   @Environment(\.analytics) private var analytics
-  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
   private static let menuIconBaseSize: CGFloat = 20
 
@@ -69,8 +68,11 @@ struct ChecklistsView: View {
   @AccessibilityFocusState private var focusedChecklistID: String?
   /// Where VoiceOver goes back to when the main menu closes.
   @AccessibilityFocusState private var isMainMenuButtonFocused: Bool
-  /// Where VoiceOver goes after an Edit mode action, which takes the bottom toolbar away with it.
-  @AccessibilityFocusState private var isEditButtonFocused: Bool
+  /// Where VoiceOver goes on leaving Edit mode, by Done or by an Edit mode action, either of which
+  /// takes the button it was on away.
+  @AccessibilityFocusState private var isMoreMenuFocused: Bool
+  /// Where VoiceOver goes on entering Edit mode, from a menu that has closed.
+  @AccessibilityFocusState private var isEditDoneFocused: Bool
   /// Where VoiceOver goes when deleting a checklist leaves none.
   @AccessibilityFocusState private var isAddButtonFocused: Bool
 
@@ -167,24 +169,23 @@ struct ChecklistsView: View {
       }
     }
     .toolbar {
+      // Every bar button is an icon, so on iPhone Duo's outer display the whole bar moves into the
+      // vertical bar and the list gets the screen's full height; a word would keep a top bar alive.
       // Editing clears the bar down to Done, so the way out is obvious and nothing competes with
       // the bottom toolbar, which carries its own Reset.
-      if !isEditing {
+      if isEditing {
+        // Pinned: at the top of the vertical bar, and never in its overflow.
+        ToolbarItem(placement: .topBarPinnedTrailing) {
+          editDoneButton
+        }
+      } else {
         ToolbarItem(placement: .topBarLeading) {
           mainMenuButton
         }
 
         ToolbarItem(placement: .topBarTrailing) {
-          resetAllButton
+          moreMenu
         }
-
-        // Keeps Reset All and Edit as two separate buttons rather than one shared capsule, so the
-        // one that cannot be undone reads as its own target.
-        ToolbarSpacer(.fixed, placement: .topBarTrailing)
-      }
-
-      ToolbarItem(placement: .topBarTrailing) {
-        editButton
       }
 
       // Separate items with flexible spacers rather than one group with `Spacer`s: iOS 26 gives each
@@ -238,6 +239,7 @@ struct ChecklistsView: View {
     .alert(Text(Self.resetAllConfirmationTitle), isPresented: $showsResetAllConfirmation) {
       Button(Self.resetAllTitle, role: .destructive) {
         if context.resetChecklists(Array(checklists)) > 0 {
+          analytics.track(AnalyticsEvent.allChecklistsReset)
           postAccessibilityFeedback(Self.allResetAnnouncement, afterAlert: true)
         }
       }
@@ -324,58 +326,65 @@ struct ChecklistsView: View {
     }
   }
 
-  /// Always enabled, even with no checklists: the control stays visible so people learn it exists,
-  /// and confirming with nothing to reset does nothing.
-  private var resetAllButton: some View {
-    Button {
-      showsResetAllConfirmation = true
-    } label: {
-      barLabel(Self.resetAllTitle, systemImage: "arrow.counterclockwise")
-    }
-    .tint(Color.accentColor)
-    .accessibilityIdentifier("toolbar.resetAll")
-  }
+  /// Edit and Reset All, behind one "•••" as on a checklist's own screen. Both entries are always
+  /// enabled, even with no checklists: they stay visible so people learn they exist; Edit then
+  /// opens an empty Edit mode, and confirming Reset All with nothing to reset does nothing.
+  private var moreMenu: some View {
+    Menu {
+      // Rows in the system's own colors, as on a checklist's screen: the menu's accent tint would
+      // otherwise reach them, leaving Reset All a teal icon beside red words.
+      Group {
+        Button(Self.editTitle, systemImage: "pencil") {
+          analytics.track(AnalyticsEvent.checklistsEditModeEntered)
+          withAnimation {
+            editMode = .active
+          }
+          // The menu VoiceOver was in has closed and its button gone with Edit mode.
+          postAccessibilityFeedback(nil, afterAlert: true) {
+            isEditDoneFocused = true
+          }
+        }
+        .accessibilityIdentifier("toolbar.edit")
 
-  /// Words up to one step above the default text size, an icon from two steps up, in every
-  /// language. At the largest sizes the longest translations overflow both bars: German and Tamil
-  /// push Edit into the nav bar's "•••" menu, and German and Russian clip the bottom toolbar at the
-  /// screen edges. Edit never collapses — it is how people find reordering. The words stay as the
-  /// VoiceOver label and in the Large Content Viewer.
-  private func barLabel(_ title: String, systemImage: String) -> some View {
-    Group {
-      if dynamicTypeSize >= .xxLarge {
-        Image(systemName: systemImage)
-      } else {
-        Text(title)
-      }
-    }
-    .accessibilityLabel(title)
-    .accessibilityShowsLargeContentViewer {
-      Label(title, systemImage: systemImage)
-    }
-  }
+        // Divided off, so a thumb reaching for Edit cannot land on the one that cannot be undone.
+        Divider()
 
-  /// Always enabled, like Reset All: with no checklists it opens an empty Edit mode.
-  private var editButton: some View {
-    Button {
-      if !isEditing {
-        analytics.track(AnalyticsEvent.checklistsEditModeEntered)
+        Button(Self.resetAllTitle, systemImage: "arrow.counterclockwise", role: .destructive) {
+          showsResetAllConfirmation = true
+        }
+        .accessibilityIdentifier("toolbar.resetAll")
       }
-      withAnimation {
-        editMode = isEditing ? .inactive : .active
-      }
+      .tint(nil)
     } label: {
-      Text(isEditing ? CommonStrings.done : Self.editTitle)
-        .fontWeight(isEditing ? .semibold : .regular)
-        // Bar text doesn't grow with the text size, so at the largest sizes this is how its name
-        // gets read, as Reset All's is in `barLabel`.
+      // A label rather than a bare image: its title is what VoiceOver reads and what the Large
+      // Content Viewer shows.
+      Label(CommonStrings.more, systemImage: "ellipsis")
         .accessibilityShowsLargeContentViewer()
     }
     .tint(Color.accentColor)
-    .accessibilityIdentifier("toolbar.edit")
-    .accessibilityFocused($isEditButtonFocused)
+    .accessibilityIdentifier("toolbar.more")
+    .accessibilityFocused($isMoreMenuFocused)
   }
 
+  private var editDoneButton: some View {
+    Button(role: .confirm) {
+      withAnimation {
+        editMode = .inactive
+      }
+      postAccessibilityFeedback(nil, afterAlert: true) {
+        isMoreMenuFocused = true
+      }
+    }
+    .tint(Color.accentColor)
+    // The system's own checkmark and "Done" label, enlarged on a long press like the other icons.
+    .accessibilityShowsLargeContentViewer()
+    .accessibilityIdentifier("toolbar.editDone")
+    .accessibilityFocused($isEditDoneFocused)
+  }
+
+  /// Always an icon, at every text size and in every language: a word would keep a bottom toolbar
+  /// on iPhone Duo's outer display, and the longest translations clip at the screen edges at large
+  /// sizes. The title is the VoiceOver label and what the Large Content Viewer shows.
   private func bulkActionButton(
     _ title: String,
     systemImage: String,
@@ -384,7 +393,9 @@ struct ChecklistsView: View {
     action: @escaping () -> Void,
   ) -> some View {
     Button(action: action) {
-      barLabel(title, systemImage: systemImage)
+      Label(title, systemImage: systemImage)
+        .labelStyle(.iconOnly)
+        .accessibilityShowsLargeContentViewer()
     }
     .tint(tint)
     .disabled(liveSelection.isEmpty)
@@ -593,21 +604,22 @@ struct ChecklistsView: View {
       editMode = .inactive
     }
     guard changedCount > 0 else { return }
-    // Edit, because the bottom toolbar VoiceOver was on has gone with Edit mode.
+    // "•••", because the bottom toolbar VoiceOver was on has gone with Edit mode.
     postAccessibilityFeedback(Self.bulkAnnouncement(for: action, count: changedCount), afterAlert: true) {
-      isEditButtonFocused = true
+      isMoreMenuFocused = true
     }
   }
 
   // MARK: - VoiceOver feedback
 
-  /// Moves VoiceOver with `focus`, when given, then says `announcement`. Neither shows when
-  /// VoiceOver is off.
+  /// Moves VoiceOver with `focus`, when given, then says `announcement`, when given. Neither shows
+  /// when VoiceOver is off.
   ///
-  /// `afterAlert` waits for a confirmation alert or Edit mode's exit to finish first: the system
-  /// moves VoiceOver itself as an alert closes, which would undo the focus and cut off the words.
+  /// `afterAlert` waits for a confirmation alert, a menu, or Edit mode's entry or exit to finish
+  /// first: the system moves VoiceOver itself as each closes, which would undo the focus and cut off
+  /// the words.
   private func postAccessibilityFeedback(
-    _ announcement: String,
+    _ announcement: String?,
     afterAlert: Bool = false,
     focus: (() -> Void)? = nil,
   ) {
@@ -619,11 +631,13 @@ struct ChecklistsView: View {
         // Cleared first, then set a turn later: a focus state still holding its target from an
         // earlier move or action would not move VoiceOver when set to the same value.
         focusedChecklistID = nil
-        isEditButtonFocused = false
+        isMoreMenuFocused = false
+        isEditDoneFocused = false
         isAddButtonFocused = false
         await Task.yield()
         focus()
       }
+      guard let announcement else { return }
       // After a beat, or VoiceOver reading the refocused element cuts it off.
       try? await Task.sleep(for: .milliseconds(500))
       AccessibilityNotification.Announcement(announcement).post()
@@ -635,13 +649,13 @@ struct ChecklistsView: View {
   private static let editTitle = String(
     localized: "checklists.action.edit",
     defaultValue: "Edit",
-    comment: "Nav bar button that enters Edit mode on the list of checklists (select, reorder, delete, duplicate, reset). Becomes Done while editing.",
+    comment: "Entry in the overflow menu of the list of checklists that enters Edit mode (select, reorder, delete, duplicate, reset).",
   )
 
   private static let resetAllTitle = String(
     localized: "checklists.action.resetAll",
     defaultValue: "Reset All",
-    comment: "Unchecks every item in every checklist. Nav bar button beside Edit, and its confirmation button; clears progress, never deletes lists.",
+    comment: "Unchecks every item in every checklist. Entry in the overflow menu of the list of checklists, below Edit, and its confirmation button; clears progress, never deletes lists.",
   )
 
   private static let resetSelectedTitle = String(
@@ -685,40 +699,9 @@ struct ChecklistsView: View {
 
   // MARK: Dynamic Type
 
-  //
-  // These pin the sizes either side of `barLabel`'s icon threshold, in English only: the labels
-  // resolve through `String(localized:)`, which follows the app's language, not the preview
-  // environment. The localized check is `translation-accessibility-size-check`.
-
-  // The largest size that keeps Reset All's words.
-  #Preview("Nav bar, xLarge: last size with words") {
-    NavigationStack {
-      ChecklistsView()
-    }
-    .previewEnvironment()
-    .dynamicTypeSize(.xLarge)
-  }
-
-  // The icon threshold: Reset All is ↺ from here up, and Edit keeps its word.
-  #Preview("Nav bar, xxLarge: icon") {
-    NavigationStack {
-      ChecklistsView()
-    }
-    .previewEnvironment()
-    .dynamicTypeSize(.xxLarge)
-  }
-
-  // The largest size that keeps the toolbar's words.
-  #Preview("Edit mode, xLarge: last size with words") {
-    NavigationStack {
-      ChecklistsView(editingWith: [SampleData.morningRoutineId])
-    }
-    .previewEnvironment()
-    .dynamicTypeSize(.xLarge)
-  }
-
-  // The largest standard size, where both bars are icons but Edit and Done keep their words.
-  #Preview("Edit mode, xxxLarge: icons") {
+  // The largest standard size. The bars hold icons at every size, so one preview stands for all
+  // of them; the localized check is `translation-accessibility-size-check`.
+  #Preview("Edit mode, xxxLarge") {
     NavigationStack {
       ChecklistsView(editingWith: [SampleData.morningRoutineId])
     }

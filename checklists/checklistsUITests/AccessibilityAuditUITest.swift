@@ -51,11 +51,6 @@ class AccessibilityAuditUITest: XCTestCase {
 
   private static let knownIssues: [KnownIssue] = [
     KnownIssue(
-      types: .dynamicType,
-      identifier: "toolbar.edit",
-      reason: "Bar text never scales with the text size; the button's Large Content Viewer covers it.",
-    ),
-    KnownIssue(
       screens: ["copyCheckedItemsSheet"],
       types: .textClipped,
       identifier: "copyDestination.newChecklistName",
@@ -185,6 +180,7 @@ class AccessibilityAuditUITest: XCTestCase {
 
   func testChecklistsListEditMode() throws {
     launch()
+    tapButton("toolbar.more")
     tapButton("toolbar.edit")
     // Once Edit mode's bar is up, a row tap selects instead of opening.
     XCTAssertTrue(app.buttons["editBar.delete"].waitForExistence(timeout: 5), "Edit mode didn't start.")
@@ -194,6 +190,7 @@ class AccessibilityAuditUITest: XCTestCase {
 
   func testResetAllAlert() throws {
     launch()
+    tapButton("toolbar.more")
     tapButton("toolbar.resetAll")
     XCTAssertTrue(app.alerts.firstMatch.waitForExistence(timeout: 5), "Reset All confirmation didn't appear.")
     try audit("resetAllAlert")
