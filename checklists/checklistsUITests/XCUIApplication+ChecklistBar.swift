@@ -47,4 +47,17 @@ extension XCUIApplication {
     XCTAssertTrue(button.waitForExistence(timeout: 5), "The create sheet's Done isn't in the bar.", file: file, line: line)
     button.tap()
   }
+
+  /// Taps the checklists list's add button — an `.overlay` on the list, not a row inside it, so it
+  /// hangs off the application rather than the collection view — and waits for the create sheet's name field to take
+  /// focus, which it does in `viewDidAppear`: typing before then has nowhere to go.
+  func openCreateSheet(file: StaticString = #filePath, line: UInt = #line) {
+    buttons["Add new checklist."].tap()
+    XCTAssertTrue(
+      textFields["checklistNameField"].waitForKeyboardFocus(),
+      "The create sheet's name field never took focus.",
+      file: file,
+      line: line,
+    )
+  }
 }

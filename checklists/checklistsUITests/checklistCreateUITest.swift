@@ -29,12 +29,6 @@ class checklistCreateUITest: XCTestCase {
     app.collectionViews
   }
 
-  /// The add button is a `.overlay` on the list, not a row inside it, so it hangs off the screen
-  /// rather than off the collection view — look it up from the application.
-  private var addChecklistButton: XCUIElement {
-    app.buttons["Add new checklist."]
-  }
-
   /**
    1a. Create a checklist with 3 Checklist Name, Notes, and 3 items, one item with Item Notes.
    1b. Do it in a way that exercises different ways of adding a new Item.
@@ -51,7 +45,7 @@ class checklistCreateUITest: XCTestCase {
     let item4Name = "3 deep breaths. Complete!"
 
     var checklistTable = app.tables["ChecklistTableView"]
-    addChecklistButton.tap()
+    app.openCreateSheet()
     XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))
 
     // Should auto-focus on Checklist Name field
@@ -129,7 +123,7 @@ class checklistCreateUITest: XCTestCase {
   }
 
   func testCreateChecklist2() {
-    addChecklistButton.tap()
+    app.openCreateSheet()
     let checklistTable = app.tables["ChecklistTableView"]
     XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))
 
@@ -184,7 +178,7 @@ class checklistCreateUITest: XCTestCase {
     let checklistName = "Mindfulness Checklist"
     let item1Name = "Gratitude - 1 min"
 
-    addChecklistButton.tap()
+    app.openCreateSheet()
     let checklistTable = app.tables["ChecklistTableView"]
     XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))
 
@@ -229,14 +223,9 @@ class checklistCreateUITest: XCTestCase {
   }
 
   func testCreateBlankChecklist() {
-    addChecklistButton.tap()
-    // A tap while the sheet is still sliding up is dropped. The name field takes focus in
-    // `viewDidAppear`, so wait for that before tapping.
-    let sheetPresented = expectation(
-      for: NSPredicate(format: "hasKeyboardFocus == true"),
-      evaluatedWith: app.textFields["checklistNameField"],
-    )
-    wait(for: [sheetPresented], timeout: 5)
+    // A tap while the sheet is still sliding up is dropped, so this waits for the name field's focus
+    // before tapping.
+    app.openCreateSheet()
     app.finishCreateSheet()
 
     let untitled = checklistsList.cells.element(boundBy: 0).staticTexts["untitled checklist"]
@@ -245,7 +234,7 @@ class checklistCreateUITest: XCTestCase {
 
   func testCreateChecklistAndRemoveAllItems() {
     let checklistName = "XYZ"
-    addChecklistButton.tap() // Should pull up modal and auto-focus on name. Leave Checklist Name blank.
+    app.openCreateSheet() // Should pull up modal and auto-focus on name. Leave Checklist Name blank.
 
     app.typeText(checklistName) // Arbitrary Checklist Name
     app.pressReturnKey() // Should auto-focus on first Item after tapping done Checklist Name
@@ -270,7 +259,7 @@ class checklistCreateUITest: XCTestCase {
     let itemName2 = "Express gratitude to universe."
     let itemName3 = "🍳"
 
-    addChecklistButton.tap() // Should pull up modal and auto-focus on name. Leave Checklist Name blank.
+    app.openCreateSheet() // Should pull up modal and auto-focus on name. Leave Checklist Name blank.
 
     app.typeText(checklistName) // Arbitrary Checklist Name
     app.pressReturnKey() // Should auto-focus on first Item after tapping done Checklist Name
@@ -295,7 +284,7 @@ class checklistCreateUITest: XCTestCase {
   /// (ChecklistsView.addChecklist), so "discard" here has to remove it from the list rather than
   /// merely closing the sheet.
   func testDiscardNewChecklist() {
-    addChecklistButton.tap()
+    app.openCreateSheet()
     let checklistTable = app.tables["ChecklistTableView"]
     XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))
     app.typeText("Trip Prep")

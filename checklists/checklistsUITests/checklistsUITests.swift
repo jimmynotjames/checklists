@@ -81,9 +81,19 @@ class checklistsUITests: XCTestCase {
     // `.onMove` needs a long press to lift the row, then a slow drag and a hold at the end so the
     // list settles on the drop target before the touch lifts. It honours the full drag, so dropping
     // onto row 3 instead would land the row at the end (2, 3, 1).
-    text1.press(forDuration: 1.0, thenDragTo: text2, withVelocity: .slow, thenHoldForDuration: 1.0)
+    //
+    // This is the first press after launch, which can take longer than a second to lift the row
+    // under load; see `ChecklistDetailUITestCase.dragRow`.
+    text1.press(forDuration: 1.5, thenDragTo: text2, withVelocity: .slow, thenHoldForDuration: 1.0)
 
-    XCTAssertGreaterThan(text1.frame.origin.y, text2.frame.origin.y, "Row 1 should have moved below row 2.")
+    let moved = XCTNSPredicateExpectation(
+      predicate: NSPredicate { _, _ in text1.frame.origin.y > text2.frame.origin.y },
+      object: nil,
+    )
+    XCTAssertEqual(
+      XCTWaiter().wait(for: [moved], timeout: 5), .completed,
+      "Row 1 should have moved below row 2 (row 1 at y \(text1.frame.origin.y), row 2 at y \(text2.frame.origin.y)).",
+    )
     XCTAssertGreaterThan(text3.frame.origin.y, text1.frame.origin.y, "Row 3 should still be below row 1.")
   }
 

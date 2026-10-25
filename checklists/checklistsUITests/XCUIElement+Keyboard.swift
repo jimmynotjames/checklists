@@ -25,6 +25,14 @@ extension XCUIElement {
     typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: count))
   }
 
+  /// Waits for this element to hold keyboard focus. A tap returns once the app goes idle, which can
+  /// come before the field becomes first responder; typing then fails with "Neither element nor any
+  /// descendant has keyboard focus".
+  func waitForKeyboardFocus(timeout: TimeInterval = 10) -> Bool {
+    let focused = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasKeyboardFocus == true"), object: self)
+    return XCTWaiter().wait(for: [focused], timeout: timeout) == .completed
+  }
+
   /// `XCUIKeyboardKey.return` is CR, but `ItemContentView.textView(_:shouldChangeTextIn:_:)`
   /// compares its replacement text against `"\n"`, so the escape that reaches the app has to be LF.
   private static let returnEscape = "\n"
