@@ -10,10 +10,10 @@ import Testing
 /// Covers `RemoteChangeObserver`'s debounce: a burst of `NSPersistentStoreRemoteChange`
 /// notifications — the shape a CloudKit merge actually produces — collapses into one callback, and
 /// a burst that never goes quiet still fires on the maximum-delay deadline.
-/// `.serialized` is load-bearing, not tidiness: `RemoteChangeObserver` registers on
-/// `NotificationCenter.default` with `object: nil`, so every observer alive in this process sees
-/// every post. Run concurrently, one test's burst restarts another's debounce and both assert
-/// against callbacks they did not cause.
+/// Each test observes and posts on a `NotificationCenter` of its own. On `.default`, a remote-change
+/// or `didRemoveDuplicates` post from anywhere else in the process restarts the debounce or adds a
+/// callback the test didn't cause. `.serialized` keeps these timing-bound tests from competing with
+/// each other for the main actor.
 @Suite("RemoteChangeObserver coalescing", .serialized)
 struct RemoteChangeObserverTests {
   /// `confirmation` is doing two jobs: it fails if the callback never arrives, and it fails if it
@@ -24,16 +24,17 @@ struct RemoteChangeObserverTests {
   /// actor, which the observer's callback needs in order to run at all.
   @Test("a burst of remote-change notifications collapses into one callback", .timeLimit(.minutes(1)))
   func postingNotificationCallsOnChangeOnce() async throws {
+    let center = NotificationCenter()
     try await confirmation("coalesced callback fired") { callbackFired in
       // Held for the duration of the test: `RemoteChangeObserver` unregisters its notification
       // observer on deallocation, so an observer that goes out of scope early would silently stop
       // seeing the notifications posted below.
-      let observer = RemoteChangeObserver(coalescingDelay: .milliseconds(50)) {
+      let observer = RemoteChangeObserver(coalescingDelay: .milliseconds(50), notificationCenter: center) {
         callbackFired()
       }
 
       for _ in 0 ..< 3 {
-        NotificationCenter.default.post(name: .NSPersistentStoreRemoteChange, object: nil)
+        center.post(name: .NSPersistentStoreRemoteChange, object: nil)
       }
 
       try await Task.sleep(for: .milliseconds(500))
@@ -59,17 +60,19 @@ struct RemoteChangeObserverTests {
     let started = ContinuousClock.now
     var firstFiredAt: ContinuousClock.Instant?
 
+    let center = NotificationCenter()
     try await confirmation("deadline callback fired", expectedCount: 1...) { callbackFired in
       let observer = RemoteChangeObserver(
         coalescingDelay: .milliseconds(50),
         maximumDelay: .milliseconds(120),
+        notificationCenter: center,
       ) {
         firstFiredAt = firstFiredAt ?? ContinuousClock.now
         callbackFired()
       }
 
       for _ in 0 ..< 20 {
-        NotificationCenter.default.post(name: .NSPersistentStoreRemoteChange, object: nil)
+        center.post(name: .NSPersistentStoreRemoteChange, object: nil)
         try await Task.sleep(for: .milliseconds(20))
       }
 
@@ -87,16 +90,18 @@ struct RemoteChangeObserverTests {
     let started = ContinuousClock.now
     var firedAt: ContinuousClock.Instant?
 
+    let center = NotificationCenter()
     try await confirmation("debounced callback fired") { callbackFired in
       let observer = RemoteChangeObserver(
         coalescingDelay: .milliseconds(100),
         maximumDelay: .seconds(5),
+        notificationCenter: center,
       ) {
         firedAt = ContinuousClock.now
         callbackFired()
       }
 
-      NotificationCenter.default.post(name: .NSPersistentStoreRemoteChange, object: nil)
+      center.post(name: .NSPersistentStoreRemoteChange, object: nil)
       try await Task.sleep(for: .milliseconds(400))
 
       withExtendedLifetime(observer) {}
@@ -117,10 +122,12 @@ struct RemoteChangeObserverTests {
     let started = ContinuousClock.now
     var firstFiredAt: ContinuousClock.Instant?
 
+    let center = NotificationCenter()
     try await confirmation("deadline and trailing callbacks fired", expectedCount: 2...) { callbackFired in
       let observer = RemoteChangeObserver(
         coalescingDelay: .milliseconds(50),
         maximumDelay: .milliseconds(100),
+        notificationCenter: center,
       ) {
         firstFiredAt = firstFiredAt ?? ContinuousClock.now
         callbackFired()
@@ -128,7 +135,7 @@ struct RemoteChangeObserverTests {
 
       // Long enough to cross the deadline at least once.
       for _ in 0 ..< 10 {
-        NotificationCenter.default.post(name: .NSPersistentStoreRemoteChange, object: nil)
+        center.post(name: .NSPersistentStoreRemoteChange, object: nil)
         try await Task.sleep(for: .milliseconds(20))
       }
       // Then go quiet, so the trailing debounce delivers a second callback.

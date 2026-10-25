@@ -41,11 +41,14 @@ final class RemoteChangeObserver: NSObject {
   /// - Parameters:
   ///   - maximumDelay: the longest the callback is held back once a burst has started. Setting it
   ///     below `coalescingDelay` turns the debounce into a fixed-interval throttle.
+  ///   - notificationCenter: where both notifications are observed. Tests pass a private center so
+  ///     that posts from suites running alongside them don't reach the observer under test.
   ///   - onChange: invoked on the main actor. Capture the owner weakly: the owner is expected to
   ///     hold this observer, so a strong capture would be a cycle.
   init(
     coalescingDelay: Duration = .milliseconds(200),
     maximumDelay: Duration = .seconds(1),
+    notificationCenter: NotificationCenter = .default,
     onChange: @escaping () -> Void,
   ) {
     self.onChange = onChange
@@ -54,13 +57,13 @@ final class RemoteChangeObserver: NSObject {
     super.init()
     // The selector-based registration is unregistered automatically when this object is
     // deallocated, which the block-based API would not do.
-    NotificationCenter.default.addObserver(
+    notificationCenter.addObserver(
       self,
       selector: #selector(storeChangedRemotely),
       name: .NSPersistentStoreRemoteChange,
       object: nil,
     )
-    NotificationCenter.default.addObserver(
+    notificationCenter.addObserver(
       self,
       selector: #selector(storeChangedRemotely),
       name: SampleData.didRemoveDuplicates,
