@@ -102,16 +102,25 @@ class checklistCreateUITest: XCTestCase {
     XCTAssert((cell.textViews["itemNotesTextView"].value as? String ?? "") == (item2NotesLine1 + "\n" + item2NotesLine2))
 
     // Now remove the notes via Delete key, but keep deleting until some of Item Name is deleted
+    //
+    // Delete carries on upward past an emptied field: from an item's notes into its own name, and
+    // from an item with both emptied into the name of the item above, which it is deleted in favour
+    // of (`ChecklistViewController.itemContentViewDidBackspaceEmpty`). It stops at the first item.
     let itemNotesTextView = cell.textViews["itemNotesTextView"]
-    itemNotesTextView.tap()
-    itemNotesTextView.press(forDuration: 0.5)
-    // The edit menu animates in, and comes back with Cut only after Select All has selected.
-    let selectAll = app.menuItems["Select All"]
-    XCTAssertTrue(selectAll.waitForExistence(timeout: 5), "The edit menu didn't offer Select All.")
-    selectAll.tap()
-    let cut = app.menuItems["Cut"]
-    XCTAssertTrue(cut.waitForExistence(timeout: 5), "The edit menu didn't offer Cut after Select All.")
-    cut.tap()
+    // The far bottom-right corner, past the end of the last line, so the caret lands after the last
+    // character.
+    itemNotesTextView.coordinate(withNormalizedOffset: CGVector(dx: 0.99, dy: 0.99)).tap()
+    XCTAssertTrue(itemNotesTextView.waitForKeyboardFocus(), "The notes field didn't take focus.")
+    itemNotesTextView.pressDeleteKey((item2NotesLine1 + "\n" + item2NotesLine2).count)
+    XCTAssertEqual(itemNotesTextView.value as? String, "", "Text was left in the notes: the caret didn't land at the end.")
+
+    // One more moves up into the name without deleting anything, and the next deletes from its end.
+    itemNotesTextView.pressDeleteKey()
+    let itemNameTextView = cell.textViews["itemNameTextView"]
+    XCTAssertTrue(itemNameTextView.waitForKeyboardFocus(), "A Delete in the emptied notes didn't move up to the name.")
+    XCTAssertEqual(itemNameTextView.value as? String, item2Name, "The Delete that moved up shouldn't touch the name.")
+    itemNameTextView.pressDeleteKey()
+    XCTAssertEqual(itemNameTextView.value as? String, String(item2Name.dropLast()), "Delete didn't carry on into the name.")
     app.tapChecklistEditingDone()
 
     // Emptied, the notes field collapses and leaves the accessibility tree.
