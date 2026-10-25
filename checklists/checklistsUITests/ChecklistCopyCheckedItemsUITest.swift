@@ -114,7 +114,8 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     let nameField = app.textFields["copyDestination.newChecklistName"]
     XCTAssertTrue(nameField.waitForExistence(timeout: 5), "The destination picker didn't appear.")
     nameField.tap()
-    app.typeText("Ferry Day")
+    XCTAssertTrue(nameField.waitForKeyboardFocus(), "The name field didn't take focus.")
+    nameField.typeText("Ferry Day")
     app.buttons["copyDestination.createNewChecklist"].tap()
 
     XCTAssertTrue(nameField.waitForNonExistence(timeout: 5), "The picker didn't dismiss.")
@@ -206,8 +207,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
   @MainActor func testDestinationJustAboveKeyboardTakesTapWhileTyping() throws {
     // Enough destinations that one reaches down to the keyboard; the seed alone has two.
     for name in ["Packing A", "Packing B", "Packing C", "Packing D", "Packing E"] {
-      app.buttons["Add new checklist."].tap()
-      XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
+      app.openCreateSheet()
       app.typeText(name)
       app.finishCreateSheet()
       XCTAssertTrue(checklistsList.staticTexts[name].waitForExistence(timeout: 5))
@@ -220,8 +220,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     let nameField = app.textFields["copyDestination.newChecklistName"]
     XCTAssertTrue(nameField.waitForExistence(timeout: 5), "The destination picker didn't appear.")
     nameField.tap()
-    let keyboard = app.keyboards.firstMatch
-    XCTAssertTrue(keyboard.waitForExistence(timeout: 5), "Keyboard didn't appear for the name.")
+    let keyboard = app.waitForSoftwareKeyboard("Keyboard didn't appear for the name.")
     XCTAssertTrue(editingDoneButton.waitForExistence(timeout: 5), "Focusing the name didn't bring Done into the bar.")
 
     // A point in the band a keyboard toolbar occupies: centred 68pt above the keyboard, as the bar

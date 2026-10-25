@@ -194,7 +194,7 @@ class AccessibilityAuditUITest: XCTestCase {
     tapButton("toolbar.addChecklist")
     XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5), "The create sheet didn't open.")
     // The name field takes focus as the sheet opens; audit once the keyboard is up, not mid-way.
-    XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5), "The keyboard didn't come up.")
+    app.waitForSoftwareKeyboard("The keyboard didn't come up.")
     try audit("createSheet")
   }
 
@@ -213,7 +213,7 @@ class AccessibilityAuditUITest: XCTestCase {
     let name = app.tables["ChecklistTableView"].cells.element(boundBy: 0).textViews["itemNameTextView"]
     XCTAssertTrue(name.waitForExistence(timeout: 5), "The first item didn't appear.")
     name.tap()
-    XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5), "The keyboard didn't come up.")
+    app.waitForSoftwareKeyboard("The keyboard didn't come up.")
     try audit("checklistEditingItem")
   }
 

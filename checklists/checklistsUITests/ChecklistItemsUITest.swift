@@ -53,8 +53,7 @@ final class ChecklistItemsUITest: ChecklistDetailUITestCase {
     XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))
 
     checklistTable.textViews["checklistNotesTextView"].tap()
-    let keyboard = app.keyboards.firstMatch
-    XCTAssertTrue(keyboard.waitForExistence(timeout: 5), "Keyboard didn't appear for the notes.")
+    let keyboard = app.waitForSoftwareKeyboard("Keyboard didn't appear for the notes.")
     XCTAssertTrue(app.checklistEditingDoneButton.waitForExistence(timeout: 5), "The bar didn't swap in its editing Done.")
 
     // The lowest checkbox still clear of the keyboard: the one a keyboard toolbar would sit over.

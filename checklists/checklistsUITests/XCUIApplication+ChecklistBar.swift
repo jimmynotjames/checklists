@@ -5,8 +5,9 @@
 
 import XCTest
 
-/// The checklist screen's navigation-bar buttons that come and go with typing. Matched by
-/// identifier, without naming the bar: see `ChecklistDetailUITestCase.detailBackButton`.
+/// Opening and closing the create sheet, and the checklist screen's navigation-bar buttons that come
+/// and go with typing. Bar buttons are matched by identifier, without naming the bar: see
+/// `ChecklistDetailUITestCase.detailBackButton`.
 ///
 /// While a field is being typed into, the editing Done sits at the bar's outer edge, in place of the
 /// create sheet's own Done there. It reads "Done" just as that one does, so a `buttons["Done"]`
@@ -46,5 +47,18 @@ extension XCUIApplication {
     let button = createSheetDoneButton
     XCTAssertTrue(button.waitForExistence(timeout: 5), "The create sheet's Done isn't in the bar.", file: file, line: line)
     button.tap()
+  }
+
+  /// Taps the checklists list's add button — an `.overlay` on the list, not a row inside it, so it
+  /// hangs off the application rather than the collection view — and waits for the create sheet's name field to take
+  /// focus, which it does in `viewDidAppear`: typing before then has nowhere to go.
+  func openCreateSheet(file: StaticString = #filePath, line: UInt = #line) {
+    buttons["Add new checklist."].tap()
+    XCTAssertTrue(
+      textFields["checklistNameField"].waitForKeyboardFocus(),
+      "The create sheet's name field never took focus.",
+      file: file,
+      line: line,
+    )
   }
 }
