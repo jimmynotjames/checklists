@@ -83,7 +83,7 @@ extension ChecklistViewController {
 
   /// The one item in the navigation item's pinned trailing group: past ⋯ at the outer edge of a
   /// top bar, and at the top of iPhone Duo's vertical bar, under Back, where the overflow never
-  /// takes it. Used for this screen's Dones, so the confirming action is always in the same place.
+  /// takes it. Holds the typing Done and Reorder Items mode's Done.
   var pinnedTrailingItem: UIBarButtonItem? {
     get { navigationItem.pinnedTrailingGroup?.barButtonItems.first }
     set {

@@ -168,7 +168,7 @@ full two-family sweep, and the reasoning behind each verdict.
 | `ChecklistsView` Edit mode on/off (`withAnimation`) | **Left alone.** The system's own edit-mode reveal of selection circles and handles; Apple's list apps don't suppress it |
 | `ChecklistViewController` Reorder Items mode on/off (`setEditing(_:animated:)`, add-item footer fade) | **Left alone.** The system's reveal of drag handles, plus an opacity fade |
 | `ChecklistViewController` nav-title fade on scroll | **Left alone.** Opacity, not simulated movement |
-| `ChecklistViewController.updateEditingDoneBarButtonItem` editing Done coming and going (`navigationItem.pinnedTrailingGroup`) | **Left alone.** The system's own bar relayout; Notes adds its editing Done the same way |
+| `ChecklistViewController.updateEditingDoneBarButtonItem` editing Done coming and going (`navigationItem.pinnedTrailingGroup`, which has no animated setter) | **Left alone.** Whatever the system's bar relayout does with the pinned group; Notes adds its editing Done the same way |
 | `CopyCheckedItemsView` Done coming and going with the name field's focus | **Left alone.** The system's own toolbar transition, as above |
 | `CircularPercentStatusIcon.setInnerCircle`, `CheckboxButton.setCheckboxState` | **Not animated.** Direct property assignment, outside any animation context |
 | `ProgressView` spinners (`LoadingView`, `SettingsView`) | System-owned. Progress indicators are not suppressed under Reduce Motion, by Apple's design |
