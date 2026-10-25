@@ -63,22 +63,33 @@ extension ChecklistViewController {
     updateEditingDoneBarButtonItem(animated: false)
   }
 
-  /// While a field is being typed into, adds the editing Done at the outer edge and leaves the rest
+  /// While a field is being typed into, pins the editing Done at the outer edge and leaves the rest
   /// where it was, as Notes does. On the create sheet it stands in for the sheet's own Done, which
   /// already sits there. Reorder Items mode owns the whole bar while it is on, and puts back what it
   /// found.
   func updateEditingDoneBarButtonItem(animated: Bool) {
     guard !isReordering, let moreBarButtonItem, let primaryBarButtonItem, let editingDoneBarButtonItem else { return }
-    // Trailing-first: index 0 is the outer edge.
+    // Trailing-first: index 0 is the outer edge, next to the pinned item.
     let items: [UIBarButtonItem] = switch (showsDiscardWording, isEditingText) {
-    case (true, true): [editingDoneBarButtonItem, moreBarButtonItem]
+    case (true, true): [moreBarButtonItem]
     case (true, false): [primaryBarButtonItem, moreBarButtonItem]
-    case (false, true): [editingDoneBarButtonItem, moreBarButtonItem, primaryBarButtonItem]
-    case (false, false): [moreBarButtonItem, primaryBarButtonItem]
+    case (false, _): [moreBarButtonItem, primaryBarButtonItem]
     }
+    pinnedTrailingItem = isEditingText ? editingDoneBarButtonItem : nil
     let current = navigationItem.rightBarButtonItems ?? []
     guard !current.elementsEqual(items, by: ===) else { return }
     navigationItem.setRightBarButtonItems(items, animated: animated)
+  }
+
+  /// The one item in the navigation item's pinned trailing group: past ⋯ at the outer edge of a
+  /// top bar, and at the top of iPhone Duo's vertical bar, under Back, where the overflow never
+  /// takes it. Used for this screen's Dones, so the confirming action is always in the same place.
+  var pinnedTrailingItem: UIBarButtonItem? {
+    get { navigationItem.pinnedTrailingGroup?.barButtonItems.first }
+    set {
+      guard newValue !== pinnedTrailingItem else { return }
+      navigationItem.pinnedTrailingGroup = newValue.map { UIBarButtonItemGroup(barButtonItems: [$0], representativeItem: nil) }
+    }
   }
 
   @objc func editingDoneTapped() {
@@ -191,22 +202,21 @@ extension ChecklistViewController {
     if reordering {
       savedRightBarButtonItems = navigationItem.rightBarButtonItems
       savedLeftBarButtonItem = navigationItem.leftBarButtonItem
-      // The word and semibold weight of ChecklistsView's Done; the `.done` style would draw a filled
-      // checkmark button instead.
-      let doneItem = UIBarButtonItem(title: CommonStrings.done, style: .plain, target: self, action: #selector(reorderDoneTapped))
-      let bodySize = UIFont.preferredFont(forTextStyle: .body, compatibleWith: traitCollection).pointSize
-      let semibold = UIFont.systemFont(ofSize: bodySize, weight: .semibold)
-      doneItem.setTitleTextAttributes([.font: semibold], for: .normal)
-      doneItem.setTitleTextAttributes([.font: semibold], for: .highlighted)
+      savedPinnedTrailingItem = pinnedTrailingItem
+      // The same checkmark as the screen's other Dones, pinned where they sit.
+      let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(reorderDoneTapped))
       doneItem.tintColor = .tintColor
       doneItem.accessibilityIdentifier = "checklist.reorderDone"
       navigationItem.setLeftBarButton(nil, animated: animated)
-      navigationItem.setRightBarButtonItems([doneItem], animated: animated)
+      navigationItem.setRightBarButtonItems(nil, animated: animated)
+      pinnedTrailingItem = doneItem
     } else {
       navigationItem.setLeftBarButton(savedLeftBarButtonItem, animated: animated)
       navigationItem.setRightBarButtonItems(savedRightBarButtonItems, animated: animated)
+      pinnedTrailingItem = savedPinnedTrailingItem
       savedRightBarButtonItems = nil
       savedLeftBarButtonItem = nil
+      savedPinnedTrailingItem = nil
     }
   }
 
@@ -217,7 +227,7 @@ extension ChecklistViewController {
   /// Done in Reorder Items mode, ⋯ outside it: where VoiceOver goes when the mode swaps away the
   /// item it was on, which would leave it somewhere arbitrary.
   var barSwapFocusTarget: UIBarButtonItem? {
-    isReordering ? navigationItem.rightBarButtonItems?.first : moreBarButtonItem
+    isReordering ? pinnedTrailingItem : moreBarButtonItem
   }
 
   /// Posted with the bar item itself; see `core-docs/accessibility-spec.md` §Announcements and focus.

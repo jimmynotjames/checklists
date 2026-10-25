@@ -17,10 +17,11 @@ import UIKit
 struct ChecklistEditingDoneTests {
   private static let threeItems: [(name: String, isChecked: Bool)] = [("Milk", false), ("Bread", true), ("Eggs", false)]
 
-  /// The trailing bar items, outer edge first, each named by its identifier, or "Reset" for Reset,
-  /// which carries none.
+  /// The trailing bar items, outer edge first: the pinned item, if any, then the rest. Each is named
+  /// by its identifier, or "Reset" for Reset, which carries none.
   private func bar(_ controller: ChecklistViewController) -> [String] {
-    (controller.navigationItem.rightBarButtonItems ?? []).map {
+    let pinned = controller.pinnedTrailingItem.map { [$0] } ?? []
+    return (pinned + (controller.navigationItem.rightBarButtonItems ?? [])).map {
       $0.title == ChecklistViewController.resetButtonTitle ? "Reset" : $0.accessibilityIdentifier ?? "?"
     }
   }
@@ -85,6 +86,24 @@ struct ChecklistEditingDoneTests {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
       let editingDone = try #require(harness.viewController.editingDoneBarButtonItem)
       #expect(!editingDone.sharesBackground)
+    }
+  }
+
+  /// Pinned, so on iPhone Duo's vertical bar it sits at the top of the column rather than among
+  /// the other items, and never falls into the overflow.
+  @Test("typing pins the editing Done, and ending unpins it", arguments: [false, true])
+  func editingDoneIsPinned(isNewChecklist: Bool) throws {
+    try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: isNewChecklist) { harness in
+      let controller = harness.viewController
+      harness.header.nameTextField.becomeFirstResponder()
+
+      #expect(controller.pinnedTrailingItem === controller.editingDoneBarButtonItem)
+      let rest = controller.navigationItem.rightBarButtonItems ?? []
+      #expect(!rest.contains { $0 === controller.editingDoneBarButtonItem })
+
+      controller.view.endEditing(true)
+      settle()
+      #expect(controller.pinnedTrailingItem == nil)
     }
   }
 
