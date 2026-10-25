@@ -87,7 +87,7 @@ final class ChecklistHistoryCaptionUITest: ChecklistDetailUITestCase {
     XCTAssertTrue(caption.label.contains("Last completed: "), "Unexpected caption: \(caption.label)")
     XCTAssertFalse(caption.label.hasSuffix("Never"), "Unexpected caption: \(caption.label)")
 
-    app.navigationBars.buttons["Reset"].tap()
+    app.navigationBars.buttons["checklist.reset"].tap()
     detailBackButton.tap()
     checklistsList.staticTexts["Morning Routine"].tap()
 

@@ -27,7 +27,7 @@ class ChecklistReorderItemsUITest: XCTestCase {
   }
 
   private var detailBackButton: XCUIElement {
-    app.navigationBars.buttons["Back"]
+    app.navigationBars.buttons["BackButton"]
   }
 
   /// Reorder Items mode: the menu entry, the handles, Done, and a move that survives leaving the
@@ -47,7 +47,7 @@ class ChecklistReorderItemsUITest: XCTestCase {
 
     let doneButton = app.navigationBars.buttons["checklist.reorderDone"]
     XCTAssertTrue(doneButton.waitForExistence(timeout: 5), "Reorder Items mode's Done didn't appear.")
-    XCTAssertFalse(app.navigationBars.buttons["Reset"].exists, "The mode clears the bar down to Done.")
+    XCTAssertFalse(app.navigationBars.buttons["checklist.reset"].exists, "The mode clears the bar down to Done.")
 
     // A left-edge swipe would leave the screen if the mode let it through.
     let window = app.windows.firstMatch
@@ -72,7 +72,7 @@ class ChecklistReorderItemsUITest: XCTestCase {
     )
 
     doneButton.tap()
-    XCTAssertTrue(app.navigationBars.buttons["Reset"].waitForExistence(timeout: 5), "Done didn't put Reset back.")
+    XCTAssertTrue(app.navigationBars.buttons["checklist.reset"].waitForExistence(timeout: 5), "Done didn't put Reset back.")
 
     detailBackButton.tap()
     checklistsList.staticTexts["Morning Routine"].tap()

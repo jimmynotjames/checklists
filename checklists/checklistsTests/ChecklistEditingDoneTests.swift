@@ -91,7 +91,7 @@ struct ChecklistEditingDoneTests {
 
   /// Pinned, so on iPhone Duo's vertical bar it sits at the top of the column rather than among
   /// the other items, and never falls into the overflow.
-  @Test("typing pins the editing Done, and ending unpins it", arguments: [false, true])
+  @Test("typing pins the editing Done, and ending gives the pin back", arguments: [false, true])
   func editingDoneIsPinned(isNewChecklist: Bool) throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: isNewChecklist) { harness in
       let controller = harness.viewController
@@ -103,7 +103,9 @@ struct ChecklistEditingDoneTests {
 
       controller.view.endEditing(true)
       settle()
-      #expect(controller.pinnedTrailingItem == nil)
+      // The create sheet's own Done takes the pin back; an existing checklist pins nothing.
+      let expected = isNewChecklist ? controller.primaryBarButtonItem : nil
+      #expect(controller.pinnedTrailingItem === expected)
     }
   }
 

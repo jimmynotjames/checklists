@@ -29,7 +29,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
   }
 
   private var detailBackButton: XCUIElement {
-    app.navigationBars.buttons["Back"]
+    app.navigationBars.buttons["BackButton"]
   }
 
   // MARK: - Helpers

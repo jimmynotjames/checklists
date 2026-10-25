@@ -278,6 +278,12 @@ class ChecklistViewController: UIViewController {
     tableView.reloadData()
   }
 
+  override func viewIsAppearing(_ animated: Bool) {
+    super.viewIsAppearing(animated)
+    // The first copy: the host exists only once the screen is in its hierarchy.
+    mirrorBarToHost()
+  }
+
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     if isNewChecklist {
@@ -298,6 +304,10 @@ class ChecklistViewController: UIViewController {
     //   - Item cells must commit before viewDidDisappear's dangling-empty-item trim loop, or an
     //     uncommitted name reads as empty and gets wrongly deleted.
     view.endEditing(true)
+    // Leaving by the host's back button or swipe, which bypass `requestDismissal`.
+    if navigationController?.parent?.isMovingFromParent == true {
+      hasRequestedDismissal = true
+    }
     super.viewWillDisappear(animated)
   }
 
@@ -544,6 +554,8 @@ class ChecklistViewController: UIViewController {
 
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    // A re-assert guard, not the update path; see `mirrorBarToHost`.
+    mirrorBarToHost()
     if footerNeedsResize, let footer = tableView.tableFooterView as? AddItemButtonTableFooterView {
       footerNeedsResize = false
       // Like the header, the table reads the footer's height only on assignment.
@@ -737,11 +749,13 @@ extension ChecklistViewController: UIScrollViewDelegate {
     if scrolledY <= thresholdY, navigationItem.title != nil {
       UIView.animate(withDuration: 0.4, animations: {
         self.navigationItem.title = nil
+        self.mirrorBarToHost()
       })
     }
     if scrolledY > thresholdY, navigationItem.title == nil {
       UIView.animate(withDuration: 0.4, animations: {
         self.navigationItem.title = self.checklist.name
+        self.mirrorBarToHost()
       })
     }
   }

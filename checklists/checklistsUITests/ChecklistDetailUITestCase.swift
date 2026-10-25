@@ -30,7 +30,9 @@ class ChecklistDetailUITestCase: XCTestCase {
     app.collectionViews
   }
 
-  /// The detail screen's Back button, found without naming its navigation bar.
+  /// The detail screen's Back button, found without naming its navigation bar. It is the SwiftUI
+  /// stack's own back button, so it reads as the list's title; `BackButton` is the identifier UIKit
+  /// gives it in every language.
   ///
   /// **Never name the detail screen's navigation bar in a query.** Its identifier is whichever of
   /// the checklist name / the view controller's default ("checklists.ChecklistView") happens to
@@ -42,10 +44,10 @@ class ChecklistDetailUITestCase: XCTestCase {
   /// intermittent "No matches found for … IN identifiers".
   ///
   /// Matching on the button alone is immune to that, and stays unambiguous even with a sheet's bar
-  /// in the tree beside the list screen's: Back, Reset, Done and `checklist.more` each exist on
+  /// in the tree beside the list screen's: Back, `checklist.reset`, Done and `checklist.more` each exist on
   /// exactly one bar at a time. `checklistCreateUITest` follows the same rule.
   var detailBackButton: XCUIElement {
-    app.navigationBars.buttons["Back"]
+    app.navigationBars.buttons["BackButton"]
   }
 
   /// Long-presses `row` and drops it on `target`, the way a user drag-reorders a ChecklistScreen row.

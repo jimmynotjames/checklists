@@ -42,8 +42,11 @@ struct RootView: View {
                   guard !router.path.isEmpty else { return }
                   router.path.removeLast()
                 }
-                // Only the embedded UIKit bar should show for this destination; see ChecklistScreen.
-                .toolbar(.hidden, for: .navigationBar)
+                // The screen lends its UIKit bar items to this bar; see
+                // ChecklistViewController+BarHost. Visible explicitly: holding no SwiftUI items of its
+                // own, the bar is otherwise hidden as empty while the screen appears, lent items and
+                // all.
+                .toolbarVisibility(.visible, for: .navigationBar)
               } else {
                 unresolvedPushDestination
               }
@@ -81,8 +84,12 @@ struct RootView: View {
           AnalyticsConsentSheet()
         case let .newChecklist(id):
           if let checklist = context.checklist(id: id) {
-            ChecklistScreen(checklist: checklist, isNewChecklist: true) {
-              router.sheet = nil
+            // A stack of its own only for the bar it brings, which the screen lends its items to.
+            NavigationStack {
+              ChecklistScreen(checklist: checklist, isNewChecklist: true) {
+                router.sheet = nil
+              }
+              .toolbarVisibility(.visible, for: .navigationBar)
             }
           } else {
             unresolvedSheetDestination

@@ -229,8 +229,6 @@ The forced size may not reach the UIKit checklist detail screen: see that script
 
 ## Known gaps
 
-- `ChecklistScreen.swift` hardcodes `edgeSwipe.edges = .left`, which is the wrong edge under
-  right-to-left layout.
 - The accessibility labels in `ItemContentView.swift` and `ChecklistInfoHeaderView.swift` carry a
   trailing `": "` inside the localized value, which reads oddly and makes the string harder to
   translate well.

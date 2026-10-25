@@ -98,12 +98,14 @@ struct ChecklistReorderModeTests {
     try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: true) { harness in
       let controller = harness.viewController
       let original = try #require(controller.navigationItem.rightBarButtonItems)
+      let pinnedDone = try #require(controller.pinnedTrailingItem)
       controller.isNewChecklist = false
 
       controller.enterReorderMode()
       controller.setEditing(false, animated: false)
 
       #expect(controller.navigationItem.rightBarButtonItems == original)
+      #expect(controller.pinnedTrailingItem === pinnedDone)
     }
   }
 

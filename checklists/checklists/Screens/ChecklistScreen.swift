@@ -10,8 +10,10 @@ import UIKit
 /// SwiftUI host for the still-UIKit `ChecklistViewController`, embedded in its own `UINavigationController` because it drives a real UIKit nav bar directly:
 ///   - its scroll handler animates `navigationItem.title` in and out past a threshold,
 ///   - it builds and changes its own trailing bar items, by mode and while a field is being typed into; see `ChecklistViewController.configureNavigationBar`.
-/// When pushed, the caller hides SwiftUI's navigation bar for this destination so only the
-/// embedded bar shows.
+/// The embedded bar stays hidden: its items are shown in the SwiftUI navigation bar around the
+/// screen, which is the only one iPhone Duo's vertical bar takes items from. Pushed or presented,
+/// the caller puts this screen in a `NavigationStack` for that reason; see
+/// `ChecklistViewController+BarHost`.
 ///
 /// The wrapper exists so the safe-area handling below travels with the screen instead of being restated at each presentation site.
 struct ChecklistScreen: View {
@@ -92,10 +94,10 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   @Environment(ToastPresenter.self) private var toasts: ToastPresenter?
 
   func makeCoordinator() -> Coordinator {
-    Coordinator(onRequestDismiss: onRequestDismiss, transferGeneration: transferGeneration)
+    Coordinator(transferGeneration: transferGeneration)
   }
 
-  func makeUIViewController(context: Context) -> UINavigationController {
+  func makeUIViewController(context _: Context) -> UINavigationController {
     let viewController = ChecklistViewController()
     viewController.checklist = checklist
     viewController.context = modelContext
@@ -107,67 +109,18 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
     viewController.onRemoteDeletion = { [toasts] in toasts?.show(.checklistDeletedElsewhere) }
     viewController.analytics = analytics
     viewController.ratingPrompt = ratingPrompt
-    if !isNewChecklist {
-      // The embedded navigation controller's root has no system back button, so recreate one.
-      // Chevron-only, with no back title, is the intended look.
-      let backButton = UIBarButtonItem(
-        image: UIImage(systemName: "chevron.backward"),
-        // Through the controller, so it knows it is leaving; see `hasRequestedDismissal`.
-        primaryAction: UIAction { [weak viewController] _ in viewController?.requestDismissal() },
-      )
-      // iOS 26 renders bar buttons in `labelColor` unless the item itself carries a tint.
-      backButton.tintColor = .tintColor
-      backButton.accessibilityLabel = String(
-        localized: "checklist.back.accessibilityLabel",
-        defaultValue: "Back",
-        comment: "VoiceOver label for the chevron-only back button on the checklist detail screen.",
-      )
-      viewController.navigationItem.leftBarButtonItem = backButton
-    }
-    let navigationController = ChecklistNavigationController(rootViewController: viewController)
-    if !isNewChecklist {
-      // Swipe-back: the embedded navigation controller swallows edge pans before they reach
-      // SwiftUI's NavigationStack, and its own interactive-pop recognizer is inert with a
-      // single view controller on its stack — so without this, the pop gesture is silently
-      // dead. The pop itself still animates, driven by the router; only the finger-tracking
-      // phase of the stock gesture is lost.
-      let edgeSwipe = UIScreenEdgePanGestureRecognizer(
-        target: context.coordinator,
-        action: #selector(Coordinator.edgeSwipeBegan(_:)),
-      )
-      edgeSwipe.edges = .left
-      edgeSwipe.delegate = context.coordinator
-      context.coordinator.viewController = viewController
-      navigationController.view.addGestureRecognizer(edgeSwipe)
-    }
-    return navigationController
+    // Back and the edge swipe are the SwiftUI stack's own, on the bar the controller lends its
+    // items to; see ChecklistViewController+BarHost.
+    return ChecklistNavigationController(rootViewController: viewController)
   }
 
   @MainActor
-  final class Coordinator: NSObject, UIGestureRecognizerDelegate {
-    private let onRequestDismiss: () -> Void
-    weak var viewController: ChecklistViewController?
+  final class Coordinator {
     /// The last `transferGeneration` the controller was brought up to date with.
     var transferGeneration: Int
 
-    init(onRequestDismiss: @escaping () -> Void, transferGeneration: Int) {
-      self.onRequestDismiss = onRequestDismiss
+    init(transferGeneration: Int) {
       self.transferGeneration = transferGeneration
-    }
-
-    @objc func edgeSwipeBegan(_ gesture: UIScreenEdgePanGestureRecognizer) {
-      guard gesture.state == .began else { return }
-      // Through the controller when there is one, as the back button does.
-      if let viewController {
-        viewController.requestDismissal()
-      } else {
-        onRequestDismiss()
-      }
-    }
-
-    /// Reorder Items mode hides the back button, and an edge swipe would be the way out it stands in for.
-    func gestureRecognizerShouldBegin(_: UIGestureRecognizer) -> Bool {
-      viewController?.isReordering != true
     }
   }
 
@@ -182,6 +135,8 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
     assert(viewController.context === modelContext, "The screen's context changed under a live controller.")
     viewController.analytics = analytics
     viewController.ratingPrompt = ratingPrompt
+    // A re-assert guard: a SwiftUI update is when SwiftUI may have rewritten the host's bar.
+    viewController.mirrorBarToHost()
     if context.coordinator.transferGeneration != transferGeneration {
       context.coordinator.transferGeneration = transferGeneration
       // The same refresh another device's edit gets, guards and all.
@@ -190,9 +145,10 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
   }
 }
 
-/// The VoiceOver escape gesture runs up the responder chain from the focused element, and the nav
-/// bar's chain reaches this controller without passing through its root. With focus on Reorder
-/// Items mode's Done, escape would otherwise fall through to the SwiftUI stack and leave the screen.
+/// The VoiceOver escape gesture runs up the responder chain from the focused element, which reaches
+/// this controller without always passing through its root. In Reorder Items mode escape would
+/// otherwise fall through to the SwiftUI stack and leave the screen. The bar's items now live in the
+/// SwiftUI bar, whose chain never reaches here; see `core-docs/accessibility-spec.md`.
 private final class ChecklistNavigationController: UINavigationController {
   override func accessibilityPerformEscape() -> Bool {
     if let root = viewControllers.first as? ChecklistViewController, root.isReordering {

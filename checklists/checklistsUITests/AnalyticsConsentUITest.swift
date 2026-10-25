@@ -46,7 +46,7 @@ class AnalyticsConsentUITest: XCTestCase {
   /// otherwise, so it is safe to call after a sheet-only interaction that never pushed a detail
   /// screen change.
   private func returnToChecklistsListIfNeeded() {
-    let backButton = app.navigationBars.buttons["Back"]
+    let backButton = app.navigationBars.buttons["BackButton"]
     guard backButton.waitForExistence(timeout: 3) else { return }
     backButton.tap()
   }

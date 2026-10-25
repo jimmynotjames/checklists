@@ -21,8 +21,8 @@ extension ChecklistViewController {
   }
 
   /// Picks the menu's wording for this screen's mode and builds the trailing bar items. The create
-  /// sheet gets Done at the outer edge, beyond the overflow menu, as a sheet's confirming action
-  /// sits; an existing checklist gets Reset on the title side of the menu.
+  /// sheet gets Done pinned at the outer edge, beyond the overflow menu, as a sheet's confirming
+  /// action sits; an existing checklist gets Reset on the title side of the menu.
   func configureNavigationBar() {
     showsDiscardWording = isNewChecklist
     let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: makeMoreMenu())
@@ -41,14 +41,20 @@ extension ChecklistViewController {
       UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
     } else {
       // Reset keeps the bar slot: in an app built around rerunning a list it is a per-run action,
-      // while deleting the list is a once-ever one that can afford to sit a tap deeper.
-      UIBarButtonItem(title: Self.resetButtonTitle, style: .plain, target: self, action: #selector(resetButtonTapped))
+      // while deleting the list is a once-ever one that can afford to sit a tap deeper. An icon, so
+      // on iPhone Duo it moves into the vertical bar with the rest; the title is what VoiceOver
+      // reads and what the Large Content Viewer and an overflow menu show.
+      UIBarButtonItem(
+        title: Self.resetButtonTitle,
+        image: UIImage(systemName: "arrow.counterclockwise"),
+        target: self,
+        action: #selector(resetButtonTapped),
+      )
     }
     primaryItem.tintColor = .tintColor
-    if isNewChecklist {
-      // Locale-invariant handle for UI tests, apart from the editing Done, which reads "Done" too.
-      primaryItem.accessibilityIdentifier = "checklist.done"
-    }
+    // Locale-invariant handles for UI tests; the create sheet's Done reads "Done", as the editing
+    // Done does.
+    primaryItem.accessibilityIdentifier = isNewChecklist ? "checklist.done" : "checklist.reset"
     primaryBarButtonItem = primaryItem
 
     // In the bar, not above the keyboard: on iOS 26 a keyboard toolbar spans the full width and
@@ -65,25 +71,28 @@ extension ChecklistViewController {
 
   /// While a field is being typed into, pins the editing Done at the outer edge and leaves the rest
   /// where it was, as Notes does. On the create sheet it stands in for the sheet's own Done, which
-  /// already sits there. Reorder Items mode owns the whole bar while it is on, and puts back what it
-  /// found.
+  /// is pinned there otherwise. Reorder Items mode owns the whole bar while it is on, and puts back
+  /// what it found.
   func updateEditingDoneBarButtonItem(animated: Bool) {
     guard !isReordering, let moreBarButtonItem, let primaryBarButtonItem, let editingDoneBarButtonItem else { return }
     // Trailing-first: index 0 is the outer edge, next to the pinned item.
-    let items: [UIBarButtonItem] = switch (showsDiscardWording, isEditingText) {
-    case (true, true): [moreBarButtonItem]
-    case (true, false): [primaryBarButtonItem, moreBarButtonItem]
-    case (false, _): [moreBarButtonItem, primaryBarButtonItem]
+    let items: [UIBarButtonItem] = showsDiscardWording ? [moreBarButtonItem] : [moreBarButtonItem, primaryBarButtonItem]
+    pinnedTrailingItem = if isEditingText {
+      editingDoneBarButtonItem
+    } else {
+      showsDiscardWording ? primaryBarButtonItem : nil
     }
-    pinnedTrailingItem = isEditingText ? editingDoneBarButtonItem : nil
     let current = navigationItem.rightBarButtonItems ?? []
-    guard !current.elementsEqual(items, by: ===) else { return }
-    navigationItem.setRightBarButtonItems(items, animated: animated)
+    if !current.elementsEqual(items, by: ===) {
+      navigationItem.setRightBarButtonItems(items, animated: animated)
+    }
+    mirrorBarToHost(animated: animated)
   }
 
   /// The one item in the navigation item's pinned trailing group: past ⋯ at the outer edge of a
   /// top bar, and at the top of iPhone Duo's vertical bar, under Back, where the overflow never
-  /// takes it. Holds the typing Done and Reorder Items mode's Done.
+  /// takes it. Holds the screen's Done of the moment: the typing Done, the create sheet's, or Reorder
+  /// Items mode's.
   var pinnedTrailingItem: UIBarButtonItem? {
     get { navigationItem.pinnedTrailingGroup?.barButtonItems.first }
     set {
@@ -196,8 +205,8 @@ extension ChecklistViewController {
   }
 
   /// Clears the bar down to Done, as ChecklistsView's Edit mode does: one obvious way out, and no
-  /// second Done beside the create sheet's own. The back button goes too; the VoiceOver escape
-  /// gesture still leaves the mode, and `ChecklistScreen` holds off its edge swipe.
+  /// second Done beside the create sheet's own. The back button goes too, and its edge swipe with it;
+  /// the VoiceOver escape gesture still leaves the mode.
   func applyReorderModeToNavigationBar(_ reordering: Bool, animated: Bool) {
     if reordering {
       savedRightBarButtonItems = navigationItem.rightBarButtonItems
@@ -208,16 +217,19 @@ extension ChecklistViewController {
       doneItem.tintColor = .tintColor
       doneItem.accessibilityIdentifier = "checklist.reorderDone"
       navigationItem.setLeftBarButton(nil, animated: animated)
+      navigationItem.setHidesBackButton(true, animated: animated)
       navigationItem.setRightBarButtonItems(nil, animated: animated)
       pinnedTrailingItem = doneItem
     } else {
       navigationItem.setLeftBarButton(savedLeftBarButtonItem, animated: animated)
+      navigationItem.setHidesBackButton(false, animated: animated)
       navigationItem.setRightBarButtonItems(savedRightBarButtonItems, animated: animated)
       pinnedTrailingItem = savedPinnedTrailingItem
       savedRightBarButtonItems = nil
       savedLeftBarButtonItem = nil
       savedPinnedTrailingItem = nil
     }
+    mirrorBarToHost(animated: animated)
   }
 
   @objc private func reorderDoneTapped() {
