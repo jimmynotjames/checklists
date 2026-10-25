@@ -105,8 +105,13 @@ class checklistCreateUITest: XCTestCase {
     let itemNotesTextView = cell.textViews["itemNotesTextView"]
     itemNotesTextView.tap()
     itemNotesTextView.press(forDuration: 0.5)
-    app.menuItems["Select All"].tap()
-    app.menuItems["Cut"].tap()
+    // The edit menu animates in, and comes back with Cut only after Select All has selected.
+    let selectAll = app.menuItems["Select All"]
+    XCTAssertTrue(selectAll.waitForExistence(timeout: 5), "The edit menu didn't offer Select All.")
+    selectAll.tap()
+    let cut = app.menuItems["Cut"]
+    XCTAssertTrue(cut.waitForExistence(timeout: 5), "The edit menu didn't offer Cut after Select All.")
+    cut.tap()
     app.tapChecklistEditingDone()
 
     // Emptied, the notes field collapses and leaves the accessibility tree.
