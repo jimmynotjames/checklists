@@ -48,8 +48,9 @@ class ChecklistViewController: UIViewController {
   /// device deleted its checklist, for the host to say why.
   var onRemoteDeletion: (() -> Void)?
   /// Whether this screen has asked to close, so a deletion arriving as a store change while it
-  /// leaves — its own, or another device's just as the person left — isn't announced. Every way out
-  /// goes through `requestDismissal`, which sets it.
+  /// leaves — its own, or another device's just as the person left — isn't announced. Set by
+  /// `requestDismissal`, and by `viewWillDisappear` for the SwiftUI stack's own back button and
+  /// swipe, which bypass it.
   var hasRequestedDismissal = false
   /// Read at load: once the record is deleted, its properties are no longer safe to read.
   private var checklistID: String?
@@ -152,7 +153,6 @@ class ChecklistViewController: UIViewController {
   /// out rather than rebuilt: `configureNavigationBar` reads `isNewChecklist`, which `viewDidAppear`
   /// has cleared by then.
   var savedRightBarButtonItems: [UIBarButtonItem]?
-  var savedLeftBarButtonItem: UIBarButtonItem?
   var savedPinnedTrailingItem: UIBarButtonItem?
 
   /// Whether Reorder Items mode is on. Named apart from `isEditing` because everywhere else in this
@@ -304,9 +304,15 @@ class ChecklistViewController: UIViewController {
     //   - Item cells must commit before viewDidDisappear's dangling-empty-item trim loop, or an
     //     uncommitted name reads as empty and gets wrongly deleted.
     view.endEditing(true)
-    // Leaving by the host's back button or swipe, which bypass `requestDismissal`.
+    // Leaving by the host's back button or swipe, which bypass `requestDismissal`. A back swipe
+    // given up partway brings the screen back, so it takes the mark back too.
     if navigationController?.parent?.isMovingFromParent == true {
       hasRequestedDismissal = true
+      transitionCoordinator?.notifyWhenInteractionChanges { [weak self] context in
+        if context.isCancelled {
+          self?.hasRequestedDismissal = false
+        }
+      }
     }
     super.viewWillDisappear(animated)
   }

@@ -7,7 +7,7 @@ import SwiftData
 import SwiftUI
 import UIKit
 
-/// SwiftUI host for the still-UIKit `ChecklistViewController`, embedded in its own `UINavigationController` because it drives a real UIKit nav bar directly:
+/// SwiftUI host for the still-UIKit `ChecklistViewController`, embedded in its own `UINavigationController` because it manages a UIKit navigation item directly:
 ///   - its scroll handler animates `navigationItem.title` in and out past a threshold,
 ///   - it builds and changes its own trailing bar items, by mode and while a field is being typed into; see `ChecklistViewController.configureNavigationBar`.
 /// The embedded bar stays hidden: its items are shown in the SwiftUI navigation bar around the
@@ -19,8 +19,9 @@ import UIKit
 struct ChecklistScreen: View {
   let checklist: Checklist
   var isNewChecklist = false
-  /// Routes every way of leaving the screen (Done, back, remote deletion) through the SwiftUI
-  /// router so navigation state can't desync from what's on screen.
+  /// Routes the screen's own ways of leaving (Done, Delete or Discard, remote deletion) through the
+  /// SwiftUI router so navigation state can't desync from what's on screen; the stack's own back
+  /// button and swipe update the router's path themselves.
   let onRequestDismiss: () -> Void
 
   @Environment(Router.self) private var router
@@ -147,7 +148,7 @@ private struct ChecklistControllerView: UIViewControllerRepresentable {
 
 /// The VoiceOver escape gesture runs up the responder chain from the focused element, which reaches
 /// this controller without always passing through its root. In Reorder Items mode escape would
-/// otherwise fall through to the SwiftUI stack and leave the screen. The bar's items now live in the
+/// otherwise fall through to the SwiftUI stack and leave the screen. The bar's items live in the
 /// SwiftUI bar, whose chain never reaches here; see `core-docs/accessibility-spec.md`.
 private final class ChecklistNavigationController: UINavigationController {
   override func accessibilityPerformEscape() -> Bool {

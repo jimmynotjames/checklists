@@ -210,23 +210,19 @@ extension ChecklistViewController {
   func applyReorderModeToNavigationBar(_ reordering: Bool, animated: Bool) {
     if reordering {
       savedRightBarButtonItems = navigationItem.rightBarButtonItems
-      savedLeftBarButtonItem = navigationItem.leftBarButtonItem
       savedPinnedTrailingItem = pinnedTrailingItem
       // The same checkmark as the screen's other Dones, pinned where they sit.
       let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(reorderDoneTapped))
       doneItem.tintColor = .tintColor
       doneItem.accessibilityIdentifier = "checklist.reorderDone"
-      navigationItem.setLeftBarButton(nil, animated: animated)
       navigationItem.setHidesBackButton(true, animated: animated)
       navigationItem.setRightBarButtonItems(nil, animated: animated)
       pinnedTrailingItem = doneItem
     } else {
-      navigationItem.setLeftBarButton(savedLeftBarButtonItem, animated: animated)
       navigationItem.setHidesBackButton(false, animated: animated)
       navigationItem.setRightBarButtonItems(savedRightBarButtonItems, animated: animated)
       pinnedTrailingItem = savedPinnedTrailingItem
       savedRightBarButtonItems = nil
-      savedLeftBarButtonItem = nil
       savedPinnedTrailingItem = nil
     }
     mirrorBarToHost(animated: animated)

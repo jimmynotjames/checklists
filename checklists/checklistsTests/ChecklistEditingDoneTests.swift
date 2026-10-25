@@ -17,17 +17,15 @@ import UIKit
 struct ChecklistEditingDoneTests {
   private static let threeItems: [(name: String, isChecked: Bool)] = [("Milk", false), ("Bread", true), ("Eggs", false)]
 
-  /// The trailing bar items, outer edge first: the pinned item, if any, then the rest. Each is named
-  /// by its identifier, or "Reset" for Reset, which carries none.
+  /// The trailing bar items, outer edge first: the pinned item, if any, then the rest, each named by
+  /// its identifier.
   private func bar(_ controller: ChecklistViewController) -> [String] {
     let pinned = controller.pinnedTrailingItem.map { [$0] } ?? []
-    return (pinned + (controller.navigationItem.rightBarButtonItems ?? [])).map {
-      $0.title == ChecklistViewController.resetButtonTitle ? "Reset" : $0.accessibilityIdentifier ?? "?"
-    }
+    return (pinned + (controller.navigationItem.rightBarButtonItems ?? [])).map { $0.accessibilityIdentifier ?? "?" }
   }
 
-  private static let pushedIdle = ["checklist.more", "Reset"]
-  private static let pushedTyping = ["checklist.editingDone", "checklist.more", "Reset"]
+  private static let pushedIdle = ["checklist.more", "checklist.reset"]
+  private static let pushedTyping = ["checklist.editingDone", "checklist.more", "checklist.reset"]
   private static let createIdle = ["checklist.done", "checklist.more"]
   private static let createTyping = ["checklist.editingDone", "checklist.more"]
 

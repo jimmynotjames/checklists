@@ -90,6 +90,9 @@ struct RootView: View {
                 router.sheet = nil
               }
               .toolbarVisibility(.visible, for: .navigationBar)
+              // Inline, as the embedded bar always was: the scroll handler puts the name in the
+              // title, which a large-title bar would grow a row for.
+              .navigationBarTitleDisplayMode(.inline)
             }
           } else {
             unresolvedSheetDestination

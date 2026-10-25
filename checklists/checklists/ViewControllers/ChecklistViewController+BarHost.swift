@@ -29,7 +29,11 @@ extension ChecklistViewController {
   /// Copies the bar to the host, touching only what differs, so it is cheap enough for every
   /// layout pass and leaves an unchanged bar alone mid-animation.
   func mirrorBarToHost(animated: Bool = false) {
-    guard let host = barHostItem else { return }
+    guard let host = barHostItem, let hostController = navigationController?.parent else { return }
+    // The bar's scroll-edge treatment follows the table, two containers down from the host.
+    if let table = viewIfLoaded as? UIScrollView, hostController.contentScrollView(for: .top) !== table {
+      hostController.setContentScrollView(table, for: .top)
+    }
     if navigationController?.isNavigationBarHidden == false {
       navigationController?.setNavigationBarHidden(true, animated: false)
     }
