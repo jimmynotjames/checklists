@@ -37,3 +37,40 @@ extension XCUIElement {
   /// compares its replacement text against `"\n"`, so the escape that reaches the app has to be LF.
   private static let returnEscape = "\n"
 }
+
+extension XCUIApplication {
+  /// Waits for the software keyboard to be on screen and done sliding in, and returns it.
+  ///
+  /// `keyboards.firstMatch` existing isn't enough: a device can keep the keyboard element in the
+  /// tree with nothing on screen, or minimized to a bar (`scripts/sim_reset_keyboard.py`). A test
+  /// that reads the keyboard's frame then measures against the wrong edge, and one that audits the
+  /// screen sees rows the keyboard should be covering. Fails with the frame it last saw.
+  @discardableResult
+  func waitForSoftwareKeyboard(
+    _ message: String = "The software keyboard isn't on screen.",
+    timeout: TimeInterval = 5,
+    file: StaticString = #filePath,
+    line: UInt = #line,
+  ) -> XCUIElement {
+    let keyboard = keyboards.firstMatch
+    let windowBottom = windows.firstMatch.frame.maxY
+    let deadline = Date().addingTimeInterval(timeout)
+    var lastFrame: CGRect?
+    while Date() < deadline {
+      if keyboard.exists {
+        let frame = keyboard.frame
+        // Unchanged since the last poll, so the slide-in has finished.
+        if min(frame.maxY, windowBottom) - frame.minY >= Self.minimumKeyboardHeight, frame == lastFrame {
+          return keyboard
+        }
+        lastFrame = frame
+      }
+      Thread.sleep(forTimeInterval: 0.25)
+    }
+    XCTFail("\(message) Last keyboard frame: \(lastFrame.map { "\($0)" } ?? "none").", file: file, line: line)
+    return keyboard
+  }
+
+  /// A full iPhone keyboard stands about 300pt; a minimized one is a bar well under half that.
+  private static let minimumKeyboardHeight: CGFloat = 150
+}

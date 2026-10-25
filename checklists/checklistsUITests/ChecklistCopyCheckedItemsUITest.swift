@@ -220,8 +220,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     let nameField = app.textFields["copyDestination.newChecklistName"]
     XCTAssertTrue(nameField.waitForExistence(timeout: 5), "The destination picker didn't appear.")
     nameField.tap()
-    let keyboard = app.keyboards.firstMatch
-    XCTAssertTrue(keyboard.waitForExistence(timeout: 5), "Keyboard didn't appear for the name.")
+    let keyboard = app.waitForSoftwareKeyboard("Keyboard didn't appear for the name.")
     XCTAssertTrue(editingDoneButton.waitForExistence(timeout: 5), "Focusing the name didn't bring Done into the bar.")
 
     // A point in the band a keyboard toolbar occupies: centred 68pt above the keyboard, as the bar

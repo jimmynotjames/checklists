@@ -33,6 +33,15 @@ _pick_sim() {
         --state "$1"
 }
 
+# Strips the keyboard preferences that can hide the software keyboard (sim_reset_keyboard.py
+# says which and why). $1: UDID of a shut-down device.
+_reset_keyboard_prefs() {
+    local key
+    for key in $(python3 "${ROOT}/scripts/sim_reset_keyboard.py" --udid "$1"); do
+        echo "sim-sandbox: cleared ${key} from ${_SIM_DEVICE_NAME}'s keyboard preferences" >&2
+    done
+}
+
 # Every boot starts an unwarmed session; the sentinel's meaning is in test-ui.sh's header.
 _invalidate_warm_sentinel() {
     rm -f "${ROOT}/.build/sim/warmed"
@@ -51,9 +60,16 @@ _ensure_sim_booted() {
     #    delete it so step 3 recreates it on the new runtime instead of reusing the old one forever
     python3 "${ROOT}/scripts/sim_retire_stale.py" --name "${_SIM_DEVICE_NAME}"
 
-    # 1. Already booted — reuse it (still call bootstatus to confirm UI services ready)
+    # 1. Already booted — reuse it (still call bootstatus to confirm UI services ready), unless its
+    #    keyboard preferences mark a hidden-keyboard state: then it's shut down here and booted
+    #    clean by step 2.
     local udid
     udid="$(_pick_sim Booted)"
+    if [[ -n "${udid}" && -n "$(python3 "${ROOT}/scripts/sim_reset_keyboard.py" --udid "${udid}" --dry-run)" ]]; then
+        echo "sim-sandbox: shutting down ${_SIM_DEVICE_NAME} (${udid}) to clear its keyboard preferences" >&2
+        xcrun simctl shutdown "${udid}" >&2 || true
+        udid=""
+    fi
     if [[ -n "${udid}" ]]; then
         echo "sim-sandbox: reusing booted ${_SIM_DEVICE_NAME} (${udid})" >&2
         _wait_for_ready "${udid}"
@@ -65,6 +81,7 @@ _ensure_sim_booted() {
     # 2. Exists but shutdown — boot and wait for full readiness
     udid="$(_pick_sim any)"
     if [[ -n "${udid}" ]]; then
+        _reset_keyboard_prefs "${udid}"
         echo "sim-sandbox: booting existing ${_SIM_DEVICE_NAME} (${udid})" >&2
         _boot_and_wait "${udid}"
         _invalidate_warm_sentinel

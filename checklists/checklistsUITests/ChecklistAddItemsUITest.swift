@@ -140,8 +140,7 @@ final class ChecklistAddItemsUITest: ChecklistDetailUITestCase {
     checklistTableView.buttons["Add"].tap()
     app.typeText("Pack sunglasses")
 
-    let keyboard = app.keyboards.firstMatch
-    XCTAssertTrue(keyboard.waitForExistence(timeout: 5), "Keyboard didn't appear for the new item.")
+    let keyboard = app.waitForSoftwareKeyboard("Keyboard didn't appear for the new item.")
     let newItem = checklistTableView.children(matching: .cell).element(boundBy: numItems)
     XCTAssertTrue(newItem.waitForExistence(timeout: 5), "New item row didn't appear.")
     XCTAssertLessThanOrEqual(

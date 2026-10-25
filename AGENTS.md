@@ -246,7 +246,8 @@ device and skips sandbox management. `make sim-status` shows the device and the 
 When the device isn't on the newest iOS runtime the selected Xcode can target that hosts its device
 type,
 `scripts/sim_retire_stale.py` deletes it before use so it is recreated; the screenshot device gets
-the same treatment.
+the same treatment. Before boot, `scripts/sim_reset_keyboard.py` strips the keyboard preferences
+that mark a hidden software keyboard, and a booted device carrying them is rebooted first.
 
 Agents sharing one checkout take turns: every command that touches its sandbox device (the test
 scripts, `run.sh`, every `make sim-*` but `sim-status`) holds `.build/sim.lock` for its whole run;
