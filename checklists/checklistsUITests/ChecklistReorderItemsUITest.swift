@@ -60,10 +60,17 @@ class ChecklistReorderItemsUITest: XCTestCase {
     let movedName = try XCTUnwrap(lastRow.textViews["itemNameTextView"].value as? String)
     let handle = lastRow.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Reorder'")).firstMatch
     XCTAssertTrue(handle.waitForExistence(timeout: 5), "The row's drag handle didn't appear.")
-    handle.press(forDuration: 0.5, thenDragTo: firstRow)
+    // Slow, with a hold before the drop, so the table settles on the destination; and the drop is
+    // waited for rather than read at once. See `ChecklistDetailUITestCase.dragRow` and
+    // `waitForItemName`, which this class doesn't inherit.
+    handle.press(forDuration: 0.5, thenDragTo: firstRow, withVelocity: .slow, thenHoldForDuration: 0.5)
 
-    let atIndex0 = try XCTUnwrap(firstRow.textViews["itemNameTextView"].value as? String)
-    XCTAssertEqual(atIndex0, movedName)
+    let firstName = firstRow.textViews["itemNameTextView"]
+    let dropped = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", movedName), object: firstName)
+    XCTAssertEqual(
+      XCTWaiter().wait(for: [dropped], timeout: 5), .completed,
+      "Row 0 shows \"\(firstName.value as? String ?? "nil")\", not \"\(movedName)\".",
+    )
 
     doneButton.tap()
     XCTAssertTrue(app.navigationBars.buttons["Reset"].waitForExistence(timeout: 5), "Done didn't put Reset back.")
