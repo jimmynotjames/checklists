@@ -164,7 +164,9 @@ class checklistsUITests: XCTestCase {
   /// It leaves the app for a web page, so VoiceOver should call it a link, not a button.
   func testPrivacyPolicyIsALink() {
     app.buttons["toolbar.mainMenu"].tap()
-    app.buttons["mainMenu.settings"].tap()
+    let settingsEntry = app.buttons["mainMenu.settings"]
+    XCTAssertTrue(settingsEntry.waitForExistence(timeout: 5), "Main menu didn't open.")
+    settingsEntry.tap()
     XCTAssertTrue(app.links["Privacy Policy"].waitForExistence(timeout: 5), "Privacy Policy should be a link.")
     XCTAssertFalse(app.buttons["Privacy Policy"].exists, "Privacy Policy shouldn't also be a button.")
   }

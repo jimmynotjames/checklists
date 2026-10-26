@@ -33,6 +33,42 @@ extension XCUIElement {
     return XCTWaiter().wait(for: [focused], timeout: timeout) == .completed
   }
 
+  /// Taps this field once it has settled, and fails unless it takes keyboard focus. For a tap that
+  /// starts typing straight after a push or a sheet. The field must already be on screen: unlike a
+  /// plain `tap()`, nothing here scrolls it into view.
+  ///
+  /// One tap, no retry: a field that has stopped moving and still ignores a tap is a bug a person
+  /// would hit too. `offset` aims the tap within the field, as to put the caret after the last
+  /// character.
+  func tapForKeyboardFocus(at offset: CGVector? = nil, file: StaticString = #filePath, line: UInt = #line) {
+    XCTAssertTrue(waitForSettledFrame(), "\(identifier) didn't appear and hold still to be tapped.", file: file, line: line)
+    if let offset {
+      coordinate(withNormalizedOffset: offset).tap()
+    } else {
+      tap()
+    }
+    XCTAssertTrue(waitForKeyboardFocus(), "\(identifier) didn't take keyboard focus.", file: file, line: line)
+  }
+
+  /// Waits for this element to exist, take taps, and hold still, as on a sheet done sliding up.
+  /// A tap aims at the frame read just before it, so a tap on a field still moving can miss it and
+  /// the field never takes focus. XCUITest's own wait for animations to end can give up under load.
+  private func waitForSettledFrame(timeout: TimeInterval = 5) -> Bool {
+    let deadline = Date().addingTimeInterval(timeout)
+    var lastFrame: CGRect?
+    while Date() < deadline {
+      if exists, isHittable {
+        let frame = frame
+        if frame == lastFrame {
+          return true
+        }
+        lastFrame = frame
+      }
+      Thread.sleep(forTimeInterval: 0.5)
+    }
+    return false
+  }
+
   /// `XCUIKeyboardKey.return` is CR, but `ItemContentView.textView(_:shouldChangeTextIn:_:)`
   /// compares its replacement text against `"\n"`, so the escape that reaches the app has to be LF.
   private static let returnEscape = "\n"

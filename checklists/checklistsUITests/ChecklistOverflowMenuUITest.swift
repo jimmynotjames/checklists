@@ -71,7 +71,9 @@ final class ChecklistOverflowMenuUITest: ChecklistDetailUITestCase {
     tapDuplicateChecklistEntry()
     XCTAssertTrue(duplicateSheetNavigationBar.waitForExistence(timeout: 5), "The copy's sheet didn't appear.")
 
-    duplicateSheetNavigationBar.buttons["checklist.more"].tap()
+    let duplicateMoreButton = duplicateSheetNavigationBar.buttons["checklist.more"]
+    XCTAssertTrue(duplicateMoreButton.waitForExistence(timeout: 5), "The copy's overflow menu button didn't appear.")
+    duplicateMoreButton.tap()
     let discardEntry = app.buttons["Discard Checklist"]
     XCTAssertTrue(discardEntry.waitForExistence(timeout: 5), "Discard Checklist menu entry didn't appear.")
     discardEntry.tap()
@@ -137,7 +139,7 @@ final class ChecklistOverflowMenuUITest: ChecklistDetailUITestCase {
     XCTAssertTrue(checklistTableView.waitForExistence(timeout: 5))
 
     let nameField = checklistTableView.textFields["checklistNameField"]
-    nameField.tap()
+    nameField.tapForKeyboardFocus()
     app.typeText(" edited")
 
     tapDeleteChecklistEntry()

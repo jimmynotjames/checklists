@@ -19,7 +19,7 @@ final class ChecklistAddItemsUITest: ChecklistDetailUITestCase {
     let checklisttableviewTable = app.tables["ChecklistTableView"]
     XCTAssertTrue(checklisttableviewTable.waitForExistence(timeout: 5))
     let itemNameTextView1a = checklisttableviewTable.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"]
-    itemNameTextView1a.tap()
+    itemNameTextView1a.tapForKeyboardFocus()
     let itemNameTextView1aValue = try XCTUnwrap(itemNameTextView1a.value as? String)
 
     let itemNameTextView2aValue = try XCTUnwrap(checklisttableviewTable.children(matching: .cell).element(boundBy: 2).textViews["itemNameTextView"].value as? String)
@@ -99,7 +99,7 @@ final class ChecklistAddItemsUITest: ChecklistDetailUITestCase {
 
     // Now add something at end using keyboard Return key ("Next") key.
     let lastItemNameTextView = checklistTableView.children(matching: .cell).element(boundBy: numItems).textViews["itemNameTextView"]
-    lastItemNameTextView.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.9)).tap()
+    lastItemNameTextView.tapForKeyboardFocus(at: CGVector(dx: 0.9, dy: 0.9))
 
     lastItemNameTextView.pressReturnKey()
     app.typeText(newItemName2)
