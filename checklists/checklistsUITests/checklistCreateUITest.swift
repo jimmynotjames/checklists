@@ -109,8 +109,7 @@ class checklistCreateUITest: XCTestCase {
     let itemNotesTextView = cell.textViews["itemNotesTextView"]
     // The far bottom-right corner, past the end of the last line, so the caret lands after the last
     // character.
-    itemNotesTextView.coordinate(withNormalizedOffset: CGVector(dx: 0.99, dy: 0.99)).tap()
-    XCTAssertTrue(itemNotesTextView.waitForKeyboardFocus(), "The notes field didn't take focus.")
+    itemNotesTextView.tapForKeyboardFocus(at: CGVector(dx: 0.99, dy: 0.99))
     itemNotesTextView.pressDeleteKey((item2NotesLine1 + "\n" + item2NotesLine2).count)
     XCTAssertEqual(itemNotesTextView.value as? String, "", "Text was left in the notes: the caret didn't land at the end.")
 
@@ -221,7 +220,7 @@ class checklistCreateUITest: XCTestCase {
     XCTAssert(checklistTable.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String == item1Name)
 
     let item1NameTextView = checklistTable.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"]
-    item1NameTextView.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.9)).tap()
+    item1NameTextView.tapForKeyboardFocus(at: CGVector(dx: 0.9, dy: 0.9))
 
     // Remove the text only, leaving Item with empty field.
     item1NameTextView.pressDeleteKey(item1Name.count)

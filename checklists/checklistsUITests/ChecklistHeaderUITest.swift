@@ -30,7 +30,7 @@ final class ChecklistHeaderUITest: ChecklistDetailUITestCase {
     let tablesQuery = app.tables
     let checklistNameField = tablesQuery.textFields["Checklist Name: "]
     XCTAssertTrue(checklistNameField.waitForExistence(timeout: 5))
-    checklistNameField.tap()
+    checklistNameField.tapForKeyboardFocus()
     checklistNameField.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 7))
     checklistNameField.typeText("Ritual")
 
@@ -64,7 +64,7 @@ final class ChecklistHeaderUITest: ChecklistDetailUITestCase {
     let checklistTableView = app.tables["ChecklistTableView"]
     XCTAssertTrue(checklistTableView.waitForExistence(timeout: 5))
     let checklistnotestextviewTextView = checklistTableView.textViews["checklistNotesTextView"]
-    checklistnotestextviewTextView.tap()
+    checklistnotestextviewTextView.tapForKeyboardFocus()
 
     let notes = loremIspum + "\n" + loremIspum
     app.typeText(notes)
@@ -89,7 +89,7 @@ final class ChecklistHeaderUITest: ChecklistDetailUITestCase {
     let tablesQuery = app.tables
     XCTAssertTrue(tablesQuery["ChecklistTableView"].waitForExistence(timeout: 5))
 
-    tablesQuery.textViews["checklistNotesTextView"].tap()
+    tablesQuery.textViews["checklistNotesTextView"].tapForKeyboardFocus()
     app.typeText((1 ... 6).map { "Notes line \($0)." }.joined(separator: "\n"))
     app.tapChecklistEditingDone()
 

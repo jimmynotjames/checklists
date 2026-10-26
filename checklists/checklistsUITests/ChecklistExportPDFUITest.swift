@@ -26,7 +26,9 @@ final class ChecklistExportPDFUITest: ChecklistDetailUITestCase {
     app.buttons["Add new checklist."].tap()
     XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5), "The create sheet didn't open.")
 
-    app.navigationBars.buttons["checklist.more"].tap()
+    let moreButton = app.navigationBars.buttons["checklist.more"]
+    XCTAssertTrue(moreButton.waitForExistence(timeout: 5), "Overflow menu button didn't appear.")
+    moreButton.tap()
 
     XCTAssertTrue(app.buttons["checklist.menu.reorderItems"].waitForExistence(timeout: 5), "The overflow menu didn't open.")
     XCTAssertFalse(app.buttons["checklist.menu.exportPDF"].exists, "The create sheet shouldn't offer Export as PDF….")

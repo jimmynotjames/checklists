@@ -113,8 +113,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
 
     let nameField = app.textFields["copyDestination.newChecklistName"]
     XCTAssertTrue(nameField.waitForExistence(timeout: 5), "The destination picker didn't appear.")
-    nameField.tap()
-    XCTAssertTrue(nameField.waitForKeyboardFocus(), "The name field didn't take focus.")
+    nameField.tapForKeyboardFocus()
     nameField.typeText("Ferry Day")
     app.buttons["copyDestination.createNewChecklist"].tap()
 
@@ -192,7 +191,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     let nameField = app.textFields["copyDestination.newChecklistName"]
     XCTAssertTrue(nameField.waitForExistence(timeout: 5), "The destination picker didn't appear.")
     XCTAssertFalse(editingDoneButton.exists, "Done should only show while the name is being typed.")
-    nameField.tap()
+    nameField.tapForKeyboardFocus()
     XCTAssertTrue(editingDoneButton.waitForExistence(timeout: 5), "Focusing the name didn't bring Done into the bar.")
 
     editingDoneButton.tap()
@@ -219,7 +218,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
 
     let nameField = app.textFields["copyDestination.newChecklistName"]
     XCTAssertTrue(nameField.waitForExistence(timeout: 5), "The destination picker didn't appear.")
-    nameField.tap()
+    nameField.tapForKeyboardFocus()
     let keyboard = app.waitForSoftwareKeyboard("Keyboard didn't appear for the name.")
     XCTAssertTrue(editingDoneButton.waitForExistence(timeout: 5), "Focusing the name didn't bring Done into the bar.")
 

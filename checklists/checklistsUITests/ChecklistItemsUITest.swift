@@ -52,7 +52,7 @@ final class ChecklistItemsUITest: ChecklistDetailUITestCase {
     let checklistTable = app.tables["ChecklistTableView"]
     XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))
 
-    checklistTable.textViews["checklistNotesTextView"].tap()
+    checklistTable.textViews["checklistNotesTextView"].tapForKeyboardFocus()
     let keyboard = app.waitForSoftwareKeyboard("Keyboard didn't appear for the notes.")
     XCTAssertTrue(app.checklistEditingDoneButton.waitForExistence(timeout: 5), "The bar didn't swap in its editing Done.")
 
@@ -132,7 +132,7 @@ final class ChecklistItemsUITest: ChecklistDetailUITestCase {
 
     let item2NameTextView = checklistTableView.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"]
     let item2Name = try XCTUnwrap(item2NameTextView.value as? String)
-    item2NameTextView.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.9)).tap()
+    item2NameTextView.tapForKeyboardFocus(at: CGVector(dx: 0.9, dy: 0.9))
 
     let n = 11
     item2NameTextView.pressDeleteKey(n)
