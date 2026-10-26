@@ -90,15 +90,14 @@ class checklistsUITests: XCTestCase {
     // the row stayed lifted in place. Straight down, too, so no sideways part reaches the rows'
     // swipe actions.
     //
-    // Dragged once more if the first left the order as it was: under heavy simulator load the row can
-    // lift and settle back in place without the drag ever starting, which leaves nothing to undo.
+    // Dragged once more if the first left the order as it was, as `dragRow` does.
     let rowPitch = text2.frame.midY - text1.frame.midY
     let start = text1.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
     let drag = {
       start.press(
         forDuration: 1.5,
         thenDragTo: start.withOffset(CGVector(dx: 0, dy: rowPitch * 1.3)),
-        // Pixels per second, so a second or more for the move; `.slow` took under a third of one.
+        // Pixels per second, so a second or more for the move.
         withVelocity: XCUIGestureVelocity(rawValue: 60),
         thenHoldForDuration: 1.0,
       )
