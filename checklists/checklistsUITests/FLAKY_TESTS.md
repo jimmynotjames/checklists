@@ -15,5 +15,3 @@ enough data. What counts as flaky and when to log it: AGENTS.md §"Reading a tes
 
 | Date | Test | File:line | Failure | Run (suite, branch@sha, bundle) | Isolated rerun | Hunch |
 |---|---|---|---|---|---|---|
-| 2026-10-22 | `ChecklistOverflowMenuUITest/testCancellingDeleteKeepsTheChecklist` | `checklists/checklistsUITests/ChecklistOverflowMenuUITest.swift:124` | Failed to tap "Cancel" Button: Timed out while synthesizing event | `make test-ui`, u/jimmyho/claude-code/fix-flaky-reorder-test@a3b7c4f+uncommitted, `tmp/reorder1-ui-2.log` | Passed 3/3 (`ITERATIONS=3`) | Simulator load: the run took 1988s against 878s for the run before it |
-| 2026-10-25 | `AccessibilityAuditDarkUITest/testOverflowMenu` | `checklists/checklistsUITests/AccessibilityAuditUITest.swift:102` | Failed to get matching snapshots: Error getting main window kAXErrorServerNotFound | `make test-ui`, main@e93b91e, `.build/sim/results/20261025_115831-94278-ui.xcresult` | Passed 3/3 (`ITERATIONS=3`) | Simulator load, same run as above; fails at launch, before the test does anything |
