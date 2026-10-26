@@ -88,6 +88,15 @@ class AccessibilityAuditUITest: XCTestCase {
       detailContains: "TUIPredictionViewCell",
       reason: "The keyboard's suggestion bar is system UI; it shows up only some runs.",
     ),
+    KnownIssue(
+      screens: ["createSheet"],
+      types: .sufficientElementDescription,
+      identifier: "RecentPaste",
+      reason: """
+      The suggestion bar's "Paste from" cell is system UI, offering whatever the Mac last copied: the \
+      simulator syncs the Mac's clipboard.
+      """,
+    ),
   ]
 
   override func setUpWithError() throws {
