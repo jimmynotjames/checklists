@@ -33,8 +33,9 @@ extension XCUIElement {
     return XCTWaiter().wait(for: [focused], timeout: timeout) == .completed
   }
 
-  /// Taps this field once it has settled, and fails unless it takes keyboard focus. Use it for any
-  /// tap meant to start typing, above all straight after a push or a sheet.
+  /// Taps this field once it has settled, and fails unless it takes keyboard focus. For a tap that
+  /// starts typing straight after a push or a sheet. The field must already be on screen: unlike a
+  /// plain `tap()`, nothing here scrolls it into view.
   ///
   /// One tap, no retry: a field that has stopped moving and still ignores a tap is a bug a person
   /// would hit too. `offset` aims the tap within the field, as to put the caret after the last
@@ -58,7 +59,6 @@ extension XCUIElement {
     while Date() < deadline {
       if exists, isHittable {
         let frame = frame
-        // Unchanged since the last poll, so the slide has finished.
         if frame == lastFrame {
           return true
         }
