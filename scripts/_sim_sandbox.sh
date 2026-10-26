@@ -33,15 +33,16 @@ _pick_sim() {
         --state "$1"
 }
 
-# Keeps the software keyboard on screen. Once iOS decides a hardware keyboard is around, it parks
-# the keyboard just below the screen while the field keeps focus, and XCUITest still finds it;
-# synthesized key events are reported to set that off. Turning automatic minimization off in the
-# booted device's live preferences prevents it, and xcodebuild's parallel-testing clones, copied
-# from this device, carry the setting. $1: UDID of a booted device.
+# Keeps the software keyboard on screen. iOS can minimize it to just below the screen mid-run (by
+# community reports, once it thinks a hardware keyboard is around); turning automatic minimization
+# off in the booted device's live preferences stopped that here, and xcodebuild's parallel-testing
+# clones, copied from this device, carry the setting. `HardwareKeyboardLastSeen` is cleared along
+# with it on the same reports, unproven on its own. $1: UDID of a booted device.
 _keep_keyboard_on_screen() {
     local key
     for key in AutomaticMinimizationEnabled HardwareKeyboardLastSeen; do
-        xcrun simctl spawn "$1" defaults write com.apple.keyboard.preferences "${key}" -bool false >&2 || true
+        xcrun simctl spawn "$1" defaults write com.apple.keyboard.preferences "${key}" -bool false >&2 \
+            || echo "sim-sandbox: warning: could not set ${key}; the software keyboard may hide mid-run" >&2
     done
 }
 
