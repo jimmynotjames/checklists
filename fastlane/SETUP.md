@@ -64,9 +64,9 @@ devices, and the shots; the Python pipelines derive from it. Each active locale'
 catalog is generated, and `make gate` fails when one drifts from the string catalog:
 `core-docs/localization-spec.md §Screenshot seeds`.
 
-A full capture is release-time work and runs serially, so budget a couple of hours;
-it is resumable by `run_id`, and `locales:` takes a subset of runtime codes for a
-spot check.
+A full capture is release-time work and runs serially: about a minute per locale once
+the build is warm, so budget about an hour. It is resumable by `run_id`, and `locales:`
+takes a subset of runtime codes for a spot check.
 
 The English seed mirrors the shipped sample data but checks some items, so the home
 screen shows progress. Screenshot launches use Debug-only, disposable in-memory stores

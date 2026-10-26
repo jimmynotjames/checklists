@@ -6,7 +6,7 @@ description: "Capture and review App Store screenshots locally, inspect existing
 # Capture and publish screenshots
 
 The workflow captures two screens per active locale.
-A full run is serial and takes hours, so it is release-time work and is
+A full run is serial and takes about an hour, so it is release-time work and is
 resumable by `run_id`; use a `locales:` subset while iterating. Run commands
 from the repository root. Read `fastlane/SETUP.md` and
 `fastlane/screenshot-config.json` first.
