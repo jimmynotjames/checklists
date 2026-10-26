@@ -33,12 +33,16 @@ _pick_sim() {
         --state "$1"
 }
 
-# Strips the keyboard preferences that can hide the software keyboard (sim_reset_keyboard.py
-# says which and why). $1: UDID of a shut-down device.
-_reset_keyboard_prefs() {
+# Keeps the software keyboard on screen. iOS can minimize it to just below the screen mid-run (by
+# community reports, once it thinks a hardware keyboard is around); turning automatic minimization
+# off in the booted device's live preferences stopped that here, and xcodebuild's parallel-testing
+# clones, copied from this device, carry the setting. `HardwareKeyboardLastSeen` is cleared along
+# with it on the same reports, unproven on its own. $1: UDID of a booted device.
+_keep_keyboard_on_screen() {
     local key
-    for key in $(python3 "${ROOT}/scripts/sim_reset_keyboard.py" --udid "$1"); do
-        echo "sim-sandbox: cleared ${key} from ${_SIM_DEVICE_NAME}'s keyboard preferences" >&2
+    for key in AutomaticMinimizationEnabled HardwareKeyboardLastSeen; do
+        xcrun simctl spawn "$1" defaults write com.apple.keyboard.preferences "${key}" -bool false >&2 \
+            || echo "sim-sandbox: warning: could not set ${key}; the software keyboard may hide mid-run" >&2
     done
 }
 
@@ -60,16 +64,9 @@ _ensure_sim_booted() {
     #    delete it so step 3 recreates it on the new runtime instead of reusing the old one forever
     python3 "${ROOT}/scripts/sim_retire_stale.py" --name "${_SIM_DEVICE_NAME}"
 
-    # 1. Already booted — reuse it (still call bootstatus to confirm UI services ready), unless its
-    #    keyboard preferences mark a hidden-keyboard state: then it's shut down here and booted
-    #    clean by step 2.
+    # 1. Already booted — reuse it (still call bootstatus to confirm UI services ready)
     local udid
     udid="$(_pick_sim Booted)"
-    if [[ -n "${udid}" && -n "$(python3 "${ROOT}/scripts/sim_reset_keyboard.py" --udid "${udid}" --dry-run)" ]]; then
-        echo "sim-sandbox: shutting down ${_SIM_DEVICE_NAME} (${udid}) to clear its keyboard preferences" >&2
-        xcrun simctl shutdown "${udid}" >&2 || true
-        udid=""
-    fi
     if [[ -n "${udid}" ]]; then
         echo "sim-sandbox: reusing booted ${_SIM_DEVICE_NAME} (${udid})" >&2
         _wait_for_ready "${udid}"
@@ -81,7 +78,6 @@ _ensure_sim_booted() {
     # 2. Exists but shutdown — boot and wait for full readiness
     udid="$(_pick_sim any)"
     if [[ -n "${udid}" ]]; then
-        _reset_keyboard_prefs "${udid}"
         echo "sim-sandbox: booting existing ${_SIM_DEVICE_NAME} (${udid})" >&2
         _boot_and_wait "${udid}"
         _invalidate_warm_sentinel
@@ -125,3 +121,6 @@ _wait_for_ready() {
 }
 
 _ensure_sim_booted
+if [[ -z "${SIMULATOR_UDID:-}" ]]; then
+    _keep_keyboard_on_screen "${SIM_UDID}"
+fi

@@ -41,8 +41,8 @@ extension XCUIElement {
 extension XCUIApplication {
   /// Waits for the software keyboard to be on screen and done sliding in, and returns it.
   ///
-  /// `keyboards.firstMatch` existing isn't enough: a device can keep the keyboard element in the
-  /// tree with nothing on screen, or minimized to a bar (`scripts/sim_reset_keyboard.py`). A test
+  /// `keyboards.firstMatch` existing isn't enough: iOS can park the keyboard just below the screen
+  /// while the field keeps focus (`_keep_keyboard_on_screen` in `scripts/_sim_sandbox.sh`). A test
   /// that reads the keyboard's frame then measures against the wrong edge, and one that audits the
   /// screen sees rows the keyboard should be covering. Fails with the frame it last saw.
   @discardableResult
