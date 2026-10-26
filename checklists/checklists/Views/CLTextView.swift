@@ -79,7 +79,7 @@ class CLTextView: UITextView {
 
   private func commonInit() {
     isScrollEnabled = false
-    // Without this the placeholder label, sized by the scroll view's contentSize rather than its frame, spills out of a collapsed field.
+    // Without this the placeholder label, sized vertically by the scroll view's content rather than its frame, spills out of a collapsed field.
     clipsToBounds = true
     textContainer.heightTracksTextView = true
 
@@ -102,13 +102,16 @@ class CLTextView: UITextView {
   private func setUpSubviews() {
     addSubview(placeholderLabel)
 
-    let views = ["placeholderLabel": placeholderLabel]
-    views.forEach { $0.value.translatesAutoresizingMaskIntoConstraints = false }
+    placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
 
-    NSLayoutConstraint.activate(
-      NSLayoutConstraint.constraints(withVisualFormat: "H:|[placeholderLabel]|", options: [], metrics: nil, views: views)
-        + [placeholderTopConstraint, placeholderBottomConstraint],
-    )
+    // Pinned to the frame, not the scroll content, so the label spans the field and its natural
+    // alignment puts it on the leading side in right-to-left languages too.
+    NSLayoutConstraint.activate([
+      placeholderLabel.leadingAnchor.constraint(equalTo: frameLayoutGuide.leadingAnchor),
+      placeholderLabel.trailingAnchor.constraint(equalTo: frameLayoutGuide.trailingAnchor),
+      placeholderTopConstraint,
+      placeholderBottomConstraint,
+    ])
   }
 
   // The placeholder sits on the first line of text, so it follows the text inset's top and bottom.
