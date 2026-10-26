@@ -84,14 +84,40 @@ class checklistsUITests: XCTestCase {
     //
     // This is the first press after launch, which can take longer than a second to lift the row
     // under load; see `ChecklistDetailUITestCase.dragRow`.
-    text1.press(forDuration: 1.5, thenDragTo: text2, withVelocity: .slow, thenHoldForDuration: 1.0)
+    //
+    // Straight down, at a crawl, into the lower half of row 2. The drag only starts following the
+    // finger a beat after the lift; on a just-launched app a quick move could be over by then, and
+    // the row stayed lifted in place. Straight down, too, so no sideways part reaches the rows'
+    // swipe actions.
+    //
+    // Dragged once more if the first left the order as it was: under heavy simulator load the row can
+    // lift and settle back in place without the drag ever starting, which leaves nothing to undo.
+    let rowPitch = text2.frame.midY - text1.frame.midY
+    let start = text1.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+    let drag = {
+      start.press(
+        forDuration: 1.5,
+        thenDragTo: start.withOffset(CGVector(dx: 0, dy: rowPitch * 1.3)),
+        // Pixels per second, so a second or more for the move; `.slow` took under a third of one.
+        withVelocity: XCUIGestureVelocity(rawValue: 60),
+        thenHoldForDuration: 1.0,
+      )
+    }
+    // A fresh expectation per wait: one already waited on can't be waited on again.
+    let rowsSwapped = {
+      XCTWaiter().wait(
+        for: [XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in text1.frame.origin.y > text2.frame.origin.y }, object: nil)],
+        timeout: 5,
+      )
+    }
 
-    let moved = XCTNSPredicateExpectation(
-      predicate: NSPredicate { _, _ in text1.frame.origin.y > text2.frame.origin.y },
-      object: nil,
-    )
+    drag()
+    if rowsSwapped() != .completed, text1.frame.origin.y < text2.frame.origin.y {
+      XCTContext.runActivity(named: "The row didn't move; dragging it once more.") { _ in }
+      drag()
+    }
     XCTAssertEqual(
-      XCTWaiter().wait(for: [moved], timeout: 5), .completed,
+      rowsSwapped(), .completed,
       "Row 1 should have moved below row 2 (row 1 at y \(text1.frame.origin.y), row 2 at y \(text2.frame.origin.y)).",
     )
     XCTAssertGreaterThan(text3.frame.origin.y, text1.frame.origin.y, "Row 3 should still be below row 1.")

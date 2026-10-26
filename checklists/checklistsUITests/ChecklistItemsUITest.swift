@@ -157,10 +157,8 @@ final class ChecklistItemsUITest: ChecklistDetailUITestCase {
     let cells = checklistTableView.children(matching: .cell)
     let item12Name = try XCTUnwrap(cells.element(boundBy: 11).textViews["itemNameTextView"].value as? String)
 
-    dragRow(cells.element(boundBy: 11), onto: cells.element(boundBy: 7))
-
     // Now the original last item should now be at index 7.
-    waitForItemName(item12Name, atRow: 7, in: checklistTableView)
+    dragRow(cells.element(boundBy: 11), named: item12Name, onto: cells.element(boundBy: 7), landingAtRow: 7, in: checklistTableView)
 
     // For good measure, go Back to main page, then back into Checklist, and see if all elements are still ordered correctly.
     // NOTE: the nav bar title only shows the checklist name once the table view is scrolled past a
@@ -185,8 +183,7 @@ final class ChecklistItemsUITest: ChecklistDetailUITestCase {
     let item1Name = try XCTUnwrap(cells.element(boundBy: 0).textViews["itemNameTextView"].value as? String)
     let item2Name = try XCTUnwrap(cells.element(boundBy: 1).textViews["itemNameTextView"].value as? String)
 
-    dragRow(cells.element(boundBy: 5), onto: cells.element(boundBy: 0))
-    waitForItemName(fromName, atRow: 0, in: checklistTableView)
+    dragRow(cells.element(boundBy: 5), named: fromName, onto: cells.element(boundBy: 0), landingAtRow: 0, in: checklistTableView)
 
     var atIndex0 = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"].value as? String)
     var atIndex1 = try XCTUnwrap(checklistTableView.children(matching: .cell).element(boundBy: 1).textViews["itemNameTextView"].value as? String)

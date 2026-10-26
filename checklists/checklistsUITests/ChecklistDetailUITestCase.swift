@@ -60,22 +60,42 @@ class ChecklistDetailUITestCase: XCTestCase {
   /// The hold is long and the move slow because the first lift after launch can take longer than a
   /// user's half-second; moving before it lands cancels the long press, and nothing is dragged. The
   /// closing hold lets the table settle on the destination row before the drop.
-  func dragRow(_ row: XCUIElement, onto target: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
+  ///
+  /// Then waits for row `index` of `table` to show `name`, the dragged item's. A drop moves its row
+  /// only once the dragged item has loaded (`ChecklistViewController.tableView(_:performDropWith:)`),
+  /// which can land after the gesture's idle wait.
+  ///
+  /// Drags once more if the first left the order as it was. Under heavy simulator load the row can
+  /// lift and then settle back in place without the drag ever starting, which leaves nothing to undo.
+  /// A drop in the wrong place still fails.
+  func dragRow(
+    _ row: XCUIElement,
+    named name: String,
+    onto target: XCUIElement,
+    landingAtRow index: Int,
+    in table: XCUIElement,
+    file: StaticString = #filePath,
+    line: UInt = #line,
+  ) {
     let center = CGVector(dx: 0.5, dy: 0.5)
-    row.buttons["itemCheckbox"].coordinate(withNormalizedOffset: center)
-      .press(forDuration: 1.5, thenDragTo: target.coordinate(withNormalizedOffset: center), withVelocity: .slow, thenHoldForDuration: 0.5)
-    XCTAssertFalse(app.keyboards.firstMatch.exists, "The press began editing instead of lifting the row.", file: file, line: line)
-  }
-
-  /// Waits for row `index` of `table` to show `name`. A drop moves its row only once the dragged
-  /// item has loaded (`ChecklistViewController.tableView(_:performDropWith:)`), which can land after
-  /// the gesture's idle wait.
-  func waitForItemName(_ name: String, atRow index: Int, in table: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
-    let nameTextView = table.children(matching: .cell).element(boundBy: index).textViews["itemNameTextView"]
-    let shown = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", name), object: nameTextView)
+    let drag = {
+      row.buttons["itemCheckbox"].coordinate(withNormalizedOffset: center)
+        .press(forDuration: 1.5, thenDragTo: target.coordinate(withNormalizedOffset: center), withVelocity: .slow, thenHoldForDuration: 0.5)
+      XCTAssertFalse(self.app.keyboards.firstMatch.exists, "The press began editing instead of lifting the row.", file: file, line: line)
+    }
+    let landed = table.children(matching: .cell).element(boundBy: index).textViews["itemNameTextView"]
+    // A fresh expectation per wait: one already waited on can't be waited on again.
+    let landedShowsName = {
+      XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", name), object: landed)], timeout: 5)
+    }
+    drag()
+    if landedShowsName() != .completed, row.textViews["itemNameTextView"].value as? String == name {
+      XCTContext.runActivity(named: "The row didn't move; dragging it once more.") { _ in }
+      drag()
+    }
     XCTAssertEqual(
-      XCTWaiter().wait(for: [shown], timeout: 5), .completed,
-      "Row \(index) shows \"\(nameTextView.value as? String ?? "nil")\", not \"\(name)\".",
+      landedShowsName(), .completed,
+      "Row \(index) shows \"\(landed.value as? String ?? "nil")\", not \"\(name)\".",
       file: file,
       line: line,
     )
