@@ -14,6 +14,7 @@ Record merged: no
 - [x] Metadata uploaded or deliberately unchanged
 
 Metadata note: Uploaded 2026-10-24, all locales, no errors.
+Screenshots: Reviewed run `full-20261026T190050Z` (source 7be41de) uploaded to 2.0 on 2026-10-26; all 50 locales now hold one APP_IPHONE_67 set of 2, processing verified.
 
 ## Candidate
 
