@@ -104,7 +104,23 @@ class AccessibilityAuditUITest: XCTestCase {
 
   /// Audits the current screen. An issue in `knownIssues` passes, logged with its reason; any other
   /// fails the test.
+  ///
+  /// A run that hits the audit's own time limit is retried once: that is the simulator being slow,
+  /// not an issue on the screen, and a second timeout still fails.
   private func audit(_ screen: String) throws {
+    do {
+      try runAudit(screen)
+    } catch let error as NSError where error.domain == Self.auditErrorDomain && error.code == Self.auditTimedOutCode {
+      XCTContext.runActivity(named: "The audit timed out; running it once more.") { _ in }
+      try runAudit(screen)
+    }
+  }
+
+  /// `performAccessibilityAudit`'s "Audit failed to complete in time".
+  private static let auditErrorDomain = "com.apple.xcode.xctest.accessibilityAudit"
+  private static let auditTimedOutCode = -56
+
+  private func runAudit(_ screen: String) throws {
     let alertText = Set(app.alerts.staticTexts.allElementsBoundByIndex.map { $0.label })
     try app.performAccessibilityAudit(for: Self.auditTypes) { issue in
       var identifier = ""
