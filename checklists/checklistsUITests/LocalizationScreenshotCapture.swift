@@ -9,9 +9,8 @@ import XCTest
 /// `RUN_LOCALIZATION_SCREENSHOTS=1`, so an unscoped `xcodebuild test` never runs it.
 ///
 /// Navigation is locale-invariant (accessibility identifiers and `cells.firstMatch`); the type size is
-/// forced via the `FORCE_DYNAMIC_TYPE` env hook, because the standard
-/// `-UIPreferredContentSizeCategoryName` launch argument rendered at the default size on the iOS 26.x
-/// simulator. One test method per language so xcodebuild can fan them across simulator clones.
+/// set with the `-UIPreferredContentSizeCategoryName` launch argument, which reaches SwiftUI, UIKit,
+/// and sheets alike. One test method per language so xcodebuild can fan them across simulator clones.
 ///
 /// **Depends on existing code (don't break these without updating this capture):**
 /// - The `-UITests1` launch argument and its production sample fixture (three checklists), which is
@@ -24,8 +23,6 @@ import XCTest
 /// - `analyticsConsentSheet.decline`, shared with `AnalyticsConsentUITest`, and the sheet's trigger:
 ///   `ChecklistScreen`'s `.task` presents it on opening a checklist, where `openFirstChecklist`
 ///   clears it. Moving the trigger leaves the sheet over whichever screen it moves to.
-/// - `TestDynamicTypeOverride` (the `FORCE_DYNAMIC_TYPE` hook), applied at the app root and again on
-///   `RootView`'s sheet, since a sheet does not inherit the root's `dynamicTypeSize`.
 /// - The runner `scripts/translation-accessibility-size-check/run.sh`, which `-only-testing`s this
 ///   class, sets `TEST_RUNNER_RUN_LOCALIZATION_SCREENSHOTS=1`, and relies on the `<lang>__<screen>`
 ///   attachment names.
@@ -178,9 +175,11 @@ final class LocalizationScreenshotCapture: XCTestCase {
   /// Launch in `lang` at forced xxxLarge against the standard UI-test fixture.
   @MainActor private func launch(_ lang: String) -> XCUIApplication {
     let app = XCUIApplication()
-    app.launchArguments = ["-UITests1", "-AppleLanguages", "(\(lang))", "-AppleLocale", localeID(lang)]
+    app.launchArguments = [
+      "-UITests1", "-AppleLanguages", "(\(lang))", "-AppleLocale", localeID(lang),
+      "-UIPreferredContentSizeCategoryName", UIContentSizeCategory.extraExtraExtraLarge.rawValue,
+    ]
     app.launchEnvironment["IS_TESTING"] = "1"
-    app.launchEnvironment["FORCE_DYNAMIC_TYPE"] = "xxxLarge"
     // Fixed, so runs compare whatever the simulator's own setting is.
     app.launchEnvironment["FORCE_APPEARANCE"] = "light"
     app.launch()

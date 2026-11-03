@@ -222,9 +222,6 @@ also fails a catalog not in Xcode's exact bytes, which every script writes throu
 `.xxxLarge` and leaves the screenshots for reading. It asserts nothing — the reading is the check —
 and it is deliberately outside the app test suites and `make gate`. Findings go in its `AUDIT_LOG.md`.
 
-The forced size may not reach the UIKit checklist detail screen: see that script's README
-§Known limitation.
-
 ---
 
 ## Known gaps
