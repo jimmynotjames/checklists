@@ -39,10 +39,8 @@ struct ChecklistReorderModeTests {
 
       #expect(controller.isReordering)
       #expect(harness.table.isEditing)
-      let barItems = controller.navigationItem.rightBarButtonItems ?? []
-      #expect(barItems.count == 1)
-      #expect(barItems.first?.accessibilityIdentifier == "checklist.reorderDone")
-      #expect(barItems.first?.title == CommonStrings.done)
+      #expect(controller.navigationItem.rightBarButtonItems?.isEmpty ?? true)
+      #expect(controller.pinnedTrailingItem?.accessibilityIdentifier == "checklist.reorderDone")
       #expect(controller.navigationItem.leftBarButtonItem == nil)
 
       #expect(!harness.header.nameTextField.isEnabled)
@@ -78,6 +76,7 @@ struct ChecklistReorderModeTests {
 
       #expect(!controller.isReordering)
       #expect(controller.navigationItem.rightBarButtonItems == original)
+      #expect(controller.pinnedTrailingItem == nil)
       #expect(controller.navigationItem.leftBarButtonItem === backButton)
       #expect(harness.header.nameTextField.isEnabled)
       let footer = try #require(harness.table.tableFooterView as? AddItemButtonTableFooterView)

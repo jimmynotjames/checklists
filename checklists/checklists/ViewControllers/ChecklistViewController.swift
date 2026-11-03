@@ -153,6 +153,7 @@ class ChecklistViewController: UIViewController {
   /// has cleared by then.
   var savedRightBarButtonItems: [UIBarButtonItem]?
   var savedLeftBarButtonItem: UIBarButtonItem?
+  var savedPinnedTrailingItem: UIBarButtonItem?
 
   /// Whether Reorder Items mode is on. Named apart from `isEditing` because everywhere else in this
   /// screen "editing" means typing into a field.
