@@ -41,7 +41,7 @@ struct ChecklistReorderModeTests {
       #expect(harness.table.isEditing)
       #expect(controller.navigationItem.rightBarButtonItems?.isEmpty ?? true)
       #expect(controller.pinnedTrailingItem?.accessibilityIdentifier == "checklist.reorderDone")
-      #expect(controller.navigationItem.leftBarButtonItem == nil)
+      #expect(controller.navigationItem.hidesBackButton)
 
       #expect(!harness.header.nameTextField.isEnabled)
       #expect(!harness.header.notesTextView.isEditable)
@@ -67,8 +67,6 @@ struct ChecklistReorderModeTests {
   func leavingRestoresTheBar() throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
       let controller = harness.viewController
-      let backButton = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
-      controller.navigationItem.leftBarButtonItem = backButton
       let original = try #require(controller.navigationItem.rightBarButtonItems)
 
       controller.enterReorderMode()
@@ -77,7 +75,7 @@ struct ChecklistReorderModeTests {
       #expect(!controller.isReordering)
       #expect(controller.navigationItem.rightBarButtonItems == original)
       #expect(controller.pinnedTrailingItem == nil)
-      #expect(controller.navigationItem.leftBarButtonItem === backButton)
+      #expect(!controller.navigationItem.hidesBackButton)
       #expect(harness.header.nameTextField.isEnabled)
       let footer = try #require(harness.table.tableFooterView as? AddItemButtonTableFooterView)
       #expect(footer.isUserInteractionEnabled)
@@ -98,12 +96,14 @@ struct ChecklistReorderModeTests {
     try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: true) { harness in
       let controller = harness.viewController
       let original = try #require(controller.navigationItem.rightBarButtonItems)
+      let pinnedDone = try #require(controller.pinnedTrailingItem)
       controller.isNewChecklist = false
 
       controller.enterReorderMode()
       controller.setEditing(false, animated: false)
 
       #expect(controller.navigationItem.rightBarButtonItems == original)
+      #expect(controller.pinnedTrailingItem === pinnedDone)
     }
   }
 

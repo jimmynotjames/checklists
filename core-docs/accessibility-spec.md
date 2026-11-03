@@ -114,6 +114,10 @@ long and which the user just acted on.
   at the outer edge: ⋯, or the create sheet's own Done. The post
   names the `UIBarButtonItem` itself, which VoiceOver resolves to the button the bar draws: the
   bar's own views are private, and in a unit-test host they carry no identifier to find them by.
+  The items live in the SwiftUI stack's bar (`ChecklistViewController+BarHost`), and Back is the
+  stack's own, read as the list's title. Reorder Items mode hides it, which also blocks the back
+  swipe; whether the VoiceOver escape gesture is blocked with it is unverified on a device, where
+  escape would leave the screen mid-mode instead of leaving the mode.
 - **The Copy/Move Checked Items sheet** shows the same Done while its name field is being typed
   into. Nothing takes its place when it goes, so after a beat VoiceOver moves back to the name field.
 - **The failure screen** (`ContainerFailureView`) replaces the app unasked, so after a beat it posts

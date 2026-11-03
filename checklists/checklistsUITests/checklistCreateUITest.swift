@@ -132,7 +132,7 @@ class checklistCreateUITest: XCTestCase {
     XCTAssert((cell.textViews["itemNameTextView"].value as? String ?? "") == item4Name)
 
     // Go back to main page.
-    app.navigationBars.buttons["Back"].tap()
+    app.navigationBars.buttons["BackButton"].tap()
   }
 
   func testCreateChecklist2() {
@@ -227,7 +227,7 @@ class checklistCreateUITest: XCTestCase {
     app.tapChecklistEditingDone()
 
     // Finish and dismiss modal, go back to check stuff
-    app.navigationBars.buttons["Back"].tap()
+    app.navigationBars.buttons["BackButton"].tap()
     let mindfulnessRowAgain = checklistsList.staticTexts["Mindfulness Checklist"]
     XCTAssertTrue(mindfulnessRowAgain.waitForExistence(timeout: 5))
     mindfulnessRowAgain.tap()

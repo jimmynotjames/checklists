@@ -25,7 +25,7 @@ final class ChecklistItemsUITest: ChecklistDetailUITestCase {
     assertPercentComplete(tablesQuery["ChecklistTableView"], numCheckedItems: 2, numItems: 11) // Check that circular status icon updated. 2/11 -> 18%
 
     // Reset checklist. Verify again.
-    app.navigationBars.buttons["Reset"].tap()
+    app.navigationBars.buttons["checklist.reset"].tap()
 
     XCTAssertTrue(tablesQuery.children(matching: .cell).element(boundBy: 0).buttons["itemCheckbox"].wait(for: \.isSelected, toEqual: false, timeout: 5))
     XCTAssertTrue(tablesQuery.children(matching: .cell).element(boundBy: 5).buttons["itemCheckbox"].wait(for: \.isSelected, toEqual: false, timeout: 5))

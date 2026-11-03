@@ -17,17 +17,15 @@ import UIKit
 struct ChecklistEditingDoneTests {
   private static let threeItems: [(name: String, isChecked: Bool)] = [("Milk", false), ("Bread", true), ("Eggs", false)]
 
-  /// The trailing bar items, outer edge first: the pinned item, if any, then the rest. Each is named
-  /// by its identifier, or "Reset" for Reset, which carries none.
+  /// The trailing bar items, outer edge first: the pinned item, if any, then the rest, each named by
+  /// its identifier.
   private func bar(_ controller: ChecklistViewController) -> [String] {
     let pinned = controller.pinnedTrailingItem.map { [$0] } ?? []
-    return (pinned + (controller.navigationItem.rightBarButtonItems ?? [])).map {
-      $0.title == ChecklistViewController.resetButtonTitle ? "Reset" : $0.accessibilityIdentifier ?? "?"
-    }
+    return (pinned + (controller.navigationItem.rightBarButtonItems ?? [])).map { $0.accessibilityIdentifier ?? "?" }
   }
 
-  private static let pushedIdle = ["checklist.more", "Reset"]
-  private static let pushedTyping = ["checklist.editingDone", "checklist.more", "Reset"]
+  private static let pushedIdle = ["checklist.more", "checklist.reset"]
+  private static let pushedTyping = ["checklist.editingDone", "checklist.more", "checklist.reset"]
   private static let createIdle = ["checklist.done", "checklist.more"]
   private static let createTyping = ["checklist.editingDone", "checklist.more"]
 
@@ -91,7 +89,7 @@ struct ChecklistEditingDoneTests {
 
   /// Pinned, so on iPhone Duo's vertical bar it sits at the top of the column rather than among
   /// the other items, and never falls into the overflow.
-  @Test("typing pins the editing Done, and ending unpins it", arguments: [false, true])
+  @Test("typing pins the editing Done, and ending gives the pin back", arguments: [false, true])
   func editingDoneIsPinned(isNewChecklist: Bool) throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: isNewChecklist) { harness in
       let controller = harness.viewController
@@ -103,7 +101,9 @@ struct ChecklistEditingDoneTests {
 
       controller.view.endEditing(true)
       settle()
-      #expect(controller.pinnedTrailingItem == nil)
+      // The create sheet's own Done takes the pin back; an existing checklist pins nothing.
+      let expected = isNewChecklist ? controller.primaryBarButtonItem : nil
+      #expect(controller.pinnedTrailingItem === expected)
     }
   }
 
