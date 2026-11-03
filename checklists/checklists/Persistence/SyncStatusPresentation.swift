@@ -180,8 +180,8 @@ extension SyncStatus {
       ),
       footer: String(
         localized: "settings.icloud.footer.syncInterrupted",
-        defaultValue: "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback from the menu.",
-        comment: "Footer under the iCloud section when a sync operation failed for a reason other than storage.",
+        defaultValue: "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback.",
+        comment: "Footer under the iCloud section when a sync operation failed for a reason other than storage. The Send Feedback row sits just above this section in Settings.",
       ),
       symbolName: "exclamationmark.icloud",
       isWarning: true,

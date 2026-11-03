@@ -131,11 +131,11 @@
       }
     },
     "App Store": {
-      "context": "Apple's storefront, in the main-menu row 'Rate in App Store' that opens the app's review page. Render it exactly as Apple writes it for this locale — in most locales that means leaving 'App Store' verbatim in English; never invent a translation.",
+      "context": "Apple's storefront, in the Settings row 'Rate in App Store' that opens the app's review page. Render it exactly as Apple writes it for this locale — in most locales that means leaving 'App Store' verbatim in English; never invent a translation.",
       "en": "App Store",
       "partOfSpeech": "proper noun",
       "sourceKeys": [
-        "mainMenu.rateInAppStore"
+        "settings.feedback.rateInAppStore"
       ],
       "translations": {
         "ar": "App Store",
@@ -610,12 +610,11 @@
       }
     },
     "Feedback": {
-      "context": "Main-menu row that opens a pre-addressed email to the developer, plus its mail subject. Sense: the user's comments and suggestions sent to the developer. Trap: not performance-review feedback and not audio feedback. Must stay consistent with the 'Send Feedback' button on the error screen.",
+      "context": "The subject of the pre-addressed email to the developer that Settings' Send Feedback row opens. Sense: the user's comments and suggestions sent to the developer. Trap: not performance-review feedback and not audio feedback. Must stay consistent with 'Send Feedback'.",
       "en": "Feedback",
       "partOfSpeech": "noun",
       "sourceKeys": [
-        "mainMenu.feedback",
-        "mainMenu.feedback.mail.subject"
+        "settings.feedback.mail.subject"
       ],
       "translations": {
         "ar": "الآراء والمقترحات",
@@ -730,66 +729,6 @@
         "vi": "Mục",
         "zh-Hans": "项目",
         "zh-Hant": "項目"
-      }
-    },
-    "Menu": {
-      "context": "A panel of actions opened from a toolbar button — 'Miscellaneous Menu' (feedback, rating, settings) and 'Close menu'. Sense: a UI menu of commands. Trap: not a restaurant menu. These are VoiceOver labels, so use the platform-standard accessibility term and keep one word across both.",
-      "en": "Menu",
-      "partOfSpeech": "noun",
-      "sourceKeys": [
-        "checklists.menu.misc.accessibilityLabel",
-        "mainMenu.close.accessibilityLabel"
-      ],
-      "translations": {
-        "ar": "قائمة",
-        "bn": "মেনু",
-        "ca": "Menú",
-        "cs": "Nabídka",
-        "da": "Menu",
-        "de": "Menü",
-        "el": "Μενού",
-        "en-AU": "Menu",
-        "en-CA": "Menu",
-        "en-GB": "Menu",
-        "es": "Menú",
-        "es-MX": "Menú",
-        "fi": "Valikko",
-        "fr": "Menu",
-        "fr-CA": "Menu",
-        "gu": "મેનૂ",
-        "he": "תפריט",
-        "hi": "मेनू",
-        "hr": "Izbornik",
-        "hu": "Menü",
-        "id": "Menu",
-        "it": "Menu",
-        "ja": "メニュー",
-        "kn": "ಮೆನು",
-        "ko": "메뉴",
-        "ml": "മെനു",
-        "mr": "मेनू",
-        "ms": "Menu",
-        "nb": "Meny",
-        "nl": "Menu",
-        "or": "ମେନୁ",
-        "pa": "ਮੀਨੂ",
-        "pl": "Menu",
-        "pt-BR": "Menu",
-        "pt-PT": "Menu",
-        "ro": "Meniu",
-        "ru": "Меню",
-        "sk": "Menu",
-        "sl": "Meni",
-        "sv": "Meny",
-        "ta": "மெனு",
-        "te": "మెనూ",
-        "th": "เมนู",
-        "tr": "Menü",
-        "uk": "Меню",
-        "ur": "مینیو",
-        "vi": "Menu",
-        "zh-Hans": "菜单",
-        "zh-Hant": "選單"
       }
     },
     "Move Down": {
@@ -1515,12 +1454,13 @@
       }
     },
     "Send Feedback": {
-      "context": "Button on the database-failure screen that opens a pre-filled support email containing the error details (no personal data). Compose it from the agreed 'Feedback' noun so the error screen and the main menu use the same word.",
+      "context": "Opens a pre-addressed feedback email: a row in Settings, and a button on the database-failure screen that includes the error details (no personal data). Compose it from the agreed 'Feedback' noun so both places and the email subject use the same word.",
       "en": "Send Feedback",
       "partOfSpeech": "verb phrase",
       "sourceKeys": [
-        "containerFailure.action.sendFeedback",
-        "containerFailure.action.sendFeedback.hint"
+        "common.action.sendFeedback",
+        "containerFailure.action.sendFeedback.hint",
+        "settings.icloud.footer.syncInterrupted"
       ],
       "translations": {
         "ar": "إرسال الآراء والمقترحات",
@@ -1575,7 +1515,7 @@
       }
     },
     "Settings": {
-      "context": "The app's Settings screen, the main-menu row that opens it, and — in 'Sign in to iCloud in Settings' — the iOS system Settings app. Use exactly the word Apple uses for the iOS Settings app in this language, so both senses match. Trap: not 'configuration', 'preferences', 'options', or 'adjustments' unless that is genuinely Apple's iOS term for the locale.",
+      "context": "The app's Settings screen, the VoiceOver label of the gear button that opens it, and — in 'Sign in to iCloud in Settings' — the iOS system Settings app. Use exactly the word Apple uses for the iOS Settings app in this language, so both senses match. Trap: not 'configuration', 'preferences', 'options', or 'adjustments' unless that is genuinely Apple's iOS term for the locale.",
       "en": "Settings",
       "partOfSpeech": "noun",
       "sourceKeys": [
@@ -2065,7 +2005,7 @@
       "en": "reChecklist",
       "partOfSpeech": "proper noun",
       "sourceKeys": [
-        "mainMenu.feedback.mail.subject"
+        "settings.feedback.mail.subject"
       ],
       "translations": {
         "ar": "reChecklist",

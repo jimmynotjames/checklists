@@ -96,8 +96,8 @@
     ///
     /// `toasts` is a fresh instance per call rather than a `PreviewSupport` fixture, deliberately
     /// unlike `router` above: default-argument expressions are evaluated per call, and a shared
-    /// presenter would leave one preview's toast showing in its neighbours — the leak `RootView`'s
-    /// "Main menu open" preview already works around for `Router`.
+    /// presenter would leave one preview's toast showing in its neighbours. A preview that mutates
+    /// the router passes its own for the same reason.
     ///
     /// `colorScheme` forces an appearance; `nil` follows the canvas's own setting.
     func previewEnvironment(

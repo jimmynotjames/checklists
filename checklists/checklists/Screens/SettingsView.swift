@@ -5,6 +5,7 @@
 
 import CloudKit
 import SwiftUI
+import UIKit
 
 /// Settings screen presented as a sheet from the app's `Router`.
 struct SettingsView: View {
@@ -14,10 +15,16 @@ struct SettingsView: View {
   @Environment(\.openURL) private var openURL
   @Environment(\.analytics) private var analytics
 
+  /// The Feedback and Rate rows' artwork, which, unlike an SF Symbol, does not follow Dynamic Type
+  /// by itself. Its drawing sits inside some padding, so it reads about the size of the symbols
+  /// in the rows below.
+  @ScaledMetric(relativeTo: .body) private var artworkIconSize: CGFloat = 30
+
   var body: some View {
     NavigationStack {
       Form {
         Group {
+          feedbackSection
           iCloudSection
           analyticsSection
           infoSection
@@ -40,6 +47,72 @@ struct SettingsView: View {
         analytics.track(AnalyticsEvent.settingsViewed)
       }
     }
+  }
+
+  // MARK: - Feedback section
+
+  /// No header: the rows name themselves, and no one word covers both.
+  private var feedbackSection: some View {
+    Section {
+      Button {
+        analytics.track(AnalyticsEvent.feedbackTapped)
+        guard let url = FeedbackMail.url(
+          subject: String(
+            localized: "settings.feedback.mail.subject",
+            defaultValue: "Feedback for reChecklist App",
+            comment: "Subject line of the feedback email opened from the Send Feedback row in Settings. Keep the app name reChecklist verbatim.",
+          ),
+          body: feedbackBody,
+        ) else { assertionFailure(); return }
+        openURL(url)
+      } label: {
+        Label {
+          Text(CommonStrings.sendFeedback)
+        } icon: {
+          artworkIcon("FeedbackIcon")
+        }
+      }
+      // Both rows leave the app, for Mail and the App Store, which VoiceOver announces as a link.
+      .accessibilityRemoveTraits(.isButton)
+      .accessibilityAddTraits(.isLink)
+
+      Button {
+        analytics.track(AnalyticsEvent.rateAppTapped)
+        guard let url = URL(string: "https://apps.apple.com/app/id1475724536?action=write-review") else {
+          assertionFailure()
+          return
+        }
+        openURL(url)
+      } label: {
+        Label {
+          Text(String(localized: "settings.feedback.rateInAppStore", defaultValue: "Rate in App Store", comment: "Row in Settings that opens the app's App Store review page."))
+        } icon: {
+          artworkIcon("RateInAppStoreIcon")
+        }
+      }
+      .accessibilityRemoveTraits(.isButton)
+      .accessibilityAddTraits(.isLink)
+    }
+  }
+
+  /// In its own colours, not the accent tint; decorative, since the row's title carries the meaning.
+  private func artworkIcon(_ name: String) -> some View {
+    Image(decorative: name)
+      .resizable()
+      .scaledToFit()
+      .frame(width: artworkIconSize, height: artworkIconSize)
+  }
+
+  /// Two blank lines above the diagnostics, for whatever the person types first. English only,
+  /// not localized — it's for reading, not sending.
+  private var feedbackBody: String {
+    let report = SyncDiagnostics.report(
+      syncStatus: syncStatus,
+      appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0",
+      build: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "0",
+      osVersion: UIDevice.current.systemVersion,
+    )
+    return "\n\n\n\(report)"
   }
 
   // MARK: - iCloud section

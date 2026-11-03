@@ -83,11 +83,4 @@ struct ReadableColumnTests {
       #expect(abs(guide.layoutFrame.midX - width / 2.0) < 0.01)
     }
   }
-
-  @Test("the main menu becomes a side panel only when the list beside it keeps the panel's width")
-  func menuSidePanel() {
-    #expect(!RootView.menuIsSidePanel(in: 393.0))
-    #expect(!RootView.menuIsSidePanel(in: RootView.menuPanelWidth * 2.0 - 1.0))
-    #expect(RootView.menuIsSidePanel(in: RootView.menuPanelWidth * 2.0))
-  }
 }

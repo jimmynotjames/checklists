@@ -214,7 +214,7 @@ struct RatingPromptCoordinatorTests {
   @Test("the presenter requests only when pending, on the list, and active")
   func presenterGate() {
     #expect(RatingPromptCoordinator.shouldRequestReview(isRequestPending: true, isOnChecklistsList: true, sceneIsActive: true))
-    // Still on the checklist screen (or a sheet, or the main menu) → wait.
+    // Still on the checklist screen (or a sheet) → wait.
     #expect(!RatingPromptCoordinator.shouldRequestReview(isRequestPending: true, isOnChecklistsList: false, sceneIsActive: true))
     // Backgrounded → wait.
     #expect(!RatingPromptCoordinator.shouldRequestReview(isRequestPending: true, isOnChecklistsList: true, sceneIsActive: false))

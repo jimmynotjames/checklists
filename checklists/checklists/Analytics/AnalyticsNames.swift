@@ -18,7 +18,6 @@ nonisolated enum AnalyticsEvent {
   static let checklistsViewed = "checklists_viewed"
   static let checklistViewed = "checklist_viewed"
   static let settingsViewed = "settings_viewed"
-  static let mainMenuViewed = "main_menu_viewed"
 
   // MARK: Navigation out of the app
 

@@ -176,25 +176,18 @@ class checklistsUITests: XCTestCase {
     XCTAssertTrue(app.navigationBars["Checklists"].exists, "The list's title should be in the accessibility tree.")
   }
 
-  /// An icon that isn't decorative is an image element named after its asset, "MainMenuFeedbackIcon".
-  func testMenuRowsReadOnlyTheirNames() {
-    app.buttons["toolbar.mainMenu"].tap()
-    for title in ["Feedback", "Rate in App Store", "Settings"] {
-      XCTAssertTrue(app.buttons[title].waitForExistence(timeout: 5), "The \(title) row should be labelled with its name alone.")
+  /// Each leaves the app, for Mail, the App Store or a web page, so VoiceOver should call it a link,
+  /// not a button.
+  func testSettingsRowsThatLeaveTheAppAreLinks() {
+    app.buttons["toolbar.settings"].tap()
+    for title in ["Send Feedback", "Rate in App Store", "Privacy Policy"] {
+      XCTAssertTrue(app.links[title].waitForExistence(timeout: 5), "\(title) should be a link.")
+      XCTAssertFalse(app.buttons[title].exists, "\(title) shouldn't also be a button.")
     }
-    for asset in ["MainMenuFeedbackIcon", "MainMenuRateInAppStoreIcon", "MainMenuSettingsIcon"] {
-      XCTAssertFalse(app.images[asset].exists, "The \(asset) icon should be decorative.")
+    // Decorative: an image that isn't is its own element, named after its asset.
+    for asset in ["FeedbackIcon", "RateInAppStoreIcon"] {
+      XCTAssertFalse(app.images[asset].exists, "The \(asset) artwork should be decorative.")
     }
-  }
-
-  /// It leaves the app for a web page, so VoiceOver should call it a link, not a button.
-  func testPrivacyPolicyIsALink() {
-    app.buttons["toolbar.mainMenu"].tap()
-    let settingsEntry = app.buttons["mainMenu.settings"]
-    XCTAssertTrue(settingsEntry.waitForExistence(timeout: 5), "Main menu didn't open.")
-    settingsEntry.tap()
-    XCTAssertTrue(app.links["Privacy Policy"].waitForExistence(timeout: 5), "Privacy Policy should be a link.")
-    XCTAssertFalse(app.buttons["Privacy Policy"].exists, "Privacy Policy shouldn't also be a button.")
   }
 
   /// The list's "•••", which holds Edit and Reset All.

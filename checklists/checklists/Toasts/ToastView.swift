@@ -8,8 +8,7 @@ import SwiftUI
 /// The toast card itself, with no opinion about where it sits (`ToastPresenterModifier`) or how
 /// long it lives (`ToastPresenter`).
 ///
-/// On `darkBlueGray`, matching `MainMenuView`'s panel: it differs from the page in both appearances,
-/// so it separates from the content underneath without leaning on its shadow.
+/// On `darkBlueGray`: it differs from the page in both appearances, so it separates from the content underneath without leaning on its shadow.
 struct ToastView: View {
   let toast: Toast
   /// Tapping the card anywhere but the action button dismisses it, whatever kind of toast it is.
@@ -86,7 +85,7 @@ struct ToastView: View {
             .frame(minWidth: 44, minHeight: 44)
         }
         // Not the accent colour: it is rgb(55,130,136) against a rgb(51,110,145) card, about
-        // 1.2:1. The weight is what marks this as the action, the way `MainMenuView`'s rows do.
+        // 1.2:1. The weight is what marks this as the action.
         .tint(Colors.panelForegroundColor)
       }
     }

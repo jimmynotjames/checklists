@@ -84,7 +84,7 @@ struct PaletteTests {
     Pair(name: "text in a Form row", foreground: Colors.primaryText, background: surface, minimum: 4.5),
     Pair(name: "secondary text in a Form row", foreground: Colors.inactiveText, background: surface, minimum: 4.5),
     Pair(name: "placeholders in a Form row", foreground: Colors.placeholderText, background: surface, minimum: 4.5),
-    Pair(name: "text on the menu and toasts", foreground: panelForeground, background: Colors.darkBlueGray, minimum: 4.5),
+    Pair(name: "text on toasts", foreground: panelForeground, background: Colors.darkBlueGray, minimum: 4.5),
     Pair(name: "the Duplicate swipe glyph", foreground: .white, background: Colors.accentFill, minimum: 3),
     Pair(name: "the Delete swipe glyph", foreground: .white, background: Colors.destructiveFill, minimum: 3),
   ]

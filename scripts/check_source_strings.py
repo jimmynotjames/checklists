@@ -23,7 +23,7 @@ Scans: the app target (paths.SOURCE_DIR) only.
 Skips: *Tests.swift, *UITests.swift, and DesignExplorations/ (gitignored scratch).
 
 Not caught: literals bound to a plain `String` property or a custom initializer
-(`MainMenuRow(title: "…")`, `private let message = "…"`). Those are a review item
+(`SomeRow(title: "…")`, `private let message = "…"`). Those are a review item
 in the create-pr cross-cutting audit.
 
 Usage:
