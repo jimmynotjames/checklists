@@ -15,6 +15,11 @@ struct SettingsView: View {
   @Environment(\.openURL) private var openURL
   @Environment(\.analytics) private var analytics
 
+  /// The Feedback and Rate rows' artwork, which, unlike an SF Symbol, does not follow Dynamic Type
+  /// by itself. Its drawing sits inside some padding, so it reads about the size of the symbols
+  /// in the rows below.
+  @ScaledMetric(relativeTo: .body) private var artworkIconSize: CGFloat = 30
+
   var body: some View {
     NavigationStack {
       Form {
@@ -61,7 +66,11 @@ struct SettingsView: View {
         ) else { assertionFailure(); return }
         openURL(url)
       } label: {
-        Label(CommonStrings.sendFeedback, systemImage: "envelope")
+        Label {
+          Text(CommonStrings.sendFeedback)
+        } icon: {
+          artworkIcon("FeedbackIcon")
+        }
       }
       // Both rows leave the app, for Mail and the App Store, which VoiceOver announces as a link.
       .accessibilityRemoveTraits(.isButton)
@@ -75,14 +84,23 @@ struct SettingsView: View {
         }
         openURL(url)
       } label: {
-        Label(
-          String(localized: "settings.feedback.rateInAppStore", defaultValue: "Rate in App Store", comment: "Row in Settings that opens the app's App Store review page."),
-          systemImage: "star",
-        )
+        Label {
+          Text(String(localized: "settings.feedback.rateInAppStore", defaultValue: "Rate in App Store", comment: "Row in Settings that opens the app's App Store review page."))
+        } icon: {
+          artworkIcon("RateInAppStoreIcon")
+        }
       }
       .accessibilityRemoveTraits(.isButton)
       .accessibilityAddTraits(.isLink)
     }
+  }
+
+  /// In its own colours, not the accent tint; decorative, since the row's title carries the meaning.
+  private func artworkIcon(_ name: String) -> some View {
+    Image(decorative: name)
+      .resizable()
+      .scaledToFit()
+      .frame(width: artworkIconSize, height: artworkIconSize)
   }
 
   /// Two blank lines above the diagnostics, for whatever the person types first. English only,

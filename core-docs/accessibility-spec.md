@@ -79,7 +79,8 @@ category stops it without shrinking the symbol below its default size; the
 header's status ring, which stays 24pt; and fixed margins.
 
 **SwiftUI screens** use semantic font tokens, and their rows wrap rather than truncate. Settings row
-icons are SF Symbols, so they grow with their text. `ToastView` moves an action button under the
+icons grow with their text: SF Symbols by themselves, and the Send Feedback and Rate in App Store
+artwork through a `@ScaledMetric` size. `ToastView` moves an action button under the
 message at accessibility sizes, where beside it the message would be left a few letters wide.
 
 `ChecklistRowView` wraps a checklist's name rather than truncating it; its notes stay a three-line

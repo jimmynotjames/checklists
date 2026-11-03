@@ -184,6 +184,10 @@ class checklistsUITests: XCTestCase {
       XCTAssertTrue(app.links[title].waitForExistence(timeout: 5), "\(title) should be a link.")
       XCTAssertFalse(app.buttons[title].exists, "\(title) shouldn't also be a button.")
     }
+    // Decorative: an image that isn't is its own element, named after its asset.
+    for asset in ["FeedbackIcon", "RateInAppStoreIcon"] {
+      XCTAssertFalse(app.images[asset].exists, "The \(asset) artwork should be decorative.")
+    }
   }
 
   /// The list's "•••", which holds Edit and Reset All.
