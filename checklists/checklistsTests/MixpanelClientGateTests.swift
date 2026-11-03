@@ -10,8 +10,8 @@ import Testing
 /// simulation — see core-docs/analytics-spec.md §Launch and consent ordering.
 ///
 /// **Every test here is restricted to paths that never call `Mixpanel.initialize`.** Calling
-/// `track`/`identify` directly against the real class would initialize the SDK and reach
-/// `MixpanelInstance.reset()`'s `flush()`, which POSTs over the network and leaves real artifacts
+/// `track`/`identify` directly against the real class would run `Mixpanel.initialize`, which
+/// reaches the network and leaves real artifacts
 /// (`*_MPDB.sqlite`, `Mixpanel.plist`) behind — so this file asserts only the **negative** half of
 /// the contract. The **positive** half — that an opted-in `track` actually initializes the SDK
 /// exactly once — isn't safely assertable here.

@@ -21,14 +21,14 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
 
   private let token: String
   /// Resolved once during `init()` rather than read from `ensureInitialized()`, so the actual
-  /// `UIDevice.current` access happens exactly once regardless of how many times the SDK is
-  /// lazily initialized across a reset → re-opt-in cycle.
+  /// `UIDevice.current` access happens exactly once.
   private let deviceClass: String
   private let distinctIdProvider: () -> String?
 
   /// Guards `_instance`.
   private let instanceLock = NSLock()
-  /// The lazily-created SDK instance. `nil` until the first `track` after opt-in.
+  /// The lazily-created SDK instance. `nil` until the first `track` after opt-in; kept, opted out,
+  /// after `reset()`.
   private var _instance: MixpanelInstance?
 
   // MARK: - Init
@@ -70,14 +70,13 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
     instance.identify(distinctId: id)
   }
 
-  /// Clears this client's reference **and** the SDK's process-wide registry entry via
-  /// `Mixpanel.removeInstance` — `Mixpanel.initialize` keeps every instance alive in a singleton
-  /// keyed by token, so without this an opted-out install's instance keeps its flush timer running.
+  /// Opts out through the SDK's own `optOutTracking()` (analytics-spec.md §Toggle-off behaviour).
+  ///
+  /// **The instance is kept, not discarded.** `optOutTracking()` runs later on the SDK's queue and
+  /// holds the instance weakly, so dropping the last reference here would cancel the opt-out.
   func reset() {
     instanceLock.lock()
-    _instance?.reset()
-    Mixpanel.removeInstance(name: token)
-    _instance = nil
+    _instance?.optOutTracking()
     instanceLock.unlock()
   }
 
@@ -122,25 +121,42 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
   private func ensureInitialized() -> MixpanelInstance {
     instanceLock.lock()
     if let existing = _instance {
+      if existing.hasOptedOutTracking() {
+        optBackIn(existing)
+      }
       instanceLock.unlock()
       return existing
     }
     let newInstance = Mixpanel.initialize(token: token, trackAutomaticEvents: false)
     // Defaults to `true`, which sends `ip=1` and has Mixpanel derive `$city` / `$region` from the
     // request IP. This app's location signal is the device's own `locale` / `region` settings, so
-    // the derived geolocation is turned off rather than declared. 6.7.0 has no init parameter.
+    // the derived geolocation is turned off rather than declared. `MixpanelOptions` has no
+    // parameter for it.
     newInstance.useIPAddressForGeoLocation = false
     // Conservative flush batch size — this app's event volume is small and there is no rush to
     // flush aggressively.
     newInstance.flushBatchSize = 50
-    registerSuperProperties(on: newInstance)
-    if let distinctId = distinctIdProvider() {
-      newInstance.identify(distinctId: distinctId)
-      setBaselinePeopleProperties(on: newInstance)
+    if newInstance.hasOptedOutTracking() {
+      optBackIn(newInstance)
+    } else {
+      registerSuperProperties(on: newInstance)
+      if let distinctId = distinctIdProvider() {
+        newInstance.identify(distinctId: distinctId)
+        setBaselinePeopleProperties(on: newInstance)
+      }
     }
     _instance = newInstance
     instanceLock.unlock()
     return newInstance
+  }
+
+  /// Only an opted-in caller reaches `ensureInitialized()`, so an SDK opt-out left by `reset()` —
+  /// this launch or a persisted one — is stale. `optOutTracking()` cleared the super properties, so
+  /// they go back first. `optInTracking` clears the opt-out asynchronously and identifies on its own
+  /// queue; the SDK drops people updates made before that lands, so the baseline ones are skipped.
+  private func optBackIn(_ instance: MixpanelInstance) {
+    registerSuperProperties(on: instance)
+    instance.optInTracking(distinctId: distinctIdProvider())
   }
 
   /// The instance if the SDK is already up, without initializing it. The people-property setters

@@ -16,7 +16,7 @@ import SwiftData
 
  Three properties matter, in this order:
 
- 1. **It never loses data.** Nothing on the import path deletes the Realm file; only `StoreReset`
+ 1. **It never deletes data.** Nothing on the import path deletes the Realm file; only `StoreReset`
     does, and the failure screen offers that only for `.storeOpen`. If anything below goes wrong
     the original store is still on disk, untouched, and the import runs again on the next launch —
     and after `maximumAttempts` of those it stops trying and lets the app open anyway, still
@@ -26,6 +26,14 @@ import SwiftData
  3. **It verifies before declaring success.** The completion flag is written only after every
     record read out of Realm has been read back out of SwiftData. A partial import leaves the flag
     unset and is retried rather than silently accepted.
+
+ **Only v1.1.0 stores are importable.** v1.1.0 shipped Realm 10.7.2, which writes file format v20;
+ v1.0.0 shipped Realm 4.3.1, which writes v9. Realm Core 14 and later neither open nor upgrade
+ anything below v10, so on a v1.0.0 store `Realm(configuration:)` throws
+ `Realm.Error.unsupportedFileFormatVersion` (code 16). No retry can fix that, so the import is
+ abandoned on that first launch, with the file kept, and `legacy_import_abandoned` reports
+ `error_code` 16. The user gets an app with none of their old checklists. That loss is accepted:
+ reading v9 would mean shipping Realm Core 13 or older alongside the current Realm.
  */
 enum LegacyRealmImporter {
   /// Set once the copy has completed and been verified, or once it has been abandoned.
@@ -103,24 +111,7 @@ enum LegacyRealmImporter {
   static func readLegacyChecklists(from configuration: Realm.Configuration = legacyConfiguration()) throws -> [ChecklistSnapshot] {
     let realm = try Realm(configuration: configuration)
 
-    guard let group = realm.objects(LegacyGroup.self).first else {
-      // No Group means a store written before v1.1.0, which predates that object entirely and
-      // ordered checklists by `sortNumber` instead. Upgrading straight from that release is out of
-      // scope as a *feature* — but reading nothing here would set the completion flag, and the
-      // store is never read again, so "out of scope" would silently mean "deleted forever". Falling
-      // back to the field that release actually ordered by costs nothing and cannot lose data.
-      let unlinked = Array(realm.objects(LegacyChecklist.self).sorted(byKeyPath: "sortNumber"))
-      if unlinked.isEmpty {
-        AppLog.persistence.warning("legacyImport: store has no Group and no checklists; nothing to import.")
-      } else {
-        AppLog.persistence.warning(
-          "legacyImport: store has no Group; recovering \(unlinked.count, privacy: .public) checklist(s) by sortNumber.",
-        )
-      }
-      return unlinked.map(snapshot(of:))
-    }
-
-    var ordered = Array(group.checklists)
+    var ordered = realm.objects(LegacyGroup.self).first.map { Array($0.checklists) } ?? []
     let linkedIds = Set(ordered.map(\.id))
     let orphans = Array(realm.objects(LegacyChecklist.self)).filter { !linkedIds.contains($0.id) }
     if !orphans.isEmpty {
@@ -269,7 +260,8 @@ enum LegacyRealmImporter {
   /// Giving up sets the completion flag and **keeps the Realm file**, so the user gets a working
   /// app, nothing is destroyed, and a later release with a better reader can still find the data.
   /// The cost is that this release stops trying, which is why it takes several failures rather
-  /// than one — a full disk or a transient read error still gets its retries.
+  /// than one — a full disk or a transient read error still gets its retries. A store too old to
+  /// open (see the type's doc comment) gets none: it can only ever fail the same way.
   private static func abandonIfOutOfAttempts(
     _ error: any Error,
     userDefaults: UserDefaults,
@@ -279,7 +271,8 @@ enum LegacyRealmImporter {
     userDefaults.set(attempts, forKey: failedAttemptsKey)
 
     let nsError = error as NSError
-    guard attempts >= maximumAttempts else {
+    let isUnsupportedFormat = (error as? Realm.Error)?.code == .unsupportedFileFormatVersion
+    guard attempts >= maximumAttempts || isUnsupportedFormat else {
       AppLog.persistence.error(
         "legacyImport.failed: attempt \(attempts, privacy: .public), \(nsError.domain, privacy: .public) \(nsError.code, privacy: .public)",
       )

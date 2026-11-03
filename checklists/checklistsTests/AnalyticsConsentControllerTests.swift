@@ -83,8 +83,8 @@ struct AnalyticsConsentControllerTests {
     #expect(!settings.analyticsOptIn)
   }
 
-  /// The opt-out event is the only record the opt-out happened, so it must be sent *while still
-  /// opted in* — before `reset()` and before the flag flips.
+  /// The opt-out event must be tracked *while still opted in* — before `reset()` and before the
+  /// flag flips — or the gate drops it.
   @Test("toggling off tracks the consent change while still opted in")
   func togglingOffTracksWhileStillOptedIn() {
     let settings = AnalyticsSettings(store: InMemoryKeyValueStore())
