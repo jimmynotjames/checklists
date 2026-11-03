@@ -46,8 +46,7 @@ struct SettingsView: View {
 
   // MARK: - Feedback section
 
-  /// First, as the only rows here that act rather than report. No header: the rows name themselves,
-  /// and no one word covers both.
+  /// No header: the rows name themselves, and no one word covers both.
   private var feedbackSection: some View {
     Section {
       Button {

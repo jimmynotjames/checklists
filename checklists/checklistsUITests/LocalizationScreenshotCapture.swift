@@ -108,7 +108,7 @@ final class LocalizationScreenshotCapture: XCTestCase {
   @MainActor private func captureAll(_ lang: String) {
     capture("01-list", lang) { _ in true }
 
-    // 02 was the ☰ panel, which Settings replaced. The numbers stay so earlier audits still match.
+    // No 02: the numbers stay so earlier audits still match.
     capture("03-settings", lang) { app in
       guard self.tap(app, "toolbar.settings") else { return false }
       return app.switches.firstMatch.waitForExistence(timeout: 8)

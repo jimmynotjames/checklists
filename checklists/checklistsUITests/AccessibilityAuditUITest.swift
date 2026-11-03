@@ -67,9 +67,21 @@ class AccessibilityAuditUITest: XCTestCase {
     ),
     KnownIssue(
       screens: ["settings"],
+      types: .textClipped,
+      label: "Rate in App Store",
+      reason: "False positive: the row's title draws in full, as the audit's own crop of it shows.",
+    ),
+    KnownIssue(
+      screens: ["settings"],
       types: .dynamicType,
       label: "Info",
       reason: "False positive: the section header scales like the others in Settings.",
+    ),
+    KnownIssue(
+      screens: ["settings"],
+      types: .dynamicType,
+      label: "Anonymous usage data helps troubleshoot issues and understand usage. Data is never linked to your Apple Account. Never included: checklist item names, item notes, or any Apple or iCloud identifiers.",
+      reason: "False positive: the footer is plain Form text and scales like the others in Settings.",
     ),
     KnownIssue(
       screens: ["resetAllAlert"],

@@ -8,7 +8,7 @@
 import UIKit
 
 class Colors {
-  /// The page background. Never a foreground: text and icons on the panel use
+  /// The page background. Never a foreground: text and icons on the toast card use
   /// `panelForegroundColor`.
   static let defaultBackground = UIColor(resource: .defaultBackground)
   static let inactiveText = UIColor(resource: .inactiveText)

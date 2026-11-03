@@ -280,7 +280,6 @@ struct ChecklistsView: View {
 
   // MARK: - Toolbar
 
-  /// Settings also holds Send Feedback and Rate in App Store, so one button reaches all three.
   private var settingsButton: some View {
     Button {
       router.sheet = .settings
