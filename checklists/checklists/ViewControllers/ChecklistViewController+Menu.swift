@@ -41,15 +41,11 @@ extension ChecklistViewController {
       UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
     } else {
       // Reset keeps the bar slot: in an app built around rerunning a list it is a per-run action,
-      // while deleting the list is a once-ever one that can afford to sit a tap deeper. An icon, so
-      // on iPhone Duo it moves into the vertical bar with the rest; the title is what VoiceOver
-      // reads and what the Large Content Viewer and an overflow menu show.
-      UIBarButtonItem(
-        title: Self.resetButtonTitle,
-        image: UIImage(systemName: "arrow.counterclockwise"),
-        target: self,
-        action: #selector(resetButtonTapped),
-      )
+      // while deleting the list is a once-ever one that can afford to sit a tap deeper. A word, not
+      // an icon: no symbol reads as "uncheck every item" at a glance, and the arrows that come
+      // closest read as Undo or Refresh. On iPhone Duo that keeps it in a horizontal bar above the
+      // vertical one, which is the accepted cost.
+      UIBarButtonItem(title: Self.resetButtonTitle, style: .plain, target: self, action: #selector(resetButtonTapped))
     }
     primaryItem.tintColor = .tintColor
     // Locale-invariant handles for UI tests; the create sheet's Done reads "Done", as the editing
