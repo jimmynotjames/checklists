@@ -61,13 +61,13 @@ struct ContainerFailureView: View {
           Button {
             sendFeedbackTapped()
           } label: {
-            Text(Self.sendFeedbackTitle)
+            Text(CommonStrings.sendFeedback)
               .frame(maxWidth: .infinity)
           }
           // Approximates the UIKit CLButton's glass UIButtonConfiguration.
           .buttonStyle(.glass)
           .controlSize(.large)
-          .accessibilityLabel(Self.sendFeedbackTitle)
+          .accessibilityLabel(CommonStrings.sendFeedback)
           .accessibilityHint(String(
             localized: "containerFailure.action.sendFeedback.hint",
             defaultValue: "Opens an email with the error details. No personal data is included.",
@@ -132,12 +132,6 @@ struct ContainerFailureView: View {
     }
   }
 
-  private static let sendFeedbackTitle = String(
-    localized: "containerFailure.action.sendFeedback",
-    defaultValue: "Send Feedback",
-    comment: "Button on the database-failure screen that opens a pre-filled support email.",
-  )
-
   private static let startOverTitle = String(
     localized: "containerFailure.action.startOver",
     defaultValue: "Start over fresh",
@@ -147,17 +141,10 @@ struct ContainerFailureView: View {
   private func sendFeedbackTapped() {
     analytics.track(AnalyticsEvent.feedbackTapped)
 
-    var components = URLComponents()
-    components.scheme = "mailto"
-    components.path = "jimmyho.appfeedback@gmail.com"
-    components.queryItems = [
-      URLQueryItem(
-        name: "subject",
-        value: String(localized: "containerFailure.mail.subject", defaultValue: "Checklists data error", comment: "Subject line of the support email opened from the database-failure screen."),
-      ),
-      URLQueryItem(name: "body", value: "Error: \(failure.diagnosticDescription)"),
-    ]
-    guard let url = components.url else { assertionFailure(); return }
+    guard let url = FeedbackMail.url(
+      subject: String(localized: "containerFailure.mail.subject", defaultValue: "Checklists data error", comment: "Subject line of the support email opened from the database-failure screen."),
+      body: "Error: \(failure.diagnosticDescription)",
+    ) else { assertionFailure(); return }
     openURL(url)
   }
 }

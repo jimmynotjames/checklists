@@ -250,7 +250,6 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `checklists_viewed` | The checklists list appears | `checklists_count` |
 | `checklist_viewed` | A checklist is opened | `checklist_name`, `notes_length`, `items_count`, `items_with_notes_count` |
 | `settings_viewed` | Settings appears | — |
-| `main_menu_viewed` | The main menu appears | — |
 | `checklist_created` | A checklist is created | — |
 | `checklist_duplicated` | Copied, from the list's swipe or the checklist menu | `source` |
 | `checklist_items_copied` | Ticked items copied into another checklist, from the checklist menu | `destination` |
@@ -264,8 +263,8 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `checklists_bulk_action_performed` | An Edit mode toolbar action runs and changes something; once per action, not per checklist; `checklist_duplicated` and `checklist_deleted` don't also fire | `bulk_action`, `selected_count` |
 | `all_checklists_reset` | Reset All is confirmed and unchecks something; `checklist_reset` doesn't also fire | — |
 | `checklist_pdf_exported` | The share sheet opened by the checklist menu's Export as PDF… completes; not on a cancelled share | `items_count`, `checked_items_count` |
-| `rate_app_tapped` | "Rate in App Store" tapped | — |
-| `feedback_tapped` | "Send feedback" tapped, main menu **or** failure screen | — |
+| `rate_app_tapped` | "Rate in App Store" tapped in Settings | — |
+| `feedback_tapped` | "Send Feedback" tapped, Settings **or** failure screen | — |
 | `privacy_policy_tapped` | The privacy policy is opened | — |
 | `orientation_changed` | Portrait ↔ landscape | `orientation` |
 | `persistence_fatal_error` | The store cannot be opened | `error_domain`, `error_code` |

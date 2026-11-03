@@ -19,7 +19,6 @@ struct AnalyticsNamesTests {
     AnalyticsEvent.checklistsViewed,
     AnalyticsEvent.checklistViewed,
     AnalyticsEvent.settingsViewed,
-    AnalyticsEvent.mainMenuViewed,
     AnalyticsEvent.rateAppTapped,
     AnalyticsEvent.feedbackTapped,
     AnalyticsEvent.privacyPolicyTapped,

@@ -7,74 +7,34 @@ import SwiftData
 import SwiftUI
 
 /// The app's main scene once startup has succeeded: the checklists list inside a
-/// `NavigationStack`, with the main menu layered above it and the router's sheets presented over
-/// it.
+/// `NavigationStack`, with the router's sheets presented over it.
 struct RootView: View {
   @Environment(Router.self) private var router
   @Environment(\.modelContext) private var context
-  @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-  /// Read back so the main menu can become a side panel on a wide window.
-  @State private var rootWidth: CGFloat = 0
-
-  /// How long the main menu takes to slide in or out.
-  static let menuAnimationSeconds: TimeInterval = 0.2
-
-  /// The main menu's width once it stops covering the whole window.
-  static let menuPanelWidth: CGFloat = 360
-
-  /// Whether the main menu is a side panel over a dimmed list rather than full-screen: only when
-  /// the list beside it keeps at least the panel's own width.
-  static func menuIsSidePanel(in width: CGFloat) -> Bool {
-    width >= menuPanelWidth * 2
-  }
 
   var body: some View {
     @Bindable var router = router
-    ZStack {
-      NavigationStack(path: $router.path) {
-        ChecklistsView()
-          .navigationDestination(for: AppRoute.self) { route in
-            switch route {
-            case let .checklist(id):
-              if let checklist = context.checklist(id: id) {
-                ChecklistScreen(checklist: checklist) {
-                  guard !router.path.isEmpty else { return }
-                  router.path.removeLast()
-                }
-                // The screen lends its UIKit bar items to this bar; see
-                // ChecklistViewController+BarHost. Visible explicitly: holding no SwiftUI items of its
-                // own, the bar is otherwise hidden as empty while the screen appears, lent items and
-                // all.
-                .toolbarVisibility(.visible, for: .navigationBar)
-              } else {
-                unresolvedPushDestination
+    NavigationStack(path: $router.path) {
+      ChecklistsView()
+        .navigationDestination(for: AppRoute.self) { route in
+          switch route {
+          case let .checklist(id):
+            if let checklist = context.checklist(id: id) {
+              ChecklistScreen(checklist: checklist) {
+                guard !router.path.isEmpty else { return }
+                router.path.removeLast()
               }
+              // The screen lends its UIKit bar items to this bar; see
+              // ChecklistViewController+BarHost. Visible explicitly: holding no SwiftUI items of its
+              // own, the bar is otherwise hidden as empty while the screen appears, lent items and
+              // all.
+              .toolbarVisibility(.visible, for: .navigationBar)
+            } else {
+              unresolvedPushDestination
             }
           }
-      }
-      if router.isMainMenuVisible, Self.menuIsSidePanel(in: rootWidth) {
-        // Decorative: VoiceOver is held in the panel by its modal trait, and closes it with the
-        // panel's own button or the escape gesture.
-        Color.black.opacity(0.3)
-          .ignoresSafeArea()
-          .onTapGesture { router.isMainMenuVisible = false }
-          .accessibilityHidden(true)
-          .zIndex(1)
-          .transition(.opacity)
-      }
-      if router.isMainMenuVisible {
-        MainMenuView()
-          .frame(maxWidth: Self.menuIsSidePanel(in: rootWidth) ? Self.menuPanelWidth : .infinity)
-          .frame(maxWidth: .infinity, alignment: .leading)
-          .zIndex(2)
-          // Reduce Motion suppresses simulated spatial movement, not animation itself: the
-          // panel cross-fades in place instead of sliding from the leading edge.
-          .transition(reduceMotion ? .opacity : .move(edge: .leading))
-      }
+        }
     }
-    .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { rootWidth = $0 }
-    .animation(.easeInOut(duration: Self.menuAnimationSeconds), value: router.isMainMenuVisible)
     .sheet(item: $router.sheet) { route in
       Group {
         switch route {
@@ -137,16 +97,5 @@ struct RootView: View {
   #Preview("Root") {
     RootView()
       .previewEnvironment()
-  }
-
-  #Preview("Main menu open") {
-    // A fresh `Router`, not `PreviewSupport.router`: that instance is shared by every other
-    // preview in this process, and mutating `isMainMenuVisible` on it would leak into them.
-    RootView()
-      .previewEnvironment(router: {
-        let router = Router()
-        router.isMainMenuVisible = true
-        return router
-      }())
   }
 #endif

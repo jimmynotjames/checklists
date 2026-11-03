@@ -196,17 +196,9 @@ class AccessibilityAuditUITest: XCTestCase {
     try audit("resetAllAlert")
   }
 
-  func testMainMenu() throws {
-    launch()
-    tapButton("toolbar.mainMenu")
-    XCTAssertTrue(app.buttons["mainMenu.settings"].waitForExistence(timeout: 5), "Main menu didn't open.")
-    try audit("mainMenu")
-  }
-
   func testSettings() throws {
     launch()
-    tapButton("toolbar.mainMenu")
-    tapButton("mainMenu.settings")
+    tapButton("toolbar.settings")
     XCTAssertTrue(app.links["Privacy Policy"].waitForExistence(timeout: 5), "Settings didn't open.")
     try audit("settings")
   }

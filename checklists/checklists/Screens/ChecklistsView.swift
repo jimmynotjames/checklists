@@ -24,21 +24,9 @@ struct ChecklistsView: View {
   @Environment(Router.self) private var router
   @Environment(\.analytics) private var analytics
 
-  private static let menuIconBaseSize: CGFloat = 20
-
   private static let addButtonSize: CGFloat = 60
   /// Between the Add button and the safe area's edges.
   private static let addButtonMargin: CGFloat = 20
-
-  /// The menu icon's side at the current Dynamic Type size, scaled the way body text scales.
-  /// A bitmap does not follow Dynamic Type by itself.
-  @ScaledMetric(relativeTo: .body) private var scaledMenuIconSize: CGFloat = menuIconBaseSize
-
-  /// Grows at a third of the body-text rate so the icon stays inside the system's slower-growing
-  /// capsule.
-  private var menuIconSize: CGFloat {
-    Self.menuIconBaseSize + (scaledMenuIconSize - Self.menuIconBaseSize) / 3
-  }
 
   /// Created on the first `.task` rather than at init: a `@State` initial value would be
   /// rebuilt on every re-render of the view struct, and this observer registers for a
@@ -66,8 +54,6 @@ struct ChecklistsView: View {
 
   /// Where VoiceOver goes after a move (the moved row, as the list re-sorts) or a delete (its neighbour).
   @AccessibilityFocusState private var focusedChecklistID: String?
-  /// Where VoiceOver goes back to when the main menu closes.
-  @AccessibilityFocusState private var isMainMenuButtonFocused: Bool
   /// Where VoiceOver goes on leaving Edit mode, by Done or by an Edit mode action, either of which
   /// takes the button it was on away.
   @AccessibilityFocusState private var isMoreMenuFocused: Bool
@@ -180,7 +166,7 @@ struct ChecklistsView: View {
         }
       } else {
         ToolbarItem(placement: .topBarLeading) {
-          mainMenuButton
+          settingsButton
         }
 
         ToolbarItem(placement: .topBarTrailing) {
@@ -294,36 +280,20 @@ struct ChecklistsView: View {
 
   // MARK: - Toolbar
 
-  private var mainMenuButton: some View {
+  /// Settings also holds Send Feedback and Rate in App Store, so one button reaches all three.
+  private var settingsButton: some View {
     Button {
-      router.isMainMenuVisible = true
+      router.sheet = .settings
     } label: {
-      Image("MenuIcon25x25")
-        .resizable()
-        .scaledToFit()
-        .frame(width: menuIconSize, height: menuIconSize)
+      // A label rather than a bare image, as with "•••".
+      Label(CommonStrings.settingsTitle, systemImage: "gearshape")
+        .accessibilityShowsLargeContentViewer()
     }
     // iOS 26 renders bar buttons in `labelColor` unless the button itself carries a tint.
     .tint(Color.accentColor)
-    .accessibilityLabel(String(
-      localized: "checklists.menu.misc.accessibilityLabel",
-      defaultValue: "Miscellaneous Menu",
-      comment: "VoiceOver label for the toolbar button that opens the main menu (feedback, rating, settings).",
-    ))
     // Locale-invariant handle for `translation-accessibility-size-check`, which cannot
     // navigate by localized visible text.
-    .accessibilityIdentifier("toolbar.mainMenu")
-    .accessibilityFocused($isMainMenuButtonFocused)
-    // After the slide-out, while the panel still covers ☰. Not when the menu closed to open
-    // Settings: the sheet takes focus instead.
-    .onChange(of: router.isMainMenuVisible) { _, isVisible in
-      guard !isVisible else { return }
-      Task {
-        try? await Task.sleep(for: .seconds(RootView.menuAnimationSeconds + 0.1))
-        guard !router.isMainMenuVisible, router.sheet == nil else { return }
-        isMainMenuButtonFocused = true
-      }
-    }
+    .accessibilityIdentifier("toolbar.settings")
   }
 
   /// Edit and Reset All, behind one "•••" as on a checklist's own screen. Both entries are always

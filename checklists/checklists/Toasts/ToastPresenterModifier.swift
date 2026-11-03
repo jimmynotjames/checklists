@@ -12,10 +12,6 @@ import SwiftUI
 /// sheet's own content via `toastOverlay()`. Exactly one of the two draws at a time — the root
 /// stands down while a sheet is up — so a toast is always visible wherever the person is looking,
 /// and it is never announced or timed twice.
-///
-/// The main menu is *not* stood down for: it is a layer inside `RootView`'s `ZStack`, so the root
-/// overlay already draws above it, and the card sits at the bottom while the menu's only control
-/// is at the top.
 private struct ToastLayer: ViewModifier {
   /// How far the card sits above the safe area on an ordinary screen.
   private static let bottomInset: CGFloat = 16
@@ -59,8 +55,7 @@ private struct ToastLayer: ViewModifier {
         }
       }
       // Value-scoped on purpose. `withAnimation` inside the presenter would be transaction-scoped
-      // and animate every other change in the same update turn — the bug `MainMenuView` already
-      // needed `Transaction(disablesAnimations: true)` to work around.
+      // and animate every other change in the same update turn.
       .animation(.easeInOut(duration: 0.25), value: presenter.current?.id)
       // Keyed on the toast, not its message: a repeat with the same words is still news — a
       // second copy into the same checklist, a second failed save — and under VoiceOver the first

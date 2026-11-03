@@ -33,7 +33,7 @@ private struct RatingPromptPresenter: ViewModifier {
   }
 
   private var isOnChecklistsList: Bool {
-    router.path.isEmpty && router.sheet == nil && !router.isMainMenuVisible
+    router.path.isEmpty && router.sheet == nil
   }
 
   private var isReady: Bool {

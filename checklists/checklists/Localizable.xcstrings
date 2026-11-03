@@ -21310,311 +21310,6 @@
         }
       }
     },
-    "checklists.menu.misc.accessibilityLabel" : {
-      "comment" : "VoiceOver label for the toolbar button that opens the main menu (feedback, rating, settings).",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "قائمة متنوعة"
-          }
-        },
-        "bn" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "বিবিধ মেনু"
-          }
-        },
-        "ca" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menú general"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hlavní nabídka"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hovedmenu"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hauptmenü"
-          }
-        },
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Κύριο μενού"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miscellaneous Menu"
-          }
-        },
-        "en-AU" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miscellaneous Menu"
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miscellaneous Menu"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miscellaneous Menu"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menú"
-          }
-        },
-        "es-MX" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menú general"
-          }
-        },
-        "fi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Päävalikko"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menu principal"
-          }
-        },
-        "fr-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menu"
-          }
-        },
-        "gu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "મુખ્ય મેનૂ"
-          }
-        },
-        "he" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "תפריט ראשי"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "अन्य मेनू"
-          }
-        },
-        "hr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Glavni izbornik"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Főmenü"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menu Lainnya"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menu principale"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "その他のメニュー"
-          }
-        },
-        "kn" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ಇತರ ಮೆನು"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "기타 메뉴"
-          }
-        },
-        "ml" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "പ്രധാന മെനു"
-          }
-        },
-        "mr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "इतर मेनू"
-          }
-        },
-        "ms" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menu Pelbagai"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diverse-meny"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hoofdmenu"
-          }
-        },
-        "or" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ବିବିଧ ମେନୁ"
-          }
-        },
-        "pa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ਮੁੱਖ ਮੀਨੂ"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menu dodatkowe"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menu Diversos"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menu geral"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meniu principal"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Главное меню"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hlavné menu"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meni z drugimi možnostmi"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Övrig meny"
-          }
-        },
-        "ta" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "பொது மெனு"
-          }
-        },
-        "te" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ప్రధాన మెనూ"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เมนูอื่นๆ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ana Menü"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Головне меню"
-          }
-        },
-        "ur" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "مین مینیو"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menu khác"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "主菜单"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "主選單"
-          }
-        }
-      }
-    },
     "checklists.title" : {
       "comment" : "Name of the app's main screen, the list of all checklists. Not drawn on screen: VoiceOver reads it as the screen's title. A plural noun, not a verb.",
       "localizations" : {
@@ -23140,6 +22835,311 @@
         }
       }
     },
+    "common.action.sendFeedback" : {
+      "comment" : "Opens a pre-addressed feedback email in Mail. A row in Settings, and a button on the database-failure screen.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إرسال الآراء والمقترحات"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "মতামত পাঠান"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar comentaris"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odeslat zpětnou vazbu"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send feedback"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback senden"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Αποστολή σχολίων"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Feedback"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Feedback"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Feedback"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Feedback"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar comentarios"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar comentarios"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lähetä palautetta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer des commentaires"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer des commentaires"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "પ્રતિસાદ મોકલો"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "לשלוח משוב"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "फ़ीडबैक भेजें"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pošalji povratne informacije"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visszajelzés küldése"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kirim Umpan Balik"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invia feedback"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フィードバックを送信"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "피드백 보내기"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ഫീഡ്‌ബാക്ക് അയയ്ക്കുക"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अभिप्राय पाठवा"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hantar Maklum Balas"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send tilbakemelding"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stuur feedback"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ମତାମତ ପଠାନ୍ତୁ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਫੀਡਬੈਕ ਭੇਜੋ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyślij opinię"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar Feedback"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar comentários"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trimiteți feedback"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправить отзыв"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odoslať spätnú väzbu"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pošlji povratne informacije"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skicka feedback"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "கருத்தை அனுப்பு"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ఫీడ్‌బ్యాక్ పంపండి"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ส่งคำติชม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri Bildirim Gönder"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Надіслати відгук"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تاثرات بھیجیں"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gửi phản hồi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送反馈"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "傳送意見回饋"
+          }
+        }
+      }
+    },
     "common.notes.placeholder" : {
       "comment" : "Placeholder of the optional notes field on an item and on a checklist header.",
       "localizations" : {
@@ -23446,7 +23446,7 @@
       }
     },
     "common.settings.title" : {
-      "comment" : "Title of the Settings screen and the main-menu row that opens it.",
+      "comment" : "Title of the Settings screen, and VoiceOver label of the gear button on the list of checklists that opens it.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -25576,311 +25576,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "要協助改善 App 嗎？"
-          }
-        }
-      }
-    },
-    "containerFailure.action.sendFeedback" : {
-      "comment" : "Button on the database-failure screen that opens a pre-filled support email.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إرسال الآراء والمقترحات"
-          }
-        },
-        "bn" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "মতামত পাঠান"
-          }
-        },
-        "ca" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enviar comentaris"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Odeslat zpětnou vazbu"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Send feedback"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback senden"
-          }
-        },
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Αποστολή σχολίων"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Send Feedback"
-          }
-        },
-        "en-AU" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Send Feedback"
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Send Feedback"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Send Feedback"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enviar comentarios"
-          }
-        },
-        "es-MX" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enviar comentarios"
-          }
-        },
-        "fi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lähetä palautetta"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Envoyer des commentaires"
-          }
-        },
-        "fr-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Envoyer des commentaires"
-          }
-        },
-        "gu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "પ્રતિસાદ મોકલો"
-          }
-        },
-        "he" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "לשלוח משוב"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "फ़ीडबैक भेजें"
-          }
-        },
-        "hr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pošalji povratne informacije"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Visszajelzés küldése"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kirim Umpan Balik"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Invia feedback"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "フィードバックを送信"
-          }
-        },
-        "kn" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "피드백 보내기"
-          }
-        },
-        "ml" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ഫീഡ്‌ബാക്ക് അയയ്ക്കുക"
-          }
-        },
-        "mr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "अभिप्राय पाठवा"
-          }
-        },
-        "ms" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hantar Maklum Balas"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Send tilbakemelding"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stuur feedback"
-          }
-        },
-        "or" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ମତାମତ ପଠାନ୍ତୁ"
-          }
-        },
-        "pa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ਫੀਡਬੈਕ ਭੇਜੋ"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wyślij opinię"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enviar Feedback"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enviar comentários"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trimiteți feedback"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отправить отзыв"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Odoslať spätnú väzbu"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pošlji povratne informacije"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skicka feedback"
-          }
-        },
-        "ta" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "கருத்தை அனுப்பு"
-          }
-        },
-        "te" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ఫీడ్‌బ్యాక్ పంపండి"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ส่งคำติชม"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geri Bildirim Gönder"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Надіслати відгук"
-          }
-        },
-        "ur" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تاثرات بھیجیں"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gửi phản hồi"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "发送反馈"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "傳送意見回饋"
           }
         }
       }
@@ -33245,1226 +32940,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在移轉資料庫⋯需要一點時間⋯"
-          }
-        }
-      }
-    },
-    "mainMenu.close.accessibilityLabel" : {
-      "comment" : "VoiceOver label for the X button that dismisses the main menu.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إغلاق القائمة"
-          }
-        },
-        "bn" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "মেনু বন্ধ করুন"
-          }
-        },
-        "ca" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tancar el menú"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zavřít nabídku"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Luk menu"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menü schließen"
-          }
-        },
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Κλείσιμο μενού"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Close menu"
-          }
-        },
-        "en-AU" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Close menu"
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Close menu"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Close menu"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cerrar menú"
-          }
-        },
-        "es-MX" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cerrar menú"
-          }
-        },
-        "fi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sulje valikko"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fermer le menu"
-          }
-        },
-        "fr-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fermer le menu"
-          }
-        },
-        "gu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "મેનૂ બંધ કરો"
-          }
-        },
-        "he" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "סגירת תפריט"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "मेनू बंद करें"
-          }
-        },
-        "hr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zatvori izbornik"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menü bezárása"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tutup menu"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chiudi menu"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "メニューを閉じる"
-          }
-        },
-        "kn" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ಮೆನು ಮುಚ್ಚಿ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "메뉴 닫기"
-          }
-        },
-        "ml" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "മെനു അടയ്ക്കുക"
-          }
-        },
-        "mr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "मेनू बंद करा"
-          }
-        },
-        "ms" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tutup menu"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lukk meny"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sluit menu"
-          }
-        },
-        "or" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ମେନୁ ବନ୍ଦ କରନ୍ତୁ"
-          }
-        },
-        "pa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ਮੀਨੂ ਬੰਦ ਕਰੋ"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zamknij menu"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fechar menu"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fechar menu"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Închideți meniul"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Закрыть меню"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zavrieť menu"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zapri meni"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stäng menyn"
-          }
-        },
-        "ta" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "மெனுவை மூடு"
-          }
-        },
-        "te" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "మెనూను మూసివేయండి"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ปิดเมนู"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menüyü kapat"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Закрити меню"
-          }
-        },
-        "ur" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "مینیو بند کریں"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đóng menu"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "关闭菜单"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "關閉選單"
-          }
-        }
-      }
-    },
-    "mainMenu.feedback" : {
-      "comment" : "Main-menu row that opens a pre-addressed feedback email.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الآراء والمقترحات"
-          }
-        },
-        "bn" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "মতামত"
-          }
-        },
-        "ca" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comentaris"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zpětná vazba"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback"
-          }
-        },
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Σχόλια"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback"
-          }
-        },
-        "en-AU" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback"
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comentarios"
-          }
-        },
-        "es-MX" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comentarios"
-          }
-        },
-        "fi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Palaute"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Commentaires"
-          }
-        },
-        "fr-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Commentaires"
-          }
-        },
-        "gu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "પ્રતિસાદ"
-          }
-        },
-        "he" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "משוב"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "फ़ीडबैक"
-          }
-        },
-        "hr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Povratne informacije"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Visszajelzés"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Umpan Balik"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "フィードバック"
-          }
-        },
-        "kn" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ಪ್ರತಿಕ್ರಿಯೆ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "피드백"
-          }
-        },
-        "ml" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ഫീഡ്‌ബാക്ക്"
-          }
-        },
-        "mr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "अभिप्राय"
-          }
-        },
-        "ms" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Maklum Balas"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilbakemelding"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback"
-          }
-        },
-        "or" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ମତାମତ"
-          }
-        },
-        "pa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ਫੀਡਬੈਕ"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opinia"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comentários"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отзыв"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spätná väzba"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Povratne informacije"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback"
-          }
-        },
-        "ta" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "கருத்து"
-          }
-        },
-        "te" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ఫీడ్‌బ్యాక్"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "คำติชม"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geri Bildirim"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Відгук"
-          }
-        },
-        "ur" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تاثرات"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Phản hồi"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "反馈"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "意見回饋"
-          }
-        }
-      }
-    },
-    "mainMenu.feedback.mail.subject" : {
-      "comment" : "Subject line of the feedback email opened from the main menu. Keep the app name reChecklist verbatim.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الآراء والمقترحات حول تطبيق reChecklist"
-          }
-        },
-        "bn" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklist অ্যাপের মতামত"
-          }
-        },
-        "ca" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comentaris sobre l'app reChecklist"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zpětná vazba k aplikaci reChecklist"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback til reChecklist"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback zu reChecklist"
-          }
-        },
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Σχόλια για την εφαρμογή reChecklist"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback for reChecklist App"
-          }
-        },
-        "en-AU" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback for reChecklist App"
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback for reChecklist App"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback for reChecklist App"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comentarios sobre la app reChecklist"
-          }
-        },
-        "es-MX" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comentarios sobre la app reChecklist"
-          }
-        },
-        "fi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Palaute reChecklist-sovelluksesta"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Commentaires sur l'app reChecklist"
-          }
-        },
-        "fr-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Commentaires sur l'app reChecklist"
-          }
-        },
-        "gu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklist એપ્લિકેશન માટે પ્રતિસાદ"
-          }
-        },
-        "he" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "משוב על reChecklist"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklist ऐप के लिए फ़ीडबैक"
-          }
-        },
-        "hr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Povratne informacije za aplikaciju reChecklist"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Visszajelzés a reChecklist apphoz"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Umpan balik untuk aplikasi reChecklist"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback per l'app reChecklist"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklistアプリへのフィードバック"
-          }
-        },
-        "kn" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklist ಆ್ಯಪ್‌ಗೆ ಪ್ರತಿಕ್ರಿಯೆ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklist 앱 피드백"
-          }
-        },
-        "ml" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklist ആപ്പിനുള്ള ഫീഡ്‌ബാക്ക്"
-          }
-        },
-        "mr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklist अॅपसाठी अभिप्राय"
-          }
-        },
-        "ms" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Maklum Balas untuk app reChecklist"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilbakemelding om reChecklist-appen"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback voor de app reChecklist"
-          }
-        },
-        "or" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklist ଆପ୍ ପାଇଁ ମତାମତ"
-          }
-        },
-        "pa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklist ਐਪ ਲਈ ਫੀਡਬੈਕ"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opinia o aplikacji reChecklist"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback sobre o app reChecklist"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comentários sobre a app reChecklist"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback pentru aplicația reChecklist"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отзыв о приложении reChecklist"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spätná väzba k aplikácii reChecklist"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Povratne informacije za aplikacijo reChecklist"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feedback om reChecklist"
-          }
-        },
-        "ta" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklist ஆப்ஸுக்கான கருத்து"
-          }
-        },
-        "te" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklist యాప్ కోసం ఫీడ్‌బ్యాక్"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "คำติชมสำหรับแอป reChecklist"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklist Uygulaması Geri Bildirimi"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Відгук про застосунок reChecklist"
-          }
-        },
-        "ur" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ایپ reChecklist کے لیے تاثرات"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Phản hồi về ứng dụng reChecklist"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklist 反馈"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reChecklist App 的意見回饋"
-          }
-        }
-      }
-    },
-    "mainMenu.rateInAppStore" : {
-      "comment" : "Main-menu row that opens the App Store review page.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "التقييم في App Store"
-          }
-        },
-        "bn" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Store-এ রেট করুন"
-          }
-        },
-        "ca" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Valorar a l'App Store"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ohodnotit v App Store"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bedøm i App Store"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Im App Store bewerten"
-          }
-        },
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Αξιολόγηση στο App Store"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rate in App Store"
-          }
-        },
-        "en-AU" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rate in App Store"
-          }
-        },
-        "en-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rate in App Store"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rate in App Store"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Valorar en App Store"
-          }
-        },
-        "es-MX" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calificar en la App Store"
-          }
-        },
-        "fi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arvioi App Storessa"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Évaluer sur l'App Store"
-          }
-        },
-        "fr-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Évaluer dans l'App Store"
-          }
-        },
-        "gu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Store માં રેટ કરો"
-          }
-        },
-        "he" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "לדרג ב-App Store"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Store में रेट करें"
-          }
-        },
-        "hr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ocijeni u App Storeu"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Értékelés az App Store-ban"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beri Rating di App Store"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Valuta su App Store"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Storeで評価"
-          }
-        },
-        "kn" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Store ನಲ್ಲಿ ರೇಟ್ ಮಾಡಿ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Store에서 평가"
-          }
-        },
-        "ml" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Store-ൽ റേറ്റ് ചെയ്യുക"
-          }
-        },
-        "mr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Store मध्ये रेट करा"
-          }
-        },
-        "ms" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nilai di App Store"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vurder i App Store"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beoordeel in App Store"
-          }
-        },
-        "or" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Storeରେ ରେଟ୍ କରନ୍ତୁ"
-          }
-        },
-        "pa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Store ਵਿੱਚ ਰੇਟ ਕਰੋ"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oceń w App Store"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avaliar na App Store"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avaliar na App Store"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Evaluați în App Store"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Оценить в App Store"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ohodnotiť v App Store"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oceni v App Store"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Betygsätt i App Store"
-          }
-        },
-        "ta" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Store இல் மதிப்பிடு"
-          }
-        },
-        "te" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Storeలో రేట్ చేయండి"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ให้คะแนนใน App Store"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Store'da Puanla"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Оцінити в App Store"
-          }
-        },
-        "ur" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ایپ کو App Store میں ریٹ کریں"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đánh giá trên App Store"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 App Store 评分"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 App Store 評分"
           }
         }
       }
@@ -46669,6 +45144,616 @@
         }
       }
     },
+    "settings.feedback.mail.subject" : {
+      "comment" : "Subject line of the feedback email opened from the Send Feedback row in Settings. Keep the app name reChecklist verbatim.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الآراء والمقترحات حول تطبيق reChecklist"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklist অ্যাপের মতামত"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comentaris sobre l'app reChecklist"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zpětná vazba k aplikaci reChecklist"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback til reChecklist"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback zu reChecklist"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Σχόλια για την εφαρμογή reChecklist"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback for reChecklist App"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback for reChecklist App"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback for reChecklist App"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback for reChecklist App"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comentarios sobre la app reChecklist"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comentarios sobre la app reChecklist"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palaute reChecklist-sovelluksesta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Commentaires sur l'app reChecklist"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Commentaires sur l'app reChecklist"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklist એપ્લિકેશન માટે પ્રતિસાદ"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "משוב על reChecklist"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklist ऐप के लिए फ़ीडबैक"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Povratne informacije za aplikaciju reChecklist"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visszajelzés a reChecklist apphoz"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umpan balik untuk aplikasi reChecklist"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback per l'app reChecklist"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklistアプリへのフィードバック"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklist ಆ್ಯಪ್‌ಗೆ ಪ್ರತಿಕ್ರಿಯೆ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklist 앱 피드백"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklist ആപ്പിനുള്ള ഫീഡ്‌ബാക്ക്"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklist अॅपसाठी अभिप्राय"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maklum Balas untuk app reChecklist"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilbakemelding om reChecklist-appen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback voor de app reChecklist"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklist ଆପ୍ ପାଇଁ ମତାମତ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklist ਐਪ ਲਈ ਫੀਡਬੈਕ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opinia o aplikacji reChecklist"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback sobre o app reChecklist"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comentários sobre a app reChecklist"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback pentru aplicația reChecklist"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отзыв о приложении reChecklist"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spätná väzba k aplikácii reChecklist"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Povratne informacije za aplikacijo reChecklist"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback om reChecklist"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklist ஆப்ஸுக்கான கருத்து"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklist యాప్ కోసం ఫీడ్‌బ్యాక్"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำติชมสำหรับแอป reChecklist"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklist Uygulaması Geri Bildirimi"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відгук про застосунок reChecklist"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ایپ reChecklist کے لیے تاثرات"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phản hồi về ứng dụng reChecklist"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklist 反馈"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reChecklist App 的意見回饋"
+          }
+        }
+      }
+    },
+    "settings.feedback.rateInAppStore" : {
+      "comment" : "Row in Settings that opens the app's App Store review page.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التقييم في App Store"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store-এ রেট করুন"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valorar a l'App Store"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohodnotit v App Store"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bedøm i App Store"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im App Store bewerten"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Αξιολόγηση στο App Store"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rate in App Store"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rate in App Store"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rate in App Store"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rate in App Store"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valorar en App Store"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calificar en la App Store"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arvioi App Storessa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Évaluer sur l'App Store"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Évaluer dans l'App Store"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store માં રેટ કરો"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "לדרג ב-App Store"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store में रेट करें"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocijeni u App Storeu"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Értékelés az App Store-ban"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beri Rating di App Store"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valuta su App Store"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Storeで評価"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store ನಲ್ಲಿ ರೇಟ್ ಮಾಡಿ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store에서 평가"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store-ൽ റേറ്റ് ചെയ്യുക"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store मध्ये रेट करा"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nilai di App Store"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vurder i App Store"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beoordeel in App Store"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Storeରେ ରେଟ୍ କରନ୍ତୁ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store ਵਿੱਚ ਰੇਟ ਕਰੋ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oceń w App Store"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avaliar na App Store"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avaliar na App Store"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evaluați în App Store"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оценить в App Store"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohodnotiť v App Store"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oceni v App Store"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Betygsätt i App Store"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store இல் மதிப்பிடு"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Storeలో రేట్ చేయండి"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ให้คะแนนใน App Store"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store'da Puanla"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оцінити в App Store"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ایپ کو App Store میں ریٹ کریں"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đánh giá trên App Store"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 App Store 评分"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 App Store 評分"
+          }
+        }
+      }
+    },
     "settings.icloud.active" : {
       "comment" : "iCloud status row: checklists are syncing through iCloud.",
       "localizations" : {
@@ -49415,306 +48500,306 @@
       }
     },
     "settings.icloud.footer.syncInterrupted" : {
-      "comment" : "Footer under the iCloud section when a sync operation failed for a reason other than storage.",
+      "comment" : "Footer under the iCloud section when a sync operation failed for a reason other than storage. The Send Feedback row sits just above this section in Settings.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "قوائم التحقق محفوظة على هذا الجهاز، وستستمر المزامنة في إعادة المحاولة. إذا استمرت المشكلة، أرسل الآراء والمقترحات من القائمة."
+            "value" : "قوائم المراجعة محفوظة على هذا الجهاز، وستواصل المزامنة المحاولة. إذا استمرت المشكلة، فأرسل الآراء والمقترحات."
           }
         },
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "আপনার চেকলিস্ট এই ডিভাইসে সংরক্ষিত আছে, আর সিঙ্ক বারবার চেষ্টা করা হবে। সমস্যা না মিটলে মেনু থেকে মতামত পাঠান।"
+            "value" : "আপনার checklist এই ডিভাইসে সংরক্ষিত আছে, আর সিঙ্ক আবার চেষ্টা করতে থাকবে। সমস্যা না মিটলে মতামত পাঠান।"
           }
         },
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les teves llistes es desen en aquest dispositiu i la sincronització ho continuarà intentant. Si no es resol, envia comentaris des del menú."
+            "value" : "Les teves llistes de verificació es desen en aquest dispositiu i la sincronització ho continuarà intentant. Si no es resol, envia comentaris."
           }
         },
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaše seznamy jsou uložené v tomto zařízení a synchronizace se bude dál opakovat. Pokud potíže nezmizí, pošlete zpětnou vazbu z nabídky."
+            "value" : "Vaše checklisty jsou uložené v tomto zařízení a synchronizace to bude zkoušet dál. Pokud se to nespraví samo, pošlete zpětnou vazbu."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dine tjeklister er gemt på denne enhed, og synkroniseringen prøver igen. Hvis det ikke løser sig, kan du sende feedback fra menuen."
+            "value" : "Dine checklister er gemt på denne enhed, og synkroniseringen bliver ved med at prøve igen. Hvis det ikke løser sig, så send feedback."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine Checklisten sind auf diesem Gerät gespeichert, die Synchronisierung versucht es weiter. Wenn das so bleibt, sende Feedback über das Menü."
+            "value" : "Deine Checklisten sind auf diesem Gerät gespeichert, und die Synchronisierung versucht es weiter. Wenn das so bleibt, sende uns Feedback."
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Οι λίστες ελέγχου σας είναι αποθηκευμένες σε αυτή τη συσκευή και ο συγχρονισμός θα συνεχίσει να προσπαθεί. Αν το πρόβλημα δεν λυθεί, στείλτε σχόλια από το μενού."
+            "value" : "Οι λίστες σας είναι αποθηκευμένες σε αυτή τη συσκευή και ο συγχρονισμός θα συνεχίσει να προσπαθεί. Αν το πρόβλημα παραμένει, στείλτε σχόλια."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback from the menu."
+            "value" : "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback."
           }
         },
         "en-AU" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback from the menu."
+            "value" : "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback."
           }
         },
         "en-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback from the menu."
+            "value" : "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback."
           }
         },
         "en-GB" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback from the menu."
+            "value" : "Your checklists are saved on this device, and sync will keep retrying. If this doesn't clear up, send feedback."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tus listas se guardan en este dispositivo y la sincronización seguirá reintentándose. Si no se soluciona, envía comentarios desde el menú."
+            "value" : "Tus listas se guardan en este dispositivo y la sincronización seguirá intentándolo. Si no se soluciona, envía comentarios."
           }
         },
         "es-MX" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tus listas están guardadas en este dispositivo y la sincronización seguirá intentándolo. Si no se resuelve, envía comentarios desde el menú."
+            "value" : "Tus listas de verificación se guardan en este dispositivo y la sincronización seguirá reintentando. Si no se resuelve, envía comentarios."
           }
         },
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tarkistuslistasi on tallennettu tähän laitteeseen, ja synkronointia yritetään uudelleen. Jos tämä ei korjaudu, lähetä palautetta valikosta."
+            "value" : "Tarkistuslistasi on tallennettu tälle laitteelle, ja synkronointi yrittää uudelleen. Jos tämä ei korjaannu, lähetä palautetta."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos listes sont enregistrées sur cet appareil et la synchronisation continuera de réessayer. Si le problème persiste, envoyez des commentaires depuis le menu."
+            "value" : "Vos checklists sont enregistrées sur cet appareil, et la synchronisation continuera de réessayer. Si le problème persiste, envoyez des commentaires."
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos listes de vérification sont enregistrées sur cet appareil, et la synchronisation continuera de réessayer. Si le problème persiste, envoyez des commentaires depuis le menu."
+            "value" : "Vos listes de vérification sont enregistrées sur cet appareil, et la synchronisation continuera de réessayer. Si le problème persiste, envoyez des commentaires."
           }
         },
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "તમારી ચેકલિસ્ટ આ ડિવાઇસ પર સાચવેલી છે, અને સિંક ફરી પ્રયાસ કરતું રહેશે. જો આ ઠીક ન થાય, તો મેનૂમાંથી પ્રતિસાદ મોકલો."
+            "value" : "તમારી checklist આ ડિવાઇસ પર સાચવેલી છે, અને સિંક ફરી પ્રયાસ કરતું રહેશે. જો આ ઉકેલાય નહીં, તો પ્રતિસાદ મોકલો."
           }
         },
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "הרשימות שלך שמורות במכשיר זה, והסנכרון ימשיך לנסות. אם זה לא נפתר, שלחו משוב מהתפריט."
+            "value" : "הרשימות שלך שמורות במכשיר הזה, והסנכרון ימשיך לנסות שוב. אם זה לא נפתר, אפשר לשלוח משוב."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आपकी चेकलिस्ट इस डिवाइस पर सेव हैं, और सिंक बार-बार कोशिश करता रहेगा। अगर यह ठीक न हो, तो मेनू से फ़ीडबैक भेजें।"
+            "value" : "आपकी चेकलिस्ट इस डिवाइस पर सहेजी हैं, और सिंक दोबारा कोशिश करता रहेगा। अगर यह ठीक न हो, तो फ़ीडबैक भेजें।"
           }
         },
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaši popisi spremljeni su na ovom uređaju, a pokušaji sinkronizacije nastavit će se. Ako se problem ne riješi, pošaljite povratne informacije iz izbornika."
+            "value" : "Vaši se kontrolni popisi spremaju na ovom uređaju, a sinkronizacija će se nastaviti pokušavati. Ako se problem ne riješi, pošaljite povratne informacije."
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A listái ezen az eszközön mentve vannak, a szinkronizálás pedig újra és újra próbálkozik. Ha ez nem oldódik meg, küldjön visszajelzést a menüből."
+            "value" : "Listái ezen az eszközön mentve vannak, a szinkronizálás pedig újrapróbálkozik. Ha ez nem szűnik meg, küldjön visszajelzést."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Daftar periksa Anda tersimpan di perangkat ini, dan sinkronisasi akan terus dicoba lagi. Jika masalah berlanjut, kirim umpan balik dari menu."
+            "value" : "Checklist Anda tersimpan di perangkat ini, dan sinkronisasi akan terus mencoba lagi. Jika tidak kunjung pulih, kirim umpan balik."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le tue checklist sono salvate su questo dispositivo e la sincronizzazione continuerà a riprovare. Se il problema non si risolve, invia un feedback dal menu."
+            "value" : "Le tue checklist sono salvate su questo dispositivo e la sincronizzazione continuerà a riprovare. Se il problema persiste, invia un feedback."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "チェックリストはこのデバイスに保存されていて、同期は自動的に再試行されます。改善しない場合は、メニューからフィードバックを送信してください。"
+            "value" : "チェックリストはこのデバイスに保存されていて、同期は再試行を続けます。改善しない場合は、フィードバックを送信してください。"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ನಿಮ್ಮ ಚೆಕ್‌ಲಿಸ್ಟ್‌ಗಳು ಈ ಸಾಧನದಲ್ಲಿ ಉಳಿಸಲ್ಪಟ್ಟಿವೆ, ಮತ್ತು ಸಿಂಕ್ ಪ್ರಯತ್ನಿಸುತ್ತಲೇ ಇರುತ್ತದೆ. ಇದು ಸರಿಹೋಗದಿದ್ದರೆ, ಮೆನುವಿನಿಂದ ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ."
+            "value" : "ನಿಮ್ಮ ಚೆಕ್‌ಲಿಸ್ಟ್‌ಗಳು ಈ ಸಾಧನದಲ್ಲಿ ಉಳಿದಿವೆ, ಸಿಂಕ್ ಮತ್ತೆ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸುತ್ತಲೇ ಇರುತ್ತದೆ. ಇದು ಸರಿಯಾಗದಿದ್ದರೆ, ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ."
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "체크리스트는 이 기기에 저장되며, 동기화를 계속 다시 시도해요. 계속 해결되지 않으면 메뉴에서 피드백을 보내 주세요."
+            "value" : "체크리스트는 이 기기에 저장되어 있고, 동기화는 계속 다시 시도해요. 계속 해결되지 않으면 피드백을 보내 주세요."
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "നിങ്ങളുടെ ചെക്ക്‌ലിസ്റ്റുകൾ ഈ ഉപകരണത്തിൽ സംരക്ഷിച്ചിട്ടുണ്ട്, സമന്വയം വീണ്ടും ശ്രമിച്ചുകൊണ്ടിരിക്കും. ഇത് മാറുന്നില്ലെങ്കിൽ മെനുവിൽ നിന്ന് ഫീഡ്‌ബാക്ക് അയയ്ക്കുക."
+            "value" : "നിങ്ങളുടെ ചെക്ക്‌ലിസ്റ്റുകൾ ഈ ഉപകരണത്തിൽ സേവ് ആയിട്ടുണ്ട്, സമന്വയം വീണ്ടും ശ്രമിച്ചുകൊണ്ടിരിക്കും. ശരിയായില്ലെങ്കിൽ ഫീഡ്‌ബാക്ക് അയയ്ക്കുക."
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "तुमच्या चेकलिस्ट या डिव्हाइसवर सेव्ह आहेत आणि सिंक पुन्हा प्रयत्न करत राहील. हे दूर न झाल्यास मेनूमधून अभिप्राय पाठवा."
+            "value" : "तुमच्या checklist या डिव्हाइसवर सेव्ह आहेत आणि सिंक पुन्हा प्रयत्न करत राहील. हे दूर झाले नाही, तर अभिप्राय पाठवा."
           }
         },
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Senarai semak anda disimpan pada peranti ini, dan penyelarasan akan terus mencuba semula. Jika masalah ini berterusan, hantar maklum balas daripada menu."
+            "value" : "Senarai semak anda disimpan pada peranti ini, dan penyelarasan akan terus mencuba semula. Jika masalah ini berterusan, hantar maklum balas."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sjekklistene dine er lagret på denne enheten, og synkroniseringen prøver igjen. Hvis dette ikke går over, kan du sende tilbakemelding fra menyen."
+            "value" : "Sjekklistene dine er lagret på denne enheten, og synkroniseringen prøver på nytt. Hvis dette ikke løser seg, kan du sende tilbakemelding."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je checklists zijn bewaard op dit apparaat en synchronisatie blijft het opnieuw proberen. Verdwijnt dit niet, stuur dan feedback via het menu."
+            "value" : "Je checklists staan op dit apparaat en het synchroniseren blijft het opnieuw proberen. Verdwijnt dit niet, stuur dan feedback."
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ଆପଣଙ୍କ ଚେକଲିଷ୍ଟ ଏହି ଡିଭାଇସରେ ସେଭ୍ ହୋଇଛି, ଏବଂ ସିଙ୍କ ପୁଣି ଚେଷ୍ଟା କରିଚାଲିବ। ଏହା ଠିକ୍ ନହେଲେ ମେନୁରୁ ମତାମତ ପଠାନ୍ତୁ।"
+            "value" : "ଆପଣଙ୍କ checklist ଏହି ଡିଭାଇସରେ ସଞ୍ଚିତ ଅଛି, ଆଉ ସିଙ୍କ ପୁଣି ଚେଷ୍ଟା କରୁଥିବ। ଏହା ଠିକ୍ ନହେଲେ, ମତାମତ ପଠାନ୍ତୁ।"
           }
         },
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਤੁਹਾਡੀਆਂ ਚੈੱਕਲਿਸਟਾਂ ਇਸ ਡੀਵਾਈਸ 'ਤੇ ਸੁਰੱਖਿਅਤ ਹਨ, ਅਤੇ ਸਿੰਕ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰਦਾ ਰਹੇਗਾ। ਜੇ ਇਹ ਠੀਕ ਨਾ ਹੋਵੇ, ਤਾਂ ਮੀਨੂ ਤੋਂ ਫੀਡਬੈਕ ਭੇਜੋ।"
+            "value" : "ਤੁਹਾਡੀਆਂ checklists ਇਸ ਡਿਵਾਈਸ 'ਤੇ ਸੁਰੱਖਿਅਤ ਹਨ, ਅਤੇ ਸਿੰਕ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰਦਾ ਰਹੇਗਾ। ਜੇ ਇਹ ਠੀਕ ਨਾ ਹੋਵੇ, ਤਾਂ ਫੀਡਬੈਕ ਭੇਜੋ।"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twoje listy są zapisane na tym urządzeniu, a synchronizacja będzie ponawiana. Jeśli problem nie ustąpi, wyślij opinię z menu."
+            "value" : "Twoje checklisty są zapisane na tym urządzeniu, a synchronizacja będzie ponawiana. Jeśli to nie ustąpi, wyślij opinię."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seus checklists estão salvos neste dispositivo, e a sincronização continuará tentando. Se isso não se resolver, envie feedback pelo menu."
+            "value" : "Suas checklists estão salvas neste dispositivo, e a sincronização vai continuar tentando. Se isso não se resolver, envie feedback."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "As suas listas estão guardadas neste dispositivo e a sincronização continuará a tentar. Se o problema persistir, envie comentários a partir do menu."
+            "value" : "As suas checklists estão guardadas neste dispositivo e a sincronização continuará a tentar. Se não resolver, envie comentários."
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Listele dumneavoastră de verificare sunt salvate pe acest dispozitiv, iar sincronizarea va continua să reîncerce. Dacă problema persistă, trimiteți feedback din meniu."
+            "value" : "Checklisturile dumneavoastră sunt salvate pe acest dispozitiv, iar sincronizarea va continua să reîncerce. Dacă problema persistă, trimiteți feedback."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваши чек-листы сохранены на этом устройстве, а синхронизация продолжит попытки. Если проблема не исчезнет, отправьте отзыв через меню."
+            "value" : "Ваши чек-листы сохранены на этом устройстве, синхронизация продолжит попытки. Если это не пройдёт, отправьте отзыв."
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaše zoznamy sú uložené v tomto zariadení a synchronizácia sa bude naďalej opakovať. Ak sa to nevyrieši, pošlite spätnú väzbu z menu."
+            "value" : "Vaše checklisty sú uložené v tomto zariadení a synchronizácia to bude skúšať znova. Ak sa to nevyrieši, odošlite spätnú väzbu."
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vaši kontrolni seznami so shranjeni v tej napravi, sinhronizacija pa bo še naprej poskušala znova. Če se težava ne odpravi, pošljite povratne informacije prek menija."
+            "value" : "Vaši seznami so shranjeni v tej napravi, sinhronizacija pa bo poskušala znova. Če se težava ne odpravi, pošljite povratne informacije."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dina checklistor är sparade på den här enheten, och synkroniseringen försöker igen. Om det inte löser sig kan du skicka feedback från menyn."
+            "value" : "Dina checklistor är sparade på den här enheten, och synkroniseringen fortsätter att försöka. Om det inte löser sig, skicka feedback."
           }
         },
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "உங்கள் செக்லிஸ்ட்கள் இந்தச் சாதனத்தில் சேமிக்கப்பட்டுள்ளன; ஒத்திசைவு தொடர்ந்து முயலும். இது சரியாகவில்லை என்றால், மெனுவிலிருந்து கருத்தை அனுப்புங்கள்."
+            "value" : "உங்கள் செக்லிஸ்ட்கள் இந்தச் சாதனத்தில் சேமிக்கப்பட்டுள்ளன; ஒத்திசைவு தொடர்ந்து மீண்டும் முயலும். இது சரியாகவில்லை என்றால், கருத்தை அனுப்புங்கள்."
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "మీ చెక్‌లిస్ట్‌లు ఈ పరికరంలో సేవ్ అయ్యాయి, సింక్ మళ్లీ మళ్లీ ప్రయత్నిస్తూనే ఉంటుంది. ఇది సరికాకపోతే, మెనూ నుండి ఫీడ్‌బ్యాక్ పంపండి."
+            "value" : "మీ checklistలు ఈ పరికరంలో సేవ్ అయి ఉన్నాయి, సింక్ మళ్లీ ప్రయత్నిస్తూనే ఉంటుంది. ఇది సరికాకపోతే, ఫీడ్‌బ్యాక్ పంపండి."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เช็กลิสต์ของคุณบันทึกอยู่บนอุปกรณ์เครื่องนี้ และจะลองซิงค์ต่อไปเรื่อยๆ หากยังไม่หาย โปรดส่งคำติชมจากเมนู"
+            "value" : "เช็กลิสต์ของคุณบันทึกอยู่ในอุปกรณ์เครื่องนี้ และจะลองซิงค์ต่อไปเรื่อยๆ หากยังไม่หาย โปรดส่งคำติชม"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kontrol listeleriniz bu aygıtta kayıtlı ve eşzamanlama yeniden denenmeye devam edecek. Sorun düzelmezse menüden geri bildirim gönderin."
+            "value" : "Checklist'leriniz bu aygıtta kayıtlı; Eşzamanlama yeniden denenmeye devam edecek. Sorun düzelmezse Geri Bildirim gönderin."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваші чеклісти збережено на цьому пристрої, а синхронізація повторюватиме спроби. Якщо проблема не зникне, надішліть відгук із меню."
+            "value" : "Ваші списки збережено на цьому пристрої, а синхронізація продовжить спроби. Якщо це не минеться, надішліть відгук."
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "آپ کی چیک لسٹس اس ڈیوائس پر محفوظ ہیں اور سنک دوبارہ کوشش کرتا رہے گا۔ اگر مسئلہ حل نہ ہو تو مینیو سے تاثرات بھیجیں۔"
+            "value" : "آپ کی چیک لسٹس اس ڈیوائس پر محفوظ ہیں، اور سنک دوبارہ کوشش کرتا رہے گا۔ اگر یہ مسئلہ دور نہ ہو تو تاثرات بھیجیں۔"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Các danh sách kiểm tra của bạn được lưu trên thiết bị này, và quá trình đồng bộ hóa sẽ tiếp tục thử lại. Nếu vẫn chưa ổn, hãy gửi phản hồi từ menu."
+            "value" : "Danh sách kiểm tra của bạn đã được lưu trên thiết bị này, và quá trình đồng bộ hóa sẽ tiếp tục thử lại. Nếu vẫn chưa được, hãy gửi phản hồi."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的清单已保存在此设备上，同步会持续重试。如果问题没有消失，请通过菜单发送反馈。"
+            "value" : "你的清单已保存在此设备上，同步会继续重试。如果一直没有恢复，请发送反馈。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的檢查清單已儲存在這部裝置上，同步會持續重試。若問題未解決，請從選單傳送意見回饋。"
+            "value" : "你的清單已儲存在這部裝置上,同步會持續重試。如果一直沒有恢復,請傳送意見回饋。"
           }
         }
       }

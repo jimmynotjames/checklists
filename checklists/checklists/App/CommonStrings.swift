@@ -48,7 +48,13 @@ nonisolated enum CommonStrings {
   static let settingsTitle = String(
     localized: "common.settings.title",
     defaultValue: "Settings",
-    comment: "Title of the Settings screen and the main-menu row that opens it.",
+    comment: "Title of the Settings screen, and VoiceOver label of the gear button on the list of checklists that opens it.",
+  )
+
+  static let sendFeedback = String(
+    localized: "common.action.sendFeedback",
+    defaultValue: "Send Feedback",
+    comment: "Opens a pre-addressed feedback email in Mail. A row in Settings, and a button on the database-failure screen.",
   )
 
   /// Written into the store as a checklist's name, not shown as a label, so it stays in whatever

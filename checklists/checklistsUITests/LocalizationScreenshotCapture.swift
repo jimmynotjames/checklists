@@ -16,10 +16,9 @@ import XCTest
 /// **Depends on existing code (don't break these without updating this capture):**
 /// - The `-UITests1` launch argument and its production sample fixture (three checklists), which is
 ///   what gives every locale the same rows to photograph.
-/// - The `.accessibilityIdentifier(...)` handles it navigates by: `toolbar.mainMenu`,
-///   `toolbar.more`, `toolbar.edit` (inside that menu), `editBar.delete`, `toolbar.addChecklist`,
-///   `checklistRow.delete` (ChecklistsView) and `mainMenu.settings` (MainMenuView). Renaming one
-///   breaks navigation here.
+/// - The `.accessibilityIdentifier(...)` handles it navigates by: `toolbar.settings`,
+///   `toolbar.more`, `toolbar.edit` (inside that menu), `editBar.delete`, `toolbar.addChecklist` and
+///   `checklistRow.delete` (ChecklistsView). Renaming one breaks navigation here.
 /// - The row's trailing swipe reveals two buttons: `checklistRow.duplicate` beside
 ///   `checklistRow.delete`.
 /// - `analyticsConsentSheet.decline`, shared with `AnalyticsConsentUITest`, and the sheet's trigger:
@@ -109,14 +108,9 @@ final class LocalizationScreenshotCapture: XCTestCase {
   @MainActor private func captureAll(_ lang: String) {
     capture("01-list", lang) { _ in true }
 
-    capture("02-menu", lang) { app in
-      self.tap(app, "toolbar.mainMenu")
-    }
-
+    // 02 was the ☰ panel, which Settings replaced. The numbers stay so earlier audits still match.
     capture("03-settings", lang) { app in
-      guard self.tap(app, "toolbar.mainMenu"),
-            self.tap(app, "mainMenu.settings")
-      else { return false }
+      guard self.tap(app, "toolbar.settings") else { return false }
       return app.switches.firstMatch.waitForExistence(timeout: 8)
     }
 
