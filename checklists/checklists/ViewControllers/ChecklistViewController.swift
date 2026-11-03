@@ -103,9 +103,6 @@ class ChecklistViewController: UIViewController {
 
   private var remoteChangeObserver: RemoteChangeObserver?
 
-  /// How far down the list must be dragged before an in-progress edit is committed.
-  private let keyboardDismissDragThreshold: CGFloat = 40.0
-
   /// The store this screen reads and writes: the context `checklist` was resolved from. Same
   /// lifetime rule as `checklist`. There is no safe default, and a missed injection only traps in
   /// `viewDidLoad` for an empty checklist; otherwise it traps on the first edit or remote merge.
@@ -198,6 +195,9 @@ class ChecklistViewController: UIViewController {
     tableView.accessibilityIdentifier = "ChecklistTableView"
     tableView.delegate = self
     tableView.dataSource = self
+    // Interactive, so only a drag into the keyboard dismisses it: scrolling up to read the rest of
+    // the list leaves an edit in progress alone.
+    tableView.keyboardDismissMode = .interactiveWithAccessory
 
     tableView.dragInteractionEnabled = true
     tableView.dragDelegate = self
@@ -624,13 +624,6 @@ class ChecklistViewController: UIViewController {
     }
   }
 
-  /// Ends editing when the list is dragged down far enough to mean it.
-  ///
-  /// Overridden in tests to observe the dismissal without loading the view.
-  func endEditingAfterDragDismiss() {
-    view.endEditing(true)
-  }
-
   /// Puts the table back in step with the model after a move that could not be saved.
   ///
   /// Deferred to a later turn of the run loop deliberately: reloading from inside
@@ -733,16 +726,7 @@ extension ChecklistViewController: UIScrollViewDelegate {
     checklistInfoHeaderView?.nameTextBottom ?? 52.0
   }
 
-  /// Drag-to-dismiss. `keyboardDismissMode` is the stock way to get this, but on iOS 26 both
-  /// `.onDragWithAccessory` and `.interactiveWithAccessory` hide the keyboard without resigning the
-  /// field, which leaves the bar's Done showing with no keyboard to dismiss.
-  ///
-  /// Only a deliberate downward drag counts, so scrolling up to read the rest of the list leaves an
-  /// edit in progress alone.
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    if scrollView.isDragging, scrollView.panGestureRecognizer.translation(in: scrollView).y > keyboardDismissDragThreshold {
-      endEditingAfterDragDismiss()
-    }
     // Measured from the table's real top rather than a literal zero, so the threshold below means
     // the distance actually scrolled.
     let scrolledY: CGFloat = scrollView.contentOffset.y + scrollView.adjustedContentInset.top
