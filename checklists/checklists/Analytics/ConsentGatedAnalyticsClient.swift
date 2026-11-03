@@ -32,8 +32,8 @@ final class ConsentGatedAnalyticsClient: AnalyticsClient, @unchecked Sendable {
     wrapped.identify(distinctId)
   }
 
-  /// **Always passes through, ungated**, so a reset clears the wrapped client's identity and
-  /// queued events whatever the flag says — including one issued after it has flipped to `false`.
+  /// **Always passes through, ungated**, so a reset opts the wrapped client out whatever the flag
+  /// says — including one issued after it has flipped to `false`.
   func reset() {
     wrapped.reset()
   }

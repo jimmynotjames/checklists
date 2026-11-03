@@ -100,13 +100,12 @@ number matters (analytics-spec.md §Product questions).
 Checklist order comes from the old `LegacyGroup.checklists` `List`, since that was the only record of
 display order in the Realm schema; any checklist reachable in the store but not linked from the
 `Group` (which should not happen, but would be invisible and unrecoverable if dropped) is appended
-at the end rather than discarded. A store with no `Group` object at all predates v1.1.0; those
-builds ordered checklists by `Checklist.sortNumber` instead, so the importer falls back to reading
-that field. Upgrading straight from a pre-v1.1.0 build is not a supported path and is not tested
-beyond that one case — but the import runs once and never reads the Realm file again, so anything it
-declines to read is lost permanently. Reading the older ordering field costs nothing and is the
-difference between "unsupported" and "silently destroys their data", which is why `sortNumber` is
-still carried on `LegacyChecklist` even though nothing else uses it.
+at the end rather than discarded, so a store with no `Group` at all imports every checklist in store
+order.
+
+**v1.0.0 stores are not importable**, by decision: the current Realm cannot open their file format,
+so those installs end up abandoned with the file kept. The reason is on `LegacyRealmImporter`;
+`legacy_import_abandoned` with `error_code` 16 counts them.
 
 ## Sort keys
 

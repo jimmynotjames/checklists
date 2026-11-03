@@ -2,7 +2,7 @@
 
 Hybrid SwiftUI/UIKit iOS app (Swift 6.0, iOS 27.0+), persisted with SwiftData + CloudKit. The app
 root, navigation (`NavigationStack` + `Router`), and every screen except checklist detail are SwiftUI
-(`App/`, `Screens/`); `ChecklistViewController` is UIKit, hosted by `ChecklistScreen`. Realm 20.0.5
+(`App/`, `Screens/`); `ChecklistViewController` is UIKit, hosted by `ChecklistScreen`. Realm 20.0.6
 stays linked only so `LegacyRealmImporter` can read a pre-migration install's Realm file once.
 Analytics go to Mixpanel through the `AnalyticsClient` protocol; with no configured token, or in a
 test run, `ConsoleAnalyticsClient` is used instead. Tooling was ported from

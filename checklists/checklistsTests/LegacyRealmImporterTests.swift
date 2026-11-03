@@ -19,8 +19,6 @@ private struct FixtureChecklist {
   let name: String
   var notes: String?
   var items: [FixtureItem] = []
-  /// Only meaningful for the pre-v1.1.0 (no-`Group`) fixtures, where it is the ordering field.
-  var sortNumber: Double = 0.0
 }
 
 /**
@@ -65,7 +63,6 @@ struct LegacyRealmImporterTests {
         let legacyChecklist = LegacyChecklist()
         legacyChecklist.name = checklist.name
         legacyChecklist.notes = checklist.notes
-        legacyChecklist.sortNumber = checklist.sortNumber
         for item in checklist.items {
           let legacyItem = LegacyItem()
           legacyItem.name = item.name
@@ -83,8 +80,8 @@ struct LegacyRealmImporterTests {
       if includeGroup {
         realm.add(group)
       } else {
-        // Still persist the checklists themselves, so the file is non-empty exactly as a
-        // pre-v1.1.0 store would be.
+        // Still persist the checklists themselves, so the file holds them with no `Group` to
+        // reach them through.
         for checklist in group.checklists {
           realm.add(checklist)
         }
@@ -325,19 +322,17 @@ struct LegacyRealmImporterTests {
     }
   }
 
-  /// A store with no `Group` was written before v1.1.0, which ordered checklists by `sortNumber`.
-  /// Upgrading straight from that release is not a supported path, but the import still has to
-  /// carry the data across: it runs once and then never reads the Realm file again, so anything it
-  /// skips here is gone permanently.
-  @Test("a store with no group recovers checklists by sort number")
-  func storeWithNoGroupRecoversChecklistsBySortNumber() throws {
+  /// With no `Group` there is no display order to follow, but every checklist is still reachable
+  /// as an orphan: the import runs once and never reads the Realm file again, so anything it skips
+  /// here is gone permanently.
+  @Test("a store with no group imports every checklist")
+  func storeWithNoGroupImportsEveryChecklist() throws {
     try withFixture { fixtureURL, userDefaults in
       try writeFixture(
         fixtureURL: fixtureURL,
         checklists: [
-          FixtureChecklist(name: "Third", sortNumber: 3.0),
-          FixtureChecklist(name: "First", items: [FixtureItem(name: "a")], sortNumber: 1.0),
-          FixtureChecklist(name: "Second", sortNumber: 2.0),
+          FixtureChecklist(name: "Packing", items: [FixtureItem(name: "Passport")]),
+          FixtureChecklist(name: "Groceries"),
         ],
         includeGroup: false,
       )
@@ -346,8 +341,8 @@ struct LegacyRealmImporterTests {
       try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults)
 
       let imported = try context.fetchChecklistsSorted()
-      #expect(imported.map(\.name) == ["First", "Second", "Third"])
-      #expect(imported.first?.items.map(\.name) == ["a"])
+      #expect(Set(imported.map(\.name)) == ["Packing", "Groceries"])
+      #expect(imported.first { $0.name == "Packing" }?.items.map(\.name) == ["Passport"])
       #expect(userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
     }
   }

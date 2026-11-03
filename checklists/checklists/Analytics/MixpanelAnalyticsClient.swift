@@ -70,12 +70,16 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
     instance.identify(distinctId: id)
   }
 
-  /// Clears this client's reference **and** the SDK's process-wide registry entry via
+  /// Opts out through the SDK's own `optOutTracking()`: it deletes the Mixpanel profile, persists
+  /// the opt-out in the SDK's storage, and stops every later send. Anything still queued stays on
+  /// disk unsent, and goes out only if the person opts back in.
+  ///
+  /// Then clears this client's reference **and** the SDK's process-wide registry entry via
   /// `Mixpanel.removeInstance` — `Mixpanel.initialize` keeps every instance alive in a singleton
-  /// keyed by token, so without this an opted-out install's instance keeps its flush timer running.
+  /// keyed by token, so without this an opted-out install's instance stays resident.
   func reset() {
     instanceLock.lock()
-    _instance?.reset()
+    _instance?.optOutTracking()
     Mixpanel.removeInstance(name: token)
     _instance = nil
     instanceLock.unlock()
@@ -128,13 +132,19 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
     let newInstance = Mixpanel.initialize(token: token, trackAutomaticEvents: false)
     // Defaults to `true`, which sends `ip=1` and has Mixpanel derive `$city` / `$region` from the
     // request IP. This app's location signal is the device's own `locale` / `region` settings, so
-    // the derived geolocation is turned off rather than declared. 6.7.0 has no init parameter.
+    // the derived geolocation is turned off rather than declared. `MixpanelOptions` has no
+    // parameter for it.
     newInstance.useIPAddressForGeoLocation = false
     // Conservative flush batch size — this app's event volume is small and there is no rush to
     // flush aggressively.
     newInstance.flushBatchSize = 50
     registerSuperProperties(on: newInstance)
-    if let distinctId = distinctIdProvider() {
+    // Only an opted-in caller reaches here, so a persisted SDK opt-out from an earlier `reset()` is
+    // stale. `optInTracking` clears it asynchronously and identifies on its own queue; the SDK drops
+    // people updates made before that lands, so the baseline ones wait for the next init.
+    if newInstance.hasOptedOutTracking() {
+      newInstance.optInTracking(distinctId: distinctIdProvider())
+    } else if let distinctId = distinctIdProvider() {
       newInstance.identify(distinctId: distinctId)
       setBaselinePeopleProperties(on: newInstance)
     }

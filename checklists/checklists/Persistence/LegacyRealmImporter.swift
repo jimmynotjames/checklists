@@ -16,7 +16,7 @@ import SwiftData
 
  Three properties matter, in this order:
 
- 1. **It never loses data.** Nothing on the import path deletes the Realm file; only `StoreReset`
+ 1. **It never deletes data.** Nothing on the import path deletes the Realm file; only `StoreReset`
     does, and the failure screen offers that only for `.storeOpen`. If anything below goes wrong
     the original store is still on disk, untouched, and the import runs again on the next launch —
     and after `maximumAttempts` of those it stops trying and lets the app open anyway, still
@@ -26,6 +26,13 @@ import SwiftData
  3. **It verifies before declaring success.** The completion flag is written only after every
     record read out of Realm has been read back out of SwiftData. A partial import leaves the flag
     unset and is retried rather than silently accepted.
+
+ **Only v1.1.0 stores are importable.** v1.1.0 shipped Realm 10.7.2, which writes file format v20;
+ v1.0.0 shipped Realm 4.3.1, which writes v9. Realm Core 14 and later neither open nor upgrade
+ anything below v10, so on a v1.0.0 store `Realm(configuration:)` throws
+ `RLMError.unsupportedFileFormatVersion` (code 16), the import is abandoned after `maximumAttempts`
+ with the file kept, and `legacy_import_abandoned` reports `error_code` 16. That loss is accepted:
+ reading v9 would mean shipping Realm Core 13 or older alongside the current Realm.
  */
 enum LegacyRealmImporter {
   /// Set once the copy has completed and been verified, or once it has been abandoned.
@@ -99,28 +106,12 @@ enum LegacyRealmImporter {
   ///
   /// Display order came from `LegacyGroup.checklists`, a Realm `List`, so that list is the
   /// authority. Any checklist not reachable through it — which should not exist, but would be
-  /// invisible and unrecoverable if dropped — is appended afterwards rather than discarded.
+  /// invisible and unrecoverable if dropped — is appended afterwards rather than discarded. A store
+  /// with no `Group` at all therefore imports every checklist, in store order.
   static func readLegacyChecklists(from configuration: Realm.Configuration = legacyConfiguration()) throws -> [ChecklistSnapshot] {
     let realm = try Realm(configuration: configuration)
 
-    guard let group = realm.objects(LegacyGroup.self).first else {
-      // No Group means a store written before v1.1.0, which predates that object entirely and
-      // ordered checklists by `sortNumber` instead. Upgrading straight from that release is out of
-      // scope as a *feature* — but reading nothing here would set the completion flag, and the
-      // store is never read again, so "out of scope" would silently mean "deleted forever". Falling
-      // back to the field that release actually ordered by costs nothing and cannot lose data.
-      let unlinked = Array(realm.objects(LegacyChecklist.self).sorted(byKeyPath: "sortNumber"))
-      if unlinked.isEmpty {
-        AppLog.persistence.warning("legacyImport: store has no Group and no checklists; nothing to import.")
-      } else {
-        AppLog.persistence.warning(
-          "legacyImport: store has no Group; recovering \(unlinked.count, privacy: .public) checklist(s) by sortNumber.",
-        )
-      }
-      return unlinked.map(snapshot(of:))
-    }
-
-    var ordered = Array(group.checklists)
+    var ordered = realm.objects(LegacyGroup.self).first.map { Array($0.checklists) } ?? []
     let linkedIds = Set(ordered.map(\.id))
     let orphans = Array(realm.objects(LegacyChecklist.self)).filter { !linkedIds.contains($0.id) }
     if !orphans.isEmpty {

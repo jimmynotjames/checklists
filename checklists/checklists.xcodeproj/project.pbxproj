@@ -717,7 +717,7 @@
 			repositoryURL = "https://github.com/realm/realm-swift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 20.0.5;
+				minimumVersion = 20.0.6;
 			};
 		};
 		B665B1641DDE206A2642D8FF /* XCRemoteSwiftPackageReference "mixpanel-swift" */ = {
@@ -725,7 +725,7 @@
 			repositoryURL = "https://github.com/mixpanel/mixpanel-swift";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 6.5.0;
+				minimumVersion = 7.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

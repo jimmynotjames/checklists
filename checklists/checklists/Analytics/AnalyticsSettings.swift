@@ -36,7 +36,8 @@ final class AnalyticsSettings {
 
   /// A stable UUIDv4 string used as the Mixpanel `distinct_id`. Generated once and persisted;
   /// `MixpanelAnalyticsClient.reset()` clears the SDK's notion of it but not this value, so a
-  /// re-opt-in rejoins the same Mixpanel profile — why this lives here rather than in the client.
+  /// re-opt-in reuses the same `distinct_id` (its profile was deleted on opt-out, so that starts
+  /// over) — why this lives here rather than in the client.
   private(set) var analyticsDistinctId: String {
     didSet {
       store.set(analyticsDistinctId, forKey: Self.analyticsDistinctIdKey)

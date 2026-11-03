@@ -8,7 +8,7 @@ Debug builds send to the Dev project. **No App Store build carries the SDK yet**
 
 ## Scope
 
-- Mixpanel (`mixpanel-swift`, SPM, `upToNextMajorVersion` from 6.5.0), Growth plan.
+- Mixpanel (`mixpanel-swift`, SPM, `upToNextMajorVersion` from 7.1.0), Growth plan.
 - Projects `reChecklist App - Prod` (4062256) and `reChecklist App - Dev` (4062257), picked by
   `#if DEBUG`.
 - Automatic events **off** (`trackAutomaticEvents: false`). No crash reporting (Xcode Organizer
@@ -119,8 +119,8 @@ the cross-cutting audit in `/create-pr` and `/create-pr-for-issue`.
 ## Identity
 
 `distinct_id` is a **UUIDv4 the app generates once** and persists — not the IDFV or any Apple
-identifier. `reset()` clears the SDK's copy, not the persisted one, so a re-opt-in rejoins the same
-profile.
+identifier. `reset()` clears the SDK's copy, not the persisted one, so a re-opt-in reuses the same
+`distinct_id` — but opting out deleted that profile, so it starts over.
 
 It lives in `UserDefaults.standard`, so consent and identity are **per device**, which
 `TARGETED_DEVICE_FAMILY = 1` makes nearly per person. They stay out of iCloud on purpose:
@@ -165,14 +165,23 @@ checklist screen *is* the presented sheet.
 
 The order is the contract, held in `AnalyticsConsentController`:
 
-1. Track `analytics_consent_changed` with `new_value: false` **while still opted in** — the only
-   record of the opt-out.
-2. `reset()` — clears the Mixpanel instance and its queue.
+1. Track `analytics_consent_changed` with `new_value: false` **while still opted in**.
+2. `reset()` — Mixpanel's own `optOutTracking()`, then discard the instance.
 3. Store `false`.
 
 Toggle-on and the sheet's accept reverse it: store `true` first, so the lazy initializer sees
 opt-in, then track, then stamp `analytics_opt_in_at`. Declining the sheet, swipe included, stores an
 **explicit** `false` and sends nothing.
+
+**Opt-out follows the SDK's pattern, with no workarounds**, and that has costs we accept:
+
+- `optOutTracking()` deletes the Mixpanel profile and stops sending at once, so the step-1 event is
+  usually still queued when it does. Count opt-outs from it as approximate.
+- Anything still queued stays on disk unsent, and goes out under its original identity if the person
+  opts back in. It was tracked with consent.
+- Re-opting in calls `optInTracking`, which sends `$opt_in` and clears the SDK's persisted opt-out
+  asynchronously. People updates made before that lands are dropped, so that opt-in's
+  `analytics_opt_in_at` is lost and `first_seen_at` / `last_app_open_at` wait for the next init.
 
 ## Architecture
 
@@ -198,7 +207,8 @@ It must therefore never initialize the SDK itself (`MixpanelClientGateTests`).
 
 **SDK init is lazy.** `Mixpanel.initialize` runs only in `ensureInitialized()`, reached from
 `track` and `identify`, so an opted-out install never builds an instance. `reset()` discards it; a
-later opt-in re-runs init, which re-registers super properties and re-identifies.
+later opt-in re-runs init, which re-registers super properties and re-identifies — through
+`optInTracking` when the SDK has a persisted opt-out.
 
 ### Non-SwiftUI callers
 
@@ -259,6 +269,9 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `rating_prompt_requested` | `requestReview` called; once per app version | `time_since_first_eligible_bucket` |
 
 The rating-prompt events fire from `RatingPromptCoordinator`; its doc comment has the mechanics.
+
+The SDK adds one of its own: `$opt_in`, sent by `optInTracking` when an install that opted out opts
+back in (§Toggle-off behaviour).
 
 ## Property catalog
 
