@@ -40,7 +40,7 @@ A dashboard is justified by a question here. The IDs are stable; board names cit
 | 3.2 | What do people make checklists *for*? | `checklist_name` |
 | 3.3 | How big do checklists get, and how many per person? | `checklists_count`, `items_count`, `notes_length` |
 | 3.4 | Is the notes feature used? | `items_with_notes_count`, `notes_length` |
-| 3.5 | Reuse (reset), template (duplicate, copy items), or disposable (create, delete, move or delete checked items)? | the checklist action events, plus `checklists_bulk_action_performed` by `bulk_action` for the list's Edit mode |
+| 3.5 | Reuse (reset), template (duplicate, copy items), or disposable (create, delete, move or delete checked items)? | the checklist action events, plus `checklists_bulk_action_performed` by `bulk_action` for the list's Edit mode and `all_checklists_reset` for its Reset All |
 | 3.6 | How often does the store fail to open, and how often is that unrecoverable? | `startup_failed` / `startup_store_reset` at `startup_stage = store_open` |
 | 3.7 | Does anyone rotate the device? | `orientation_changed` |
 | 3.8 | What share opt out, by jurisdiction? | `analytics_consent_changed`, `consent_jurisdiction` — approximate (§Toggle-off behaviour) |
@@ -49,6 +49,7 @@ A dashboard is justified by a question here. The IDs are stable; board names cit
 | 3.11 | Is sync working, and when it isn't, why? | `icloud_status_checked`, `cloudkit_container_fell_back`, `cloudkit_sync_failed` |
 | 3.12 | Do people duplicate several items in a row? | `checklist_item_duplicated`, per session |
 | 3.13 | Do people hand checklists to someone else as a record? | `checklist_pdf_exported` |
+| 3.14 | Do people find Edit and Reset All behind the list's "•••" menu? | `checklists_edit_mode_entered`, `all_checklists_reset`, per active user |
 
 3.9 stops at the request: `requestReview` reports neither whether the dialog showed nor what was
 chosen, and no custom pre-prompt manufactures that signal. The bar is three constants on
@@ -59,6 +60,11 @@ chosen, and no custom pre-prompt manufactures that signal. The bar is three cons
 
 3.12 exists to decide whether the checklist menu needs a Duplicate Checked Items entry: runs of
 three or more in one session are the signal for it.
+
+3.14 exists to decide whether Edit and Reset All earn their own bar buttons back: they moved into
+a "•••" menu so the list's bar is all icons, which iPhone Duo's vertical bar needs. Opening the menu
+isn't tracked: SwiftUI reports no menu opening. Only Edit has a before figure; `all_checklists_reset`
+starts with the menu, so Reset All is read as a rate per active user.
 
 ## Privacy
 
@@ -254,8 +260,9 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `checklist_deleted` | Deleted, from the list's swipe or the checklist menu | — |
 | `checklist_reorder_mode_entered` | The checklist menu's Reorder Items entry is chosen | — |
 | `checklist_item_duplicated` | An item is duplicated from its swipe action | — |
-| `checklists_edit_mode_entered` | The list's Edit button is tapped | — |
+| `checklists_edit_mode_entered` | Edit is chosen from the list's "•••" menu | — |
 | `checklists_bulk_action_performed` | An Edit mode toolbar action runs and changes something; once per action, not per checklist; `checklist_duplicated` and `checklist_deleted` don't also fire | `bulk_action`, `selected_count` |
+| `all_checklists_reset` | Reset All is confirmed and unchecks something; `checklist_reset` doesn't also fire | — |
 | `checklist_pdf_exported` | The share sheet opened by the checklist menu's Export as PDF… completes; not on a cancelled share | `items_count`, `checked_items_count` |
 | `rate_app_tapped` | "Rate in App Store" tapped | — |
 | `feedback_tapped` | "Send feedback" tapped, main menu **or** failure screen | — |

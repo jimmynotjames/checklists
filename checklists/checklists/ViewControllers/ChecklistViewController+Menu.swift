@@ -28,7 +28,7 @@ extension ChecklistViewController {
     let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: makeMoreMenu())
     // Held on to so the menu can be rebuilt while it is on screen; see `refreshMoreMenu`.
     moreBarButtonItem = moreItem
-    moreItem.accessibilityLabel = Self.moreMenuAccessibilityLabel
+    moreItem.accessibilityLabel = CommonStrings.more
     // Locale-invariant handle for UI tests; the label above is what VoiceOver reads.
     moreItem.accessibilityIdentifier = "checklist.more"
     // iOS 26 renders bar buttons in `labelColor` unless the item itself carries a tint.

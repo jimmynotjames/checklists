@@ -60,7 +60,7 @@ not for type size.
 
 `run.sh` needs `jq` and `sips` and checks for both. The capture navigates by
 accessibility identifier rather than visible text, so renaming `toolbar.mainMenu`,
-`toolbar.edit`, `editBar.delete`, `toolbar.addChecklist`, `mainMenu.settings`, or
+`toolbar.more`, `toolbar.edit`, `editBar.delete`, `toolbar.addChecklist`, `mainMenu.settings`, or
 `analyticsConsentSheet.decline` breaks it silently. The type size is forced
 through `TestDynamicTypeOverride`, which is DEBUG-only and inert unless launched
 with both `IS_TESTING` and `FORCE_DYNAMIC_TYPE`.

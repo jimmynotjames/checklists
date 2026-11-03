@@ -162,8 +162,9 @@ class checklistsUITests: XCTestCase {
   }
 
   func testResetAllAsksFirst() {
+    openMoreMenu()
     let resetAll = app.buttons["toolbar.resetAll"]
-    XCTAssertTrue(resetAll.waitForExistence(timeout: 5), "Reset All should be in the nav bar.")
+    XCTAssertTrue(resetAll.waitForExistence(timeout: 5), "Reset All should be in the \"•••\" menu.")
     resetAll.tap()
     let cancel = app.alerts.buttons["Cancel"]
     XCTAssertTrue(cancel.waitForExistence(timeout: 5), "Reset All should confirm first.")
@@ -196,9 +197,17 @@ class checklistsUITests: XCTestCase {
     XCTAssertFalse(app.buttons["Privacy Policy"].exists, "Privacy Policy shouldn't also be a button.")
   }
 
+  /// The list's "•••", which holds Edit and Reset All.
+  private func openMoreMenu() {
+    let more = app.buttons["toolbar.more"]
+    XCTAssertTrue(more.waitForExistence(timeout: 5), "The \"•••\" menu button didn't appear.")
+    more.tap()
+  }
+
   private func enterEditMode() {
+    openMoreMenu()
     let edit = app.buttons["toolbar.edit"]
-    XCTAssertTrue(edit.waitForExistence(timeout: 5), "The Edit button didn't appear.")
+    XCTAssertTrue(edit.waitForExistence(timeout: 5), "Edit didn't appear in the \"•••\" menu.")
     edit.tap()
   }
 }

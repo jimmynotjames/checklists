@@ -27,12 +27,6 @@ extension ChecklistViewController {
     """,
   )
 
-  static let moreMenuAccessibilityLabel = String(
-    localized: "checklist.menu.more.accessibilityLabel",
-    defaultValue: "More",
-    comment: "VoiceOver label for the ellipsis button in the checklist detail screen's navigation bar that opens the overflow menu.",
-  )
-
   static let duplicateChecklistMenuTitle = String(
     localized: "checklist.menu.duplicateChecklist",
     defaultValue: "Duplicate Checklist",

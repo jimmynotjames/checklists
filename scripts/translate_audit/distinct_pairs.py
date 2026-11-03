@@ -91,13 +91,7 @@ DISTINCT_PAIRS: list[tuple[str, str, str]] = [
     (
         "checklists.action.resetAll",
         "checklists.action.edit",
-        "the two text buttons side by side at the trailing end of the checklist list's nav bar",
-    ),
-    (
-        "checklists.action.edit",
-        "common.action.done",
-        "one nav bar button that toggles between the two; identical words would hide whether "
-        "Edit mode is on",
+        "neighbouring rows of the checklist list's overflow menu",
     ),
     (
         "checklists.action.resetSelected",

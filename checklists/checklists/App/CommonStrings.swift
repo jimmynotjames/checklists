@@ -27,14 +27,10 @@ nonisolated enum CommonStrings {
     comment: "Destructive action: removes a checklist or an item. Swipe action, Edit mode toolbar button on the list of checklists, and confirmation button.",
   )
 
-  static let done = String(
-    localized: "common.action.done",
-    defaultValue: "Done",
-    comment: """
-    Ends editing: the nav bar button that leaves Edit mode on the \
-    list of checklists (it reads Edit until tapped), and the nav bar button that leaves Reorder \
-    Items mode on a checklist's screen.
-    """,
+  static let more = String(
+    localized: "common.action.more",
+    defaultValue: "More",
+    comment: "VoiceOver label for the ellipsis button that opens a screen's overflow menu: in the navigation bar of the list of checklists (Edit, Reset All) and of a checklist's screen.",
   )
 
   static let duplicate = String(

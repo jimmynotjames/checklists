@@ -40,7 +40,7 @@ extension ChecklistsView {
     defaultValue: "All checklists reset",
     comment: """
     VoiceOver announcement after Reset All unchecks every item in every checklist. "Reset" matches \
-    the Reset All button; nothing is deleted. Keep it short.
+    the Reset All menu entry; nothing is deleted. Keep it short.
     """,
   )
 
@@ -128,8 +128,8 @@ extension ChecklistsView {
     localized: "checklists.confirm.resetAll.title",
     defaultValue: "Reset All Checklists?",
     comment: """
-    Title of the alert after the Reset All button on the list of checklists. Reset unchecks every \
-    item in every checklist; nothing is deleted. Use the same verb as the Reset All button. The \
+    Title of the alert after the Reset All menu entry on the list of checklists. Reset unchecks \
+    every item in every checklist; nothing is deleted. Use the same verb as that entry. The \
     buttons are Cancel and Reset All.
     """,
   )
