@@ -9,7 +9,7 @@ subagent tool) with the diff pasted after this brief:
 
 > "You are reviewing a code diff for a **hybrid SwiftUI/UIKit iOS app written in Swift 6.0 with
 > `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`**, persisted with SwiftData + CloudKit. Deployment
-> target is iOS 27.0. The app root, navigation, and every screen except checklist detail are
+> target is iOS 27.2. The app root, navigation, and every screen except checklist detail are
 > SwiftUI; checklist detail is `ChecklistViewController` (UIKit, table-based), hosted by
 > `ChecklistScreen`. You have repository access: read and grep beyond the diff wherever a check
 > below needs it.
