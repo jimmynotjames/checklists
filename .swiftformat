@@ -1,5 +1,5 @@
 # https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md
-# Compiler version (Xcode 27.1 ships Swift 6.4) and language mode are separate settings; the
+# Compiler version (Xcode 27.2 ships Swift 6.4) and language mode are separate settings; the
 # language mode defaults to 5 unless set.
 --swift-version 6.4
 --language-mode 6

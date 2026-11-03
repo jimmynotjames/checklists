@@ -1,6 +1,6 @@
 # Agent instructions — checklists
 
-Hybrid SwiftUI/UIKit iOS app (Swift 6.0, iOS 27.0+), persisted with SwiftData + CloudKit. The app
+Hybrid SwiftUI/UIKit iOS app (Swift 6.0, iOS 27.2+), persisted with SwiftData + CloudKit. The app
 root, navigation (`NavigationStack` + `Router`), and every screen except checklist detail are SwiftUI
 (`App/`, `Screens/`); `ChecklistViewController` is UIKit, hosted by `ChecklistScreen`. Realm 20.0.6
 stays linked only so `LegacyRealmImporter` can read a pre-migration install's Realm file once.
@@ -8,7 +8,7 @@ Analytics go to Mixpanel through the `AnalyticsClient` protocol; with no configu
 test run, `ConsoleAnalyticsClient` is used instead. Tooling was ported from
 `simple-recurring-budgets` (the **Wren** app) and trimmed.
 
-The Xcode project is `checklists/checklists.xcodeproj` (Xcode 27+; CI pins 27.1). All three targets
+The Xcode project is `checklists/checklists.xcodeproj` (Xcode 27.2+; CI pins 27.2). All three targets
 use file-system-synchronized folders: a new `.swift` under `checklists/checklists/`,
 `checklists/checklistsTests/`, or `checklists/checklistsUITests/` compiles into that target with no
 project-file change. Each folder's `Info.plist` is excluded from its target, as is the UI-test
