@@ -23,8 +23,7 @@ protocol AnalyticsClient: AnyObject, Sendable {
   /// Associates subsequent events with a person. See analytics-spec.md §Identity.
   func identify(_ distinctId: String?)
 
-  /// Drops the current identity and any queued events. Called when someone opts out
-  /// (analytics-spec.md §Toggle-off behaviour).
+  /// Stops all tracking. Called when someone opts out (analytics-spec.md §Toggle-off behaviour).
   func reset()
 
   /// Re-registers the super properties. **No production caller**: lazy SDK init registers them,

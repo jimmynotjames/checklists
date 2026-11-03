@@ -88,7 +88,7 @@ within SwiftData yet. See "CloudKit rules" below for what changing either model 
 versions of *one* SwiftData schema, while this moves data between two entirely different persistence
 frameworks.
 
-Three properties hold, in priority order — never loses data, idempotent, verifies before declaring
+Three properties hold, in priority order — never deletes data, idempotent, verifies before declaring
 success. They, and what does and does not delete the Realm file, are canonical on the type's own
 doc comment.
 
@@ -100,12 +100,11 @@ number matters (analytics-spec.md §Product questions).
 Checklist order comes from the old `LegacyGroup.checklists` `List`, since that was the only record of
 display order in the Realm schema; any checklist reachable in the store but not linked from the
 `Group` (which should not happen, but would be invisible and unrecoverable if dropped) is appended
-at the end rather than discarded, so a store with no `Group` at all imports every checklist in store
-order.
+at the end rather than discarded.
 
 **v1.0.0 stores are not importable**, by decision: the current Realm cannot open their file format,
-so those installs end up abandoned with the file kept. The reason is on `LegacyRealmImporter`;
-`legacy_import_abandoned` with `error_code` 16 counts them.
+so those installs are abandoned on their first launch, with the file kept. The reason is on
+`LegacyRealmImporter`.
 
 ## Sort keys
 

@@ -45,7 +45,7 @@ final class AnalyticsConsentController {
 
   /// The always-on Settings toggle. Opting in mirrors `accept()`, with `old_value` always `false`:
   /// the toggle can only be turned on from off. Opting out tracks the change *while still opted
-  /// in*, the only record that the opt-out happened, then resets the client, then clears the flag.
+  /// in*, then resets the client, then clears the flag.
   func setOptIn(_ newValue: Bool) {
     if newValue {
       settings.analyticsOptIn = true

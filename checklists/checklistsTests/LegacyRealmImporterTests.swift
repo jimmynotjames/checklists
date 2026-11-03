@@ -293,6 +293,35 @@ struct LegacyRealmImporterTests {
     }
   }
 
+  /// A v1.0.0 store is file format v9, which the current Realm refuses outright; retrying would
+  /// only show the failure screen again. Stamping v9 into a real file's header stands in for one,
+  /// since the format bytes are all Realm checks before refusing.
+  @Test("a store in a format too old to open is abandoned on the first attempt")
+  func storeTooOldToOpenIsAbandonedOnTheFirstAttempt() throws {
+    try withFixture { fixtureURL, userDefaults in
+      // Written at another path: Realm keeps a path it has open cached in-process, so a file patched
+      // in place would be read through that cache rather than from its new header.
+      let sourceURL = fixtureURL.deletingLastPathComponent().appendingPathComponent("source.realm")
+      try writeFixture(fixtureURL: sourceURL, checklists: [FixtureChecklist(name: "Packing")])
+      var bytes = try Data(contentsOf: sourceURL)
+      // `Header::m_file_format` in realm-core's alloc_slab.hpp: two bytes after the two 8-byte top
+      // refs and the 4-byte mnemonic.
+      bytes[20] = 9
+      bytes[21] = 9
+      try bytes.write(to: fixtureURL)
+      let context = try TestModelContainer.makeContext()
+      let spy = SpyAnalyticsClient()
+
+      try runImport(into: context, fixtureURL: fixtureURL, userDefaults: userDefaults, analytics: spy)
+
+      #expect(userDefaults.bool(forKey: LegacyRealmImporter.completedFlagKey))
+      #expect(spy.count(of: AnalyticsEvent.legacyImportAbandoned) == 1)
+      #expect(spy.properties(forFirst: AnalyticsEvent.legacyImportAbandoned)?[AnalyticsProperty.errorCode] == "16")
+      #expect(try context.fetchChecklistsSorted().isEmpty)
+      #expect(try Data(contentsOf: fixtureURL) == bytes)
+    }
+  }
+
   @Test("abandoning the import keeps the Realm file on disk")
   func abandoningTheImportKeepsTheRealmFile() throws {
     try withFixture { fixtureURL, userDefaults in

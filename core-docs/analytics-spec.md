@@ -43,7 +43,7 @@ A dashboard is justified by a question here. The IDs are stable; board names cit
 | 3.5 | Reuse (reset), template (duplicate, copy items), or disposable (create, delete, move or delete checked items)? | the checklist action events, plus `checklists_bulk_action_performed` by `bulk_action` for the list's Edit mode |
 | 3.6 | How often does the store fail to open, and how often is that unrecoverable? | `startup_failed` / `startup_store_reset` at `startup_stage = store_open` |
 | 3.7 | Does anyone rotate the device? | `orientation_changed` |
-| 3.8 | What share opt out, by jurisdiction? | `analytics_consent_changed`, `consent_jurisdiction` |
+| 3.8 | What share opt out, by jurisdiction? | `analytics_consent_changed`, `consent_jurisdiction` — approximate (§Toggle-off behaviour) |
 | 3.9 | When do people reach the review-prompt bar, and how soon does the app ask? | `rating_prompt_eligible` → `rating_prompt_requested` |
 | 3.10 | How often does an upgrader's old data end up out of reach? | `startup_failed` at `legacy_import`, `legacy_import_abandoned` |
 | 3.11 | Is sync working, and when it isn't, why? | `icloud_status_checked`, `cloudkit_container_fell_back`, `cloudkit_sync_failed` |
@@ -120,7 +120,7 @@ the cross-cutting audit in `/create-pr` and `/create-pr-for-issue`.
 
 `distinct_id` is a **UUIDv4 the app generates once** and persists — not the IDFV or any Apple
 identifier. `reset()` clears the SDK's copy, not the persisted one, so a re-opt-in reuses the same
-`distinct_id` — but opting out deleted that profile, so it starts over.
+`distinct_id`; its profile is rebuilt from scratch (§Toggle-off behaviour).
 
 It lives in `UserDefaults.standard`, so consent and identity are **per device**, which
 `TARGETED_DEVICE_FAMILY = 1` makes nearly per person. They stay out of iCloud on purpose:
@@ -166,7 +166,8 @@ checklist screen *is* the presented sheet.
 The order is the contract, held in `AnalyticsConsentController`:
 
 1. Track `analytics_consent_changed` with `new_value: false` **while still opted in**.
-2. `reset()` — Mixpanel's own `optOutTracking()`, then discard the instance.
+2. `reset()` — Mixpanel's own `optOutTracking()`. The instance is kept: the SDK runs the opt-out
+   later and holds the instance weakly, so discarding it would cancel the opt-out.
 3. Store `false`.
 
 Toggle-on and the sheet's accept reverse it: store `true` first, so the lazy initializer sees
@@ -175,13 +176,17 @@ opt-in, then track, then stamp `analytics_opt_in_at`. Declining the sheet, swipe
 
 **Opt-out follows the SDK's pattern, with no workarounds**, and that has costs we accept:
 
-- `optOutTracking()` deletes the Mixpanel profile and stops sending at once, so the step-1 event is
-  usually still queued when it does. Count opt-outs from it as approximate.
+- **The profile stays on Mixpanel's servers.** `optOutTracking()` queues a profile delete but stops
+  sending before it goes out. Deleting it is a manual request (the Mixpanel dashboard or its GDPR
+  API).
+- Sending stops at once, so the step-1 event is usually still queued when it does. 3.8 counts
+  opt-outs from it, and is approximate.
 - Anything still queued stays on disk unsent, and goes out under its original identity if the person
-  opts back in. It was tracked with consent.
+  opts back in — the profile delete first, so the profile is rebuilt from scratch. It was all queued
+  with consent.
 - Re-opting in calls `optInTracking`, which sends `$opt_in` and clears the SDK's persisted opt-out
   asynchronously. People updates made before that lands are dropped, so that opt-in's
-  `analytics_opt_in_at` is lost and `first_seen_at` / `last_app_open_at` wait for the next init.
+  `analytics_opt_in_at` is lost and `first_seen_at` / `last_app_open_at` wait for a later launch.
 
 ## Architecture
 
@@ -206,9 +211,9 @@ opt-in, then track, then stamp `analytics_opt_in_at`. Declining the sheet, swipe
 It must therefore never initialize the SDK itself (`MixpanelClientGateTests`).
 
 **SDK init is lazy.** `Mixpanel.initialize` runs only in `ensureInitialized()`, reached from
-`track` and `identify`, so an opted-out install never builds an instance. `reset()` discards it; a
-later opt-in re-runs init, which re-registers super properties and re-identifies — through
-`optInTracking` when the SDK has a persisted opt-out.
+`track` and `identify`, so an install opted out at launch never builds an instance. `reset()` opts
+an existing one out and keeps it; the next opted-in call opts it back in with `optInTracking`, as
+does init on a later launch that finds the SDK's persisted opt-out.
 
 ### Non-SwiftUI callers
 

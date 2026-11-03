@@ -30,8 +30,9 @@ import SwiftData
  **Only v1.1.0 stores are importable.** v1.1.0 shipped Realm 10.7.2, which writes file format v20;
  v1.0.0 shipped Realm 4.3.1, which writes v9. Realm Core 14 and later neither open nor upgrade
  anything below v10, so on a v1.0.0 store `Realm(configuration:)` throws
- `RLMError.unsupportedFileFormatVersion` (code 16), the import is abandoned after `maximumAttempts`
- with the file kept, and `legacy_import_abandoned` reports `error_code` 16. That loss is accepted:
+ `Realm.Error.unsupportedFileFormatVersion` (code 16). No retry can fix that, so the import is
+ abandoned on that first launch, with the file kept, and `legacy_import_abandoned` reports
+ `error_code` 16. The user gets an app with none of their old checklists. That loss is accepted:
  reading v9 would mean shipping Realm Core 13 or older alongside the current Realm.
  */
 enum LegacyRealmImporter {
@@ -106,8 +107,7 @@ enum LegacyRealmImporter {
   ///
   /// Display order came from `LegacyGroup.checklists`, a Realm `List`, so that list is the
   /// authority. Any checklist not reachable through it — which should not exist, but would be
-  /// invisible and unrecoverable if dropped — is appended afterwards rather than discarded. A store
-  /// with no `Group` at all therefore imports every checklist, in store order.
+  /// invisible and unrecoverable if dropped — is appended afterwards rather than discarded.
   static func readLegacyChecklists(from configuration: Realm.Configuration = legacyConfiguration()) throws -> [ChecklistSnapshot] {
     let realm = try Realm(configuration: configuration)
 
@@ -260,7 +260,8 @@ enum LegacyRealmImporter {
   /// Giving up sets the completion flag and **keeps the Realm file**, so the user gets a working
   /// app, nothing is destroyed, and a later release with a better reader can still find the data.
   /// The cost is that this release stops trying, which is why it takes several failures rather
-  /// than one — a full disk or a transient read error still gets its retries.
+  /// than one — a full disk or a transient read error still gets its retries. A store too old to
+  /// open (see the type's doc comment) gets none: it can only ever fail the same way.
   private static func abandonIfOutOfAttempts(
     _ error: any Error,
     userDefaults: UserDefaults,
@@ -270,7 +271,8 @@ enum LegacyRealmImporter {
     userDefaults.set(attempts, forKey: failedAttemptsKey)
 
     let nsError = error as NSError
-    guard attempts >= maximumAttempts else {
+    let isUnsupportedFormat = (error as? Realm.Error)?.code == .unsupportedFileFormatVersion
+    guard attempts >= maximumAttempts || isUnsupportedFormat else {
       AppLog.persistence.error(
         "legacyImport.failed: attempt \(attempts, privacy: .public), \(nsError.domain, privacy: .public) \(nsError.code, privacy: .public)",
       )
