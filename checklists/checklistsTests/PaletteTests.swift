@@ -27,8 +27,8 @@ struct PaletteTests {
 
   private static let light = UITraitCollection(userInterfaceStyle: .light)
   private static let dark = UITraitCollection(userInterfaceStyle: .dark)
-  private static let lightHigh = UITraitCollection(traitsFrom: [light, UITraitCollection(accessibilityContrast: .high)])
-  private static let darkHigh = UITraitCollection(traitsFrom: [dark, UITraitCollection(accessibilityContrast: .high)])
+  private static let lightHigh = light.modifyingTraits { $0.accessibilityContrast = .high }
+  private static let darkHigh = dark.modifyingTraits { $0.accessibilityContrast = .high }
   private static let toastError = UIColor(resource: .toastError)
   private static let surface = UIColor(resource: .surface)
   private static let panelForeground = UIColor(resource: .panelForeground)
@@ -111,8 +111,7 @@ struct PaletteTests {
     Pair(name: "the iCloud warning icon", foreground: warning, background: surface, minimum: 3),
   ]
 
-  /// Pairs that fail in light at standard contrast but pass with Increase Contrast on. Each is
-  /// also in `darkOnlyPairs`.
+  /// Pairs that fail in light at standard contrast but pass with Increase Contrast on.
   private static let highContrastPairs = [
     Pair(name: "destructive text on the page", foreground: Colors.destructive, background: Colors.defaultBackground, minimum: 4.5),
   ]
