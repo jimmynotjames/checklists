@@ -76,8 +76,8 @@ struct PaletteTests {
     Value(name: "toastError", color: toastError, light: "ED6664", dark: "FF7C76", lightHigh: "FF7C76", darkHigh: "FF7C76"),
     Value(name: "toastSuccess", color: toastSuccess, light: "34C759", dark: "3DD68C", lightHigh: "3DD68C", darkHigh: "3DD68C"),
     Value(name: "toastWarning", color: toastWarning, light: "FF9500", dark: "FFAA33", lightHigh: "FFAA33", darkHigh: "FFAA33"),
-    Value(name: "success", color: success, light: "34C759", dark: "3DD68C"),
-    Value(name: "warning", color: warning, light: "FF9500", dark: "FFAA33"),
+    Value(name: "success", color: success, light: "34C759", dark: "3DD68C", lightHigh: "119E3E", darkHigh: "3DD68C"),
+    Value(name: "warning", color: warning, light: "FF9500", dark: "FFAA33", lightHigh: "DB6633", darkHigh: "FFAA33"),
     Value(name: "shadow", color: UIColor(resource: .shadow), light: "8E8E93", dark: "000000"),
   ]
 
@@ -121,6 +121,8 @@ struct PaletteTests {
     Pair(name: "the success toast icon", foreground: toastSuccess, background: Colors.darkBlueGray, minimum: 3),
     Pair(name: "the warning toast icon", foreground: toastWarning, background: Colors.darkBlueGray, minimum: 3),
     Pair(name: "the error toast icon", foreground: toastError, background: Colors.darkBlueGray, minimum: 3),
+    Pair(name: "the iCloud synced icon", foreground: success, background: surface, minimum: 3),
+    Pair(name: "the iCloud warning icon", foreground: warning, background: surface, minimum: 3),
   ]
 
   @Test("text and essential icons meet their contrast minimum in both appearances")

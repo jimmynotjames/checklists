@@ -28,6 +28,7 @@ extension Colors {
   static let toastSuccessColor = Color(.toastSuccess)
   static let toastWarningColor = Color(.toastWarning)
   static let toastErrorColor = Color(.toastError)
+  /// The iCloud row's status icons, on `surface` Form rows.
   static let successColor = Color(.success)
   static let warningColor = Color(.warning)
   static let shadowColor = Color(.shadow)
