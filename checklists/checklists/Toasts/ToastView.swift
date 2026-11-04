@@ -84,8 +84,8 @@ struct ToastView: View {
             // 44pt so the button clears the touch-target minimum even at the smallest text size.
             .frame(minWidth: 44, minHeight: 44)
         }
-        // Not the accent colour: it is rgb(46,122,128) against a rgb(51,110,145) card, about
-        // 1.1:1. The weight is what marks this as the action.
+        // Not the accent colour: it is too close to the card's blue to read. The weight is what
+        // marks this as the action.
         .tint(Colors.panelForegroundColor)
       }
     }

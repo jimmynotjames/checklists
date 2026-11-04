@@ -111,7 +111,7 @@ struct PaletteTests {
     }
   }
 
-  @Test("accent and status colors meet their contrast minimum in dark")
+  @Test("status and destructive colors meet their contrast minimum in dark")
   func contrastDark() {
     for pair in Self.darkOnlyPairs {
       let ratio = Self.contrast(pair, Self.dark)
