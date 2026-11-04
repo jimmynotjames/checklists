@@ -76,14 +76,16 @@ struct ChecklistScreen: View {
             sourceID == checklist.id else { return }
       transferGeneration += 1
     }
-    // The view controller does its own keyboard avoidance via contentInset; opt out of SwiftUI's so
-    // they don't stack.
+    // The view controller keeps its table above the keyboard with UIKit's keyboard layout guide;
+    // opt out of SwiftUI's avoidance so only one of them moves it. Letting SwiftUI shrink the
+    // hosted controller instead was tried: the resize mid-way through Add's becoming first
+    // responder intermittently left no field with keyboard focus.
     .ignoresSafeArea(.keyboard)
     // `.keyboard` narrows the ignored region, not the edges, so the table is still laid out inside
-    // the container safe area — leaving the strips above and below it showing the presenting
-    // background rather than the table's own `Colors.defaultBackground`. Not a full
-    // `ignoresSafeArea()`: giving the table real safe-area insets would shift `scrollViewDidScroll`'s
-    // title threshold.
+    // the container safe area, leaving the strips above and below it showing the presenting
+    // background rather than the table's own `Colors.defaultBackground`.
+    // Not a full `ignoresSafeArea()`: giving the table real safe-area insets would shift
+    // `scrollViewDidScroll`'s title threshold.
     .background(Colors.defaultBackgroundColor.ignoresSafeArea())
     // First-run consent trigger (`analytics-spec.md §Strict-opt-in jurisdictions`): the moment
     // right before `checklist_name` could first be transmitted. `isNewChecklist` is load-bearing —

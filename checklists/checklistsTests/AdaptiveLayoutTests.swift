@@ -7,54 +7,6 @@
 import Testing
 import UIKit
 
-private let restingTable = CGRect(x: 0.0, y: 0.0, width: 393.0, height: 852.0)
-
-/// Covers `ChecklistViewController.keyboardOverlap(keyboardFrame:tableBounds:)`.
-@Suite("How much of the checklist the keyboard covers")
-struct ChecklistKeyboardOverlapTests {
-  @Test("a docked keyboard under a full-screen table covers its full height")
-  func dockedKeyboard() {
-    let keyboard = CGRect(x: 0.0, y: 852.0 - 336.0, width: 393.0, height: 336.0)
-    #expect(ChecklistViewController.keyboardOverlap(keyboardFrame: keyboard, tableBounds: restingTable) == 336.0)
-  }
-
-  /// A window ending above the screen's bottom edge — an iPad window, or a table laid out above the
-  /// home indicator — is covered by less than the keyboard's height.
-  @Test("a table ending above the screen bottom is covered by less than the keyboard's height")
-  func tableEndingAboveScreenBottom() {
-    let table = CGRect(x: 0.0, y: 0.0, width: 393.0, height: 818.0)
-    let keyboard = CGRect(x: 0.0, y: 852.0 - 336.0, width: 393.0, height: 336.0)
-    #expect(ChecklistViewController.keyboardOverlap(keyboardFrame: keyboard, tableBounds: table) == 302.0)
-  }
-
-  @Test("a keyboard that misses the table covers nothing")
-  func floatingKeyboardElsewhere() {
-    let keyboard = CGRect(x: 500.0, y: 400.0, width: 320.0, height: 250.0)
-    #expect(ChecklistViewController.keyboardOverlap(keyboardFrame: keyboard, tableBounds: restingTable) == 0.0)
-  }
-
-  @Test("a keyboard entirely below the table covers nothing")
-  func keyboardBelowWindow() {
-    let keyboard = CGRect(x: 0.0, y: 900.0, width: 393.0, height: 336.0)
-    #expect(ChecklistViewController.keyboardOverlap(keyboardFrame: keyboard, tableBounds: restingTable) == 0.0)
-  }
-
-  /// With a hardware keyboard only the shortcuts bar shows.
-  @Test("the hardware keyboard's shortcuts bar covers only its own height")
-  func shortcutsBarOnly() {
-    let bar = CGRect(x: 0.0, y: 852.0 - 55.0, width: 393.0, height: 55.0)
-    #expect(ChecklistViewController.keyboardOverlap(keyboardFrame: bar, tableBounds: restingTable) == 55.0)
-  }
-
-  /// Bounds are content space: scrolled down, both frames move together and the overlap holds.
-  @Test("a scrolled table is covered by the same amount")
-  func scrolledTable() {
-    let table = restingTable.offsetBy(dx: 0.0, dy: 1200.0)
-    let keyboard = CGRect(x: 0.0, y: 1200.0 + 852.0 - 336.0, width: 393.0, height: 336.0)
-    #expect(ChecklistViewController.keyboardOverlap(keyboardFrame: keyboard, tableBounds: table) == 336.0)
-  }
-}
-
 @Suite("Centering content on a wide window")
 struct ReadableColumnTests {
   @Test("an iPhone-width window gets no margin")

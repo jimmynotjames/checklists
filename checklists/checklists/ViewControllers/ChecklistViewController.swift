@@ -17,7 +17,8 @@ private let itemCellReuseIdentifier = "ItemCell"
 private let atTopTolerance: CGFloat = 0.5
 
 /// Not a UITableViewController: its keyboard handling halted the animate-above-keyboard scroll and
-/// jittered on long lists with lots of notes. Keyboard avoidance below is manual instead.
+/// jittered on long lists with lots of notes. The table is pinned above the keyboard layout guide
+/// instead (`loadView`), and this controller scrolls the edited row into view.
 class ChecklistViewController: UIViewController {
   private var tableView: UITableView!
   var checklist: Checklist! // Expected to be set right after init(). Behavior undefined if this is set/reset after viewDidLoad().
@@ -144,10 +145,28 @@ class ChecklistViewController: UIViewController {
     isEditing
   }
 
+  /// The table sits in a plain container, not as `view` itself, so its bottom can be pinned to the
+  /// container's keyboard layout guide: UIKit then keeps it above the keyboard through rotations,
+  /// folds, display moves and an interactive dismissal, with no keyboard notifications to follow.
   override func loadView() {
+    let container = UIView()
+    container.backgroundColor = Colors.defaultBackground
     let tableView = UITableView(frame: .zero, style: .plain)
     self.tableView = tableView
-    view = tableView
+    tableView.translatesAutoresizingMaskIntoConstraints = false
+    container.addSubview(tableView)
+    let keyboard = container.keyboardLayoutGuide
+    // With the keyboard down, the guide sits on the container's bottom edge rather than the safe
+    // area's, so the table keeps the extent it had before. `followsUndockedKeyboard` stays off: a
+    // floating keyboard leaves the guide at the bottom, so the table doesn't shrink above it.
+    keyboard.usesBottomSafeArea = false
+    NSLayoutConstraint.activate([
+      tableView.topAnchor.constraint(equalTo: container.topAnchor),
+      tableView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+      tableView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+      tableView.bottomAnchor.constraint(equalTo: keyboard.topAnchor),
+    ])
+    view = container
   }
 
   /// Builds the header and wires it to this controller. Layout lives in `ChecklistInfoHeaderView`.
@@ -167,10 +186,6 @@ class ChecklistViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardAppear(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-    // Floating, docking, and resizing the window all move the keyboard without a show or hide.
-    NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardAppear(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardDisappear(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     // Field focus rather than the keyboard drives the bar's Done, so it also shows with a hardware
     // keyboard. Notifications, because no one delegate hears all four fields begin.
     NotificationCenter.default.addObserver(self, selector: #selector(textEditingDidBegin(_:)), name: UITextField.textDidBeginEditingNotification, object: nil)
@@ -467,6 +482,9 @@ class ChecklistViewController: UIViewController {
     if !animated {
       UIView.setAnimationsEnabled(true)
     }
+    // A row grows as editing begins, to show its notes field, often after the keyboard has already
+    // made room for its old height.
+    scrollEditingCellIntoView()
   }
 
   /// `announcesResult` is for the swipe and VoiceOver Delete, which move VoiceOver to the row that
@@ -530,9 +548,13 @@ class ChecklistViewController: UIViewController {
     postAccessibilityFeedback(focus: nil, announcement: Self.itemDuplicatedAnnouncement)
   }
 
-  /// The width the header was last measured against. `view` is the table itself, so this runs on
-  /// every scroll frame — and measuring means a full layout plus TextKit pass over the notes.
+  /// The width the header was last measured against. Measuring means a full layout plus TextKit
+  /// pass over the notes, and this runs on every keyboard and size change.
   private var lastHeaderWidth: CGFloat = 0.0
+  /// The item row whose field began editing last; `nil` for the name and notes.
+  private weak var editingItemCell: ItemTableViewCell?
+  /// The table's height in the last layout pass, so a shrink can be told apart from a scroll.
+  private var lastTableHeight: CGFloat = 0.0
 
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
@@ -543,6 +565,11 @@ class ChecklistViewController: UIViewController {
         tableView.tableFooterView = footer
       }
     }
+    // The keyboard arriving, or a rotation or fold under it, shortens the table.
+    if tableView.bounds.height < lastTableHeight {
+      scrollEditingCellIntoView()
+    }
+    lastTableHeight = tableView.bounds.height
     guard tableView.bounds.width != lastHeaderWidth else { return }
     lastHeaderWidth = tableView.bounds.width
     checklistInfoHeaderView?.resize(in: tableView)
@@ -720,67 +747,35 @@ extension ChecklistViewController: UIScrollViewDelegate {
 
 // MARK: - Keyboard dynamics.
 
-/// https://developer.apple.com/library/archive/documentation/StringsTextFonts/Conceptual/TextAndWebiPhoneOS/KeyboardManagement/KeyboardManagement.html
+/// Breathing room between the edited row and the keyboard.
+private let editingRowClearance: CGFloat = 20.0
+
 extension ChecklistViewController {
-  /// How much of `tableBounds` the keyboard covers from below, in the table's own (content)
-  /// coordinates. Zero when the keyboard misses the table entirely: floating, undocked, or below a
-  /// window that does not reach the bottom of the screen.
+  /// Scrolls the row being edited into view, clear of the table's bottom edge by the editing
+  /// clearance (`contentInset.bottom`, which `scrollRectToVisible` honours).
   ///
-  /// Static and internal so a test can drive it with frames it chose.
-  static func keyboardOverlap(keyboardFrame: CGRect, tableBounds: CGRect) -> CGFloat {
-    guard keyboardFrame.intersects(tableBounds) else { return 0.0 }
-    return max(0.0, tableBounds.maxY - keyboardFrame.minY)
-  }
-
-  @objc func onKeyboardAppear(_ notification: NSNotification) {
-    guard
-      let userInfo = notification.userInfo,
-      let screenKeyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
-    else { assertionFailure(); return }
-
-    guard let cell = findEditingCell()
-    else { return } // If keyboard arose for Checklist Name/Notes, which, if visible, shouldn't require scrolling (except for massive notes, but we're accepting that for now).
-
-    // The frame is in screen coordinates.
-    guard let screen = view.window?.windowScene?.screen else { return }
-    let keyboardFrame = tableView.convert(screenKeyboardFrame, from: screen.coordinateSpace)
-    var keyboardHeight = Self.keyboardOverlap(keyboardFrame: keyboardFrame, tableBounds: tableView.bounds)
-    guard keyboardHeight > 0.0 else {
-      onKeyboardDisappear(notification)
-      return
-    }
-
-    keyboardHeight += 20.0 // Breathing room between the edited row and the keyboard. (iPhone X-style phones used to get 34pt more, from counting the home-indicator strip the table doesn't cover.)
-
-    // `cell.frame` below is in the table's content space; `tableView.frame` is in its superview's,
-    // and the two only line up at a content offset of zero. `bounds` is content space, so
-    // inset it by the bar above and the keyboard below to get the genuinely visible slice.
-    let visibleFrame = tableView.bounds.inset(by: UIEdgeInsets(
-      top: tableView.adjustedContentInset.top,
-      left: 0.0,
-      bottom: keyboardHeight,
-      right: 0.0,
-    ))
-
+  /// Only for item rows: the name and notes sit at the top, where the keyboard cannot reach them
+  /// (bar a very long note, which we accept).
+  private func scrollEditingCellIntoView() {
+    // The remembered row, not a `visibleCells` search: by the time the keyboard has shortened the
+    // table, the row it covered is outside the new bounds and no longer counts as visible.
+    guard let cell = editingItemCell, cell.itemContentView.isEditing else { return }
     let cellFrame = tableView.convert(cell.frame, from: cell.superview)
-
-    let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyboardHeight, right: 0.0)
-    // If the user taps to edit and quickly starts typing, the default animated scrollRectToVisible
-    // halts the animation — this explicit animation block avoids that, and is snappier besides.
-    UIView.animate(withDuration: 0.1) {
-      self.tableView.contentInset = contentInsets
-      self.tableView.scrollIndicatorInsets = contentInsets
-      if !visibleFrame.contains(cellFrame) { // If even partially covered, move it.
-        self.tableView.scrollRectToVisible(cellFrame, animated: false)
-      }
-    }
+    // A row taller than the visible slice (a long note) is left to the text view, which keeps its
+    // own caret in view; scrolling to the whole row would jump away from the line being typed.
+    let visibleHeight = tableView.bounds.inset(by: tableView.adjustedContentInset).height
+    guard cellFrame.height <= visibleHeight else { return }
+    // Not animated: called from a layout pass inside the keyboard's own animation, it moves with
+    // it, and an animated scroll there halts when the user starts typing straight away.
+    tableView.scrollRectToVisible(cellFrame, animated: false)
   }
 
-  @objc func onKeyboardDisappear(_: NSNotification) {
-    UIView.animate(withDuration: 0.1) { // At bottom of list, it will animate back down more smoothly.
-      self.tableView.contentInset = .zero
-      self.tableView.scrollIndicatorInsets = .zero
-    }
+  /// Breathing room below the row being edited, so it doesn't sit flush on the keyboard. Only the
+  /// bottom edge, and only while an item row is being typed into: the keyboard's own geometry is
+  /// the keyboard layout guide's, which shortens the table.
+  private func updateEditingClearance() {
+    let isEditingItem = editingItemCell?.itemContentView.isEditing == true
+    tableView.contentInset.bottom = isEditingItem ? editingRowClearance : 0.0
   }
 
   private func findEditingCell() -> UITableViewCell? {
@@ -799,8 +794,12 @@ extension ChecklistViewController {
   }
 
   @objc func textEditingDidBegin(_ notification: Notification) {
-    guard (notification.object as? UIView)?.isDescendant(of: view) == true else { return }
+    guard let field = notification.object as? UIView, field.isDescendant(of: view) else { return }
+    editingItemCell = sequence(first: field, next: \.superview).lazy.compactMap { $0 as? ItemTableViewCell }.first
+    updateEditingClearance()
     updateBarMode(animated: true)
+    // Moving between rows with the keyboard already up changes no layout, so nothing else scrolls.
+    scrollEditingCellIntoView()
   }
 
   /// Waits a turn before taking the editing Done away: moving between fields ends one and begins the
@@ -813,6 +812,7 @@ extension ChecklistViewController {
   @objc func textEditingDidEnd(_: Notification) {
     RunLoop.main.perform(inModes: [.common]) { [weak self] in
       MainActor.assumeIsolated {
+        self?.updateEditingClearance()
         self?.updateBarMode(animated: true)
       }
     }

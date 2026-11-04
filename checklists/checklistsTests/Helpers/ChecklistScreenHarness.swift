@@ -25,11 +25,11 @@ enum ChecklistScreenHarness {
     let modelContext: ModelContext
     let analytics: SpyAnalyticsClient
 
-    /// `loadView` installs the table as the controller's `view`, so it is reachable without
-    /// widening the controller's own private storage.
+    /// `loadView` installs the table as the only subview of the controller's `view`, so it is
+    /// reachable without widening the controller's own private storage.
     var table: UITableView {
-      guard let table = viewController.view as? UITableView else {
-        fatalError("The checklist controller's view is not its table.")
+      guard let table = viewController.view.subviews.lazy.compactMap({ $0 as? UITableView }).first else {
+        fatalError("The checklist controller's view does not hold its table.")
       }
       return table
     }
