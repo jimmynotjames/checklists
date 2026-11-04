@@ -47,20 +47,9 @@ Record what you find in `AUDIT_LOG.md`, including the date and the fact that you
 found nothing, if that is the outcome. An empty log is indistinguishable from a
 check nobody ran.
 
-## Known limitation
-
-`TestDynamicTypeOverride` forces the type size through SwiftUI's
-`dynamicTypeSize`. The checklist detail screen is UIKit, hosted in a
-`UIViewControllerRepresentable`, and no run has confirmed that the forced size
-reaches it. If its text is no larger than at the default size, its screenshots
-are still worth reading for translation length and right-to-left mirroring, but
-not for type size.
-
 ## Dependencies worth knowing about
 
 `run.sh` needs `jq` and `sips` and checks for both. The capture navigates by
 accessibility identifier rather than visible text, so renaming `toolbar.settings`,
 `toolbar.more`, `toolbar.edit`, `editBar.delete`, `toolbar.addChecklist`, or
-`analyticsConsentSheet.decline` breaks it silently. The type size is forced
-through `TestDynamicTypeOverride`, which is DEBUG-only and inert unless launched
-with both `IS_TESTING` and `FORCE_DYNAMIC_TYPE`.
+`analyticsConsentSheet.decline` breaks it silently.
