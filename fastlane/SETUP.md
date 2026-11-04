@@ -64,9 +64,15 @@ devices, and the shots; the Python pipelines derive from it. Each active locale'
 catalog is generated, and `make gate` fails when one drifts from the string catalog:
 `core-docs/localization-spec.md §Screenshot seeds`.
 
-A full capture is release-time work and runs serially: about a minute per locale once
-the build is warm, so budget about an hour. It is resumable by `run_id`, and `locales:`
-takes a subset of runtime codes for a spot check.
+A full capture is release-time work and runs serially: about a minute per locale per
+device once the build is warm. It captures every
+locale on one device, shuts that simulator down, then moves to the next. It is resumable by
+`run_id`, and `locales:` takes a subset of runtime codes for a spot check.
+
+The devices are the 6.9" iPhone and iPhone Duo's outer display, which deliver uploads as
+`APP_IPHONE_DUO`. The Duo simulator boots folded, and neither `simctl` nor XCTest
+can unfold it, so the inner display is not captured; the size check rejects a capture of the
+wrong display.
 
 The English seed mirrors the shipped sample data but checks some items, so the home
 screen shows progress. Screenshot launches use Debug-only, disposable in-memory stores

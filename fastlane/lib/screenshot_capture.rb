@@ -34,8 +34,14 @@ class ScreenshotCapture
     run_id = "#{Time.now.utc.strftime('%Y%m%dT%H%M%SZ')}-#{SecureRandom.hex(4)}" if run_id.empty?
     begin_run(run_id, locales)
 
-    pending_targets(run_id, locales).each do |target|
-      simulator = prepare_simulator(target.fetch("device"))
+    current = nil
+    device_major(pending_targets(run_id, locales)).each do |target|
+      device = target.fetch("device")
+      unless device == current
+        shutdown_other_capture_simulators(device)
+        current = device
+      end
+      simulator = prepare_simulator(device)
       cache_dir = File.join(run_directory(run_id), "cache")
       isolate_fastlane_snapshot!(cache_dir)
       with_test_runner_environment(run_id, cache_dir) do
@@ -138,6 +144,31 @@ class ScreenshotCapture
       "capture_progress.py", "mark-success",
       "--run-id", run_id, "--locale", runtime, "--device", device
     )
+  end
+
+  # Every locale on one device before the next device, in config order, so a run
+  # boots each simulator once instead of switching per locale.
+  def device_major(targets)
+    order = @config.fetch("devices").map { |device| device.fetch("name") }
+    targets.each_with_index.sort_by do |target, index|
+      [order.index(target.fetch("device")) || order.length, index]
+    end.map(&:first)
+  end
+
+  # One booted capture simulator at a time, including one an earlier run or an
+  # interrupted resume left up. Each is found by its exact repo-scoped name and
+  # shut down by UDID; best effort, since one already shut down is no failure.
+  def shutdown_other_capture_simulators(device_name)
+    slug = run_command("python3", File.join(@root, "scripts", "sim_common.py"), "slug", @root).strip
+    @config.fetch("devices").map { |device| device.fetch("name") }.each do |name|
+      next if name == device_name
+
+      udid = run_command(
+        "python3", File.join(@root, "scripts", "resolve_booted_sim_udid.py"),
+        "--name", "#{name} Screenshots [#{slug}]", "--state", "Booted"
+      ).strip
+      @command_runner.call("xcrun", "simctl", "shutdown", udid) unless udid.empty?
+    end
   end
 
   def prepare_simulator(device_name)

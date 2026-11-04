@@ -16,9 +16,6 @@ fi
 BASE_NAME="$1"
 REPO_SLUG="$(python3 "${ROOT}/scripts/sim_common.py" slug "${ROOT}")"
 DEVICE_NAME="${BASE_NAME} Screenshots [${REPO_SLUG}]"
-STATE_DIR="${ROOT}/.build/screenshots/simulator"
-UDID_FILE="${STATE_DIR}/device.udid"
-mkdir -p "${STATE_DIR}"
 
 python3 "${ROOT}/scripts/sim_retire_stale.py" --name "${DEVICE_NAME}"
 UDID="$(python3 "${ROOT}/scripts/resolve_booted_sim_udid.py" --name "${DEVICE_NAME}" --state Booted)"
@@ -38,6 +35,5 @@ if [[ "${IS_BOOTED}" -eq 0 ]]; then
     xcrun simctl boot "${UDID}"
 fi
 xcrun simctl bootstatus "${UDID}" -b >&2
-printf '%s' "${UDID}" > "${UDID_FILE}"
 
 printf '%s\t%s\n' "${UDID}" "${DEVICE_NAME}"

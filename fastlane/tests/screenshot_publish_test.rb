@@ -67,6 +67,17 @@ class ScreenshotPublishTest < Minitest::Test
     publish
   end
 
+  def test_each_display_type_is_verified_as_its_own_set
+    duo_path = File.expand_path("../lib/screenshot_publish.rb", __dir__)
+    @shots << Shot.new("en-US", "APP_IPHONE_DUO", duo_path)
+    sets = @version.localizations.first.sets
+    assert_raises(RuntimeError) { publish }
+    sets << ScreenshotSet.new("APP_IPHONE_DUO", [RemoteShot.new(Digest::MD5.file(__FILE__).hexdigest, true)])
+    assert_raises(RuntimeError) { publish }
+    sets.last.app_screenshots.first.source_file_checksum = Digest::MD5.file(duo_path).hexdigest
+    publish
+  end
+
   def test_wrong_version_fails_before_deletion
     @version.version_string = "1.3"
     assert_raises(ArgumentError) { publish }

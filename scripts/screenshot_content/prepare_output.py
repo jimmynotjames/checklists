@@ -113,24 +113,30 @@ def prepare_output(
     }
     report_path = run_root(run_id) / "capture-report.json"
     review_path = run_root(run_id) / "review.html"
-    cards = []
-    for record in report_files:
-        image_url = Path(str(record["staged"])).resolve().as_uri()
-        title = f"{record['storefront']} · {record['device']} · {record['shot']}"
-        cards.append(
-            "<figure><img src=\"{}\" alt=\"{}\"><figcaption>{}</figcaption></figure>".format(
-                html.escape(image_url, quote=True),
-                html.escape(title, quote=True),
-                html.escape(title),
+    sections = []
+    for device in devices:
+        cards = []
+        for record in report_files:
+            if record["device"] != device["name"]:
+                continue
+            image_url = Path(str(record["staged"])).resolve().as_uri()
+            title = f"{record['storefront']} · {record['device']} · {record['shot']}"
+            cards.append(
+                "<figure><img src=\"{}\" alt=\"{}\"><figcaption>{}</figcaption></figure>".format(
+                    html.escape(image_url, quote=True),
+                    html.escape(title, quote=True),
+                    html.escape(title),
+                )
             )
-        )
+        heading = f"{device['name']} · {device['width']}×{device['height']}"
+        sections.append(f"<h2>{html.escape(heading)}</h2><main>{''.join(cards)}</main>")
     review_path.write_text(
         "<!doctype html><meta charset=\"utf-8\"><title>Screenshot review</title>"
         "<style>body{font:16px system-ui;margin:24px;background:#eee;color:#111}"
         "main{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}"
         "figure{margin:0;background:white;padding:12px;border-radius:12px}"
         "img{display:block;width:100%;height:auto}figcaption{padding-top:10px}</style>"
-        f"<h1>Screenshot run {html.escape(run_id)}</h1><main>{''.join(cards)}</main>\n",
+        f"<h1>Screenshot run {html.escape(run_id)}</h1>{''.join(sections)}\n",
         encoding="utf-8",
     )
     report["review_page"] = str(review_path)

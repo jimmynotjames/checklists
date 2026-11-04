@@ -240,12 +240,12 @@ worktree, so run `make sim-clean` in a worktree before removing it. The device i
 `iPhone 17 [<hash of the checkout's physical path>]` in the default device set, managed by
 `scripts/_sim_sandbox.sh` (sourced via `_destination.sh` by the test scripts and
 `translation-accessibility-size-check/run.sh`); the screenshot lane's `... Screenshots [<hash>]`
-device shares the hash. `SIMULATOR_NAME` picks a different base device; `SIMULATOR_UDID` pins a
+devices, one per configured device, share the hash. `SIMULATOR_NAME` picks a different base device; `SIMULATOR_UDID` pins a
 device and skips sandbox management. `make sim-status` shows the device and the lock holder;
 `make sim-clean` deletes every device and parallel-testing clone carrying this checkout's hash.
 When the device isn't on the newest iOS runtime the selected Xcode can target that hosts its device
 type,
-`scripts/sim_retire_stale.py` deletes it before use so it is recreated; the screenshot device gets
+`scripts/sim_retire_stale.py` deletes it before use so it is recreated; the screenshot devices get
 the same treatment. Once the device is up, `_sim_sandbox.sh` turns off iOS's automatic keyboard
 minimization on it, which otherwise can park the software keyboard below the screen mid-run.
 
