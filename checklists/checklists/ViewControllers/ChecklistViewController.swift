@@ -70,8 +70,8 @@ class ChecklistViewController: UIViewController {
   var analytics: any AnalyticsClient = ConsoleAnalyticsClient()
 
   /// Set by the SwiftUI host, like `analytics` above. Fed one call per item checked off — the
-  /// qualifying action for the automatic App Store review prompt. `nil` (pure-UIKit construction,
-  /// previews, tests) means the prompt is simply never fed.
+  /// qualifying action for the automatic App Store review prompt. `nil` (tests, or a host
+  /// without the coordinator in its environment) means the prompt is simply never fed.
   var ratingPrompt: RatingPromptCoordinator?
 
   /// Built in `setUpHeaderView`, once `isNewChecklist` is known. This and the four shortcuts below

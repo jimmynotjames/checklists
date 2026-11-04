@@ -9,7 +9,6 @@ import SwiftUI
 enum ToastPlacement: Equatable {
   /// `ChecklistsView`, the navigation stack's root.
   case list
-  /// A screen pushed onto the router's path.
   case pushed(AppRoute)
   /// The root view of whatever sheet the router presents.
   case sheet
@@ -21,9 +20,9 @@ enum ToastPlacement: Equatable {
 /// card is laid out in the screen's safe area. That area already excludes the bars wherever the
 /// system puts them — `ChecklistsView`'s bottom toolbar, or the vertical bar on iPhone Duo — so the
 /// card clears them without knowing their size. Exactly one layer draws at a time, the one on the
-/// frontmost screen; announcing and timing belong to `ToastCoordinator` at the root.
+/// frontmost screen; announcing, and clearing on backgrounding, belong to `ToastCoordinator` at the
+/// root.
 private struct ToastOverlay: ViewModifier {
-  /// How far the card sits above the safe area.
   private static let bottomInset: CGFloat = 16
 
   let placement: ToastPlacement
@@ -125,7 +124,7 @@ private struct ToastCoordinator: ViewModifier {
 }
 
 extension View {
-  /// Announces and times toasts for the whole app. Apply once, innermost at the app root; see
+  /// Announces toasts, and clears them on backgrounding, for the whole app. Apply once, innermost at the app root; see
   /// `ChecklistsApp`.
   func toastPresenter() -> some View {
     modifier(ToastCoordinator())

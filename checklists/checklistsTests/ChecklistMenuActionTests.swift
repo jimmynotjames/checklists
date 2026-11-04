@@ -27,6 +27,7 @@ struct ChecklistMenuActionTests {
     try ChecklistScreenHarness.withController(
       items: [("Milk", false), ("Bread", false)],
     ) { harness in
+      harness.viewController.onRequestDismiss = {}
       harness.viewController.deleteChecklist()
 
       let verification = ModelContext(harness.modelContext.container)
