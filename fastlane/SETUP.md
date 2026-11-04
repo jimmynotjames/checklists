@@ -119,5 +119,11 @@ fastlane ios push_screenshots app_version:X.Y.Z run_id:REVIEWED_RUN
 
 It replaces the selected active locales' screenshot sets, old display sizes included, so
 the large iPhone shots serve smaller sizes, and touches nothing else: no binary, text
-metadata, version, availability, or submission. To test the infrastructure, use the mocked
+metadata, version, availability, or submission.
+
+It stages into the run's `upload/` folder, so the reviewed `storefront/` set and
+`review.html` always cover every locale. Deliver gives up when assets are still processing
+after its retries, before sorting. The lane then sorts anyway, waits a bounded time for
+processing, and checks every selected locale for processing, files, and order. If any
+locale fails, it lists only those locales and prints the `locales:` retry command. To test the infrastructure, use the mocked
 publishing tests and local captures, never an upload.

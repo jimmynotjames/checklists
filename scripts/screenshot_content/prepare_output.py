@@ -18,6 +18,9 @@ from capture_progress import CaptureError, capture_status, load_manifest, run_ro
 from config import ConfigError, REPO_ROOT, load_config, parse_locale_args  # noqa: E402
 
 MARKER = ".screenshot-staging.json"
+# A non-default output (an upload subset) carries its own report, so staging it never
+# replaces the run's full review set.
+STAGING_REPORT = "staging-report.json"
 
 
 def _safe_output_path(path: Path, run_id: str) -> Path:
@@ -44,13 +47,15 @@ def prepare_output(
     run_id: str,
     locales: tuple[str, ...],
     output: Path | None = None,
-) -> tuple[Path, Path]:
+) -> tuple[Path, Path, Path | None]:
     config = load_config()
     status = capture_status(run_id, locales, config)
     if status["pending"]:
         raise CaptureError(f"cannot stage incomplete locale(s): {', '.join(status['pending'])}")
 
-    target = _safe_output_path(output or (run_root(run_id) / "storefront"), run_id)
+    default_target = (run_root(run_id) / "storefront").resolve()
+    target = _safe_output_path(output or default_target, run_id)
+    is_review_set = target == default_target
     _replaceable_output(target, run_id)
     target.parent.mkdir(parents=True, exist_ok=True)
     temporary = Path(tempfile.mkdtemp(prefix=f".{target.name}-", dir=target.parent))
@@ -111,6 +116,11 @@ def prepare_output(
         "screenshots_path": str(target),
         "files": report_files,
     }
+    if not is_review_set:
+        report_path = target / STAGING_REPORT
+        report_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        return target, report_path, None
+
     report_path = run_root(run_id) / "capture-report.json"
     review_path = run_root(run_id) / "review.html"
     sections = []
@@ -160,7 +170,7 @@ def main(argv: list[str] | None = None) -> int:
                     "output": str(output),
                     "screenshots_path": str(output),
                     "report": str(report),
-                    "review_page": str(review),
+                    "review_page": str(review) if review else None,
                     "locales": [config.locales_by_runtime[value].storefront for value in locales],
                 }
             )
