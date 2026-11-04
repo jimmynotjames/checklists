@@ -14,7 +14,7 @@ Record merged: no
 - [x] Metadata uploaded or deliberately unchanged
 
 Metadata note: Uploaded 2026-10-24, all locales, no errors.
-Screenshots: Reviewed run `full-20261026T190050Z` (source 7be41de) uploaded to 2.0 on 2026-10-26; all 50 locales now hold one APP_IPHONE_67 set of 2, processing verified.
+Screenshots: Reviewed run `20261104T153913Z-34f31b45` (source 4ca0bc8) uploaded to 2.0 on 2026-11-04, replacing the 2026-10-26 run; all 50 locales now hold an APP_IPHONE_67 set of 2 and an APP_IPHONE_DUO set of 2, with processing, checksums and order verified. The 49-locale push stopped before sorting, with 4 assets still processing; sorting those locales and a subset retry of en-AU, es-ES, ur-PK completed it.
 
 ## Candidate
 
