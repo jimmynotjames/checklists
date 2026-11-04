@@ -96,7 +96,6 @@ struct ToastView: View {
     .background(
       RoundedRectangle(cornerRadius: 14, style: .continuous)
         .fill(Colors.darkBlueGrayColor)
-        // The floating-button treatment from `ChecklistsView`, so the two read as one system.
         .shadow(color: Colors.shadowColor.opacity(0.4), radius: 3, x: 0, y: 2),
     )
     // Locale-invariant handle so UI tests can wait a toast out rather than tapping through it.

@@ -24,9 +24,10 @@ struct ChecklistsView: View {
   @Environment(Router.self) private var router
   @Environment(\.analytics) private var analytics
 
-  private static let addButtonSize: CGFloat = 60
-  /// Between the Add button and the safe area's edges.
-  private static let addButtonMargin: CGFloat = 20
+  /// The Add artwork's size, a little over a bar symbol's since the drawing sits inside some
+  /// padding. Left to itself it fills the bar's height and stretches the glass capsule. Fixed, like
+  /// the other bar icons; larger text sizes get the Large Content Viewer.
+  private static let addIconSize: CGFloat = 28
 
   /// Created on the first `.task` rather than at init: a `@State` initial value would be
   /// rebuilt on every re-render of the view struct, and this observer registers for a
@@ -135,9 +136,6 @@ struct ChecklistsView: View {
     // Insets whole rows, so Edit mode's controls and swipe actions stay beside them. `nil` below
     // the cap keeps the list's stock margins on a narrow window.
     .contentMargins(.horizontal, listColumnMargin, for: .scrollContent)
-    // Room below the last row so it can scroll clear of the Add button. None in Edit mode, where
-    // the button is hidden.
-    .contentMargins(.bottom, isEditing ? nil : Self.addButtonSize + Self.addButtonMargin, for: .scrollContent)
     .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { listWidth = $0 }
     .environment(\.editMode, $editMode)
     .appBackground()
@@ -145,15 +143,6 @@ struct ChecklistsView: View {
     .navigationTitle(Self.screenTitle)
     .navigationBarTitleDisplayMode(.inline)
     .toolbar(removing: .title)
-    .overlay(alignment: .bottom) {
-      // Hidden rather than disabled: the bottom toolbar takes its place, and a new checklist
-      // appearing mid-selection would only confuse it.
-      if !isEditing {
-        // At the trailing edge of the rows' column, not of a wide window, so it stays by them.
-        addChecklistButton
-          .frame(maxWidth: readableColumnMaxWidth, alignment: .trailing)
-      }
-    }
     .toolbar {
       // Every bar button is an icon, so on iPhone Duo's outer display the whole bar moves into the
       // vertical bar and the list gets the screen's full height; a word would keep a top bar alive.
@@ -174,33 +163,42 @@ struct ChecklistsView: View {
         }
       }
 
-      // Separate items with flexible spacers rather than one group with `Spacer`s: iOS 26 gives each
-      // item its own capsule, and in a group the outer two were pushed past the screen edges.
-      // Delete and Reset cannot be undone, so they confirm; Duplicate takes nothing away.
-      ToolbarItem(placement: .bottomBar) {
-        bulkActionButton(
-          CommonStrings.delete,
-          systemImage: "trash",
-          tint: Colors.destructiveColor,
-          id: "editBar.delete",
-        ) {
-          confirm(.delete)
+      // The bottom bar is always up: Edit mode's bulk actions, otherwise Add. On iPhone Duo's
+      // outer display it moves to the bottom of the vertical bar, lined up with the rest.
+      if isEditing {
+        // Separate items with flexible spacers rather than one group with `Spacer`s: iOS 26 gives each
+        // item its own capsule, and in a group the outer two were pushed past the screen edges.
+        // Delete and Reset cannot be undone, so they confirm; Duplicate takes nothing away.
+        ToolbarItem(placement: .bottomBar) {
+          bulkActionButton(
+            CommonStrings.delete,
+            systemImage: "trash",
+            tint: Colors.destructiveColor,
+            id: "editBar.delete",
+          ) {
+            confirm(.delete)
+          }
         }
-      }
-      ToolbarSpacer(.flexible, placement: .bottomBar)
-      ToolbarItem(placement: .bottomBar) {
-        bulkActionButton(CommonStrings.duplicate, systemImage: "plus.square.on.square", id: "editBar.duplicate") {
-          perform(.duplicate)
+        ToolbarSpacer(.flexible, placement: .bottomBar)
+        ToolbarItem(placement: .bottomBar) {
+          bulkActionButton(CommonStrings.duplicate, systemImage: "plus.square.on.square", id: "editBar.duplicate") {
+            perform(.duplicate)
+          }
         }
-      }
-      ToolbarSpacer(.flexible, placement: .bottomBar)
-      ToolbarItem(placement: .bottomBar) {
-        bulkActionButton(Self.resetSelectedTitle, systemImage: "arrow.counterclockwise", id: "editBar.reset") {
-          confirm(.reset)
+        ToolbarSpacer(.flexible, placement: .bottomBar)
+        ToolbarItem(placement: .bottomBar) {
+          bulkActionButton(Self.resetSelectedTitle, systemImage: "arrow.counterclockwise", id: "editBar.reset") {
+            confirm(.reset)
+          }
         }
+      } else {
+        ToolbarSpacer(.flexible, placement: .bottomBar)
+        ToolbarItem(placement: .bottomBar) {
+          addChecklistButton
+        }
+        .visibilityPriority(.high)
       }
     }
-    .toolbar(isEditing ? .visible : .hidden, for: .bottomBar)
     .onChange(of: isEditing) { _, editing in
       if !editing {
         selection.removeAll()
@@ -377,25 +375,27 @@ struct ChecklistsView: View {
     Button {
       addChecklist()
     } label: {
+      // The artwork in its own colours, not the bar's tint. The image alone, no title: given a
+      // Label, the toolbar sizes its glass capsule for the title even when it draws only the icon.
       Image("AddChecklistIcon")
+        .renderingMode(.original)
         .resizable()
         .scaledToFit()
-        .padding(10)
-        .frame(width: Self.addButtonSize, height: Self.addButtonSize)
-        .background(Circle().fill(Colors.surfaceColor))
-        .shadow(color: Colors.shadowColor.opacity(0.4), radius: 3, x: 0, y: 2)
+        .frame(width: Self.addIconSize, height: Self.addIconSize)
     }
-    .accessibilityLabel(String(
-      localized: "checklists.add.accessibilityLabel",
-      defaultValue: "Add new checklist.",
-      comment: "VoiceOver label for the round floating button that creates a checklist.",
-    ))
+    .accessibilityLabel(Self.addLabel)
+    .accessibilityShowsLargeContentViewer {
+      Label(Self.addLabel, image: "AddChecklistIcon")
+    }
     .accessibilityIdentifier("toolbar.addChecklist")
     .accessibilityFocused($isAddButtonFocused)
-    // From the safe area, so the larger bottom gap is the home-indicator inset. Tune this constant;
-    // never offset against `safeAreaInsets`, which pushes the button into the system's gesture strip.
-    .padding(Self.addButtonMargin)
   }
+
+  private static let addLabel = String(
+    localized: "checklists.add.accessibilityLabel",
+    defaultValue: "Add new checklist.",
+    comment: "VoiceOver label for the bottom-bar button that creates a checklist.",
+  )
 
   private func addChecklist() {
     analytics.track(AnalyticsEvent.checklistCreated)
@@ -573,7 +573,7 @@ struct ChecklistsView: View {
       editMode = .inactive
     }
     guard changedCount > 0 else { return }
-    // "•••", because the bottom toolbar VoiceOver was on has gone with Edit mode.
+    // "•••", because the bulk action VoiceOver was on has gone with Edit mode.
     postAccessibilityFeedback(Self.bulkAnnouncement(for: action, count: changedCount), afterAlert: true) {
       isMoreMenuFocused = true
     }

@@ -17,7 +17,7 @@ extension Colors {
   static let darkBlueGrayColor = Color(.darkBlueGray)
   /// Text and icons drawn on `darkBlueGrayColor`.
   static let panelForegroundColor = Color(.panelForeground)
-  /// A raised surface on the page: grouped `Form` rows and the floating add button.
+  /// A raised surface on the page: grouped `Form` rows.
   static let surfaceColor = Color(.surface)
   static let destructiveColor = Color(.salmonRed)
   static let accentFillColor = Color(.accentFill)

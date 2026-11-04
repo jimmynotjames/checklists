@@ -49,7 +49,7 @@ extension XCUIApplication {
     button.tap()
   }
 
-  /// Taps the checklists list's add button — an `.overlay` on the list, not a row inside it, so it
+  /// Taps the checklists list's add button — in the bottom toolbar, not a row inside the list, so it
   /// hangs off the application rather than the collection view — and waits for the create sheet's name field to take
   /// focus, which it does in `viewDidAppear`: typing before then has nowhere to go.
   func openCreateSheet(file: StaticString = #filePath, line: UInt = #line) {
