@@ -58,8 +58,8 @@ nonisolated enum ToastStyle {
   @MainActor var tint: Color {
     switch self {
     case .info: Colors.panelForegroundColor
-    case .success: Colors.successColor
-    case .warning: Colors.warningColor
+    case .success: Colors.toastSuccessColor
+    case .warning: Colors.toastWarningColor
     case .error: Colors.toastErrorColor
     }
   }
