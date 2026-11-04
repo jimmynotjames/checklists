@@ -223,6 +223,45 @@ class CaptureTests(unittest.TestCase):
         self.assertTrue(report.is_file())
         self.assertTrue(review.is_file())
 
+    def test_each_device_needs_its_own_correctly_sized_capture(self) -> None:
+        """A second display size (iPhone Duo's outer display) is a target of its own."""
+        two_devices = replace(
+            self.config,
+            devices=(DeviceConfig("Test Phone", 2, 3, "portrait"), DeviceConfig("Test Duo", 4, 5, "portrait")),
+        )
+        capture_progress.begin_run("run-four", ("en-US",), two_devices)
+        manifest = capture_progress.load_manifest("run-four")
+        phone, duo = manifest["devices"]
+        raw = capture_progress.run_root("run-four") / "raw" / "en-US"
+        for shot in manifest["shots"]:
+            write_png(raw / f"{phone['capture_name']}-{shot}.png", 2, 3)
+        capture_progress.mark_success("run-four", "en-US", "Test Phone", two_devices)
+        self.assertEqual(capture_progress.capture_status("run-four", ("en-US",), two_devices)["pending"], ["en-US"])
+
+        # The wrong display (for example the unfolded inner one) is rejected by size.
+        for shot in manifest["shots"]:
+            write_png(raw / f"{duo['capture_name']}-{shot}.png", 2, 3)
+        with self.assertRaises(capture_progress.CaptureError):
+            capture_progress.mark_success("run-four", "en-US", "Test Duo", two_devices)
+
+        for shot in manifest["shots"]:
+            write_png(raw / f"{duo['capture_name']}-{shot}.png", 4, 5)
+        capture_progress.mark_success("run-four", "en-US", "Test Duo", two_devices)
+        self.assertEqual(capture_progress.capture_status("run-four", ("en-US",), two_devices)["complete"], ["en-US"])
+
+        original_load_config = prepare_output.load_config
+        prepare_output.load_config = lambda: two_devices
+        try:
+            output, report, review = prepare_output.prepare_output("run-four", ("en-US",))
+        finally:
+            prepare_output.load_config = original_load_config
+        sizes = {(record["device"], record["width"], record["height"]) for record in json.loads(report.read_text())["files"]}
+        self.assertEqual(sizes, {("Test Phone", 2, 3), ("Test Duo", 4, 5)})
+        self.assertTrue((output / "en-US" / "Test Duo-02_pre_trip.png").is_file())
+        page = review.read_text(encoding="utf-8")
+        self.assertIn("<h2>Test Phone · 2×3</h2>", page)
+        self.assertIn("<h2>Test Duo · 4×5</h2>", page)
+
 
 if __name__ == "__main__":
     unittest.main()

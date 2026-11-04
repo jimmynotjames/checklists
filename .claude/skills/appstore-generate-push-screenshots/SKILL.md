@@ -5,7 +5,9 @@ description: "Capture and review App Store screenshots locally, inspect existing
 
 # Capture and publish screenshots
 
-The workflow captures two screens per active locale.
+The workflow captures two screens per active locale on each configured device: the 6.9"
+iPhone and iPhone Duo's outer (folded) display. The Duo simulator boots folded and cannot be
+unfolded from a script, so the inner display is not captured.
 A full run is serial release-time work (timing: `fastlane/SETUP.md`) and is
 resumable by `run_id`; use a `locales:` subset while iterating. Run commands
 from the repository root. Read `fastlane/SETUP.md` and
@@ -20,8 +22,8 @@ from the repository root. Read `fastlane/SETUP.md` and
    the real process exit status. The lane uses the repository's screenshot
    simulator, runs only `AppStoreScreenshots`, and does not authenticate with ASC.
 3. Run `python3 scripts/screenshot_content/capture_progress.py status --run-id RUN_ID`
-   and open `.build/screenshots/runs/RUN_ID/review.html`. Inspect both
-   `01_checklists` and `02_pre_trip`: three distinct
+   and open `.build/screenshots/runs/RUN_ID/review.html`, which has one section per device.
+   Inspect both `01_checklists` and `02_pre_trip` on each device: three distinct
    completion states, first three Pre-Trip items checked, no clipping or transient
    overlays, correct status bar and native Liquid Glass rendering.
 4. Report the run ID, image paths, and verification result. Preserve that run for

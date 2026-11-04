@@ -59,6 +59,12 @@
       "width": 1320,
       "height": 2868,
       "orientation": "portrait"
+    },
+    {
+      "name": "iPhone Duo",
+      "width": 1398,
+      "height": 2034,
+      "orientation": "portrait"
     }
   ],
   "shots": ["01_checklists", "02_pre_trip"],

@@ -73,6 +73,46 @@ class ScreenshotCaptureTest < Minitest::Test
     end
   end
 
+  def test_capture_runs_device_major_and_shuts_down_each_finished_device
+    calls = []
+    status = Struct.new(:success?).new(true)
+    runner = lambda do |*arguments|
+      calls << arguments
+      script = File.basename(arguments[1].to_s)
+      stdout =
+        if script == "capture_progress.py" && arguments[2] == "pending-targets"
+          [
+            { "runtime" => "en-US", "device" => "iPhone 17 Pro Max" },
+            { "runtime" => "en-US", "device" => "iPhone Duo" },
+            { "runtime" => "de", "device" => "iPhone 17 Pro Max" },
+            { "runtime" => "de", "device" => "iPhone Duo" }
+          ].map(&:to_json).join("\n")
+        elsif File.basename(arguments[0]) == "prepare_simulator.sh"
+          "UDID-#{arguments[1]}\t#{arguments[1]} Screenshots [12345678]\n"
+        elsif script == "prepare_output.py"
+          { "output" => "/out", "report" => "/report", "review_page" => "/review" }.to_json
+        else
+          ""
+        end
+      [stdout, "", status]
+    end
+    capture = ScreenshotCapture.new(ROOT, command_runner: runner)
+    config = capture.instance_variable_get(:@config)
+    capture.instance_variable_set(:@config, config.merge("active_locales" => %w[en-US de]))
+    capture.define_singleton_method(:isolate_fastlane_snapshot!) { |_cache_dir| nil }
+    yielded = []
+
+    capture.send(:capture_run, run_id: "test-run", locales: %w[en-US de]) do |options|
+      yielded << [options.fetch(:devices).first, options.fetch(:languages).first]
+    end
+
+    pro = "iPhone 17 Pro Max Screenshots [12345678]"
+    duo = "iPhone Duo Screenshots [12345678]"
+    assert_equal [[pro, "en-US"], [pro, "de"], [duo, "en-US"], [duo, "de"]], yielded
+    shutdowns = calls.select { |call| call[0] == "xcrun" && call[2] == "shutdown" }
+    assert_equal [["xcrun", "simctl", "shutdown", "UDID-iPhone 17 Pro Max"]], shutdowns
+  end
+
   def test_inactive_locale_is_rejected
     config = @capture.instance_variable_get(:@config)
     @capture.instance_variable_set(:@config, config.merge("active_locales" => ["en-US"]))
