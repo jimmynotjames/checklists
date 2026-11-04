@@ -22,6 +22,9 @@ extension Colors {
   static let destructiveColor = Color(.salmonRed)
   static let accentFillColor = Color(.accentFill)
   static let destructiveFillColor = Color(.destructiveFill)
+  /// The error icon on the toast card. Not `destructiveColor`: the card needs a lighter red than
+  /// the page does, so the two diverge under Increase Contrast.
+  static let toastErrorColor = Color(.toastError)
   static let successColor = Color(.success)
   static let warningColor = Color(.warning)
   static let shadowColor = Color(.shadow)
