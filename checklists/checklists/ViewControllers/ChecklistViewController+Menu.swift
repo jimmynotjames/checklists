@@ -217,16 +217,13 @@ extension ChecklistViewController {
     context.saveChangesIgnoringFailure(operation: .delete)
   }
 
-  /// Implements the contract on `onRequestDismiss`'s doc comment; also the fallback for the
-  /// pure-UIKit case that leaves it unset.
+  /// Implements the contract on `onRequestDismiss`'s doc comment.
   func requestDismissal() {
     hasRequestedDismissal = true
-    if let onRequestDismiss {
-      onRequestDismiss()
-    } else if let navigationController, navigationController.viewControllers.count > 1 {
-      navigationController.popViewController(animated: true)
-    } else {
-      dismiss(animated: true)
+    guard let onRequestDismiss else {
+      assertionFailure("The host sets onRequestDismiss before the screen appears.")
+      return
     }
+    onRequestDismiss()
   }
 }

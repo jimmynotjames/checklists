@@ -89,6 +89,7 @@ struct CopyCheckedItemsView: View {
           }
         }
       }
+      .toastOverlay(.sheet)
     }
   }
 

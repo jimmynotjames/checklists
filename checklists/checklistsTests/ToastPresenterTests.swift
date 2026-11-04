@@ -16,7 +16,7 @@ import Testing
 /// Messages are built from runtime strings rather than literals, so a test fixture is never
 /// mistaken for copy needing translation.
 ///
-/// `ToastLayer` is deliberately not covered — which of the two layers draws, the dismiss-versus-
+/// `ToastOverlay` and `ToastCoordinator` are deliberately not covered — which layer draws, the dismiss-versus-
 /// action tap regions, and the VoiceOver announcement are all `ViewModifier` behaviour, and the
 /// repo has no seam for that. `RatingPromptPresenter` is untested for the same reason; both keep
 /// their decisions in a plain type instead, which is what this suite exercises. The tap-region

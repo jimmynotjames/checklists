@@ -46,6 +46,7 @@ struct SettingsView: View {
       .task {
         analytics.track(AnalyticsEvent.settingsViewed)
       }
+      .toastOverlay(.sheet)
     }
   }
 
