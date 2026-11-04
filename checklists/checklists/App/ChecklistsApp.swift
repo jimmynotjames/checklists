@@ -5,7 +5,6 @@
 
 import CloudKit
 import SwiftUI
-import UIKit
 
 @main
 struct ChecklistsApp: App {
@@ -46,9 +45,6 @@ struct ChecklistsApp: App {
     _toasts = State(initialValue: toasts)
     _ratingPrompt = State(initialValue: RatingPromptCoordinator(state: RatingPromptState(), analytics: client))
     _startup = State(initialValue: AppStartupModel())
-
-    // TODO: revisit once rotation stats land.
-    UIDevice.current.beginGeneratingDeviceOrientationNotifications()
   }
 
   var body: some Scene {
@@ -82,10 +78,6 @@ struct ChecklistsApp: App {
             }
             .task {
               await observeAccountChanges(syncStatus: PersistenceController.shared.syncStatus)
-            }
-            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
-              guard let value = orientationAnalyticsValue(UIDevice.current.orientation) else { return }
-              analytics.track(AnalyticsEvent.orientationChanged, properties: [AnalyticsProperty.orientation: value])
             }
         case let .failed(failure):
           // Deliberately gets none of the *data* environment: the store may be unsafe. It does get

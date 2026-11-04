@@ -60,8 +60,6 @@ nonisolated enum AnalyticsEvent {
   static let ratingPromptEligible = "rating_prompt_eligible"
   static let ratingPromptRequested = "rating_prompt_requested"
 
-  static let orientationChanged = "orientation_changed"
-
   // MARK: Consent
 
   static let analyticsConsentChanged = "analytics_consent_changed"
@@ -110,8 +108,6 @@ nonisolated enum AnalyticsProperty {
   static let containerBacking = "container_backing"
   static let icloudAccount = "icloud_account"
   static let syncOperation = "sync_operation"
-
-  static let orientation = "orientation"
 
   // MARK: analytics_consent_changed
 
