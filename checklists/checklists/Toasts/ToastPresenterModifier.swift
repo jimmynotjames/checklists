@@ -5,33 +5,31 @@
 
 import SwiftUI
 
-/// Draws whatever toast is up, and at the root also announces it and clears it on backgrounding.
+/// Where a toast layer sits, which decides when it is the one that draws.
+enum ToastPlacement: Equatable {
+  /// `ChecklistsView`, the navigation stack's root.
+  case list
+  case pushed(AppRoute)
+  /// The root view of whatever sheet the router presents.
+  case sheet
+}
+
+/// Draws whatever toast is up, over one screen's content.
 ///
-/// Applied twice, because a `.sheet` is presented outside the root overlay's hierarchy and a toast
-/// cannot be drawn over one from there: once at the root via `toastPresenter()`, and once on the
-/// sheet's own content via `toastOverlay()`. Exactly one of the two draws at a time — the root
-/// stands down while a sheet is up — so a toast is always visible wherever the person is looking,
-/// and it is never announced or timed twice.
-private struct ToastLayer: ViewModifier {
-  /// How far the card sits above the safe area on an ordinary screen.
+/// Applied inside each screen's `NavigationStack` rather than once over the whole window, so the
+/// card is laid out in the screen's safe area. That area already excludes the bars wherever the
+/// system puts them — `ChecklistsView`'s bottom toolbar, or the vertical bar on iPhone Duo — so the
+/// card clears them without knowing their size. Exactly one layer draws at a time, the one on the
+/// frontmost screen; announcing, and clearing on backgrounding, belong to `ToastCoordinator` at the
+/// root.
+private struct ToastOverlay: ViewModifier {
   private static let bottomInset: CGFloat = 16
 
-  /// Clears `ChecklistsView`'s bottom toolbar, which holds Add or Edit mode's actions. At
-  /// `bottomInset` the card would lie over the bar and swallow taps meant for it. On iPhone Duo's
-  /// outer display the bar moves to the side, so there the card sits higher than it needs to.
-  private static let bottomBarClearance: CGFloat = 88
-
-  /// The root layer owns the announcement and the scene handling; the sheet's layer only draws,
-  /// so neither fires twice.
-  let isRoot: Bool
+  let placement: ToastPlacement
 
   @Environment(ToastPresenter.self) private var presenter
   @Environment(Router.self) private var router
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
-  @Environment(\.scenePhase) private var scenePhase
-
-  /// When the last sheet started closing, so an announcement raised as it goes can wait it out.
-  @State private var sheetClosedAt: ContinuousClock.Instant?
 
   func body(content: Content) -> some View {
     content
@@ -49,49 +47,59 @@ private struct ToastLayer: ViewModifier {
           .padding(.horizontal, 16)
           // In line with the list's rows on a wide window rather than spanning it.
           .frame(maxWidth: readableColumnMaxWidth)
-          .padding(.bottom, bottomClearance)
+          // From the safe area, which includes the keyboard, so with the keyboard up the card
+          // rides above it.
+          .padding(.bottom, Self.bottomInset)
           .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
         }
       }
       // Value-scoped on purpose. `withAnimation` inside the presenter would be transaction-scoped
       // and animate every other change in the same update turn.
       .animation(.easeInOut(duration: 0.25), value: presenter.current?.id)
+  }
+
+  /// A screen under a pushed one, or under a sheet, stays mounted, so every layer checks that its
+  /// screen is the frontmost. The sheet's check is not redundant: a dismissing sheet's content stays
+  /// mounted for its slide-out, so a toast raised just after `dismiss()` would otherwise be drawn
+  /// by both the sheet and the screen beneath it.
+  private var drawsHere: Bool {
+    switch placement {
+    case .sheet: router.sheet != nil
+    case .list: router.sheet == nil && router.path.isEmpty
+    case let .pushed(route): router.sheet == nil && router.path.last == route
+    }
+  }
+}
+
+/// Announces each toast and clears it on backgrounding, once for the whole app; `ToastOverlay`
+/// does the drawing.
+private struct ToastCoordinator: ViewModifier {
+  @Environment(ToastPresenter.self) private var presenter
+  @Environment(Router.self) private var router
+  @Environment(\.scenePhase) private var scenePhase
+
+  /// When the last sheet started closing, so an announcement raised as it goes can wait it out.
+  @State private var sheetClosedAt: ContinuousClock.Instant?
+
+  func body(content: Content) -> some View {
+    content
       // Keyed on the toast, not its message: a repeat with the same words is still news — a
       // second copy into the same checklist, a second failed save — and under VoiceOver the first
       // never timed out, so keying on the words would leave the second unspoken. A replaced
       // toast's pending announcement is cancelled with it.
-      .task(id: announcedToastID) { await announceCurrent() }
+      .task(id: presenter.current?.id) { await announceCurrent() }
       // `dismiss()` clears `router.sheet` as the slide-out starts, in the same update that
       // raises a "Copied to…" toast.
       .onChange(of: router.sheet == nil) { _, closed in
-        guard isRoot, closed else { return }
+        guard closed else { return }
         sheetClosedAt = .now
       }
       // A toast raised just before the app suspends would otherwise still be there on return,
       // then vanish at a moment unrelated to anything the person did.
       .onChange(of: scenePhase) { _, phase in
-        guard isRoot, phase != .active else { return }
+        guard phase != .active else { return }
         presenter.dismiss()
       }
-  }
-
-  /// The bottom toolbar belongs to `ChecklistsView`, which is what the card sits over exactly when
-  /// nothing is pushed and no sheet is up. Measured from the safe area, which includes the
-  /// keyboard, so with the keyboard up the card rides above it. `AnalyticsConsentSheet`'s
-  /// Accept/Decline stack is taller than either value clears; a toast over it needs a third case.
-  private var bottomClearance: CGFloat {
-    isRoot && router.path.isEmpty ? Self.bottomBarClearance : Self.bottomInset
-  }
-
-  /// Both layers key off the same condition, so exactly one ever draws. The sheet's half is not
-  /// redundant: a dismissing sheet's content stays mounted for its slide-out, so a toast raised
-  /// just after `dismiss()` would otherwise be drawn by both.
-  private var drawsHere: Bool {
-    isRoot ? router.sheet == nil : router.sheet != nil
-  }
-
-  private var announcedToastID: UUID? {
-    isRoot ? presenter.current?.id : nil
   }
 
   /// `.announcement`, never `.screenChanged`: the latter moves VoiceOver focus, which for
@@ -100,7 +108,7 @@ private struct ToastLayer: ViewModifier {
   /// A toast raised as a sheet closes — "Copied to…" — waits the sheet out, because VoiceOver
   /// moving back to the screen underneath would cut the announcement off.
   private func announceCurrent() async {
-    guard isRoot, let id = presenter.current?.id else { return }
+    guard let id = presenter.current?.id else { return }
     // SwiftUI does not promise to run the `.onChange` above before this task, so give it the
     // turn before reading its stamp.
     await Task.yield()
@@ -116,13 +124,15 @@ private struct ToastLayer: ViewModifier {
 }
 
 extension View {
-  /// Applies the root toast layer. Apply once, innermost at the app root; see `ChecklistsApp`.
+  /// Announces toasts, and clears them on backgrounding, for the whole app. Apply once, innermost at the app root; see
+  /// `ChecklistsApp`.
   func toastPresenter() -> some View {
-    modifier(ToastLayer(isRoot: true))
+    modifier(ToastCoordinator())
   }
 
-  /// Applies the toast layer to a sheet's content, which the root layer cannot draw over.
-  func toastOverlay() -> some View {
-    modifier(ToastLayer(isRoot: false))
+  /// Draws toasts over this screen while it is the frontmost one. Apply inside the screen's
+  /// `NavigationStack`, so the bars are already outside its safe area.
+  func toastOverlay(_ placement: ToastPlacement) -> some View {
+    modifier(ToastOverlay(placement: placement))
   }
 }

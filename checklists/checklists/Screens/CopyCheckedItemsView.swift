@@ -89,6 +89,7 @@ struct CopyCheckedItemsView: View {
           }
         }
       }
+      .toastOverlay(.sheet)
     }
   }
 
@@ -173,7 +174,8 @@ struct CopyCheckedItemsView: View {
   private func hasSomethingToCopy() -> Bool {
     guard source.checkedItems.isEmpty else { return true }
     dismiss()
-    // After the dismissal, like `finish`, so the root layer draws and announces it.
+    // After the dismissal, like `finish`, so the screen beneath draws it and its announcement
+    // waits for the sheet to go.
     toasts?.show(.noCheckedItemsLeft)
     return false
   }
@@ -213,8 +215,8 @@ struct CopyCheckedItemsView: View {
     finish(copiedInto: destination, destination: .existingChecklist)
   }
 
-  /// Track, dismiss, then confirm — in that order, so the root toast layer is the one that draws
-  /// the toast (see `ToastPresenterModifier`).
+  /// Track, dismiss, then confirm — in that order, so the screen beneath the sheet is the one that
+  /// draws the toast (see `ToastPresenterModifier`).
   private func finish(copiedInto checklist: Checklist, destination: CheckedItemsCopyDestination) {
     let event = switch mode {
     case .copy: AnalyticsEvent.checklistItemsCopied

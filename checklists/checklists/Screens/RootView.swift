@@ -16,6 +16,7 @@ struct RootView: View {
     @Bindable var router = router
     NavigationStack(path: $router.path) {
       ChecklistsView()
+        .toastOverlay(.list)
         .navigationDestination(for: AppRoute.self) { route in
           switch route {
           case let .checklist(id):
@@ -24,6 +25,7 @@ struct RootView: View {
                 guard !router.path.isEmpty else { return }
                 router.path.removeLast()
               }
+              .toastOverlay(.pushed(route))
             } else {
               unresolvedPushDestination
             }
@@ -44,6 +46,7 @@ struct RootView: View {
               ChecklistScreen(checklist: checklist, isNewChecklist: true) {
                 router.sheet = nil
               }
+              .toastOverlay(.sheet)
             }
           } else {
             unresolvedSheetDestination
@@ -56,8 +59,6 @@ struct RootView: View {
           }
         }
       }
-      // The sheet's own toast layer; see `ToastPresenterModifier`.
-      .toastOverlay()
     }
   }
 

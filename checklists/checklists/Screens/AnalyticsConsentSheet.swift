@@ -114,6 +114,9 @@ struct AnalyticsConsentSheet: View {
       }
       .appBackground()
       .navigationBarTitleDisplayMode(.inline)
+      // Outside the `.safeAreaInset` above, so a toast here lies over Accept/Decline rather than
+      // above them; inside it, the card would clear them.
+      .toastOverlay(.sheet)
     }
     // Swipe-to-dismiss is a decline (`analytics-spec.md §Toggle-off behaviour`): without this, a swipe would leave the choice
     // unmade and the sheet would re-present on every checklist open.
@@ -128,6 +131,6 @@ struct AnalyticsConsentSheet: View {
 #if DEBUG
   #Preview("Consent") {
     AnalyticsConsentSheet()
-      .environment(PreviewSupport.analyticsSettings)
+      .previewEnvironment()
   }
 #endif

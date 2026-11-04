@@ -12,7 +12,7 @@ import UIKit
  Newest wins: an arriving toast replaces whatever is up, immediately. Nothing is queued or merged,
  so no toast's contents are quietly discarded in favour of the one already showing.
 
- The dismissal timer lives here rather than in `ToastLayer`'s `@State` because a toast is raised
+ The dismissal timer lives here rather than in `ToastOverlay`'s `@State` because a toast is raised
  from arbitrary call sites, which view state cannot reach, and a re-instantiated modifier would
  orphan it. Sleeping and the VoiceOver check are injectable so the lifecycle tests need no clock.
  */

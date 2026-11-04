@@ -25,7 +25,7 @@ class ChecklistViewController: UIViewController {
   /// Set by the SwiftUI host (`ChecklistScreen`) so leaving the screen updates the router's
   /// navigation state instead of calling UIKit `dismiss`/`pop` directly — a UIKit dismissal of a
   /// SwiftUI-presented container would leave the router's sheet/path out of sync with what's on
-  /// screen. When unset (pure-UIKit presentation), the original dismiss/pop paths still run.
+  /// screen.
   var onRequestDismiss: (() -> Void)?
 
   /// Set by the SwiftUI host (`ChecklistScreen`). Called with the new checklist's `id` after a
@@ -70,8 +70,8 @@ class ChecklistViewController: UIViewController {
   var analytics: any AnalyticsClient = ConsoleAnalyticsClient()
 
   /// Set by the SwiftUI host, like `analytics` above. Fed one call per item checked off — the
-  /// qualifying action for the automatic App Store review prompt. `nil` (pure-UIKit construction,
-  /// previews, tests) means the prompt is simply never fed.
+  /// qualifying action for the automatic App Store review prompt. `nil` (tests, or a host
+  /// without the coordinator in its environment) means the prompt is simply never fed.
   var ratingPrompt: RatingPromptCoordinator?
 
   /// Built in `setUpHeaderView`, once `isNewChecklist` is known. This and the four shortcuts below
