@@ -84,7 +84,9 @@ platform :ios do
     version = options[:app_version].to_s
     run_id = options[:run_id].to_s
     UI.user_error!("Pass app_version:<version> and run_id:<reviewed-run> explicitly") if version.empty? || run_id.empty?
-    command = ["python3", File.join(RELEASE_ROOT, "scripts/screenshot_content/prepare_output.py"), "--run-id", run_id]
+    # --upload stages into its own folder, so a subset never replaces the run's reviewed set.
+    command = ["python3", File.join(RELEASE_ROOT, "scripts/screenshot_content/prepare_output.py"),
+               "--run-id", run_id, "--upload"]
     command += ["--locales", options[:locales].to_s] if options[:locales]
     output, status = Open3.capture2e(*command)
     UI.user_error!(output) unless status.success?
@@ -94,11 +96,20 @@ platform :ios do
     identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
     app = Spaceship::ConnectAPI::App.find(identifier)
     UI.user_error!("No access to #{identifier}") unless app && app.bundle_id == identifier
-    ScreenshotPublish.publish(
-      app: app, version: version, locales: locales,
-      screenshots: Deliver::Loader.load_app_screenshots(staging.fetch("output"), false),
-      uploader: Deliver::UploadScreenshots.new
-    )
+    begin
+      deliver_error = ScreenshotPublish.publish(
+        app: app, version: version, locales: locales,
+        screenshots: Deliver::Loader.load_app_screenshots(staging.fetch("output"), false),
+        uploader: Deliver::UploadScreenshots.new
+      )
+    rescue ScreenshotPublish::IncompletePublish => e
+      rows = JSON.parse(File.read(File.join(RELEASE_ROOT, "fastlane", "screenshot-config.json"))).fetch("locales")
+      runtime = e.failures.keys.map { |storefront| rows.find { |row| row.fetch("storefront") == storefront }.fetch("runtime") }
+      passed = locales - e.failures.keys
+      UI.user_error!("#{e.message}\nVerified: #{passed.length} locale(s). Inspect, then retry only the rest:\n" \
+                     "fastlane ios push_screenshots app_version:#{version} run_id:#{run_id} locales:#{runtime.join(',')}")
+    end
+    UI.important("Deliver stopped (#{deliver_error.message}); every locale verified anyway.") if deliver_error
     UI.success("Screenshots uploaded for #{version}: #{locales.join(', ')}; run #{run_id}")
   end
 

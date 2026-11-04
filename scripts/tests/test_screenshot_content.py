@@ -223,6 +223,26 @@ class CaptureTests(unittest.TestCase):
         self.assertTrue(report.is_file())
         self.assertTrue(review.is_file())
 
+    def test_upload_subset_staging_leaves_the_review_set_whole(self) -> None:
+        capture_progress.begin_run("run-five", ("en-US", "de"), self.config)
+        for runtime in ("en-US", "de"):
+            self._write_capture("run-five", runtime)
+            capture_progress.mark_success("run-five", runtime, "Test Phone", self.config)
+        prepare_output.load_config = lambda: self.config
+        storefront, full_report, review = prepare_output.prepare_output("run-five", ("en-US", "de"))
+        review_page = review.read_text(encoding="utf-8")
+
+        upload = capture_progress.run_root("run-five") / "upload"
+        output, report, subset_review = prepare_output.prepare_output("run-five", ("de",), upload)
+        self.assertIsNone(subset_review)
+        self.assertEqual(report, upload.resolve() / prepare_output.STAGING_REPORT)
+        self.assertEqual(json.loads(report.read_text())["storefront_locales"], ["de-DE"])
+        self.assertFalse((output / "en-US").exists())
+        # The reviewed set, its report and its review page still cover both locales.
+        self.assertTrue((storefront / "en-US").is_dir() and (storefront / "de-DE").is_dir())
+        self.assertEqual(json.loads(full_report.read_text())["storefront_locales"], ["en-US", "de-DE"])
+        self.assertEqual(review.read_text(encoding="utf-8"), review_page)
+
     def test_each_device_needs_its_own_correctly_sized_capture(self) -> None:
         two_devices = replace(
             self.config,

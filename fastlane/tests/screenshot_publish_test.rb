@@ -6,8 +6,11 @@ class ScreenshotPublishTest < Minitest::Test
     def get_app_screenshot_sets = sets || []
   end
   Shot = Struct.new(:language, :display_type, :path)
-  RemoteShot = Struct.new(:source_file_checksum, :finished) do
+  RemoteShot = Struct.new(:source_file_checksum, :finished, :state) do
     def complete? = finished
+    def error? = state == "FAILED"
+    def awaiting_upload? = state == "AWAITING_UPLOAD"
+    def error_messages = error? ? ["IMAGE_BAD_DIMENSIONS"] : []
   end
   ScreenshotSet = Struct.new(:screenshot_display_type, :app_screenshots)
   Version = Struct.new(:version_string, :app_version_state, :localizations) do
@@ -18,10 +21,15 @@ class ScreenshotPublishTest < Minitest::Test
   end
   class Uploader
     attr_reader :calls
+    attr_accessor :upload_error
     def initialize = @calls = []
     def delete_screenshots(locales, grouped, tries:) = @calls << [:delete, locales.map(&:locale), tries]
-    def upload_screenshots(locales, grouped, timeout, tries:) = @calls << [:upload, locales.map(&:locale), tries, timeout]
     def sort_screenshots(locales) = @calls << [:sort, locales.map(&:locale)]
+
+    def upload_screenshots(locales, grouped, timeout, tries:)
+      @calls << [:upload, locales.map(&:locale), tries, timeout]
+      raise upload_error if upload_error
+    end
   end
 
   def setup
@@ -29,23 +37,105 @@ class ScreenshotPublishTest < Minitest::Test
     @app = App.new(@version)
     @uploader = Uploader.new
     @shots = [Shot.new("en-US", "APP_IPHONE_67", __FILE__)]
+    @sleeps = []
     @version.localizations.first.sets = [ScreenshotSet.new("APP_IPHONE_67", [RemoteShot.new(Digest::MD5.file(__FILE__).hexdigest, true)])]
   end
 
   def publish
-    ScreenshotPublish.publish(app: @app, version: "1.2", locales: ["en-US"], screenshots: @shots, uploader: @uploader)
+    ScreenshotPublish.publish(app: @app, version: "1.2", locales: ["en-US"], screenshots: @shots, uploader: @uploader,
+                              sleeper: ->(seconds) { @sleeps << seconds })
   end
+
+  def remote = @version.localizations.first.sets.first.app_screenshots.first
 
   def test_mutations_and_retries_only_receive_selected_locale
     publish
-    assert_equal [[:delete, ["en-US"], 3], [:upload, ["en-US"], 3, 120], [:sort, ["en-US"]]], @uploader.calls
+    assert_equal [[:delete, ["en-US"], 3], [:upload, ["en-US"], 3, 300], [:sort, ["en-US"]]], @uploader.calls
+  end
+
+  def test_deliver_giving_up_still_sorts_and_verifies
+    @uploader.upload_error = RuntimeError.new("4 incomplete screenshot(s) still exist")
+    # The remote set is complete and correct, so Deliver's give-up is not a failure; it is returned.
+    assert_same @uploader.upload_error, publish
+    assert_equal [:sort, ["en-US"]], @uploader.calls.last
+
+    remote.finished = false
+    error = assert_raises(ScreenshotPublish::IncompletePublish) { publish }
+    assert_equal({ "en-US" => ["processing APP_IPHONE_67"] }, error.failures)
+    assert_includes error.message, "4 incomplete screenshot(s) still exist"
+    assert_equal [:sort, ["en-US"]], @uploader.calls.last
+  end
+
+  def test_assets_still_processing_get_a_bounded_settle
+    remote.finished = false
+    sleeper = lambda do |seconds|
+      @sleeps << seconds
+      remote.finished = true if @sleeps.length == 2
+    end
+    ScreenshotPublish.publish(app: @app, version: "1.2", locales: ["en-US"], screenshots: @shots, uploader: @uploader,
+                              sleeper: sleeper)
+    assert_equal [60, 60], @sleeps
+
+    @sleeps = []
+    remote.finished = false
+    assert_raises(ScreenshotPublish::IncompletePublish) { publish }
+    assert_equal ScreenshotPublish::SETTLE_SECONDS, @sleeps
+  end
+
+  def test_complete_without_checksum_is_still_processing
+    remote.source_file_checksum = nil
+    sleeper = lambda do |seconds|
+      @sleeps << seconds
+      remote.source_file_checksum = Digest::MD5.file(__FILE__).hexdigest
+    end
+    ScreenshotPublish.publish(app: @app, version: "1.2", locales: ["en-US"], screenshots: @shots, uploader: @uploader,
+                              sleeper: sleeper)
+    assert_equal [60], @sleeps
+  end
+
+  def test_failed_or_never_uploaded_assets_fail_without_waiting
+    %w[FAILED AWAITING_UPLOAD].each do |state|
+      remote.finished = false
+      remote.state = state
+      error = assert_raises(ScreenshotPublish::IncompletePublish) { publish }
+      expected = state == "FAILED" ? "failed APP_IPHONE_67 (IMAGE_BAD_DIMENSIONS)" : "failed APP_IPHONE_67"
+      assert_equal({ "en-US" => [expected] }, error.failures)
+    end
+    assert_empty @sleeps
+  end
+
+  def test_a_later_error_keeps_the_deliver_error_that_caused_it
+    @uploader.upload_error = RuntimeError.new("session expired")
+    def @uploader.sort_screenshots(_locales) = raise(IOError, "sort request failed")
+    error = assert_raises(IOError) { publish }
+    assert_equal "sort request failed (after Deliver stopped with: session expired)", error.message
+  end
+
+  def test_wrong_files_fail_without_waiting
+    remote.source_file_checksum = "wrong"
+    error = assert_raises(ScreenshotPublish::IncompletePublish) { publish }
+    assert_equal({ "en-US" => ["files APP_IPHONE_67"] }, error.failures)
+    assert_empty @sleeps
+  end
+
+  def test_every_failing_locale_is_reported_for_one_retry
+    path = File.expand_path("../lib/screenshot_publish.rb", __dir__)
+    fr = @version.localizations.last
+    fr.sets = [ScreenshotSet.new("APP_IPHONE_67", [RemoteShot.new(Digest::MD5.file(path).hexdigest, false)])]
+    @version.localizations.first.sets.first.app_screenshots.first.source_file_checksum = "wrong"
+    shots = @shots + [Shot.new("fr-FR", "APP_IPHONE_67", path)]
+    error = assert_raises(ScreenshotPublish::IncompletePublish) do
+      ScreenshotPublish.publish(app: @app, version: "1.2", locales: ["en-US", "fr-FR"], screenshots: shots,
+                                uploader: @uploader, sleeper: ->(_seconds) {})
+    end
+    assert_equal({ "en-US" => ["files APP_IPHONE_67"], "fr-FR" => ["processing APP_IPHONE_67"] }, error.failures)
   end
 
   def test_remote_verification_rejects_unexpected_sets
     locale = Object.new
     def locale.locale = "en-US"
     def locale.get_app_screenshot_sets = []
-    assert_raises(RuntimeError) { ScreenshotPublish.verify_remote!([locale], { "en-US" => @shots }) }
+    assert_equal({ "en-US" => ["unexpected sets "] }, ScreenshotPublish.remote_failures([locale], { "en-US" => @shots }))
   end
 
   def test_incomplete_or_wrong_remote_asset_is_not_success
@@ -62,7 +152,8 @@ class ScreenshotPublishTest < Minitest::Test
     remote = @version.localizations.first.sets.first.app_screenshots
     remote << RemoteShot.new(Digest::MD5.file(@shots.last.path).hexdigest, true)
     # Expected filename order is screenshot_publish.rb, then screenshot_publish_test.rb.
-    assert_raises(RuntimeError) { publish }
+    error = assert_raises(ScreenshotPublish::IncompletePublish) { publish }
+    assert_equal({ "en-US" => ["order APP_IPHONE_67"] }, error.failures)
     remote.reverse!
     publish
   end
