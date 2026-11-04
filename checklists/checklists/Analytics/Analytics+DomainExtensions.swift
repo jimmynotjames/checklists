@@ -3,27 +3,7 @@
 //  checklists
 //
 
-import UIKit
-
-/// Maps a device orientation to the `orientation` property value, or `nil` when the rotation is
-/// not one this app reports.
-///
-/// Face-up and face-down fire the same notification as a real rotation but say nothing about how
-/// the app is being held, so they are filtered rather than bucketed into one of the two values.
-///
-/// Upside-down portrait maps to `portrait`. The app does not support that orientation, but the
-/// notification can still arrive, and calling it portrait is more honest than dropping it.
-///
-/// Pure and `nonisolated` so it can be tested without a device or a running app.
-nonisolated func orientationAnalyticsValue(_ orientation: UIDeviceOrientation) -> String? {
-  if orientation.isPortrait {
-    return "portrait"
-  }
-  if orientation.isLandscape {
-    return "landscape"
-  }
-  return nil
-}
+import Foundation
 
 /// Buckets a count for the `checklists_count_bucket` **profile** property. Events carry raw counts;
 /// cohorts are built from profiles, where a bucket is what is useful.

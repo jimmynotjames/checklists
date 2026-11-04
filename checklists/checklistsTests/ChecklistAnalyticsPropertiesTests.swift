@@ -7,8 +7,8 @@
 import SwiftData
 import Testing
 
-/// Covers the two pure mappings that feed events: `Checklist.analyticsViewedProperties` and
-/// `orientationAnalyticsValue`.
+/// Covers the pure mappings that feed analytics: `Checklist.analyticsViewedProperties` and
+/// `checklistsCountBucket`.
 ///
 /// `analyticsViewedProperties` is also where this app's PII boundary is drawn in code
 /// (analytics-spec.md §Privacy), so the negative assertions below — that no note text and no item name
@@ -96,29 +96,6 @@ struct ChecklistAnalyticsPropertiesTests {
     #expect(!rendered.contains("SECRET_ITEM_NOTE"))
     #expect(!rendered.contains("SECRET_CHECKLIST_NOTE"))
     #expect(rendered.contains("Trip"), "The checklist name is the one allow-listed free text.")
-  }
-
-  // MARK: - Orientation
-
-  @Test("portrait orientations map to portrait")
-  func portraitOrientationsMapToPortrait() {
-    #expect(orientationAnalyticsValue(.portrait) == "portrait")
-    #expect(orientationAnalyticsValue(.portraitUpsideDown) == "portrait")
-  }
-
-  @Test("landscape orientations map to landscape")
-  func landscapeOrientationsMapToLandscape() {
-    #expect(orientationAnalyticsValue(.landscapeLeft) == "landscape")
-    #expect(orientationAnalyticsValue(.landscapeRight) == "landscape")
-  }
-
-  /// Laying the device flat fires the same notification as a real rotation but says nothing about
-  /// how the app is being held, so it must produce no event at all.
-  @Test("flat and unknown orientations are dropped")
-  func flatAndUnknownOrientationsAreDropped() {
-    #expect(orientationAnalyticsValue(.faceUp) == nil)
-    #expect(orientationAnalyticsValue(.faceDown) == nil)
-    #expect(orientationAnalyticsValue(.unknown) == nil)
   }
 
   // MARK: - Cohort bucketing

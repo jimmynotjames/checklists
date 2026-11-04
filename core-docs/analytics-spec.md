@@ -42,7 +42,6 @@ A dashboard is justified by a question here. The IDs are stable; board names cit
 | 3.4 | Is the notes feature used? | `items_with_notes_count`, `notes_length` |
 | 3.5 | Reuse (reset), template (duplicate, copy items), or disposable (create, delete, move or delete checked items)? | the checklist action events, plus `checklists_bulk_action_performed` by `bulk_action` for the list's Edit mode and `all_checklists_reset` for its Reset All |
 | 3.6 | How often does the store fail to open, and how often is that unrecoverable? | `startup_failed` / `startup_store_reset` at `startup_stage = store_open` |
-| 3.7 | Does anyone rotate the device? | `orientation_changed` |
 | 3.8 | What share opt out, by jurisdiction? | `analytics_consent_changed`, `consent_jurisdiction` — approximate (§Toggle-off behaviour) |
 | 3.9 | When do people reach the review-prompt bar, and how soon does the app ask? | `rating_prompt_eligible` → `rating_prompt_requested` |
 | 3.10 | How often does an upgrader's old data end up out of reach? | `startup_failed` at `legacy_import`, `legacy_import_abandoned` |
@@ -54,9 +53,6 @@ A dashboard is justified by a question here. The IDs are stable; board names cit
 3.9 stops at the request: `requestReview` reports neither whether the dialog showed nor what was
 chosen, and no custom pre-prompt manufactures that signal. The bar is three constants on
 `RatingPromptCoordinator`.
-
-3.7 exists to decide whether `orientation_changed` and `ChecklistsApp`'s
-`beginGeneratingDeviceOrientationNotifications()` call are worth keeping.
 
 3.12 exists to decide whether the checklist menu needs a Duplicate Checked Items entry: runs of
 three or more in one session are the signal for it.
@@ -76,7 +72,7 @@ with its rationale recorded here. The app code sends exactly:
 - **Event names** in §Event catalog.
 - **Event properties:** `checklists_count`, `items_count`, `items_with_notes_count`, `notes_length`
   (integers, never content); `checklist_name` (§Free-text exception); `source`, `destination`,
-  `orientation`, `error_operation`, `startup_stage`, `container_backing`, `icloud_account`,
+  `error_operation`, `startup_stage`, `container_backing`, `icloud_account`,
   `sync_operation`, `bulk_action` (app-owned enumerations); `selected_count`, `checked_items_count` (integers); `error_domain`, `error_code` (an `NSError`'s domain and
   code, never its `userInfo`); `new_value`, `old_value` (booleans); `time_since_first_eligible_bucket`
   (a bucket, not a timestamp).
@@ -266,7 +262,6 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `rate_app_tapped` | "Rate in App Store" tapped in Settings | — |
 | `feedback_tapped` | "Send Feedback" tapped, Settings **or** failure screen | — |
 | `privacy_policy_tapped` | The privacy policy is opened | — |
-| `orientation_changed` | Portrait ↔ landscape | `orientation` |
 | `persistence_fatal_error` | The store cannot be opened | `error_domain`, `error_code` |
 | `persistence_write_failed` | A SwiftData save throws | `error_domain`, `error_code`, `error_operation` |
 | `startup_failed` | The failure screen is shown | `error_domain`, `error_code`, `startup_stage` |
@@ -307,7 +302,6 @@ back in (§Toggle-off behaviour).
 | `container_backing` | String | `ContainerBacking.rawValue`: `cloudkit`, `local_fallback` |
 | `icloud_account` | String | `SyncStatus.AccountStatus.rawValue`: `available`, `no_account`, `restricted`, `temporarily_unavailable`, `could_not_determine` (`.checking` is never sent) |
 | `sync_operation` | String | `SyncOperation.rawValue`: `setup`, `import`, `export` |
-| `orientation` | String | `portrait` / `landscape`; face-up/down are dropped |
 | `new_value` / `old_value` | Bool | |
 | `time_since_first_eligible_bucket` | String | `<1d` / `<7d` / `<30d` / `30d+` |
 
