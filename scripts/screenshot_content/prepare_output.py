@@ -158,12 +158,15 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--locales", action="append", help="Repeatable or comma-separated active runtime locales")
-    parser.add_argument("--output", type=Path)
+    target = parser.add_mutually_exclusive_group()
+    target.add_argument("--output", type=Path)
+    target.add_argument("--upload", action="store_true", help="Stage into the run's upload/ folder")
     args = parser.parse_args(argv)
     try:
         config = load_config()
         locales = parse_locale_args(args.locales, config)
-        output, report, review = prepare_output(args.run_id, locales, args.output)
+        destination = run_root(args.run_id) / "upload" if args.upload else args.output
+        output, report, review = prepare_output(args.run_id, locales, destination)
         print(
             json.dumps(
                 {

@@ -6,8 +6,11 @@ class ScreenshotPublishTest < Minitest::Test
     def get_app_screenshot_sets = sets || []
   end
   Shot = Struct.new(:language, :display_type, :path)
-  RemoteShot = Struct.new(:source_file_checksum, :finished) do
+  RemoteShot = Struct.new(:source_file_checksum, :finished, :state) do
     def complete? = finished
+    def error? = state == "FAILED"
+    def awaiting_upload? = state == "AWAITING_UPLOAD"
+    def error_messages = error? ? ["IMAGE_BAD_DIMENSIONS"] : []
   end
   ScreenshotSet = Struct.new(:screenshot_display_type, :app_screenshots)
   Version = Struct.new(:version_string, :app_version_state, :localizations) do
@@ -52,7 +55,8 @@ class ScreenshotPublishTest < Minitest::Test
 
   def test_deliver_giving_up_still_sorts_and_verifies
     @uploader.upload_error = RuntimeError.new("4 incomplete screenshot(s) still exist")
-    publish # The remote set is complete and correct, so Deliver's give-up is not a failure.
+    # The remote set is complete and correct, so Deliver's give-up is not a failure; it is returned.
+    assert_same @uploader.upload_error, publish
     assert_equal [:sort, ["en-US"]], @uploader.calls.last
 
     remote.finished = false
@@ -76,6 +80,35 @@ class ScreenshotPublishTest < Minitest::Test
     remote.finished = false
     assert_raises(ScreenshotPublish::IncompletePublish) { publish }
     assert_equal ScreenshotPublish::SETTLE_SECONDS, @sleeps
+  end
+
+  def test_complete_without_checksum_is_still_processing
+    remote.source_file_checksum = nil
+    sleeper = lambda do |seconds|
+      @sleeps << seconds
+      remote.source_file_checksum = Digest::MD5.file(__FILE__).hexdigest
+    end
+    ScreenshotPublish.publish(app: @app, version: "1.2", locales: ["en-US"], screenshots: @shots, uploader: @uploader,
+                              sleeper: sleeper)
+    assert_equal [60], @sleeps
+  end
+
+  def test_failed_or_never_uploaded_assets_fail_without_waiting
+    %w[FAILED AWAITING_UPLOAD].each do |state|
+      remote.finished = false
+      remote.state = state
+      error = assert_raises(ScreenshotPublish::IncompletePublish) { publish }
+      expected = state == "FAILED" ? "failed APP_IPHONE_67 (IMAGE_BAD_DIMENSIONS)" : "failed APP_IPHONE_67"
+      assert_equal({ "en-US" => [expected] }, error.failures)
+    end
+    assert_empty @sleeps
+  end
+
+  def test_a_later_error_keeps_the_deliver_error_that_caused_it
+    @uploader.upload_error = RuntimeError.new("session expired")
+    def @uploader.sort_screenshots(_locales) = raise(IOError, "sort request failed")
+    error = assert_raises(IOError) { publish }
+    assert_equal "sort request failed (after Deliver stopped with: session expired)", error.message
   end
 
   def test_wrong_files_fail_without_waiting
@@ -102,7 +135,7 @@ class ScreenshotPublishTest < Minitest::Test
     locale = Object.new
     def locale.locale = "en-US"
     def locale.get_app_screenshot_sets = []
-    assert_raises(RuntimeError) { ScreenshotPublish.verify_remote!([locale], { "en-US" => @shots }) }
+    assert_equal({ "en-US" => ["unexpected sets "] }, ScreenshotPublish.remote_failures([locale], { "en-US" => @shots }))
   end
 
   def test_incomplete_or_wrong_remote_asset_is_not_success

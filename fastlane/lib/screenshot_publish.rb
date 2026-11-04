@@ -32,6 +32,7 @@ module ScreenshotPublish
     end
   end
 
+  # Returns the error Deliver stopped with, if any, once remote state verified anyway.
   def self.publish(app:, version:, locales:, screenshots:, uploader:, sleeper: Kernel.method(:sleep))
     raise ArgumentError, "Select at least one locale" if locales.empty? || locales.uniq != locales
     grouped = screenshots.group_by(&:language)
@@ -50,20 +51,24 @@ module ScreenshotPublish
     end
     # Deliver raises once its retries run out, before sorting, so sort and verify
     # regardless; otherwise every locale it already uploaded keeps upload order.
-    uploader.sort_screenshots(selected)
-    failures = remote_failures(selected, grouped)
-    SETTLE_SECONDS.each do |seconds|
-      break unless failures.any? && failures.values.flatten.all? { |problem| problem.start_with?("processing") }
-
-      sleeper.call(seconds)
+    begin
+      uploader.sort_screenshots(selected)
       failures = remote_failures(selected, grouped)
+      SETTLE_SECONDS.each do |seconds|
+        break unless failures.any? && failures.values.flatten.all? { |problem| problem.start_with?("processing") }
+
+        sleeper.call(seconds)
+        failures = remote_failures(selected, grouped)
+      end
+    rescue StandardError => e
+      raise if upload_error.nil?
+
+      # Keep the error that stopped the upload; this one may only be its consequence.
+      raise e.class, "#{e.message} (after Deliver stopped with: #{upload_error.message})"
     end
     raise IncompletePublish.new(failures, upload_error) unless failures.empty?
-  end
 
-  def self.verify_remote!(localizations, grouped)
-    failures = remote_failures(localizations, grouped)
-    raise IncompletePublish.new(failures, nil) unless failures.empty?
+    upload_error
   end
 
   # Every selected locale's problems, so one retry can name all of them.
@@ -81,7 +86,12 @@ module ScreenshotPublish
                             .map { |shot| Digest::MD5.file(shot.path).hexdigest }
         remote = set.app_screenshots.to_a
         remote_checksums = remote.map { |shot| shot.source_file_checksum.to_s }
-        if !remote.all?(&:complete?)
+        failed = remote.select { |shot| shot.error? || shot.awaiting_upload? }
+        if failed.any?
+          messages = failed.flat_map { |shot| Array(shot.error_messages) }
+          problems << "failed #{type}#{messages.empty? ? '' : " (#{messages.join('; ')})"}"
+        elsif !remote.all? { |shot| shot.complete? && shot.source_file_checksum }
+          # App Store Connect publishes the checksum shortly after COMPLETE, as Deliver also allows.
           problems << "processing #{type}"
         elsif remote_checksums.sort == checksums.sort && remote_checksums != checksums
           problems << "order #{type}"
