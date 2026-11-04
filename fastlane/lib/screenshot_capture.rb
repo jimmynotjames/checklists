@@ -9,7 +9,7 @@ require "time"
 
 # Owns local screenshot capture state. It has no App Store Connect dependency.
 class ScreenshotCapture
-  SUPPORTED_FASTLANE_VERSION = "2.236.1"
+  SUPPORTED_FASTLANE_VERSION = "2.241.2"
 
   def initialize(root, command_runner: nil)
     @root = File.expand_path(root)

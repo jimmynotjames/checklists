@@ -52,5 +52,5 @@
     "zh-Hans",
     "zh-Hant"
   ],
-  "source": "Fastlane 2.236.1 FastlaneCore::Languages::ALL_LANGUAGES"
+  "source": "Fastlane 2.241.2 FastlaneCore::Languages::ALL_LANGUAGES"
 }
