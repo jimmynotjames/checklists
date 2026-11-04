@@ -16,8 +16,7 @@ extension ChecklistViewController {
     case delete
   }
 
-  /// Picks the menu's wording for this screen's mode and hands the bar its actions. The toolbar
-  /// itself is `ChecklistScreen`'s.
+  /// Picks the menu's wording for this screen's mode and hands the bar its actions.
   func configureBar() {
     showsDiscardWording = isNewChecklist
     bar.isNewChecklist = isNewChecklist
@@ -129,7 +128,7 @@ extension ChecklistViewController {
     }
   }
 
-  /// Internal so a test can invoke it, like the actions in this extension's doc comment.
+  /// Internal so a test can invoke it: a SwiftUI menu button cannot be tapped from one.
   func checkedItemsEntryTapped(_ entry: CheckedItemsMenuEntry) {
     // Commits in-progress edits first; see `duplicateChecklist`.
     view.endEditing(true)
@@ -189,7 +188,7 @@ extension ChecklistViewController {
   /// The existing-checklist wording matches the confirmation the checklists list puts behind a
   /// swipe, so deleting a checklist reads the same wherever it is started from; the create sheet
   /// gets its own copy for the same reason its menu entry does.
-  func confirmDeleteChecklist() {
+  private func confirmDeleteChecklist() {
     let message = showsDiscardWording ? Self.discardConfirmationMessage : CommonStrings.irreversibleConfirmation
     let confirmTitle = showsDiscardWording ? Self.discardActionTitle : CommonStrings.delete
     let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)

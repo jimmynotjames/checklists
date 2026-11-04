@@ -126,8 +126,8 @@ class ChecklistViewController: UIViewController {
   /// init time.
   var saveItemMove: ((Item, [Item], Int) throws -> Void)?
 
-  /// Overrides what this screen tells VoiceOver after an action or a mode change: the element or bar
-  /// item to focus, and the announcement. `nil` — the normal case — posts both for real. Set by tests
+  /// Overrides what this screen tells VoiceOver after an action: the element to focus, and the
+  /// announcement. Bar focus goes through `ChecklistBar.requestFocus` instead. `nil` — the normal case — posts both for real. Set by tests
   /// to observe them.
   var accessibilityFeedback: ((NSObject?, String?) -> Void)?
 
@@ -339,8 +339,6 @@ class ChecklistViewController: UIViewController {
     }
     super.setEditing(editing, animated: animated)
     tableView.setEditing(editing, animated: animated)
-    // Clears the bar down to Done, as ChecklistsView's Edit mode does, and hides Back, and its edge
-    // swipe with it; the VoiceOver escape gesture still leaves the mode.
     bar.setMode(editing ? .reordering : (isEditingText ? .typing : .idle), animated: animated)
     moveVoiceOverAfterBarSwap()
 

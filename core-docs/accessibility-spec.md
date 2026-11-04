@@ -113,10 +113,10 @@ long and which the user just acted on.
   at the outer edge: ⋯, or the create sheet's own Done. The controller asks through
   `ChecklistBar.focusRequest`, and `ChecklistScreen`'s toolbar moves VoiceOver with
   `AccessibilityFocusState`, as ChecklistsView does. Back is the stack's own, read as the list's
-  title. Reorder Items mode hides it, which also blocks the back swipe; the controller's
-  `accessibilityPerformEscape` leaves the mode when escape comes from the screen's content. Whether
-  escape from the bar itself is blocked is unverified on a device, where it would leave the screen
-  mid-mode instead of leaving the mode.
+  title. Reorder Items mode hides it, which also blocks the back swipe. The controller's
+  `accessibilityPerformEscape` override leaves the mode: escape from the table reaches it, the
+  table being the controller's own view. Escape from the bar runs up SwiftUI's chain instead;
+  whether it leaves the screen mid-mode is unverified on a device.
 - **The Copy/Move Checked Items sheet** shows the same Done while its name field is being typed
   into. Nothing takes its place when it goes, so after a beat VoiceOver moves back to the name field.
 - **The failure screen** (`ContainerFailureView`) replaces the app unasked, so after a beat it posts

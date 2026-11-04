@@ -16,7 +16,6 @@ final class ChecklistBar {
     case idle
     /// A field on the screen is being typed into.
     case typing
-    /// Reorder Items mode.
     case reordering
   }
 

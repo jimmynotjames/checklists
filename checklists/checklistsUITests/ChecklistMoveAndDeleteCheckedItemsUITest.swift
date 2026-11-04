@@ -135,6 +135,8 @@ class ChecklistMoveAndDeleteCheckedItemsUITest: XCTestCase {
         "With nothing checked there is nothing to pick a destination for.",
       )
       XCTAssertTrue(app.buttons[identifier].waitForNonExistence(timeout: 5), "The menu didn't close.")
+      // Gone before the next entry is tried, so its toast is its own and not this one's.
+      XCTAssertTrue(noCheckedItemsToast.waitForNonExistence(timeout: 10), "The toast didn't go.")
     }
   }
 

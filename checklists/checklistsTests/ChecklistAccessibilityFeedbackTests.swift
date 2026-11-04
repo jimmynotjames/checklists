@@ -107,9 +107,9 @@ struct ChecklistAccessibilityFeedbackTests {
   }
 }
 
-@Suite("Checklist menu VoiceOver feedback", .serialized)
+/// Not VoiceOver feedback as such: the toast announces itself; see `ToastPresenterModifier`.
+@Suite("Checklist menu nothing-checked toast", .serialized)
 struct ChecklistMenuFeedbackTests {
-  /// The toast announces itself; see `ToastPresenterModifier`.
   @Test("tapping a checked-items entry with nothing ticked asks for the toast, once", arguments: [
     ChecklistViewController.CheckedItemsMenuEntry.copy, .move, .delete,
   ])
