@@ -60,7 +60,7 @@ nonisolated enum ToastStyle {
     case .info: Colors.panelForegroundColor
     case .success: Colors.successColor
     case .warning: Colors.warningColor
-    case .error: Colors.destructiveColor
+    case .error: Colors.toastErrorColor
     }
   }
 }
