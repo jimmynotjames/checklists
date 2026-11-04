@@ -566,7 +566,9 @@ class ChecklistViewController: UIViewController {
       }
     }
     // The keyboard arriving, or a rotation or fold under it, shortens the table.
-    if tableView.bounds.height < lastTableHeight {
+    // Not mid-drag: the guide follows an interactive dismissal, and pulling the row back under the
+    // user's finger would fight the gesture.
+    if tableView.bounds.height < lastTableHeight, !tableView.isTracking {
       scrollEditingCellIntoView()
     }
     lastTableHeight = tableView.bounds.height
@@ -747,7 +749,6 @@ extension ChecklistViewController: UIScrollViewDelegate {
 
 // MARK: - Keyboard dynamics.
 
-/// Breathing room between the edited row and the keyboard.
 private let editingRowClearance: CGFloat = 20.0
 
 extension ChecklistViewController {
@@ -774,8 +775,13 @@ extension ChecklistViewController {
   /// bottom edge, and only while an item row is being typed into: the keyboard's own geometry is
   /// the keyboard layout guide's, which shortens the table.
   private func updateEditingClearance() {
-    let isEditingItem = editingItemCell?.itemContentView.isEditing == true
-    tableView.contentInset.bottom = isEditingItem ? editingRowClearance : 0.0
+    let clearance = editingItemCell?.itemContentView.isEditing == true ? editingRowClearance : 0.0
+    guard tableView.contentInset.bottom != clearance else { return }
+    // Animated, so a list scrolled to its end settles back down rather than snapping. Called after
+    // editing ends, outside the keyboard's own animation.
+    UIView.animate(withDuration: 0.1) {
+      self.tableView.contentInset.bottom = clearance
+    }
   }
 
   private func findEditingCell() -> UITableViewCell? {

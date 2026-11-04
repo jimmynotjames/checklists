@@ -165,7 +165,7 @@ full two-family sweep, and the reasoning behind each verdict.
 | `ToastPresenterModifier` toast transition | **Gated** — cross-fades instead of sliding up from the bottom edge |
 | `ChecklistViewController.resetButtonTapped` scroll-to-top | **Gated** — jumps instead of gliding, and reloads directly, because the animated path defers its reload to `scrollViewDidScroll` |
 | `NavigationStack` push/pop, `.sheet`, `.alert`, `Toggle`, `.onMove`, `UIDragInteraction` reorder | System-owned. No app code specifies motion |
-| `ChecklistViewController` item-insert and scroll-into-view animations (all ≤ 0.1s) | **Functional, left alone.** They keep the target row on screen and the edited field clear of the keyboard (which the keyboard layout guide keeps the table above); suppressing them trades an a11y win for an a11y regression |
+| `ChecklistViewController` item-insert scroll, the scroll-into-view that rides the keyboard's own animation, and the 0.1s editing-clearance inset change | **Functional, left alone.** They keep the target row on screen and the edited field clear of the keyboard (which the keyboard layout guide keeps the table above); suppressing them trades an a11y win for an a11y regression |
 | `ChecklistViewController` row insert/delete/move and row-height reflow | **Left alone.** Ordinary list-editing feedback; Apple's own list apps don't suppress it |
 | `ChecklistsView` Edit mode on/off (`withAnimation`) | **Left alone.** The system's own edit-mode reveal of selection circles and handles; Apple's list apps don't suppress it |
 | `ChecklistViewController` Reorder Items mode on/off (`setEditing(_:animated:)`, add-item footer fade) | **Left alone.** The system's reveal of drag handles, plus an opacity fade |
