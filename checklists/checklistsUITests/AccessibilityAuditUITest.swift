@@ -84,6 +84,15 @@ class AccessibilityAuditUITest: XCTestCase {
       reason: "False positive: the footer is plain Form text and scales like the others in Settings.",
     ),
     KnownIssue(
+      screens: ["checklist"],
+      types: .dynamicType,
+      identifier: "checklist.reset",
+      reason: """
+      The navigation bar caps its text size, as every app's does; the button shows the Large Content \
+      Viewer instead.
+      """,
+    ),
+    KnownIssue(
       screens: ["resetAllAlert"],
       types: [.dynamicType, .elementDetection],
       inAlert: true,

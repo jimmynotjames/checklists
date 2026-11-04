@@ -121,25 +121,25 @@ class ChecklistMoveAndDeleteCheckedItemsUITest: XCTestCase {
 
   // MARK: - Nothing checked
 
-  /// The same rule the copy entry teaches, under each entry that acts on checked items.
+  /// The same rule the copy entry teaches, for each entry that acts on checked items.
   func testMoveAndDeleteEntriesExplainThemselvesWithNothingChecked() {
     checklistsList.staticTexts["Pre-Trip Checklist"].tap()
     XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
 
     for identifier in ["checklist.menu.moveCheckedItems", "checklist.menu.deleteCheckedItems"] {
       tapMenuEntry(identifier)
-      // Checked at once, not waited for; `ChecklistCopyCheckedItemsUITest` says why.
-      XCTAssertTrue(app.buttons["No checked items."].exists, "No notice under \(identifier).")
+      XCTAssertTrue(noCheckedItemsToast.waitForExistence(timeout: 5), "No toast for \(identifier).")
       XCTAssertFalse(app.alerts.firstMatch.exists, "With nothing checked there is nothing to confirm.")
       XCTAssertFalse(
         app.buttons["copyDestination.createNewChecklist"].exists,
         "With nothing checked there is nothing to pick a destination for.",
       )
-      // Closes the menu, which stayed up to show the notice, before the next entry is tried. Waits
-      // on the entry, not the notice: the notice also leaves on its own timer with the menu still
-      // up, and the next overflow tap would then land on Reorder Items, which covers the button.
-      app.tables["ChecklistTableView"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.9)).tap()
       XCTAssertTrue(app.buttons[identifier].waitForNonExistence(timeout: 5), "The menu didn't close.")
     }
+  }
+
+  /// By label, and of any element type, as the move toast above is found.
+  private var noCheckedItemsToast: XCUIElement {
+    app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "No checked items.")).firstMatch
   }
 }

@@ -110,13 +110,13 @@ long and which the user just acted on.
 - **Reorder Items mode** swaps the bar item VoiceOver was on, so VoiceOver moves to Done on the way
   in and back to ⋯ on the way out, after the bar has relaid and the ⋯ menu has closed. Tapping the
   Done that typing adds to the bar takes that Done away, so VoiceOver moves to what takes its place
-  at the outer edge: ⋯, or the create sheet's own Done. The post
-  names the `UIBarButtonItem` itself, which VoiceOver resolves to the button the bar draws: the
-  bar's own views are private, and in a unit-test host they carry no identifier to find them by.
-  The items live in the SwiftUI stack's bar (`ChecklistViewController+BarHost`), and Back is the
-  stack's own, read as the list's title. Reorder Items mode hides it, which also blocks the back
-  swipe; whether the VoiceOver escape gesture is blocked with it is unverified on a device, where
-  escape would leave the screen mid-mode instead of leaving the mode.
+  at the outer edge: ⋯, or the create sheet's own Done. The controller asks through
+  `ChecklistBar.focusRequest`, and `ChecklistScreen`'s toolbar moves VoiceOver with
+  `AccessibilityFocusState`, as ChecklistsView does. Back is the stack's own, read as the list's
+  title. Reorder Items mode hides it, which also blocks the back swipe; the controller's
+  `accessibilityPerformEscape` leaves the mode when escape comes from the screen's content. Whether
+  escape from the bar itself is blocked is unverified on a device, where it would leave the screen
+  mid-mode instead of leaving the mode.
 - **The Copy/Move Checked Items sheet** shows the same Done while its name field is being typed
   into. Nothing takes its place when it goes, so after a beat VoiceOver moves back to the name field.
 - **The failure screen** (`ContainerFailureView`) replaces the app unasked, so after a beat it posts
@@ -138,8 +138,8 @@ long and which the user just acted on.
   dismissed, so the message is one element whose double-tap, Dismiss action and escape scrub all
   dismiss it, with a hint saying so. An Undo button stays its own element.
 - **Rarer outcomes.**
-  - The overflow menu's "No checked items." row is announced as it appears; a disabled row isn't read
-    out by appearing.
+  - Tapping a ⋯ entry that acts on checked items with nothing checked shows a "No checked items."
+    toast, announced as toasts are.
   - When the open checklist is deleted on another device, it closes with a toast saying so, for
     everyone. There's no toast for sample dedupe, whose surviving twin is the same checklist, nor for
     the screen's own Delete Checklist coming back as a store change.
@@ -169,8 +169,8 @@ full two-family sweep, and the reasoning behind each verdict.
 | `ChecklistViewController` row insert/delete/move and row-height reflow | **Left alone.** Ordinary list-editing feedback; Apple's own list apps don't suppress it |
 | `ChecklistsView` Edit mode on/off (`withAnimation`) | **Left alone.** The system's own edit-mode reveal of selection circles and handles; Apple's list apps don't suppress it |
 | `ChecklistViewController` Reorder Items mode on/off (`setEditing(_:animated:)`, add-item footer fade) | **Left alone.** The system's reveal of drag handles, plus an opacity fade |
-| `ChecklistViewController` nav-title fade on scroll | **Left alone.** Opacity, not simulated movement |
-| `ChecklistViewController.updateEditingDoneBarButtonItem` editing Done coming and going (`navigationItem.pinnedTrailingGroup`, which has no animated setter) | **Left alone.** Whatever the system's bar relayout does with the pinned group; Notes adds its editing Done the same way |
+| `ChecklistBar.setTitle` nav-title fade on scroll (`withAnimation`) | **Left alone.** Opacity, not simulated movement |
+| `ChecklistBar.setMode` editing Done coming and going (`withAnimation`) | **Left alone.** The system's own toolbar transition; Notes adds its editing Done the same way |
 | `CopyCheckedItemsView` Done coming and going with the name field's focus | **Left alone.** The system's own toolbar transition, as above |
 | `CircularPercentStatusIcon.setInnerCircle`, `CheckboxButton.setCheckboxState` | **Not animated.** Direct property assignment, outside any animation context |
 | `ProgressView` spinners (`LoadingView`, `SettingsView`) | System-owned. Progress indicators are not suppressed under Reduce Motion, by Apple's design |

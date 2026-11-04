@@ -22,10 +22,7 @@ struct ChecklistReorderModeTests {
   @Test("Reorder Items opens the menu, on a saved checklist and on the create sheet", arguments: [false, true])
   func reorderItemsLeadsTheMenu(isNewChecklist: Bool) throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: isNewChecklist) { harness in
-      let firstSection = try #require(harness.viewController.makeMoreMenu().children.first as? UIMenu)
-      let entry = try #require(firstSection.children.first as? UIAction)
-      #expect(entry.title == ChecklistViewController.reorderItemsMenuTitle)
-      #expect(firstSection.children.count == 1)
+      #expect(harness.viewController.bar.menuSections.first == [.reorderItems])
     }
   }
 
@@ -39,9 +36,10 @@ struct ChecklistReorderModeTests {
 
       #expect(controller.isReordering)
       #expect(harness.table.isEditing)
-      #expect(controller.navigationItem.rightBarButtonItems?.isEmpty ?? true)
-      #expect(controller.pinnedTrailingItem?.accessibilityIdentifier == "checklist.reorderDone")
-      #expect(controller.navigationItem.hidesBackButton)
+      // `.reordering` is also what hides Back; see `ChecklistScreen`.
+      #expect(controller.bar.mode == .reordering)
+      #expect(controller.bar.trailingItems.isEmpty)
+      #expect(controller.bar.pinnedItem == .reorderDone)
 
       #expect(!harness.header.nameTextField.isEnabled)
       #expect(!harness.header.notesTextView.isEditable)
@@ -67,15 +65,13 @@ struct ChecklistReorderModeTests {
   func leavingRestoresTheBar() throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
       let controller = harness.viewController
-      let original = try #require(controller.navigationItem.rightBarButtonItems)
-
       controller.enterReorderMode()
       controller.setEditing(false, animated: false)
 
       #expect(!controller.isReordering)
-      #expect(controller.navigationItem.rightBarButtonItems == original)
-      #expect(controller.pinnedTrailingItem == nil)
-      #expect(!controller.navigationItem.hidesBackButton)
+      #expect(controller.bar.mode == .idle)
+      #expect(controller.bar.trailingItems == [.more, .primary])
+      #expect(controller.bar.pinnedItem == nil)
       #expect(harness.header.nameTextField.isEnabled)
       let footer = try #require(harness.table.tableFooterView as? AddItemButtonTableFooterView)
       #expect(footer.isUserInteractionEnabled)
@@ -89,21 +85,19 @@ struct ChecklistReorderModeTests {
     }
   }
 
-  /// `configureNavigationBar` would put Reset back here, since `isNewChecklist` reads false by the
-  /// time the mode can be opened; restoring what was saved keeps the sheet's own Done.
+  /// `isNewChecklist` reads false by the time the mode can be opened; the bar's own copy, taken at
+  /// load, keeps the sheet's Done.
   @Test("leaving on the create sheet puts back its Done, not Reset")
   func leavingOnTheCreateSheetKeepsItsDone() throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: true) { harness in
       let controller = harness.viewController
-      let original = try #require(controller.navigationItem.rightBarButtonItems)
-      let pinnedDone = try #require(controller.pinnedTrailingItem)
       controller.isNewChecklist = false
 
       controller.enterReorderMode()
       controller.setEditing(false, animated: false)
 
-      #expect(controller.navigationItem.rightBarButtonItems == original)
-      #expect(controller.pinnedTrailingItem === pinnedDone)
+      #expect(controller.bar.trailingItems == [.more])
+      #expect(controller.bar.pinnedItem == .primary)
     }
   }
 
@@ -111,13 +105,12 @@ struct ChecklistReorderModeTests {
   func enteringTwiceIsHarmless() throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
       let controller = harness.viewController
-      let original = try #require(controller.navigationItem.rightBarButtonItems)
-
       controller.setEditing(true, animated: false)
       controller.setEditing(true, animated: false)
       controller.setEditing(false, animated: false)
 
-      #expect(controller.navigationItem.rightBarButtonItems == original)
+      #expect(controller.bar.mode == .idle)
+      #expect(controller.bar.trailingItems == [.more, .primary])
     }
   }
 

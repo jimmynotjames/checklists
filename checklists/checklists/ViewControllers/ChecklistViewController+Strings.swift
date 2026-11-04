@@ -73,18 +73,6 @@ extension ChecklistViewController {
     """,
   )
 
-  static let noItemsCheckedNotice = String(
-    localized: "checklist.menu.copyCheckedItems.noCheckedItems",
-    defaultValue: "No checked items.",
-    comment: """
-    Appears inside the overflow menu, directly under the Copy Checked Items to…, Move Checked \
-    Items to… or Delete Checked Items entry, when that entry is tapped with nothing ticked, and \
-    fades again after a moment. Not a button — it says why nothing happened. Echo the wording of \
-    those entries: it should read as "there are none of the thing that entry acts on", so reuse \
-    their word for checked items rather than picking a synonym. Keep it to a few words.
-    """,
-  )
-
   static let deleteCheckedItemsMenuTitle = String(
     localized: "checklist.menu.deleteCheckedItems",
     defaultValue: "Delete Checked Items",

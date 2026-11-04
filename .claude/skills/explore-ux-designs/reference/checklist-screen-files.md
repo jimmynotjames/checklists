@@ -2,9 +2,9 @@
 
 | File | Owns visually |
 |---|---|
-| `Screens/ChecklistScreen.swift` | SwiftUI host: safe-area handling, background colour, the embedded `UINavigationController`. **Always copy this** — it is the preview's entry point. |
+| `Screens/ChecklistScreen.swift` | SwiftUI host: safe-area handling, background colour, the toolbar and ⋯ menu. **Always copy this** — it is the preview's entry point. |
 | `ViewControllers/ChecklistViewController.swift` | The screen: table, nav-bar buttons, scroll-driven title, keyboard avoidance, drag-reorder, Reorder Items mode, and the rows' VoiceOver move actions. **Almost always copy this.** |
-| `ViewControllers/ChecklistViewController+Menu.swift`, `ViewControllers/ChecklistViewController+Strings.swift`, `ViewControllers/ChecklistViewController+BarHost.swift` | Extensions holding the trailing bar items, overflow menu, the screen's copy, and the hand-off of the bar items to the SwiftUI bar. **Copy all three whenever you copy the controller** — the controller calls into them. |
+| `ViewControllers/ChecklistViewController+Menu.swift`, `ViewControllers/ChecklistViewController+Strings.swift`, `ViewControllers/ChecklistBar.swift` | Extensions holding what the bar buttons and the ⋯ menu do, and the screen's copy; and the bar state the controller writes and `ChecklistScreen`'s toolbar draws. **Copy all three whenever you copy the controller** — the controller calls into them. |
 | `Views/ChecklistInfoHeaderView.swift` | The table header's layout: status ring, name field, notes, history caption. Copy for header redesigns. |
 | `Views/ChecklistHistoryCaption.swift` | The "Last updated / Last completed" caption under the notes. |
 | `Views/ItemContentView.swift` | One item row's interior: checkbox, name, notes, row height animation. Copy for row redesigns. |

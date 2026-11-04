@@ -11,8 +11,8 @@ import UIKit
 
 /// Covers the checklist screen's overflow-menu actions.
 ///
-/// The menu entries themselves are `UIAction` handlers, which cannot be fired from a test, so each
-/// action is invoked directly. What that still covers is everything between the tap and the store.
+/// The menu entries themselves are SwiftUI buttons in `ChecklistScreen`, which a unit test cannot
+/// tap, so each action is invoked directly. What that still covers is everything between the tap and the store.
 /// The controller this builds registers a `RemoteChangeObserver` on `.default`, which does not filter
 /// by store: a remote-change or dedupe post from another suite could reach a live harness controller
 /// mid-test and, in the deletion cases, dismiss the screen out from under it. What keeps other suites
@@ -155,26 +155,20 @@ struct ChecklistMenuActionTests {
   @Test("Export as PDF… has its own section, between copy and move and the deletes")
   func exportEntryHasItsOwnSection() throws {
     try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
-      let sections = harness.viewController.makeMoreMenu().children.compactMap { $0 as? UIMenu }
+      let sections = harness.viewController.bar.menuSections
 
       #expect(sections.count == 4)
-      let exportSection = try #require(sections.dropFirst(2).first)
-      let entry = try #require(exportSection.children.first as? UIAction)
-      #expect(exportSection.children.count == 1)
-      #expect(entry.accessibilityIdentifier == "checklist.menu.exportPDF")
+      #expect(sections.dropFirst(2).first == [.exportPDF])
     }
   }
 
   @Test("the create sheet's menu has no export entry")
   func createSheetHasNoExportEntry() throws {
     try ChecklistScreenHarness.withController(items: [("Milk", false)], isNewChecklist: true) { harness in
-      let identifiers = harness.viewController.makeMoreMenu().children
-        .compactMap { $0 as? UIMenu }
-        .flatMap(\.children)
-        .compactMap { ($0 as? UIAction)?.accessibilityIdentifier }
+      let entries = harness.viewController.bar.menuSections.flatMap(\.self)
 
-      #expect(!identifiers.contains("checklist.menu.exportPDF"))
-      #expect(identifiers.contains("checklist.menu.reorderItems"))
+      #expect(!entries.contains(.exportPDF))
+      #expect(entries.contains(.reorderItems))
     }
   }
 

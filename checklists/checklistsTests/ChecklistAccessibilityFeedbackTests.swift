@@ -109,15 +109,18 @@ struct ChecklistAccessibilityFeedbackTests {
 
 @Suite("Checklist menu VoiceOver feedback", .serialized)
 struct ChecklistMenuFeedbackTests {
-  @Test("tapping a checked-items entry with nothing ticked announces the notice")
-  func noCheckedItemsNoticeIsAnnounced() throws {
+  /// The toast announces itself; see `ToastPresenterModifier`.
+  @Test("tapping a checked-items entry with nothing ticked asks for the toast, once", arguments: [
+    ChecklistViewController.CheckedItemsMenuEntry.copy, .move, .delete,
+  ])
+  func noCheckedItemsAsksForTheToast(entry: ChecklistViewController.CheckedItemsMenuEntry) throws {
     try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
-      var announcements: [String?] = []
-      harness.viewController.accessibilityFeedback = { _, announcement in announcements.append(announcement) }
+      var toastsAskedFor = 0
+      harness.viewController.onNoCheckedItems = { toastsAskedFor += 1 }
 
-      harness.viewController.checkedItemsEntryTapped(.copy)
+      harness.viewController.checkedItemsEntryTapped(entry)
 
-      #expect(announcements == [ChecklistViewController.noItemsCheckedNotice])
+      #expect(toastsAskedFor == 1)
     }
   }
 }
@@ -146,19 +149,13 @@ struct ReorderModeFocusTests {
   func focusMovesWithTheMode() throws {
     try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
       let controller = harness.viewController
-      let more = try #require(controller.moreBarButtonItem)
-      var focused: [NSObject?] = []
       controller.barSwapFocusDelay = nil
-      controller.accessibilityFeedback = { focus, _ in focused.append(focus) }
 
       controller.setEditing(true, animated: false)
-      let done = try #require(focused.last as? UIBarButtonItem)
-      #expect(done.accessibilityIdentifier == "checklist.reorderDone")
+      #expect(controller.bar.focusRequest == ChecklistBar.FocusRequest(item: .reorderDone, generation: 1))
 
       controller.setEditing(false, animated: false)
-      #expect(focused.count == 2)
-      let afterwards = focused.compactMap(\.self).last
-      #expect(afterwards === more)
+      #expect(controller.bar.focusRequest == ChecklistBar.FocusRequest(item: .more, generation: 2))
     }
   }
 }
