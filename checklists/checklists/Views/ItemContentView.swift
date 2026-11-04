@@ -56,6 +56,16 @@ class ItemContentView: UIView {
     nameTextView.isFirstResponder || notesTextView.isFirstResponder
   }
 
+  /// The caret of whichever field is being typed into, in this view's coordinates. Nil when neither
+  /// is.
+  var editingCaretRect: CGRect? {
+    guard
+      let field = [nameTextView, notesTextView].first(where: \.isFirstResponder),
+      let caret = field.selectedTextRange?.end
+    else { return nil }
+    return convert(field.caretRect(for: caret), from: field)
+  }
+
   private(set) lazy var checkboxButton: CheckboxButton = {
     let button = CheckboxButton()
     button.addTarget(self, action: #selector(checkboxButtonTapped(sender:)), for: .touchUpInside)

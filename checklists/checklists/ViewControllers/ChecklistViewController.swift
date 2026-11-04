@@ -943,9 +943,21 @@ extension ChecklistViewController: ItemContentViewDelegate {
     cellHeightRequiresRefresh(animated: true)
   }
 
-  func itemContentViewHeightUpdated(_: ItemContentView) {
+  func itemContentViewHeightUpdated(_ itemContentView: ItemContentView) {
     // Don't animate, or stuff gets jittery when table view is scrolled up and user is typing in text view.
     cellHeightRequiresRefresh(animated: false)
+    scrollCaretIntoView(of: itemContentView)
+  }
+
+  /// Keeps the line being typed above the keyboard as a row grows.
+  ///
+  /// The table's layout pass after a row resizes puts the content offset back
+  /// so the focused field holds its place on screen, undoing any scroll made before it, UIKit's
+  /// own scroll to the caret included. So the layout runs first, here, and the scroll after it.
+  private func scrollCaretIntoView(of itemContentView: ItemContentView) {
+    tableView.layoutIfNeeded()
+    guard let caret = itemContentView.editingCaretRect else { return }
+    tableView.scrollRectToVisible(tableView.convert(caret, from: itemContentView), animated: false)
   }
 
   func itemContentView(_ itemContentView: ItemContentView, nameFieldUpdatedWith name: String) {

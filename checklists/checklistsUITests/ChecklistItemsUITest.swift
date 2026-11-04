@@ -147,6 +147,31 @@ final class ChecklistItemsUITest: ChecklistDetailUITestCase {
     XCTAssert(item2Name.prefix(item2Name.count - n) == trimmedName)
   }
 
+  /// Lines typed into the notes of an item just above the keyboard stay above it: the list scrolls
+  /// up as the notes grow.
+  func testItemNotesGrowingAboveKeyboardScrollTheList() {
+    checklistsList.staticTexts["Weekend Getaway Essentials"].tap()
+    let checklistTableView = app.tables["ChecklistTableView"]
+    XCTAssertTrue(checklistTableView.waitForExistence(timeout: 5))
+
+    // The last item, which the keyboard's arrival leaves just above it.
+    let lastCell = checklistTableView.children(matching: .cell).element(boundBy: 11)
+    lastCell.textViews["itemNameTextView"].tap()
+    let keyboard = app.waitForSoftwareKeyboard("This test needs the software keyboard.")
+    let notesTextView = lastCell.textViews["itemNotesTextView"]
+    notesTextView.tapForKeyboardFocus()
+
+    for line in 1 ... 8 {
+      notesTextView.pressReturnKey()
+      notesTextView.typeText("Line \(line)")
+    }
+
+    XCTAssertLessThanOrEqual(
+      lastCell.frame.maxY, keyboard.frame.minY,
+      "The notes went behind the keyboard: the row ends at \(lastCell.frame.maxY), the keyboard starts at \(keyboard.frame.minY).",
+    )
+  }
+
   func testChecklistReordering1() throws {
     checklistsList.staticTexts["Weekend Getaway Essentials"].tap()
     let checklistTableView = app.tables["ChecklistTableView"]
