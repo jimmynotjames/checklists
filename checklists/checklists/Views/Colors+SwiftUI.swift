@@ -13,7 +13,7 @@ extension Colors {
   static let primaryTextColor = Color(.primaryText)
   static let inactiveTextColor = Color(.inactiveText)
   static let placeholderTextColor = Color(.placeholderText)
-  /// The menu panel and toast card.
+  /// The toast card.
   static let darkBlueGrayColor = Color(.darkBlueGray)
   /// Text and icons drawn on `darkBlueGrayColor`.
   static let panelForegroundColor = Color(.panelForeground)
@@ -22,8 +22,11 @@ extension Colors {
   static let destructiveColor = Color(.salmonRed)
   static let accentFillColor = Color(.accentFill)
   static let destructiveFillColor = Color(.destructiveFill)
-  /// The error icon on the toast card. Not `destructiveColor`: the card needs a lighter red than
-  /// the page does, so the two diverge under Increase Contrast.
+  /// The status icons on the toast card. Not `successColor`, `warningColor` or
+  /// `destructiveColor`: those are tuned for the page and Form rows, while the card is a dark
+  /// surface, so the two sets diverge under Increase Contrast.
+  static let toastSuccessColor = Color(.toastSuccess)
+  static let toastWarningColor = Color(.toastWarning)
   static let toastErrorColor = Color(.toastError)
   static let successColor = Color(.success)
   static let warningColor = Color(.warning)
