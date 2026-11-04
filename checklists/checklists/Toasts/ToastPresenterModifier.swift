@@ -16,11 +16,10 @@ private struct ToastLayer: ViewModifier {
   /// How far the card sits above the safe area on an ordinary screen.
   private static let bottomInset: CGFloat = 16
 
-  /// Extra room for the floating add button on `ChecklistsView` — 60pt across with 20pt of
-  /// padding, so 80pt of footprint — plus a little air. At `bottomInset` the card would lie over
-  /// the button and swallow taps meant for it. In Edit mode the button is hidden and the bottom
-  /// toolbar takes its place, which this also clears.
-  private static let addButtonClearance: CGFloat = 88
+  /// Clears `ChecklistsView`'s bottom toolbar, which holds Add or Edit mode's actions. At
+  /// `bottomInset` the card would lie over the bar and swallow taps meant for it. On iPhone Duo's
+  /// outer display the bar moves to the side, so there the card sits higher than it needs to.
+  private static let bottomBarClearance: CGFloat = 88
 
   /// The root layer owns the announcement and the scene handling; the sheet's layer only draws,
   /// so neither fires twice.
@@ -76,12 +75,12 @@ private struct ToastLayer: ViewModifier {
       }
   }
 
-  /// The add button belongs to `ChecklistsView`, which is what the card sits over exactly when
+  /// The bottom toolbar belongs to `ChecklistsView`, which is what the card sits over exactly when
   /// nothing is pushed and no sheet is up. Measured from the safe area, which includes the
   /// keyboard, so with the keyboard up the card rides above it. `AnalyticsConsentSheet`'s
   /// Accept/Decline stack is taller than either value clears; a toast over it needs a third case.
   private var bottomClearance: CGFloat {
-    isRoot && router.path.isEmpty ? Self.addButtonClearance : Self.bottomInset
+    isRoot && router.path.isEmpty ? Self.bottomBarClearance : Self.bottomInset
   }
 
   /// Both layers key off the same condition, so exactly one ever draws. The sheet's half is not

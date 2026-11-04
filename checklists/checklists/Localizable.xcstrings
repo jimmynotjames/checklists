@@ -17563,7 +17563,7 @@
       }
     },
     "checklists.add.accessibilityLabel" : {
-      "comment" : "VoiceOver label for the round floating button that creates a checklist.",
+      "comment" : "VoiceOver label for the bottom-bar button that creates a checklist.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

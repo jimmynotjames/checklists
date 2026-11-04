@@ -24,9 +24,10 @@ struct ChecklistsView: View {
   @Environment(Router.self) private var router
   @Environment(\.analytics) private var analytics
 
-  /// The Add artwork, about the size of an SF Symbol in a toolbar; unlike one it would otherwise
-  /// fill the bar's height and stretch the glass capsule around it.
-  @ScaledMetric(relativeTo: .body) private var addIconSize: CGFloat = 28
+  /// The Add artwork's size, a little over a bar symbol's since the drawing sits inside some
+  /// padding. Left to itself it fills the bar's height and stretches the glass capsule. Fixed, like
+  /// the other bar icons; larger text sizes get the Large Content Viewer.
+  private static let addIconSize: CGFloat = 28
 
   /// Created on the first `.task` rather than at init: a `@State` initial value would be
   /// rebuilt on every re-render of the view struct, and this observer registers for a
@@ -195,7 +196,6 @@ struct ChecklistsView: View {
         ToolbarItem(placement: .bottomBar) {
           addChecklistButton
         }
-        // The last to overflow when the vertical bar runs out of room.
         .visibilityPriority(.high)
       }
     }
@@ -381,9 +381,12 @@ struct ChecklistsView: View {
         .renderingMode(.original)
         .resizable()
         .scaledToFit()
-        .frame(width: addIconSize, height: addIconSize)
+        .frame(width: Self.addIconSize, height: Self.addIconSize)
     }
     .accessibilityLabel(Self.addLabel)
+    .accessibilityShowsLargeContentViewer {
+      Label(Self.addLabel, image: "AddChecklistIcon")
+    }
     .accessibilityIdentifier("toolbar.addChecklist")
     .accessibilityFocused($isAddButtonFocused)
   }
@@ -391,7 +394,7 @@ struct ChecklistsView: View {
   private static let addLabel = String(
     localized: "checklists.add.accessibilityLabel",
     defaultValue: "Add new checklist.",
-    comment: "VoiceOver label for the round floating button that creates a checklist.",
+    comment: "VoiceOver label for the bottom-bar button that creates a checklist.",
   )
 
   private func addChecklist() {
@@ -570,7 +573,7 @@ struct ChecklistsView: View {
       editMode = .inactive
     }
     guard changedCount > 0 else { return }
-    // "•••", because the bottom toolbar VoiceOver was on has gone with Edit mode.
+    // "•••", because the bulk action VoiceOver was on has gone with Edit mode.
     postAccessibilityFeedback(Self.bulkAnnouncement(for: action, count: changedCount), afterAlert: true) {
       isMoreMenuFocused = true
     }
