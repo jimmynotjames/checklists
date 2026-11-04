@@ -68,6 +68,8 @@ What must be renamed:
   `extension ChecklistViewController` block, including those in the copied `+Menu` and `+Strings`
   files.
 - `struct ChecklistScreen` → `struct ChecklistScreenCompact`.
+- `class ChecklistBar` → `class ChecklistBarCompact`, and every `ChecklistBar.` reference in the
+  copied controller and screen.
 - **Protocols, which are easy to miss.** `ItemContentViewDelegate`, `CLTextViewDelegate`, and
   `AddItemButtonTableFooterViewDelegate` are internal top-level declarations. If you copy the file
   declaring one, rename the protocol too — *and* the `extension …: ThatDelegate` conformance in
@@ -105,8 +107,11 @@ build a one-off container or router in a `#Preview`"):
 ```swift
 #if DEBUG
   #Preview("Compact") {
-    ChecklistScreenCompact(checklist: PreviewSupport.checklist()) {}
-      .previewEnvironment()
+    // In a stack, for the screen's toolbar.
+    NavigationStack {
+      ChecklistScreenCompact(checklist: PreviewSupport.checklist()) {}
+    }
+    .previewEnvironment()
   }
 #endif
 ```
@@ -123,9 +128,9 @@ one `#Preview` at a time, so a combined block is the only way to see them togeth
 
   #Preview("All variants", traits: .fixedLayout(width: 1320, height: 920)) {
     HStack(spacing: 24) {
-      ChecklistScreenCompact(checklist: PreviewSupport.checklist()) {}
+      NavigationStack { ChecklistScreenCompact(checklist: PreviewSupport.checklist()) {} }
         .frame(width: 402, height: 874)
-      ChecklistScreenInlineRing(checklist: PreviewSupport.checklist()) {}
+      NavigationStack { ChecklistScreenInlineRing(checklist: PreviewSupport.checklist()) {} }
         .frame(width: 402, height: 874)
     }
     .previewEnvironment()

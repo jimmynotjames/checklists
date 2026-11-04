@@ -12,7 +12,7 @@ extension Checklist {
   ///
   /// Shared by the operations below, by Delete Checked Items, and by the overflow-menu entries that
   /// offer them, so a tap on an entry acts only when there is something to act on, and shows the
-  /// "No checked items." notice otherwise — including when the only ticked row is a blank one.
+  /// "No checked items." toast otherwise — including when the only ticked row is a blank one.
   var checkedItems: [Item] {
     items.filter { $0.status == .checked && !$0.isBlank }
   }

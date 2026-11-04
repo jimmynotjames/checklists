@@ -137,3 +137,23 @@ extension Toast {
     )
   }
 }
+
+/// Shown by `ChecklistScreen` when a ⋯ menu entry that acts on the checked items is tapped with
+/// nothing checked.
+extension Toast {
+  static var noCheckedItems: Toast {
+    Toast(
+      message: LocalizedStringResource(
+        "checklist.menu.copyCheckedItems.noCheckedItems",
+        defaultValue: "No checked items.",
+        comment: """
+        Info toast shown on a checklist's screen when the Copy Checked Items to…, Move Checked \
+        Items to… or Delete Checked Items menu entry is tapped with nothing ticked. It says why \
+        nothing happened. Echo the wording of those entries: it should read as "there are none of \
+        the thing that entry acts on", so reuse their word for checked items rather than picking a \
+        synonym. Appears briefly at the bottom of the screen, with no button. Keep it to a few words.
+        """,
+      ),
+    )
+  }
+}

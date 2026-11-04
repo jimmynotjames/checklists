@@ -55,21 +55,13 @@ class ChecklistViewController: UIViewController {
   /// Read at load: once the record is deleted, its properties are no longer safe to read.
   private var checklistID: String?
 
-  /// The overflow menu's bar item, kept so its menu can be rebuilt while it is on screen — the one
-  /// way UIKit offers to change a menu that is already presented.
-  var moreBarButtonItem: UIBarButtonItem?
+  /// Set by the SwiftUI host (`ChecklistScreen`). Called when a ⋯ menu entry that acts on the
+  /// checked items is tapped with nothing checked, for the host to say why nothing happened.
+  var onNoCheckedItems: (() -> Void)?
 
-  /// Reset, or the create sheet's Done; and the Done that typing in any field adds at the outer
-  /// edge. See `updateEditingDoneBarButtonItem(animated:)`.
-  var primaryBarButtonItem: UIBarButtonItem?
-  var editingDoneBarButtonItem: UIBarButtonItem?
-
-  /// Which overflow-menu entry is currently showing "No checked items." under it, if any. See
-  /// `showNoItemsCheckedNotice(under:)`.
-  var noItemsCheckedNoticeEntry: CheckedItemsMenuEntry?
-
-  /// The one scheduled retirement of that notice, held so a second tap can restart it.
-  var noItemsCheckedNoticeDismissal: Task<Void, Never>?
+  /// The navigation bar's state, drawn by `ChecklistScreen`'s toolbar. Replaced by the host before
+  /// the view loads; the default serves a screen built without one, such as a unit test's.
+  var bar = ChecklistBar()
 
   /// Set by the SwiftUI host (`ChecklistScreen`), like `onRequestDismiss` above. There is no
   /// environment to read from here, so the client is pushed in. The console default means a missed
@@ -134,8 +126,8 @@ class ChecklistViewController: UIViewController {
   /// init time.
   var saveItemMove: ((Item, [Item], Int) throws -> Void)?
 
-  /// Overrides what this screen tells VoiceOver after an action or a mode change: the element or bar
-  /// item to focus, and the announcement. `nil` — the normal case — posts both for real. Set by tests
+  /// Overrides what this screen tells VoiceOver after an action: the element to focus, and the
+  /// announcement. Bar focus goes through `ChecklistBar.requestFocus` instead. `nil` — the normal case — posts both for real. Set by tests
   /// to observe them.
   var accessibilityFeedback: ((NSObject?, String?) -> Void)?
 
@@ -145,12 +137,6 @@ class ChecklistViewController: UIViewController {
   var barSwapFocusDelay: Duration? = .milliseconds(500)
   /// The pending move, so a quick toggle back replaces it rather than stacking a second.
   var barSwapFocusTask: Task<Void, Never>?
-
-  /// The bar as it was before Reorder Items mode cleared it down to Done. Put back as-is on the way
-  /// out rather than rebuilt: `configureNavigationBar` reads `isNewChecklist`, which `viewDidAppear`
-  /// has cleared by then.
-  var savedRightBarButtonItems: [UIBarButtonItem]?
-  var savedPinnedTrailingItem: UIBarButtonItem?
 
   /// Whether Reorder Items mode is on. Named apart from `isEditing` because everywhere else in this
   /// screen "editing" means typing into a field.
@@ -227,7 +213,7 @@ class ChecklistViewController: UIViewController {
     // The footer's width isn't set automatically despite the docs; set it manually.
     tableFooterView.widthAnchor.constraint(equalTo: tableView.widthAnchor, multiplier: 1.0).isActive = true
 
-    configureNavigationBar()
+    configureBar()
 
     registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (viewController: Self, _) in
       viewController.textSizeDidChange()
@@ -278,12 +264,6 @@ class ChecklistViewController: UIViewController {
     tableView.reloadData()
   }
 
-  override func viewIsAppearing(_ animated: Bool) {
-    super.viewIsAppearing(animated)
-    // The first copy: the host exists only once the screen is in its hierarchy.
-    mirrorBarToHost()
-  }
-
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     if isNewChecklist {
@@ -306,7 +286,7 @@ class ChecklistViewController: UIViewController {
     view.endEditing(true)
     // Leaving by the host's back button or swipe, which bypass `requestDismissal`. A back swipe
     // given up partway brings the screen back, so it takes the mark back too.
-    if navigationController?.parent?.isMovingFromParent == true {
+    if parent?.isMovingFromParent == true {
       hasRequestedDismissal = true
       transitionCoordinator?.notifyWhenInteractionChanges { [weak self] context in
         if context.isCancelled {
@@ -352,18 +332,14 @@ class ChecklistViewController: UIViewController {
   /// name and notes, each row's checkbox and text, and the add-item footer all freeze, so the only
   /// things that respond are the ones the mode is about. Deleting stays outside the mode.
   override func setEditing(_ editing: Bool, animated: Bool) {
-    // A repeat would save the mode's own Done as the bar to restore.
     guard editing != isEditing else { return }
     if editing {
       // Commits whatever is being typed before the field it belongs to stops responding.
       view.endEditing(true)
-      // Now rather than on the usual next turn, so the bar the mode saves is the one without the
-      // editing Done in it.
-      updateEditingDoneBarButtonItem(animated: false)
     }
     super.setEditing(editing, animated: animated)
     tableView.setEditing(editing, animated: animated)
-    applyReorderModeToNavigationBar(editing, animated: animated)
+    bar.setMode(editing ? .reordering : (isEditingText ? .typing : .idle), animated: animated)
     moveVoiceOverAfterBarSwap()
 
     checklistNameTextField.isEnabled = !editing
@@ -391,11 +367,11 @@ class ChecklistViewController: UIViewController {
     return true
   }
 
-  @objc func doneButtonTapped() {
+  func doneButtonTapped() {
     requestDismissal()
   }
 
-  @objc func resetButtonTapped() {
+  func resetButtonTapped() {
     analytics.track(AnalyticsEvent.checklistReset)
 
     // Nothing ticked means nothing to update: a Reset on an untouched list must not date it.
@@ -560,8 +536,6 @@ class ChecklistViewController: UIViewController {
 
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    // A re-assert guard, not the update path; see `mirrorBarToHost`.
-    mirrorBarToHost()
     if footerNeedsResize, let footer = tableView.tableFooterView as? AddItemButtonTableFooterView {
       footerNeedsResize = false
       // Like the header, the table reads the footer's height only on assignment.
@@ -736,17 +710,10 @@ extension ChecklistViewController: UIScrollViewDelegate {
       isResetting = false
       tableView.reloadData()
     }
-    if scrolledY <= thresholdY, navigationItem.title != nil {
-      UIView.animate(withDuration: 0.4, animations: {
-        self.navigationItem.title = nil
-        self.mirrorBarToHost()
-      })
-    }
-    if scrolledY > thresholdY, navigationItem.title == nil {
-      UIView.animate(withDuration: 0.4, animations: {
-        self.navigationItem.title = self.checklist.name
-        self.mirrorBarToHost()
-      })
+    // Only on crossing the threshold, as the name is read: not on every scroll frame.
+    let isPastThreshold = scrolledY > thresholdY
+    if isPastThreshold != (bar.title != nil) {
+      bar.setTitle(isPastThreshold ? checklist.name : nil)
     }
   }
 }
@@ -833,7 +800,7 @@ extension ChecklistViewController {
 
   @objc func textEditingDidBegin(_ notification: Notification) {
     guard (notification.object as? UIView)?.isDescendant(of: view) == true else { return }
-    updateEditingDoneBarButtonItem(animated: true)
+    updateBarMode(animated: true)
   }
 
   /// Waits a turn before taking the editing Done away: moving between fields ends one and begins the
@@ -846,7 +813,7 @@ extension ChecklistViewController {
   @objc func textEditingDidEnd(_: Notification) {
     RunLoop.main.perform(inModes: [.common]) { [weak self] in
       MainActor.assumeIsolated {
-        self?.updateEditingDoneBarButtonItem(animated: true)
+        self?.updateBarMode(animated: true)
       }
     }
   }

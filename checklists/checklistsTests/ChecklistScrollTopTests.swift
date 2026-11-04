@@ -69,7 +69,7 @@ struct ChecklistScrollTopTests {
 /// distance scrolled rather than on a raw content offset (#145).
 ///
 /// With the view unloaded the threshold is `titleThresholdY`'s stand-in, 52.0. The title branches
-/// touch only `navigationItem`, so `scrollViewDidScroll` can be driven directly without loading
+/// touch only `bar`, so `scrollViewDidScroll` can be driven directly without loading
 /// the view.
 @Suite("Swapping the checklist name into the navigation bar")
 struct ChecklistTitleThresholdTests {
@@ -95,7 +95,7 @@ struct ChecklistTitleThresholdTests {
 
     viewController.scrollViewDidScroll(makeScrollView(scrolledBy: 0.0, topInset: Self.barInset))
 
-    #expect(viewController.navigationItem.title == nil)
+    #expect(viewController.bar.title == nil)
   }
 
   /// The case a raw content offset gets wrong: 60 points of scrolling reads as an offset of 16
@@ -106,7 +106,7 @@ struct ChecklistTitleThresholdTests {
 
     viewController.scrollViewDidScroll(makeScrollView(scrolledBy: 60.0, topInset: Self.barInset))
 
-    #expect(viewController.navigationItem.title == "Groceries")
+    #expect(viewController.bar.title == "Groceries")
   }
 
   @Test("the title stays out while the name field is still on screen")
@@ -115,7 +115,7 @@ struct ChecklistTitleThresholdTests {
 
     viewController.scrollViewDidScroll(makeScrollView(scrolledBy: 20.0, topInset: Self.barInset))
 
-    #expect(viewController.navigationItem.title == nil)
+    #expect(viewController.bar.title == nil)
   }
 
   /// Scrolling back up hands the name to the header again.
@@ -126,7 +126,7 @@ struct ChecklistTitleThresholdTests {
 
     viewController.scrollViewDidScroll(makeScrollView(scrolledBy: 0.0, topInset: Self.barInset))
 
-    #expect(viewController.navigationItem.title == nil)
+    #expect(viewController.bar.title == nil)
   }
 
   /// An uninset table has no bar to hide behind, so the threshold is the offset itself.
@@ -136,6 +136,6 @@ struct ChecklistTitleThresholdTests {
 
     viewController.scrollViewDidScroll(makeScrollView(offsetY: 60.0, topInset: 0.0))
 
-    #expect(viewController.navigationItem.title == "Groceries")
+    #expect(viewController.bar.title == "Groceries")
   }
 }

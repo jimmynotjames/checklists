@@ -17,17 +17,17 @@ import UIKit
 struct ChecklistEditingDoneTests {
   private static let threeItems: [(name: String, isChecked: Bool)] = [("Milk", false), ("Bread", true), ("Eggs", false)]
 
-  /// The trailing bar items, outer edge first: the pinned item, if any, then the rest, each named by
-  /// its identifier.
-  private func bar(_ controller: ChecklistViewController) -> [String] {
-    let pinned = controller.pinnedTrailingItem.map { [$0] } ?? []
-    return (pinned + (controller.navigationItem.rightBarButtonItems ?? [])).map { $0.accessibilityIdentifier ?? "?" }
+  /// The trailing bar items, outer edge first: the pinned item, if any, then the rest. `primary` is
+  /// Reset on an existing checklist and Done on the create sheet.
+  private func bar(_ controller: ChecklistViewController) -> [ChecklistBar.Item] {
+    let pinned = controller.bar.pinnedItem.map { [$0] } ?? []
+    return pinned + controller.bar.trailingItems
   }
 
-  private static let pushedIdle = ["checklist.more", "checklist.reset"]
-  private static let pushedTyping = ["checklist.editingDone", "checklist.more", "checklist.reset"]
-  private static let createIdle = ["checklist.done", "checklist.more"]
-  private static let createTyping = ["checklist.editingDone", "checklist.more"]
+  private static let pushedIdle: [ChecklistBar.Item] = [.more, .primary]
+  private static let pushedTyping: [ChecklistBar.Item] = [.editingDone, .more, .primary]
+  private static let createIdle: [ChecklistBar.Item] = [.primary, .more]
+  private static let createTyping: [ChecklistBar.Item] = [.editingDone, .more]
 
   /// Gives the deferred bar update its turn of the run loop.
   private func settle() {
@@ -79,14 +79,6 @@ struct ChecklistEditingDoneTests {
     }
   }
 
-  @Test("the editing Done has a pill of its own")
-  func editingDoneHasItsOwnPill() throws {
-    try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
-      let editingDone = try #require(harness.viewController.editingDoneBarButtonItem)
-      #expect(!editingDone.sharesBackground)
-    }
-  }
-
   /// Pinned, so on iPhone Duo's vertical bar it sits at the top of the column rather than among
   /// the other items, and never falls into the overflow.
   @Test("typing pins the editing Done, and ending gives the pin back", arguments: [false, true])
@@ -95,15 +87,13 @@ struct ChecklistEditingDoneTests {
       let controller = harness.viewController
       harness.header.nameTextField.becomeFirstResponder()
 
-      #expect(controller.pinnedTrailingItem === controller.editingDoneBarButtonItem)
-      let rest = controller.navigationItem.rightBarButtonItems ?? []
-      #expect(!rest.contains { $0 === controller.editingDoneBarButtonItem })
+      #expect(controller.bar.pinnedItem == .editingDone)
+      #expect(!controller.bar.trailingItems.contains(.editingDone))
 
       controller.view.endEditing(true)
       settle()
       // The create sheet's own Done takes the pin back; an existing checklist pins nothing.
-      let expected = isNewChecklist ? controller.primaryBarButtonItem : nil
-      #expect(controller.pinnedTrailingItem === expected)
+      #expect(controller.bar.pinnedItem == (isNewChecklist ? .primary : nil))
     }
   }
 
@@ -129,16 +119,12 @@ struct ChecklistEditingDoneTests {
   func editingDoneMovesVoiceOverToItsReplacement(isNewChecklist: Bool) throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: isNewChecklist) { harness in
       let controller = harness.viewController
-      let replacement = try #require(isNewChecklist ? controller.primaryBarButtonItem : controller.moreBarButtonItem)
-      var focused: [NSObject?] = []
       controller.barSwapFocusDelay = nil
-      controller.accessibilityFeedback = { focus, _ in focused.append(focus) }
       harness.header.nameTextField.becomeFirstResponder()
 
       controller.editingDoneTapped()
 
-      #expect(focused.count == 1)
-      #expect(focused.first.flatMap(\.self) === replacement)
+      #expect(controller.bar.focusRequest == ChecklistBar.FocusRequest(item: isNewChecklist ? .primary : .more, generation: 1))
     }
   }
 
@@ -152,7 +138,7 @@ struct ChecklistEditingDoneTests {
       row.itemContentView.startEditing()
 
       controller.itemContentViewDidReturnOnNameField(row.itemContentView)
-      var barsSeen: [[String]] = []
+      var barsSeen: [[ChecklistBar.Item]] = []
       for _ in 0 ..< 40 {
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.005))
         barsSeen.append(bar(controller))
@@ -172,7 +158,7 @@ struct ChecklistEditingDoneTests {
 
       controller.enterReorderMode()
       settle()
-      #expect(bar(controller) == ["checklist.reorderDone"])
+      #expect(bar(controller) == [.reorderDone])
 
       controller.setEditing(false, animated: false)
       #expect(bar(controller) == Self.pushedIdle)

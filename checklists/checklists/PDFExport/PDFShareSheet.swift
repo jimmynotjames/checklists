@@ -10,13 +10,17 @@ import UIKit
 enum PDFShareSheet {
   /// The URL rather than the data, so AirDrop, Mail and Files show the file's readable name.
   /// `completion` runs when the share sheet is done, not when one destination inside it closes.
-  static func present(url: URL, from presenter: UIViewController, sourceItem: UIBarButtonItem?, completion: @escaping @MainActor (Bool) -> Void) {
+  static func present(url: URL, from presenter: UIViewController, completion: @escaping @MainActor (Bool) -> Void) {
     let activity = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-    // iPhone only, but an iPad running the app in compatibility mode still asks for an anchor.
-    if let sourceItem {
-      activity.popoverPresentationController?.sourceItem = sourceItem
-    } else {
-      activity.popoverPresentationController?.sourceView = presenter.view
+    // iPhone only, but an iPad running the app in compatibility mode still asks for an anchor. The
+    // top trailing corner of what is on screen, under ⋯, which as a SwiftUI toolbar item has no
+    // UIKit handle to anchor on.
+    if let popover = activity.popoverPresentationController, let view = presenter.view {
+      let bounds = view.bounds
+      let isRightToLeft = view.effectiveUserInterfaceLayoutDirection == .rightToLeft
+      popover.sourceView = view
+      popover.sourceRect = CGRect(x: isRightToLeft ? bounds.minX : bounds.maxX, y: bounds.minY, width: 0, height: 0)
+      popover.permittedArrowDirections = .up
     }
     var isFinished = false
     let finish = { (completed: Bool) in
