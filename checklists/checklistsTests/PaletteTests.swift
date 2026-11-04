@@ -60,9 +60,9 @@ struct PaletteTests {
     Value(name: "primaryText", color: Colors.primaryText, light: "000000", dark: "E4ECF1"),
     Value(name: "inactiveText", color: Colors.inactiveText, light: "636363", dark: "8799A6"),
     Value(name: "placeholderText", color: Colors.placeholderText, light: "707070", dark: "80919E"),
-    Value(name: "accent", color: Colors.accent, light: "378288", dark: "5FC4CB"),
+    Value(name: "accent", color: Colors.accent, light: "2E7A80", dark: "5FC4CB"),
     Value(name: "salmonRed", color: Colors.destructive, light: "ED6664", dark: "FF7C76"),
-    Value(name: "accentFill", color: Colors.accentFill, light: "378288", dark: "2E7D83"),
+    Value(name: "accentFill", color: Colors.accentFill, light: "2E7A80", dark: "2E7D83"),
     Value(name: "destructiveFill", color: Colors.destructiveFill, light: "ED6664", dark: "C94A47"),
     Value(name: "success", color: success, light: "34C759", dark: "3DD68C"),
     Value(name: "warning", color: warning, light: "FF9500", dark: "FFAA33"),
@@ -85,14 +85,14 @@ struct PaletteTests {
     Pair(name: "secondary text in a Form row", foreground: Colors.inactiveText, background: surface, minimum: 4.5),
     Pair(name: "placeholders in a Form row", foreground: Colors.placeholderText, background: surface, minimum: 4.5),
     Pair(name: "text on toasts", foreground: panelForeground, background: Colors.darkBlueGray, minimum: 4.5),
+    Pair(name: "accent text on the page", foreground: Colors.accent, background: Colors.defaultBackground, minimum: 4.5),
+    Pair(name: "accent text in a Form row", foreground: Colors.accent, background: surface, minimum: 4.5),
     Pair(name: "the Duplicate swipe glyph", foreground: .white, background: Colors.accentFill, minimum: 3),
     Pair(name: "the Delete swipe glyph", foreground: .white, background: Colors.destructiveFill, minimum: 3),
   ]
 
   /// Pairs that fail in light today; Increase Contrast (#345) owns them.
   private static let darkOnlyPairs = [
-    Pair(name: "accent text on the page", foreground: Colors.accent, background: Colors.defaultBackground, minimum: 4.5),
-    Pair(name: "accent text in a Form row", foreground: Colors.accent, background: surface, minimum: 4.5),
     Pair(name: "the success toast icon", foreground: success, background: Colors.darkBlueGray, minimum: 3),
     Pair(name: "the warning toast icon", foreground: warning, background: Colors.darkBlueGray, minimum: 3),
     Pair(name: "the error toast icon", foreground: Colors.destructive, background: Colors.darkBlueGray, minimum: 3),
@@ -111,7 +111,7 @@ struct PaletteTests {
     }
   }
 
-  @Test("accent and status colors meet their contrast minimum in dark")
+  @Test("status and destructive colors meet their contrast minimum in dark")
   func contrastDark() {
     for pair in Self.darkOnlyPairs {
       let ratio = Self.contrast(pair, Self.dark)
