@@ -224,7 +224,6 @@ class CaptureTests(unittest.TestCase):
         self.assertTrue(review.is_file())
 
     def test_each_device_needs_its_own_correctly_sized_capture(self) -> None:
-        """A second display size (iPhone Duo's outer display) is a target of its own."""
         two_devices = replace(
             self.config,
             devices=(DeviceConfig("Test Phone", 2, 3, "portrait"), DeviceConfig("Test Duo", 4, 5, "portrait")),

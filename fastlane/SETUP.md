@@ -65,12 +65,12 @@ catalog is generated, and `make gate` fails when one drifts from the string cata
 `core-docs/localization-spec.md §Screenshot seeds`.
 
 A full capture is release-time work and runs serially: about a minute per locale per
-device once the build is warm, so budget about two hours for both devices. It captures every
+device once the build is warm. It captures every
 locale on one device, shuts that simulator down, then moves to the next. It is resumable by
 `run_id`, and `locales:` takes a subset of runtime codes for a spot check.
 
-The devices are the 6.9" iPhone and iPhone Duo's outer display (1398×2034, which deliver
-uploads as `APP_IPHONE_DUO`). The Duo simulator boots folded, and neither `simctl` nor XCTest
+The devices are the 6.9" iPhone and iPhone Duo's outer display, which deliver uploads as
+`APP_IPHONE_DUO`. The Duo simulator boots folded, and neither `simctl` nor XCTest
 can unfold it, so the inner display is not captured; the size check rejects a capture of the
 wrong display.
 

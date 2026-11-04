@@ -113,7 +113,6 @@ def prepare_output(
     }
     report_path = run_root(run_id) / "capture-report.json"
     review_path = run_root(run_id) / "review.html"
-    # One section per device, so each display size reviews as its own story.
     sections = []
     for device in devices:
         cards = []
