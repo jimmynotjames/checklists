@@ -90,9 +90,14 @@ class checklistsUITests: XCTestCase {
     // the row stayed lifted in place. Straight down, too, so no sideways part reaches the rows'
     // swipe actions.
     //
-    // Pressed in the row's right third: the long-press opens the row's context menu first, just
-    // below the row and from its leading edge, and a drag down through the menu would release on
-    // one of its entries instead of moving the row.
+    // Pressed in the row's right third. As of iOS 27.2, a long-press anywhere on a row near the top
+    // of the screen opens the row's context menu just below it, on the left side of the screen. A
+    // drag down from the row's left or middle crosses the menu and releases on one of its entries
+    // instead of moving the row; one down the right third passes beside the menu.
+    //
+    // People do the same thing by accident sometimes, and that is accepted: they learn to drag
+    // clear of the menu, and both entries can be undone. A stray Duplicate leaves a copy to
+    // delete, and Delete asks for confirmation first.
     //
     // Dragged once more if the first left the order as it was, as `dragRow` does.
     let rowPitch = text2.frame.midY - text1.frame.midY
