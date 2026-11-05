@@ -10,6 +10,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
+from resolve_sim_spec import newest_ios_runtime  # noqa: E402
 from sim_retire_stale import stale_devices  # noqa: E402
 
 NAME = "iPhone 17 [a1b2c3d4]"
@@ -65,6 +66,8 @@ class StaleDeviceTests(unittest.TestCase):
             {**_runtime(ios_27_2, "27.2"), "supportedDeviceTypes": [{"identifier": IPHONE_17}]},
             {**_runtime(ios_27_2_duo, "27.2"), "supportedDeviceTypes": [{"identifier": iphone_duo}]},
         ]
+        self.assertEqual(newest_ios_runtime(runtimes, "27.2", IPHONE_17)["identifier"], ios_27_2)
+        self.assertEqual(newest_ios_runtime(runtimes, "27.2", iphone_duo)["identifier"], ios_27_2_duo)
         duo_name = "iPhone Duo [a1b2c3d4]"
         duo = {**_device(name=duo_name, udid="duo"), "deviceTypeIdentifier": iphone_duo}
         self.assertEqual(stale_devices(NAME, {ios_27_2: [_device()]}, runtimes, sdk_version="27.2"), [])
