@@ -132,7 +132,7 @@ documented in `core-docs/analytics-spec.md` §Free-text exception — it is not 
 
 **Accessibility**
 Applies if: the diff adds or modifies a SwiftUI `View`, a `UIView`, a `UIViewController`, or a
-color (`Colors.xcassets`, `Colors.swift`, or a `.tint`/`.foregroundStyle` change).
+color (`Colors.xcassets`, `Colors*.swift`, or a `.tint`/`.foregroundStyle` change).
 Check: new interactive controls have an `accessibilityLabel`; custom controls (`CheckboxButton`,
 `CLButton`, `CircularPercentStatusIcon`) set appropriate `accessibilityTraits` and reflect state
 (a checkbox should expose selected/unselected); no fixed frame heights that clip text at large
