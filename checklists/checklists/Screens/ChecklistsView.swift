@@ -128,6 +128,20 @@ struct ChecklistsView: View {
             .tint(Colors.accentFillColor)
             .accessibilityIdentifier("checklistRow.duplicate")
           }
+          // The swipe actions again, for long-press and right-click. `.onMove`'s long-press drag
+          // still works: moving the finger once the menu is up lifts the row into the drag. Delete
+          // goes through the same confirmation alert as the swipe. ChecklistScreen has no such
+          // menu on purpose: on its `UITableView` a context menu takes over the long-press and
+          // the reorder drag never starts.
+          .contextMenu {
+            Button(CommonStrings.duplicate, systemImage: "plus.square.on.square") {
+              duplicate(checklist: checklist)
+            }
+            Button(CommonStrings.delete, systemImage: "trash", role: .destructive) {
+              deleteConfirmationTitle = Self.deleteConfirmationTitle(name: checklist.name)
+              pendingDeleteID = checklist.persistentModelID
+            }
+          }
       }
       // Drag handles in Edit mode; long-press drag outside it.
       .onMove(perform: move)
