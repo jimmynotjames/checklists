@@ -194,7 +194,7 @@ the transcreation fan-out, then `generate_seeds.py`.
 | `generate_seeds.py --check` | `make uitest-check` | Yes |
 | `check_metadata.py` | CI, `push_metadata` lane | Yes |
 | `plural_completeness.py` | CI | Yes |
-| `untranslated_copies.py` | CI | Yes |
+| `untranslated_copies.py` | `make i18n-check`, CI | Yes |
 | `distinct_pairs.py` | `make i18n-check`, CI | Yes |
 | `sync_catalog.py --check` | `make i18n-sync-check`, after the build in `make gate` | Yes |
 | `consistency_check.py` | CI | No, informational |

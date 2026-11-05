@@ -65,7 +65,7 @@ repo is `checklists` (`jimmynotjames/checklists`). Introduce both sibling names 
 ```bash
 make gate         # tool-versions-check -> format-changed -> lint-changed -> i18n-check -> uitest-check -> doc-check -> simulator-slots-check -> test-scripts -> build -> i18n-sync-check. Logs to tmp/gate.log.
 make build        # compile only (generic destination; never boots a simulator)
-make i18n-check   # catalog fully translated, in Xcode's byte format + no unkeyed user-facing strings
+make i18n-check   # catalog fully translated, in Xcode's byte format + no unkeyed user-facing strings, no paired strings translated identically, no English left in a translated slot
 make i18n-sync    # after `make build`: copy Swift comments/keys into the catalog, as a build in Xcode does
 make doc-check    # doc pointers, headings, and named symbols resolve; no history on added lines
 make test-scripts # scripts/tests (Python) + fastlane/tests (Ruby 3+; skipped with a warning if absent)
