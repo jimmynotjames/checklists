@@ -84,7 +84,9 @@ struct CopyCheckedItemsView: View {
                 isNameFieldVoiceOverFocused = true
               }
             }
-            .tint(Color.accentColor)
+            // `accentFill`, not the accent: iOS draws a white checkmark on a capsule of this tint,
+            // and the dark accent is too light behind white.
+            .tint(Colors.accentFillColor)
             .accessibilityIdentifier("copyDestination.editingDone")
           }
         }

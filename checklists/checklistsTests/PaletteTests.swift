@@ -101,7 +101,7 @@ struct PaletteTests {
     Pair(name: "text on toasts", foreground: panelForeground, background: Colors.darkBlueGray, minimum: 4.5),
     Pair(name: "accent text on the page", foreground: Colors.accent, background: Colors.defaultBackground, minimum: 4.5),
     Pair(name: "accent text in a Form row", foreground: Colors.accent, background: surface, minimum: 4.5),
-    Pair(name: "the Duplicate swipe glyph", foreground: .white, background: Colors.accentFill, minimum: 3),
+    Pair(name: "the Duplicate swipe glyph and the bar's Done checkmarks", foreground: .white, background: Colors.accentFill, minimum: 3),
     Pair(name: "the Delete swipe glyph", foreground: .white, background: Colors.destructiveFill, minimum: 3),
   ]
 

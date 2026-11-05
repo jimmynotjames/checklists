@@ -162,7 +162,9 @@ struct ChecklistScreen: View {
       case .more, .primary: bar.perform(.primary)
       }
     }
-    .tint(Color.accentColor)
+    // `accentFill`, not the accent: iOS draws a white checkmark on a capsule of this tint, and the
+    // dark accent is too light behind white.
+    .tint(Colors.accentFillColor)
     .accessibilityShowsLargeContentViewer()
     .accessibilityIdentifier(id)
     .accessibilityFocused($focusedBarItem, equals: item)
