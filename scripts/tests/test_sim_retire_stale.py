@@ -54,6 +54,25 @@ class StaleDeviceTests(unittest.TestCase):
         found = stale_devices(NAME, {IOS_27_0: [_device()]}, runtimes)
         self.assertEqual([d["udid"] for d, _ in found], ["U1"])
 
+    def test_device_specific_runtime_of_the_same_version_is_not_a_newer_target(self) -> None:
+        # Xcode 27.2 installs a second iOS 27.2 runtime that only hosts iPhone Duo.
+        iphone_duo = "com.apple.CoreSimulator.SimDeviceType.iPhone-Duo"
+        ios_27_1 = "com.apple.CoreSimulator.SimRuntime.iOS-27-1"
+        ios_27_2 = "com.apple.CoreSimulator.SimRuntime.iOS-27-2"
+        ios_27_2_duo = "com.apple.CoreSimulator.SimRuntime.iOS-27-2-iPhone19-4"
+        runtimes = [
+            {**_runtime(ios_27_1, "27.1"), "supportedDeviceTypes": [{"identifier": IPHONE_17}]},
+            {**_runtime(ios_27_2, "27.2"), "supportedDeviceTypes": [{"identifier": IPHONE_17}]},
+            {**_runtime(ios_27_2_duo, "27.2"), "supportedDeviceTypes": [{"identifier": iphone_duo}]},
+        ]
+        duo_name = "iPhone Duo [a1b2c3d4]"
+        duo = {**_device(name=duo_name, udid="duo"), "deviceTypeIdentifier": iphone_duo}
+        self.assertEqual(stale_devices(NAME, {ios_27_2: [_device()]}, runtimes, sdk_version="27.2"), [])
+        self.assertEqual(stale_devices(duo_name, {ios_27_2_duo: [duo]}, runtimes, sdk_version="27.2"), [])
+        found = stale_devices(NAME, {ios_27_1: [_device()]}, runtimes, sdk_version="27.2")
+        self.assertEqual([d["udid"] for d, _ in found], ["U1"])
+        self.assertIn("target is iOS 27.2", found[0][1])
+
     def test_device_without_a_type_is_left_alone(self) -> None:
         runtimes = [_runtime(IOS_26_5, "26.5"), _runtime(IOS_27_0, "27.0")]
         device = {k: v for k, v in _device().items() if k != "deviceTypeIdentifier"}
