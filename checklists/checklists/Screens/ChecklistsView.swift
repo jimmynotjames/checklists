@@ -34,7 +34,7 @@ struct ChecklistsView: View {
   /// notification in its initializer.
   @State private var remoteChangeObserver: RemoteChangeObserver?
 
-  /// The checklist the delete confirmation is currently about: the swiped row's own record, not its
+  /// The checklist the delete confirmation is currently about: the row's own record, not its
   /// `id`, since two records can share an `id` until sample dedupe runs and deleting by `id` could
   /// take the other one. See `ModelContext.deleteChecklists(_:)`.
   @State private var pendingDeleteID: PersistentIdentifier?
@@ -129,17 +129,17 @@ struct ChecklistsView: View {
             .accessibilityIdentifier("checklistRow.duplicate")
           }
           // The swipe actions again, for long-press and right-click. `.onMove`'s long-press drag
-          // still works: moving the finger once the menu is up lifts the row into the drag. Delete
-          // goes through the same confirmation alert as the swipe. ChecklistScreen has no such
-          // menu on purpose: on its `UITableView` a context menu takes over the long-press and
-          // the reorder drag never starts.
+          // still works: moving the finger once the menu is up lifts the row into the drag. Absent
+          // in Edit mode, like the swipe, where the bottom bar acts on the selection instead.
           .contextMenu {
-            Button(CommonStrings.duplicate, systemImage: "plus.square.on.square") {
-              duplicate(checklist: checklist)
-            }
-            Button(CommonStrings.delete, systemImage: "trash", role: .destructive) {
-              deleteConfirmationTitle = Self.deleteConfirmationTitle(name: checklist.name)
-              pendingDeleteID = checklist.persistentModelID
+            if !isEditing {
+              Button(CommonStrings.duplicate, systemImage: "plus.square.on.square") {
+                duplicate(checklist: checklist, source: .contextMenu)
+              }
+              Button(CommonStrings.delete, systemImage: "trash", role: .destructive) {
+                deleteConfirmationTitle = Self.deleteConfirmationTitle(name: checklist.name)
+                pendingDeleteID = checklist.persistentModelID
+              }
             }
           }
       }
@@ -529,7 +529,7 @@ struct ChecklistsView: View {
 
   /// The detail screen's menu entry opens the copy; this one does not, because here the result is
   /// already on screen.
-  private func duplicate(checklist: Checklist) {
+  private func duplicate(checklist: Checklist, source: ChecklistDuplicationSource = .swipe) {
     do {
       try context.duplicate(checklist: checklist, among: Array(checklists))
     } catch {
@@ -537,9 +537,9 @@ struct ChecklistsView: View {
     }
     analytics.track(
       AnalyticsEvent.checklistDuplicated,
-      properties: [AnalyticsProperty.source: ChecklistDuplicationSource.swipe.rawValue],
+      properties: [AnalyticsProperty.source: source.rawValue],
     )
-    postAccessibilityFeedback(Self.duplicatedAnnouncement)
+    postAccessibilityFeedback(Self.duplicatedAnnouncement, afterAlert: source == .contextMenu)
   }
 
   // MARK: - Edit mode actions
