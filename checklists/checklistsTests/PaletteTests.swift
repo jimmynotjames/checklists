@@ -105,7 +105,7 @@ struct PaletteTests {
     Pair(name: "the Delete swipe glyph", foreground: .white, background: Colors.destructiveFill, minimum: 3),
   ]
 
-  /// Pairs that fail in light today; Increase Contrast (#345) owns them.
+  /// Pairs that fail in light at standard contrast; `highContrastPairs` checks their light values.
   private static let darkOnlyPairs = [
     Pair(name: "the success toast icon", foreground: toastSuccess, background: Colors.darkBlueGray, minimum: 3),
     Pair(name: "the warning toast icon", foreground: toastWarning, background: Colors.darkBlueGray, minimum: 3),

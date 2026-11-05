@@ -7,8 +7,8 @@ import XCTest
 
 /// Xcode's accessibility audit on every screen, one test each, so a regression fails `make test-ui`.
 ///
-/// Contrast is left out until Increase Contrast lands (#345). Anything the audit raises fails the test
-/// unless it is in `knownIssues`.
+/// Every audit type runs, contrast included, with Increase Contrast off (accessibility-spec.md
+/// §Increase Contrast). Anything the audit raises fails the test unless it is in `knownIssues`.
 class AccessibilityAuditUITest: XCTestCase {
   var app: XCUIApplication!
 
@@ -17,7 +17,7 @@ class AccessibilityAuditUITest: XCTestCase {
     "light"
   }
 
-  private static let auditTypes: XCUIAccessibilityAuditType = .all.subtracting(.contrast)
+  private static let auditTypes: XCUIAccessibilityAuditType = .all
 
   /// One audit issue accepted on purpose. Every field given must match; `nil` matches anything.
   private struct KnownIssue {
@@ -90,6 +90,16 @@ class AccessibilityAuditUITest: XCTestCase {
       reason: """
       The navigation bar caps its text size, as every app's does; the button shows the Large Content \
       Viewer instead.
+      """,
+    ),
+    KnownIssue(
+      screens: ["checklist"],
+      types: .contrast,
+      identifier: "checklist.reset",
+      reason: """
+      Accepted: iOS lightens the tint on bar glass, so in light it measures 3.9:1 by default (5.4:1 \
+      with Increase Contrast) and the default palette stays. The audit also flags it at passing \
+      ratios, 7:1 in dark.
       """,
     ),
     KnownIssue(
