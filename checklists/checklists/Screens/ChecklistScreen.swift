@@ -162,7 +162,8 @@ struct ChecklistScreen: View {
       case .more, .primary: bar.perform(.primary)
       }
     }
-    .tint(Color.accentColor)
+    // `accentFill`: iOS draws a white checkmark on a capsule of this tint.
+    .tint(Colors.accentFillColor)
     .accessibilityShowsLargeContentViewer()
     .accessibilityIdentifier(id)
     .accessibilityFocused($focusedBarItem, equals: item)

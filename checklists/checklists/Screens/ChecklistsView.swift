@@ -342,7 +342,8 @@ struct ChecklistsView: View {
         isMoreMenuFocused = true
       }
     }
-    .tint(Color.accentColor)
+    // `accentFill`: iOS draws a white checkmark on a capsule of this tint.
+    .tint(Colors.accentFillColor)
     // The system's own checkmark and "Done" label, enlarged on a long press like the other icons.
     .accessibilityShowsLargeContentViewer()
     .accessibilityIdentifier("toolbar.editDone")
