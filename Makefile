@@ -31,12 +31,14 @@ lint-changed:
 # -- Localization -------------------------------------------------------------
 # Repo-wide on purpose, and the documented exception to AGENTS.md §"Lint policy":
 # check_translations validates the catalog, check_source_strings enforces a repo
-# invariant (no unkeyed user-facing copy), and distinct_pairs catches paired strings
-# translated identically. None is a style lint of Swift files; all take under a second.
+# invariant (no unkeyed user-facing copy), distinct_pairs catches paired strings
+# translated identically, and untranslated_copies catches English left in a translated
+# slot. None is a style lint of Swift files; all take under a second.
 i18n-check:
 	python3 scripts/check_translations.py
 	python3 scripts/check_source_strings.py
 	python3 scripts/translate_audit/distinct_pairs.py
+	python3 scripts/translate_audit/untranslated_copies.py
 
 # Merge the last `make build`'s extracted strings into the catalog, as a build in Xcode does:
 # Swift `comment:` changes, new keys, and `stale` for keys gone from Swift. Needs that build.
