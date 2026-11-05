@@ -5,6 +5,12 @@ name: CI
 
 on:
   workflow_dispatch:
+    inputs:
+      tests:
+        description: "Tests after the build: none (compile only), unit, or ui (unit then UI)"
+        type: choice
+        options: [none, unit, ui]
+        default: none
   # pull_request:
   # push:
   #   branches: [main]
@@ -146,6 +152,8 @@ jobs:
   build:
     runs-on: xcode-27
     needs: [lint, secrets, check-large-files, i18n-gates]
+    # The 360-minute default would let one hung simulator burn the month's allowance.
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v7
       - name: Select Xcode 27.2
@@ -155,12 +163,16 @@ jobs:
       - name: Cache SwiftPM packages
         uses: actions/cache@v6
         with:
-          path: .build/DerivedData/SourcePackages
+          path: |
+            .build/DerivedData/SourcePackages
+            .build/sim/DerivedData/SourcePackages
           key: spm-${{ runner.os }}-xcode27.2-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: |
             spm-${{ runner.os }}-xcode27.2-
-      # Mirrors scripts/build.sh.
+      # Mirrors scripts/build.sh. Skipped when tests run: their build-for-testing is the
+      # compile check, and building here too would compile everything twice.
       - name: xcodebuild build
+        if: inputs.tests != 'unit' && inputs.tests != 'ui'
         run: |
           xcodebuild build \
             -project checklists/checklists.xcodeproj \
@@ -169,3 +181,25 @@ jobs:
             -derivedDataPath .build/DerivedData \
             ARCHS=arm64 \
             ONLY_ACTIVE_ARCH=NO
+
+      # --- Opt-in tests (workflow_dispatch input `tests`) -----------------------
+      # Each phase is its own step so the run's step timings split build+unit from UI.
+      - name: Unit tests (make test-unit; includes build-for-testing)
+        if: inputs.tests == 'unit' || inputs.tests == 'ui'
+        run: make test-unit
+
+      # Turns the simulator-slots pool on with a runner-local 2-slot pool, so test-ui.sh splits
+      # the UI tests across 2 simulator clones (the most a 3-core / 7 GB runner handles).
+      - name: Simulator pool (2 slots, runner-local)
+        if: inputs.tests == 'ui'
+        run: |
+          mkdir -p "$RUNNER_TEMP/slots-master" "$RUNNER_TEMP/slots-state"
+          echo 2 > "$RUNNER_TEMP/slots-state/max"
+          echo "SIMULATOR_SLOTS_MASTER=$RUNNER_TEMP/slots-master" >> "$GITHUB_ENV"
+          echo "SIMULATOR_SLOTS_STATE_DIR=$RUNNER_TEMP/slots-state" >> "$GITHUB_ENV"
+
+      - name: UI tests (make test-ui, 2 workers)
+        if: inputs.tests == 'ui'
+        env:
+          UI_WORKERS: "2"
+        run: make test-ui
