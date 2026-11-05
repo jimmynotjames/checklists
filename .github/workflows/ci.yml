@@ -113,8 +113,8 @@ jobs:
         run: bash scripts/check-large-files.sh ${{ steps.diff.outputs.files }}
 
   # --- Localization gates (ubuntu) --------------------------------------------
-  # The i18n-check and doc-check scripts, plus check_metadata and the plural and
-  # untranslated-copy audits, and a non-blocking consistency report. The
+  # The i18n-check and doc-check scripts, plus check_metadata, the plural audit,
+  # and a non-blocking consistency report. The
   # uitest-check scripts don't run in CI.
   i18n-gates:
     runs-on: ubuntu-latest
