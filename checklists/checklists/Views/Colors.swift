@@ -29,9 +29,8 @@ class Colors {
   /// The destructive-action color, matching `Colors.destructiveColor` on the SwiftUI side.
   static let destructive = UIColor(resource: .salmonRed)
 
-  /// Backgrounds behind a white glyph: the swipe actions, and for `accentFill` the bar's Done
-  /// buttons too. `accent` and `destructive` are tuned to read as text on the page, which can leave
-  /// them too light behind white.
+  /// Fills behind a white glyph. `accent` and `destructive` are tuned to read as text on the page,
+  /// which can leave them too light behind white.
   static let accentFill = UIColor(resource: .accentFill)
   static let destructiveFill = UIColor(resource: .destructiveFill)
 }

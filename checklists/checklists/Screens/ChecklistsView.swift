@@ -342,8 +342,7 @@ struct ChecklistsView: View {
         isMoreMenuFocused = true
       }
     }
-    // `accentFill`, not the accent: iOS draws a white checkmark on a capsule of this tint, and the
-    // dark accent is too light behind white.
+    // `accentFill`: iOS draws a white checkmark on a capsule of this tint.
     .tint(Colors.accentFillColor)
     // The system's own checkmark and "Done" label, enlarged on a long press like the other icons.
     .accessibilityShowsLargeContentViewer()

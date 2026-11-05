@@ -162,8 +162,7 @@ struct ChecklistScreen: View {
       case .more, .primary: bar.perform(.primary)
       }
     }
-    // `accentFill`, not the accent: iOS draws a white checkmark on a capsule of this tint, and the
-    // dark accent is too light behind white.
+    // `accentFill`: iOS draws a white checkmark on a capsule of this tint.
     .tint(Colors.accentFillColor)
     .accessibilityShowsLargeContentViewer()
     .accessibilityIdentifier(id)
