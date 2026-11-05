@@ -90,9 +90,15 @@ class checklistsUITests: XCTestCase {
     // the row stayed lifted in place. Straight down, too, so no sideways part reaches the rows'
     // swipe actions.
     //
+    // Pressed in the row's right third: the long-press opens the row's context menu first, just
+    // below the row and from its leading edge, and a drag down through the menu would release on
+    // one of its entries instead of moving the row.
+    //
     // Dragged once more if the first left the order as it was, as `dragRow` does.
     let rowPitch = text2.frame.midY - text1.frame.midY
-    let start = text1.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+    let rightThird = app.windows.firstMatch.frame.width * 5 / 6
+    let start = text1.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0.5))
+      .withOffset(CGVector(dx: rightThird - text1.frame.minX, dy: 0))
     let drag = {
       start.press(
         forDuration: 1.5,
