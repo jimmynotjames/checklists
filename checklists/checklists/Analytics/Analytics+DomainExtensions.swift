@@ -20,10 +20,12 @@ nonisolated func checklistsCountBucket(_ count: Int) -> String {
 /// Which affordance a duplication was started from — the `source` property on
 /// `checklist_duplicated`.
 ///
-/// An enum rather than two string constants so a call site cannot invent a third value.
+/// An enum rather than string constants so a call site cannot invent another value. `menu` is the
+/// detail screen's "•••" menu; `contextMenu` is a checklists-list row's long-press or right-click.
 nonisolated enum ChecklistDuplicationSource: String {
   case menu
   case swipe
+  case contextMenu = "context_menu"
 }
 
 /// Where the checked items went — the `destination` property on `checklist_items_copied` and

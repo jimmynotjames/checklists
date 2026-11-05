@@ -869,6 +869,8 @@ extension ChecklistViewController: AddItemButtonTableFooterViewDelegate {
 
 // MARK: - Drag/Drop Reorder
 
+/// No context menu on the rows, unlike the checklists list: with one, the table's long-press opens
+/// the menu and the reorder drag no longer starts.
 extension ChecklistViewController: UITableViewDragDelegate {
   func tableView(_: UITableView, itemsForBeginning _: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
     guard indexPath.section == itemsSection, indexPath.row < checklist.items.count else { assertionFailure(); return [] }

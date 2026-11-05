@@ -163,6 +163,7 @@ struct AnalyticsNamesTests {
   func duplicationSourceValuesArePinned() {
     #expect(ChecklistDuplicationSource.menu.rawValue == "menu")
     #expect(ChecklistDuplicationSource.swipe.rawValue == "swipe")
+    #expect(ChecklistDuplicationSource.contextMenu.rawValue == "context_menu")
   }
 
   /// `destination` transmits `CheckedItemsCopyDestination.rawValue`. Its raw values are spelled out

@@ -124,10 +124,10 @@ long and which the user just acted on.
   read once. A string would be read and then the element again. `LoadingView` passes its text as the
   string instead; nothing on it is interactive. A failed Start over fresh leaves the same screen up
   and says nothing new.
-- **Checklists list:** a confirmed delete, the swipe Duplicate, Reset All (only when it unticked
-  something) and Edit mode's Delete, Duplicate and Reset (with a count) announce. Focus moves after a
-  confirmation alert, the "•••" menu, or Edit mode's entry or exit has finished, since the system
-  moves VoiceOver itself as each closes. Entering Edit mode from "•••" moves it to Edit mode's ✓;
+- **Checklists list:** a confirmed delete, the swipe or context-menu Duplicate, Reset All (only when
+  it unticked something) and Edit mode's Delete, Duplicate and Reset (with a count) announce. Focus
+  moves after a confirmation alert, the "•••" or a row's context menu, or Edit mode's entry or exit
+  has finished, since the system moves VoiceOver itself as each closes. Entering Edit mode from "•••" moves it to Edit mode's ✓;
   leaving by ✓, or by an Edit mode action, moves it to "•••", because the button it was on is gone;
   when a delete leaves no checklists it goes to the Add button, since the list has no empty
   state. Its confirmation alerts name what they act on in the title — the checklist, or how many are

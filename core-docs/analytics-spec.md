@@ -247,12 +247,12 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `checklist_viewed` | A checklist is opened | `checklist_name`, `notes_length`, `items_count`, `items_with_notes_count` |
 | `settings_viewed` | Settings appears | — |
 | `checklist_created` | A checklist is created | — |
-| `checklist_duplicated` | Copied, from the list's swipe or the checklist menu | `source` |
+| `checklist_duplicated` | Copied, from the list's swipe or context menu, or the checklist menu | `source` |
 | `checklist_items_copied` | Ticked items copied into another checklist, from the checklist menu | `destination` |
 | `checklist_items_moved` | Ticked items moved into another checklist and out of this one, from the checklist menu | `destination` |
 | `checklist_checked_items_deleted` | The checklist menu's Delete Checked Items is confirmed | `items_count` |
 | `checklist_reset` | All items unchecked | — |
-| `checklist_deleted` | Deleted, from the list's swipe or the checklist menu | — |
+| `checklist_deleted` | Deleted, from the list's swipe or context menu, or the checklist menu | — |
 | `checklist_reorder_mode_entered` | The checklist menu's Reorder Items entry is chosen | — |
 | `checklist_item_duplicated` | An item is duplicated from its swipe action | — |
 | `checklists_edit_mode_entered` | Edit is chosen from the list's "•••" menu | — |
@@ -291,7 +291,7 @@ back in (§Toggle-off behaviour).
 | `items_count` | Int | Items in the checklist; on `checklist_checked_items_deleted`, the items deleted; on `checklist_pdf_exported`, the items printed (blank rows excluded) |
 | `checked_items_count` | Int | Checked items printed |
 | `items_with_notes_count` | Int | Items with non-nil, non-empty notes |
-| `source` | String | `menu` / `swipe` |
+| `source` | String | `menu` / `swipe` / `context_menu` |
 | `destination` | String | `new` / `existing` |
 | `bulk_action` | String | `ChecklistsBulkAction.rawValue`: `delete`, `duplicate`, `reset` |
 | `selected_count` | Int | Checklists selected when the action ran |
