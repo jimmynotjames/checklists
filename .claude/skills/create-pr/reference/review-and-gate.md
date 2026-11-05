@@ -131,11 +131,15 @@ The one exception is `checklist_name` on `checklist_viewed`, which is a pre-exis
 documented in `core-docs/analytics-spec.md` §Free-text exception — it is not a precedent for adding more user content.
 
 **Accessibility**
-Applies if: the diff adds or modifies a SwiftUI `View`, a `UIView`, or a `UIViewController`.
+Applies if: the diff adds or modifies a SwiftUI `View`, a `UIView`, a `UIViewController`, or a
+color (`Colors.xcassets`, `Colors.swift`, or a `.tint`/`.foregroundStyle` change).
 Check: new interactive controls have an `accessibilityLabel`; custom controls (`CheckboxButton`,
 `CLButton`, `CircularPercentStatusIcon`) set appropriate `accessibilityTraits` and reflect state
 (a checkbox should expose selected/unselected); no fixed frame heights that clip text at large
-Dynamic Type — prefer `minHeight` over a fixed `height` on rows that contain text.
+Dynamic Type — prefer `minHeight` over a fixed `height` on rows that contain text. New or changed
+colors: the foreground/background pair is in `PaletteTests`, with a high-contrast value if the
+default falls short, and `make test-ui` has run, since its audits check contrast and neither is in
+the gate.
 
 **Reduce Motion**
 Applies if: the diff adds or changes an animation — SwiftUI `.animation`/`withAnimation`/
