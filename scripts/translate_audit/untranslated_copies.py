@@ -56,6 +56,10 @@ ALLOWLIST: set[tuple[str, str]] = {
     ("checklist.copy.namePlaceholder", "de"),
     # "Edit" is the Edit button label in Apple's Malay UI.
     ("checklists.action.edit", "ms"),
+    # "Checklists" is the ordinary Dutch and Brazilian Portuguese plural: the glossary keeps
+    # "Checklist" in English for both, but the plural isn't a glossary term.
+    ("checklists.title", "nl"),
+    ("checklists.title", "pt-BR"),
 }
 
 
