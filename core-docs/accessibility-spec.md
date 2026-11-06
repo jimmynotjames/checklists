@@ -101,10 +101,13 @@ long and which the user just acted on.
   nothing changes on screen when VoiceOver is off. The announcement follows focus after a beat, so
   VoiceOver reading the refocused element doesn't cut it off.
 - **After a delete** VoiceOver lands on the row that took the deleted one's place, else the row
-  above, else the Add button (`DeletionFocus`).
+  above, else the Add button (`DeletionFocus`). ⌘⌫ is the exception: it moves typing, and VoiceOver
+  with it, to the row above, else the one that took the deleted row's place, so a run of deletes
+  walks back up the list.
 - **After a duplicate** it stays on the original, as selection does in Photos and Files; the copy is
-  the next row down.
-- **Checklist screen:** the swipe, context-menu and VoiceOver Delete and Duplicate, Reset (only when
+  the next row down. ⌘D is the exception: typing moves into the copy, as it does into Return's new
+  row.
+- **Checklist screen:** the swipe, context-menu, VoiceOver and ⌘ shortcut Delete and Duplicate, Reset (only when
   it unticked something) and Delete Checked Items (with a count, focus on the first row left)
   announce. After a row's context menu, focus waits for the menu to close, as on the checklists list.
   Backspace on an empty row doesn't: it moves editing to the row above.

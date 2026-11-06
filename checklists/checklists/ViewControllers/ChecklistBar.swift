@@ -57,6 +57,8 @@ final class ChecklistBar {
 
   /// Set by the controller. A no-op until then, so a toolbar drawn early does nothing.
   @ObservationIgnored var perform: (Action) -> Void = { _ in }
+  /// ⌘N, which has no bar button. Set by the controller, like `perform`.
+  @ObservationIgnored var addItem: () -> Void = {}
 
   /// The item pinned at the outer edge: at the top of iPhone Duo's vertical bar, under Back, and
   /// never in the overflow. Always the screen's Done of the moment.

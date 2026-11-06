@@ -415,7 +415,7 @@ class ChecklistViewController: UIViewController {
     tableView.setContentOffset(topContentOffset, animated: true)
   }
 
-  private func insertNewItem(becomeFirstResponder: Bool) {
+  func insertNewItem(becomeFirstResponder: Bool) {
     insertNewItem(at: checklist.items.count, becomeFirstResponder: becomeFirstResponder)
   }
 
@@ -448,6 +448,14 @@ class ChecklistViewController: UIViewController {
 
     updateStatusIcon()
     refreshAccessibilityActions()
+  }
+
+  /// Moves typing to the item at `index`, scrolling it on screen first so its cell exists.
+  func startEditingRow(at index: Int) {
+    let indexPath = IndexPath(row: index, section: itemsSection)
+    tableView.scrollToRow(at: indexPath, at: .none, animated: false)
+    tableView.layoutIfNeeded()
+    (tableView.cellForRow(at: indexPath) as? ItemTableViewCell)?.itemContentView.startEditing()
   }
 
   private func collapseEditingCellIfNecessary() {
@@ -808,7 +816,7 @@ extension ChecklistViewController {
     }
   }
 
-  private func findEditingCell() -> UITableViewCell? {
+  func findEditingCell() -> UITableViewCell? {
     for cell in tableView.visibleCells {
       if let cell = cell as? ItemTableViewCell, cell.itemContentView.isEditing {
         return cell
@@ -821,6 +829,17 @@ extension ChecklistViewController {
   /// item's.
   var isEditingText: Bool {
     checklistNameTextField.isFirstResponder || checklistNotesTextView.isFirstResponder || findEditingCell() != nil
+  }
+
+  /// Whether an input method is mid-word in the field being typed into.
+  var isComposingText: Bool {
+    if checklistNameTextField.isFirstResponder {
+      return checklistNameTextField.markedTextRange != nil
+    }
+    if checklistNotesTextView.isFirstResponder {
+      return checklistNotesTextView.markedTextRange != nil
+    }
+    return (findEditingCell() as? ItemTableViewCell)?.itemContentView.isComposingText ?? false
   }
 
   @objc func textEditingDidBegin(_ notification: Notification) {
@@ -952,6 +971,11 @@ extension ChecklistViewController: ItemContentViewDelegate {
   }
 
   func itemContentViewCheckboxButtonTapped(_ itemContentView: ItemContentView) {
+    toggleItem(in: itemContentView)
+  }
+
+  /// The checkbox square's tap, and ⌘K on the item being typed in.
+  func toggleItem(in itemContentView: ItemContentView) {
     // The row ignores touches in Reorder Items mode; this also covers a VoiceOver double-tap.
     guard !isReordering, let item = itemContentView.item else { return }
     let wasComplete = checklist.isComplete

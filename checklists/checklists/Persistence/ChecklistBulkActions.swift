@@ -101,7 +101,7 @@ nonisolated enum ChecklistMoveAction: CaseIterable {
   }
 }
 
-/// Where VoiceOver goes after a row is deleted, on either list screen.
+/// Where VoiceOver, or typing after ⌘⌫, goes once a row is deleted, on either list screen.
 ///
 /// Free of SwiftData, like `ChecklistMoveAction`, so the edge rules can be tested without a
 /// container.
@@ -111,6 +111,14 @@ nonisolated enum DeletionFocus {
   static func neighbourIndex(afterRemoving index: Int, remainingCount: Int) -> Int? {
     guard remainingCount > 0 else { return nil }
     return min(index, remainingCount - 1)
+  }
+
+  /// The row typing moves to once ⌘⌫ deletes the item being typed in: the row above, else the row
+  /// that slid into its place, counted among the rows left; `nil` when none are left. Upward, as
+  /// Backspace on an empty row goes, so a run of deletes walks back through the list.
+  static func editingNeighbourIndex(afterRemoving index: Int, remainingCount: Int) -> Int? {
+    guard remainingCount > 0 else { return nil }
+    return index > 0 ? min(index - 1, remainingCount - 1) : 0
   }
 
   /// The id among `ids` that VoiceOver goes to once the one at `index` is deleted; `nil` when it was

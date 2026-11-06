@@ -21,6 +21,7 @@ extension ChecklistViewController {
     showsDiscardWording = isNewChecklist
     bar.isNewChecklist = isNewChecklist
     bar.perform = { [weak self] action in self?.perform(action) }
+    bar.addItem = { [weak self] in self?.newItemKeyPressed() }
     updateBarMode(animated: false)
   }
 
