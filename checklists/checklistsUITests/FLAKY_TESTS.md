@@ -15,3 +15,4 @@ enough data. What counts as flaky and when to log it: AGENTS.md §"Reading a tes
 
 | Date | Test | File:line | Failure | Run (suite, branch@sha, bundle) | Isolated rerun | Hunch |
 |---|---|---|---|---|---|---|
+| 2026-11-05 | `ChecklistItemsUITest/testChecklistEditItemName` | `checklists/checklistsUITests/ChecklistItemsUITest.swift:141` | `XCTAssertTrue failed`: the name read after 11 delete-key presses didn't equal the original minus its last 11 characters | `ChecklistItemsUITest` (8 tests), `u/jimmyho/claude-code/checklist-screen-context-menu@6461faa`, `.build/sim/results/20261105_181140-36475-only.xcresult` | 3/3 passed (`ITERATIONS=3`) | The value is read straight after the key presses with no wait, so it may catch the field mid-update; or the tap at (0.9, 0.9) left the cursor short of the end |
