@@ -469,10 +469,10 @@ class ChecklistViewController: UIViewController {
     }
   }
 
-  /// `announcesResult` is for the swipe and VoiceOver Delete, which move VoiceOver to the row that
-  /// takes the deleted one's place. Backspace on an empty row leaves it off: it moves editing to the
-  /// row above itself.
-  func deleteItem(at index: Int, announcesResult: Bool = false) {
+  /// `announcesResult` is for the swipe, context-menu and VoiceOver Delete, which move VoiceOver to
+  /// the row that takes the deleted one's place. Backspace on an empty row leaves it off: it moves
+  /// editing to the row above itself. `afterMenu`: see `postAccessibilityFeedback`.
+  func deleteItem(at index: Int, announcesResult: Bool = false, afterMenu: Bool = false) {
     let items = checklist.items
     guard index >= 0, index < items.count else { assertionFailure(); return }
     let wasComplete = checklist.isComplete
@@ -484,7 +484,7 @@ class ChecklistViewController: UIViewController {
     refreshAccessibilityActions()
     guard announcesResult else { return }
     let neighbour = DeletionFocus.neighbourIndex(afterRemoving: index, remainingCount: checklist.items.count)
-    postAccessibilityFeedback(focus: focusTargetAfterRemoval(neighbour: neighbour), announcement: Self.itemDeletedAnnouncement)
+    postAccessibilityFeedback(focus: focusTargetAfterRemoval(neighbour: neighbour), announcement: Self.itemDeletedAnnouncement, afterMenu: afterMenu)
   }
 
   /// The overflow menu's Delete Checked Items, once confirmed. Internal so a test can invoke it: a
@@ -513,8 +513,8 @@ class ChecklistViewController: UIViewController {
 
   /// Copies the item at `index` and places the copy directly beneath it. See
   /// `ModelContext.duplicate(item:in:)` — unlike checklist duplication, the name carries over
-  /// unchanged.
-  func duplicateItem(at index: Int) {
+  /// unchanged. `afterMenu`: see `postAccessibilityFeedback`.
+  func duplicateItem(at index: Int, afterMenu: Bool = false) {
     // Commits in-progress edits first; see `duplicateChecklist`.
     view.endEditing(true)
     let items = checklist.items
@@ -527,7 +527,7 @@ class ChecklistViewController: UIViewController {
     // `isComplete`, which is why the status icon alone needs a refresh.
     updateStatusIcon()
     refreshAccessibilityActions()
-    postAccessibilityFeedback(focus: nil, announcement: Self.itemDuplicatedAnnouncement)
+    postAccessibilityFeedback(focus: nil, announcement: Self.itemDuplicatedAnnouncement, afterMenu: afterMenu)
   }
 
   /// The width the header was last measured against. `view` is the table itself, so this runs on
@@ -689,6 +689,27 @@ extension ChecklistViewController: UITableViewDelegate {
     let configuration = UISwipeActionsConfiguration(actions: [deleteAction, duplicateAction])
     configuration.performsFirstActionWithFullSwipe = true
     return configuration
+  }
+
+  /// The swipe actions again, for long-press and right-click. The table's long-press drag still
+  /// works: moving the finger once the menu is up lifts the row into the drag (see the drag
+  /// extension below for what that relies on). Absent in Reorder Items mode, like the swipe. Looks
+  /// the item up again when an action fires, since its row may have moved meanwhile.
+  func tableView(_: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point _: CGPoint) -> UIContextMenuConfiguration? {
+    guard indexPath.section == itemsSection, indexPath.row < checklist.items.count, !isReordering else { return nil }
+    let item = checklist.items[indexPath.row]
+
+    return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ in
+      let duplicate = UIAction(title: CommonStrings.duplicate, image: UIImage(systemName: "plus.square.on.square")) { _ in
+        guard let self, let index = self.checklist.items.firstIndex(of: item) else { return }
+        self.duplicateItem(at: index, afterMenu: true)
+      }
+      let delete = UIAction(title: CommonStrings.delete, image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+        guard let self, let index = self.checklist.items.firstIndex(of: item) else { return }
+        self.deleteItem(at: index, announcesResult: true, afterMenu: true)
+      }
+      return UIMenu(children: [duplicate, delete])
+    }
   }
 }
 
@@ -869,8 +890,9 @@ extension ChecklistViewController: AddItemButtonTableFooterViewDelegate {
 
 // MARK: - Drag/Drop Reorder
 
-/// No context menu on the rows, unlike the checklists list: with one, the table's long-press opens
-/// the menu and the reorder drag no longer starts.
+/// The rows' context menu hands off to this drag once the finger moves. That relies on
+/// `CLTextView` having no text drag interaction of its own: with one under the finger, the menu
+/// opens and the drag never starts.
 extension ChecklistViewController: UITableViewDragDelegate {
   func tableView(_: UITableView, itemsForBeginning _: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
     guard indexPath.section == itemsSection, indexPath.row < checklist.items.count else { assertionFailure(); return [] }
@@ -1059,12 +1081,17 @@ extension ChecklistViewController {
 
   /// Moves VoiceOver to `focus`, when there is one, then speaks `announcement`. Neither shows when
   /// VoiceOver is off.
-  func postAccessibilityFeedback(focus: NSObject?, announcement: String?) {
+  func postAccessibilityFeedback(focus: NSObject?, announcement: String?, afterMenu: Bool = false) {
     if let accessibilityFeedback {
       accessibilityFeedback(focus, announcement)
       return
     }
     Task {
+      // From a row's context menu: waits for the menu to close, since the system moves VoiceOver
+      // itself as it does, as ChecklistsView's `afterAlert` does.
+      if afterMenu {
+        try? await Task.sleep(for: .milliseconds(500))
+      }
       // A turn later, so a swipe or custom action that triggered this has finished first: VoiceOver
       // re-seats its cursor when the element that ran the action goes away.
       if let focus {
