@@ -413,6 +413,7 @@ struct ChecklistsView: View {
     } label: {
       // The artwork in its own colours, not the bar's tint. The image alone, no title: given a
       // Label, the toolbar sizes its glass capsule for the title even when it draws only the icon.
+      // The PDF's page must stay 28pt: on a Mac the bar sizes the capsule from it, not the frame.
       Image("AddChecklistIcon")
         .renderingMode(.original)
         .resizable()
