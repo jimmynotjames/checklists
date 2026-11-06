@@ -40,6 +40,7 @@ nonisolated enum AnalyticsEvent {
   static let checklistsBulkActionPerformed = "checklists_bulk_action_performed"
   static let allChecklistsReset = "all_checklists_reset"
   static let checklistPDFExported = "checklist_pdf_exported"
+  static let keyboardShortcutUsed = "keyboard_shortcut_used"
 
   // MARK: Errors
 
@@ -95,6 +96,10 @@ nonisolated enum AnalyticsProperty {
   // MARK: checklist_pdf_exported
 
   static let checkedItemsCount = "checked_items_count"
+
+  // MARK: keyboard_shortcut_used
+
+  static let shortcut = "shortcut"
 
   // MARK: Errors and failures
 

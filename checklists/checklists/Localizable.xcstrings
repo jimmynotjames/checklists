@@ -11330,6 +11330,616 @@
         }
       }
     },
+    "checklist.shortcut.newItem" : {
+      "comment" : "Name of the ⌘N keyboard shortcut on a checklist's screen, shown in the list of shortcuts an iPad shows while ⌘ is held. Adds an empty item at the end of this checklist and starts typing in it. Title case, like a menu command.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عنصر جديد"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "নতুন আইটেম"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Element nou"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nová položka"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nyt punkt"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neuer Eintrag"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Νέο στοιχείο"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Item"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Item"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Item"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Item"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuevo elemento"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuevo elemento"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uusi kohta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouvel élément"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouvel élément"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "નવી આઇટમ"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "פריט חדש"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "नया आइटम"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova stavka"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Új elem"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Item Baru"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuova voce"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新規項目"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಹೊಸ ಐಟಂ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 항목"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "പുതിയ ഇനം"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "नवीन आयटम"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Item Baharu"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nytt punkt"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nieuw onderdeel"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ନୂଆ ଆଇଟମ୍"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਨਵੀਂ ਆਈਟਮ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nowa pozycja"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novo item"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novo elemento"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Element nou"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новый пункт"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nová položka"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova postavka"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ny punkt"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "புதிய உருப்படி"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "కొత్త అంశం"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "รายการใหม่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni Öge"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новий пункт"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نیا آئٹم"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mục mới"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新建项目"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新增項目"
+          }
+        }
+      }
+    },
+    "checklist.shortcut.toggleItem" : {
+      "comment" : "Name of the ⌘K keyboard shortcut on a checklist's screen, shown in the list of shortcuts an iPad shows while ⌘ is held. Ticks the item being typed in, or unticks it if already ticked. Title case, like a menu command.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحديد أو إلغاء التحديد"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "টিক দিন বা তুলে নিন"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marca o desmarca"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Označit nebo odznačit"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markér eller fjern markering"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abhaken oder Häkchen entfernen"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Επιλογή ή αποεπιλογή"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check or Uncheck"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check or Uncheck"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check or Uncheck"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check or Uncheck"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcar o desmarcar"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcar o desmarcar"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merkitse tai poista merkintä"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cocher ou décocher"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cocher ou décocher"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ટિક કરો અથવા કાઢો"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "סימון או ביטול סימון"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चुनें या हटाएँ"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Označi ili poništi"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kipipálás vagy visszavonás"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centang atau Batal Centang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spunta o deseleziona"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チェックを付ける/外す"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಟಿಕ್ ಮಾಡಿ ಅಥವಾ ತೆಗೆಯಿರಿ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "체크 또는 해제"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ടിക്ക് ചെയ്യുക / മാറ്റുക"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "टिक करा किंवा काढा"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanda atau Nyahtanda"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merk av eller fjern merking"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aan- of uitvinken"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଟିକ୍ କରନ୍ତୁ ବା ହଟାନ୍ତୁ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਚੁਣੋ ਜਾਂ ਅਣਚੁਣੋ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zaznacz lub odznacz"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcar ou desmarcar"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcar ou desmarcar"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bifați sau debifați"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отметить или снять отметку"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Označiť alebo zrušiť označenie"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Označi ali odznači"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bocka i eller ur"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "குறி அல்லது நீக்கு"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "టిక్ చేయి లేదా తీసివేయి"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ทำเครื่องหมายหรือยกเลิก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İşaretle veya İşareti Kaldır"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Позначити або зняти позначку"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نشان لگائیں یا ہٹائیں"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chọn hoặc bỏ chọn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "勾选或取消勾选"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "勾選或取消勾選"
+          }
+        }
+      }
+    },
     "checklists.accessibility.allReset" : {
       "comment" : "VoiceOver announcement after Reset All unchecks every item in every checklist. \"Reset\" matches the Reset All menu entry; nothing is deleted. Keep it short.",
       "localizations" : {
@@ -21310,6 +21920,311 @@
         }
       }
     },
+    "checklists.shortcut.newChecklist" : {
+      "comment" : "Name of the ⌘N keyboard shortcut on the screen listing every checklist, shown in the list of shortcuts an iPad shows while ⌘ is held. Creates a checklist, like the Add button. Title case, like a menu command.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قائمة تحقق جديدة"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "নতুন চেকলিস্ট"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Llista nova"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nový seznam"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ny tjekliste"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Checkliste"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Νέα λίστα ελέγχου"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Checklist"
+          }
+        },
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Checklist"
+          }
+        },
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Checklist"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Checklist"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nueva lista"
+          }
+        },
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nueva lista"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uusi tarkistuslista"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouvelle liste"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouvelle liste de vérification"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "નવું ચેકલિસ્ટ"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "רשימה חדשה"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "नई चेकलिस्ट"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novi popis"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Új lista"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daftar Periksa Baru"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuova checklist"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新規チェックリスト"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಹೊಸ ಚೆಕ್‌ಲಿಸ್ಟ್"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 체크리스트"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "പുതിയ ചെക്ക്‌ലിസ്റ്റ്"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "नवीन चेकलिस्ट"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senarai Semak Baharu"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ny sjekkliste"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nieuwe checklist"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ନୂଆ ଚେକଲିଷ୍ଟ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਨਵੀਂ ਚੈੱਕਲਿਸਟ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nowa lista"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova checklist"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova lista"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listă de verificare nouă"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новый чек-лист"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nový zoznam"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nov kontrolni seznam"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ny checklista"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "புதிய செக்லிஸ்ட்"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "కొత్త చెక్‌లిస్ట్"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เช็กลิสต์ใหม่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni Kontrol Listesi"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новий чекліст"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نئی چیک لسٹ"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danh sách kiểm tra mới"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新建清单"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新增檢查清單"
+          }
+        }
+      }
+    },
     "checklists.title" : {
       "comment" : "Name of the app's main screen, the list of all checklists. Not drawn on screen: VoiceOver reads it as the screen's title. A plural noun, not a verb.",
       "localizations" : {
@@ -29590,7 +30505,7 @@
       }
     },
     "item.accessibility.deleted" : {
-      "comment" : "VoiceOver announcement after an item inside a checklist is deleted with the swipe, context-menu or VoiceOver Delete action. VoiceOver then moves to a neighbouring item, or to the Add button when none are left. Keep it short.",
+      "comment" : "VoiceOver announcement after an item inside a checklist is deleted with the swipe, context-menu or VoiceOver Delete action, or the ⌘⌫ keyboard shortcut. VoiceOver then moves to a neighbouring item, or to the Add button when none are left. Keep it short.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

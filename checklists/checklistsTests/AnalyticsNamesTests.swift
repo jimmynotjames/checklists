@@ -35,6 +35,7 @@ struct AnalyticsNamesTests {
     AnalyticsEvent.checklistsBulkActionPerformed,
     AnalyticsEvent.allChecklistsReset,
     AnalyticsEvent.checklistPDFExported,
+    AnalyticsEvent.keyboardShortcutUsed,
     AnalyticsEvent.persistenceFatalError,
     AnalyticsEvent.persistenceWriteFailed,
     AnalyticsEvent.startupFailed,
@@ -59,6 +60,7 @@ struct AnalyticsNamesTests {
     AnalyticsProperty.bulkAction,
     AnalyticsProperty.selectedCount,
     AnalyticsProperty.checkedItemsCount,
+    AnalyticsProperty.shortcut,
     AnalyticsProperty.errorDomain,
     AnalyticsProperty.errorCode,
     AnalyticsProperty.errorOperation,
@@ -182,6 +184,15 @@ struct AnalyticsNamesTests {
     #expect(ChecklistsBulkAction.delete.rawValue == "delete")
     #expect(ChecklistsBulkAction.duplicate.rawValue == "duplicate")
     #expect(ChecklistsBulkAction.reset.rawValue == "reset")
+  }
+
+  /// `shortcut` transmits `KeyboardShortcutName.rawValue`. Update analytics-spec.md §Per-event
+  /// properties in the same change.
+  @Test("the keyboard shortcut values sent as shortcut are pinned")
+  func keyboardShortcutValuesArePinned() {
+    #expect(Set(KeyboardShortcutName.allCases.map(\.rawValue)) == [
+      "new_checklist", "done", "new_item", "toggle_item", "duplicate_item", "delete_item",
+    ])
   }
 
   /// `container_backing` transmits `ContainerBacking.rawValue`. Update analytics-spec.md

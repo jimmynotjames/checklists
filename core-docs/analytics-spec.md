@@ -49,6 +49,7 @@ A dashboard is justified by a question here. The IDs are stable; board names cit
 | 3.12 | Do people duplicate several items in a row? | `checklist_item_duplicated`, per session |
 | 3.13 | Do people hand checklists to someone else as a record? | `checklist_pdf_exported` |
 | 3.14 | Do people find Edit and Reset All behind the list's "•••" menu? | `checklists_edit_mode_entered`, `all_checklists_reset`, per active user |
+| 3.15 | Do people build checklists from a hardware keyboard? | `keyboard_shortcut_used` by `shortcut`, with `device_class` |
 
 3.9 stops at the request: `requestReview` reports neither whether the dialog showed nor what was
 chosen, and no custom pre-prompt manufactures that signal. The bar is three constants on
@@ -61,6 +62,10 @@ three or more in one session are the signal for it.
 a "•••" menu so the list's bar is all icons, which iPhone Duo's vertical bar needs. Opening the menu
 isn't tracked: SwiftUI reports no menu opening. Only Edit has a before figure; `all_checklists_reset`
 starts with the menu, so Reset All is read as a rate per active user.
+
+3.15 exists to decide whether keyboard selection (#404) is worth building: arrow keys, Space to
+check off, and moving items by key. A Mac running the iPhone app reports `device_class` as phone, so
+split by `$os` there.
 
 ## Privacy
 
@@ -259,6 +264,7 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `checklists_bulk_action_performed` | An Edit mode toolbar action runs and changes something; once per action, not per checklist; `checklist_duplicated` and `checklist_deleted` don't also fire | `bulk_action`, `selected_count` |
 | `all_checklists_reset` | Reset All is confirmed and unchecks something; `checklist_reset` doesn't also fire | — |
 | `checklist_pdf_exported` | The share sheet opened by the checklist menu's Export as PDF… completes; not on a cancelled share | `items_count`, `checked_items_count` |
+| `keyboard_shortcut_used` | A hardware-keyboard shortcut runs; beside, not instead of, the action's own event | `shortcut` |
 | `rate_app_tapped` | "Rate in App Store" tapped in Settings | — |
 | `feedback_tapped` | "Send Feedback" tapped, Settings **or** failure screen | — |
 | `privacy_policy_tapped` | The privacy policy is opened | — |
@@ -290,6 +296,7 @@ back in (§Toggle-off behaviour).
 | `notes_length` | Int | Characters in the checklist's notes; 0 when absent |
 | `items_count` | Int | Items in the checklist; on `checklist_checked_items_deleted`, the items deleted; on `checklist_pdf_exported`, the items printed (blank rows excluded) |
 | `checked_items_count` | Int | Checked items printed |
+| `shortcut` | String | `KeyboardShortcutName.rawValue`: `new_checklist` (ChecklistsView); `done`, `new_item`, `toggle_item`, `duplicate_item`, `delete_item` (ChecklistScreen). ChecklistsView's ⌘,, ⌘⌫ and Esc ride on its visible buttons and aren't told apart from a tap |
 | `items_with_notes_count` | Int | Items with non-nil, non-empty notes |
 | `source` | String | `menu` / `swipe` / `context_menu` |
 | `destination` | String | `new` / `existing` |
@@ -306,7 +313,7 @@ back in (§Toggle-off behaviour).
 | `time_since_first_eligible_bucket` | String | `<1d` / `<7d` / `<30d` / `30d+` |
 
 `error_operation` values are Swift case names, so renaming a case changes the dashboards.
-`AnalyticsNamesTests` pins the value sets of `source`, `destination`, `bulk_action`, `error_operation`,
+`AnalyticsNamesTests` pins the value sets of `source`, `destination`, `bulk_action`, `shortcut`, `error_operation`,
 `startup_stage`, `container_backing`, `icloud_account`, and `sync_operation`. 3.6 must be filtered by
 `startup_stage`, since only `store_open` offers the reset.
 

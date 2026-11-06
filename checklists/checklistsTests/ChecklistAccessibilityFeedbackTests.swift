@@ -139,6 +139,20 @@ struct DeletionFocusTests {
   func neighbour(removed index: Int, remaining: Int, expected: Int?) {
     #expect(DeletionFocus.neighbourIndex(afterRemoving: index, remainingCount: remaining) == expected)
   }
+
+  /// ⌘⌫ moves typing up, as Backspace on an empty row does; down only from the first row.
+  @Test(
+    "typing moves to the row above, else the one that slid up, else none",
+    arguments: [
+      (0, 2, 0 as Int?),
+      (1, 2, 0),
+      (2, 2, 1),
+      (0, 0, nil),
+    ],
+  )
+  func editingNeighbour(removed index: Int, remaining: Int, expected: Int?) {
+    #expect(DeletionFocus.editingNeighbourIndex(afterRemoving: index, remainingCount: remaining) == expected)
+  }
 }
 
 /// Reorder Items mode swaps the bar item VoiceOver was on, so the screen points VoiceOver at its

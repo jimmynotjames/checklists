@@ -153,6 +153,7 @@ struct ChecklistsView: View {
     .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { listWidth = $0 }
     .environment(\.editMode, $editMode)
     .appBackground()
+    .background { keyboardShortcuts }
     // Named for VoiceOver, but not drawn.
     .navigationTitle(Self.screenTitle)
     .navigationBarTitleDisplayMode(.inline)
@@ -192,6 +193,8 @@ struct ChecklistsView: View {
           ) {
             confirm(.delete)
           }
+          // ⌘⌫, behind the same confirmation: a checklist never goes unasked.
+          .keyboardShortcut(shortcut(KeyboardShortcut(.delete)))
         }
         ToolbarSpacer(.flexible, placement: .bottomBar)
         ToolbarItem(placement: .bottomBar) {
@@ -305,6 +308,7 @@ struct ChecklistsView: View {
     // Locale-invariant handle for `translation-accessibility-size-check`, which cannot
     // navigate by localized visible text.
     .accessibilityIdentifier("toolbar.settings")
+    .keyboardShortcut(shortcut(KeyboardShortcut(",")))
   }
 
   /// Edit and Reset All, behind one "•••" as on a checklist's own screen. Both entries are always
@@ -347,20 +351,25 @@ struct ChecklistsView: View {
     .accessibilityFocused($isMoreMenuFocused)
   }
 
+  private func leaveEditMode() {
+    withAnimation {
+      editMode = .inactive
+    }
+    postAccessibilityFeedback(nil, afterAlert: true) {
+      isMoreMenuFocused = true
+    }
+  }
+
   private var editDoneButton: some View {
     Button(role: .confirm) {
-      withAnimation {
-        editMode = .inactive
-      }
-      postAccessibilityFeedback(nil, afterAlert: true) {
-        isMoreMenuFocused = true
-      }
+      leaveEditMode()
     }
     // `accentFill`: iOS draws a white checkmark on a capsule of this tint.
     .tint(Colors.accentFillColor)
     // The system's own checkmark and "Done" label, enlarged on a long press like the other icons.
     .accessibilityShowsLargeContentViewer()
     .accessibilityIdentifier("toolbar.editDone")
+    .keyboardShortcut(shortcut(.cancelAction))
     .accessibilityFocused($isEditDoneFocused)
   }
 
@@ -382,6 +391,24 @@ struct ChecklistsView: View {
     .tint(tint)
     .disabled(liveSelection.isEmpty)
     .accessibilityIdentifier(id)
+  }
+
+  // MARK: - Keyboard shortcuts
+
+  /// Shortcuts are off while ChecklistScreen or a sheet is up. The stack keeps this screen alive
+  /// under them, and ⌘N there would otherwise make a checklist.
+  private var isFrontmost: Bool {
+    router.path.isEmpty && router.sheet == nil
+  }
+
+  /// `shortcut` while this screen is frontmost, else none.
+  private func shortcut(_ shortcut: KeyboardShortcut) -> KeyboardShortcut? {
+    isFrontmost ? shortcut : nil
+  }
+
+  private var keyboardShortcuts: some View {
+    ChecklistsNewChecklistShortcut(newChecklist: addChecklist)
+      .disabled(!isFrontmost || isEditing)
   }
 
   // MARK: - Add

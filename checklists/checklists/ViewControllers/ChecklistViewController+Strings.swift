@@ -14,6 +14,28 @@ extension ChecklistViewController {
     comment: "Navigation bar button on the checklist detail screen that unchecks every item so the list can be run again.",
   )
 
+  // MARK: Keyboard shortcuts
+
+  static let newItemShortcutTitle = String(
+    localized: "checklist.shortcut.newItem",
+    defaultValue: "New Item",
+    comment: """
+    Name of the ⌘N keyboard shortcut on a checklist's screen, shown in the list of shortcuts an \
+    iPad shows while ⌘ is held. Adds an empty item at the end of this checklist and starts typing \
+    in it. Title case, like a menu command.
+    """,
+  )
+
+  static let toggleItemShortcutTitle = String(
+    localized: "checklist.shortcut.toggleItem",
+    defaultValue: "Check or Uncheck",
+    comment: """
+    Name of the ⌘K keyboard shortcut on a checklist's screen, shown in the list of shortcuts an \
+    iPad shows while ⌘ is held. Ticks the item being typed in, or unticks it if already ticked. \
+    Title case, like a menu command.
+    """,
+  )
+
   // MARK: Overflow menu
 
   static let reorderItemsMenuTitle = String(
@@ -178,7 +200,7 @@ extension ChecklistViewController {
     defaultValue: "Item deleted",
     comment: """
     VoiceOver announcement after an item inside a checklist is deleted with the swipe, context-menu \
-    or VoiceOver Delete action. VoiceOver then moves to a neighbouring item, or to the Add button when none are \
+    or VoiceOver Delete action, or the ⌘⌫ keyboard shortcut. VoiceOver then moves to a neighbouring item, or to the Add button when none are \
     left. Keep it short.
     """,
   )

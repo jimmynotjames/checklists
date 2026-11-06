@@ -48,6 +48,26 @@ nonisolated enum ChecklistsBulkAction: String {
   case reset
 }
 
+/// Which hardware-keyboard shortcut ran — the `shortcut` property on `keyboard_shortcut_used`.
+/// Spelled out for the same reason as `CheckedItemsCopyDestination`. `newChecklist` is
+/// ChecklistsView's, the rest ChecklistScreen's. ChecklistsView's ⌘,, ⌘⌫ and Esc sit on its visible
+/// buttons, which can't tell a key from a tap, so they aren't counted.
+nonisolated enum KeyboardShortcutName: String, CaseIterable {
+  case newChecklist = "new_checklist"
+  case done
+  case newItem = "new_item"
+  case toggleItem = "toggle_item"
+  case duplicateItem = "duplicate_item"
+  case deleteItem = "delete_item"
+}
+
+extension AnalyticsClient {
+  /// `keyboard_shortcut_used`, which fires beside whatever event the action itself sends.
+  func trackShortcut(_ shortcut: KeyboardShortcutName) {
+    track(AnalyticsEvent.keyboardShortcutUsed, properties: [AnalyticsProperty.shortcut: shortcut.rawValue])
+  }
+}
+
 extension Checklist {
   /// The properties `checklist_viewed` carries.
   ///
