@@ -254,7 +254,7 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `checklist_reset` | All items unchecked | — |
 | `checklist_deleted` | Deleted, from the list's swipe or context menu, or the checklist menu | — |
 | `checklist_reorder_mode_entered` | The checklist menu's Reorder Items entry is chosen | — |
-| `checklist_item_duplicated` | An item is duplicated from its swipe action | — |
+| `checklist_item_duplicated` | An item is duplicated from its swipe action or context menu | — |
 | `checklists_edit_mode_entered` | Edit is chosen from the list's "•••" menu | — |
 | `checklists_bulk_action_performed` | An Edit mode toolbar action runs and changes something; once per action, not per checklist; `checklist_duplicated` and `checklist_deleted` don't also fire | `bulk_action`, `selected_count` |
 | `all_checklists_reset` | Reset All is confirmed and unchecks something; `checklist_reset` doesn't also fire | — |

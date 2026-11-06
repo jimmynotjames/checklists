@@ -177,8 +177,8 @@ extension ChecklistViewController {
     localized: "item.accessibility.deleted",
     defaultValue: "Item deleted",
     comment: """
-    VoiceOver announcement after an item inside a checklist is deleted with the swipe or VoiceOver \
-    Delete action. VoiceOver then moves to a neighbouring item, or to the Add button when none are \
+    VoiceOver announcement after an item inside a checklist is deleted with the swipe, context-menu \
+    or VoiceOver Delete action. VoiceOver then moves to a neighbouring item, or to the Add button when none are \
     left. Keep it short.
     """,
   )

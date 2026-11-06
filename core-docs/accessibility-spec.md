@@ -104,9 +104,10 @@ long and which the user just acted on.
   above, else the Add button (`DeletionFocus`).
 - **After a duplicate** it stays on the original, as selection does in Photos and Files; the copy is
   the next row down.
-- **Checklist screen:** the swipe and VoiceOver Delete, Duplicate, Reset (only when it unticked
-  something) and Delete Checked Items (with a count, focus on the first row left) announce. Backspace
-  on an empty row doesn't: it moves editing to the row above.
+- **Checklist screen:** the swipe, context-menu and VoiceOver Delete and Duplicate, Reset (only when
+  it unticked something) and Delete Checked Items (with a count, focus on the first row left)
+  announce. After a row's context menu, focus waits for the menu to close, as on the checklists list.
+  Backspace on an empty row doesn't: it moves editing to the row above.
 - **Reorder Items mode** swaps the bar item VoiceOver was on, so VoiceOver moves to Done on the way
   in and back to ⋯ on the way out, after the bar has relaid and the ⋯ menu has closed. Tapping the
   Done that typing adds to the bar takes that Done away, so VoiceOver moves to what takes its place

@@ -95,6 +95,7 @@ class CLTextView: UITextView {
     updatePlaceholderLabel()
 
     textDropDelegate = self
+    interactions.filter { $0 is UIDragInteraction }.forEach { removeInteraction($0) }
 
     NotificationCenter.default.addObserver(self, selector: #selector(textDidChange), name: UITextView.textDidChangeNotification, object: self)
   }
@@ -124,6 +125,15 @@ class CLTextView: UITextView {
       placeholderTopConstraint.constant = textContainerInset.top
       placeholderBottomConstraint.constant = -textContainerInset.bottom
     }
+  }
+
+  /// No text drag interaction on any CLTextView, not even the disabled one iPhone has by default.
+  /// Its mere presence under the finger stops an item row's context menu from handing off to the
+  /// table's reorder drag (ChecklistViewController). Refused here in case UIKit adds it again, e.g.
+  /// on an `isEditable` change.
+  override func addInteraction(_ interaction: UIInteraction) {
+    guard !(interaction is UIDragInteraction) else { return }
+    super.addInteraction(interaction)
   }
 
   deinit {
