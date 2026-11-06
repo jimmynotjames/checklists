@@ -127,11 +127,10 @@ class CLTextView: UITextView {
     }
   }
 
-  /// No text drag interaction at all, not even the disabled one iPhone has by default. Its mere
-  /// presence under the finger stops an item row's context menu from handing off to the table's
-  /// reorder drag (ChecklistViewController). Removed in `commonInit`, and refused here in case
-  /// UIKit adds it again, e.g. on an `isEditable` change. Nothing is lost on iPhone; on iPad and Mac
-  /// it means selected text can't be dragged out of an item.
+  /// No text drag interaction on any CLTextView, not even the disabled one iPhone has by default.
+  /// Its mere presence under the finger stops an item row's context menu from handing off to the
+  /// table's reorder drag (ChecklistViewController). Refused here in case UIKit adds it again, e.g.
+  /// on an `isEditable` change.
   override func addInteraction(_ interaction: UIInteraction) {
     guard !(interaction is UIDragInteraction) else { return }
     super.addInteraction(interaction)

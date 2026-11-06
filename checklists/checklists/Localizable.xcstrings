@@ -21921,7 +21921,7 @@
       }
     },
     "common.action.delete" : {
-      "comment" : "Destructive action: removes a checklist or an item. Swipe action, Edit mode toolbar button on the list of checklists, and confirmation button.",
+      "comment" : "Destructive action: removes a checklist or an item. Swipe action, Edit mode toolbar button on the list of checklists, confirmation button, and row context-menu entry (shown as text).",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -22226,7 +22226,7 @@
       }
     },
     "common.action.duplicate" : {
-      "comment" : "Makes a copy of a checklist or an item. Swipe action, and Edit mode toolbar button on the list of checklists; VoiceOver reads it as the button's name.",
+      "comment" : "Makes a copy of a checklist or an item. Swipe action, Edit mode toolbar button on the list of checklists, and row context-menu entry (shown as text); VoiceOver reads it as the button's name.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -29590,7 +29590,7 @@
       }
     },
     "item.accessibility.deleted" : {
-      "comment" : "VoiceOver announcement after an item inside a checklist is deleted with the swipe or VoiceOver Delete action. VoiceOver then moves to a neighbouring item, or to the Add button when none are left. Keep it short.",
+      "comment" : "VoiceOver announcement after an item inside a checklist is deleted with the swipe, context-menu or VoiceOver Delete action. VoiceOver then moves to a neighbouring item, or to the Add button when none are left. Keep it short.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

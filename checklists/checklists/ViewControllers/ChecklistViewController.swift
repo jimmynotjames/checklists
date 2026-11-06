@@ -701,11 +701,15 @@ extension ChecklistViewController: UITableViewDelegate {
 
     return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ in
       let duplicate = UIAction(title: CommonStrings.duplicate, image: UIImage(systemName: "plus.square.on.square")) { _ in
-        guard let self, let index = self.checklist.items.firstIndex(of: item) else { return }
+        guard let self, let index = self.checklist.items.firstIndex(where: { $0 === item }) else { return }
         self.duplicateItem(at: index, afterMenu: true)
       }
       let delete = UIAction(title: CommonStrings.delete, image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
-        guard let self, let index = self.checklist.items.firstIndex(of: item) else { return }
+        guard let self, let index = self.checklist.items.firstIndex(where: { $0 === item }) else { return }
+        // Commits an edit in progress first, as Duplicate does: a right-click or a long-press on
+        // the checkbox can reach the row being typed in, whose text would otherwise be written to
+        // the deleted item when its field stops editing.
+        self.view.endEditing(true)
         self.deleteItem(at: index, announcesResult: true, afterMenu: true)
       }
       return UIMenu(children: [duplicate, delete])

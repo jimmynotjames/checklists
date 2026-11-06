@@ -59,6 +59,10 @@ class ChecklistDetailUITestCase: XCTestCase {
   /// checkbox doesn't toggle: the lift cancels its touch, and failing that the finger lifts far
   /// outside it.
   ///
+  /// The press also opens the row's context menu; moving the finger lifts the row out of it into
+  /// the drag. As in `checklistsUITests.testChecklistReordering`, a drag that crosses the menu
+  /// releases on one of its entries instead of moving the row.
+  ///
   /// The hold is long and the move slow because the first lift after launch can take longer than a
   /// user's half-second; moving before it lands cancels the long press, and nothing is dragged. The
   /// closing hold lets the table settle on the destination row before the drop.
