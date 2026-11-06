@@ -24,7 +24,7 @@ final class KeyboardShortcutsUITest: ChecklistDetailUITestCase {
     itemCells.element(boundBy: index).textViews["itemNameTextView"]
   }
 
-  /// Opens Morning Routine, six items, and starts typing in item `index`'s name.
+  /// Opens Morning Routine and, given `index`, starts typing in that item's name.
   private func openMorningRoutine(typingIn index: Int? = nil) {
     checklistsList.staticTexts["Morning Routine"].tap()
     XCTAssertTrue(checklistTable.waitForExistence(timeout: 5))
@@ -37,7 +37,7 @@ final class KeyboardShortcutsUITest: ChecklistDetailUITestCase {
   // MARK: - ChecklistScreen
 
   /// With nothing being typed, ⌘N still reaches the screen. It adds an item and types in it, and
-  /// doesn't also make a checklist from the screen underneath.
+  /// doesn't also make a checklist from the screen underneath; back there, ⌘N makes one again.
   func testCommandNAddsItemNotChecklist() {
     let checklistCount = checklistsList.cells.count
     openMorningRoutine()
@@ -50,6 +50,12 @@ final class KeyboardShortcutsUITest: ChecklistDetailUITestCase {
     detailBackButton.tap()
     XCTAssertTrue(checklistsList.cells.firstMatch.waitForExistence(timeout: 5))
     XCTAssertEqual(checklistsList.cells.count, checklistCount, "⌘N on ChecklistScreen also made a checklist.")
+
+    app.typeKey("n", modifierFlags: .command)
+    XCTAssertTrue(
+      app.textFields["checklistNameField"].waitForKeyboardFocus(),
+      "⌘N after going Back didn't open the create sheet.",
+    )
   }
 
   @MainActor func testCommandKTogglesItemBeingTyped() {

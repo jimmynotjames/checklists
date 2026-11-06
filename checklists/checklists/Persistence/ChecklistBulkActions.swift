@@ -101,7 +101,7 @@ nonisolated enum ChecklistMoveAction: CaseIterable {
   }
 }
 
-/// Where VoiceOver goes after a row is deleted, on either list screen.
+/// Where VoiceOver, or typing after ⌘⌫, goes once a row is deleted, on either list screen.
 ///
 /// Free of SwiftData, like `ChecklistMoveAction`, so the edge rules can be tested without a
 /// container.

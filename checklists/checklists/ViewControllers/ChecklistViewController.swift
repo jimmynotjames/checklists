@@ -272,7 +272,6 @@ class ChecklistViewController: UIViewController {
       checklistNameTextField.becomeFirstResponder()
     } else {
       tableView.flashScrollIndicators()
-      takeKeyCommandsIfIdle()
     }
     analytics.track(AnalyticsEvent.checklistViewed, properties: checklist.analyticsViewedProperties)
   }
@@ -832,6 +831,17 @@ extension ChecklistViewController {
     checklistNameTextField.isFirstResponder || checklistNotesTextView.isFirstResponder || findEditingCell() != nil
   }
 
+  /// Whether an input method is mid-word in the field being typed into.
+  var isComposingText: Bool {
+    if checklistNameTextField.isFirstResponder {
+      return checklistNameTextField.markedTextRange != nil
+    }
+    if checklistNotesTextView.isFirstResponder {
+      return checklistNotesTextView.markedTextRange != nil
+    }
+    return (findEditingCell() as? ItemTableViewCell)?.itemContentView.isComposingText ?? false
+  }
+
   @objc func textEditingDidBegin(_ notification: Notification) {
     guard (notification.object as? UIView)?.isDescendant(of: view) == true else { return }
     updateBarMode(animated: true)
@@ -848,7 +858,6 @@ extension ChecklistViewController {
     RunLoop.main.perform(inModes: [.common]) { [weak self] in
       MainActor.assumeIsolated {
         self?.updateBarMode(animated: true)
-        self?.takeKeyCommandsIfIdle()
       }
     }
   }

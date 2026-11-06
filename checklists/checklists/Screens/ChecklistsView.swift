@@ -351,18 +351,14 @@ struct ChecklistsView: View {
     .accessibilityFocused($isMoreMenuFocused)
   }
 
-  private func leaveEditMode() {
-    withAnimation {
-      editMode = .inactive
-    }
-    postAccessibilityFeedback(nil, afterAlert: true) {
-      isMoreMenuFocused = true
-    }
-  }
-
   private var editDoneButton: some View {
     Button(role: .confirm) {
-      leaveEditMode()
+      withAnimation {
+        editMode = .inactive
+      }
+      postAccessibilityFeedback(nil, afterAlert: true) {
+        isMoreMenuFocused = true
+      }
     }
     // `accentFill`: iOS draws a white checkmark on a capsule of this tint.
     .tint(Colors.accentFillColor)
@@ -401,14 +397,12 @@ struct ChecklistsView: View {
     router.path.isEmpty && router.sheet == nil
   }
 
-  /// `shortcut` while this screen is frontmost, else none.
   private func shortcut(_ shortcut: KeyboardShortcut) -> KeyboardShortcut? {
     isFrontmost ? shortcut : nil
   }
 
   private var keyboardShortcuts: some View {
-    ChecklistsNewChecklistShortcut(newChecklist: addChecklist)
-      .disabled(!isFrontmost || isEditing)
+    ChecklistsNewChecklistShortcut(isEnabled: isFrontmost && !isEditing, newChecklist: addChecklist)
   }
 
   // MARK: - Add

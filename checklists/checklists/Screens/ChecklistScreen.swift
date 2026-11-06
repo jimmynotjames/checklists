@@ -58,6 +58,7 @@ struct ChecklistScreen: View {
     // and no Back, and the system otherwise hides it as empty, Done and all.
     .toolbarVisibility(.visible, for: .navigationBar)
     .toolbar { toolbarContent }
+    .background { newItemShortcut }
     .onChange(of: bar.focusRequest) { _, request in
       guard let request else { return }
       Task {
@@ -149,7 +150,18 @@ struct ChecklistScreen: View {
       doneButton(.editingDone, id: "checklist.editingDone")
     case .reorderDone:
       doneButton(.reorderDone, id: "checklist.reorderDone")
+        .keyboardShortcut(.cancelAction)
     }
+  }
+
+  /// ⌘N, as an unseen button titled for the iPad's ⌘ list: no bar button adds an item. Here rather
+  /// than among the controller's key commands, which reach it only while a field has the keyboard.
+  private var newItemShortcut: some View {
+    Button(ChecklistViewController.newItemShortcutTitle) { bar.addItem() }
+      .keyboardShortcut(bar.mode == .reordering ? nil : KeyboardShortcut("n"))
+      .frame(width: 0, height: 0)
+      .opacity(0)
+      .accessibilityHidden(true)
   }
 
   /// The system's own checkmark and "Done" label, as ChecklistsView's Edit mode Done has it. Every

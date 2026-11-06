@@ -56,6 +56,11 @@ class ItemContentView: UIView {
     nameTextView.isFirstResponder || notesTextView.isFirstResponder
   }
 
+  /// Whether an input method is mid-word in the field being typed into.
+  var isComposingText: Bool {
+    [nameTextView, notesTextView].first(where: \.isFirstResponder)?.markedTextRange != nil
+  }
+
   /// The caret of whichever field is being typed into, in this view's coordinates. Nil when neither
   /// is.
   var editingCaretRect: CGRect? {

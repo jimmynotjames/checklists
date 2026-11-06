@@ -8,6 +8,8 @@ import SwiftUI
 /// ChecklistsView's ⌘N, as an unseen button so it carries a title for the iPad's ⌘ list: the bar's
 /// Add is artwork, titled only for VoiceOver. The screen's other shortcuts sit on its own buttons.
 struct ChecklistsNewChecklistShortcut: View {
+  /// Off under ChecklistScreen, whose own ⌘N adds an item, and under a sheet.
+  let isEnabled: Bool
   let newChecklist: () -> Void
 
   @Environment(\.analytics) private var analytics
@@ -17,7 +19,7 @@ struct ChecklistsNewChecklistShortcut: View {
       analytics.trackShortcut(.newChecklist)
       newChecklist()
     }
-    .keyboardShortcut("n")
+    .keyboardShortcut(isEnabled ? KeyboardShortcut("n") : nil)
     .frame(width: 0, height: 0)
     .opacity(0)
     .accessibilityHidden(true)

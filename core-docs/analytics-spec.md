@@ -49,7 +49,7 @@ A dashboard is justified by a question here. The IDs are stable; board names cit
 | 3.12 | Do people duplicate several items in a row? | `checklist_item_duplicated`, per session |
 | 3.13 | Do people hand checklists to someone else as a record? | `checklist_pdf_exported` |
 | 3.14 | Do people find Edit and Reset All behind the list's "•••" menu? | `checklists_edit_mode_entered`, `all_checklists_reset`, per active user |
-| 3.15 | Do people build checklists from a hardware keyboard? | `keyboard_shortcut_used` by `shortcut`, with `device_class` |
+| 3.15 | Do people build checklists from a hardware keyboard? | `keyboard_shortcut_used` by `shortcut`, split by `$os` and `$model` |
 
 3.9 stops at the request: `requestReview` reports neither whether the dialog showed nor what was
 chosen, and no custom pre-prompt manufactures that signal. The bar is three constants on
@@ -64,8 +64,8 @@ isn't tracked: SwiftUI reports no menu opening. Only Edit has a before figure; `
 starts with the menu, so Reset All is read as a rate per active user.
 
 3.15 exists to decide whether keyboard selection (#404) is worth building: arrow keys, Space to
-check off, and moving items by key. A Mac running the iPhone app reports `device_class` as phone, so
-split by `$os` there.
+check off, and moving items by key. The app is iPhone-only, so `device_class` reads phone on an iPad
+and a Mac alike; `$os` and `$model` tell them apart.
 
 ## Privacy
 
@@ -78,7 +78,8 @@ with its rationale recorded here. The app code sends exactly:
 - **Event properties:** `checklists_count`, `items_count`, `items_with_notes_count`, `notes_length`
   (integers, never content); `checklist_name` (§Free-text exception); `source`, `destination`,
   `error_operation`, `startup_stage`, `container_backing`, `icloud_account`,
-  `sync_operation`, `bulk_action` (app-owned enumerations); `selected_count`, `checked_items_count` (integers); `error_domain`, `error_code` (an `NSError`'s domain and
+  `sync_operation`, `bulk_action`, `shortcut` (app-owned enumerations; `shortcut` names a key,
+  never what was typed); `selected_count`, `checked_items_count` (integers); `error_domain`, `error_code` (an `NSError`'s domain and
   code, never its `userInfo`); `new_value`, `old_value` (booleans); `time_since_first_eligible_bucket`
   (a bucket, not a timestamp).
 - **Super properties:** `app_version`, `app_build`, `device_class`, `locale`, `region`,
@@ -296,7 +297,7 @@ back in (§Toggle-off behaviour).
 | `notes_length` | Int | Characters in the checklist's notes; 0 when absent |
 | `items_count` | Int | Items in the checklist; on `checklist_checked_items_deleted`, the items deleted; on `checklist_pdf_exported`, the items printed (blank rows excluded) |
 | `checked_items_count` | Int | Checked items printed |
-| `shortcut` | String | `KeyboardShortcutName.rawValue`: `new_checklist` (ChecklistsView); `done`, `new_item`, `toggle_item`, `duplicate_item`, `delete_item` (ChecklistScreen). ChecklistsView's ⌘,, ⌘⌫ and Esc ride on its visible buttons and aren't told apart from a tap |
+| `shortcut` | String | `KeyboardShortcutName.rawValue`: `new_checklist` (ChecklistsView); `done` (Esc while typing), `new_item`, `toggle_item`, `duplicate_item`, `delete_item` (ChecklistScreen). Shortcuts that ride on a visible button (ChecklistsView's ⌘,, ⌘⌫ and Esc; Reorder Items mode's Esc) aren't told apart from a tap |
 | `items_with_notes_count` | Int | Items with non-nil, non-empty notes |
 | `source` | String | `menu` / `swipe` / `context_menu` |
 | `destination` | String | `new` / `existing` |
