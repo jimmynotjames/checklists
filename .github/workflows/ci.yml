@@ -1,10 +1,16 @@
 # CI — DISABLED (workflow_dispatch only; private repo, macOS minutes bill at 10x).
 # To enable: uncomment the pull_request/push triggers AND add these jobs as required
-# status checks. No test job: tests are opt-in (AGENTS.md §"Build and test").
+# status checks.
 name: CI
 
 on:
   workflow_dispatch:
+    inputs:
+      tests:
+        description: "Tests after the gates: none (compile only), unit, or ui (unit then UI)"
+        type: choice
+        options: [none, unit, ui]
+        default: none
   # pull_request:
   # push:
   #   branches: [main]
@@ -22,7 +28,8 @@ jobs:
   # Versions come from config/lint-tools.env. Runs REPO-WIDE, unlike the local gate
   # (AGENTS.md §"Lint policy").
   lint:
-    runs-on: ubuntu-latest
+    # Not ubuntu-latest: on 26.04 the SwiftLint Linux binary can't load libxml2.so.2.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
 
@@ -95,7 +102,8 @@ jobs:
   # --- check-large-files: reject oversized files added/changed in the PR -----
   # Mirrors the pre-commit hook (scripts/check-large-files.sh), which only ever
   # sees staged files locally — here we diff against the PR base (or the prior
-  # push, on a push-to-main event) since there's no "staged files" concept in CI.
+  # push, on a push-to-main event, or the branch point from main, on a manual
+  # run) since there's no "staged files" concept in CI.
   check-large-files:
     runs-on: ubuntu-latest
     steps:
@@ -106,6 +114,9 @@ jobs:
         id: diff
         run: |
           base="${{ github.event.pull_request.base.sha || github.event.before }}"
+          if [[ -z "$base" ]]; then
+            base="$(git merge-base origin/main HEAD)"
+          fi
           files=$(git diff --name-only --diff-filter=d "$base"...HEAD | tr '\n' ' ')
           echo "files=$files" >> "$GITHUB_OUTPUT"
       - name: check-large-files
@@ -146,6 +157,8 @@ jobs:
   build:
     runs-on: xcode-27
     needs: [lint, secrets, check-large-files, i18n-gates]
+    # The 360-minute default would let one hung simulator burn the month's allowance.
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v7
       - name: Select Xcode 27.2
@@ -155,12 +168,18 @@ jobs:
       - name: Cache SwiftPM packages
         uses: actions/cache@v6
         with:
-          path: .build/DerivedData/SourcePackages
-          key: spm-${{ runner.os }}-xcode27.2-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          path: |
+            .build/DerivedData/SourcePackages
+            .build/sim/DerivedData/SourcePackages
+          # The mode is in the key: a compile-only run fills one path and a test run the other, and
+          # an exact hit is never saved again, so a shared key would leave one mode uncached.
+          key: spm-${{ runner.os }}-xcode27.2-${{ (inputs.tests == 'unit' || inputs.tests == 'ui') && 'sim' || 'build' }}-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: |
-            spm-${{ runner.os }}-xcode27.2-
-      # Mirrors scripts/build.sh.
+            spm-${{ runner.os }}-xcode27.2-${{ (inputs.tests == 'unit' || inputs.tests == 'ui') && 'sim' || 'build' }}-
+      # Mirrors scripts/build.sh. Skipped when tests run: their build-for-testing is the
+      # compile check, and building here too would compile everything twice.
       - name: xcodebuild build
+        if: inputs.tests != 'unit' && inputs.tests != 'ui'
         run: |
           xcodebuild build \
             -project checklists/checklists.xcodeproj \
@@ -169,3 +188,40 @@ jobs:
             -derivedDataPath .build/DerivedData \
             ARCHS=arm64 \
             ONLY_ACTIVE_ARCH=NO
+
+      # --- Opt-in tests (workflow_dispatch input `tests`) -----------------------
+      # The runner image can lag the pinned Xcode's simulator runtime, and the app's
+      # deployment target needs that runtime, so fetch it when it's missing.
+      - name: iOS simulator runtime for the selected Xcode
+        if: inputs.tests == 'unit' || inputs.tests == 'ui'
+        run: |
+          sdk="$(xcrun --sdk iphonesimulator --show-sdk-version)"
+          if xcrun simctl list runtimes --json \
+            | python3 -c 'import json,sys; v=sys.argv[1]; sys.exit(0 if any(r["isAvailable"] and "iOS" in r["name"] and r["version"].startswith(v) for r in json.load(sys.stdin)["runtimes"]) else 1)' "$sdk"; then
+            echo "iOS ${sdk} simulator runtime already installed"
+          else
+            xcodebuild -downloadPlatform iOS
+          fi
+          xcrun simctl list runtimes
+
+      # Each phase is its own step so the run's step timings split build+unit from UI.
+      - name: Unit tests (make test-unit; includes build-for-testing)
+        if: inputs.tests == 'unit' || inputs.tests == 'ui'
+        run: make test-unit
+
+      # The runner is this repo's alone, so no slot pool: two simulator clones, the most its memory
+      # holds (scripts/_destination.sh, take_slots).
+      - name: UI tests (make test-ui, 2 workers)
+        if: inputs.tests == 'ui'
+        env:
+          SIMULATOR_WORKERS_WITHOUT_POOL: "2"
+        run: make test-ui
+
+      # Failures are easier to read in the bundle than in the log.
+      - name: Upload test result bundles
+        if: failure() && (inputs.tests == 'unit' || inputs.tests == 'ui')
+        uses: actions/upload-artifact@v7
+        with:
+          name: xcresults
+          path: .build/sim/results/*.xcresult
+          retention-days: 7

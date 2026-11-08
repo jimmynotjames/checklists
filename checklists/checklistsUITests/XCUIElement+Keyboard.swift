@@ -53,7 +53,10 @@ extension XCUIElement {
   /// Waits for this element to exist, take taps, and hold still, as on a sheet done sliding up.
   /// A tap aims at the frame read just before it, so a tap on a field still moving can miss it and
   /// the field never takes focus. XCUITest's own wait for animations to end can give up under load.
-  private func waitForSettledFrame(timeout: TimeInterval = 5) -> Bool {
+  ///
+  /// The timeout is generous because each poll reads the frame through accessibility, which takes
+  /// seconds on a loaded CI runner. A field that settles returns at once, so the margin costs nothing.
+  private func waitForSettledFrame(timeout: TimeInterval = 15) -> Bool {
     let deadline = Date().addingTimeInterval(timeout)
     var lastFrame: CGRect?
     while Date() < deadline {
@@ -80,11 +83,12 @@ extension XCUIApplication {
   /// `keyboards.firstMatch` existing isn't enough: iOS can park the keyboard just below the screen
   /// while the field keeps focus (`_keep_keyboard_on_screen` in `scripts/_sim_sandbox.sh`). A test
   /// that reads the keyboard's frame then measures against the wrong edge, and one that audits the
-  /// screen sees rows the keyboard should be covering. Fails with the frame it last saw.
+  /// screen sees rows the keyboard should be covering. Fails with the frame it last saw. The timeout
+  /// is generous for the reason `waitForSettledFrame` gives.
   @discardableResult
   func waitForSoftwareKeyboard(
     _ message: String = "The software keyboard isn't on screen.",
-    timeout: TimeInterval = 5,
+    timeout: TimeInterval = 15,
     file: StaticString = #filePath,
     line: UInt = #line,
   ) -> XCUIElement {

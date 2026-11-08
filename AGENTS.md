@@ -293,8 +293,9 @@ share. The pool's state, including its size (the `max` file), is in
 **The pool is on only where `~/dev/simulator-slots` exists** (Jimmy's machine). On any other
 clone it is off: don't look for or create that directory or the state directory. Test scripts
 take no slots and pass no parallel-testing flags, so they run serially on the checkout's own
-device, the scheme's setting. The gate's sync check is skipped, and the rest of this section
-doesn't apply.
+device, the scheme's setting. `SIMULATOR_WORKERS_WITHOUT_POOL=N` lets a run there use up to N
+clones instead, for a machine that runs only this repo's tests (CI sets it). The gate's sync check
+is skipped, and the rest of this section doesn't apply.
 
 - **Changing the tool:** never edit the copy. Change the master, then run `make
   simulator-slots-sync`. The gate fails while the two differ.
@@ -326,3 +327,10 @@ doesn't apply.
 
 `.github/workflows/ci.yml` is present but disabled (`workflow_dispatch` only; private repo, macOS
 minutes bill at 10×). Enable instructions are in the workflow header.
+
+A manual run on a branch shows as checks on that commit's PR. Its `tests` input adds the app's
+suites after the gates. Only Jimmy decides when to spend macOS minutes on one:
+
+```bash
+gh workflow run ci.yml --ref <branch> -f tests=ui
+```
