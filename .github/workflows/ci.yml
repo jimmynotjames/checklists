@@ -56,7 +56,7 @@ jobs:
           ./swiftformat_linux --lint .
 
       # The official image, not the release zip: that binary needs libxml2.so.2, which
-      # Ubuntu 26.04 dropped (realm/SwiftLint#6966). The image brings its own userland.
+      # Ubuntu 26.04 dropped (realm/SwiftLint#6966).
       # The workspace is mounted at its own path so reported file paths match the checkout.
       - name: SwiftLint (strict, official Docker image)
         run: |
