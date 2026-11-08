@@ -13,8 +13,8 @@ import SwiftUI
 /// of Edit mode, since neither the handles nor the long-press drag can be used without dragging.
 ///
 /// The `navigationDestination` for `AppRoute` is attached once at the root of the
-/// `NavigationStack`, not here, so this screen only pushes routes onto the router's path and
-/// never resolves them.
+/// `NavigationStack`, not here, so this screen only tells the router which checklist to open and
+/// never resolves it.
 struct ChecklistsView: View {
   /// Display order; id breaks sortKey ties. Keep in step with ModelContext.fetchChecklistsSorted.
   @Query(sort: [SortDescriptor(\Checklist.sortKey), SortDescriptor(\Checklist.id)])
@@ -267,7 +267,7 @@ struct ChecklistsView: View {
 
   // MARK: - Rows
 
-  /// Outside Edit mode a row is a `Button` pushing the route by hand rather than a
+  /// Outside Edit mode a row is a `Button` opening the checklist through the router rather than a
   /// `NavigationLink`: inside a `List` the link draws a disclosure chevron that this screen
   /// deliberately does without, and SwiftUI offers no way to suppress it. In Edit mode it is bare
   /// content, so a tap selects it instead of opening it.
@@ -277,7 +277,7 @@ struct ChecklistsView: View {
       rowContent(for: checklist)
     } else {
       Button {
-        router.path.append(.checklist(id: checklist.id))
+        router.open(checklistID: checklist.id)
       } label: {
         rowContent(for: checklist)
       }
@@ -394,7 +394,7 @@ struct ChecklistsView: View {
   /// Shortcuts are off while ChecklistScreen or a sheet is up. The stack keeps this screen alive
   /// under them, and ⌘N there would otherwise make a checklist.
   private var isFrontmost: Bool {
-    router.path.isEmpty && router.sheet == nil
+    router.isChecklistsViewFrontmost
   }
 
   private func shortcut(_ shortcut: KeyboardShortcut) -> KeyboardShortcut? {

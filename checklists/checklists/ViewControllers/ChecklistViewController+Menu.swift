@@ -209,8 +209,8 @@ extension ChecklistViewController {
     // field resigns during teardown instead and its delegate writes the committed text back into a
     // checklist that no longer exists.
     view.endEditing(true)
-    // Leaving first and deleting second, with nothing suspending in between: the route is off the
-    // router's path before SwiftUI's next update, so the push destination is never re-resolved
+    // Leaving first and deleting second, with nothing suspending in between: the router has closed
+    // the checklist before SwiftUI's next update, so the push destination is never re-resolved
     // against a checklist that has gone.
     requestDismissal()
     // The items go with it: the relationship's cascade delete rule handles that automatically.

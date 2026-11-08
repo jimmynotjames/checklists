@@ -9,7 +9,8 @@ import SwiftUI
 enum ToastPlacement: Equatable {
   /// `ChecklistsView`, the navigation stack's root.
   case list
-  case pushed(AppRoute)
+  /// The ChecklistScreen showing the checklist with this `Checklist.id`.
+  case checklist(id: String)
   /// The root view of whatever sheet the router presents.
   case sheet
 }
@@ -58,15 +59,15 @@ private struct ToastOverlay: ViewModifier {
       .animation(.easeInOut(duration: 0.25), value: presenter.current?.id)
   }
 
-  /// A screen under a pushed one, or under a sheet, stays mounted, so every layer checks that its
-  /// screen is the frontmost. The sheet's check is not redundant: a dismissing sheet's content stays
-  /// mounted for its slide-out, so a toast raised just after `dismiss()` would otherwise be drawn
-  /// by both the sheet and the screen beneath it.
+  /// A screen under an open checklist, or under a sheet, stays mounted, so every layer checks that
+  /// its screen is the frontmost. The sheet's check is not redundant: a dismissing sheet's content
+  /// stays mounted for its slide-out, so a toast raised just after `dismiss()` would otherwise be
+  /// drawn by both the sheet and the screen beneath it.
   private var drawsHere: Bool {
     switch placement {
     case .sheet: router.sheet != nil
-    case .list: router.sheet == nil && router.path.isEmpty
-    case let .pushed(route): router.sheet == nil && router.path.last == route
+    case .list: router.isChecklistsViewFrontmost
+    case let .checklist(id): router.isFrontmost(checklistID: id)
     }
   }
 }

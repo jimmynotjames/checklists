@@ -19,7 +19,7 @@ struct ChecklistScreen: View {
   var isNewChecklist = false
   /// Routes the screen's own ways of leaving (Done, Delete or Discard, remote deletion) through the
   /// SwiftUI router so navigation state can't desync from what's on screen; the stack's own back
-  /// button and swipe update the router's path themselves.
+  /// button and swipe update the router's selection themselves.
   let onRequestDismiss: () -> Void
 
   @Environment(Router.self) private var router

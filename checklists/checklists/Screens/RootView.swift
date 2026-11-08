@@ -14,7 +14,7 @@ struct RootView: View {
 
   var body: some View {
     @Bindable var router = router
-    NavigationStack(path: $router.path) {
+    NavigationStack(path: $router.stackPath) {
       ChecklistsView()
         .toastOverlay(.list)
         .navigationDestination(for: AppRoute.self) { route in
@@ -22,10 +22,9 @@ struct RootView: View {
           case let .checklist(id):
             if let checklist = context.checklist(id: id) {
               ChecklistScreen(checklist: checklist) {
-                guard !router.path.isEmpty else { return }
-                router.path.removeLast()
+                router.closeChecklist()
               }
-              .toastOverlay(.pushed(route))
+              .toastOverlay(.checklist(id: id))
             } else {
               unresolvedPushDestination
             }
@@ -67,8 +66,7 @@ struct RootView: View {
   /// the open screen catching the same deletion first, which says why (`Toast.checklistDeletedElsewhere`).
   private var unresolvedPushDestination: some View {
     Color.clear.onAppear {
-      guard !router.path.isEmpty else { return }
-      router.path.removeLast()
+      router.closeChecklist()
     }
   }
 
