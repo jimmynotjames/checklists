@@ -9,7 +9,8 @@
 #
 # UI_WORKERS (default 2) is how many simulators to ask the slot pool for; the run takes what is
 # free and splits the test classes across that many clones (AGENTS.md §"Simulator slots"). Where
-# the pool is off, it is ignored and the run is serial.
+# the pool is off, the run is serial unless SIMULATOR_WORKERS_WITHOUT_POOL allows more
+# (`take_slots` in _destination.sh).
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"

@@ -55,8 +55,7 @@ extension XCUIElement {
   /// the field never takes focus. XCUITest's own wait for animations to end can give up under load.
   ///
   /// The timeout is generous because each poll reads the frame through accessibility, which takes
-  /// seconds on a loaded CI runner; there 5s allowed too few polls to see the frame twice. A field
-  /// that settles returns at once, so the margin costs nothing.
+  /// seconds on a loaded CI runner. A field that settles returns at once, so the margin costs nothing.
   private func waitForSettledFrame(timeout: TimeInterval = 15) -> Bool {
     let deadline = Date().addingTimeInterval(timeout)
     var lastFrame: CGRect?

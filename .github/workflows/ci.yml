@@ -1,7 +1,6 @@
 # CI — DISABLED (workflow_dispatch only; private repo, macOS minutes bill at 10x).
 # To enable: uncomment the pull_request/push triggers AND add these jobs as required
-# status checks. A manual run can add the app's tests with the `tests` input; the
-# default stays compile-only (AGENTS.md §CI).
+# status checks.
 name: CI
 
 on:
@@ -172,9 +171,11 @@ jobs:
           path: |
             .build/DerivedData/SourcePackages
             .build/sim/DerivedData/SourcePackages
-          key: spm-${{ runner.os }}-xcode27.2-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          # The mode is in the key: a compile-only run fills one path and a test run the other, and
+          # an exact hit is never saved again, so a shared key would leave one mode uncached.
+          key: spm-${{ runner.os }}-xcode27.2-${{ (inputs.tests == 'unit' || inputs.tests == 'ui') && 'sim' || 'build' }}-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: |
-            spm-${{ runner.os }}-xcode27.2-
+            spm-${{ runner.os }}-xcode27.2-${{ (inputs.tests == 'unit' || inputs.tests == 'ui') && 'sim' || 'build' }}-
       # Mirrors scripts/build.sh. Skipped when tests run: their build-for-testing is the
       # compile check, and building here too would compile everything twice.
       - name: xcodebuild build
@@ -196,7 +197,7 @@ jobs:
         run: |
           sdk="$(xcrun --sdk iphonesimulator --show-sdk-version)"
           if xcrun simctl list runtimes --json \
-            | python3 -c 'import json,sys; v=sys.argv[1]; sys.exit(0 if any(r["isAvailable"] and r["version"].startswith(v) for r in json.load(sys.stdin)["runtimes"]) else 1)' "$sdk"; then
+            | python3 -c 'import json,sys; v=sys.argv[1]; sys.exit(0 if any(r["isAvailable"] and "iOS" in r["name"] and r["version"].startswith(v) for r in json.load(sys.stdin)["runtimes"]) else 1)' "$sdk"; then
             echo "iOS ${sdk} simulator runtime already installed"
           else
             xcodebuild -downloadPlatform iOS
@@ -208,20 +209,12 @@ jobs:
         if: inputs.tests == 'unit' || inputs.tests == 'ui'
         run: make test-unit
 
-      # Turns the simulator-slots pool on with a runner-local 2-slot pool, so test-ui.sh
-      # splits the UI tests across 2 simulator clones (the most this runner's memory holds).
-      - name: Simulator pool (2 slots, runner-local)
-        if: inputs.tests == 'ui'
-        run: |
-          mkdir -p "$RUNNER_TEMP/slots-master" "$RUNNER_TEMP/slots-state"
-          echo 2 > "$RUNNER_TEMP/slots-state/max"
-          echo "SIMULATOR_SLOTS_MASTER=$RUNNER_TEMP/slots-master" >> "$GITHUB_ENV"
-          echo "SIMULATOR_SLOTS_STATE_DIR=$RUNNER_TEMP/slots-state" >> "$GITHUB_ENV"
-
+      # The runner is this repo's alone, so no slot pool: two simulator clones, the most its memory
+      # holds (scripts/_destination.sh, take_slots).
       - name: UI tests (make test-ui, 2 workers)
         if: inputs.tests == 'ui'
         env:
-          UI_WORKERS: "2"
+          SIMULATOR_WORKERS_WITHOUT_POOL: "2"
         run: make test-ui
 
       # Failures are easier to read in the bundle than in the log.

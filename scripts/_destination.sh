@@ -26,21 +26,24 @@ else
 fi
 
 # Takes up to $1 slots for a run labelled $2 and sets SIMULATOR_SLOTS_GRANTED; with the pool off,
-# takes none and sets it to 1. Call it after building and before testing, so builds never hold a slot.
+# takes none and grants $1 capped at SIMULATOR_WORKERS_WITHOUT_POOL (default 1). That cap is the
+# per-checkout knob for a machine that runs only this repo's tests, such as a CI runner. Call it
+# after building and before testing, so builds never hold a slot.
 take_slots() {
     if [[ "${SIMULATOR_SLOTS_ENABLED}" -eq 0 ]]; then
-        SIMULATOR_SLOTS_GRANTED=1
+        local cap="${SIMULATOR_WORKERS_WITHOUT_POOL:-1}"
+        SIMULATOR_SLOTS_GRANTED=$(( $1 < cap ? $1 : cap ))
         return 0
     fi
     simulator_slots_hold "$1" "$2" "${ROOT}" "${SIM_UDID}" "[${SIM_SLUG}]"
 }
 
 # take_slots, then sets SLOTS_PARALLEL_ARGS to the xcodebuild flags for the granted count: serial
-# on this checkout's device for 1, that many clones for more. With the pool off, no flags: the
-# scheme's own setting (serial) applies.
+# on this checkout's device for 1, that many clones for more. With the pool off and 1 granted, no
+# flags: the scheme's own setting (serial) applies.
 slots_parallel_args() {
     take_slots "$1" "$2" || return $?
-    if [[ "${SIMULATOR_SLOTS_ENABLED}" -eq 0 ]]; then
+    if [[ "${SIMULATOR_SLOTS_ENABLED}" -eq 0 && "${SIMULATOR_SLOTS_GRANTED}" -le 1 ]]; then
         SLOTS_PARALLEL_ARGS=()
     elif [[ "${SIMULATOR_SLOTS_GRANTED}" -le 1 ]]; then
         SLOTS_PARALLEL_ARGS=(-parallel-testing-enabled NO)
