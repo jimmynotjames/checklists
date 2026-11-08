@@ -326,3 +326,11 @@ doesn't apply.
 
 `.github/workflows/ci.yml` is present but disabled (`workflow_dispatch` only; private repo, macOS
 minutes bill at 10×). Enable instructions are in the workflow header.
+
+A manual run on a branch shows as checks on that commit's PR. Its `tests` input adds the app's
+suites after the gates: `none` (default, compile only), `unit`, or `ui` (unit, then UI on two
+simulators). Only Jimmy decides when to spend macOS minutes on one:
+
+```bash
+gh workflow run ci.yml --ref <branch> -f tests=ui
+```
