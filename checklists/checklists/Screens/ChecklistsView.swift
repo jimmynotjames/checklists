@@ -5,6 +5,7 @@
 
 import SwiftData
 import SwiftUI
+import UIKit
 
 /// The app's top-level screen: every checklist, in the user's own order.
 ///
@@ -12,9 +13,8 @@ import SwiftUI
 /// acts on the selection. Every row also carries move actions for assistive technologies, in or out
 /// of Edit mode, since neither the handles nor the long-press drag can be used without dragging.
 ///
-/// The `navigationDestination` for `AppRoute` is attached once at the root of the
-/// `NavigationStack`, not here, so this screen only tells the router which checklist to open and
-/// never resolves it.
+/// This screen only tells the router which checklist to open and never resolves it: `RootView`
+/// shows the open checklist beside this screen on a wide window, or pushed over it on a narrow one.
 struct ChecklistsView: View {
   /// Display order; id breaks sortKey ties. Keep in step with ModelContext.fetchChecklistsSorted.
   @Query(sort: [SortDescriptor(\Checklist.sortKey), SortDescriptor(\Checklist.id)])
@@ -23,6 +23,7 @@ struct ChecklistsView: View {
   @Environment(\.modelContext) private var context
   @Environment(Router.self) private var router
   @Environment(\.analytics) private var analytics
+  @Environment(\.isChecklistBesideList) private var isChecklistBesideList
 
   /// The Add artwork's size, a little over a bar symbol's since the drawing sits inside some
   /// padding. Left to itself it fills the bar's height and stretches the glass capsule. Fixed, like
@@ -96,8 +97,7 @@ struct ChecklistsView: View {
           }
           .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
           .listRowSeparator(.hidden)
-          // Lets the screen's background show through instead of the system's row fill.
-          .listRowBackground(Color.clear)
+          .openChecklistRowBackground(isOpen: isShownAsOpen(checklist))
           .swipeActions(edge: .trailing) {
             // Deliberately NOT `role: .destructive`: a full swipe on one animates the row away
             // before the confirmation alert, and a cancelled confirmation must leave the row
@@ -285,6 +285,12 @@ struct ChecklistsView: View {
     }
   }
 
+  /// Only beside the open checklist: on a narrow window it covers this screen, and in Edit mode the
+  /// selection circles are what mark a row.
+  private func isShownAsOpen(_ checklist: Checklist) -> Bool {
+    isChecklistBesideList && !isEditing && router.selectedChecklistID == checklist.id
+  }
+
   private func rowContent(for checklist: Checklist) -> some View {
     ChecklistRowView(checklist: checklist)
       // The row's own content is only as wide as its text, so widen it to make the whole row
@@ -391,8 +397,8 @@ struct ChecklistsView: View {
 
   // MARK: - Keyboard shortcuts
 
-  /// Shortcuts are off while ChecklistScreen or a sheet is up. The stack keeps this screen alive
-  /// under them, and ⌘N there would otherwise make a checklist.
+  /// Shortcuts are off while a checklist is open or a sheet is up, so the open checklist's own ⌘N
+  /// adds an item, even with this screen beside it on a wide window.
   private var isFrontmost: Bool {
     router.isChecklistsViewFrontmost
   }
@@ -535,6 +541,7 @@ struct ChecklistsView: View {
     let index = checklists.firstIndex { $0.persistentModelID == persistentID }
     // `0` means that record is already gone while the alert was up — deleted on another device, or
     // removed by sample dedupe. Its twin, if any, is deliberately left alone.
+    closeIfOpen(checklists.filter { $0.persistentModelID == persistentID }.map(\.id))
     guard context.deleteChecklists([persistentID]) > 0 else { return }
     analytics.track(AnalyticsEvent.checklistDeleted)
     let neighbour = index.flatMap { DeletionFocus.neighbourID(afterRemoving: $0, from: ids) }
@@ -545,6 +552,16 @@ struct ChecklistsView: View {
         isAddButtonFocused = true
       }
     }
+  }
+
+  /// On a wide window the open checklist sits beside this screen, so it can be deleted from here.
+  /// Closed first, with any edit in it committed while the record is still valid, the order its own
+  /// Delete Checklist keeps (`ChecklistViewController.deleteChecklist`): no screen is left on a
+  /// deleted record, and no "deleted elsewhere" toast follows.
+  private func closeIfOpen(_ ids: some Sequence<String>) {
+    guard let openID = router.selectedChecklistID, ids.contains(openID) else { return }
+    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    router.closeChecklist(id: openID)
   }
 
   // MARK: - Duplicating
@@ -587,6 +604,9 @@ struct ChecklistsView: View {
   private func perform(_ action: ChecklistsBulkAction) {
     let ids = liveSelection
     guard !ids.isEmpty else { return }
+    if action == .delete {
+      closeIfOpen(ids)
+    }
     let changedCount = switch action {
     case .delete:
       context.deleteChecklists(ids: ids)

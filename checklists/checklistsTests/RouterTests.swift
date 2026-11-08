@@ -4,6 +4,7 @@
 //
 
 @testable import checklists
+import SwiftUI
 import Testing
 
 @Suite("Router — which screen is in front")
@@ -50,22 +51,26 @@ struct RouterTests {
     #expect(!router.isFrontmost(checklistID: "a"))
   }
 
-  @Test("the stack path mirrors the selection")
-  func stackPathReadsSelection() {
+  @Test("the compact column shows the open checklist, or ChecklistsView with none")
+  func compactColumnReadsSelection() {
     let router = Router()
-    #expect(router.stackPath.isEmpty)
+    #expect(router.compactColumn == .sidebar)
 
     router.open(checklistID: "a")
-    #expect(router.stackPath == [.checklist(id: "a")])
+    #expect(router.compactColumn == .detail)
   }
 
-  @Test("a push or pop through the stack path updates the selection")
-  func stackPathWritesSelection() {
+  @Test("going back to the sidebar closes the checklist; the split view's own .detail changes nothing")
+  func compactColumnWritesSelection() {
     let router = Router()
-    router.stackPath = [.checklist(id: "a")]
+    router.open(checklistID: "a")
+    router.compactColumn = .detail
     #expect(router.selectedChecklistID == "a")
 
-    router.stackPath = []
+    router.compactColumn = .sidebar
+    #expect(router.selectedChecklistID == nil)
+
+    router.compactColumn = .detail
     #expect(router.selectedChecklistID == nil)
   }
 }

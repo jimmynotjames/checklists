@@ -19,6 +19,8 @@ extension Colors {
   static let panelForegroundColor = Color(.panelForeground)
   /// A raised surface on the page: grouped `Form` rows.
   static let surfaceColor = Color(.surface)
+  /// The open checklist's row in ChecklistsView, while the two sit side by side.
+  static let selectedRowColor = Color(.selectedRow)
   static let destructiveColor = Color(.salmonRed)
   static let accentFillColor = Color(.accentFill)
   static let destructiveFillColor = Color(.destructiveFill)

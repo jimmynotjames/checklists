@@ -30,7 +30,7 @@ class ChecklistViewController: UIViewController {
 
   /// Set by the SwiftUI host (`ChecklistScreen`). Called with the new checklist's `id` after a
   /// duplication, for the host to present. The id rather than the model, like every other
-  /// cross-screen reference in the app (see `AppRoute`); the controller has no router and should
+  /// cross-screen reference in the app (see `Router.selectedChecklistID`); the controller has no router and should
   /// not acquire one. Unset means the copy is still made and saved, just not opened.
   var onRequestOpenDuplicate: ((String) -> Void)?
 

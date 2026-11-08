@@ -23,7 +23,7 @@ extension ModelContext {
 
   /// Resolves a checklist by its app-assigned `id`.
   ///
-  /// Navigation routes (`AppRoute`, `SheetRoute`) carry this `id` rather than a
+  /// Navigation state (`Router.selectedChecklistID`, `SheetRoute`) carries this `id` rather than a
   /// `PersistentIdentifier`, so a reference survives the record being re-created by a sync merge.
   /// `nil` means the record is gone — deleted here, or deleted on another device.
   func checklist(id: String) -> Checklist? {

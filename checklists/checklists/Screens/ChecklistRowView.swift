@@ -61,6 +61,26 @@ struct ChecklistRowView: View {
   }
 }
 
+extension View {
+  /// A checklists-list row's background: the screen's own showing through instead of the system's
+  /// row fill, except behind the open checklist's row while it is on screen beside the list, which
+  /// also reads as selected.
+  func openChecklistRowBackground(isOpen: Bool) -> some View {
+    listRowBackground(
+      Group {
+        if isOpen {
+          RoundedRectangle(cornerRadius: 12)
+            .fill(Colors.selectedRowColor)
+            .padding(.horizontal, 8)
+        } else {
+          Color.clear
+        }
+      },
+    )
+    .accessibilityAddTraits(isOpen ? .isSelected : [])
+  }
+}
+
 #if DEBUG
   #Preview("Untouched") {
     ChecklistRowView(checklist: PreviewSupport.checklist(id: SampleData.preTripId))

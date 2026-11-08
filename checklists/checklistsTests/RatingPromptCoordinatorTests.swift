@@ -211,15 +211,30 @@ struct RatingPromptCoordinatorTests {
 
   // MARK: - Pure helpers
 
-  @Test("the presenter requests only when pending, on the list, and active")
+  @Test("the presenter requests only when pending, between tasks, and active")
   func presenterGate() {
-    #expect(RatingPromptCoordinator.shouldRequestReview(isRequestPending: true, isOnChecklistsList: true, sceneIsActive: true))
+    #expect(RatingPromptCoordinator.shouldRequestReview(isRequestPending: true, isBetweenTasks: true, sceneIsActive: true))
     // Still on the checklist screen (or a sheet) → wait.
-    #expect(!RatingPromptCoordinator.shouldRequestReview(isRequestPending: true, isOnChecklistsList: false, sceneIsActive: true))
+    #expect(!RatingPromptCoordinator.shouldRequestReview(isRequestPending: true, isBetweenTasks: false, sceneIsActive: true))
     // Backgrounded → wait.
-    #expect(!RatingPromptCoordinator.shouldRequestReview(isRequestPending: true, isOnChecklistsList: true, sceneIsActive: false))
+    #expect(!RatingPromptCoordinator.shouldRequestReview(isRequestPending: true, isBetweenTasks: true, sceneIsActive: false))
     // Nothing pending → inert.
-    #expect(!RatingPromptCoordinator.shouldRequestReview(isRequestPending: false, isOnChecklistsList: true, sceneIsActive: true))
+    #expect(!RatingPromptCoordinator.shouldRequestReview(isRequestPending: false, isBetweenTasks: true, sceneIsActive: true))
+  }
+
+  @Test("between tasks: nothing open, or a checklist just left, with no sheet up")
+  func betweenTasks() {
+    // ChecklistsView alone, or beside nothing.
+    #expect(RatingPromptCoordinator.isBetweenTasks(isChecklistOpen: false, hasJustLeftChecklist: false, isSheetUp: false))
+    // A checklist just closed.
+    #expect(RatingPromptCoordinator.isBetweenTasks(isChecklistOpen: false, hasJustLeftChecklist: true, isSheetUp: false))
+    // Beside the list, another checklist just picked.
+    #expect(RatingPromptCoordinator.isBetweenTasks(isChecklistOpen: true, hasJustLeftChecklist: true, isSheetUp: false))
+    // Still in a checklist.
+    #expect(!RatingPromptCoordinator.isBetweenTasks(isChecklistOpen: true, hasJustLeftChecklist: false, isSheetUp: false))
+    // A sheet is up, whatever else.
+    #expect(!RatingPromptCoordinator.isBetweenTasks(isChecklistOpen: false, hasJustLeftChecklist: false, isSheetUp: true))
+    #expect(!RatingPromptCoordinator.isBetweenTasks(isChecklistOpen: true, hasJustLeftChecklist: true, isSheetUp: true))
   }
 
   @Test("the time-since-eligible bucket boundaries")
