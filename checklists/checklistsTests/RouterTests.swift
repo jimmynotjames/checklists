@@ -20,8 +20,21 @@ struct RouterTests {
     router.open(checklistID: "a")
     #expect(!router.isChecklistsViewFrontmost)
 
-    router.closeChecklist()
+    router.closeChecklist(id: "a")
     #expect(router.isChecklistsViewFrontmost)
+  }
+
+  @Test("closing a checklist that is no longer the open one leaves the open one alone")
+  func lateCloseKeepsSuccessor() {
+    let router = Router()
+    router.open(checklistID: "a")
+    router.open(checklistID: "b")
+
+    router.closeChecklist(id: "a")
+    #expect(router.selectedChecklistID == "b")
+
+    router.closeChecklist(id: "b")
+    #expect(router.selectedChecklistID == nil)
   }
 
   @Test("an open checklist is frontmost until a sheet covers it, and only that checklist")

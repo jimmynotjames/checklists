@@ -22,11 +22,11 @@ struct RootView: View {
           case let .checklist(id):
             if let checklist = context.checklist(id: id) {
               ChecklistScreen(checklist: checklist) {
-                router.closeChecklist()
+                router.closeChecklist(id: id)
               }
               .toastOverlay(.checklist(id: id))
             } else {
-              unresolvedPushDestination
+              unresolvedPushDestination(id: id)
             }
           }
         }
@@ -61,12 +61,12 @@ struct RootView: View {
     }
   }
 
-  /// A route can stop resolving between being appended and being rendered (e.g. the record was
+  /// A checklist can stop resolving between being opened and being rendered (e.g. the record was
   /// deleted on another device). Render nothing and quietly pop rather than crashing. Quietly, unlike
   /// the open screen catching the same deletion first, which says why (`Toast.checklistDeletedElsewhere`).
-  private var unresolvedPushDestination: some View {
+  private func unresolvedPushDestination(id: String) -> some View {
     Color.clear.onAppear {
-      router.closeChecklist()
+      router.closeChecklist(id: id)
     }
   }
 

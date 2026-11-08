@@ -18,12 +18,10 @@ final class Router {
   var selectedChecklistID: String?
   var sheet: SheetRoute?
 
-  /// Whether ChecklistsView is the screen in front: no checklist open over it and no sheet.
   var isChecklistsViewFrontmost: Bool {
     selectedChecklistID == nil && sheet == nil
   }
 
-  /// Whether the checklist with this id is open and nothing is presented over it.
   func isFrontmost(checklistID: String) -> Bool {
     sheet == nil && selectedChecklistID == checklistID
   }
@@ -32,7 +30,10 @@ final class Router {
     selectedChecklistID = checklistID
   }
 
-  func closeChecklist() {
+  /// Closes the checklist only if it is still the open one: a screen leaving late, after another
+  /// checklist has replaced it, must not close its successor.
+  func closeChecklist(id: String) {
+    guard selectedChecklistID == id else { return }
     selectedChecklistID = nil
   }
 
