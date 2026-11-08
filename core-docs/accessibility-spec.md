@@ -116,8 +116,9 @@ long and which the user just acted on.
   Done that typing adds to the bar takes that Done away, so VoiceOver moves to what takes its place
   at the outer edge: ⋯, or the create sheet's own Done. The controller asks through
   `ChecklistBar.focusRequest`, and `ChecklistScreen`'s toolbar moves VoiceOver with
-  `AccessibilityFocusState`, as ChecklistsView does. Back is the stack's own, read as the list's
-  title. Reorder Items mode hides it, which also blocks the back swipe. The controller's
+  `AccessibilityFocusState`, as ChecklistsView does. On a narrow window Back is the split view's
+  own, read as the list's title; Reorder Items mode hides it, which also blocks the back swipe. On
+  a wide window there is no Back, and picking another row in ChecklistsView leaves mid-mode. The controller's
   `accessibilityPerformEscape` override leaves the mode: escape from the table reaches it, the
   table being the controller's own view. Escape from the bar runs up SwiftUI's chain instead;
   whether it leaves the screen mid-mode is unverified on a device.

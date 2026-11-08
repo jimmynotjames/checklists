@@ -52,7 +52,8 @@ struct ChecklistScreen: View {
     // row for.
     .navigationTitle(bar.title ?? "")
     .navigationBarTitleDisplayMode(.inline)
-    // Reorder Items mode hides Back, and its edge swipe with it: Done is the one way out.
+    // Reorder Items mode hides Back, and its edge swipe with it. On a narrow window Done is then the
+    // one way out; on a wide one, picking another row in ChecklistsView also leaves.
     .navigationBarBackButtonHidden(bar.mode == .reordering)
     // Visible explicitly: in Reorder Items mode the bar holds only its pinned Done, with no title
     // and no Back, and the system otherwise hides it as empty, Done and all.

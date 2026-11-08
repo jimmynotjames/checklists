@@ -560,8 +560,14 @@ struct ChecklistsView: View {
   /// deleted record, and no "deleted elsewhere" toast follows.
   private func closeIfOpen(_ ids: some Sequence<String>) {
     guard let openID = router.selectedChecklistID, ids.contains(openID) else { return }
-    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    commitOpenEdit()
     router.closeChecklist(id: openID)
+  }
+
+  /// Ends any edit in the open checklist beside this screen, so an action taken here on it sees
+  /// what has been typed.
+  private func commitOpenEdit() {
+    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
   }
 
   // MARK: - Duplicating
@@ -569,6 +575,7 @@ struct ChecklistsView: View {
   /// The detail screen's menu entry opens the copy; this one does not, because here the result is
   /// already on screen.
   private func duplicate(checklist: Checklist, source: ChecklistDuplicationSource = .swipe) {
+    commitOpenEdit()
     do {
       try context.duplicate(checklist: checklist, among: Array(checklists))
     } catch {
@@ -606,6 +613,8 @@ struct ChecklistsView: View {
     guard !ids.isEmpty else { return }
     if action == .delete {
       closeIfOpen(ids)
+    } else {
+      commitOpenEdit()
     }
     let changedCount = switch action {
     case .delete:

@@ -228,6 +228,12 @@ class ChecklistViewController: UIViewController {
     remoteChangeObserver = RemoteChangeObserver { [weak self] in
       self?.handleRemoteChange()
     }
+    // And when ChecklistsView, beside this screen on a wide window, resets it.
+    NotificationCenter.default.addObserver(self, selector: #selector(checklistsDidReset), name: ModelContext.didResetChecklists, object: nil)
+  }
+
+  @objc private func checklistsDidReset() {
+    handleRemoteChange()
   }
 
   /// Reacts to this checklist being changed, or deleted, somewhere other than this screen.

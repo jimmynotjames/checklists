@@ -9,8 +9,8 @@ import SwiftUI
 /// The app's main scene once startup has succeeded: ChecklistsView and the open checklist in a
 /// `NavigationSplitView`, with the router's sheets presented over it.
 ///
-/// One container for every width. On a wide window (regular width: iPhone Duo unfolded, a large
-/// iPhone in landscape, a wide iPad or Mac window) the two sit side by side; on a narrow one the
+/// One container for every width. On a wide window (regular horizontal size class) the two sit
+/// side by side; on a narrow one the
 /// split view collapses to a stack and the open checklist is pushed over ChecklistsView. Folding or
 /// unfolding collapses and expands the same views, so the open checklist, its scroll position and
 /// an edit in progress survive it.
@@ -18,6 +18,10 @@ struct RootView: View {
   @Environment(Router.self) private var router
   @Environment(\.modelContext) private var context
   @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+  /// The checklist last opened, kept in the detail column on a narrow window after it closes, until
+  /// the pop back to ChecklistsView has finished: the router clears its selection as the pop starts,
+  /// and the pop should carry the checklist away, not the placeholder.
+  @State private var poppingChecklistID: String?
 
   var body: some View {
     @Bindable var router = router
@@ -35,6 +39,11 @@ struct RootView: View {
       detail
     }
     .navigationSplitViewStyle(.balanced)
+    .onChange(of: router.selectedChecklistID) { _, id in
+      if let id {
+        poppingChecklistID = id
+      }
+    }
     .sheet(item: $router.sheet) { route in
       Group {
         switch route {
@@ -66,7 +75,8 @@ struct RootView: View {
   }
 
   @ViewBuilder private var detail: some View {
-    if let id = router.selectedChecklistID {
+    let isCollapsed = horizontalSizeClass != .regular
+    if let id = router.selectedChecklistID ?? (isCollapsed ? poppingChecklistID : nil) {
       if let checklist = context.checklist(id: id) {
         ChecklistScreen(checklist: checklist) {
           router.closeChecklist(id: id)
@@ -75,6 +85,11 @@ struct RootView: View {
         // A new screen for each checklist: the controller takes its checklist once, when it is
         // made, so without this, opening another checklist beside the list would keep the old one.
         .id(id)
+        .onDisappear {
+          if poppingChecklistID == id, router.selectedChecklistID != id {
+            poppingChecklistID = nil
+          }
+        }
       } else {
         unresolvedDetail(id: id)
       }

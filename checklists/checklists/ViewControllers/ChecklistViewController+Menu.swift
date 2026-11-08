@@ -210,7 +210,7 @@ extension ChecklistViewController {
     // checklist that no longer exists.
     view.endEditing(true)
     // Leaving first and deleting second, with nothing suspending in between: the router has closed
-    // the checklist before SwiftUI's next update, so the push destination is never re-resolved
+    // the checklist before SwiftUI's next update, so `RootView`'s detail column is never re-resolved
     // against a checklist that has gone.
     requestDismissal()
     // The items go with it: the relationship's cascade delete rule handles that automatically.

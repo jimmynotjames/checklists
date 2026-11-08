@@ -36,6 +36,7 @@ struct PaletteTests {
   private static let panelForeground = UIColor(resource: .panelForeground)
   private static let success = UIColor(resource: .success)
   private static let warning = UIColor(resource: .warning)
+  private static let selectedRow = UIColor(resource: .selectedRow)
 
   private static func components(_ color: UIColor, _ traits: UITraitCollection) -> [CGFloat] {
     var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
@@ -79,6 +80,7 @@ struct PaletteTests {
     Value(name: "success", color: success, light: "34C759", dark: "3DD68C", lightHigh: "119E3E", darkHigh: "3DD68C"),
     Value(name: "warning", color: warning, light: "FF9500", dark: "FFAA33", lightHigh: "DB6633", darkHigh: "FFAA33"),
     Value(name: "shadow", color: UIColor(resource: .shadow), light: "8E8E93", dark: "000000"),
+    Value(name: "selectedRow", color: selectedRow, light: "D1DFE0", dark: "173137"),
   ]
 
   @Test("each colorset resolves to its light and dark value, at standard and high contrast")
@@ -103,6 +105,8 @@ struct PaletteTests {
     Pair(name: "accent text in a Form row", foreground: Colors.accent, background: surface, minimum: 4.5),
     Pair(name: "the Duplicate swipe glyph and the bar's Done checkmarks", foreground: .white, background: Colors.accentFill, minimum: 3),
     Pair(name: "the Delete swipe glyph", foreground: .white, background: Colors.destructiveFill, minimum: 3),
+    Pair(name: "text on the open checklist's row", foreground: Colors.primaryText, background: selectedRow, minimum: 4.5),
+    Pair(name: "the progress ring on the open checklist's row", foreground: Colors.accent, background: selectedRow, minimum: 3),
   ]
 
   /// Pairs that fail in light at standard contrast; `highContrastPairs` checks their light values.

@@ -99,8 +99,7 @@ final class RatingPromptCoordinator {
   /// Whether the presenter should request a review right now. Pure so the gate is unit-testable;
   /// the `requestReview()` call itself stays in `RatingPromptPresenter`.
   ///
-  /// `isBetweenTasks` is the "not mid-task" gate (`isBetweenTasks(isChecklistOpen:…)`). It is
-  /// what defers the request until the checklist screen has been left.
+  /// `isBetweenTasks` is the "not mid-task" gate. It is what defers the request until the checklist screen has been left.
   nonisolated static func shouldRequestReview(
     isRequestPending: Bool,
     isBetweenTasks: Bool,

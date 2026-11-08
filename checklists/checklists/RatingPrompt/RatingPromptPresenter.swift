@@ -8,10 +8,9 @@ import SwiftUI
 
 /// Root-level presenter for the automatic App Store review prompt.
 ///
-/// **Between tasks**: with no sheet up, either no checklist is open, or one has just been left for
-/// another. The second only happens on a wide window, where ChecklistsView sits beside the open
-/// checklist and picking another row moves on without ever closing one; it counts once, for the
-/// attempt it starts, so a request that becomes pending later, mid-checklist, still waits.
+/// **Between tasks**: `RatingPromptCoordinator.isBetweenTasks`. Leaving one checklist for another
+/// counts once, for the attempt it starts, so a request that becomes pending later, mid-checklist,
+/// still waits.
 ///
 /// **Deferred past the transition**: the router flips at the *start* of a pop, dismiss or switch,
 /// and Apple's guidance is not to request mid-transition, so the gate is re-checked after a short
