@@ -24,7 +24,7 @@ class ChecklistViewController: UIViewController {
 
   /// Set by the SwiftUI host (`ChecklistScreen`) so leaving the screen updates the router's
   /// navigation state instead of calling UIKit `dismiss`/`pop` directly — a UIKit dismissal of a
-  /// SwiftUI-presented container would leave the router's sheet/path out of sync with what's on
+  /// SwiftUI-presented container would leave the router's sheet/selection out of sync with what's on
   /// screen.
   var onRequestDismiss: (() -> Void)?
 

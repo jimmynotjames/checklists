@@ -14,7 +14,7 @@ struct RootView: View {
 
   var body: some View {
     @Bindable var router = router
-    NavigationStack(path: $router.path) {
+    NavigationStack(path: $router.stackPath) {
       ChecklistsView()
         .toastOverlay(.list)
         .navigationDestination(for: AppRoute.self) { route in
@@ -22,12 +22,11 @@ struct RootView: View {
           case let .checklist(id):
             if let checklist = context.checklist(id: id) {
               ChecklistScreen(checklist: checklist) {
-                guard !router.path.isEmpty else { return }
-                router.path.removeLast()
+                router.closeChecklist(id: id)
               }
-              .toastOverlay(.pushed(route))
+              .toastOverlay(.checklist(id: id))
             } else {
-              unresolvedPushDestination
+              unresolvedPushDestination(id: id)
             }
           }
         }
@@ -62,13 +61,12 @@ struct RootView: View {
     }
   }
 
-  /// A route can stop resolving between being appended and being rendered (e.g. the record was
+  /// A checklist can stop resolving between being opened and being rendered (e.g. the record was
   /// deleted on another device). Render nothing and quietly pop rather than crashing. Quietly, unlike
   /// the open screen catching the same deletion first, which says why (`Toast.checklistDeletedElsewhere`).
-  private var unresolvedPushDestination: some View {
+  private func unresolvedPushDestination(id: String) -> some View {
     Color.clear.onAppear {
-      guard !router.path.isEmpty else { return }
-      router.path.removeLast()
+      router.closeChecklist(id: id)
     }
   }
 
