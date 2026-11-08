@@ -28,25 +28,22 @@ jobs:
   # Versions come from config/lint-tools.env. Runs REPO-WIDE, unlike the local gate
   # (AGENTS.md §"Lint policy").
   lint:
-    # Not ubuntu-latest: on 26.04 the SwiftLint Linux binary can't load libxml2.so.2.
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
       - name: Load pinned tool versions
         run: grep -E '^[A-Z_]+=' config/lint-tools.env >> "$GITHUB_ENV"
 
-      - name: Cache pinned SwiftFormat/SwiftLint binaries
+      - name: Cache pinned SwiftFormat binary
         uses: actions/cache@v6
-        id: cache-lint-tools
+        id: cache-swiftformat
         with:
-          path: |
-            swiftformat_linux
-            swiftlint_bin
-          key: lint-tools-${{ env.SWIFTFORMAT_VERSION }}-${{ env.SWIFTLINT_VERSION }}
+          path: swiftformat_linux
+          key: swiftformat-${{ env.SWIFTFORMAT_VERSION }}
 
       - name: Install pinned SwiftFormat (Linux release binary)
-        if: steps.cache-lint-tools.outputs.cache-hit != 'true'
+        if: steps.cache-swiftformat.outputs.cache-hit != 'true'
         run: |
           curl -sSL -o swiftformat_linux.zip \
             "https://github.com/nicklockwood/SwiftFormat/releases/download/${SWIFTFORMAT_VERSION}/swiftformat_linux.zip"
@@ -58,18 +55,14 @@ jobs:
           ./swiftformat_linux --version
           ./swiftformat_linux --lint .
 
-      - name: Install pinned SwiftLint (Linux release binary)
-        if: steps.cache-lint-tools.outputs.cache-hit != 'true'
+      # The official image, not the release zip: that binary needs libxml2.so.2, which
+      # Ubuntu 26.04 dropped (realm/SwiftLint#6966). The image brings its own userland.
+      # The workspace is mounted at its own path so reported file paths match the checkout.
+      - name: SwiftLint (strict, official Docker image)
         run: |
-          curl -sSL -o swiftlint_linux.zip \
-            "https://github.com/realm/SwiftLint/releases/download/${SWIFTLINT_VERSION}/swiftlint_linux_amd64.zip"
-          unzip -o -q swiftlint_linux.zip -d swiftlint_bin
-          chmod +x swiftlint_bin/swiftlint
-
-      - name: SwiftLint (strict)
-        run: |
-          swiftlint_bin/swiftlint version
-          swiftlint_bin/swiftlint lint --strict
+          image="ghcr.io/realm/swiftlint:${SWIFTLINT_VERSION}"
+          docker run --rm "$image" version
+          docker run --rm -v "$PWD:$PWD" -w "$PWD" "$image" lint --strict
 
   # --- Tier 1: secret scan over full history (ubuntu) -------------------------
   # Full-history scan. Green != no secrets — AGENTS.md §"Known issues".
