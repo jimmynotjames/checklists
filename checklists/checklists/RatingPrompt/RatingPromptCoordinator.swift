@@ -99,14 +99,24 @@ final class RatingPromptCoordinator {
   /// Whether the presenter should request a review right now. Pure so the gate is unit-testable;
   /// the `requestReview()` call itself stays in `RatingPromptPresenter`.
   ///
-  /// `isOnChecklistsList` is the "not mid-task" gate: no route pushed, no sheet up. It is
-  /// what defers the request until the checklist screen has been left.
+  /// `isBetweenTasks` is the "not mid-task" gate. It is what defers the request until the checklist screen has been left.
   nonisolated static func shouldRequestReview(
     isRequestPending: Bool,
-    isOnChecklistsList: Bool,
+    isBetweenTasks: Bool,
     sceneIsActive: Bool,
   ) -> Bool {
-    isRequestPending && isOnChecklistsList && sceneIsActive
+    isRequestPending && isBetweenTasks && sceneIsActive
+  }
+
+  /// No sheet up, and either no checklist open or one just left for another, which only a wide
+  /// window allows: there ChecklistsView sits beside the open checklist, so a person moves on by
+  /// picking another row rather than by closing one.
+  nonisolated static func isBetweenTasks(
+    isChecklistOpen: Bool,
+    hasJustLeftChecklist: Bool,
+    isSheetUp: Bool,
+  ) -> Bool {
+    !isSheetUp && (!isChecklistOpen || hasJustLeftChecklist)
   }
 
   /// Buckets the gap between first eligibility and the request. Coarse on purpose: no raw

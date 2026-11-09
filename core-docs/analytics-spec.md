@@ -162,7 +162,7 @@ resolves to `.required`; any code not on the list resolves to `.autoOptin`.
 **The resolved default is never written.** "A choice was made" is exactly
 `store.object(forKey:) != nil`, and that gates the sheet.
 
-**Trigger: the first `checklist_viewed` on a pushed checklist**, in a strict region, with no choice
+**Trigger: the first `checklist_viewed` on an opened checklist**, in a strict region, with no choice
 yet. Sample checklists are seeded, so a person may never create one, but always opens one — and
 that is when `checklist_name` would first be sent. The new-checklist route is excluded: there the
 checklist screen *is* the presented sheet.

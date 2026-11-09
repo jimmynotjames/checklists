@@ -30,7 +30,7 @@ class ChecklistViewController: UIViewController {
 
   /// Set by the SwiftUI host (`ChecklistScreen`). Called with the new checklist's `id` after a
   /// duplication, for the host to present. The id rather than the model, like every other
-  /// cross-screen reference in the app (see `AppRoute`); the controller has no router and should
+  /// cross-screen reference in the app (see `Router.selectedChecklistID`); the controller has no router and should
   /// not acquire one. Unset means the copy is still made and saved, just not opened.
   var onRequestOpenDuplicate: ((String) -> Void)?
 
@@ -228,6 +228,12 @@ class ChecklistViewController: UIViewController {
     remoteChangeObserver = RemoteChangeObserver { [weak self] in
       self?.handleRemoteChange()
     }
+    // And when ChecklistsView, beside this screen on a wide window, resets it.
+    NotificationCenter.default.addObserver(self, selector: #selector(checklistsDidReset), name: ModelContext.didResetChecklists, object: nil)
+  }
+
+  @objc private func checklistsDidReset() {
+    handleRemoteChange()
   }
 
   /// Reacts to this checklist being changed, or deleted, somewhere other than this screen.

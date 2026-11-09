@@ -7,7 +7,7 @@ import SwiftUI
 
 /// Where a toast layer sits, which decides when it is the one that draws.
 enum ToastPlacement: Equatable {
-  /// `ChecklistsView`, the navigation stack's root.
+  /// `ChecklistsView`, the split view's sidebar.
   case list
   /// The ChecklistScreen showing the checklist with this `Checklist.id`.
   case checklist(id: String)
@@ -17,7 +17,7 @@ enum ToastPlacement: Equatable {
 
 /// Draws whatever toast is up, over one screen's content.
 ///
-/// Applied inside each screen's `NavigationStack` rather than once over the whole window, so the
+/// Applied inside each screen's column or sheet rather than once over the whole window, so the
 /// card is laid out in the screen's safe area. That area already excludes the bars wherever the
 /// system puts them — `ChecklistsView`'s bottom toolbar, or the vertical bar on iPhone Duo — so the
 /// card clears them without knowing their size. Exactly one layer draws at a time, the one on the
@@ -59,8 +59,9 @@ private struct ToastOverlay: ViewModifier {
       .animation(.easeInOut(duration: 0.25), value: presenter.current?.id)
   }
 
-  /// A screen under an open checklist, or under a sheet, stays mounted, so every layer checks that
-  /// its screen is the frontmost. The sheet's check is not redundant: a dismissing sheet's content
+  /// A screen under or beside an open checklist, or under a sheet, stays mounted, so every layer
+  /// checks that its screen is the frontmost. Beside an open checklist on a wide window, the
+  /// checklist's column draws. The sheet's check is not redundant: a dismissing sheet's content
   /// stays mounted for its slide-out, so a toast raised just after `dismiss()` would otherwise be
   /// drawn by both the sheet and the screen beneath it.
   private var drawsHere: Bool {
@@ -131,8 +132,8 @@ extension View {
     modifier(ToastCoordinator())
   }
 
-  /// Draws toasts over this screen while it is the frontmost one. Apply inside the screen's
-  /// `NavigationStack`, so the bars are already outside its safe area.
+  /// Draws toasts over this screen while it is the frontmost one. Apply inside the screen's column
+  /// or `NavigationStack`, so the bars are already outside its safe area.
   func toastOverlay(_ placement: ToastPlacement) -> some View {
     modifier(ToastOverlay(placement: placement))
   }

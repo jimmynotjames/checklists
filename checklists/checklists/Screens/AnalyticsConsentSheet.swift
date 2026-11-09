@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// First-run analytics consent sheet, shown once in strict-opt-in jurisdictions on the first
-/// pushed `checklist_viewed` (`analytics-spec.md §Strict-opt-in jurisdictions`) — see the trigger
+/// opened `checklist_viewed` (`analytics-spec.md §Strict-opt-in jurisdictions`) — see the trigger
 /// guard in `ChecklistScreen`.
 ///
 /// Accept and decline both route through `AnalyticsConsentController` so the ordering

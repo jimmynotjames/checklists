@@ -7,8 +7,8 @@ import SwiftData
 import SwiftUI
 import UIKit
 
-/// SwiftUI host for the still-UIKit `ChecklistViewController`, pushed or presented straight into
-/// a `NavigationStack`. The controller decides what the bar shows (`ChecklistBar`); this view's
+/// SwiftUI host for the still-UIKit `ChecklistViewController`: the detail column of `RootView`'s
+/// split view, or the root of the create sheet's `NavigationStack`. The controller decides what the bar shows (`ChecklistBar`); this view's
 /// toolbar draws it, so the bar is the stack's own and iPhone Duo's vertical bar takes its items as
 /// it does on every other screen.
 ///
@@ -18,8 +18,8 @@ struct ChecklistScreen: View {
   let checklist: Checklist
   var isNewChecklist = false
   /// Routes the screen's own ways of leaving (Done, Delete or Discard, remote deletion) through the
-  /// SwiftUI router so navigation state can't desync from what's on screen; the stack's own back
-  /// button and swipe update the router's selection themselves.
+  /// SwiftUI router so navigation state can't desync from what's on screen; a narrow window's
+  /// back button and swipe update the router's selection themselves (`Router.compactColumn`).
   let onRequestDismiss: () -> Void
 
   @Environment(Router.self) private var router
@@ -52,7 +52,8 @@ struct ChecklistScreen: View {
     // row for.
     .navigationTitle(bar.title ?? "")
     .navigationBarTitleDisplayMode(.inline)
-    // Reorder Items mode hides Back, and its edge swipe with it: Done is the one way out.
+    // Reorder Items mode hides Back, and its edge swipe with it. On a narrow window Done is then the
+    // one way out; on a wide one, picking another row in ChecklistsView also leaves.
     .navigationBarBackButtonHidden(bar.mode == .reordering)
     // Visible explicitly: in Reorder Items mode the bar holds only its pinned Done, with no title
     // and no Back, and the system otherwise hides it as empty, Done and all.

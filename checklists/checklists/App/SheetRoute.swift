@@ -10,7 +10,7 @@ import Foundation
 /// Conforms to `Identifiable` so it binds directly to `.sheet(item:)`.
 /// The `newChecklist` case carries the id the new `Checklist` will be created with, so
 /// the id is decided at the call site rather than inside the sheet's own view — see
-/// `AppRoute` for the rationale on carrying stable ids rather than live model references.
+/// `Router.selectedChecklistID` for the rationale on carrying stable ids rather than live model references.
 enum SheetRoute: Hashable, Identifiable {
   case settings
   case newChecklist(id: String)

@@ -3,21 +3,29 @@
 //  checklists
 //
 
-import Foundation
+import SwiftUI
 
 /// Centralised navigation state for the SwiftUI shell, owned by the app's root view as `@State`
 /// and injected into the environment so any descendant screen can open a checklist or present a
 /// sheet without a direct reference to the host.
 ///
-/// At most one checklist is open at a time, so the state is a selection rather than a path. Screens
-/// ask the questions below instead of reading the selection and sheet themselves.
+/// At most one checklist is open at a time, so the state is a selection rather than a path: the
+/// detail column of `RootView`'s split view on a wide window, a push over ChecklistsView on a
+/// narrow one. Screens ask the questions below instead of reading the selection and sheet
+/// themselves.
 @Observable
 @MainActor
 final class Router {
-  /// The open checklist's `Checklist.id`; `nil` while ChecklistsView is all there is.
+  /// The open checklist's `Checklist.id`; `nil` while no checklist is open.
+  ///
+  /// The stable `id`, never a live model reference: the destination resolves it when it is shown,
+  /// via `ModelContext.checklist(id:)`, and quietly closes when the record no longer exists (e.g.
+  /// deleted on another device).
   var selectedChecklistID: String?
   var sheet: SheetRoute?
 
+  /// No checklist open and no sheet up. On a wide window ChecklistsView is on screen beside the
+  /// open checklist too, but the open checklist still counts as frontmost.
   var isChecklistsViewFrontmost: Bool {
     selectedChecklistID == nil && sheet == nil
   }
@@ -37,14 +45,15 @@ final class Router {
     selectedChecklistID = nil
   }
 
-  /// The selection as a `NavigationStack` path: empty, or the one open checklist.
-  var stackPath: [AppRoute] {
-    get { selectedChecklistID.map { [.checklist(id: $0)] } ?? [] }
+  /// The selection as `NavigationSplitView`'s preferred compact column. On a narrow window an open
+  /// checklist shows as the detail column pushed over ChecklistsView, and the back button or swipe
+  /// writes `.sidebar`, which closes it. The split view never writes `.detail` on its own; opening
+  /// goes through `open(checklistID:)`.
+  var compactColumn: NavigationSplitViewColumn {
+    get { selectedChecklistID == nil ? .sidebar : .detail }
     set {
-      selectedChecklistID = newValue.last.map { route in
-        switch route {
-        case let .checklist(id): id
-        }
+      if newValue == .sidebar {
+        selectedChecklistID = nil
       }
     }
   }
