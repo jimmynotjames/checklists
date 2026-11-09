@@ -1,16 +1,27 @@
 # CI — DISABLED (workflow_dispatch only; private repo, macOS minutes bill at 10x).
+# Start a run by commenting `/ci ...` on the PR (ci-command.yml dispatches this workflow
+# and this one reports back), or with `gh workflow run` (AGENTS.md §CI).
 # To enable: uncomment the pull_request/push triggers AND add these jobs as required
 # status checks.
 name: CI
+run-name: "${{ inputs.pr && format('CI · PR #{0}', inputs.pr) || 'CI' }} · ${{ inputs.only || 'gates+build' }} · tests=${{ inputs.tests }}"
 
 on:
   workflow_dispatch:
     inputs:
+      only:
+        description: "Comma list, no spaces, of lint,secrets,large-files,i18n,build; empty runs all four gates + build"
+        type: string
+        default: ""
       tests:
         description: "Tests after the gates: none (compile only), unit, or ui (unit then UI)"
         type: choice
         options: [none, unit, ui]
         default: none
+      pr:
+        description: "PR number to post the results on (set by a /ci comment); empty posts nothing"
+        type: string
+        default: ""
   # pull_request:
   # push:
   #   branches: [main]
@@ -28,6 +39,7 @@ jobs:
   # Versions come from config/lint-tools.env. Runs REPO-WIDE, unlike the local gate
   # (AGENTS.md §"Lint policy").
   lint:
+    if: inputs.only == '' || contains(format(',{0},', inputs.only), ',lint,')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -67,6 +79,7 @@ jobs:
   # --- Tier 1: secret scan over full history (ubuntu) -------------------------
   # Full-history scan. Green != no secrets — AGENTS.md §"Known issues".
   secrets:
+    if: inputs.only == '' || contains(format(',{0},', inputs.only), ',secrets,')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -98,6 +111,7 @@ jobs:
   # push, on a push-to-main event, or the branch point from main, on a manual
   # run) since there's no "staged files" concept in CI.
   check-large-files:
+    if: inputs.only == '' || contains(format(',{0},', inputs.only), ',large-files,')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -121,6 +135,7 @@ jobs:
   # and a non-blocking consistency report. The
   # uitest-check scripts don't run in CI.
   i18n-gates:
+    if: inputs.only == '' || contains(format(',{0},', inputs.only), ',i18n,')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -150,6 +165,10 @@ jobs:
   build:
     runs-on: xcode-27
     needs: [lint, secrets, check-large-files, i18n-gates]
+    # Runs when selected (tests imply it), after whichever gates ran; a failed gate still stops it.
+    if: >-
+      !cancelled() && !contains(needs.*.result, 'failure')
+      && (inputs.only == '' || contains(format(',{0},', inputs.only), ',build,') || inputs.tests != 'none')
     # The 360-minute default would let one hung simulator burn the month's allowance.
     timeout-minutes: 90
     steps:
@@ -218,3 +237,38 @@ jobs:
           name: xcresults
           path: .build/sim/results/*.xcresult
           retention-days: 7
+
+  # --- Report back to the PR that asked for this run (a /ci comment) --------------
+  # Also runs when the run was cancelled, so a superseded run still leaves its line on the PR.
+  report:
+    needs: [lint, secrets, check-large-files, i18n-gates, build]
+    if: always() && inputs.pr != ''
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Comment the results on the PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR: ${{ inputs.pr }}
+          NEEDS: ${{ toJSON(needs) }}
+          SELECTION: ${{ inputs.only || 'gates+build' }}
+          TESTS: ${{ inputs.tests }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          rows=$(jq -r '
+            {success: "✅", failure: "❌", skipped: "⏭️", cancelled: "🚫"} as $icon
+            | to_entries[] | "| `\(.key)` | \($icon[.value.result] // "") \(.value.result) |"' <<<"$NEEDS")
+          verdict=$(jq -r '[.[].result] as $r
+            | if ($r | index("failure")) then "❌ failed"
+              elif ($r | index("cancelled")) then "🚫 cancelled"
+              else "✅ passed" end' <<<"$NEEDS")
+          {
+            echo "**CI ${verdict}** on \`${GITHUB_REF_NAME}\` @ \`${GITHUB_SHA::7}\`: ${SELECTION}, tests=${TESTS}. [Run](${RUN_URL})"
+            echo
+            echo "| Job | Result |"
+            echo "|---|---|"
+            echo "$rows"
+          } > report.md
+          gh pr comment "$PR" --body-file report.md

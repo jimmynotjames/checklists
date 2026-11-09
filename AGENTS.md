@@ -328,9 +328,16 @@ is skipped, and the rest of this section doesn't apply.
 `.github/workflows/ci.yml` is present but disabled (`workflow_dispatch` only; private repo, macOS
 minutes bill at 10×). Enable instructions are in the workflow header.
 
-A manual run on a branch shows as checks on that commit's PR. Its `tests` input adds the app's
-suites after the gates. Only Jimmy decides when to spend macOS minutes on one:
+A manual run on a branch shows as checks on that commit's PR. Only Jimmy decides when to spend
+macOS minutes on one, preferably by commenting on the PR so the request and its result stay there
+(`.github/workflows/ci-command.yml`; repo owner's comments only):
+
+- `/ci`: the four gates + build. `/ci all`: those plus unit and UI tests.
+- Words combine: `lint` `secrets` `large-files` `i18n` `gates` `build` `unit` `ui`, e.g.
+  `/ci lint i18n` or `/ci gates unit`. `/ci help` replies with the full table.
+
+The same run without a comment trail (`only` empty means gates + build):
 
 ```bash
-gh workflow run ci.yml --ref <branch> -f tests=ui
+gh workflow run ci.yml --ref <branch> -f only=lint,build -f tests=ui
 ```
