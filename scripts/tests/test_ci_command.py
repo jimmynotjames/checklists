@@ -59,7 +59,66 @@ class ParseTests(unittest.TestCase):
         self.assertEqual(parse("/ci lint help"), Command("help"))
 
     def test_unknown_words_are_an_error_and_start_nothing(self) -> None:
-        self.assertEqual(parse("/ci lint tests xyz"), Command("error", error="tests xyz"))
+        self.assertEqual(
+            parse("/ci lint tests xyz"), Command("error", error="unknown word(s) `tests xyz`")
+        )
+
+    def test_one_class_runs_only_the_build_job_once(self) -> None:
+        self.assertEqual(
+            parse("/ci test checklistsUITests/ChecklistItemsUITest"),
+            Command("run", only="build", test="checklistsUITests/ChecklistItemsUITest"),
+        )
+
+    def test_one_test_keeps_its_case_and_repeats(self) -> None:
+        self.assertEqual(
+            parse("/CI Test checklistsUITests/ChecklistItemsUITest/testChecklistEditItemName X5"),
+            Command(
+                "run",
+                only="build",
+                test="checklistsUITests/ChecklistItemsUITest/testChecklistEditItemName",
+                iterations=5,
+            ),
+        )
+
+    def test_a_swift_testing_function_keeps_its_parentheses(self) -> None:
+        name = "checklistsTests/ChecklistKeyboardOverlapTests/dockedKeyboard()"
+        self.assertEqual(parse(f"/ci test {name}").test, name)
+
+    def test_one_class_combines_with_gates(self) -> None:
+        self.assertEqual(
+            parse("/ci x3 lint test checklistsTests/AnalyticsNamesTests"),
+            Command("run", only="lint,build", test="checklistsTests/AnalyticsNamesTests", iterations=3),
+        )
+
+    def test_a_bad_test_name_starts_nothing(self) -> None:
+        for body in (
+            "/ci test",
+            "/ci test ChecklistItemsUITest",
+            "/ci test checklistsuitests/ChecklistItemsUITest",
+            "/ci test checklistsUITests/A/b/c",
+            "/ci test checklistsUITests/A;rm",
+            "/ci test x5",
+        ):
+            with self.subTest(body=body):
+                self.assertEqual(parse(body).action, "error")
+
+    def test_repeats_are_bounded_and_need_a_test(self) -> None:
+        name = "checklistsUITests/ChecklistItemsUITest"
+        self.assertEqual(parse(f"/ci test {name} x10").iterations, 10)
+        for body in (f"/ci test {name} x0", f"/ci test {name} x11", "/ci ui x3", "/ci x2"):
+            with self.subTest(body=body):
+                self.assertEqual(parse(body).action, "error")
+
+    def test_one_class_does_not_combine_with_whole_suites(self) -> None:
+        for extra in ("unit", "ui", "all"):
+            with self.subTest(extra=extra):
+                command = parse(f"/ci {extra} test checklistsUITests/ChecklistItemsUITest")
+                self.assertEqual(command.action, "error")
+
+    def test_only_one_test_per_comment(self) -> None:
+        self.assertEqual(
+            parse("/ci test checklistsTests/A test checklistsTests/B").action, "error"
+        )
 
     def test_other_comments_are_ignored(self) -> None:
         for body in ("/cix", "/ci-lint", "please /ci", "", "  \n", "LGTM\n/ci"):
