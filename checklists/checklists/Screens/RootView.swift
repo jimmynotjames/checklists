@@ -95,6 +95,9 @@ struct RootView: View {
       }
     } else {
       NoChecklistSelectedView()
+        // Without a bar of its own here, iPhone Duo's unfolded display hid the sidebar's bottom bar,
+        // and Add with it.
+        .toolbarVisibility(.visible, for: .bottomBar)
     }
   }
 
