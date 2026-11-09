@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 """Print one markdown line tallying a `make test-only` run's results across its iterations.
 
-ci.yml's `/ci test ... xN` run puts the line in the job summary and the PR's result comment, so a
-flake reads as "failed 2 of 5" rather than a bare red. Report-only: never changes the run's outcome.
-
-With `-test-iterations N` each Test Case node in the bundle has one Repetition child per run;
-without it the Test Case's own result is its one run.
+With `-test-iterations N` each Test Case node in the bundle has one Repetition node per run, nested
+deeper for a parameterized test; without it the Test Case's own result is its one run.
 
 Usage: python3 scripts/ci/tally_iterations.py <path-to.xcresult>
 """
@@ -29,11 +26,7 @@ def tally(tree: dict) -> dict[str, Counter]:
     def walk(node: dict) -> None:
         if node.get("nodeType") == "Test Case":
             test_id = node.get("nodeIdentifier") or node.get("name") or "?"
-            runs = [
-                child.get("result") or "?"
-                for child in node.get("children") or []
-                if child.get("nodeType") == "Repetition"
-            ]
+            runs = [r.get("result") or "?" for r in _repetitions(node)]
             found[test_id] = Counter(runs or [node.get("result") or "?"])
             return
         for child in node.get("children") or []:
@@ -41,6 +34,16 @@ def tally(tree: dict) -> dict[str, Counter]:
 
     for root in tree.get("testNodes") or []:
         walk(root)
+    return found
+
+
+def _repetitions(node: dict) -> list[dict]:
+    found = []
+    for child in node.get("children") or []:
+        if child.get("nodeType") == "Repetition":
+            found.append(child)
+        else:
+            found.extend(_repetitions(child))
     return found
 
 
@@ -58,6 +61,9 @@ def summary_line(results: dict[str, Counter]) -> str:
     ]
     if failing:
         line += " " + "; ".join(failing) + "."
+    neither = total - passed - sum(c["Failed"] for c in results.values())
+    if neither:
+        line += f" {neither} neither passed nor failed (skipped or expected failures)."
     return line
 
 

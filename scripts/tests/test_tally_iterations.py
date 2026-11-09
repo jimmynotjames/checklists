@@ -49,6 +49,28 @@ class TallyTests(unittest.TestCase):
             summary_line(results), "Tally: 0 of 1 test runs passed (1 test). `A/testOne` failed 1 of 1."
         )
 
+    def test_a_parameterized_test_counts_repetitions_under_its_arguments(self) -> None:
+        argument = lambda *runs: {  # noqa: E731
+            "nodeType": "Arguments",
+            "children": [{"nodeType": "Repetition", "result": r} for r in runs],
+        }
+        parameterized = {
+            "nodeType": "Test Case",
+            "nodeIdentifier": "S/check(value:)",
+            "result": "Failed",
+            "children": [argument("Passed", "Passed"), argument("Passed", "Failed")],
+        }
+        self.assertEqual(
+            summary_line(tally(tree(parameterized))),
+            "Tally: 3 of 4 test runs passed (1 test). `S/check(value:)` failed 1 of 4.",
+        )
+
+    def test_skipped_runs_are_called_out(self) -> None:
+        self.assertEqual(
+            summary_line(tally(tree(case("A/testOne", "Passed", "Skipped")))),
+            "Tally: 1 of 2 test runs passed (1 test). 1 neither passed nor failed (skipped or expected failures).",
+        )
+
     def test_an_empty_bundle(self) -> None:
         self.assertEqual(summary_line(tally({})), "Tally: no test results in the bundle.")
 

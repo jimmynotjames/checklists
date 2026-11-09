@@ -335,10 +335,10 @@ macOS minutes on one, preferably by commenting on the PR so the request and its 
 - `/ci`: the four gates + build. `/ci all`: those plus unit and UI tests.
 - Words combine: `lint` `secrets` `large-files` `i18n` `gates` `build` `unit` `ui`, e.g.
   `/ci lint i18n` or `/ci gates unit`. `/ci help` replies with the full table.
-- `/ci test <target>/<Class>[/<test>] [xN]`: build, then only that class or test, N times (1-10)
-  in one job, as `make test-only` runs it locally. For a test that fails only on CI: one build pays
-  for every try, the result comment tallies passes and failures, and the result bundle is kept
-  even when it passes. E.g. `/ci test checklistsUITests/ChecklistItemsUITest x5`.
+- `/ci test <target>/<Class>[/<test>] [xN]`: build, then only that class or test, N times in one
+  job, as `make test-only` runs it locally (a UI class warms up with the unit tests first). For a
+  test that fails only on CI: the result comment tallies passes and failures per test. E.g.
+  `/ci test checklistsUITests/ChecklistItemsUITest x5`.
 
 The same runs without a comment trail (`only` empty means gates + build):
 

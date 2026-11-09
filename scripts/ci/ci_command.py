@@ -6,7 +6,7 @@ $GITHUB_OUTPUT (or stdout without it):
   only=<comma list of ci.yml selections, empty for the default gates + build>
   tests=none|unit|ui
   test=<target>/<Suite>[/<test>] to run alone, or empty
-  iterations=<how many times to run `test`, 1-10>
+  iterations=<how many times to run `test`>
   error=<why the comment started nothing, for the usage reply>
 `--usage` prints the usage reply instead.
 """
@@ -24,7 +24,9 @@ TEST_LEVELS = ("none", "unit", "ui")  # each level includes the ones before it
 MAX_ITERATIONS = 10  # each iteration of a UI class is macOS minutes, billed at 10x
 # What `make test-only` takes: a test target, a class or suite, and optionally one test.
 # Swift Testing names a test function with its parentheses.
-TEST_ID = re.compile(r"^(checklistsTests|checklistsUITests)/[A-Za-z_]\w*(/[A-Za-z_]\w*(\(\))?)?$")
+TEST_ID = re.compile(
+    r"^(checklistsTests|checklistsUITests)/[A-Za-z_]\w*(/[A-Za-z_]\w*(\(\))?)?$", re.ASCII
+)
 _ITERATIONS = re.compile(r"^x(\d+)$", re.IGNORECASE)
 
 USAGE = """\
