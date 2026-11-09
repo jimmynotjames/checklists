@@ -26,9 +26,10 @@ on:
   # push:
   #   branches: [main]
 
-# Cancel superseded runs on the same ref (a new push to a PR voids the old run).
+# Cancel superseded runs on the same ref (a new push to a PR voids the old run). The selection is
+# in the group so `/ci lint` and `/ci unit` on one branch don't cancel each other.
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ inputs.only }}-${{ inputs.tests }}
   cancel-in-progress: true
 
 permissions:
@@ -239,7 +240,8 @@ jobs:
           retention-days: 7
 
   # --- Report back to the PR that asked for this run (a /ci comment) --------------
-  # Also runs when the run was cancelled, so a superseded run still leaves its line on the PR.
+  # Also runs when a started run was cancelled, so it still leaves its line on the PR (a run
+  # cancelled while still queued never starts, so it posts nothing).
   report:
     needs: [lint, secrets, check-large-files, i18n-gates, build]
     if: always() && inputs.pr != ''
