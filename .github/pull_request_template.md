@@ -61,4 +61,4 @@ when that's the honest answer.
   AGENTS.md §"The software keyboard".
 
 CI (`.github/workflows/ci.yml`) is present but **disabled** — no checks run on this PR unless a
-manual run was started (AGENTS.md §CI).
+`/ci` comment or a manual run started one (AGENTS.md §CI).
