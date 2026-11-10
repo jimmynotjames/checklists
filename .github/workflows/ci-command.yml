@@ -45,11 +45,11 @@ jobs:
       - name: Reply with usage
         if: steps.parse.outputs.action == 'help' || steps.parse.outputs.action == 'error'
         env:
-          UNKNOWN: ${{ steps.parse.outputs.error }}
+          REASON: ${{ steps.parse.outputs.error }}
         run: |
           {
-            if [[ -n "$UNKNOWN" ]]; then
-              echo "Not started: unknown word(s) \`${UNKNOWN}\` in [this comment](${COMMENT_URL})."
+            if [[ -n "$REASON" ]]; then
+              echo "Not started: ${REASON} in [this comment](${COMMENT_URL})."
               echo
             fi
             python3 scripts/ci/ci_command.py --usage
@@ -61,6 +61,8 @@ jobs:
         env:
           ONLY: ${{ steps.parse.outputs.only }}
           TESTS: ${{ steps.parse.outputs.tests }}
+          TEST: ${{ steps.parse.outputs.test }}
+          ITERATIONS: ${{ steps.parse.outputs.iterations }}
         run: |
           pr_json=$(gh pr view "$PR" --json state,headRefName,headRefOid,isCrossRepository)
           state=$(jq -r .state <<<"$pr_json")
@@ -75,11 +77,19 @@ jobs:
             exit 0
           fi
 
-          if ! out=$(gh workflow run ci.yml --ref "$branch" -f only="$ONLY" -f tests="$TESTS" -f pr="$PR" 2>&1); then
+          inputs=(-f only="$ONLY" -f tests="$TESTS" -f pr="$PR")
+          what="tests=${TESTS}"
+          # Only a `test` run sends these, so the other commands still work on a branch whose
+          # ci.yml predates them.
+          if [[ -n "$TEST" ]]; then
+            inputs+=(-f test="$TEST" -f iterations="$ITERATIONS")
+            what="test=\`${TEST}\` x${ITERATIONS}"
+          fi
+          if ! out=$(gh workflow run ci.yml --ref "$branch" "${inputs[@]}" 2>&1); then
             echo "$out" >&2
-            # A branch cut before /ci existed has a ci.yml without these inputs.
+            # A branch cut before this command existed has a ci.yml without its inputs.
             if grep -qi "unexpected inputs" <<<"$out"; then
-              gh pr comment "$PR" --body "Not started: this branch's ci.yml predates \`/ci\`; rebase onto main ([comment](${COMMENT_URL}))."
+              gh pr comment "$PR" --body "Not started: this branch's ci.yml predates this \`/ci\` command; rebase onto main ([comment](${COMMENT_URL}))."
               exit 0
             fi
             exit 1
@@ -88,7 +98,7 @@ jobs:
           run_url=$(grep -oE 'https://github\.com/[^ ]+/actions/runs/[0-9]+' <<<"$out" | head -1 || true)
           link="See the PR's checks."
           [[ -n "$run_url" ]] && link="[Run](${run_url})"
-          gh pr comment "$PR" --body "Started CI on \`${branch}\` @ \`${sha::7}\`: ${ONLY:-gates+build}, tests=${TESTS}. ${link} ([comment](${COMMENT_URL}))"
+          gh pr comment "$PR" --body "Started CI on \`${branch}\` @ \`${sha::7}\`: ${ONLY:-gates+build}, ${what}. ${link} ([comment](${COMMENT_URL}))"
 
       - name: Report a failure to start
         if: failure()

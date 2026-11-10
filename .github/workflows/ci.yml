@@ -4,7 +4,7 @@
 # To enable: uncomment the pull_request/push triggers AND add these jobs as required
 # status checks.
 name: CI
-run-name: "${{ inputs.pr && format('CI · PR #{0}', inputs.pr) || 'CI' }} · ${{ inputs.only || 'gates+build' }} · tests=${{ inputs.tests }}"
+run-name: "${{ inputs.pr && format('CI · PR #{0}', inputs.pr) || 'CI' }} · ${{ inputs.only || 'gates+build' }} · ${{ inputs.test && format('test={0} x{1}', inputs.test, inputs.iterations) || format('tests={0}', inputs.tests) }}"
 
 on:
   workflow_dispatch:
@@ -18,6 +18,14 @@ on:
         type: choice
         options: [none, unit, ui]
         default: none
+      test:
+        description: "One class or test, as make test-only takes it (<target>/<Class>[/<test>]); replaces `tests`"
+        type: string
+        default: ""
+      iterations:
+        description: "How many times to run `test`, 1-10"
+        type: string
+        default: "1"
       pr:
         description: "PR number to post the results on (set by a /ci comment); empty posts nothing"
         type: string
@@ -29,7 +37,7 @@ on:
 # Cancel superseded runs on the same ref (a new push to a PR voids the old run). The selection is
 # in the group so `/ci lint` and `/ci unit` on one branch don't cancel each other.
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ inputs.only }}-${{ inputs.tests }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ inputs.only }}-${{ inputs.tests }}-${{ inputs.test }}-${{ inputs.iterations }}
   cancel-in-progress: true
 
 permissions:
@@ -169,10 +177,30 @@ jobs:
     # Runs when selected (tests imply it), after whichever gates ran; a failed gate still stops it.
     if: >-
       !cancelled() && !contains(needs.*.result, 'failure')
-      && (inputs.only == '' || contains(format(',{0},', inputs.only), ',build,') || inputs.tests != 'none')
+      && (inputs.only == '' || contains(format(',{0},', inputs.only), ',build,') || inputs.tests != 'none' || inputs.test != '')
     # The 360-minute default would let one hung simulator burn the month's allowance.
     timeout-minutes: 90
+    env:
+      TEST_MODE: ${{ inputs.test != '' && 'one' || inputs.tests }}
+    outputs:
+      tally: ${{ steps.one.outputs.tally }}
     steps:
+      # Before any setup, so a bad `gh workflow run` input costs no macOS minutes. The same checks
+      # as ci_command.py; leading zeros are refused because bash reads them as octal.
+      - name: Check the test name and iterations
+        if: env.TEST_MODE == 'one'
+        env:
+          TEST: ${{ inputs.test }}
+          ITERATIONS: ${{ inputs.iterations }}
+        run: |
+          if [[ ! "$TEST" =~ ^(checklistsTests|checklistsUITests)/[A-Za-z_][A-Za-z0-9_]*(/[A-Za-z_][A-Za-z0-9_]*(\(\))?)?$ ]]; then
+            echo "::error::test must be <target>/<Class>[/<test>] in checklistsTests or checklistsUITests, not '${TEST}'"
+            exit 1
+          fi
+          if [[ ! "$ITERATIONS" =~ ^[1-9][0-9]*$ ]] || (( ITERATIONS > 10 )); then
+            echo "::error::iterations must be 1-10, not '${ITERATIONS}'"
+            exit 1
+          fi
       - uses: actions/checkout@v7
       - name: Select Xcode 27.2
         uses: maxim-lobanov/setup-xcode@v1
@@ -186,13 +214,13 @@ jobs:
             .build/sim/DerivedData/SourcePackages
           # The mode is in the key: a compile-only run fills one path and a test run the other, and
           # an exact hit is never saved again, so a shared key would leave one mode uncached.
-          key: spm-${{ runner.os }}-xcode27.2-${{ (inputs.tests == 'unit' || inputs.tests == 'ui') && 'sim' || 'build' }}-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          key: spm-${{ runner.os }}-xcode27.2-${{ env.TEST_MODE == 'none' && 'build' || 'sim' }}-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: |
-            spm-${{ runner.os }}-xcode27.2-${{ (inputs.tests == 'unit' || inputs.tests == 'ui') && 'sim' || 'build' }}-
+            spm-${{ runner.os }}-xcode27.2-${{ env.TEST_MODE == 'none' && 'build' || 'sim' }}-
       # Mirrors scripts/build.sh. Skipped when tests run: their build-for-testing is the
       # compile check, and building here too would compile everything twice.
       - name: xcodebuild build
-        if: inputs.tests != 'unit' && inputs.tests != 'ui'
+        if: env.TEST_MODE == 'none'
         run: |
           xcodebuild build \
             -project checklists/checklists.xcodeproj \
@@ -202,11 +230,11 @@ jobs:
             ARCHS=arm64 \
             ONLY_ACTIVE_ARCH=NO
 
-      # --- Opt-in tests (workflow_dispatch input `tests`) -----------------------
+      # --- Opt-in tests (workflow_dispatch inputs `tests` and `test`) ------------
       # The runner image can lag the pinned Xcode's simulator runtime, and the app's
       # deployment target needs that runtime, so fetch it when it's missing.
       - name: iOS simulator runtime for the selected Xcode
-        if: inputs.tests == 'unit' || inputs.tests == 'ui'
+        if: env.TEST_MODE != 'none'
         run: |
           sdk="$(xcrun --sdk iphonesimulator --show-sdk-version)"
           if xcrun simctl list runtimes --json \
@@ -219,20 +247,48 @@ jobs:
 
       # Each phase is its own step so the run's step timings split build+unit from UI.
       - name: Unit tests (make test-unit; includes build-for-testing)
-        if: inputs.tests == 'unit' || inputs.tests == 'ui'
+        if: env.TEST_MODE == 'unit' || env.TEST_MODE == 'ui'
         run: make test-unit
 
       # The runner is this repo's alone, so no slot pool: two simulator clones, the most its memory
       # holds (scripts/_destination.sh, take_slots).
       - name: UI tests (make test-ui, 2 workers)
-        if: inputs.tests == 'ui'
+        if: env.TEST_MODE == 'ui'
         env:
           SIMULATOR_WORKERS_WITHOUT_POOL: "2"
         run: make test-ui
 
-      # Failures are easier to read in the bundle than in the log.
+      # One class or test, serially, N times in one job, so a flake that shows only on this runner
+      # costs one build rather than a whole suite per try. A UI class first warms the fresh
+      # simulator up with the unit tests, as make test-only does locally. A name that matches no
+      # test fails the step rather than passing with nothing run.
+      - name: One class or test (make test-only)
+        id: one
+        if: env.TEST_MODE == 'one'
+        env:
+          TEST: ${{ inputs.test }}
+          ITERATIONS: ${{ inputs.iterations }}
+        run: |
+          rc=0
+          make test-only ONLY="$TEST" ITERATIONS="$ITERATIONS" || rc=$?
+          bundle=$(find .build/sim/results -maxdepth 1 -name '*-only.xcresult' 2>/dev/null | head -1)
+          if [[ -n "$bundle" ]]; then
+            tally=$(python3 scripts/ci/tally_iterations.py "$bundle" || true)
+            echo "tally=${tally}" >> "$GITHUB_OUTPUT"
+            echo "$tally" >> "$GITHUB_STEP_SUMMARY"
+            if [[ "$tally" == "Tally: no test results"* && "$rc" == 0 ]]; then
+              echo "::error::'${TEST}' matched no test"
+              rc=1
+            fi
+          fi
+          exit "$rc"
+
+      # Failures are easier to read in the bundle than in the log. A single class or test keeps its
+      # bundle when it passes too: with a flake, the passing runs are evidence as well.
       - name: Upload test result bundles
-        if: failure() && (inputs.tests == 'unit' || inputs.tests == 'ui')
+        if: >-
+          (failure() && env.TEST_MODE != 'none')
+          || (!cancelled() && env.TEST_MODE == 'one')
         uses: actions/upload-artifact@v7
         with:
           name: xcresults
@@ -256,7 +312,8 @@ jobs:
           PR: ${{ inputs.pr }}
           NEEDS: ${{ toJSON(needs) }}
           SELECTION: ${{ inputs.only || 'gates+build' }}
-          TESTS: ${{ inputs.tests }}
+          TESTS: ${{ inputs.test && format('test=`{0}` x{1}', inputs.test, inputs.iterations) || format('tests={0}', inputs.tests) }}
+          TALLY: ${{ needs.build.outputs.tally }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           rows=$(jq -r '
@@ -267,8 +324,12 @@ jobs:
               elif ($r | index("cancelled")) then "🚫 cancelled"
               else "✅ passed" end' <<<"$NEEDS")
           {
-            echo "**CI ${verdict}** on \`${GITHUB_REF_NAME}\` @ \`${GITHUB_SHA::7}\`: ${SELECTION}, tests=${TESTS}. [Run](${RUN_URL})"
+            echo "**CI ${verdict}** on \`${GITHUB_REF_NAME}\` @ \`${GITHUB_SHA::7}\`: ${SELECTION}, ${TESTS}. [Run](${RUN_URL})"
             echo
+            if [[ -n "$TALLY" ]]; then
+              echo "$TALLY"
+              echo
+            fi
             echo "| Job | Result |"
             echo "|---|---|"
             echo "$rows"
