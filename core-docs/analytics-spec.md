@@ -64,8 +64,8 @@ isn't tracked: SwiftUI reports no menu opening. Only Edit has a before figure; `
 starts with the menu, so Reset All is read as a rate per active user.
 
 3.15 exists to decide whether keyboard selection (#404) is worth building: arrow keys, Space to
-check off, and moving items by key. The app is iPhone-only, so `device_class` reads phone on an iPad
-and a Mac alike; `$os` and `$model` tell them apart.
+check off, and moving items by key. The app is iPhone-only; Mixpanel's default `$os` tells an iPad
+and a Mac from an iPhone.
 
 ## Privacy
 
@@ -82,8 +82,8 @@ with its rationale recorded here. The app code sends exactly:
   never what was typed); `selected_count`, `checked_items_count` (integers); `error_domain`, `error_code` (an `NSError`'s domain and
   code, never its `userInfo`); `new_value`, `old_value` (booleans); `time_since_first_eligible_bucket`
   (a bucket, not a timestamp).
-- **Super properties:** `app_version`, `app_build`, `device_class`, `locale`, `region`,
-  `consent_jurisdiction`. `locale` and `region` are device *settings*, not a position.
+- **Super properties:** `app_version`, `app_build`, `locale`, `region`, `consent_jurisdiction`.
+  `locale` and `region` are device *settings*, not a position.
 - **People properties:** `first_seen_at`, `last_app_open_at`, `analytics_opt_in_at`,
   `checklists_count_bucket`, `rating_prompt_first_eligible_at`, `rating_prompt_last_requested_at`.
 - **`distinct_id`**, a random app-generated UUID (§Identity).
@@ -329,7 +329,6 @@ Registered on lazy SDK init, so they ride on every event and re-register after r
 | --- | --- |
 | `app_version` | `CFBundleShortVersionString` |
 | `app_build` | `CFBundleVersion` |
-| `device_class` | `userInterfaceIdiom` → `phone` / `pad` / `mac` (other → `phone`) |
 | `locale` | `Locale.current.identifier` |
 | `region` | `Locale.current.region?.identifier` — the region *setting* |
 | `consent_jurisdiction` | `required` / `auto_optin` |

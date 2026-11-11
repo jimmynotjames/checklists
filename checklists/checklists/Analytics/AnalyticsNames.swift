@@ -127,7 +127,6 @@ nonisolated enum AnalyticsProperty {
 
   static let appVersion = "app_version"
   static let appBuild = "app_build"
-  static let deviceClass = "device_class"
   static let locale = "locale"
   static let region = "region"
   static let consentJurisdiction = "consent_jurisdiction"

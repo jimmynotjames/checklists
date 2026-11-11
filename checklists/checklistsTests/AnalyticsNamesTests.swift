@@ -72,7 +72,6 @@ struct AnalyticsNamesTests {
     AnalyticsProperty.oldValue,
     AnalyticsProperty.appVersion,
     AnalyticsProperty.appBuild,
-    AnalyticsProperty.deviceClass,
     AnalyticsProperty.locale,
     AnalyticsProperty.region,
     AnalyticsProperty.consentJurisdiction,

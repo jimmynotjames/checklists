@@ -5,7 +5,6 @@
 
 import Foundation
 import Mixpanel
-import UIKit
 
 /// Production `AnalyticsClient` backed by the Mixpanel SDK.
 ///
@@ -20,9 +19,6 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
   // MARK: - Stored state
 
   private let token: String
-  /// Resolved once during `init()` rather than read from `ensureInitialized()`, so the actual
-  /// `UIDevice.current` access happens exactly once.
-  private let deviceClass: String
   private let distinctIdProvider: () -> String?
 
   /// Guards `_instance`.
@@ -42,12 +38,6 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
   @MainActor
   init(token: String, distinctIdProvider: @escaping () -> String?) {
     self.token = token
-    deviceClass = switch UIDevice.current.userInterfaceIdiom {
-    case .phone: "phone"
-    case .pad: "pad"
-    case .mac: "mac"
-    default: "phone"
-    }
     self.distinctIdProvider = distinctIdProvider
   }
 
@@ -182,7 +172,6 @@ final class MixpanelAnalyticsClient: AnalyticsClient, @unchecked Sendable {
     let props: [String: MixpanelType] = [
       AnalyticsProperty.appVersion: version,
       AnalyticsProperty.appBuild: build,
-      AnalyticsProperty.deviceClass: deviceClass,
       AnalyticsProperty.locale: localeId,
       AnalyticsProperty.region: regionId,
       AnalyticsProperty.consentJurisdiction: jurisdiction,
