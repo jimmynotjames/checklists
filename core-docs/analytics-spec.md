@@ -429,9 +429,9 @@ is not charted (`items_with_notes_count` answers 3.4 better). **Never** query a 
   `fastlane/metadata/en-US/privacy_url.txt`.
 - **Nutrition label**: the manifest's types, Linked, Analytics, not tracking.
 
-**Do not push the App Store listing yet.** `privacy_url.txt` must not reach App Store Connect before
-the first SDK build is submitted; the listing's older privacy page is correct while no shipped
-build collects anything. Run `push_metadata` in the release that ships the SDK.
+**The listing, with `privacy_url.txt`, went up to the editable v2.0 version** on 2026-10-24
+(`releases/app-store-v2.0.md`). v2.0 is the first release that ships the SDK, so the new privacy page
+goes live with it.
 
 Deliberate — do not "fix":
 
