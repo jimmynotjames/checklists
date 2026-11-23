@@ -392,7 +392,7 @@ and the `___` system fields on each record type, and a `Users` record type, besi
 
 ## Realm removal plan
 
-- **v1.3**: the Realm file left by `LegacyRealmImporter` is deleted from disk, once enough of the
+- **The first release after v2.0**: the Realm file left by `LegacyRealmImporter` is deleted from disk, once enough of the
   install base has had a release cycle to complete its one-time import. This does not touch the
   `RealmSwift` package dependency.
 - **Dropping the `RealmSwift` package dependency itself is a later, separate decision**, made only

@@ -189,17 +189,21 @@ the transcreation fan-out, then `generate_seeds.py`.
 
 | Check | Where | Blocking |
 | --- | --- | --- |
-| `check_translations.py` | `make i18n-check`, pre-push, CI | Yes |
-| `check_source_strings.py` | `make i18n-check`, pre-push, CI | Yes |
+| `check_translations.py` | `make i18n-check` (in `make gate`), pre-push, manual CI | Yes |
+| `check_source_strings.py` | `make i18n-check` (in `make gate`), pre-push, manual CI | Yes |
 | `generate_seeds.py --check` | `make uitest-check` | Yes |
-| `check_metadata.py` | CI, `push_metadata` lane | Yes |
-| `plural_completeness.py` | CI | Yes |
-| `untranslated_copies.py` | `make i18n-check`, CI | Yes |
-| `distinct_pairs.py` | `make i18n-check`, CI | Yes |
+| `check_metadata.py` | `push_metadata` lane, manual CI | Yes |
+| `plural_completeness.py` | manual CI only | Yes, when run |
+| `untranslated_copies.py` | `make i18n-check` (in `make gate`), manual CI | Yes |
+| `distinct_pairs.py` | `make i18n-check` (in `make gate`), manual CI | Yes |
 | `sync_catalog.py --check` | `make i18n-sync-check`, after the build in `make gate` | Yes |
-| `consistency_check.py` | CI | No, informational |
+| `consistency_check.py` | manual CI only | No, informational |
 | `check_source_voice.py` | `push_metadata` lane | No, advisory |
 | `check_content.py` | Screenshot lanes | Yes |
+
+CI is disabled (AGENTS.md §CI): it runs only on a `/ci` comment or a manual dispatch. So the
+checks marked "manual CI only" gate nothing unless someone runs them; run them by hand before a
+release that touches translations.
 
 `check_source_strings.py` is the one that catches the common mistake: a bare `Text("English")` added
 to a view, or a pair of capitalized literals in a ternary parked in a local before they reach a UI
@@ -229,5 +233,5 @@ and it is deliberately outside the app test suites and `make gate`. Findings go 
 - The accessibility labels in `ItemContentView.swift` and `ChecklistInfoHeaderView.swift` carry a
   trailing `": "` inside the localized value, which reads oddly and makes the string harder to
   translate well.
-- `DesignExplorations/` compiles into the app target, so literals there can be re-extracted into the
-  catalog by an IDE build. `check_source_strings.py` skips the directory.
+- `DesignExplorations/` is gitignored scratch, but when present it compiles into the app target, so
+  literals there can be re-extracted into the catalog by an IDE build. `check_source_strings.py` skips the directory.
