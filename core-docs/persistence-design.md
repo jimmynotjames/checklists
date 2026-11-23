@@ -366,7 +366,9 @@ still free to change.
       launch, with nothing visibly broken. Verify on the actual archive rather than assuming.
 - [ ] Two-device tests: union across devices that never synced, edits propagating both ways, and a
       pair of fresh installs collapsing to three samples rather than six, and a reinstall on an
-      account with an edited sample coming back to three with the edit intact.
+      account with an edited sample coming back to three with the edit intact — unless the edit
+      only changed text or removed items, where the fresh twin is kept by design. A reinstall on
+      an account whose samples were deleted brings all three back, also by design.
 
 ## Realm removal plan
 

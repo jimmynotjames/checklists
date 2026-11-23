@@ -135,7 +135,7 @@ enum SampleData {
    record graph in batches, so a checklist can land before all its items. Read as edited, a
    half-arrived copy would cost every pristine copy here, while the device that sent it, seeing it
    whole, elects a survivor and deletes the rest: no copy left. Nothing is decided for that sample
-   until it has fully landed — or, if the user really did delete items, ever: an untouched twin beside
+   while the copy is short — or, if the user really did delete items, ever: an untouched twin beside
    it is the cheaper mistake.
 
    **Why "edited" ignores text.** The fixture is resolved in the current language, so a copy seeded
@@ -154,11 +154,13 @@ enum SampleData {
    random ids, so the sorted item-id fingerprint differs between copies and reads the same on every
    device, and every device elects the same survivor.
 
-   **The one gap.** Devices judge from what they have synced so far. If, during a day-one race, the
-   user edits one fresh copy before the other device has seen that edit, one device deletes the
-   other copy because of the edit while the other deletes the edited copy as a non-survivor, and
-   that sample is lost with the edit. It needs two fresh installs and an edit within seconds;
-   closing it would cost a deferred second pass, which it is not worth.
+   **The gaps.** Devices judge from what they have synced so far, so a copy can look pristine here
+   while the device that holds it knows it is edited; that device deletes the other copy because of
+   the edit, this one deletes the edited copy as a non-survivor, and the sample is lost with the
+   edit. It happens two ways: the user edits one fresh copy in a day-one race before the other device
+   has seen the edit, or a copy the user added items to arrives with only its original rows so far.
+   Both need an unlucky moment; closing them would cost a deferred second pass, which it is not
+   worth.
 
    **Deleted samples come back, by decision.** A fresh install always seeds, and this only removes a
    copy when another exists, so samples the user deleted reappear — on every device — after a reinstall
@@ -194,7 +196,7 @@ enum SampleData {
   }
 
   /// True when `checklist` has items added, checked or unchecked relative to `fixture` — differences
-  /// that read the same in every language, unlike its text. A copy with fewer items never gets here.
+  /// that read the same in every language, unlike its text.
   private static func isEditedByStructure(_ checklist: Checklist, _ fixture: ChecklistFixture) -> Bool {
     let items = checklist.items
     guard items.count == fixture.items.count else { return true }

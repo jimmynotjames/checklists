@@ -169,9 +169,7 @@ struct SampleDataDedupeTests {
 
   // MARK: - What it must refuse to touch
 
-  /// A copy whose items are still arriving from iCloud looks just like one with items deleted. If it
-  /// counted as edited, this device would delete its pristine copy while the sender, seeing the copy
-  /// whole, deleted the other one as a non-survivor.
+  /// A copy whose items are still arriving from iCloud looks just like one with items deleted.
   @Test("deletes nothing for a sample while a copy has fewer items than the fixture")
   func waitsWhileACopyHasFewerItems() throws {
     let context = try TestModelContainer.makeContext()
