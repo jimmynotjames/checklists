@@ -3,8 +3,8 @@
 **Status: SwiftData with CloudKit sync** (`ProductionContainerFactory.cloudKitEnabled`), with a
 local-only store as the fallback whenever the CloudKit store will not open. **The pre-flight
 checklist below is therefore live, not hypothetical** — in particular, an App Store build talks
-only to the CloudKit **Production** environment. The schema was deployed there on 2026-11-23 (see
-§CloudKit ops record), so `SchemaV1` is frozen.
+only to the CloudKit **Production** environment. The schema is deployed there (see §CloudKit ops
+record), so `SchemaV1` is frozen.
 
 This document is canonical for the data model, the constraints it was designed against, the
 one-time legacy import, sort-key ordering, duplication, autosave, and the startup/failure UX. The sibling
@@ -75,7 +75,7 @@ within SwiftData yet. See "CloudKit rules" below for what changing either model 
   parent record permanently undeletable if a sync merge lands a child CloudKit has not told this
   device to delete yet.
 - **The production CloudKit schema is additive-only, and it is deployed.** A record type or field that
-  has reached production can never be removed or renamed — only added to. Since 2026-11-23, any model
+  has reached production can never be removed or renamed — only added to. So any model
   change is a new `VersionedSchema` (`SchemaV2`, …) plus a `MigrationStage` in
   `ChecklistsMigrationPlan.stages` plus a migration test, never an edit to `SchemaV1` in place. See
   the doc comment atop `DataModels/SchemaV1.swift`, and the "SwiftData schema migration"
@@ -344,7 +344,7 @@ environment; TestFlight and App Store builds talk to **Production**. They hold s
 sync working perfectly from Xcode proves nothing about TestFlight until the schema is promoted. The
 Development schema is created automatically the first time real records are uploaded; Production
 requires a manual **Deploy Schema Changes** click in CloudKit Console. There is no `cktool`
-equivalent — `import-schema --environment production` is accepted as a flag and rejected by the
+command for that deploy — `import-schema --environment production` is accepted as a flag and rejected by the
 server.
 
 **Promotion is one-way.** Once a record type or field reaches Production it can never be removed or
@@ -366,8 +366,7 @@ and the `___` system fields on each record type, and a `Users` record type, besi
 
 `CD_Checklist`: `CD_id`, `CD_name`, `CD_notes` (STRING), `CD_sortKey` (DOUBLE), `CD_lastUpdated`,
 `CD_lastCompleted` (TIMESTAMP). `CD_Item`: `CD_id`, `CD_name`, `CD_notes`, `CD_checklist` (STRING),
-`CD_statusRaw` (INT64), `CD_sortKey` (DOUBLE). The Development export was audited against `SchemaV1`
-in both directions before the deploy, and the Production export afterwards was byte-identical to it.
+`CD_statusRaw` (INT64), `CD_sortKey` (DOUBLE).
 
 ### Before the first TestFlight build
 

@@ -22,7 +22,7 @@ For every change, confirm each concern applies or is N/A:
 
 - [ ] **SwiftData schema migration** — if `Checklist.swift`, `Item.swift`, or `SchemaV1.swift`
       changed, a new `VersionedSchema`, a `MigrationStage` in `ChecklistsMigrationPlan`, and a
-      migration test all exist. Once the CloudKit production schema is deployed, changes are
+      migration test all exist. The CloudKit production schema is deployed, so changes are
       additive only. See `core-docs/persistence-design.md`.
 - [ ] **Analytics events** — new user-initiated state changes fire a matching
       `analytics.track(...)` call, with names in the `AnalyticsEvent`/`AnalyticsProperty` enums in

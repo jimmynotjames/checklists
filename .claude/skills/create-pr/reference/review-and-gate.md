@@ -108,7 +108,7 @@ Applies if: the diff touches `checklists/checklists/DataModels/Checklist.swift`,
 `checklists/checklists/DataModels/Item.swift`, or `checklists/checklists/DataModels/SchemaV1.swift`.
 Model change ⇒ new `VersionedSchema` + `MigrationStage` (added to `ChecklistsMigrationPlan.stages`,
 empty today because `SchemaV1` is the first schema — see its doc comment) + migration test.
-CloudKit schema is additive-only once deployed — see `core-docs/persistence-design.md`. Ship
+The CloudKit production schema is deployed, so it is additive-only — see `core-docs/persistence-design.md`. Ship
 without the triad ⇒ stop and raise it — this is not something to paper over.
 
 **Analytics events** — the Mixpanel SDK is connected, so a missing `track` call is a missing
