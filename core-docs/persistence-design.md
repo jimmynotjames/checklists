@@ -174,8 +174,11 @@ so the whole sequence is one testable, retryable unit rather than scattered init
 4. `SampleData.dedupeChecklists(in:)`, whose failure is swallowed (reason at the `try?`). Step 3
    cannot see iCloud data that has not imported yet, so every fresh install on an account that
    already has the samples seeds a second copy. Dedupe drops redundant untouched copies once the
-   import lands (it also runs on each remote-change burst), preferring any copy whose items or
-   checks were changed; copies that differ only in text, such as another language's, are kept.
+   import lands (it also runs on each remote-change burst), preferring any copy with added items or
+   changed checks. It decides nothing for a sample while a copy has fewer items than the original,
+   since that copy may still be arriving. Copies that differ only in text, such as another
+   language's, are kept. Samples the user deleted come back after a reinstall or on a new device, by
+   decision: the reasoning is on `dedupeChecklists`.
 5. Install the result as `PersistenceController.shared`.
 
 Steps 2–4 are skipped entirely under `LaunchModeContainerFactory.isRunningTests` — automated tests
@@ -363,7 +366,9 @@ still free to change.
       launch, with nothing visibly broken. Verify on the actual archive rather than assuming.
 - [ ] Two-device tests: union across devices that never synced, edits propagating both ways, and a
       pair of fresh installs collapsing to three samples rather than six, and a reinstall on an
-      account with an edited sample coming back to three with the edit intact.
+      account with an edited sample coming back to three with the edit intact — unless the edit
+      only changed text or removed items, where the fresh twin is kept by design. A reinstall on
+      an account whose samples were deleted brings all three back, also by design.
 
 ## Realm removal plan
 
