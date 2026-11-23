@@ -22,10 +22,9 @@ Connect ID; it changes nothing.
 
 Binary archives also need an Apple Distribution identity in the login keychain, an Xcode account
 signed into team `EDMB3Z5KAY`, and automatic signing. Both binary lanes archive and export with
-plain `xcodebuild` (`ReleaseBuild#archive_and_export`) rather than fastlane's `build_app`, which
-cannot read this project (#418). `-allowProvisioningUpdates` lets Xcode's signed-in account update
-profiles; the App Store Connect API key is used only by fastlane's own App Store Connect calls.
-Logs are in the output folder's `logs/archive.log` and `logs/export.log`.
+plain `xcodebuild` (`ReleaseBuild#archive_and_export` says why). `-allowProvisioningUpdates` lets
+Xcode's signed-in account update profiles; the App Store Connect API key is used only by fastlane's
+own App Store Connect calls.
 
 `archive_validation` builds exactly what `beta` builds, after the Release values
 `scripts/verify_release_secrets.sh` checks, into `tmp/archive-validation/`. It never uploads, bumps

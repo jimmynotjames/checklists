@@ -56,8 +56,8 @@ class ReleaseBuild
     raise "Release secrets check failed" unless success
   end
 
-  # Xcode's own export method name; manageAppVersionAndBuildNumber is off because the beta lane
-  # allocates CURRENT_PROJECT_VERSION itself.
+  # manageAppVersionAndBuildNumber is off because the beta lane allocates CURRENT_PROJECT_VERSION
+  # itself.
   EXPORT_OPTIONS = <<~PLIST.freeze
     <?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -78,8 +78,12 @@ class ReleaseBuild
     archive_path = File.join(output, "checklists.xcarchive")
     logs = File.join(output, "logs")
     FileUtils.mkdir_p(logs)
-    plist = File.join(output, "ExportOptions.plist")
+    # Not output/ExportOptions.plist, which the export writes over with its own copy.
+    plist = File.join(logs, "export-options-input.plist")
     File.write(plist, EXPORT_OPTIONS)
+    ipa = File.join(output, "checklists.ipa")
+    # archive_validation reuses its folder; a previous run's .ipa must not pass for this one.
+    FileUtils.rm_f(ipa)
     xcodebuild!("archive", File.join(logs, "archive.log"),
                 "clean", "archive", "-project", File.join(@root, PROJECT), "-scheme", "checklists",
                 "-configuration", "Release", "-destination", "generic/platform=iOS",
@@ -88,7 +92,6 @@ class ReleaseBuild
     xcodebuild!("export", File.join(logs, "export.log"),
                 "-exportArchive", "-archivePath", archive_path, "-exportPath", output,
                 "-exportOptionsPlist", plist, "-allowProvisioningUpdates")
-    ipa = File.join(output, "checklists.ipa")
     raise "Export succeeded but wrote no #{ipa}" unless File.file?(ipa)
     ipa
   end
@@ -97,7 +100,8 @@ class ReleaseBuild
     puts "xcodebuild #{stage}: logging to #{log}"
     return if system("xcodebuild", *args, out: log, err: [:child, :out])
 
-    errors = File.readlines(log).grep(/error:/).first(20).join
+    # Binary read: a non-UTF-8 locale must not turn a build failure into an encoding error.
+    errors = File.binread(log).lines.grep(/error:/).first(20).join
     raise "xcodebuild #{stage} failed; see #{log}\n#{errors}"
   end
 

@@ -156,6 +156,8 @@ class ReleaseBuildTest < Minitest::Test
       @write_ipa = true
     end
 
+    def verify_secrets!; end
+
     def xcodebuild!(stage, log, *args)
       @runs << [stage, log, args]
       raise "xcodebuild #{stage} failed" if stage == @fail_stage
@@ -195,6 +197,38 @@ class ReleaseBuildTest < Minitest::Test
     release.write_ipa = false
     error = assert_raises(RuntimeError) { release.archive_and_export(File.join(@root, "out")) }
     assert_match(/wrote no/, error.message)
+  end
+
+  def test_previous_ipa_does_not_pass_for_a_failed_export
+    release = XcodebuildRecorder.new(@root)
+    release.write_ipa = false
+    output = File.join(@root, "out")
+    FileUtils.mkdir_p(output)
+    File.write(File.join(output, "checklists.ipa"), "stale")
+    assert_raises(RuntimeError) { release.archive_and_export(output) }
+  end
+
+  def test_archive_only_runs_archive_and_export_by_default
+    release = XcodebuildRecorder.new(@root)
+    assert_equal File.join(@root, "tmp/archive-validation/checklists.ipa"), release.archive_only
+    assert_equal %w[archive export], release.runs.map(&:first)
+  end
+
+  def test_xcodebuild_failure_names_the_log_and_its_errors
+    bin = File.join(@root, "bin")
+    FileUtils.mkdir_p(bin)
+    fake = File.join(bin, "xcodebuild")
+    File.write(fake, "#!/bin/sh\necho 'note: building'\necho 'x.swift:1: error: boom'\nprintf '\\377\\n'\nexit 65\n")
+    File.chmod(0o755, fake)
+    log = File.join(@root, "archive.log")
+    previous = ENV["PATH"]
+    ENV["PATH"] = "#{bin}:#{previous}"
+    error = assert_raises(RuntimeError) { ReleaseBuild.new(@root).xcodebuild!("archive", log, "archive") }
+    assert_includes error.message, log
+    assert_includes error.message, "error: boom"
+    refute_includes error.message, "note: building"
+  ensure
+    ENV["PATH"] = previous
   end
 
   def test_source_change_during_archive_stops_before_upload
