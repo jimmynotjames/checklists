@@ -115,9 +115,8 @@ platform :ios do
 
   desc "Archive and export locally with existing signing assets; never upload or commit"
   lane :archive_validation do
-    ReleaseBuild.new(RELEASE_ROOT).archive_only do |options|
-      build_app(options)
-    end
+    ipa = ReleaseBuild.new(RELEASE_ROOT).archive_only
+    UI.success("Archived and exported #{ipa}")
   end
 
   desc "Archive, upload to TestFlight, then commit only the app build number"
@@ -129,7 +128,6 @@ platform :ios do
           version: version, initial_build_number: 0, platform: "ios"
         )
       },
-      archive: lambda { |options| build_app(options) },
       upload: lambda { |ipa|
         upload_to_testflight(ipa: ipa, skip_waiting_for_build_processing: true)
       }

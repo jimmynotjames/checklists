@@ -19,7 +19,7 @@ Confirm the source checkout is clean, attached, and current with `origin/main`. 
 
 1. Update every target configuration's `MARKETING_VERSION` in `checklists/checklists.xcodeproj/project.pbxproj` to the chosen value. Verify the occurrences, stage only that project file, and commit it using the repository subject/body conventions. If the chosen version is already set, skip the no-op commit. The `beta` lane requires tracked changes to be committed before it starts.
 2. Run `fastlane ios beta`, capturing the complete log under `tmp/`. The lane allocates `CURRENT_PROJECT_VERSION` for the chosen marketing version, creates a recovery JSON under `tmp/releases/`, archives, and uploads to TestFlight. It commits the build-number bump only after confirmed upload success.
-3. Verify the candidate's entitlements before it becomes a release candidate. Read them from the archived app (`tmp/releases/<timestamp>-<pid>/checklists.xcarchive/Products/Applications/checklists.app`, or `Payload/checklists.app` from the .ipa) with `codesign -d --entitlements :- <path>`. Require:
+3. Verify the candidate's entitlements before it becomes a release candidate. Unzip the exported `tmp/releases/<timestamp>-<pid>/checklists.ipa` into a fresh folder under `tmp/` and read `Payload/checklists.app` with `codesign -d --entitlements :- <path>`. Never read the `.xcarchive` copy: it is development-signed and always shows `aps-environment` = `development`. Require:
    - `application-identifier` = `EDMB3Z5KAY.com.jimmyho.checklists`
    - `com.apple.developer.icloud-container-identifiers` contains `iCloud.com.jimmyho.checklists`
    - `com.apple.developer.icloud-services` contains `CloudKit`
@@ -35,7 +35,7 @@ Confirm the source checkout is clean, attached, and current with `origin/main`. 
 Reuse requires provenance, not an assumption that the latest TestFlight build or release commit is valid. The durable release record and merged PR/commit must identify the candidate's version, build, upload result, and source commit. A local recovery JSON is useful evidence but need not survive on another clone. Verify that:
 
 - its marketing version is the user-chosen release version;
-- its entitlements were verified per step 3 when it was cut, or are verified now against the retained archive — a candidate predating that check has not been cleared;
+- its entitlements were verified per step 3 when it was cut, or are verified now against the retained `.ipa` — a candidate predating that check has not been cleared;
 - the build still exists in TestFlight/App Store Connect;
 - the recorded source commit is the intended release source; and
 - every later diff changes no app code, resource, dependency, entitlement, or build setting that would alter the shipped binary — except the recorded build-number substitution and release-record edits, which do not invalidate reuse.

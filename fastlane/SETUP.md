@@ -1,11 +1,18 @@
 # Fastlane setup
 
-This repo uses Homebrew fastlane, verified with 2.241.2. Run commands from the
+This repo uses Homebrew fastlane, verified with 2.242.0. Run commands from the
 repository root. Install on a new machine with
 `brew install fastlane`. There is no Gemfile or plugin dependency. Supply a UTF-8
 locale per command if your shell does not already have one:
 `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 fastlane lanes`. Routing: AGENTS.md §"Commit and PR
 style".
+
+If fastlane fails to start with `Could not find 'bigdecimal'` (or another gem with a native
+extension), Homebrew's `ruby` and `fastlane` bottles were built for different macOS versions, as
+after a macOS upgrade. Compare `ruby -e 'puts Gem::Platform.local'` from
+`/opt/homebrew/opt/ruby/bin` with the folder under
+`$(brew --prefix fastlane)/libexec/extensions/`. `brew upgrade ruby` usually realigns them;
+otherwise `brew reinstall --build-from-source fastlane`.
 
 ## Credentials
 
@@ -13,10 +20,15 @@ Secret inventory and reconstruction: [`core-docs/secrets-list.md`](../core-docs/
 `fastlane ios verify_auth` confirms read-only access to the Appfile's app and prints its App Store
 Connect ID; it changes nothing.
 
-Binary archives also need an Apple Distribution identity in the login keychain and automatic
-signing for team `EDMB3Z5KAY`. `archive_validation` builds with the beta lane's options (so it can
-update provisioning through the API key) plus the Release values `scripts/verify_release_secrets.sh`
-checks, but never uploads, bumps the build number, or commits.
+Binary archives also need an Apple Distribution identity in the login keychain, an Xcode account
+signed into team `EDMB3Z5KAY`, and automatic signing. Both binary lanes archive and export with
+plain `xcodebuild` (`ReleaseBuild#archive_and_export` says why). `-allowProvisioningUpdates` lets
+Xcode's signed-in account update profiles; the App Store Connect API key is used only by fastlane's
+own App Store Connect calls.
+
+`archive_validation` builds exactly what `beta` builds, after the Release values
+`scripts/verify_release_secrets.sh` checks, into `tmp/archive-validation/`. It never uploads, bumps
+the build number, or commits.
 
 ## English source and transcreated overrides
 
