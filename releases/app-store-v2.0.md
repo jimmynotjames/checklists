@@ -24,7 +24,7 @@ Screenshots: Reviewed run `20261104T153913Z-34f31b45` (source 4ca0bc8) uploaded 
 - [ ] Version/build PR reviewed and merged
 - [ ] Exact candidate installed and tested
 
-Spec sweep: 2026-11-23, no drift affecting the binary; doc fixes and the App Privacy label step in the spec-sweep PR
+Spec sweep: 2026-11-23, no drift affecting the binary; doc fixes and the App Privacy label step in #422
 Version: 2.0
 Build: —
 Binary source commit: —
