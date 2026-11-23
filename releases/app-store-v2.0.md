@@ -18,13 +18,13 @@ Screenshots: Reviewed run `20261104T153913Z-34f31b45` (source 4ca0bc8) uploaded 
 
 ## Candidate
 
-- [ ] Spec drift sweep clean or fixed
+- [x] Spec drift sweep clean or fixed
 - [ ] Release candidate uploaded to TestFlight
 - [ ] Version/build PR opened
 - [ ] Version/build PR reviewed and merged
 - [ ] Exact candidate installed and tested
 
-Spec sweep: —
+Spec sweep: 2026-11-23, no drift affecting the binary; doc fixes and the App Privacy label step in #422
 Version: 2.0
 Build: —
 Binary source commit: —
@@ -35,6 +35,7 @@ Test result/date: —
 
 ## Submission
 
+- [ ] App Privacy label in App Store Connect matches `core-docs/analytics-spec.md` §Published disclosures
 - [ ] Exact tested build attached in App Store Connect
 - [ ] Submitted manually
 - [ ] Approved and released

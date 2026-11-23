@@ -34,6 +34,7 @@ Test result/date: —
 
 ## Submission
 
+- [ ] App Privacy label in App Store Connect matches `core-docs/analytics-spec.md` §Published disclosures
 - [ ] Exact tested build attached in App Store Connect
 - [ ] Submitted manually
 - [ ] Approved and released
