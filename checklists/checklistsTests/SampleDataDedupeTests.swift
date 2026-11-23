@@ -169,6 +169,28 @@ struct SampleDataDedupeTests {
 
   // MARK: - What it must refuse to touch
 
+  /// A copy whose items are still arriving from iCloud looks just like one with items deleted. If it
+  /// counted as edited, this device would delete its pristine copy while the sender, seeing the copy
+  /// whole, deleted the other one as a non-survivor.
+  @Test("deletes nothing for a sample while a copy has fewer items than the fixture")
+  func waitsWhileACopyHasFewerItems() throws {
+    let context = try TestModelContainer.makeContext()
+    try SampleData.seed(into: context)
+    try seedSecondCopy(into: context)
+
+    let halfArrived = try #require(try context.fetchChecklistsSorted().first { $0.id == SampleData.weekendGetawayId })
+    for item in halfArrived.items.suffix(5) {
+      context.delete(item)
+    }
+    try context.saveChanges(operation: .delete)
+
+    try SampleData.dedupeChecklists(in: context)
+
+    let stored = try context.fetchChecklistsSorted()
+    #expect(stored.count(where: { $0.id == SampleData.weekendGetawayId }) == 2)
+    #expect(stored.count(where: { $0.id == SampleData.morningRoutineId }) == 1, "Other samples are still deduped.")
+  }
+
   /// A copy that differs only in text — which is also how a copy seeded in another language looks —
   /// is not proof of an edit. Both copies are kept: treating it as an edit would let two devices in
   /// different languages each delete their own copy and leave none.

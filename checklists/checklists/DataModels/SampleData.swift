@@ -126,10 +126,17 @@ enum SampleData {
    account holding two or more copies of a sample.
 
    **The rule, per sample id.** A copy is *pristine* when it is identical to the fixture — name,
-   notes, item names, item notes, checked states, order. A copy is *edited* when its item count or
-   checked states differ from the fixture. Pristine copies are deleted whenever an edited copy exists
-   (the user's own original wins over a fresh seed); otherwise all but one elected survivor are
-   deleted. Nothing else is ever deleted.
+   notes, item names, item notes, checked states, order. A copy is *edited* when it has more items
+   than the fixture or its checked states differ. Pristine copies are deleted whenever an edited copy
+   exists (the user's own original wins over a fresh seed); otherwise all but one elected survivor
+   are deleted. Nothing else is ever deleted.
+
+   **A copy with fewer items than the fixture stops the pass for that sample.** CloudKit imports a
+   record graph in batches, so a checklist can land before all its items. Read as edited, a
+   half-arrived copy would cost every pristine copy here, while the device that sent it, seeing it
+   whole, elects a survivor and deletes the rest: no copy left. Nothing is decided for that sample
+   until it has fully landed — or, if the user really did delete items, ever: an untouched twin beside
+   it is the cheaper mistake.
 
    **Why "edited" ignores text.** The fixture is resolved in the current language, so a copy seeded
    in another language never matches it. Judging edits by text would let two devices in different
@@ -152,6 +159,11 @@ enum SampleData {
    other copy because of the edit while the other deletes the edited copy as a non-survivor, and
    that sample is lost with the edit. It needs two fresh installs and an edit within seconds;
    closing it would cost a deferred second pass, which it is not worth.
+
+   **Deleted samples come back, by decision.** A fresh install always seeds, and this only removes a
+   copy when another exists, so samples the user deleted reappear — on every device — after a reinstall
+   or a new device. Avoiding it means not seeding until the account is known, and a fresh install
+   never opens empty.
    */
   @MainActor
   static func dedupeChecklists(in context: ModelContext) throws {
@@ -163,6 +175,7 @@ enum SampleData {
 
     for fixture in fixtures {
       let copies = stored.filter { $0.id == fixture.id }
+      guard !copies.contains(where: { $0.items.count < fixture.items.count }) else { continue }
       let pristine = copies.filter { matchesPristineFixture($0, fixture) }
       let anyEdited = copies.contains { isEditedByStructure($0, fixture) }
       let survivor = anyEdited ? nil : pristine.min { itemFingerprint(of: $0) < itemFingerprint(of: $1) }
@@ -180,8 +193,8 @@ enum SampleData {
     NotificationCenter.default.post(name: didRemoveDuplicates, object: nil)
   }
 
-  /// True when `checklist` has items added, removed, checked or unchecked relative to `fixture` —
-  /// differences that read the same in every language, unlike its text.
+  /// True when `checklist` has items added, checked or unchecked relative to `fixture` — differences
+  /// that read the same in every language, unlike its text. A copy with fewer items never gets here.
   private static func isEditedByStructure(_ checklist: Checklist, _ fixture: ChecklistFixture) -> Bool {
     let items = checklist.items
     guard items.count == fixture.items.count else { return true }
@@ -217,9 +230,10 @@ enum SampleData {
   /// and stay in that language.
   ///
   /// **Changing a sample's item count or which items start checked needs new checklist ids.**
-  /// `dedupeChecklists` treats a structural difference as a user edit, so two devices on builds
-  /// with different structures would each judge the other's fresh copy edited and delete their own.
-  /// Wording changes are safe: text differences are never taken as edits.
+  /// `dedupeChecklists` judges edits by structure, so devices on builds with different structures
+  /// misread each other's fresh copies: with different checked states each judges the other's copy
+  /// edited and deletes its own, leaving none. Wording changes are safe: text differences are never
+  /// taken as edits.
   static func generateFirstTimeLaunchChecklists() -> [ChecklistFixture] {
     [
       ChecklistFixture(
