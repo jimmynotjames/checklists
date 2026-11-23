@@ -56,27 +56,59 @@ class ReleaseBuild
     raise "Release secrets check failed" unless success
   end
 
-  def build_options(output)
-    {
-      project: File.join(@root, PROJECT), scheme: "checklists", configuration: "Release",
-      clean: true, output_directory: output, output_name: "checklists.ipa",
-      archive_path: File.join(output, "checklists.xcarchive"),
-      buildlog_path: File.join(output, "logs"), derived_data_path: File.join(@root, "tmp/release-derived-data"),
-      # Not Xcode's "app-store-connect": gym accepts only "app-store" and rewrites the plist's method.
-      export_method: "app-store", export_options: { signingStyle: "automatic" },
-      xcargs: "-allowProvisioningUpdates CODE_SIGN_STYLE=Automatic",
-      export_xcargs: "-allowProvisioningUpdates"
-    }
+  # Xcode's own export method name; manageAppVersionAndBuildNumber is off because the beta lane
+  # allocates CURRENT_PROJECT_VERSION itself.
+  EXPORT_OPTIONS = <<~PLIST.freeze
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    <plist version="1.0">
+    <dict>
+      <key>destination</key><string>export</string>
+      <key>manageAppVersionAndBuildNumber</key><false/>
+      <key>method</key><string>app-store-connect</string>
+      <key>signingStyle</key><string>automatic</string>
+      <key>teamID</key><string>EDMB3Z5KAY</string>
+    </dict>
+    </plist>
+  PLIST
+
+  # Plain xcodebuild instead of fastlane's build_app: gym parses the project with the xcodeproj
+  # gem, which rejects the array-valued shellScript Xcode writes (#418).
+  def archive_and_export(output)
+    archive_path = File.join(output, "checklists.xcarchive")
+    logs = File.join(output, "logs")
+    FileUtils.mkdir_p(logs)
+    plist = File.join(output, "ExportOptions.plist")
+    File.write(plist, EXPORT_OPTIONS)
+    xcodebuild!("archive", File.join(logs, "archive.log"),
+                "clean", "archive", "-project", File.join(@root, PROJECT), "-scheme", "checklists",
+                "-configuration", "Release", "-destination", "generic/platform=iOS",
+                "-archivePath", archive_path, "-derivedDataPath", File.join(@root, "tmp/release-derived-data"),
+                "-allowProvisioningUpdates", "CODE_SIGN_STYLE=Automatic")
+    xcodebuild!("export", File.join(logs, "export.log"),
+                "-exportArchive", "-archivePath", archive_path, "-exportPath", output,
+                "-exportOptionsPlist", plist, "-allowProvisioningUpdates")
+    ipa = File.join(output, "checklists.ipa")
+    raise "Export succeeded but wrote no #{ipa}" unless File.file?(ipa)
+    ipa
   end
 
-  def archive_only
+  def xcodebuild!(stage, log, *args)
+    puts "xcodebuild #{stage}: logging to #{log}"
+    return if system("xcodebuild", *args, out: log, err: [:child, :out])
+
+    errors = File.readlines(log).grep(/error:/).first(20).join
+    raise "xcodebuild #{stage} failed; see #{log}\n#{errors}"
+  end
+
+  def archive_only(archive: method(:archive_and_export))
     verify_secrets!
     output = File.join(@root, "tmp/archive-validation")
     FileUtils.mkdir_p(output)
-    yield build_options(output)
+    archive.call(output)
   end
 
-  def beta(latest:, archive:, upload:)
+  def beta(latest:, upload:, archive: method(:archive_and_export))
     branch = git("branch", "--show-current")
     raise "Run beta on a release branch, never main or detached HEAD" if branch.empty? || branch == "main"
     raise "Commit tracked changes before beta" unless git("status", "--porcelain", "--untracked-files=no").empty?
@@ -99,7 +131,7 @@ class ReleaseBuild
     persist.call("archiving")
     set_build_number(number)
     expected_project = project_text
-    ipa = archive.call(build_options(output))
+    ipa = archive.call(output)
     # Archive/export tools must not change source under the bookkeeping commit.
     verify_source!(source_sha, expected_project)
     persist.call("upload_started")

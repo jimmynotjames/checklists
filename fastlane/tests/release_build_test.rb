@@ -52,7 +52,7 @@ class ReleaseBuildTest < Minitest::Test
   def run_beta(upload: nil, archive: nil)
     @release.beta(
       latest: lambda { |version| @events << [:latest, version]; 40 },
-      archive: archive || lambda { |options| @events << [:archive, options]; "artifact.ipa" },
+      archive: archive || lambda { |output| @events << [:archive, output]; "artifact.ipa" },
       upload: upload || lambda { |ipa| @events << [:upload, ipa] }
     )
   end
@@ -138,13 +138,63 @@ class ReleaseBuildTest < Minitest::Test
     assert_equal "committed", JSON.parse(File.read(path))["status"]
   end
 
-  def test_archive_validation_uses_beta_build_options_without_git
-    expected = @release.build_options(File.join(@root, "tmp/archive-validation"))
-    @release.archive_only do |options|
-      assert_equal expected, options
-    end
+  def test_archive_validation_archives_into_its_own_folder_without_git
+    outputs = []
+    @release.archive_only(archive: ->(output) { outputs << output; "artifact.ipa" })
+    assert_equal [File.join(@root, "tmp/archive-validation")], outputs
     assert_empty @release.commands
     assert_equal @original, File.read(@path)
+  end
+
+  class XcodebuildRecorder < ReleaseBuild
+    attr_reader :runs
+    attr_accessor :fail_stage, :write_ipa
+
+    def initialize(root)
+      super
+      @runs = []
+      @write_ipa = true
+    end
+
+    def xcodebuild!(stage, log, *args)
+      @runs << [stage, log, args]
+      raise "xcodebuild #{stage} failed" if stage == @fail_stage
+      return unless stage == "export" && @write_ipa
+
+      File.write(File.join(args[args.index("-exportPath") + 1], "checklists.ipa"), "")
+    end
+  end
+
+  def test_archive_and_export_signs_automatically_and_returns_the_ipa
+    release = XcodebuildRecorder.new(@root)
+    output = File.join(@root, "out")
+    assert_equal File.join(output, "checklists.ipa"), release.archive_and_export(output)
+    assert_equal %w[archive export], release.runs.map(&:first)
+    archive = release.runs[0][2]
+    assert_equal %w[clean archive], archive.first(2)
+    assert_includes archive, "-allowProvisioningUpdates"
+    assert_includes archive, "CODE_SIGN_STYLE=Automatic"
+    assert_equal "Release", archive[archive.index("-configuration") + 1]
+    export = release.runs[1][2]
+    assert_includes export, "-allowProvisioningUpdates"
+    assert_equal archive[archive.index("-archivePath") + 1], export[export.index("-archivePath") + 1]
+    plist = File.read(export[export.index("-exportOptionsPlist") + 1])
+    assert_includes plist, "<key>method</key><string>app-store-connect</string>"
+    assert_includes plist, "<key>manageAppVersionAndBuildNumber</key><false/>"
+  end
+
+  def test_archive_failure_skips_export
+    release = XcodebuildRecorder.new(@root)
+    release.fail_stage = "archive"
+    assert_raises(RuntimeError) { release.archive_and_export(File.join(@root, "out")) }
+    assert_equal %w[archive], release.runs.map(&:first)
+  end
+
+  def test_export_without_ipa_fails
+    release = XcodebuildRecorder.new(@root)
+    release.write_ipa = false
+    error = assert_raises(RuntimeError) { release.archive_and_export(File.join(@root, "out")) }
+    assert_match(/wrote no/, error.message)
   end
 
   def test_source_change_during_archive_stops_before_upload
