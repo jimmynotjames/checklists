@@ -1,11 +1,18 @@
 # Fastlane setup
 
-This repo uses Homebrew fastlane, verified with 2.241.2. Run commands from the
+This repo uses Homebrew fastlane, verified with 2.242.0. Run commands from the
 repository root. Install on a new machine with
 `brew install fastlane`. There is no Gemfile or plugin dependency. Supply a UTF-8
 locale per command if your shell does not already have one:
 `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 fastlane lanes`. Routing: AGENTS.md §"Commit and PR
 style".
+
+If fastlane fails to start with `Could not find 'bigdecimal'` (or another gem with a native
+extension), Homebrew's `ruby` and `fastlane` bottles were built for different macOS versions, as
+after a macOS upgrade. Compare `ruby -e 'puts Gem::Platform.local'` from
+`/opt/homebrew/opt/ruby/bin` with the folder under
+`$(brew --prefix fastlane)/libexec/extensions/`. `brew upgrade ruby` usually realigns them;
+otherwise `brew reinstall --build-from-source fastlane`.
 
 ## Credentials
 
