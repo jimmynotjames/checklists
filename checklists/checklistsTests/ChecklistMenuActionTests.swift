@@ -16,7 +16,7 @@ import UIKit
 /// The controller this builds registers a `RemoteChangeObserver` on `.default`, which does not filter
 /// by store: a remote-change or dedupe post from another suite could reach a live harness controller
 /// mid-test and, in the deletion cases, dismiss the screen out from under it. What keeps other suites
-/// from running alongside is the runner's `-parallel-testing-enabled NO` (`scripts/test-unit.sh`);
+/// from running alongside is the runner's `-parallel-testing-enabled NO` (`scripts/unit-tests.sh`);
 /// `.serialized` only orders this suite's own tests.
 @Suite("Checklist overflow menu actions", .serialized)
 struct ChecklistMenuActionTests {

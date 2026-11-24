@@ -2,11 +2,17 @@
 # Rerun or narrow a run by commenting `/ci ...` on the PR (ci-command.yml dispatches this
 # workflow and this one reports back), or with `gh workflow run` (AGENTS.md §CI).
 #
-# Docs-only PRs skip the macOS jobs (build, test): the cheap `changes` job lists the PR's files
-# and outputs code=false only when every one is docs (the rules are in scripts/ci/docs_only.py).
-# Pushes to main, manual runs and any error reading the list output code=true. GitHub counts a skipped required check as passing, so such a PR stays mergeable.
+# macOS work: `build` compiles once (build-for-testing), then `unit-tests` and the `ui-tests`
+# shards (scripts/ci/ui_shards.py) run its products in parallel, one runner each. The ubuntu
+# `tests` job sums them up and is the one test check the ruleset needs. The account runs at most 5
+# macOS jobs at once across all its repos; a full run here takes 4 at a time (build, then 1 unit +
+# 3 UI), leaving one for a main-push run or the sibling repo.
+#
+# Docs-only PRs skip build and every test job: the cheap `changes` job lists the PR's files and
+# outputs code=false only when every one is docs (the rules are in scripts/ci/docs_only.py), and
+# `tests` then passes. Pushes to main, manual runs and any error reading the list output code=true.
 # Never use a workflow-level paths-ignore for this: the required checks would never report.
-# An automatic run (PR or push) runs unit then UI tests; `tests` and `test` only shape manual runs.
+# An automatic run (PR or push) runs unit and UI tests; `tests` and `test` only shape manual runs.
 name: CI
 run-name: "${{ inputs.pr && format('CI · PR #{0}', inputs.pr) || 'CI' }} · ${{ inputs.only || 'gates+build' }} · ${{ inputs.test && format('test={0} x{1}', inputs.test, inputs.iterations) || format('tests={0}', inputs.tests) }}"
 
@@ -18,12 +24,12 @@ on:
         type: string
         default: ""
       tests:
-        description: "Tests after the gates: none (compile only), unit, or ui (unit then UI)"
+        description: "Tests after the gates: none (compile only), unit, or ui (unit and UI)"
         type: choice
         options: [none, unit, ui]
         default: none
       test:
-        description: "One class or test, as make test-only takes it (<target>/<Class>[/<test>]); replaces `tests`"
+        description: "One class or test, as make focused-tests takes it (<target>/<Class>[/<test>]); replaces `tests`"
         type: string
         default: ""
       iterations:
@@ -39,11 +45,12 @@ on:
     branches: [main]
 
 # Cancel superseded runs on the same ref (a new push to a PR voids the old run). The selection is
-# in the group so `/ci lint` and `/ci unit` on one branch don't cancel each other.
+# in the group so `/ci lint` and `/ci unit` on one branch don't cancel each other. A push to main
+# gets a group of its own commit, so every merge keeps a full run that shows which commit broke it
+# (a shared group would still drop a queued main run when a newer one arrives).
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ inputs.only }}-${{ inputs.tests }}-${{ inputs.test }}-${{ inputs.iterations }}
-  # Not on main, so every merge keeps a full run that shows which commit broke it.
-  cancel-in-progress: ${{ github.event_name != 'push' }}
+  group: ci-${{ github.workflow }}-${{ github.event_name == 'push' && github.sha || github.ref }}-${{ inputs.only }}-${{ inputs.tests }}-${{ inputs.test }}-${{ inputs.iterations }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -207,69 +214,30 @@ jobs:
       - name: consistency_check (informational, non-blocking)
         run: python3 scripts/translate_audit/consistency_check.py --ignore-casing || true
 
-  # --- Tier 2: compile check (macOS) -----------------------------------------
-  # Manual runs only, and only when no tests were asked for: a run with tests compiles in `test`
-  # (its build-for-testing), and building here too would compile everything twice. Skipped on
-  # docs-only PRs. Skipped counts as passing for a required check.
+  # --- Tier 2: build once (macOS) ---------------------------------------------------
+  # Compiles the app and both test targets once (build-for-testing) and hands the products to the
+  # test jobs, which only run them, so a PR compiles once rather than once per test job. It is also
+  # the compile check: a manual run with no tests runs it alone. Skipped on docs-only PRs, and with
+  # it every test job.
   build:
     runs-on: xcode-27
     needs: [lint, secrets, check-large-files, i18n-gates, changes]
-    # Runs when selected, after whichever gates ran; a failed gate still stops it.
+    # Runs after whichever gates ran; a failed gate still stops it.
     if: >-
       !cancelled() && !contains(needs.*.result, 'failure')
       && needs.changes.outputs.code == 'true'
-      && github.event_name == 'workflow_dispatch' && inputs.tests == 'none' && inputs.test == ''
-      && (inputs.only == '' || contains(format(',{0},', inputs.only), ',build,'))
-    # The 360-minute default would let one hung simulator hold the runner for six hours.
-    timeout-minutes: 90
-    steps:
-      - uses: actions/checkout@v7
-      - name: Select Xcode 27.2
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: "27.2"
-      - name: Cache SwiftPM packages
-        uses: actions/cache@v6
-        with:
-          path: .build/DerivedData/SourcePackages
-          # Its own key: `test` fills the simulator path, and an exact hit is never saved again.
-          key: spm-${{ runner.os }}-xcode27.2-build-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
-          restore-keys: |
-            spm-${{ runner.os }}-xcode27.2-build-
-      # Mirrors scripts/build.sh.
-      - name: xcodebuild build
-        run: |
-          xcodebuild build \
-            -project checklists/checklists.xcodeproj \
-            -scheme checklists \
-            -destination 'generic/platform=iOS Simulator' \
-            -derivedDataPath .build/DerivedData \
-            ARCHS=arm64 \
-            ONLY_ACTIVE_ARCH=NO
-
-  # --- Tier 2: tests (macOS) -------------------------------------------------
-  # An automatic run (PR or push) runs unit then UI tests; a manual run runs what `tests` or
-  # `test` ask for, and none when neither does. Its build-for-testing is the compile check.
-  # Skipped on docs-only PRs. Skipped counts as passing for a required check.
-  test:
-    runs-on: xcode-27
-    needs: [lint, secrets, check-large-files, i18n-gates, changes]
-    # Tests imply the build, after whichever gates ran; a failed gate still stops it.
-    if: >-
-      !cancelled() && !contains(needs.*.result, 'failure')
-      && needs.changes.outputs.code == 'true'
-      && (github.event_name != 'workflow_dispatch' || inputs.tests != 'none' || inputs.test != '')
-    # The 360-minute default would let one hung simulator hold the runner for six hours.
-    timeout-minutes: 90
+      && (github.event_name != 'workflow_dispatch' || inputs.tests != 'none' || inputs.test != ''
+        || inputs.only == '' || contains(format(',{0},', inputs.only), ',build,'))
+    # The 360-minute default would let one hung build hold a macOS runner for six hours.
+    timeout-minutes: 30
     env:
-      TEST_MODE: ${{ inputs.test != '' && 'one' || inputs.tests || 'ui' }}
-    outputs:
-      tally: ${{ steps.one.outputs.tally }}
+      # Whether a test job will use the products, so they're worth uploading.
+      RUNS_TESTS: ${{ github.event_name != 'workflow_dispatch' || inputs.tests != 'none' || inputs.test != '' }}
     steps:
       # Before any setup, so a bad `gh workflow run` input costs no macOS minutes. The same checks
       # as ci_command.py; leading zeros are refused because bash reads them as octal.
       - name: Check the test name and iterations
-        if: env.TEST_MODE == 'one'
+        if: inputs.test != ''
         env:
           TEST: ${{ inputs.test }}
           ITERATIONS: ${{ inputs.iterations }}
@@ -283,63 +251,131 @@ jobs:
             exit 1
           fi
       - uses: actions/checkout@v7
-      - name: Select Xcode 27.2
-        uses: maxim-lobanov/setup-xcode@v1
+      - uses: ./.github/actions/ios-setup
         with:
-          xcode-version: "27.2"
+          simulator: "false"
       - name: Cache SwiftPM packages
         uses: actions/cache@v6
         with:
           path: .build/sim/DerivedData/SourcePackages
-          # Its own key: `build` fills the other path, and an exact hit is never saved again.
-          key: spm-${{ runner.os }}-xcode27.2-sim-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          key: spm-${{ runner.os }}-xcode27.2-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: |
-            spm-${{ runner.os }}-xcode27.2-sim-
-
-      # --- Tests (automatic runs: unit then UI; manual runs: inputs `tests` and `test`) ------
-      # The runner image can lag the pinned Xcode's simulator runtime, and the app's
-      # deployment target needs that runtime, so fetch it when it's missing.
-      - name: iOS simulator runtime for the selected Xcode
+            spm-${{ runner.os }}-xcode27.2-
+      # For any simulator, so the products run on whichever device a test job's runner has. On
+      # failure, each compile error becomes a PR annotation and a job-summary line.
+      - name: Build for testing
         run: |
-          sdk="$(xcrun --sdk iphonesimulator --show-sdk-version)"
-          if xcrun simctl list runtimes --json \
-            | python3 -c 'import json,sys; v=sys.argv[1]; sys.exit(0 if any(r["isAvailable"] and "iOS" in r["name"] and r["version"].startswith(v) for r in json.load(sys.stdin)["runtimes"]) else 1)' "$sdk"; then
-            echo "iOS ${sdk} simulator runtime already installed"
-          else
-            xcodebuild -downloadPlatform iOS
-          fi
-          xcrun simctl list runtimes
+          xcodebuild build-for-testing \
+            -project checklists/checklists.xcodeproj \
+            -scheme checklists \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath .build/sim/DerivedData \
+            ARCHS=arm64 \
+            ONLY_ACTIVE_ARCH=NO \
+            2>&1 | tee build-for-testing.log \
+            || { python3 scripts/ci/xcode_errors.py build-for-testing.log; exit 1; }
+      # A tarball, because an artifact upload drops the exec bits and symlinks the app needs.
+      - name: Pack the test products
+        if: env.RUNS_TESTS == 'true'
+        run: tar -czf test-products.tgz -C .build/sim/DerivedData/Build Products
+      - name: Upload the test products
+        if: env.RUNS_TESTS == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-products
+          path: test-products.tgz
+          retention-days: 1
+          compression-level: 0 # already gzipped
 
-      # Each phase is its own step so the run's step timings split build+unit from UI.
-      - name: Unit tests (make test-unit; includes build-for-testing)
-        if: env.TEST_MODE == 'unit' || env.TEST_MODE == 'ui'
-        run: make test-unit
+  # --- Tier 2: tests (macOS), from the build job's products ----------------------------
+  # An automatic run (PR or push) runs unit-tests and every ui-tests shard, in parallel; a manual
+  # run runs what `tests` or `test` ask for. Each job is serial on one simulator. The `tests` job
+  # below sums them up, and it is the one check the ruleset needs.
+  unit-tests:
+    runs-on: xcode-27
+    needs: [build]
+    if: >-
+      !cancelled() && needs.build.result == 'success' && inputs.test == ''
+      && (github.event_name != 'workflow_dispatch' || inputs.tests == 'unit' || inputs.tests == 'ui')
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/ios-setup
+      - uses: ./.github/actions/test-products
+      # Under the job's timeout: a step timeout fails the step, so the result bundles still upload,
+      # while a job timeout cancels the job and skips the upload.
+      - name: Unit tests (make unit-tests)
+        timeout-minutes: 25
+        run: make unit-tests
+      - name: Upload test result bundles
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: xcresults-unit-tests
+          path: .build/sim/results/*.xcresult
+          retention-days: 7
 
-      # The runner is this repo's alone, so no slot pool: two simulator clones, the most its memory
-      # holds (scripts/_destination.sh, take_slots).
-      - name: UI tests (make test-ui, 2 workers)
-        if: env.TEST_MODE == 'ui'
-        # Under the job's 90: a step timeout fails the step, so the result bundles still upload,
-        # while a job timeout cancels the run and skips the upload.
-        timeout-minutes: 60
+  # The shards are defined in scripts/ci/ui_shards.py; keep this list equal to its names (a test in
+  # scripts/tests/test_ui_shards.py checks). `rest` runs every class no other shard names.
+  ui-tests:
+    name: ui-tests (${{ matrix.shard }})
+    runs-on: xcode-27
+    needs: [build]
+    if: >-
+      !cancelled() && needs.build.result == 'success' && inputs.test == ''
+      && (github.event_name != 'workflow_dispatch' || inputs.tests == 'ui')
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false # one red shard still lets the others report
+      matrix:
+        shard: [accessibility, editing, rest]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/ios-setup
+      - uses: ./.github/actions/test-products
+      # Serial on this runner's one simulator, which first warms up with one small unit suite
+      # (warm_up_if_needed in scripts/_destination.sh).
+      - name: UI tests (make ui-tests UI_SHARD=${{ matrix.shard }})
+        timeout-minutes: 35
         env:
-          SIMULATOR_WORKERS_WITHOUT_POOL: "2"
-        run: make test-ui
+          UI_SHARD: ${{ matrix.shard }}
+          UI_WORKERS: "1"
+        run: make ui-tests
+      - name: Upload test result bundles
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: xcresults-ui-tests-${{ matrix.shard }}
+          path: .build/sim/results/*.xcresult
+          retention-days: 7
 
-      # One class or test, serially, N times in one job, so a flake that shows only on this runner
-      # costs one build rather than a whole suite per try. A UI class first warms the fresh
-      # simulator up with the unit tests, as make test-only does locally. A name that matches no
-      # test fails the step rather than passing with nothing run.
-      - name: One class or test (make test-only)
+  # One class or test, serially, N times in one job (a manual `test` run), so a flake that shows
+  # only on this runner costs one build rather than a whole suite per try. A UI class first warms
+  # the fresh simulator up, as make focused-tests does locally. A name that matches no test fails
+  # the step rather than passing with nothing run.
+  focused-tests:
+    runs-on: xcode-27
+    needs: [build]
+    if: >-
+      !cancelled() && needs.build.result == 'success'
+      && github.event_name == 'workflow_dispatch' && inputs.test != ''
+    timeout-minutes: 40
+    outputs:
+      tally: ${{ steps.one.outputs.tally }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/ios-setup
+      - uses: ./.github/actions/test-products
+      - name: One class or test (make focused-tests)
         id: one
-        if: env.TEST_MODE == 'one'
+        timeout-minutes: 35
         env:
           TEST: ${{ inputs.test }}
           ITERATIONS: ${{ inputs.iterations }}
         run: |
           rc=0
-          make test-only ONLY="$TEST" ITERATIONS="$ITERATIONS" || rc=$?
-          bundle=$(find .build/sim/results -maxdepth 1 -name '*-only.xcresult' 2>/dev/null | head -1)
+          make focused-tests ONLY="$TEST" ITERATIONS="$ITERATIONS" || rc=$?
+          bundle=$(find .build/sim/results -maxdepth 1 -name '*-focused.xcresult' 2>/dev/null | head -1)
           if [[ -n "$bundle" ]]; then
             tally=$(python3 scripts/ci/tally_iterations.py "$bundle" || true)
             echo "tally=${tally}" >> "$GITHUB_OUTPUT"
@@ -350,23 +386,60 @@ jobs:
             fi
           fi
           exit "$rc"
-
-      # Failures are easier to read in the bundle than in the log. A single class or test keeps its
-      # bundle when it passes too: with a flake, the passing runs are evidence as well.
+      # Kept when it passes too: with a flake, the passing runs are evidence as well.
       - name: Upload test result bundles
-        if: >-
-          failure() || (!cancelled() && env.TEST_MODE == 'one')
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
-          name: xcresults
+          name: xcresults-focused-tests
           path: .build/sim/results/*.xcresult
           retention-days: 7
+
+  # --- The required check: sums up the build and test jobs (ubuntu, seconds) -------------
+  # Passes when every job this run asked for passed, or when `changes` found a docs-only PR and
+  # the build and tests were skipped. Anything else fails, including a failed gate, `changes`, or
+  # `build` (the test jobs are then skipped, which on their own would count as passing). Shards can
+  # be added or renamed without touching the ruleset. Skipped on a manual run with no tests.
+  tests:
+    runs-on: ubuntu-latest
+    needs: [changes, build, unit-tests, ui-tests, focused-tests]
+    if: >-
+      !cancelled()
+      && (github.event_name != 'workflow_dispatch' || inputs.tests != 'none' || inputs.test != '')
+    timeout-minutes: 5
+    steps:
+      - name: Sum up the build and test jobs
+        env:
+          CODE: ${{ needs.changes.outputs.code }}
+          BUILD: ${{ needs.build.result }}
+          UNIT: ${{ needs.unit-tests.result }}
+          UI: ${{ needs.ui-tests.result }}
+          FOCUSED: ${{ needs.focused-tests.result }}
+          WANT: ${{ inputs.test != '' && 'focused' || inputs.tests || 'ui' }}
+        run: |
+          echo "changes.code=${CODE} build=${BUILD} unit-tests=${UNIT} ui-tests=${UI} focused-tests=${FOCUSED} (asked for: ${WANT})"
+          if [[ "$CODE" == false && "$BUILD" == skipped && "$UNIT" == skipped && "$UI" == skipped ]]; then
+            echo "Docs-only PR: build and tests skipped."
+            exit 0
+          fi
+          case "$WANT" in
+            ui) jobs=(BUILD UNIT UI) ;;
+            unit) jobs=(BUILD UNIT) ;;
+            focused) jobs=(BUILD FOCUSED) ;;
+            *) echo "::error::unknown test selection '${WANT}'"; exit 1 ;;
+          esac
+          for job in "${jobs[@]}"; do
+            if [[ "${!job}" != success ]]; then
+              echo "::error::Tests did not pass (build=${BUILD}, unit-tests=${UNIT}, ui-tests=${UI}, focused-tests=${FOCUSED})."
+              exit 1
+            fi
+          done
 
   # --- Report back to the PR that asked for this run (a /ci comment) --------------
   # Also runs when a started run was cancelled, so it still leaves its line on the PR (a run
   # cancelled while still queued never starts, so it posts nothing).
   report:
-    needs: [lint, secrets, check-large-files, i18n-gates, changes, build, test]
+    needs: [lint, secrets, check-large-files, i18n-gates, changes, build, unit-tests, ui-tests, focused-tests, tests]
     if: always() && inputs.pr != ''
     runs-on: ubuntu-latest
     permissions:
@@ -380,7 +453,7 @@ jobs:
           NEEDS: ${{ toJSON(needs) }}
           SELECTION: ${{ inputs.only || 'gates+build' }}
           TESTS: ${{ inputs.test && format('test=`{0}` x{1}', inputs.test, inputs.iterations) || format('tests={0}', inputs.tests) }}
-          TALLY: ${{ needs.test.outputs.tally }}
+          TALLY: ${{ needs.focused-tests.outputs.tally }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           rows=$(jq -r '
@@ -402,3 +475,4 @@ jobs:
             echo "$rows"
           } > report.md
           gh pr comment "$PR" --body-file report.md
+

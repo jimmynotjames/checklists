@@ -25,7 +25,7 @@ fi
 
 rb_rc=0
 if [[ -z "$RUBY" ]]; then
-  echo "test-scripts: WARNING: no Ruby 3+ found (brew install fastlane) — fastlane/tests SKIPPED" >&2
+  echo "script-tests: WARNING: no Ruby 3+ found (brew install fastlane) — fastlane/tests SKIPPED" >&2
 else
   "$RUBY" -e 'Dir["fastlane/tests/*_test.rb"].sort.each { |f| require File.expand_path(f) }'
   rb_rc=$?

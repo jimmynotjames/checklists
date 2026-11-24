@@ -70,7 +70,7 @@ Its sibling project, [`simple-recurring-budgets`](https://github.com/jimmynotjam
 | **UI tests**                | XCTest / XCUITest                                                                       |
 | **i18n**                    | Xcode String Catalogs (`.xcstrings`) + a custom AI translation and transcreation pipeline |
 | **Local gates**             | Lefthook · SwiftLint · SwiftFormat · gitleaks                                           |
-| **CI/CD**                   | GitHub Actions (manual dispatch)                                                        |
+| **CI/CD**                   | GitHub Actions (every PR and push)                                                   |
 | **Release automation**      | Fastlane for TestFlight, App Store metadata, and screenshots                            |
 | **Non-coding workflows**    | Bash · Python · Makefile                                                                |
 | **AI agents for coding**    | Claude Code, Codex, Xcode                                                               |
@@ -163,9 +163,10 @@ and StoreKit (rating prompt). SPM bumps are manual; Dependabot tracks GitHub Act
 - Both suites are opt-in, not part of the gate: they boot a simulator and take minutes.
 
 ```bash
-make test-unit   # unit suite
-make test-ui     # UI suite
-make test-only ONLY=checklistsUITests/<Class>   # one class or test
+make unit-tests   # unit suite
+make ui-tests     # UI suite
+make tests        # both, unit then UI
+make focused-tests ONLY=checklistsUITests/<Class>   # one class or test
 ```
 
 ---
@@ -177,7 +178,8 @@ make test-only ONLY=checklistsUITests/<Class>   # one class or test
   and compiles.
 - `make gate` runs every local check plus a build. See [AGENTS.md](AGENTS.md) §"Build and test".
 - CI ([ci.yml](.github/workflows/ci.yml)) runs lint, secret scan, large-file and i18n checks,
-  then the unit and UI tests, on every PR and push to `main`. Docs-only PRs skip the tests. The
+  then compiles once and runs the unit tests and sharded UI tests on parallel runners, on every PR
+  and push to `main`. Docs-only PRs skip the build and tests. The
   maintainer can rerun or narrow it with a `/ci` PR comment.
 - Release (Fastlane): lanes for TestFlight, App Store metadata, and screenshots, guarded by
   `scripts/verify_release_secrets.sh`. See [fastlane/SETUP.md](fastlane/SETUP.md).

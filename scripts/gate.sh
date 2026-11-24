@@ -50,7 +50,7 @@ run_step doc-check
 # The vendored simulator-slots copy must match its master, or repos would share one pool with
 # different code.
 run_step simulator-slots-check
-run_step test-scripts
+run_step script-tests
 skipped=""
 if grep -q 'fastlane/tests SKIPPED' "$LOG"; then
   skipped=" — Ruby tests SKIPPED (no Ruby 3+)"
@@ -60,4 +60,4 @@ run_step build
 # Reads the strings the build just extracted, so it can only run after it.
 run_step i18n-sync-check
 
-printf '\nGATE PASSED (tool-versions-check, format-changed, lint-changed, i18n-check, uitest-check, doc-check, simulator-slots-check, test-scripts, build, i18n-sync-check)%s. Full log: %s\n' "$skipped" "$LOG"
+printf '\nGATE PASSED (tool-versions-check, format-changed, lint-changed, i18n-check, uitest-check, doc-check, simulator-slots-check, script-tests, build, i18n-sync-check)%s. Full log: %s\n' "$skipped" "$LOG"

@@ -1,4 +1,4 @@
-"""A repeated `make test-only` run tallies to one line naming each test that failed and how often."""
+"""A repeated `make focused-tests` run tallies to one line naming each test that failed and how often."""
 
 from __future__ import annotations
 

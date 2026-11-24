@@ -4,7 +4,7 @@ import XCTest
 
 /// App Store marketing screenshot capture for fastlane `snapshot`.
 ///
-/// This class is omitted from `scripts/test-ui.sh` and also skips unless the screenshot runner
+/// This class is omitted from every UI test run (`scripts/ci/ui_shards.py`) and also skips unless the screenshot runner
 /// explicitly sets `RUN_APP_STORE_SCREENSHOTS=1`. The app receives localized fixture JSON only
 /// through its DEBUG test launch path, which always uses a disposable in-memory SwiftData store.
 final class AppStoreScreenshots: XCTestCase {

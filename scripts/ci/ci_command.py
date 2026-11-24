@@ -22,7 +22,7 @@ GATES = ("lint", "secrets", "large-files", "i18n")
 SELECTIONS = (*GATES, "build")  # ci.yml's `only` vocabulary, in job order
 TEST_LEVELS = ("none", "unit", "ui")  # each level includes the ones before it
 MAX_ITERATIONS = 10  # bounds one run: each iteration of a UI class takes minutes
-# What `make test-only` takes: a test target, a class or suite, and optionally one test.
+# What `make focused-tests` takes: a test target, a class or suite, and optionally one test.
 # Swift Testing names a test function with its parentheses.
 TEST_ID = re.compile(
     r"^(checklistsTests|checklistsUITests)/[A-Za-z_]\w*(/[A-Za-z_]\w*(\(\))?)?$", re.ASCII
@@ -46,7 +46,7 @@ USAGE = """\
 | `help` | this message |
 
 Named tests run only the test job unless gates are named too, e.g. `/ci gates unit`.
-`test` takes the name `make test-only` takes, case and all, e.g.
+`test` takes the name `make focused-tests` takes, case and all, e.g.
 `/ci test checklistsUITests/ChecklistItemsUITest x5` or
 `/ci test checklistsTests/ChecklistKeyboardOverlapTests/dockedKeyboard()`. It replaces `unit`, `ui`
 and `all`, so it can't be combined with them.

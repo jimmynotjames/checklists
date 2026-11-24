@@ -6,7 +6,7 @@
 # Also guards hook and manual runs, which skip the gate's exact check against config/lint-tools.env.
 --min-version 0.64.1
 --unknown-options error
-# Test names are IDs that make test-only, failure lists and docs refer to; renaming them to
+# Test names are IDs that make focused-tests, failure lists and docs refer to; renaming them to
 # raw identifiers is its own change.
 --test-case-name-format preserve
 --indent 2

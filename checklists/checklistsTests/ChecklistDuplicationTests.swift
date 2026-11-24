@@ -10,7 +10,7 @@ import Testing
 
 /// Covers `ModelContext.duplicate(checklist:among:)` and the naming rules behind it.
 ///
-/// The names these produce are localized, and `make test-unit` does not pin a locale, so nothing
+/// The names these produce are localized, and `make unit-tests` does not pin a locale, so nothing
 /// here asserts English text. The rules are asserted structurally instead — that a copy's name is
 /// derived from the original's, that a clash resolves to something unused — which holds in every
 /// locale and does not break the day a translation is revised.

@@ -46,7 +46,7 @@ _keep_keyboard_on_screen() {
     done
 }
 
-# Every boot starts an unwarmed session; the sentinel's meaning is in test-ui.sh's header.
+# Every boot starts an unwarmed session; the sentinel's meaning is in ui-tests.sh's header.
 _invalidate_warm_sentinel() {
     rm -f "${ROOT}/.build/sim/warmed"
 }

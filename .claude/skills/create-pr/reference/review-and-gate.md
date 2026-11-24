@@ -138,7 +138,7 @@ Check: new interactive controls have an `accessibilityLabel`; custom controls (`
 (a checkbox should expose selected/unselected); no fixed frame heights that clip text at large
 Dynamic Type — prefer `minHeight` over a fixed `height` on rows that contain text. New or changed
 colors: the foreground/background pair is in `PaletteTests`, with a high-contrast value if the
-default falls short, and `make test-ui` has run, since its audits check contrast and neither is in
+default falls short, and `make ui-tests` has run, since its audits check contrast and neither is in
 the gate.
 
 **Reduce Motion**

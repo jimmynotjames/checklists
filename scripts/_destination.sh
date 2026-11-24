@@ -56,18 +56,37 @@ slots_parallel_args() {
     fi
 }
 
-# A UI test run on this checkout's own device needs the `warmed` sentinel (test-ui.sh's header).
-# Without it, runs the already-built unit tests here first, which write it. Call after taking a
-# slot; uses the caller's COMMON_ARGS.
+# Sets TEST_ARGS, the xcodebuild arguments for `test-without-building`. Normally builds for testing
+# first. With XCTESTRUN set to a prebuilt .xctestrun (CI's `build` job made it), builds nothing and
+# runs that build's products on this checkout's device.
+prepare_test_args() {
+    if [[ -n "${XCTESTRUN:-}" ]]; then
+        TEST_ARGS=(-xctestrun "${XCTESTRUN}" -destination "${DESTINATION}" -destination-timeout 300)
+        return 0
+    fi
+    local build_args=(
+        -project checklists/checklists.xcodeproj
+        -scheme checklists
+        -destination "${DESTINATION}"
+        -destination-timeout 300
+        -derivedDataPath "${SIM_DERIVED}"
+    )
+    xcodebuild build-for-testing "${build_args[@]}"
+    TEST_ARGS=("${build_args[@]}")
+}
+
+# A UI test run on this checkout's own device needs the `warmed` sentinel (ui-tests.sh's header).
+# Without it, runs one small, already-built unit suite here first: any hosted test gives the device
+# its first app lifecycle. Call after taking a slot; uses the caller's TEST_ARGS.
 warm_up_if_needed() {
     [[ -f "${ROOT}/.build/sim/warmed" ]] && return 0
-    echo "sim: device not warmed up; running the unit tests on it first" >&2
-    xcodebuild test-without-building "${COMMON_ARGS[@]}" \
+    echo "sim: device not warmed up; running one unit suite on it first" >&2
+    xcodebuild test-without-building "${TEST_ARGS[@]}" \
         -resultBundlePath "${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-$$-warmup.xcresult" \
         -parallel-testing-enabled NO \
         -collect-test-diagnostics never \
-        -skip-testing:checklistsUITests >&2 || {
-        echo "error: the warm-up unit tests failed; run 'make test-unit' to see why." >&2
+        -only-testing:checklistsTests/PaperSizeTests >&2 || {
+        echo "error: the warm-up unit suite failed; run 'make unit-tests' to see why." >&2
         return 1
     }
     touch "${ROOT}/.build/sim/warmed"

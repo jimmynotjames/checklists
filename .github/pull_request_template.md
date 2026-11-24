@@ -29,7 +29,7 @@ For every change, confirm each concern applies or is N/A:
       `Analytics/AnalyticsNames.swift` and a row added to `core-docs/analytics-spec.md`. No PII.
 - [ ] **Accessibility** — new controls have `accessibilityLabel` and appropriate traits; nothing
       clips at large Dynamic Type. New or changed colors have their pair in `PaletteTests` and a
-      `make test-ui` run. If this change involved any accessibility work,
+      `make ui-tests` run. If this change involved any accessibility work,
       `core-docs/accessibility-spec.md` is updated too.
 - [ ] **Reduce Motion** — new or changed animations are gated on Reduce Motion
       (`@Environment(\.accessibilityReduceMotion)` / `UIAccessibility.isReduceMotionEnabled`), or
@@ -54,9 +54,9 @@ Both suites do run and pass, so run whichever the change warrants and state expl
 Test plan above how it was verified — including "not run, verified manually in the simulator"
 when that's the honest answer.
 
-- `make test-unit` — runs entirely against in-memory `ModelContainer`s; it does not touch the
+- `make unit-tests` — runs entirely against in-memory `ModelContainer`s; it does not touch the
   simulator's real store.
-- `make test-ui` — a run on one simulator warms it up with the unit tests first if needed. The tests don't tap
+- `make ui-tests` — a run on one simulator warms it up with one unit suite first if needed. The tests don't tap
   keyboard keys, so a `kAXErrorCannotComplete` failure against one is a real regression — see
   AGENTS.md §"The software keyboard".
 
