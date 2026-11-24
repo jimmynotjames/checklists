@@ -59,13 +59,16 @@ This policy applies when you **distribute** — defined as delivering a binary (
 
 ## What to replace before distributing a fork
 
+See [CONTRIBUTING.md § B — Configure secrets, ship, or fork for distribution](CONTRIBUTING.md#b--configure-secrets-ship-or-fork-for-distribution) for the full replacement checklist. Summary:
+
 1. App icon (`checklists/checklists/Assets.xcassets/AppIcon.appiconset/`)
 2. App display name (`CFBundleDisplayName` in `checklists/checklists/Info.plist`)
 3. All `fastlane/metadata/*` storefront copy
 4. Screenshot seed content (`checklists/checklistsUITests/ScreenshotSeeds/`)
 5. Bundle ID (`com.jimmyho.checklists` in `project.pbxproj`)
 6. CloudKit container (`iCloud.com.jimmyho.checklists` in `checklists.entitlements`)
-7. Support/marketing URLs (`fastlane/metadata/*/support_url.txt`)
+7. Support and privacy URLs (`fastlane/metadata/*/support_url.txt`, `privacy_url.txt`)
+8. Your own feedback address (`checklists/checklists/App/FeedbackMail.swift`) and privacy policy URL (`checklists/checklists/Screens/SettingsView.swift`)
 
 ---
 
