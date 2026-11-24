@@ -334,8 +334,8 @@ Markdown outside `scripts/` and `fastlane/`, plus `core-docs/`, `releases/` and 
 dirs, are docs; the app folder, Swift, the Makefile, scripts, fastlane and workflows are code).
 Pushes to `main` and manual runs always count as code. A skipped required check counts as passing,
 so don't replace this with a workflow-level `paths-ignore`: the required checks would never report.
-Required checks when enabled: `lint`, `secrets`, `check-large-files`, `i18n-gates`, `test`. `test`
-holds the unit and UI tests and is also the compile check; `build` is the compile-only job of
+Required checks when enabled: `lint`, `secrets`, `check-large-files`, `i18n-gates`, `changes`
+(a failed one skips `build` and `test`, which would read as passing), `test`. `test` holds the unit and UI tests and is also the compile check; `build` is the compile-only job of
 manual runs without tests.
 
 A manual run on a branch shows as checks on that commit's PR. Only Jimmy decides when to spend

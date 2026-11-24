@@ -2,8 +2,10 @@
 # Start a run by commenting `/ci ...` on the PR (ci-command.yml dispatches this workflow
 # and this one reports back), or with `gh workflow run` (AGENTS.md §CI).
 # To enable: uncomment the pull_request/push triggers AND add these jobs as required
-# status checks: lint, secrets, check-large-files, i18n-gates, test (build is the compile-only
-# job of manual runs and is skipped whenever tests run, so it is not worth requiring).
+# status checks: lint, secrets, check-large-files, i18n-gates, changes, test. `changes` is
+# required because a failed one skips build and test, and a skipped check counts as passing.
+# (build is the compile-only job of manual runs and is skipped whenever tests run, so it is not
+# worth requiring.)
 #
 # Docs-only PRs skip the macOS jobs (build, test): the cheap `changes` job lists the PR's files
 # and outputs code=false only when every one is docs (the rules are in scripts/ci/docs_only.py).
@@ -71,7 +73,10 @@ jobs:
           REPO: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
         run: |
+          # The files API stops at 3000 files, so a bigger PR could look docs-only; it counts as code.
           if [[ "$EVENT" != pull_request ]] \
+            || ! count=$(gh api "repos/${REPO}/pulls/${PR}" --jq .changed_files) \
+            || [[ ! "$count" =~ ^[0-9]+$ ]] || (( count >= 3000 )) \
             || ! files=$(gh api --paginate "repos/${REPO}/pulls/${PR}/files" \
               --jq '.[] | .filename, (.previous_filename // empty)'); then
             echo "code=true" >> "$GITHUB_OUTPUT"
@@ -362,7 +367,7 @@ jobs:
   # Also runs when a started run was cancelled, so it still leaves its line on the PR (a run
   # cancelled while still queued never starts, so it posts nothing).
   report:
-    needs: [lint, secrets, check-large-files, i18n-gates, build, test]
+    needs: [lint, secrets, check-large-files, i18n-gates, changes, build, test]
     if: always() && inputs.pr != ''
     runs-on: ubuntu-latest
     permissions:
