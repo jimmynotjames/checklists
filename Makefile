@@ -1,4 +1,4 @@
-.PHONY: system tool-versions-check format format-changed lint lint-changed i18n-check i18n-sync i18n-sync-check uitest-check doc-check build test-unit test-ui test-only test-scripts gate verify-secrets hooks-install initialize-sims sim-udid sim-show sim-run sim-status sim-shutdown sim-clean simulator-slots-check simulator-slots-sync simulator-slots-status
+.PHONY: system tool-versions-check format format-changed lint lint-changed i18n-check i18n-sync i18n-sync-check uitest-check doc-check build tests unit-tests ui-tests focused-tests script-tests gate verify-secrets hooks-install initialize-sims sim-udid sim-show sim-run sim-status sim-shutdown sim-clean simulator-slots-check simulator-slots-sync simulator-slots-status
 
 system:
 	bash scripts/system-setup.sh
@@ -62,19 +62,23 @@ doc-check:
 build:
 	bash scripts/build.sh
 
-# Opt-in: AGENTS.md §"Build and test".
-test-unit:
-	bash scripts/test-unit.sh
+# Opt-in: AGENTS.md §"Build and test". Named like CI's jobs (unit-tests, ui-tests, focused-tests).
+# Unit then UI, as an automatic CI run does.
+tests: unit-tests ui-tests
 
-test-ui:
-	bash scripts/test-ui.sh
+unit-tests:
+	bash scripts/unit-tests.sh
 
-# make test-only ONLY=<target>/<Class>[/<test>] [ITERATIONS=3]
-test-only:
-	bash scripts/test-only.sh "$(ONLY)" $(ITERATIONS)
+# make ui-tests [UI_SHARD=<name>]: one of CI's shards (scripts/ci/ui_shards.py), or all of them.
+ui-tests:
+	bash scripts/ui-tests.sh
 
-test-scripts:
-	bash scripts/test-scripts.sh
+# make focused-tests ONLY=<target>/<Class>[/<test>] [ITERATIONS=3]
+focused-tests:
+	bash scripts/focused-tests.sh "$(ONLY)" $(ITERATIONS)
+
+script-tests:
+	bash scripts/script-tests.sh
 
 # One command so the whole gate is a single allowlisted call; see scripts/gate.sh.
 gate:

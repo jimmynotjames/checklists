@@ -37,7 +37,7 @@ DENIED = {
         "xcrun simctl --set ~/sims status_bar booted override --time 9:41",
         "xcrun simctl list devices booted; xcrun simctl erase booted",
     ],
-    "rule 6": ["nohup make test-unit &"],
+    "rule 6": ["nohup make unit-tests &"],
 }
 
 ALLOWED = [

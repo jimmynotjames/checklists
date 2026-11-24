@@ -10,7 +10,7 @@ import Testing
 
 /// Covers the Checklists screen's multi-checklist actions and the move-action edge rules.
 ///
-/// Copy names are localized and `make test-unit` pins no locale, so nothing here asserts English
+/// Copy names are localized and `make unit-tests` pins no locale, so nothing here asserts English
 /// text — only that names are distinct and derived from the source.
 ///
 /// No isolation annotation — AGENTS.md §"Concurrency".

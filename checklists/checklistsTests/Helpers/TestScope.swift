@@ -27,7 +27,7 @@ enum TestScope {
   /// persistent domain afterwards.
   ///
   /// `.standard` is never touched: a test that wrote there would leak into the next test, into the
-  /// simulator's real app container, and into `make test-ui`.
+  /// simulator's real app container, and into `make ui-tests`.
   static func withIsolatedDefaults<T>(_ label: String, _ body: (UserDefaults) throws -> T) throws -> T {
     let suiteName = "\(label)-\(UUID().uuidString)"
     guard let defaults = UserDefaults(suiteName: suiteName) else {

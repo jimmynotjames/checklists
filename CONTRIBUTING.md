@@ -72,7 +72,7 @@ You don't need `config/Secrets.local.xcconfig`, `fastlane/.env`, an App Store Co
    - From Xcode: open `checklists/checklists.xcodeproj`, select an iPhone Simulator → Run (⌘R).
 5. Before opening a PR: `make gate` (format, lint, i18n, doc, and tooling checks, then a build).
 
-The unit and UI suites (`make test-unit`, `make test-ui`) are opt-in and not part of the gate. See [AGENTS.md](AGENTS.md) §"Build and test".
+The unit and UI suites (`make unit-tests`, `make ui-tests`) are opt-in and not part of the gate. See [AGENTS.md](AGENTS.md) §"Build and test".
 
 ### Simulator concurrency
 
@@ -81,7 +81,7 @@ The test scripts can draw on a shared simulator pool at `~/dev/simulator-slots`.
 To run UI tests on parallel simulator clones instead, set `SIMULATOR_WORKERS_WITHOUT_POOL`:
 
 - Unset (default) runs serially on one simulator, the lightest option.
-- `SIMULATOR_WORKERS_WITHOUT_POOL=2 make test-ui` runs up to that many clones, also capped by `UI_WORKERS` (default 2). Each booted simulator takes about 2–3 GB of RAM.
+- `SIMULATOR_WORKERS_WITHOUT_POOL=2 make ui-tests` runs up to that many clones, also capped by `UI_WORKERS` (default 2). Each booted simulator takes about 2–3 GB of RAM.
 
 Details: [AGENTS.md](AGENTS.md) §"Simulator slots".
 
@@ -94,7 +94,7 @@ Only if a build or run fails on signing or provisioning: open `checklists/checkl
 ### What works with placeholders
 
 - App launches; checklists, items, settings, and SwiftData work against the local store. iCloud may show as unavailable on Simulator, which is expected.
-- Unit and UI tests (`make test-unit`, `make test-ui`).
+- Unit and UI tests (`make unit-tests`, `make ui-tests`).
 - Analytics: console only (`ConsoleAnalyticsClient`); no Mixpanel network traffic.
 - Send Feedback and Privacy Policy still point at the maintainer's address and site. They're hardcoded, not secrets; see [§ Branding](#branding-required-if-you-distribute).
 

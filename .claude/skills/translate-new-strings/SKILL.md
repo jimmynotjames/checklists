@@ -126,7 +126,7 @@ Skip this step if `--detect` reports nothing new.
 make gate
 ```
 
-If Swift changed too, also `L=tmp/test-unit-$$.log; make test-unit > "$L" 2>&1; echo "$? $L"` (AGENTS.md §"Reading a
+If Swift changed too, also `L=tmp/unit-tests-$$.log; make unit-tests > "$L" 2>&1; echo "$? $L"` (AGENTS.md §"Reading a
 test result").
 
 ## 7. Cleanup

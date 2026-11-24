@@ -20,10 +20,10 @@ from sim_lock import format_holder, parse_holder, status  # noqa: E402
 
 class HolderRecordTests(unittest.TestCase):
     def test_round_trip(self) -> None:
-        record = format_holder(42, "2026-10-03T12:00:00-04:00", "bash scripts/test-unit.sh", "/a b/c")
+        record = format_holder(42, "2026-10-03T12:00:00-04:00", "bash scripts/unit-tests.sh", "/a b/c")
         self.assertEqual(
             parse_holder(record),
-            {"pid": "42", "started": "2026-10-03T12:00:00-04:00", "command": "bash scripts/test-unit.sh", "root": "/a b/c"},
+            {"pid": "42", "started": "2026-10-03T12:00:00-04:00", "command": "bash scripts/unit-tests.sh", "root": "/a b/c"},
         )
 
     def test_missing_file_is_free(self) -> None:

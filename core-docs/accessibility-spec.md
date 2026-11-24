@@ -18,7 +18,7 @@
 | **Touch targets (44×44)** | Implemented | `ToastView`, `CopyCheckedItemsView`, the checklist header's name and notes fields, and each item's name and notes fields enforce a 44pt minimum, and `ChecklistsView`'s last row scrolls clear of the Add button. A toast may sit over rows while it is up, by design: a tap anywhere on it dismisses it |
 | **Color-only signaling** | N/A — none | Completion state is an icon swap plus a spoken value, never tint alone |
 | **Screen-change announcements** | Partial | `LoadingView` and `ContainerFailureView` post `.screenChanged`; `ToastPresenterModifier` posts announcements; both screens' moves, deletes, duplicates and resets tell VoiceOver what changed — §Announcements and focus |
-| **Automated a11y tests** | Implemented | `AccessibilityAuditUITest` runs Xcode's accessibility audit in `make test-ui` on each screen it lists, at the default text size, with every audit type, contrast included, in light and again in dark (`AccessibilityAuditDarkUITest`). An issue fails the test unless it is in the class's `knownIssues`, each with its reason |
+| **Automated a11y tests** | Implemented | `AccessibilityAuditUITest` runs Xcode's accessibility audit in `make ui-tests` on each screen it lists, at the default text size, with every audit type, contrast included, in light and again in dark (`AccessibilityAuditDarkUITest`). An issue fails the test unless it is in the class's `knownIssues`, each with its reason |
 
 `UIAccessibility.isVoiceOverRunning` is read by `ToastPresenter`. The other flags
 (`isReduceTransparency`, `isBoldTextEnabled`, `shouldDifferentiateWithoutColor`,
@@ -194,6 +194,6 @@ Beyond the audit, real checks are manual, in the simulator:
 
 - VoiceOver: Settings → Accessibility → VoiceOver.
 - Reduce Motion / Dynamic Type: Settings → Accessibility → Motion / Display & Text Size.
-- Xcode's accessibility audit runs in `make test-ui` (`AccessibilityAuditUITest`). It reads the accessibility tree, not speech; a new screen gets its own test there.
+- Xcode's accessibility audit runs in `make ui-tests` (`AccessibilityAuditUITest`). It reads the accessibility tree, not speech; a new screen gets its own test there.
 
 State in the PR what you actually toggled.

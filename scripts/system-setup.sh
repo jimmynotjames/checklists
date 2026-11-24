@@ -43,4 +43,4 @@ printf '%s\n' "==> Installing Git hooks (lefthook)"
 lefthook install
 
 printf '\n%s\n' "Done. Next: make gate"
-printf '%s\n' "(The app's test suites are opt-in and not part of the gate: make test-unit / make test-ui.)"
+printf '%s\n' "(The app's test suites are opt-in and not part of the gate: make unit-tests / make ui-tests.)"

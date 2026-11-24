@@ -8,6 +8,7 @@
 # keeps Swift Testing, which parallelizes within the process by default, running the
 # suite serially.
 #
+# XCTESTRUN=<path> runs a prebuilt build instead of building (prepare_test_args in _destination.sh).
 # DESTINATION, SIM_DERIVED, and SIM_RESULTS_DIR are set by _destination.sh.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -16,20 +17,13 @@ cd "$ROOT"
 source "${ROOT}/scripts/_destination.sh"
 
 RESULT_BUNDLE="${SIM_RESULTS_DIR}/$(date +%Y%m%d_%H%M%S)-$$-unit.xcresult"
-COMMON_ARGS=(
-    -project checklists/checklists.xcodeproj
-    -scheme checklists
-    -destination "${DESTINATION}"
-    -destination-timeout 300
-    -derivedDataPath "${SIM_DERIVED}"
-)
 
-xcodebuild build-for-testing "${COMMON_ARGS[@]}"
-take_slots 1 test-unit
+prepare_test_args
+take_slots 1 unit-tests
 
 # `|| RC=$?` so `set -e` doesn't skip the failure listing below.
 RC=0
-xcodebuild test-without-building "${COMMON_ARGS[@]}" \
+xcodebuild test-without-building "${TEST_ARGS[@]}" \
     -resultBundlePath "${RESULT_BUNDLE}" \
     -parallel-testing-enabled NO \
     -collect-test-diagnostics never \
@@ -37,7 +31,7 @@ xcodebuild test-without-building "${COMMON_ARGS[@]}" \
 
 python3 "${ROOT}/scripts/list_test_failures.py" "${RESULT_BUNDLE}" || true
 
-# The warm sentinel: test-ui.sh's header.
+# The warm sentinel: ui-tests.sh's header.
 if [[ "${RC}" -eq 0 ]]; then
     touch "${ROOT}/.build/sim/warmed"
 fi

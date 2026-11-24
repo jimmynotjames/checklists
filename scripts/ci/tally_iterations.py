@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Print one markdown line tallying a `make test-only` run's results across its iterations.
+"""Print one markdown line tallying a `make focused-tests` run's results across its iterations.
 
 With `-test-iterations N` each Test Case node in the bundle has one Repetition node per run, nested
 deeper for a parameterized test; without it the Test Case's own result is its one run.

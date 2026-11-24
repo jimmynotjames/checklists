@@ -63,15 +63,17 @@ repo is `checklists` (`jimmynotjames/checklists`). Introduce both sibling names 
 ## Build and test
 
 ```bash
-make gate         # tool-versions-check -> format-changed -> lint-changed -> i18n-check -> uitest-check -> doc-check -> simulator-slots-check -> test-scripts -> build -> i18n-sync-check. Logs to tmp/gate.log.
+make gate         # tool-versions-check -> format-changed -> lint-changed -> i18n-check -> uitest-check -> doc-check -> simulator-slots-check -> script-tests -> build -> i18n-sync-check. Logs to tmp/gate.log.
 make build        # compile only (generic destination; never boots a simulator)
 make i18n-check   # catalog fully translated, in Xcode's byte format + no unkeyed user-facing strings, no paired strings translated identically, no English left in a translated slot
 make i18n-sync    # after `make build`: copy Swift comments/keys into the catalog, as a build in Xcode does
 make doc-check    # doc pointers, headings, and named symbols resolve; no history on added lines
-make test-scripts # scripts/tests (Python) + fastlane/tests (Ruby 3+; skipped with a warning if absent)
-make test-unit    # opt-in, not in the gate
-make test-ui      # opt-in; a one-slot run warms the device with the unit tests first if needed
-make test-only ONLY=<target>/<Class>[/<test>] [ITERATIONS=3]  # one class or test, serially
+make script-tests # scripts/tests (Python) + fastlane/tests (Ruby 3+; skipped with a warning if absent)
+make tests        # opt-in: unit-tests then ui-tests
+make unit-tests   # opt-in, not in the gate
+make ui-tests     # opt-in; a one-slot run warms the device with one unit suite first if needed
+make ui-tests UI_SHARD=<name>  # one of CI's UI shards (scripts/ci/ui_shards.py)
+make focused-tests ONLY=<target>/<Class>[/<test>] [ITERATIONS=3]  # one class or test, serially
 make simulator-slots-status  # the machine-wide simulator pool: holders, booted devices, recent runs
 make sim-udid     # this checkout's simulator UDID (boots it if needed); `make -s` for stdout alone
 make sim-run      # build, install, and launch the app on this checkout's simulator
@@ -80,12 +82,12 @@ make system       # once per clone: toolchain + git hooks
 ```
 
 The app's unit and UI suites are opt-in and in no gate or hook: they boot this checkout's simulator
-and take minutes, while the gate never boots one. The tooling tests (`test-scripts`) are in the gate.
+and take minutes, while the gate never boots one. The tooling tests (`script-tests`) are in the gate.
 Give any suite run a timeout of at least 30 minutes.
 
-`make test-ui` runs every `checklistsUITests` class except the screenshot captures that
-`scripts/test-ui.sh` skips; add a new capture class to that skip list. Before a full UI run, run a
-new or changed class alone with `make test-only` (§Reading a test result).
+`make ui-tests` runs every `checklistsUITests` class except the screenshot captures that
+`scripts/ci/ui_shards.py` skips (`ALWAYS_SKIPPED`); add a new capture class to that list. Before a full UI run, run a
+new or changed class alone with `make focused-tests` (§Reading a test result).
 
 Don't add `-configuration Release` to the test scripts — only Debug sets `ONLY_ACTIVE_ARCH = YES`,
 so Release would build both slices.
@@ -108,7 +110,7 @@ a `result-bundle:` line naming its own bundle; never pick the newest one in `.bu
 which may be another agent's:
 
 ```bash
-L=tmp/test-unit-$$.log; make test-unit > "$L" 2>&1; echo "$? $L"
+L=tmp/unit-tests-$$.log; make unit-tests > "$L" 2>&1; echo "$? $L"
 R=$(grep -m1 '^result-bundle: ' "$L" | cut -c16-)
 xcrun xcresulttool get test-results summary --path "$R"   # swap summary -> tests for failure detail
 ```
@@ -117,7 +119,7 @@ Don't read pass/fail from `tmp/gate.log` or a stale console tail.
 
 Both test scripts print one `TEST-FAILED: <test> <file:line> <text>` line per failure
 (`scripts/list_test_failures.py`). A test that fails in a full run but passes an isolated rerun
-(`make test-only ONLY=<target>/<Class>/<test> ITERATIONS=3`, which takes a simulator slot) is flaky: append a row to `checklists/checklistsUITests/FLAKY_TESTS.md`
+(`make focused-tests ONLY=<target>/<Class>/<test> ITERATIONS=3`, which takes a simulator slot) is flaky: append a row to `checklists/checklistsUITests/FLAKY_TESTS.md`
 with `file:line` from those lines, never a guess, name the flake in your report, and don't fix it in
 passing.
 
@@ -175,7 +177,7 @@ These govern every commit, skill-driven or not:
 ### What gates a merge
 
 `main` requires a PR and, through its ruleset, the CI checks listed in §CI, with zero required
-approvals. `/merge-pr` also waits on those checks (and on `test`, while it is off the ruleset) and runs `make gate` on the branch, and refuses to
+approvals. `/merge-pr` also waits on those checks (and on `tests`, while it is off the ruleset) and runs `make gate` on the branch, and refuses to
 merge if either fails.
 
 ## Concurrency
@@ -270,7 +272,7 @@ window's run destination and Xcode's own DerivedData, outside the lock. Call `Xc
 with this checkout's `.xcodeproj` absolute path first, and pass the identifier it returns as every
 call's `workspaceIdentifier`; the server rejects a path there, and the identifier lasts only for
 that MCP session. Use it for build diagnostics, previews, snippets, and docs; run tests with `make
-test-unit` / `make test-ui`, not `RunAllTests` / `RunSomeTests`. Before `RunProject` or a
+unit-tests` / `make ui-tests`, not `RunAllTests` / `RunSomeTests`. Before `RunProject` or a
 device-interaction session, point it at this checkout's device: `XcodeSwitchRunDestination` to the
 `iPhone 17 [<hash>]` entry, or `deviceIdentifier` set to the UDID. After
 `DeviceInteractionInstallAndRun`, pass `activationBundleId: com.jimmyho.checklists` to the first
@@ -294,14 +296,14 @@ share. The pool's state, including its size (the `max` file), is in
 clone it is off: don't look for or create that directory or the state directory. Test scripts
 take no slots and pass no parallel-testing flags, so they run serially on the checkout's own
 device, the scheme's setting. `SIMULATOR_WORKERS_WITHOUT_POOL=N` lets a run there use up to N
-clones instead, for a machine that runs only this repo's tests (CI sets it). The gate's sync check
+clones instead, for a machine that runs only this repo's tests. The gate's sync check
 is skipped, and the rest of this section doesn't apply.
 
 - **Changing the tool:** never edit the copy. Change the master, then run `make
   simulator-slots-sync`. The gate fails while the two differ.
 - **Slots per command:**
-  - `test-unit` and `test-only`: 1.
-  - `test-ui`: up to `UI_WORKERS`.
+  - `unit-tests` and `focused-tests`: 1.
+  - `ui-tests`: up to `UI_WORKERS`.
   - The size check's `run.sh`: up to `WORKERS`.
   - The screenshot lane: 1, held for the whole capture, its builds included: fastlane's snapshot
     builds and tests in one step.
@@ -329,21 +331,28 @@ is skipped, and the rest of this section doesn't apply.
 `.github/workflows/ci.yml` runs on every PR and every push to `main` (the repo is public, so
 standard runners, macOS included, are free).
 
-A docs-only PR skips the macOS jobs: a `changes` job (ubuntu) lists the PR's files
-and `build` and `test` run only when one is code (`scripts/ci/docs_only.py` holds the rules:
+The macOS work compiles once and tests in parallel. `build` runs `xcodebuild build-for-testing`
+and uploads the products, and it is the compile check. Then `unit-tests` and the `ui-tests`
+shards run those products, each serially on one simulator on its own runner. The shards are defined
+in `scripts/ci/ui_shards.py`. Its last shard, `rest`, runs every class no other shard names, so
+a new UI class needs no CI change; move classes between shards when one runs well over the others.
+The ubuntu `tests` job sums them up: it passes when every job the run asked for passed, or when
+the PR was docs-only, and fails otherwise, including when a gate, `changes` or `build` failed. The
+account runs at most 5 macOS jobs at once across all its repos, and a full run here holds 4.
+
+A docs-only PR skips `build` and the test jobs: a `changes` job (ubuntu) lists the PR's files
+and they run only when one is code (`scripts/ci/docs_only.py` holds the rules:
 Markdown outside `scripts/` and `fastlane/`, plus `core-docs/`, `releases/` and the agent-config
 dirs, are docs; the app folder, Swift, the Makefile, scripts, fastlane and workflows are code).
 Pushes to `main` and manual runs always count as code. A skipped required check counts as passing,
 so don't replace this with a workflow-level `paths-ignore`: the required checks would never report.
-Required checks in the `main` ruleset: `lint`, `secrets`, `check-large-files`, `i18n-gates`, `changes`
-(a failed one skips `build` and `test`, which would read as passing). `test` belongs there too but is
-temporarily off while the UI tests hang on GitHub's runner (#428): until it's back, a red `test`
-doesn't block a merge, so check it before merging. `test` holds the unit and UI tests and is also
-the compile check; `build` is the compile-only job of manual runs without tests.
+Required checks in the `main` ruleset: `lint`, `secrets`, `check-large-files`, `i18n-gates`.
+`tests` belongs there too but is temporarily off while CI's UI tests stabilize (#428): until it's
+back, a red `tests` doesn't block a merge, so check it before merging.
 
 A manual run on a branch shows as checks on that commit's PR, under the same names as the
 automatic run, and the ruleset reads the newest check of each name. So a narrowed run can turn a red
-PR green: a passing single-test run replaces the failed `test`, and a job a narrowed run leaves out
+PR green: a passing single-test run replaces the failed `tests`, and a job a narrowed run leaves out
 reports as skipped, which counts as passing. Use one to investigate, such as repeating one flaky
 test, then rerun the automatic run (`gh run rerun <id>`) before merging. Only Jimmy starts one, preferably by commenting on the PR so the
 request and its result stay there (`.github/workflows/ci-command.yml`; repo owner's comments only):
@@ -352,7 +361,7 @@ request and its result stay there (`.github/workflows/ci-command.yml`; repo owne
 - Words combine: `lint` `secrets` `large-files` `i18n` `gates` `build` `unit` `ui`, e.g.
   `/ci lint i18n` or `/ci gates unit`. `/ci help` replies with the full table.
 - `/ci test <target>/<Class>[/<test>] [xN]`: build, then only that class or test, N times in one
-  job, as `make test-only` runs it locally (a UI class warms up with the unit tests first). For a
+  job, as `make focused-tests` runs it locally (a UI class warms up with one unit suite first). For a
   test that fails only on CI: the result comment tallies passes and failures per test. E.g.
   `/ci test checklistsUITests/ChecklistItemsUITest x5`.
 

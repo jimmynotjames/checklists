@@ -1,0 +1,34 @@
+# Shared setup for ci.yml's macOS jobs: the pinned Xcode, and (for jobs that run tests) the iOS
+# simulator runtime that Xcode needs. The caller checks the repo out first.
+name: iOS setup
+description: Select the pinned Xcode and, for test jobs, make sure its iOS simulator runtime is installed.
+
+inputs:
+  simulator:
+    description: "'true' for a job that runs tests on a simulator; 'false' for the build job"
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - name: Select Xcode 27.2
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: "27.2"
+
+    # The runner image can lag the pinned Xcode's simulator runtime, and the app's deployment
+    # target needs that runtime, so fetch it when it's missing. The test scripts' simulator sandbox
+    # (scripts/_sim_sandbox.sh) then creates and boots this checkout's device on it.
+    - name: iOS simulator runtime for the selected Xcode
+      if: inputs.simulator == 'true'
+      shell: bash
+      run: |
+        sdk="$(xcrun --sdk iphonesimulator --show-sdk-version)"
+        if xcrun simctl list runtimes --json \
+          | python3 -c 'import json,sys; v=sys.argv[1]; sys.exit(0 if any(r["isAvailable"] and "iOS" in r["name"] and r["version"].startswith(v) for r in json.load(sys.stdin)["runtimes"]) else 1)' "$sdk"; then
+          echo "iOS ${sdk} simulator runtime already installed"
+        else
+          xcodebuild -downloadPlatform iOS
+        fi
+        xcrun simctl list runtimes

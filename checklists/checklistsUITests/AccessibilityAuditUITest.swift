@@ -5,7 +5,7 @@
 
 import XCTest
 
-/// Xcode's accessibility audit on every screen, one test each, so a regression fails `make test-ui`.
+/// Xcode's accessibility audit on every screen, one test each, so a regression fails `make ui-tests`.
 ///
 /// Every audit type runs, contrast included, with Increase Contrast off (accessibility-spec.md
 /// §Increase Contrast). Anything the audit raises fails the test unless it is in `knownIssues`.
