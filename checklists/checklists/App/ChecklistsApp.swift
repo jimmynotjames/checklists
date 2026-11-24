@@ -30,6 +30,9 @@ struct ChecklistsApp: App {
   private let analytics: any AnalyticsClient
 
   init() {
+    #if DEBUG
+      TestAnimationsOverride.applyToUIKit()
+    #endif
     let settings = AnalyticsSettings()
     let base = Self.makeAnalyticsClient(settings: settings)
     // Every call site reaches the base client through this gate, so an opted-out install never
@@ -91,6 +94,7 @@ struct ChecklistsApp: App {
       }
       #if DEBUG
       .modifier(TestAppearanceOverride())
+      .modifier(TestAnimationsOverride.Modifier())
       #endif
       .environment(\.analytics, analytics)
       .environment(analyticsSettings)

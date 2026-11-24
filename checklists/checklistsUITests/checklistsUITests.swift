@@ -15,7 +15,7 @@ class checklistsUITests: XCTestCase {
 
     // UI tests must launch the application that they test. Doing this in setup will make sure it happens for each test method.
     app = XCUIApplication()
-    app.launchArguments = ["-UITests1"]
+    app.launchArguments = UITestLaunch.arguments
     app.launch()
     XCTAssertTrue(app.collectionViews.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
   }
