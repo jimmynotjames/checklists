@@ -1,10 +1,6 @@
-# CI — runs on every PR and every push to main (public repo, so standard runners are free).
+# CI — runs on every PR and every push to main. Required checks: AGENTS.md §CI.
 # Rerun or narrow a run by commenting `/ci ...` on the PR (ci-command.yml dispatches this
 # workflow and this one reports back), or with `gh workflow run` (AGENTS.md §CI).
-# Required status checks on main (set in the repo's branch settings): lint, secrets,
-# check-large-files, i18n-gates, changes, test. `changes` is required because a failed one
-# skips build and test, and a skipped check counts as passing. (build is the compile-only job
-# of manual runs and is skipped whenever tests run, so it is not worth requiring.)
 #
 # Docs-only PRs skip the macOS jobs (build, test): the cheap `changes` job lists the PR's files
 # and outputs code=false only when every one is docs (the rules are in scripts/ci/docs_only.py).
@@ -46,7 +42,8 @@ on:
 # in the group so `/ci lint` and `/ci unit` on one branch don't cancel each other.
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}-${{ inputs.only }}-${{ inputs.tests }}-${{ inputs.test }}-${{ inputs.iterations }}
-  cancel-in-progress: true
+  # Not on main, so every merge keeps a full run that shows which commit broke it.
+  cancel-in-progress: ${{ github.event_name != 'push' }}
 
 permissions:
   contents: read
@@ -223,7 +220,7 @@ jobs:
       && needs.changes.outputs.code == 'true'
       && github.event_name == 'workflow_dispatch' && inputs.tests == 'none' && inputs.test == ''
       && (inputs.only == '' || contains(format(',{0},', inputs.only), ',build,'))
-    # The 360-minute default would let one hung simulator burn the month's allowance.
+    # The 360-minute default would let one hung simulator hold the runner for six hours.
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v7
@@ -262,7 +259,7 @@ jobs:
       !cancelled() && !contains(needs.*.result, 'failure')
       && needs.changes.outputs.code == 'true'
       && (github.event_name != 'workflow_dispatch' || inputs.tests != 'none' || inputs.test != '')
-    # The 360-minute default would let one hung simulator burn the month's allowance.
+    # The 360-minute default would let one hung simulator hold the runner for six hours.
     timeout-minutes: 90
     env:
       TEST_MODE: ${{ inputs.test != '' && 'one' || inputs.tests || 'ui' }}

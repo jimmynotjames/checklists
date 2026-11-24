@@ -201,8 +201,7 @@ the transcreation fan-out, then `generate_seeds.py`.
 | `check_source_voice.py` | `push_metadata` lane | No, advisory |
 | `check_content.py` | Screenshot lanes | Yes |
 
-CI (AGENTS.md §CI) runs the `i18n-gates` job on every PR and push to `main`, so
-`plural_completeness.py` blocks a merge there. `consistency_check.py` only reports, so read its
+CI (AGENTS.md §CI) runs `i18n-gates`, so `plural_completeness.py` blocks a merge. `consistency_check.py` only reports, so read its
 output, or run `audit-translations`, before a release that touches translations.
 
 `check_source_strings.py` is the one that catches the common mistake: a bare `Text("English")` added

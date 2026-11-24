@@ -174,8 +174,9 @@ These govern every commit, skill-driven or not:
 
 ### What gates a merge
 
-`main` requires a PR and the CI checks listed in §CI, with zero required approvals. `/merge-pr` also
-runs `make gate` on the branch and refuses to merge on failure.
+`main` requires a PR and, through its ruleset, the CI checks listed in §CI, with zero required
+approvals. `/merge-pr` also waits on those checks and runs `make gate` on the branch, and refuses to
+merge if either fails.
 
 ## Concurrency
 
@@ -334,12 +335,15 @@ Markdown outside `scripts/` and `fastlane/`, plus `core-docs/`, `releases/` and 
 dirs, are docs; the app folder, Swift, the Makefile, scripts, fastlane and workflows are code).
 Pushes to `main` and manual runs always count as code. A skipped required check counts as passing,
 so don't replace this with a workflow-level `paths-ignore`: the required checks would never report.
-Required checks on `main`: `lint`, `secrets`, `check-large-files`, `i18n-gates`, `changes`
+Required checks in the `main` ruleset: `lint`, `secrets`, `check-large-files`, `i18n-gates`, `changes`
 (a failed one skips `build` and `test`, which would read as passing), `test`. `test` holds the unit and UI tests and is also the compile check; `build` is the compile-only job of
 manual runs without tests.
 
-A manual run on a branch shows as checks on that commit's PR. Use one to rerun or narrow CI, such
-as repeating one flaky test; only Jimmy starts one, preferably by commenting on the PR so the
+A manual run on a branch shows as checks on that commit's PR, under the same names as the
+automatic run, and the ruleset reads the newest check of each name. So a narrowed run can turn a red
+PR green: a passing single-test run replaces the failed `test`, and a job a narrowed run leaves out
+reports as skipped, which counts as passing. Use one to investigate, such as repeating one flaky
+test, then rerun the automatic run (`gh run rerun <id>`) before merging. Only Jimmy starts one, preferably by commenting on the PR so the
 request and its result stay there (`.github/workflows/ci-command.yml`; repo owner's comments only):
 
 - `/ci`: the four gates + build. `/ci all`: those plus unit and UI tests.
