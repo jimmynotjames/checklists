@@ -254,6 +254,12 @@ jobs:
       - uses: ./.github/actions/ios-setup
         with:
           simulator: "false"
+      # Diagnostic for #430, in each macOS job: the probe steps can neither fail nor stall the job.
+      - uses: ./.github/actions/host-probe
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          stage: start
       - name: Cache SwiftPM packages
         uses: actions/cache@v6
         with:
@@ -265,6 +271,8 @@ jobs:
       # failure, each compile error becomes a PR annotation and a job-summary line.
       - name: Build for testing
         run: |
+          bash scripts/ci/host_probe.sh sample 30 & probe=$!
+          trap 'kill "$probe" 2>/dev/null' EXIT
           xcodebuild build-for-testing \
             -project checklists/checklists.xcodeproj \
             -scheme checklists \
@@ -286,6 +294,13 @@ jobs:
           path: test-products.tgz
           retention-days: 1
           compression-level: 0 # already gzipped
+      - uses: ./.github/actions/host-probe
+        if: always()
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          stage: finish
+          artifact: host-probe-build
 
   # --- Tier 2: tests (macOS), from the build job's products ----------------------------
   # An automatic run (PR or push) runs unit-tests and every ui-tests shard, in parallel; a manual
@@ -301,12 +316,20 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/ios-setup
+      - uses: ./.github/actions/host-probe
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          stage: start
       - uses: ./.github/actions/test-products
       # Under the job's timeout: a step timeout fails the step, so the result bundles still upload,
       # while a job timeout cancels the job and skips the upload.
       - name: Unit tests (make unit-tests)
         timeout-minutes: 25
-        run: make unit-tests
+        run: |
+          bash scripts/ci/host_probe.sh sample 30 & probe=$!
+          trap 'kill "$probe" 2>/dev/null' EXIT
+          make unit-tests
       - name: Upload test result bundles
         if: failure()
         uses: actions/upload-artifact@v7
@@ -314,6 +337,13 @@ jobs:
           name: xcresults-unit-tests
           path: .build/sim/results/*.xcresult
           retention-days: 7
+      - uses: ./.github/actions/host-probe
+        if: always()
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          stage: finish
+          artifact: host-probe-unit-tests
 
   # The shards are defined in scripts/ci/ui_shards.py; keep this list equal to its names (a test in
   # scripts/tests/test_ui_shards.py checks). `rest` runs every class no other shard names.
@@ -332,6 +362,11 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/ios-setup
+      - uses: ./.github/actions/host-probe
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          stage: start
       - uses: ./.github/actions/test-products
       # Serial on this runner's one simulator, which first warms up with one small unit suite
       # (warm_up_if_needed in scripts/_destination.sh).
@@ -340,7 +375,10 @@ jobs:
         env:
           UI_SHARD: ${{ matrix.shard }}
           UI_WORKERS: "1"
-        run: make ui-tests
+        run: |
+          bash scripts/ci/host_probe.sh sample 30 & probe=$!
+          trap 'kill "$probe" 2>/dev/null' EXIT
+          make ui-tests
       - name: Upload test result bundles
         if: failure()
         uses: actions/upload-artifact@v7
@@ -348,6 +386,13 @@ jobs:
           name: xcresults-ui-tests-${{ matrix.shard }}
           path: .build/sim/results/*.xcresult
           retention-days: 7
+      - uses: ./.github/actions/host-probe
+        if: always()
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          stage: finish
+          artifact: host-probe-ui-tests-${{ matrix.shard }}
 
   # One class or test, serially, N times in one job (a manual `test` run), so a flake that shows
   # only on this runner costs one build rather than a whole suite per try. A UI class first warms

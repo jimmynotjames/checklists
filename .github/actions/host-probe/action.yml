@@ -1,0 +1,38 @@
+# Diagnostic for #430: snapshots of the runner's hardware and load (scripts/ci/host_probe.sh).
+# `start` takes the idle snapshot before the job loads the host; `finish` takes the final one,
+# prints the summary and uploads it. The job's main step runs the sampler itself, so its samples
+# reach the live log even when the VM wedges and `finish` never runs.
+name: Host probe
+description: Snapshot the runner's hardware and load, before (start) or after (finish) the job's work.
+
+inputs:
+  stage:
+    description: "'start' or 'finish'"
+    required: true
+  artifact:
+    description: "Artifact name for the finish stage's upload"
+    required: false
+    default: host-probe
+
+runs:
+  using: composite
+  steps:
+    - name: Idle snapshot
+      if: inputs.stage == 'start'
+      shell: bash
+      run: bash scripts/ci/host_probe.sh snapshot 1-idle
+
+    - name: Final snapshot and summary
+      if: inputs.stage == 'finish'
+      shell: bash
+      run: |
+        bash scripts/ci/host_probe.sh snapshot 2-after
+        bash scripts/ci/host_probe.sh summary
+
+    - name: Upload the probe
+      if: inputs.stage == 'finish'
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ inputs.artifact }}
+        path: .build/host-probe/
+        retention-days: 7
