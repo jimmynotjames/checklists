@@ -31,10 +31,9 @@ Its sibling project, [`simple-recurring-budgets`](https://github.com/jimmynotjam
 
 ## Status
 
-- **On the App Store:** version 1.1 (the original UIKit + Realm app).
-- **In release:** version 2.0, the code in this repo. Release records live in [`releases/`](releases/).
-- The SwiftData schema is `SchemaV1`, deployed to CloudKit Production, so model changes are
-  additive only. See [core-docs/persistence-design.md](core-docs/persistence-design.md).
+- This repo is reChecklist 2.0 onward: a rebuild of the original 1.x UIKit + Realm app on the
+  App Store, which imports 1.x data on first launch.
+- Per-release App Store records live in [`releases/`](releases/).
 
 ---
 
@@ -93,6 +92,7 @@ checklists/
 │   ├── PDFExport/           # PDF rendering and sharing
 │   ├── Toasts/              # Toast presentation
 │   ├── RatingPrompt/        # App Store rating-prompt eligibility
+│   ├── Utils/               # Preview support and layout helpers
 │   └── Logging/             # OSLog category loggers
 ├── checklistsTests/         # Swift Testing unit suite
 └── checklistsUITests/       # XCUITest suite, screenshot captures and seeds
@@ -148,7 +148,8 @@ and StoreKit (rating prompt). SPM bumps are manual; Dependabot tracks GitHub Act
   and locale-aware formatting. See [core-docs/localization-spec.md](core-docs/localization-spec.md).
 - AI pipelines under `scripts/translate_catalog/`, `scripts/translate_metadata/`, and
   `scripts/translate_audit/` translate UI strings, transcreate the App Store listing, and audit
-  both, with gates (`make i18n-check`) on pre-push and in CI.
+  both. `make i18n-check` gates them in `make gate` and CI; pre-push runs the translation and
+  source-string checks.
 - Accessibility is a per-change requirement: Dynamic Type, VoiceOver, Dark Mode, and Reduce Motion.
   See [core-docs/accessibility-spec.md](core-docs/accessibility-spec.md).
 

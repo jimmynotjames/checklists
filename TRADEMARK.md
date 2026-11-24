@@ -65,10 +65,10 @@ See [CONTRIBUTING.md § B — Configure secrets, ship, or fork for distribution]
 2. App display name (`CFBundleDisplayName` in `checklists/checklists/Info.plist`)
 3. All `fastlane/metadata/*` storefront copy
 4. Screenshot seed content (`checklists/checklistsUITests/ScreenshotSeeds/`)
-5. Bundle ID (`com.jimmyho.checklists` in `project.pbxproj`)
+5. Bundle ID (`com.jimmyho.checklists`) and team ID in `project.pbxproj`, `fastlane/Appfile`, and `fastlane/lib/release_build.rb`
 6. CloudKit container (`iCloud.com.jimmyho.checklists` in `checklists.entitlements`)
 7. Support and privacy URLs (`fastlane/metadata/*/support_url.txt`, `privacy_url.txt`)
-8. Your own feedback address (`checklists/checklists/App/FeedbackMail.swift`) and privacy policy URL (`checklists/checklists/Screens/SettingsView.swift`)
+8. Your own feedback address (`checklists/checklists/App/FeedbackMail.swift`) and privacy policy URL and App Store review link (`checklists/checklists/Screens/SettingsView.swift`)
 
 ---
 

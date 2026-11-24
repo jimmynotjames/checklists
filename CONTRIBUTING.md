@@ -61,7 +61,7 @@ You don't need `config/Secrets.local.xcconfig`, `fastlane/.env`, an App Store Co
    ```bash
    make system
    ```
-   Installs Lefthook hooks, SwiftLint, SwiftFormat, gitleaks; verifies Xcode and Python.
+   Installs Lefthook hooks, SwiftLint, SwiftFormat, gitleaks; verifies Xcode and Python. The lint and hook tools must match the exact versions pinned in `config/lint-tools.env`; if Homebrew installs a different version, `make system` and `make gate` stop and name the mismatch, so install the pinned release of that tool.
 3. Compile:
    ```bash
    make build
@@ -81,13 +81,13 @@ The test scripts can draw on a shared simulator pool at `~/dev/simulator-slots`.
 To run UI tests on parallel simulator clones instead, set `SIMULATOR_WORKERS_WITHOUT_POOL`:
 
 - Unset (default) runs serially on one simulator, the lightest option.
-- `SIMULATOR_WORKERS_WITHOUT_POOL=2 make test-ui` runs up to that many clones. Each booted simulator takes about 2–3 GB of RAM.
+- `SIMULATOR_WORKERS_WITHOUT_POOL=2 make test-ui` runs up to that many clones, also capped by `UI_WORKERS` (default 2). Each booted simulator takes about 2–3 GB of RAM.
 
 Details: [AGENTS.md](AGENTS.md) §"Simulator slots".
 
 ### Signing
 
-Simulator builds generally skip code signing and don't enforce entitlements, so `make build` on a fresh clone should succeed without changing the team, even though the project references maintainer team ID `EDMB3Z5KAY`.
+`make build` on a fresh clone should succeed without changing the team, even though the project references maintainer team ID `EDMB3Z5KAY`. Don't work around a signing error with `CODE_SIGNING_ALLOWED=NO`: the app then launches without its simulated entitlements and crashes in CloudKit setup (see `scripts/build.sh`).
 
 Only if a build or run fails on signing or provisioning: open `checklists/checklists.xcodeproj` → `checklists` app target → Signing & Capabilities → choose your Personal Team (the Apple ID registered in Xcode). Simulator-only dev doesn't require changing the bundle ID or CloudKit container.
 
@@ -161,10 +161,10 @@ See [§ Branding & trademarks](#branding--trademarks) and [TRADEMARK.md](TRADEMA
 - App display name (`CFBundleDisplayName = reChecklist` in `checklists/checklists/Info.plist`)
 - All `fastlane/metadata/*` storefront copy (name, subtitle, keywords, description, promotional text, release notes)
 - Screenshot seed content in `checklists/checklistsUITests/ScreenshotSeeds/` (if you generate store screenshots)
-- Bundle ID (`com.jimmyho.checklists` in `project.pbxproj` and `fastlane/Appfile`), and the team ID in both
+- Bundle ID (`com.jimmyho.checklists`) and team ID (`EDMB3Z5KAY`) in `project.pbxproj`, `fastlane/Appfile`, and `fastlane/lib/release_build.rb`
 - CloudKit container (`iCloud.com.jimmyho.checklists` in `checklists/checklists/checklists.entitlements`)
 - Support and privacy URLs in `fastlane/metadata/*/support_url.txt` and `privacy_url.txt`
-- The feedback address in `checklists/checklists/App/FeedbackMail.swift` and the privacy policy URL in `checklists/checklists/Screens/SettingsView.swift`
+- The feedback address in `checklists/checklists/App/FeedbackMail.swift`, and the privacy policy URL and App Store review link (`id1475724536`) in `checklists/checklists/Screens/SettingsView.swift`
 
 Tier A (Simulator-only) builds may show reChecklist branding locally; that is development, not distribution.
 
@@ -172,7 +172,7 @@ Tier A (Simulator-only) builds may show reChecklist branding locally; that is de
 
 ## Branding & trademarks
 
-The source code is licensed under the Apache License 2.0 (see [LICENSE](LICENSE)), which permits modification and redistribution but explicitly withholds trademark and product-name rights (Apache §6).
+The source code is licensed under the Apache License 2.0 (see [LICENSE](LICENSE)), which permits modification and redistribution but explicitly withholds trademark and product-name rights (section 6 of the Apache License).
 
 The reChecklist name and these assets are not covered by the code license:
 
@@ -197,12 +197,7 @@ If you ship a fork with analytics, use your own Mixpanel project: set `MIXPANEL_
 
 ## What never belongs in the repo
 
-- `config/Secrets.local.xcconfig` — your real tokens (gitignored)
-- `fastlane/.env` — ASC API key ID + issuer ID (gitignored)
-- `*.p8` — App Store Connect private key (keep outside the repo entirely)
-- Any other secret, credential, or personal identifier
-
-The pre-commit hook (`gitleaks git --pre-commit --staged`) and CI's secret scan enforce this.
+Besides the files in [§ What never gets committed](#what-never-gets-committed): any other secret, credential, or personal identifier. The pre-commit hook (`gitleaks git --pre-commit --staged`) blocks them; CI's full-history secret scan runs when CI is triggered.
 
 ---
 
@@ -211,7 +206,7 @@ The pre-commit hook (`gitleaks git --pre-commit --staged`) and CI's secret scan 
 If you are an AI agent working in this codebase:
 
 - **Read [AGENTS.md](AGENTS.md) first.** It is canonical; the design docs in `core-docs/` are canonical for their areas.
-- **Out-of-repo secrets:** `config/Secrets.local.xcconfig`, `fastlane/.env`, and the `.p8` key. Never read, print, or commit them; [core-docs/secrets-list.md](core-docs/secrets-list.md) names the keys.
+- **Local secrets:** `config/Secrets.local.xcconfig` and `fastlane/.env` (gitignored), and the `.p8` key (outside the repo). Never read, print, or commit them; [core-docs/secrets-list.md](core-docs/secrets-list.md) names the keys.
 - **Ship guard:** `scripts/verify_release_secrets.sh`. Don't bypass it.
 - **Build & test:** `make gate` before a PR; app test suites are opt-in. See AGENTS.md §"Build and test".
 - **Simulators:** the simulator-slots pool is off outside the maintainer's machine. Run normally and don't create the pool's directories; choose concurrency with `SIMULATOR_WORKERS_WITHOUT_POOL`. See AGENTS.md §"Simulator slots".
