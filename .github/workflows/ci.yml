@@ -326,8 +326,7 @@ jobs:
       && (github.event_name != 'workflow_dispatch' || inputs.tests == 'ui')
     timeout-minutes: 40
     env:
-      # CI only, never local: the UI tests launch the app with animations off (UITestLaunch,
-      # TestAnimationsOverride), so slow transitions can't stall XCUITest's idle wait (#430).
+      # Animations off for UI tests on CI only (TestAnimationsOverride in the app explains why).
       TEST_RUNNER_UITEST_ANIMATIONS: "off"
     strategy:
       fail-fast: false # one red shard still lets the others report

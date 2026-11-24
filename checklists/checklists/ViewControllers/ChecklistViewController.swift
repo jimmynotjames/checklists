@@ -473,13 +473,16 @@ class ChecklistViewController: UIViewController {
   }
 
   func cellHeightRequiresRefresh(animated: Bool) {
-    if !animated {
-      UIView.setAnimationsEnabled(false) // When table view is scrolled up a bit and user types in text view, jitters without this.
-    }
-    tableView.beginUpdates()
-    tableView.endUpdates()
-    if !animated {
-      UIView.setAnimationsEnabled(true)
+    if animated {
+      tableView.beginUpdates()
+      tableView.endUpdates()
+    } else {
+      // When table view is scrolled up a bit and user types in text view, jitters without this.
+      // Scoped, not a global toggle back to `true`: that would undo `TestAnimationsOverride`.
+      UIView.performWithoutAnimation {
+        tableView.beginUpdates()
+        tableView.endUpdates()
+      }
     }
   }
 

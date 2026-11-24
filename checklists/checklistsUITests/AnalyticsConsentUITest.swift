@@ -28,7 +28,7 @@ class AnalyticsConsentUITest: XCTestCase {
     app.buttons["analyticsConsentSheet.decline"]
   }
 
-  /// Launches with `-UITests1` plus `-AppleLocale <locale>`, so `Locale.current.region` resolves
+  /// Launches with `UITestLaunch.arguments` plus `-AppleLocale <locale>`, so `Locale.current.region` resolves
   /// to `locale`'s region regardless of the simulator's own setting.
   private func launch(locale: String, screenshotSeedJSON: String? = nil) {
     continueAfterFailure = false
