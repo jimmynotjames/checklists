@@ -1,0 +1,12 @@
+# github-actions: keeps action pins in .github/workflows/* current.
+#
+# Swift/SPM is not covered: there is no Package.swift (the dependencies mixpanel-swift
+# and realm-swift live in the .xcodeproj), and Dependabot's `swift` ecosystem needs a
+# manifest. SPM bumps are manual (Xcode -> File -> Packages -> Update). Don't add a
+# Package.swift shim: it would be a second source of truth for versions.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly

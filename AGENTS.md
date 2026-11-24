@@ -321,7 +321,8 @@ is skipped, and the rest of this section doesn't apply.
 ## Known issues
 
 - **The old Flurry API key is in git history** and gitleaks can't see it (a bare 20-char
-  alphanumeric matches no rule), so a green secrets gate doesn't cover it.
+  alphanumeric matches no rule). It is inert: Flurry no longer exists, so the key needs no
+  rotation or history rewrite.
 
 ## CI
 
