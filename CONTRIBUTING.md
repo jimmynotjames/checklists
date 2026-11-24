@@ -17,7 +17,7 @@ Requirements:
 - You must prove that you understand this product and have a genuine desire to improve it. Explain your product thinking clearly and concisely. I recommend you hand-write this part and have AI review it. Be prepared to have a conversation.
 - For bug fixes, clearly and concisely explain the bug, including detailed reproduction steps. Explain your bug fix and discuss any architectural issue. No "band-aid" fixes will be accepted unless it's a high-severity issue, and it would be a crazy endeavor to refactor appropriately.
 
-Obviously, given that this code is agentically written, I have no issues if you use AI to contribute to this repo. That said, if I sense that you did not put effort into ensuring that your agent was producing quality work, I will likely ignore or reject your pull request or issue.
+Obviously, given that version 2.0 onward is agentically written (through version 1.1, the app was handwritten), I have no issues if you use AI to contribute to this repo. That said, if I sense that you did not put effort into ensuring that your agent was producing quality work, I will likely ignore or reject your pull request or issue.
 
 Pull requests follow [`.github/pull_request_template.md`](.github/pull_request_template.md), including its cross-cutting concerns checklist.
 

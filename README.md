@@ -8,9 +8,10 @@
 
 ## About
 
-reChecklist started in 2019 as a UIKit + Realm app. Version 2.0 is a rebuild done largely by AI
-coding agents, steered and reviewed by me (an iOS developer for 15+ years): SwiftUI navigation,
-SwiftData with CloudKit sync, full localization, and the tooling to keep all of it honest.
+Up through version 1.1, released in 2021, reChecklist was handwritten: a UIKit + Realm app.
+Version 2.0 was updated agentically, by AI coding agents steered and reviewed by me (an iOS
+developer for 15+ years): SwiftUI navigation, SwiftData with CloudKit sync, full localization, and
+the tooling to keep all of it honest.
 
 Its sibling project, [`simple-recurring-budgets`](https://github.com/jimmynotjames/simple-recurring-budgets)
 (the **Wren** app), was built the same way, and most of this repo's tooling was ported from it.
@@ -23,16 +24,16 @@ Its sibling project, [`simple-recurring-budgets`](https://github.com/jimmynotjam
 
 ## Screenshots
 
-| Checklists | Checklist | Checklists (iPhone Duo) | Checklist (iPhone Duo) |
-| ---------- | --------- | ----------------------- | ---------------------- |
-| <img src="core-docs/images/readme/iphone-checklists.png" alt="Checklists screen listing three checklists with progress icons" width="160"> | <img src="core-docs/images/readme/iphone-checklist.png" alt="Pre-Trip Checklist with three items checked" width="160"> | <img src="core-docs/images/readme/duo-checklists.png" alt="Checklists screen on iPhone Duo" width="200"> | <img src="core-docs/images/readme/duo-checklist.png" alt="Pre-Trip Checklist on iPhone Duo" width="200"> |
+| Checklists | Checklist |
+| ---------- | --------- |
+| <img src="core-docs/images/readme/iphone-checklists.png" alt="Checklists screen listing three checklists with progress icons" width="160"> | <img src="core-docs/images/readme/iphone-checklist.png" alt="Pre-Trip Checklist with three items checked" width="160"> |
 
 ---
 
 ## Status
 
-- This repo is reChecklist 2.0 onward: a rebuild of the original 1.x UIKit + Realm app on the
-  App Store, which imports 1.x data on first launch.
+- This repo is reChecklist 2.0 onward, the agentically updated successor to the handwritten 1.x
+  app. 2.0 imports a 1.x install's data on first launch.
 - Per-release App Store records live in [`releases/`](releases/).
 
 ---
