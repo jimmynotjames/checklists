@@ -20,7 +20,7 @@ Screenshots: Reviewed run `20261104T153913Z-34f31b45` (source 4ca0bc8) uploaded 
 
 - [x] Spec drift sweep clean or fixed
 - [x] Release candidate uploaded to TestFlight
-- [ ] Version/build PR opened
+- [x] Version/build PR opened
 - [ ] Version/build PR reviewed and merged
 - [ ] Exact candidate installed and tested
 
@@ -30,7 +30,7 @@ Build: 1
 Binary source commit: 223edff
 Fastlane recovery record: `tmp/releases/20261123T234649-12138/release.json` (status `committed`; local to this clone)
 Upload result/date: uploaded 2026-11-23, build-number bump committed as fcbde2a. Exported `.ipa` entitlements verified: application-identifier `EDMB3Z5KAY.com.jimmyho.checklists`, iCloud container `iCloud.com.jimmyho.checklists`, CloudKit, `aps-environment` production, icloud-container-environment Production.
-Version/build PR: —
+Version/build PR: #423
 Test result/date: —
 
 ## Submission
