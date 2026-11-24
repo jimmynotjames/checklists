@@ -337,7 +337,8 @@ Pushes to `main` and manual runs always count as code. A skipped required check 
 so don't replace this with a workflow-level `paths-ignore`: the required checks would never report.
 Required checks in the `main` ruleset: `lint`, `secrets`, `check-large-files`, `i18n-gates`, `changes`
 (a failed one skips `build` and `test`, which would read as passing), `test`. `test` holds the unit and UI tests and is also the compile check; `build` is the compile-only job of
-manual runs without tests.
+manual runs without tests. `test` is temporarily off the ruleset while the UI tests hang on GitHub's
+runner (#428): until it's back, a red `test` doesn't block a merge, so check it before merging.
 
 A manual run on a branch shows as checks on that commit's PR, under the same names as the
 automatic run, and the ruleset reads the newest check of each name. So a narrowed run can turn a red
