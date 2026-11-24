@@ -319,6 +319,9 @@ jobs:
       # holds (scripts/_destination.sh, take_slots).
       - name: UI tests (make test-ui, 2 workers)
         if: env.TEST_MODE == 'ui'
+        # Under the job's 90: a step timeout fails the step, so the result bundles still upload,
+        # while a job timeout cancels the run and skips the upload.
+        timeout-minutes: 60
         env:
           SIMULATOR_WORKERS_WITHOUT_POOL: "2"
         run: make test-ui
