@@ -45,7 +45,7 @@ USAGE = """\
 | `xN` (after `test`) | run that class or test N times, up to 10, e.g. `x5` |
 | `help` | this message |
 
-Named tests run only the build job unless gates are named too, e.g. `/ci gates unit`.
+Named tests run only the test job unless gates are named too, e.g. `/ci gates unit`.
 `test` takes the name `make test-only` takes, case and all, e.g.
 `/ci test checklistsUITests/ChecklistItemsUITest x5` or
 `/ci test checklistsTests/ChecklistKeyboardOverlapTests/dockedKeyboard()`. It replaces `unit`, `ui`

@@ -328,6 +328,16 @@ is skipped, and the rest of this section doesn't apply.
 `.github/workflows/ci.yml` is present but disabled (`workflow_dispatch` only; private repo, macOS
 minutes bill at 10×). Enable instructions are in the workflow header.
 
+Once enabled, a docs-only PR skips the macOS jobs: a `changes` job (ubuntu) lists the PR's files
+and `build` and `test` run only when one is code (`scripts/ci/docs_only.py` holds the rules:
+Markdown outside `scripts/` and `fastlane/`, plus `core-docs/`, `releases/` and the agent-config
+dirs, are docs; the app folder, Swift, the Makefile, scripts, fastlane and workflows are code).
+Pushes to `main` and manual runs always count as code. A skipped required check counts as passing,
+so don't replace this with a workflow-level `paths-ignore`: the required checks would never report.
+Required checks when enabled: `lint`, `secrets`, `check-large-files`, `i18n-gates`, `test`. `test`
+holds the unit and UI tests and is also the compile check; `build` is the compile-only job of
+manual runs without tests.
+
 A manual run on a branch shows as checks on that commit's PR. Only Jimmy decides when to spend
 macOS minutes on one, preferably by commenting on the PR so the request and its result stay there
 (`.github/workflows/ci-command.yml`; repo owner's comments only):
