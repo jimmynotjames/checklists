@@ -60,5 +60,5 @@ when that's the honest answer.
   keyboard keys, so a `kAXErrorCannotComplete` failure against one is a real regression — see
   AGENTS.md §"The software keyboard".
 
-CI (`.github/workflows/ci.yml`) is present but **disabled** — no checks run on this PR unless a
-`/ci` comment or a manual run started one (AGENTS.md §CI).
+CI (`.github/workflows/ci.yml`) runs on this PR; a docs-only PR skips the macOS jobs. A `/ci`
+comment reruns or narrows it (AGENTS.md §CI).

@@ -21,7 +21,7 @@ from dataclasses import dataclass
 GATES = ("lint", "secrets", "large-files", "i18n")
 SELECTIONS = (*GATES, "build")  # ci.yml's `only` vocabulary, in job order
 TEST_LEVELS = ("none", "unit", "ui")  # each level includes the ones before it
-MAX_ITERATIONS = 10  # each iteration of a UI class is macOS minutes, billed at 10x
+MAX_ITERATIONS = 10  # each iteration of a UI class is minutes of a shared macOS runner
 # What `make test-only` takes: a test target, a class or suite, and optionally one test.
 # Swift Testing names a test function with its parentheses.
 TEST_ID = re.compile(

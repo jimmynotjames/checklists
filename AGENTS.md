@@ -174,9 +174,8 @@ These govern every commit, skill-driven or not:
 
 ### What gates a merge
 
-`main` requires a PR but has zero required checks and zero required approvals, and CI is disabled,
-so nothing server-side blocks a broken merge. `/merge-pr` runs `make gate` on the branch and refuses
-to merge on failure. If CI is ever enabled, `/merge-pr` should wait on `gh pr checks` instead.
+`main` requires a PR and the CI checks listed in §CI, with zero required approvals. `/merge-pr` also
+runs `make gate` on the branch and refuses to merge on failure.
 
 ## Concurrency
 
@@ -326,22 +325,22 @@ is skipped, and the rest of this section doesn't apply.
 
 ## CI
 
-`.github/workflows/ci.yml` is present but disabled (`workflow_dispatch` only; private repo, macOS
-minutes bill at 10×). Enable instructions are in the workflow header.
+`.github/workflows/ci.yml` runs on every PR and every push to `main` (the repo is public, so
+standard runners, macOS included, are free).
 
-Once enabled, a docs-only PR skips the macOS jobs: a `changes` job (ubuntu) lists the PR's files
+A docs-only PR skips the macOS jobs: a `changes` job (ubuntu) lists the PR's files
 and `build` and `test` run only when one is code (`scripts/ci/docs_only.py` holds the rules:
 Markdown outside `scripts/` and `fastlane/`, plus `core-docs/`, `releases/` and the agent-config
 dirs, are docs; the app folder, Swift, the Makefile, scripts, fastlane and workflows are code).
 Pushes to `main` and manual runs always count as code. A skipped required check counts as passing,
 so don't replace this with a workflow-level `paths-ignore`: the required checks would never report.
-Required checks when enabled: `lint`, `secrets`, `check-large-files`, `i18n-gates`, `changes`
+Required checks on `main`: `lint`, `secrets`, `check-large-files`, `i18n-gates`, `changes`
 (a failed one skips `build` and `test`, which would read as passing), `test`. `test` holds the unit and UI tests and is also the compile check; `build` is the compile-only job of
 manual runs without tests.
 
-A manual run on a branch shows as checks on that commit's PR. Only Jimmy decides when to spend
-macOS minutes on one, preferably by commenting on the PR so the request and its result stay there
-(`.github/workflows/ci-command.yml`; repo owner's comments only):
+A manual run on a branch shows as checks on that commit's PR. Use one to rerun or narrow CI, such
+as repeating one flaky test; only Jimmy starts one, preferably by commenting on the PR so the
+request and its result stay there (`.github/workflows/ci-command.yml`; repo owner's comments only):
 
 - `/ci`: the four gates + build. `/ci all`: those plus unit and UI tests.
 - Words combine: `lint` `secrets` `large-files` `i18n` `gates` `build` `unit` `ui`, e.g.

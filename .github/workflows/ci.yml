@@ -1,11 +1,10 @@
-# CI — DISABLED (workflow_dispatch only; private repo, macOS minutes bill at 10x).
-# Start a run by commenting `/ci ...` on the PR (ci-command.yml dispatches this workflow
-# and this one reports back), or with `gh workflow run` (AGENTS.md §CI).
-# To enable: uncomment the pull_request/push triggers AND add these jobs as required
-# status checks: lint, secrets, check-large-files, i18n-gates, changes, test. `changes` is
-# required because a failed one skips build and test, and a skipped check counts as passing.
-# (build is the compile-only job of manual runs and is skipped whenever tests run, so it is not
-# worth requiring.)
+# CI — runs on every PR and every push to main (public repo, so standard runners are free).
+# Rerun or narrow a run by commenting `/ci ...` on the PR (ci-command.yml dispatches this
+# workflow and this one reports back), or with `gh workflow run` (AGENTS.md §CI).
+# Required status checks on main (set in the repo's branch settings): lint, secrets,
+# check-large-files, i18n-gates, changes, test. `changes` is required because a failed one
+# skips build and test, and a skipped check counts as passing. (build is the compile-only job
+# of manual runs and is skipped whenever tests run, so it is not worth requiring.)
 #
 # Docs-only PRs skip the macOS jobs (build, test): the cheap `changes` job lists the PR's files
 # and outputs code=false only when every one is docs (the rules are in scripts/ci/docs_only.py).
@@ -39,9 +38,9 @@ on:
         description: "PR number to post the results on (set by a /ci comment); empty posts nothing"
         type: string
         default: ""
-  # pull_request:
-  # push:
-  #   branches: [main]
+  pull_request:
+  push:
+    branches: [main]
 
 # Cancel superseded runs on the same ref (a new push to a PR voids the old run). The selection is
 # in the group so `/ci lint` and `/ci unit` on one branch don't cancel each other.
@@ -211,7 +210,7 @@ jobs:
       - name: consistency_check (informational, non-blocking)
         run: python3 scripts/translate_audit/consistency_check.py --ignore-casing || true
 
-  # --- Tier 2: compile check (macOS — 10× minute cost on a private repo) ------
+  # --- Tier 2: compile check (macOS) -----------------------------------------
   # Manual runs only, and only when no tests were asked for: a run with tests compiles in `test`
   # (its build-for-testing), and building here too would compile everything twice. Skipped on
   # docs-only PRs. Skipped counts as passing for a required check.
@@ -251,7 +250,7 @@ jobs:
             ARCHS=arm64 \
             ONLY_ACTIVE_ARCH=NO
 
-  # --- Tier 2: tests (macOS — 10× minute cost on a private repo) ---------------
+  # --- Tier 2: tests (macOS) -------------------------------------------------
   # An automatic run (PR or push) runs unit then UI tests; a manual run runs what `tests` or
   # `test` ask for, and none when neither does. Its build-for-testing is the compile check.
   # Skipped on docs-only PRs. Skipped counts as passing for a required check.
