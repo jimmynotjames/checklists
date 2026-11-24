@@ -47,7 +47,7 @@ troubleshooting.
 
 ### App Store Connect private key
 
-- External file: `~/.appstoreconnect/AuthKey_UN4N2PXFKN.p8`
+- External file: `~/.appstoreconnect/AuthKey_<KEY_ID>.p8`
 - Referenced by: `ASC_API_KEY_FILEPATH` in `fastlane/.env`
 
 Restore this file from secure storage. It deliberately lives outside the repository, and the

@@ -174,9 +174,9 @@ These govern every commit, skill-driven or not:
 
 ### What gates a merge
 
-`main` requires a PR but has zero required checks and zero required approvals, and CI is disabled,
-so nothing server-side blocks a broken merge. `/merge-pr` runs `make gate` on the branch and refuses
-to merge on failure. If CI is ever enabled, `/merge-pr` should wait on `gh pr checks` instead.
+`main` requires a PR and, through its ruleset, the CI checks listed in §CI, with zero required
+approvals. `/merge-pr` also waits on those checks and runs `make gate` on the branch, and refuses to
+merge if either fails.
 
 ## Concurrency
 
@@ -326,22 +326,25 @@ is skipped, and the rest of this section doesn't apply.
 
 ## CI
 
-`.github/workflows/ci.yml` is present but disabled (`workflow_dispatch` only; private repo, macOS
-minutes bill at 10×). Enable instructions are in the workflow header.
+`.github/workflows/ci.yml` runs on every PR and every push to `main` (the repo is public, so
+standard runners, macOS included, are free).
 
-Once enabled, a docs-only PR skips the macOS jobs: a `changes` job (ubuntu) lists the PR's files
+A docs-only PR skips the macOS jobs: a `changes` job (ubuntu) lists the PR's files
 and `build` and `test` run only when one is code (`scripts/ci/docs_only.py` holds the rules:
 Markdown outside `scripts/` and `fastlane/`, plus `core-docs/`, `releases/` and the agent-config
 dirs, are docs; the app folder, Swift, the Makefile, scripts, fastlane and workflows are code).
 Pushes to `main` and manual runs always count as code. A skipped required check counts as passing,
 so don't replace this with a workflow-level `paths-ignore`: the required checks would never report.
-Required checks when enabled: `lint`, `secrets`, `check-large-files`, `i18n-gates`, `changes`
+Required checks in the `main` ruleset: `lint`, `secrets`, `check-large-files`, `i18n-gates`, `changes`
 (a failed one skips `build` and `test`, which would read as passing), `test`. `test` holds the unit and UI tests and is also the compile check; `build` is the compile-only job of
 manual runs without tests.
 
-A manual run on a branch shows as checks on that commit's PR. Only Jimmy decides when to spend
-macOS minutes on one, preferably by commenting on the PR so the request and its result stay there
-(`.github/workflows/ci-command.yml`; repo owner's comments only):
+A manual run on a branch shows as checks on that commit's PR, under the same names as the
+automatic run, and the ruleset reads the newest check of each name. So a narrowed run can turn a red
+PR green: a passing single-test run replaces the failed `test`, and a job a narrowed run leaves out
+reports as skipped, which counts as passing. Use one to investigate, such as repeating one flaky
+test, then rerun the automatic run (`gh run rerun <id>`) before merging. Only Jimmy starts one, preferably by commenting on the PR so the
+request and its result stay there (`.github/workflows/ci-command.yml`; repo owner's comments only):
 
 - `/ci`: the four gates + build. `/ci all`: those plus unit and UI tests.
 - Words combine: `lint` `secrets` `large-files` `i18n` `gates` `build` `unit` `ui`, e.g.

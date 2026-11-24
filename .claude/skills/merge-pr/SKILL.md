@@ -11,8 +11,15 @@ a request to inspect or review a PR alone is not authorization.
 
 1. **Verify it's safe to merge.** Run `gh pr view <PR>` and confirm it is `OPEN` and `MERGEABLE`.
 
-   Then gate the branch locally — nothing server-side gates a merge here (AGENTS.md §"What gates a
-   merge"):
+   Wait for the required CI checks (AGENTS.md §"What gates a merge"):
+
+   ```bash
+   gh pr checks <PR> --required --watch
+   ```
+
+   **If any fails, do NOT merge** — report it and stop. If the latest checks came from a narrowed
+   `/ci` run rather than the automatic one, they can read green over a failure (AGENTS.md §CI):
+   rerun the automatic run first. Then gate the branch locally too:
 
    ```bash
    gh pr checkout <PR>

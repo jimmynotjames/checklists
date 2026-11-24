@@ -189,21 +189,20 @@ the transcreation fan-out, then `generate_seeds.py`.
 
 | Check | Where | Blocking |
 | --- | --- | --- |
-| `check_translations.py` | `make i18n-check` (in `make gate`), pre-push, manual CI | Yes |
-| `check_source_strings.py` | `make i18n-check` (in `make gate`), pre-push, manual CI | Yes |
+| `check_translations.py` | `make i18n-check` (in `make gate`), pre-push, CI | Yes |
+| `check_source_strings.py` | `make i18n-check` (in `make gate`), pre-push, CI | Yes |
 | `generate_seeds.py --check` | `make uitest-check` (in `make gate`) | Yes |
-| `check_metadata.py` | `push_metadata` lane, manual CI | Yes |
-| `plural_completeness.py` | `audit-translations` skill, manual CI | Yes, when run |
-| `untranslated_copies.py` | `make i18n-check` (in `make gate`), manual CI | Yes |
-| `distinct_pairs.py` | `make i18n-check` (in `make gate`), manual CI | Yes |
+| `check_metadata.py` | `push_metadata` lane, CI | Yes |
+| `plural_completeness.py` | `audit-translations` skill, CI | Yes |
+| `untranslated_copies.py` | `make i18n-check` (in `make gate`), CI | Yes |
+| `distinct_pairs.py` | `make i18n-check` (in `make gate`), CI | Yes |
 | `sync_catalog.py --check` | `make i18n-sync-check`, after the build in `make gate` | Yes |
-| `consistency_check.py` | `audit-translations` skill, manual CI | No, informational |
+| `consistency_check.py` | `audit-translations` skill, CI | No, informational |
 | `check_source_voice.py` | `push_metadata` lane | No, advisory |
 | `check_content.py` | Screenshot lanes | Yes |
 
-CI is disabled (AGENTS.md §CI): it runs only on a `/ci` comment or a manual dispatch. So
-`plural_completeness.py` and `consistency_check.py` gate nothing unless someone runs them: run
-`audit-translations`, or the scripts directly, before a release that touches translations.
+CI (AGENTS.md §CI) runs `i18n-gates`, so `plural_completeness.py` blocks a merge. `consistency_check.py` only reports, so read its
+output, or run `audit-translations`, before a release that touches translations.
 
 `check_source_strings.py` is the one that catches the common mistake: a bare `Text("English")` added
 to a view, or a pair of capitalized literals in a ternary parked in a local before they reach a UI
