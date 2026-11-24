@@ -176,8 +176,9 @@ make test-only ONLY=checklistsUITests/<Class>   # one class or test
   large-file guard, and gitleaks; pre-push blocks direct pushes to `main`, checks translations,
   and compiles.
 - `make gate` runs every local check plus a build. See [AGENTS.md](AGENTS.md) §"Build and test".
-- CI ([ci.yml](.github/workflows/ci.yml)) runs lint, secret scan, large-file, i18n, build, and
-  optional tests. It's manual: the maintainer triggers it with a `/ci` PR comment.
+- CI ([ci.yml](.github/workflows/ci.yml)) runs lint, secret scan, large-file and i18n checks,
+  then the unit and UI tests, on every PR and push to `main`. Docs-only PRs skip the tests. The
+  maintainer can rerun or narrow it with a `/ci` PR comment.
 - Release (Fastlane): lanes for TestFlight, App Store metadata, and screenshots, guarded by
   `scripts/verify_release_secrets.sh`. See [fastlane/SETUP.md](fastlane/SETUP.md).
 
