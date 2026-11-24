@@ -175,7 +175,7 @@ These govern every commit, skill-driven or not:
 ### What gates a merge
 
 `main` requires a PR and, through its ruleset, the CI checks listed in §CI, with zero required
-approvals. `/merge-pr` also waits on those checks and runs `make gate` on the branch, and refuses to
+approvals. `/merge-pr` also waits on those checks (and on `test`, while it is off the ruleset) and runs `make gate` on the branch, and refuses to
 merge if either fails.
 
 ## Concurrency
@@ -336,9 +336,10 @@ dirs, are docs; the app folder, Swift, the Makefile, scripts, fastlane and workf
 Pushes to `main` and manual runs always count as code. A skipped required check counts as passing,
 so don't replace this with a workflow-level `paths-ignore`: the required checks would never report.
 Required checks in the `main` ruleset: `lint`, `secrets`, `check-large-files`, `i18n-gates`, `changes`
-(a failed one skips `build` and `test`, which would read as passing), `test`. `test` holds the unit and UI tests and is also the compile check; `build` is the compile-only job of
-manual runs without tests. `test` is temporarily off the ruleset while the UI tests hang on GitHub's
-runner (#428): until it's back, a red `test` doesn't block a merge, so check it before merging.
+(a failed one skips `build` and `test`, which would read as passing). `test` belongs there too but is
+temporarily off while the UI tests hang on GitHub's runner (#428): until it's back, a red `test`
+doesn't block a merge, so check it before merging. `test` holds the unit and UI tests and is also
+the compile check; `build` is the compile-only job of manual runs without tests.
 
 A manual run on a branch shows as checks on that commit's PR, under the same names as the
 automatic run, and the ruleset reads the newest check of each name. So a narrowed run can turn a red

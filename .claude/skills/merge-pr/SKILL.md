@@ -17,6 +17,9 @@ a request to inspect or review a PR alone is not authorization.
    gh pr checks <PR> --required --watch
    ```
 
+   While `test` is off the ruleset (AGENTS.md §CI), also wait on it with `gh pr checks <PR> --watch`
+   (no `--required`); a skipped `test` (docs-only PR) is fine.
+
    **If any fails, do NOT merge** — report it and stop. If the latest checks came from a narrowed
    `/ci` run rather than the automatic one, they can read green over a failure (AGENTS.md §CI):
    rerun the automatic run first. Then gate the branch locally too:
