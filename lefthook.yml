@@ -26,6 +26,8 @@ pre-commit:
     gitleaks:
       run: gitleaks git --pre-commit --staged --no-banner
 
+# No compile here: `make gate` compiles just before a push, and CI compiles every push
+# (AGENTS.md §"Build and test").
 pre-push:
   commands:
     # Checks the refs being pushed (from git's stdin), not the checked-out branch. Fails faster
@@ -41,7 +43,3 @@ pre-push:
 
     check-source-strings:
       run: python3 scripts/check_source_strings.py
-
-    # Compile check only; tests are opt-in (AGENTS.md §"Build and test").
-    build:
-      run: bash scripts/build.sh

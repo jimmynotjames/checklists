@@ -138,8 +138,8 @@ Check: new interactive controls have an `accessibilityLabel`; custom controls (`
 (a checkbox should expose selected/unselected); no fixed frame heights that clip text at large
 Dynamic Type — prefer `minHeight` over a fixed `height` on rows that contain text. New or changed
 colors: the foreground/background pair is in `PaletteTests`, with a high-contrast value if the
-default falls short, and `make ui-tests` has run, since its audits check contrast and neither is in
-the gate.
+default falls short. Contrast itself is checked by the UI accessibility audits, which run in CI's
+`accessibility` shard on every PR, not in the gate.
 
 **Reduce Motion**
 Applies if: the diff adds or changes an animation — SwiftUI `.animation`/`withAnimation`/

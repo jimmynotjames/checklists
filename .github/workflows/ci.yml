@@ -21,7 +21,7 @@ on:
   workflow_dispatch:
     inputs:
       only:
-        description: "Comma list, no spaces, of lint,secrets,large-files,i18n,build; empty runs all four gates + build"
+        description: "Comma list, no spaces, of lint,secrets,large-files,i18n,tooling,build; empty runs all five gates + build"
         type: string
         default: ""
       tests:
@@ -190,8 +190,7 @@ jobs:
 
   # --- Localization gates (ubuntu) --------------------------------------------
   # The i18n-check and doc-check scripts, plus check_metadata, the plural audit,
-  # and a non-blocking consistency report. The
-  # uitest-check scripts don't run in CI.
+  # and a non-blocking consistency report.
   i18n-gates:
     if: inputs.only == '' || contains(format(',{0},', inputs.only), ',i18n,')
     runs-on: ubuntu-latest
@@ -219,6 +218,28 @@ jobs:
       - name: consistency_check (informational, non-blocking)
         run: python3 scripts/translate_audit/consistency_check.py --ignore-casing || true
 
+  # --- Tooling gates (ubuntu) ---------------------------------------------------
+  # The offline tests of the repo's own scripts (Python and the fastlane Ruby) and the UI-test
+  # source checks: the parts of `make gate` no other job runs, so CI covers everything the local
+  # gate does and /merge-pr needn't re-run it. RUBY is set so a missing Ruby fails instead of
+  # skipping the fastlane tests as script-tests.sh does on a laptop without one.
+  tooling:
+    if: inputs.only == '' || contains(format(',{0},', inputs.only), ',tooling,')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: script-tests
+        env:
+          RUBY: ruby
+        run: python3 scripts/ci/annotate.py --name script-tests -- bash scripts/script-tests.sh
+      - name: check_ui_test_keyboard.py
+        run: python3 scripts/ci/annotate.py --name check_ui_test_keyboard -- python3 scripts/check_ui_test_keyboard.py
+      - name: generate_seeds.py --check
+        run: python3 scripts/ci/annotate.py --name generate_seeds -- python3 scripts/screenshot_content/generate_seeds.py --check
+
   # --- Tier 2: build once (macOS) ---------------------------------------------------
   # Compiles the app and both test targets once (build-for-testing) and hands the products to the
   # test jobs, which only run them, so a PR compiles once rather than once per test job. It is also
@@ -226,7 +247,7 @@ jobs:
   # it every test job.
   build:
     runs-on: xcode-27
-    needs: [lint, secrets, check-large-files, i18n-gates, changes]
+    needs: [lint, secrets, check-large-files, i18n-gates, tooling, changes]
     # Runs after whichever gates ran; a failed gate still stops it.
     if: >-
       !cancelled() && !contains(needs.*.result, 'failure')
@@ -280,6 +301,12 @@ jobs:
             ONLY_ACTIVE_ARCH=NO \
             2>&1 | tee build-for-testing.log \
             || { python3 scripts/ci/xcode_errors.py build-for-testing.log; exit 1; }
+      # The catalog matches the strings this build extracted (the gate's i18n-sync-check). Needs
+      # the compile, so it can't run with the ubuntu gates.
+      - name: sync_catalog.py --check
+        env:
+          SYNC_CATALOG_DERIVED_DATA: .build/sim/DerivedData
+        run: python3 scripts/ci/annotate.py --name sync_catalog -- python3 scripts/translate_catalog/sync_catalog.py --check
       # A tarball, because an artifact upload drops the exec bits and symlinks the app needs.
       - name: Pack the test products
         if: env.RUNS_TESTS == 'true'
@@ -492,7 +519,7 @@ jobs:
   # comment up to date; a /ci run or a push to main posts a new comment (on the merged PR). Not a
   # required check, and posting is best-effort.
   summary:
-    needs: [lint, secrets, check-large-files, i18n-gates, changes, build, unit-tests, ui-tests, focused-tests, tests]
+    needs: [lint, secrets, check-large-files, i18n-gates, tooling, changes, build, unit-tests, ui-tests, focused-tests, tests]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 10

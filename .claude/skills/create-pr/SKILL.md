@@ -100,8 +100,8 @@ always gets raised.
 
 ## What this skill does NOT do
 
-- **Does not run the app's test suites.** Unit and UI tests are opt-in and not in the gate (the
-  tooling tests are). Run them yourself when the change warrants
-  it — layout, data-model, or persistence work especially — and report the real result in the Test
+- **Does not run the app's test suites.** PR CI runs the unit suite and the three UI shards on
+  every push (AGENTS.md §"Build and test"); the gate runs only the tooling tests. Run
+  `make focused-tests` for tests you added or changed, and report the real result in the Test
   plan. Do not claim test coverage you did not obtain.
 - **Does not involve a GitHub issue.** For issue-linked work, use `/create-pr-for-issue <N>`.

@@ -30,13 +30,13 @@ make sim-clean        # delete them all and remove .build/sim/
 
 `scripts/_sim_concurrency.sh` decides how many simulators a test run uses; it is identical in checklists and simple-recurring-budgets. Unit and focused runs are always serial on one simulator.
 
-**Pool on** (the maintainer's machine, where `~/dev/simulator-slots` exists): each run builds first, then takes slots from a machine-wide pool. The UI pass asks for `UI_WORKERS` slots (default 2), gets what is free (at least 1), and runs that many clones. `SIMULATOR_SLOTS_FEWER=N` leaves N free slots unused; `SIMULATOR_SLOTS_TIMEOUT=S` gives up after S seconds (exit 75). `make simulator-slots-status` shows who holds what.
+**Pool on** (the maintainer's machine, where `~/dev/simulator-slots` exists): each run builds first, then takes slots from a machine-wide pool. The UI pass asks for `UI_WORKERS` slots (default 1), gets what is free (at least 1), and runs that many clones. `SIMULATOR_SLOTS_FEWER=N` leaves N free slots unused; `SIMULATOR_SLOTS_TIMEOUT=S` gives up after S seconds (exit 75). `make simulator-slots-status` shows who holds what.
 
 **Pool off** (everyone else): the run prints a `simulator-slots: no shared pool` notice, takes nothing, and uses `UI_WORKERS` (default 1, serial):
 
 | `UI_WORKERS` | UI pass flags | When to use |
 | --- | --- | --- |
-| unset or `1` | `-parallel-testing-enabled NO` (serial, 1 sim) | Lightest; the default without the pool. |
+| unset or `1` | `-parallel-testing-enabled NO` (serial, 1 sim) | Lightest; the default. |
 | `2` | `-parallel-testing-enabled YES -parallel-testing-worker-count 2 -maximum-parallel-testing-workers 2` | ≈16 GB Apple silicon with little else running. |
 | `3` | same, with `3` | Only with headroom; RAM-heavy. |
 

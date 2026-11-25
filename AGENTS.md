@@ -69,9 +69,9 @@ make i18n-check   # catalog fully translated, in Xcode's byte format + no unkeye
 make i18n-sync    # after `make build`: copy Swift comments/keys into the catalog, as a build in Xcode does
 make doc-check    # doc pointers, headings, and named symbols resolve; no history on added lines
 make script-tests # scripts/tests (Python) + fastlane/tests (Ruby 3+; skipped with a warning if absent)
-make tests        # opt-in: unit-tests then ui-tests
-make unit-tests   # opt-in, not in the gate
-make ui-tests     # opt-in; a one-slot run warms the device with one unit suite first if needed
+make tests        # by hand only: unit-tests then ui-tests (CI runs both on every PR)
+make unit-tests   # by hand only, not in the gate
+make ui-tests     # by hand only; one simulator (UI_WORKERS=1) unless asked; warms the device with one unit suite first if needed
 make ui-tests UI_SHARD=<name>  # one of CI's UI shards (scripts/ci/ui_shards.py)
 make focused-tests ONLY=<target>/<Class>[/<test>] [ITERATIONS=3]  # one class or test, serially
 make simulator-slots-status  # the machine-wide simulator pool: holders, booted devices, recent runs
@@ -81,9 +81,26 @@ make sim-show     # open DeviceHub on this checkout's simulator
 make system       # once per clone: toolchain + git hooks
 ```
 
-The app's unit and UI suites are opt-in and in no gate or hook: they boot this checkout's simulator
-and take minutes, while the gate never boots one. The tooling tests (`script-tests`) are in the gate.
-Give any suite run a timeout of at least 30 minutes.
+The app's unit and UI suites are in no gate or hook: they boot this checkout's simulator and take
+minutes, while the gate never boots one. CI runs both on every PR push and again on `main` after
+the merge, so the standard flow runs no simulator on the laptop. Locally, run `make focused-tests`
+for the tests you added or changed; run a whole suite only when you need it, with a timeout of at
+least 30 minutes. The tooling tests (`script-tests`) are in the gate.
+
+### Where each check runs
+
+| Phase | Runs | Simulators |
+|---|---|---|
+| Commit | pre-commit (lefthook): format, lint, merge markers, large files, gitleaks on staged files | 0 |
+| Create PR (`/create-pr`, `/create-pr-for-issue`) | `make gate`; `make focused-tests` for tests you touched | 0 (1 for focused tests) |
+| Push | pre-push (lefthook): no push to `main`/`gh-pages`, the two repo-wide translation checks | 0 |
+| CI on the PR | lint, secrets, large files, i18n, tooling; build once (plus `sync_catalog --check`), then unit + 3 UI shards | CI only |
+| Merge (`/merge-pr`) | waits for the required checks, squash-merges; no local checks | 0 |
+| CI on `main` | the full PR run again on the squash commit | CI only |
+
+CI covers every gate step except `tool-versions-check` (CI pins its own versions from
+`config/lint-tools.env`) and `simulator-slots-check`'s sync half (the master exists only on Jimmy's
+machine).
 
 `make ui-tests` runs every `checklistsUITests` class except the screenshot captures that
 `scripts/ci/ui_shards.py` skips (`ALWAYS_SKIPPED`); add a new capture class to that list. Before a full UI run, run a
@@ -177,8 +194,8 @@ These govern every commit, skill-driven or not:
 ### What gates a merge
 
 `main` requires a PR and, through its ruleset, the CI checks listed in §CI, with zero required
-approvals. `/merge-pr` also waits on those checks and runs `make gate` on the branch, and refuses to merge
-if either fails.
+approvals. `/merge-pr` waits on those checks and refuses to merge if one fails; it runs nothing
+locally, since CI covers the gate (§Build and test).
 
 ## Concurrency
 
@@ -304,7 +321,7 @@ doesn't apply.
   simulator-slots-sync`. The gate fails while the two differ.
 - **Slots per command:**
   - `unit-tests` and `focused-tests`: 1.
-  - `ui-tests`: up to `UI_WORKERS` (1..3, default 2; `scripts/_sim_concurrency.sh`).
+  - `ui-tests`: up to `UI_WORKERS` (1..3, default 1, so one run never takes the whole pool from other agents; `scripts/_sim_concurrency.sh`).
   - The size check's `run.sh`: up to `WORKERS`.
   - The screenshot lane: 1, held for the whole capture, its builds included: fastlane's snapshot
     builds and tests in one step.
@@ -357,8 +374,10 @@ Markdown outside `scripts/` and `fastlane/`, plus `core-docs/`, `releases/` and 
 dirs, are docs; the app folder, Swift, the Makefile, scripts, fastlane and workflows are code).
 Pushes to `main` and manual runs always count as code. A skipped required check counts as passing,
 so don't replace this with a workflow-level `paths-ignore`: the required checks would never report.
-Required checks in the `main` ruleset: `lint`, `secrets`, `check-large-files`, `i18n-gates`,
-`tests`.
+The ubuntu `tooling` job runs the gate steps no other job does: `script-tests` (Python and the
+fastlane Ruby tests) and `uitest-check`. `build` also runs `sync_catalog.py --check` on the strings
+its compile extracted. Required checks in the `main` ruleset: `lint`, `secrets`,
+`check-large-files`, `i18n-gates`, `tooling`, `tests`.
 
 A manual run on a branch shows as checks on that commit's PR, under the same names as the
 automatic run, and the ruleset reads the newest check of each name. So a narrowed run can turn a red
@@ -367,8 +386,8 @@ reports as skipped, which counts as passing. Use one to investigate, such as rep
 test, then rerun the automatic run (`gh run rerun <id>`) before merging. Only Jimmy starts one, preferably by commenting on the PR so the
 request and its result stay there (`.github/workflows/ci-command.yml`; repo owner's comments only):
 
-- `/ci`: the four gates + build. `/ci all`: those plus unit and UI tests.
-- Words combine: `lint` `secrets` `large-files` `i18n` `gates` `build` `unit` `ui`, e.g.
+- `/ci`: the five gates + build. `/ci all`: those plus unit and UI tests.
+- Words combine: `lint` `secrets` `large-files` `i18n` `tooling` `gates` `build` `unit` `ui`, e.g.
   `/ci lint i18n` or `/ci gates unit`. `/ci help` replies with the full table.
 - `/ci test <target>/<Class>[/<test>] [xN]`: build, then only that class or test, N times in one
   job, as `make focused-tests` runs it locally but with animations off (a UI class warms up with
