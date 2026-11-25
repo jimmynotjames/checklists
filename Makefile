@@ -1,4 +1,4 @@
-.PHONY: system tool-versions-check format format-changed lint lint-changed i18n-check i18n-sync i18n-sync-check uitest-check doc-check build tests unit-tests ui-tests focused-tests script-tests gate verify-secrets hooks-install initialize-sims sim-udid sim-show sim-run sim-status sim-shutdown sim-clean simulator-slots-check simulator-slots-sync simulator-slots-status
+.PHONY: system tool-versions-check format format-check format-changed lint lint-changed i18n-check i18n-sync i18n-sync-check uitest-check doc-check build tests unit-tests ui-tests focused-tests script-tests gate verify-secrets hooks-install initialize-sims sim-udid sim-show sim-run sim-status sim-shutdown sim-clean simulator-slots-check simulator-slots-sync simulator-slots-status
 
 system:
 	bash scripts/system-setup.sh
@@ -10,7 +10,11 @@ tool-versions-check:
 	bash scripts/check-tool-versions.sh
 
 format:
-	swiftformat .
+	bash scripts/swiftformat.sh
+
+# Check only; matches the CI `lint` job's SwiftFormat step.
+format-check:
+	bash scripts/swiftformat.sh --lint
 
 lint:
 	swiftlint lint --strict
@@ -19,7 +23,7 @@ lint:
 format-changed:
 	@files=$$(bash scripts/changed-swift-files.sh); \
 	if [ -z "$$files" ]; then echo "format-changed: no changed Swift files"; else \
-	  echo "$$files" | tr '\n' ' ' | xargs swiftformat; fi
+	  echo "$$files" | tr '\n' ' ' | xargs bash scripts/swiftformat.sh; fi
 
 # Autocorrect then strict-lint only the Swift files this branch changed.
 lint-changed:
