@@ -222,7 +222,9 @@ jobs:
   # The offline tests of the repo's own scripts (Python and the fastlane Ruby) and the UI-test
   # source checks: the parts of `make gate` no other job runs, so CI covers everything the local
   # gate does and /merge-pr needn't re-run it. RUBY is set so a missing Ruby fails instead of
-  # skipping the fastlane tests as script-tests.sh does on a laptop without one.
+  # skipping the fastlane tests as script-tests.sh does on a laptop without one. The
+  # simulator-slots tests need macOS (kqueue, simctl) and skip here; the pool is never on in CI.
+  # These tools print plain text, so they run without scripts/ci/annotate.py (which adds --json).
   tooling:
     if: inputs.only == '' || contains(format(',{0},', inputs.only), ',tooling,')
     runs-on: ubuntu-latest
@@ -234,11 +236,11 @@ jobs:
       - name: script-tests
         env:
           RUBY: ruby
-        run: python3 scripts/ci/annotate.py --name script-tests -- bash scripts/script-tests.sh
+        run: bash scripts/script-tests.sh
       - name: check_ui_test_keyboard.py
-        run: python3 scripts/ci/annotate.py --name check_ui_test_keyboard -- python3 scripts/check_ui_test_keyboard.py
+        run: python3 scripts/check_ui_test_keyboard.py
       - name: generate_seeds.py --check
-        run: python3 scripts/ci/annotate.py --name generate_seeds -- python3 scripts/screenshot_content/generate_seeds.py --check
+        run: python3 scripts/screenshot_content/generate_seeds.py --check
 
   # --- Tier 2: build once (macOS) ---------------------------------------------------
   # Compiles the app and both test targets once (build-for-testing) and hands the products to the
@@ -306,7 +308,7 @@ jobs:
       - name: sync_catalog.py --check
         env:
           SYNC_CATALOG_DERIVED_DATA: .build/sim/DerivedData
-        run: python3 scripts/ci/annotate.py --name sync_catalog -- python3 scripts/translate_catalog/sync_catalog.py --check
+        run: python3 scripts/translate_catalog/sync_catalog.py --check
       # A tarball, because an artifact upload drops the exec bits and symlinks the app needs.
       - name: Pack the test products
         if: env.RUNS_TESTS == 'true'

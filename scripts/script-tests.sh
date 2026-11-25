@@ -10,7 +10,12 @@ cd "$ROOT"
 
 python3 -m unittest discover -s scripts/tests -q
 py_rc=$?
-python3 -m unittest discover -s scripts/simulator-slots/tests -q || py_rc=1
+# The pool tool is macOS-only (kqueue, simctl); elsewhere (CI's ubuntu tooling job) its tests skip.
+if [[ "$(uname -s)" == Darwin ]]; then
+  python3 -m unittest discover -s scripts/simulator-slots/tests -q || py_rc=1
+else
+  echo "script-tests: scripts/simulator-slots/tests skipped (macOS only)" >&2
+fi
 
 RUBY="${RUBY:-}"
 if [[ -z "$RUBY" ]]; then

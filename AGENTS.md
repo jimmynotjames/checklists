@@ -99,8 +99,8 @@ least 30 minutes. The tooling tests (`script-tests`) are in the gate.
 | CI on `main` | the full PR run again on the squash commit | CI only |
 
 CI covers every gate step except `tool-versions-check` (CI pins its own versions from
-`config/lint-tools.env`) and `simulator-slots-check`'s sync half (the master exists only on Jimmy's
-machine).
+`config/lint-tools.env`) and `simulator-slots-check` plus the pool's own tests (the pool is a
+macOS-only tool, never on in CI; `script-tests.sh` skips those tests off macOS).
 
 `make ui-tests` runs every `checklistsUITests` class except the screenshot captures that
 `scripts/ci/ui_shards.py` skips (`ALWAYS_SKIPPED`); add a new capture class to that list. Before a full UI run, run a
