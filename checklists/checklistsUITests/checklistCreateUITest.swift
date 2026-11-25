@@ -14,7 +14,7 @@ class checklistCreateUITest: XCTestCase {
     continueAfterFailure = false
 
     app = XCUIApplication()
-    app.launchArguments = UITestLaunch.arguments
+    app.configureForUITests()
     app.launch()
     XCTAssertTrue(app.collectionViews.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
   }

@@ -14,6 +14,8 @@
 #
 # UI_SHARD=<name> runs one of CI's shards instead of the whole target (scripts/ci/ui_shards.py).
 # XCTESTRUN=<path> runs a prebuilt build instead of building (prepare_test_args in _destination.sh).
+# UI_RETRY_ON_FAILURE=1 reruns a failed test once (CI's shards set it; local runs don't, so a flaky
+# test still fails locally).
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
@@ -40,6 +42,11 @@ if [[ "${SIMULATOR_SLOTS_GRANTED}" -le 1 ]]; then
     warm_up_if_needed
 fi
 
+RETRY_ARGS=()
+if [[ "${UI_RETRY_ON_FAILURE:-}" == 1 ]]; then
+    RETRY_ARGS=(-retry-tests-on-failure -test-iterations 2)
+fi
+
 # `|| RC=$?` so `set -e` doesn't skip the tagging below; never `if ! xcodebuild` (see gate.sh).
 RC=0
 # `-collect-test-diagnostics never`: nothing here reads the simulator diagnostics, and collecting
@@ -47,10 +54,21 @@ RC=0
 xcodebuild test-without-building "${TEST_ARGS[@]}" \
     -resultBundlePath "${RESULT_BUNDLE}" \
     ${SLOTS_PARALLEL_ARGS[@]+"${SLOTS_PARALLEL_ARGS[@]}"} \
+    ${RETRY_ARGS[@]+"${RETRY_ARGS[@]}"} \
     -collect-test-diagnostics never \
     "${SELECTION[@]}" || RC=$?
 
-python3 "${ROOT}/scripts/list_test_failures.py" "${RESULT_BUNDLE}" || true
+FAILURES="$(python3 "${ROOT}/scripts/list_test_failures.py" "${RESULT_BUNDLE}" || true)"
+if [[ -n "${FAILURES}" ]]; then
+    echo "${FAILURES}"
+    # A green run with failures passed them only on retry. On CI, where the bundle isn't kept for a
+    # green job, surface each as a warning annotation so the flake gets noticed.
+    if [[ "${RC}" -eq 0 && -n "${GITHUB_ACTIONS:-}" ]]; then
+        while IFS= read -r line; do
+            echo "::warning title=UI test passed only on retry::${line#TEST-FAILED: }"
+        done <<<"${FAILURES}"
+    fi
+fi
 
 echo "result-bundle: ${RESULT_BUNDLE}"
 exit "${RC}"

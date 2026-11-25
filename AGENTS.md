@@ -340,8 +340,11 @@ The ubuntu `tests` job sums them up: it passes when every job the run asked for 
 the PR was docs-only, and fails otherwise, including when a gate, `changes` or `build` failed. The
 account runs at most 5 macOS jobs at once across all its repos, and a full run here holds 4.
 CI's UI tests (`ui-tests` and `focused-tests`) run with the app's animations off; local runs keep
-them. To reproduce a CI-only UI failure locally, prefix `TEST_RUNNER_UITEST_ANIMATIONS=off` to
-`make focused-tests` or `make ui-tests` (`TestAnimationsOverride` explains why).
+them. To reproduce a CI-only UI failure locally, prefix `TEST_RUNNER_FORCE_ANIMATIONS=off` to
+`make focused-tests` or `make ui-tests` (`TestAnimationsOverride` explains why). CI's `ui-tests`
+shards also rerun a failed test once (`UI_RETRY_ON_FAILURE=1`); a test that passes only on retry
+leaves a "UI test passed only on retry" warning on the run, which counts as a flake for
+FLAKY_TESTS.md.
 
 A docs-only PR skips `build` and the test jobs: a `changes` job (ubuntu) lists the PR's files
 and they run only when one is code (`scripts/ci/docs_only.py` holds the rules:

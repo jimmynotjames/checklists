@@ -327,7 +327,7 @@ jobs:
     timeout-minutes: 40
     env:
       # Animations off for UI tests on CI only (TestAnimationsOverride in the app explains why).
-      TEST_RUNNER_UITEST_ANIMATIONS: "off"
+      TEST_RUNNER_FORCE_ANIMATIONS: "off"
     strategy:
       fail-fast: false # one red shard still lets the others report
       matrix:
@@ -343,6 +343,7 @@ jobs:
         env:
           UI_SHARD: ${{ matrix.shard }}
           UI_WORKERS: "1"
+          UI_RETRY_ON_FAILURE: "1"
         run: make ui-tests
       - name: Upload test result bundles
         if: failure()
@@ -364,7 +365,7 @@ jobs:
       && github.event_name == 'workflow_dispatch' && inputs.test != ''
     timeout-minutes: 40
     env:
-      TEST_RUNNER_UITEST_ANIMATIONS: "off" # as in ui-tests
+      TEST_RUNNER_FORCE_ANIMATIONS: "off" # as in ui-tests
     outputs:
       tally: ${{ steps.one.outputs.tally }}
     steps:
