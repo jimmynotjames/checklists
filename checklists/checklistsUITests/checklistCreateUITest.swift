@@ -29,6 +29,27 @@ class checklistCreateUITest: XCTestCase {
     app.collectionViews
   }
 
+  /// Focuses `textView`, which holds `text`, with the caret after its last character.
+  ///
+  /// The tap aims past the end of the last line, but on a loaded runner it can land mid-text, as
+  /// when the table scrolls between reading the field's frame and tapping. So a marker is typed and
+  /// the value read to see where the caret is; the marker is deleted either way, and a caret that
+  /// missed gets another tap.
+  private func placeCaretAtEnd(of textView: XCUIElement, holding text: String, file: StaticString = #filePath, line: UInt = #line) {
+    let marker = "~"
+    for _ in 1 ... 3 {
+      textView.tapForKeyboardFocus(at: CGVector(dx: 0.99, dy: 0.99), file: file, line: line)
+      textView.typeText(marker)
+      let landedAtEnd = textView.value as? String == text + marker
+      textView.pressDeleteKey()
+      XCTAssertEqual(textView.value as? String, text, "Deleting the caret marker changed the text.", file: file, line: line)
+      if landedAtEnd {
+        return
+      }
+    }
+    XCTFail("Three taps at the end of \(textView.identifier) didn't put the caret after the last character.", file: file, line: line)
+  }
+
   /**
    1a. Create a checklist with 3 Checklist Name, Notes, and 3 items, one item with Item Notes.
    1b. Do it in a way that exercises different ways of adding a new Item.
@@ -107,10 +128,9 @@ class checklistCreateUITest: XCTestCase {
     // from an item with both emptied into the name of the item above, which it is deleted in favour
     // of (`ChecklistViewController.itemContentViewDidBackspaceEmpty`). It stops at the first item.
     let itemNotesTextView = cell.textViews["itemNotesTextView"]
-    // The far bottom-right corner, past the end of the last line, so the caret lands after the last
-    // character.
-    itemNotesTextView.tapForKeyboardFocus(at: CGVector(dx: 0.99, dy: 0.99))
-    itemNotesTextView.pressDeleteKey((item2NotesLine1 + "\n" + item2NotesLine2).count)
+    let item2Notes = item2NotesLine1 + "\n" + item2NotesLine2
+    placeCaretAtEnd(of: itemNotesTextView, holding: item2Notes)
+    itemNotesTextView.pressDeleteKey(item2Notes.count)
     XCTAssertEqual(itemNotesTextView.value as? String, "", "Text was left in the notes: the caret didn't land at the end.")
 
     // One more moves up into the name without deleting anything, and the next deletes from its end.
