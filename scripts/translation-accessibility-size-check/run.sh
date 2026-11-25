@@ -5,9 +5,9 @@ cd "$ROOT"
 
 # Ad-hoc localized large-type screenshot capture; what it does and how to read it: README.md.
 # Knobs (env):
-#   WORKERS         simulators to ask the slot pool for (default 1, serial). The run takes what is
-#                   free, one clone each (AGENTS.md §"Simulator slots"). Ignored where the pool
-#                   is off: the run is serial.
+#   WORKERS         simulators to use (default 1, serial). With the slot pool on, the run takes
+#                   what is free, one clone each (AGENTS.md §"Simulator slots"); with it off, it
+#                   runs that many.
 #   SIMULATOR_NAME  base device (default from _sim_sandbox.sh). A narrow device is the worst case
 #                   for truncation — try SIMULATOR_NAME="iPhone 17e".
 #   MAX_PX          downscale longest screenshot edge to this many px (default 1000).

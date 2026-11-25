@@ -28,16 +28,11 @@ pre-commit:
 
 pre-push:
   commands:
-    # Fails faster than the server-side protection that also covers both branches.
+    # Checks the refs being pushed (from git's stdin), not the checked-out branch. Fails faster
+    # than the server-side protection that also covers main and gh-pages.
     no-direct-protected-push:
-      run: |
-        branch="$(git rev-parse --abbrev-ref HEAD)"
-        case "$branch" in
-          main|gh-pages)
-            echo "error: direct push to $branch is not allowed - open a PR instead" >&2
-            exit 1
-            ;;
-        esac
+      run: bash scripts/check-push-refs.sh
+      use_stdin: true
 
     # Repo-wide by design — AGENTS.md §"Lint policy" records why these two are the
     # exception to the changed-files rule.

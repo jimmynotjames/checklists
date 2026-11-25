@@ -1,6 +1,7 @@
 # CI — runs on every PR and every push to main. Required checks: AGENTS.md §CI.
 # Rerun or narrow a run by commenting `/ci ...` on the PR (ci-command.yml dispatches this
-# workflow and this one reports back), or with `gh workflow run` (AGENTS.md §CI).
+# workflow), or with `gh workflow run` (AGENTS.md §CI). Every run ends with the `summary` job's
+# comment on its PR.
 #
 # macOS work: `build` compiles once (build-for-testing), then `unit-tests` and the `ui-tests`
 # shards (scripts/ci/ui_shards.py) run its products in parallel, one runner each. The ubuntu
@@ -54,6 +55,10 @@ concurrency:
 
 permissions:
   contents: read
+
+# Repo-specific constants.
+env:
+  XCODE_VERSION: "27.2"
 
 jobs:
   # --- Docs-only detection (ubuntu, seconds) ---------------------------------------
@@ -253,14 +258,15 @@ jobs:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/ios-setup
         with:
+          xcode-version: ${{ env.XCODE_VERSION }}
           simulator: "false"
       - name: Cache SwiftPM packages
         uses: actions/cache@v6
         with:
           path: .build/sim/DerivedData/SourcePackages
-          key: spm-${{ runner.os }}-xcode27.2-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          key: spm-${{ runner.os }}-xcode${{ env.XCODE_VERSION }}-${{ hashFiles('checklists/checklists.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: |
-            spm-${{ runner.os }}-xcode27.2-
+            spm-${{ runner.os }}-xcode${{ env.XCODE_VERSION }}-
       # For any simulator, so the products run on whichever device a test job's runner has. On
       # failure, each compile error becomes a PR annotation and a job-summary line.
       - name: Build for testing
@@ -301,12 +307,26 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/ios-setup
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
       - uses: ./.github/actions/test-products
       # Under the job's timeout: a step timeout fails the step, so the result bundles still upload,
       # while a job timeout cancels the job and skips the upload.
       - name: Unit tests (make unit-tests)
         timeout-minutes: 25
+        env:
+          TEST_REPORT_JSON: test-report.json
+          TEST_REPORT_JOB: unit-tests
         run: make unit-tests
+      # The summary job's input (scripts/ci/ci_summary.py); written by report_test_failures.
+      - name: Upload the test report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-report-unit-tests
+          path: test-report.json
+          retention-days: 1
+          if-no-files-found: ignore
       - name: Upload test result bundles
         if: failure()
         uses: actions/upload-artifact@v7
@@ -335,16 +355,29 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/ios-setup
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
       - uses: ./.github/actions/test-products
       # Serial on this runner's one simulator, which first warms up with one small unit suite
-      # (warm_up_if_needed in scripts/_destination.sh).
+      # (warm_up_if_needed in scripts/_sim_concurrency.sh).
       - name: UI tests (make ui-tests UI_SHARD=${{ matrix.shard }})
         timeout-minutes: 35
         env:
           UI_SHARD: ${{ matrix.shard }}
           UI_WORKERS: "1"
           UI_RETRY_ON_FAILURE: "1"
+          TEST_REPORT_JSON: test-report.json
+          TEST_REPORT_JOB: ui-tests (${{ matrix.shard }})
         run: make ui-tests
+      # The summary job's input (scripts/ci/ci_summary.py); written by report_test_failures.
+      - name: Upload the test report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-report-ui-tests-${{ matrix.shard }}
+          path: test-report.json
+          retention-days: 1
+          if-no-files-found: ignore
       - name: Upload test result bundles
         if: failure()
         uses: actions/upload-artifact@v7
@@ -371,6 +404,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/ios-setup
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
       - uses: ./.github/actions/test-products
       - name: One class or test (make focused-tests)
         id: one
@@ -378,6 +413,8 @@ jobs:
         env:
           TEST: ${{ inputs.test }}
           ITERATIONS: ${{ inputs.iterations }}
+          TEST_REPORT_JSON: test-report.json
+          TEST_REPORT_JOB: focused-tests
         run: |
           rc=0
           make focused-tests ONLY="$TEST" ITERATIONS="$ITERATIONS" || rc=$?
@@ -392,6 +429,15 @@ jobs:
             fi
           fi
           exit "$rc"
+      # The summary job's input (scripts/ci/ci_summary.py); written by report_test_failures.
+      - name: Upload the test report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-report-focused-tests
+          path: test-report.json
+          retention-days: 1
+          if-no-files-found: ignore
       # Kept when it passes too: with a flake, the passing runs are evidence as well.
       - name: Upload test result bundles
         if: ${{ !cancelled() }}
@@ -441,44 +487,34 @@ jobs:
             fi
           done
 
-  # --- Report back to the PR that asked for this run (a /ci comment) --------------
-  # Also runs when a started run was cancelled, so it still leaves its line on the PR (a run
-  # cancelled while still queued never starts, so it posts nothing).
-  report:
+  # --- Summary: the job summary page and a comment on the run's PR (ubuntu, seconds) ----------
+  # Every run, however it started (scripts/ci/ci_summary.py has the rules): a PR push keeps one
+  # comment up to date; a /ci run or a push to main posts a new comment (on the merged PR). Not a
+  # required check, and posting is best-effort.
+  summary:
     needs: [lint, secrets, check-large-files, i18n-gates, changes, build, unit-tests, ui-tests, focused-tests, tests]
-    if: always() && inputs.pr != ''
+    if: always()
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
+      contents: read
+      actions: read
+      checks: read
       pull-requests: write
     steps:
-      - name: Comment the results on the PR
+      - uses: actions/checkout@v7
+      - name: Download the test reports
+        uses: actions/download-artifact@v8
+        continue-on-error: true
+        with:
+          pattern: test-report-*
+          path: reports
+      - name: Post the summary
         env:
           GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          PR: ${{ inputs.pr }}
-          NEEDS: ${{ toJSON(needs) }}
-          SELECTION: ${{ inputs.only || 'gates+build' }}
-          TESTS: ${{ inputs.test && format('test=`{0}` x{1}', inputs.test, inputs.iterations) || format('tests={0}', inputs.tests) }}
+          CI_CODE: ${{ needs.changes.outputs.code }}
           TALLY: ${{ needs.focused-tests.outputs.tally }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          rows=$(jq -r '
-            {success: "✅", failure: "❌", skipped: "⏭️", cancelled: "🚫"} as $icon
-            | to_entries[] | "| `\(.key)` | \($icon[.value.result] // "") \(.value.result) |"' <<<"$NEEDS")
-          verdict=$(jq -r '[.[].result] as $r
-            | if ($r | index("failure")) then "❌ failed"
-              elif ($r | index("cancelled")) then "🚫 cancelled"
-              else "✅ passed" end' <<<"$NEEDS")
-          {
-            echo "**CI ${verdict}** on \`${GITHUB_REF_NAME}\` @ \`${GITHUB_SHA::7}\`: ${SELECTION}, ${TESTS}. [Run](${RUN_URL})"
-            echo
-            if [[ -n "$TALLY" ]]; then
-              echo "$TALLY"
-              echo
-            fi
-            echo "| Job | Result |"
-            echo "|---|---|"
-            echo "$rows"
-          } > report.md
-          gh pr comment "$PR" --body-file report.md
-
+          printf '%s' "$TALLY" > tally.txt
+          python3 scripts/ci/ci_summary.py post --reports reports --tally tally.txt \
+            --flaky-log checklists/checklistsUITests/FLAKY_TESTS.md
