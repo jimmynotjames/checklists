@@ -72,7 +72,7 @@ You don't need `config/Secrets.local.xcconfig`, `fastlane/.env`, an App Store Co
    - From Xcode: open `checklists/checklists.xcodeproj`, select an iPhone Simulator → Run (⌘R).
 5. Before opening a PR: `make gate` (format, lint, i18n, doc, and tooling checks, then a build).
 
-The unit and UI suites (`make unit-tests`, `make ui-tests`) are opt-in and not part of the gate. See [AGENTS.md](AGENTS.md) §"Build and test".
+The unit and UI suites (`make unit-tests`, `make ui-tests`) are not part of the gate; CI runs them on every PR. Locally, run `make focused-tests` for the tests you touched. See [AGENTS.md](AGENTS.md) §"Build and test".
 
 ### Simulator concurrency
 
@@ -208,7 +208,7 @@ If you are an AI agent working in this codebase:
 - **Read [AGENTS.md](AGENTS.md) first.** It is canonical; the design docs in `core-docs/` are canonical for their areas.
 - **Local secrets:** `config/Secrets.local.xcconfig` and `fastlane/.env` (gitignored), and the `.p8` key (outside the repo). Never read, print, or commit them; [core-docs/secrets-list.md](core-docs/secrets-list.md) names the keys.
 - **Ship guard:** `scripts/verify_release_secrets.sh`. Don't bypass it.
-- **Build & test:** `make gate` before a PR; app test suites are opt-in. See AGENTS.md §"Build and test".
+- **Build & test:** `make gate` before a PR, plus `make focused-tests` for tests you touched; CI runs the app test suites. See AGENTS.md §"Build and test".
 - **Simulators:** the simulator-slots pool is off outside the maintainer's machine. Run normally and don't create the pool's directories; choose concurrency with `UI_WORKERS`. See AGENTS.md §"Simulator slots".
 - **Translations:** new user-facing strings require the `translate-new-strings` skill. See [core-docs/localization-spec.md](core-docs/localization-spec.md).
 - **Branding:** unless you are deriving your own app with its own branding, do not alter the app icon, reChecklist name, or store metadata as part of code changes. See [TRADEMARK.md](TRADEMARK.md).

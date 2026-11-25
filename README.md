@@ -126,7 +126,7 @@ and StoreKit (rating prompt). SPM bumps are manual; Dependabot tracks GitHub Act
 - **Custom skills** (project-specific):
   - [create-pr](.claude/skills/create-pr/SKILL.md) — review, gate, and open a PR from already-written changes
   - [create-pr-for-issue](.claude/skills/create-pr-for-issue/SKILL.md) — turn a GitHub issue into a reviewed, gated PR
-  - [merge-pr](.claude/skills/merge-pr/SKILL.md) — gate, squash-merge, and close the linked issue
+  - [merge-pr](.claude/skills/merge-pr/SKILL.md) — wait for green CI, squash-merge, and close the linked issue
   - [translate-new-strings](.claude/skills/translate-new-strings/SKILL.md) — add or change string keys and translate them into every locale
   - [audit-translations](.claude/skills/audit-translations/SKILL.md) — grade existing translations for tone, length, and accuracy
   - [translation-accessibility-size-check](.claude/skills/translation-accessibility-size-check/SKILL.md) — localized screenshots at the largest Dynamic Type size
@@ -174,10 +174,9 @@ make focused-tests ONLY=checklistsUITests/<Class>   # one class or test
 ## Tooling, CI & release
 
 - Local gates (Lefthook): pre-commit runs SwiftFormat, SwiftLint, a merge-conflict check, a
-  large-file guard, and gitleaks; pre-push blocks direct pushes to `main`, checks translations,
-  and compiles.
+  large-file guard, and gitleaks; pre-push blocks direct pushes to `main` and checks translations.
 - `make gate` runs every local check plus a build. See [AGENTS.md](AGENTS.md) §"Build and test".
-- CI ([ci.yml](.github/workflows/ci.yml)) runs lint, secret scan, large-file and i18n checks,
+- CI ([ci.yml](.github/workflows/ci.yml)) runs lint, secret scan, large-file, i18n and tooling checks,
   then compiles once and runs the unit tests and sharded UI tests on parallel runners, on every PR
   and push to `main`. Docs-only PRs skip the build and tests. The
   maintainer can rerun or narrow it with a `/ci` PR comment.

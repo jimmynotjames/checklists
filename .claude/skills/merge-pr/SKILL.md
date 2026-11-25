@@ -1,6 +1,6 @@
 ---
 name: merge-pr
-description: Gate a reviewed PR locally, squash-merge it, delete its branch, and close or annotate any linked issue.
+description: Wait for a reviewed PR's required CI checks, squash-merge it, delete its branch, and close or annotate any linked issue. Runs no local gate or tests.
 ---
 
 # Merge a reviewed PR
@@ -19,26 +19,31 @@ a request to inspect or review a PR alone is not authorization.
 
    `tests` is one of them; a docs-only PR's `tests` passes without running anything.
 
-   **If any fails, do NOT merge** — report it and stop. If the latest checks came from a narrowed
-   `/ci` run rather than the automatic one, they can read green over a failure (AGENTS.md §CI):
-   rerun the automatic run first. Then gate the branch locally too:
+   **The watch can return before `tests` exists.** It only watches checks already reported, and
+   `tests` reports once `build` and the test jobs finish. So after it returns, confirm every
+   required check is present and passed:
 
    ```bash
-   gh pr checkout <PR>
-   make gate
+   gh pr checks <PR> --json name,bucket --jq '.[] | "\(.name) \(.bucket)"'
    ```
 
-   Run the gate in the background and collect its exit status; it logs to `tmp/gate.log`.
-   **If the gate fails, do NOT merge** — report the failure and stop. If the gate produced
-   formatting or lint fixes, commit and push them to the PR branch before merging (they belong
-   in this PR, not a follow-up).
+   It must list `lint`, `secrets`, `check-large-files`, `i18n-gates`, `tooling` and `tests`, each
+   `pass`. If one is missing or `pending`, wait again (`--watch` in the background) and re-check.
+
+   **If any fails, do NOT merge** — report it and stop. If the latest checks came from a narrowed
+   `/ci` run rather than the automatic one, they can read green over a failure (AGENTS.md §CI):
+   rerun the automatic run first.
+
+   No local gate or tests: CI runs everything `make gate` does (the `tooling` job covers the
+   script and UI-test-source checks) plus the unit and UI suites (AGENTS.md §"Build and test").
 
 2. **Scan the PR body for issue linkage** via `gh pr view <PR> --json body --jq '.body'`: look for
    `Closes #N` (complete fix) or `Refs #N` (partial). If neither is present, this is a no-issue PR
    (e.g. from `/create-pr`) — note that and skip step 5.
 
-3. **Squash-merge:** record the validated PR head SHA, verify it still matches the local
-   tested commit, then run `gh pr merge <PR> --squash --match-head-commit <SHA>`.
+3. **Squash-merge:** record the head SHA the green checks ran on
+   (`gh pr view <PR> --json headRefOid --jq .headRefOid`), then run
+   `gh pr merge <PR> --squash --match-head-commit <SHA>`, so a push after the checks can't land unchecked.
    One PR = one commit on `main`. Never merge on the same turn the PR was opened.
 
 4. **Clean up branches.** The merge does not clean up after itself locally, and may or may not have
@@ -60,5 +65,5 @@ a request to inspect or review a PR alone is not authorization.
    - **Partial fix** (`Refs #N`) — leave it open and comment a pointer:
      `gh issue comment <N> --body "Partially addressed by #<PR>. Still pending: <summary>."`
 
-6. **Report** what merged, the gate result, that the branch was deleted, that the simulators were shut down, and the final issue state
+6. **Report** what merged, the CI result, that the branch was deleted, that the simulators were shut down, and the final issue state
    (or "no linked issue").

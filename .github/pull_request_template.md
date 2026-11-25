@@ -28,8 +28,8 @@ For every change, confirm each concern applies or is N/A:
       `analytics.track(...)` call, with names in the `AnalyticsEvent`/`AnalyticsProperty` enums in
       `Analytics/AnalyticsNames.swift` and a row added to `core-docs/analytics-spec.md`. No PII.
 - [ ] **Accessibility** — new controls have `accessibilityLabel` and appropriate traits; nothing
-      clips at large Dynamic Type. New or changed colors have their pair in `PaletteTests` and a
-      `make ui-tests` run. If this change involved any accessibility work,
+      clips at large Dynamic Type. New or changed colors have their pair in `PaletteTests` (CI's
+      `accessibility` shard checks contrast). If this change involved any accessibility work,
       `core-docs/accessibility-spec.md` is updated too.
 - [ ] **Reduce Motion** — new or changed animations are gated on Reduce Motion
       (`@Environment(\.accessibilityReduceMotion)` / `UIAccessibility.isReduceMotionEnabled`), or
