@@ -49,12 +49,12 @@ run)
     source "${ROOT}/scripts/_destination.sh"
     # Signing stays the project default; build.sh's header says why.
     xcodebuild build \
-        -project checklists/checklists.xcodeproj \
-        -scheme checklists \
+        -project "${XCODE_PROJECT}" \
+        -scheme "${XCODE_SCHEME}" \
         -destination "${DESTINATION}" \
         -derivedDataPath "${SIM_DERIVED}" \
         -quiet
-    APP="${SIM_DERIVED}/Build/Products/Debug-iphonesimulator/checklists.app"
+    APP="${SIM_DERIVED}/Build/Products/Debug-iphonesimulator/${APP_PRODUCT}"
     BUNDLE_ID="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "${APP}/Info.plist")"
     xcrun simctl install "${SIM_UDID}" "${APP}"
     xcrun simctl launch --terminate-running-process "${SIM_UDID}" "${BUNDLE_ID}" >&2

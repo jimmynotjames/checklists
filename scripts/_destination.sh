@@ -14,6 +14,11 @@ source "${ROOT}/scripts/_sim_sandbox.sh"
 # Always pin by UDID so xcodebuild never resolves to an unintended device.
 DESTINATION="platform=iOS Simulator,id=${SIM_UDID}"
 
+# This repo's names. The scripts that source this file are the same in both iOS repos; only these differ.
+# The Xcode project and scheme, and the app the scheme builds (sim.sh run).
+XCODE_PROJECT="checklists/checklists.xcodeproj"
+XCODE_SCHEME="checklists"
+APP_PRODUCT="checklists.app"
 # The UI test target, and the small, already-built unit suite warm_up_if_needed runs.
 UI_TEST_TARGET="checklistsUITests"
 WARM_UP_ONLY="checklistsTests/PaperSizeTests"
@@ -29,8 +34,8 @@ prepare_test_args() {
         return 0
     fi
     local build_args=(
-        -project checklists/checklists.xcodeproj
-        -scheme checklists
+        -project "${XCODE_PROJECT}"
+        -scheme "${XCODE_SCHEME}"
         -destination "${DESTINATION}"
         -destination-timeout 300
         -derivedDataPath "${SIM_DERIVED}"
