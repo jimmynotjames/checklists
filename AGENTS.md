@@ -339,6 +339,14 @@ a new UI class needs no CI change; move classes between shards when one runs wel
 The ubuntu `tests` job sums them up: it passes when every job the run asked for passed, or when
 the PR was docs-only, and fails otherwise, including when a gate, `changes` or `build` failed. The
 account runs at most 5 macOS jobs at once across all its repos, and a full run here holds 4.
+CI's UI tests (`ui-tests` and `focused-tests`) run with the app's animations off; local runs keep
+them. To reproduce a CI-only UI failure locally, prefix `TEST_RUNNER_FORCE_ANIMATIONS=off` to
+`make focused-tests` or `make ui-tests` (`TestAnimationsOverride` explains why). Exception:
+`KeyboardShortcutsUITest` always keeps animations (`keepsAnimations`), because its shortcuts get
+lost after a screen change without them; don't remove that override. CI's `ui-tests`
+shards also rerun a failed test once (`UI_RETRY_ON_FAILURE=1`); a test that passes only on retry
+leaves a "UI test passed only on retry" warning on the run, which counts as a flake for
+FLAKY_TESTS.md.
 
 A docs-only PR skips `build` and the test jobs: a `changes` job (ubuntu) lists the PR's files
 and they run only when one is code (`scripts/ci/docs_only.py` holds the rules:
@@ -361,7 +369,8 @@ request and its result stay there (`.github/workflows/ci-command.yml`; repo owne
 - Words combine: `lint` `secrets` `large-files` `i18n` `gates` `build` `unit` `ui`, e.g.
   `/ci lint i18n` or `/ci gates unit`. `/ci help` replies with the full table.
 - `/ci test <target>/<Class>[/<test>] [xN]`: build, then only that class or test, N times in one
-  job, as `make focused-tests` runs it locally (a UI class warms up with one unit suite first). For a
+  job, as `make focused-tests` runs it locally but with animations off (a UI class warms up with
+  one unit suite first). For a
   test that fails only on CI: the result comment tallies passes and failures per test. E.g.
   `/ci test checklistsUITests/ChecklistItemsUITest x5`.
 

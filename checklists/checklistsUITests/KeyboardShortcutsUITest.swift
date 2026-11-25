@@ -12,6 +12,18 @@ import XCTest
 /// simulator, with or without ⌘ (a plain Delete into a focused field changes nothing). They are
 /// checked by hand on a hardware keyboard.
 final class KeyboardShortcutsUITest: ChecklistDetailUITestCase {
+  /// **These tests must always run with animations on, on CI too. Don't remove this override.**
+  ///
+  /// With animations off (CI's `FORCE_ANIMATIONS=off`, see `TestAnimationsOverride`), a shortcut
+  /// sent right after a screen change is sometimes lost: ⌘N after Back or on ChecklistsView fails
+  /// to open the create sheet, and ⌘D's copy doesn't take the cursor. That reproduces locally
+  /// (`TEST_RUNNER_FORCE_ANIMATIONS=off make focused-tests ONLY=checklistsUITests/KeyboardShortcutsUITest`),
+  /// not just on CI. With animations on they pass and stay fast, since none of them hits the
+  /// 60-second idle stalls the switch exists for.
+  override static var keepsAnimations: Bool {
+    true
+  }
+
   private var checklistTable: XCUIElement {
     app.tables["ChecklistTableView"]
   }

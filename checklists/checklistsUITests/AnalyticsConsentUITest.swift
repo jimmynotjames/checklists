@@ -28,12 +28,12 @@ class AnalyticsConsentUITest: XCTestCase {
     app.buttons["analyticsConsentSheet.decline"]
   }
 
-  /// Launches with `-UITests1` plus `-AppleLocale <locale>`, so `Locale.current.region` resolves
+  /// Launches with `configureForUITests()` plus `-AppleLocale <locale>`, so `Locale.current.region` resolves
   /// to `locale`'s region regardless of the simulator's own setting.
   private func launch(locale: String, screenshotSeedJSON: String? = nil) {
     continueAfterFailure = false
     app = XCUIApplication()
-    app.launchArguments = ["-UITests1", "-AppleLocale", locale]
+    app.configureForUITests(extraArguments: ["-AppleLocale", locale])
     if let screenshotSeedJSON {
       app.launchEnvironment["SEED_SCREENSHOTS_JSON"] = screenshotSeedJSON
       app.launchEnvironment["SCREENSHOT_SEED_LOCALE"] = "consent-regression"

@@ -131,7 +131,7 @@ class AccessibilityAuditUITest: XCTestCase {
 
   private func launch(locale: String? = nil) {
     app = XCUIApplication()
-    app.launchArguments = ["-UITests1"] + (locale.map { ["-AppleLocale", $0] } ?? [])
+    app.configureForUITests(extraArguments: locale.map { ["-AppleLocale", $0] } ?? [])
     app.launchEnvironment["FORCE_APPEARANCE"] = Self.appearance
     app.launch()
     XCTAssertTrue(app.collectionViews.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")

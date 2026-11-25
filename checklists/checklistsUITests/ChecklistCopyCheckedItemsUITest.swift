@@ -16,7 +16,7 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     continueAfterFailure = false
 
     app = XCUIApplication()
-    app.launchArguments = ["-UITests1"]
+    app.configureForUITests()
     app.launch()
     XCTAssertTrue(app.collectionViews.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
   }

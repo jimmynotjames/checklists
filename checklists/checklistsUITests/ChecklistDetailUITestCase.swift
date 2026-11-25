@@ -12,11 +12,18 @@ import XCTest
 class ChecklistDetailUITestCase: XCTestCase {
   var app: XCUIApplication!
 
+  /// Whether this class keeps the app's animations when CI turns them off (`configureForUITests`).
+  /// A subclass overrides it to `true` only when its tests fail with animations off; the override's
+  /// doc comment says why, and it must stay (`KeyboardShortcutsUITest`).
+  class var keepsAnimations: Bool {
+    false
+  }
+
   override func setUpWithError() throws {
     continueAfterFailure = false
 
     app = XCUIApplication()
-    app.launchArguments = ["-UITests1"]
+    app.configureForUITests(keepsAnimations: Self.keepsAnimations)
     app.launch()
     XCTAssertTrue(app.collectionViews.firstMatch.waitForExistence(timeout: 5), "Main checklists list did not appear after launch.")
   }
