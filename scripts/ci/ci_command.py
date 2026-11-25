@@ -18,6 +18,12 @@ import re
 import sys
 from dataclasses import dataclass
 
+# --- Repo-specific constants (the rest of this file is identical in checklists and simple-recurring-budgets) ---
+TEST_TARGETS = ("checklistsTests", "checklistsUITests")  # unit target, UI target
+EXAMPLE_UI_TEST = "checklistsUITests/ChecklistItemsUITest"
+EXAMPLE_UNIT_TEST = "checklistsTests/ChecklistKeyboardOverlapTests/dockedKeyboard()"
+# --- End of repo-specific constants ---
+
 GATES = ("lint", "secrets", "large-files", "i18n")
 SELECTIONS = (*GATES, "build")  # ci.yml's `only` vocabulary, in job order
 TEST_LEVELS = ("none", "unit", "ui")  # each level includes the ones before it
@@ -25,11 +31,12 @@ MAX_ITERATIONS = 10  # bounds one run: each iteration of a UI class takes minute
 # What `make focused-tests` takes: a test target, a class or suite, and optionally one test.
 # Swift Testing names a test function with its parentheses.
 TEST_ID = re.compile(
-    r"^(checklistsTests|checklistsUITests)/[A-Za-z_]\w*(/[A-Za-z_]\w*(\(\))?)?$", re.ASCII
+    rf"^({'|'.join(map(re.escape, TEST_TARGETS))})/[A-Za-z_]\w*(/[A-Za-z_]\w*(\(\))?)?$", re.ASCII
 )
+_TARGET_CHOICES = " or ".join(f"`{target}`" for target in TEST_TARGETS)
 _ITERATIONS = re.compile(r"^x(\d+)$", re.IGNORECASE)
 
-USAGE = """\
+USAGE = f"""\
 **`/ci` usage** — the words after `/ci` on the first line combine:
 
 | Word | Runs |
@@ -47,8 +54,8 @@ USAGE = """\
 
 Named tests run only the test job unless gates are named too, e.g. `/ci gates unit`.
 `test` takes the name `make focused-tests` takes, case and all, e.g.
-`/ci test checklistsUITests/ChecklistItemsUITest x5` or
-`/ci test checklistsTests/ChecklistKeyboardOverlapTests/dockedKeyboard()`. It replaces `unit`, `ui`
+`/ci test {EXAMPLE_UI_TEST} x5` or
+`/ci test {EXAMPLE_UNIT_TEST}`. It replaces `unit`, `ui`
 and `all`, so it can't be combined with them.
 Only the repo owner's comments start runs."""
 
@@ -103,8 +110,8 @@ def parse(body: str) -> Command:
             if not TEST_ID.match(name):
                 return Command(
                     "error",
-                    error=f"`test` needs `<target>/<Class>[/<test>]` with target `checklistsTests` "
-                    f"or `checklistsUITests`, not `{name or '(nothing)'}`",
+                    error=f"`test` needs `<target>/<Class>[/<test>]` with target {_TARGET_CHOICES}, "
+                    f"not `{name or '(nothing)'}`",
                 )
             test = name
             selected.add("build")

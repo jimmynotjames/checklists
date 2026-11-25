@@ -177,8 +177,8 @@ These govern every commit, skill-driven or not:
 ### What gates a merge
 
 `main` requires a PR and, through its ruleset, the CI checks listed in §CI, with zero required
-approvals. `/merge-pr` also waits on those checks (and on `tests`, while it is off the ruleset) and runs `make gate` on the branch, and refuses to
-merge if either fails.
+approvals. `/merge-pr` also waits on those checks and runs `make gate` on the branch, and refuses to merge
+if either fails.
 
 ## Concurrency
 
@@ -287,6 +287,8 @@ your report** — never treat it as known flake.
 
 ## Simulator slots
 
+Quick reference for this section and §"Simulator sandbox": the `ios-sims` skill.
+
 Every simulator running tests takes a slot from a machine-wide pool that other opted-in repos
 share. The pool's state, including its size (the `max` file), is in
 `~/.local/state/simulator-slots/`. `scripts/simulator-slots/` is this repo's copy of the master in
@@ -294,22 +296,23 @@ share. The pool's state, including its size (the `max` file), is in
 
 **The pool is on only where `~/dev/simulator-slots` exists** (Jimmy's machine). On any other
 clone it is off: don't look for or create that directory or the state directory. Test scripts
-take no slots and pass no parallel-testing flags, so they run serially on the checkout's own
-device, the scheme's setting. `SIMULATOR_WORKERS_WITHOUT_POOL=N` lets a run there use up to N
-clones instead, for a machine that runs only this repo's tests. The gate's sync check
-is skipped, and the rest of this section doesn't apply.
+take no slots and run serially on the checkout's own device; `UI_WORKERS=N` (1..3) lets the UI
+pass there use N clones instead. The gate's sync check is skipped, and the rest of this section
+doesn't apply.
 
 - **Changing the tool:** never edit the copy. Change the master, then run `make
   simulator-slots-sync`. The gate fails while the two differ.
 - **Slots per command:**
   - `unit-tests` and `focused-tests`: 1.
-  - `ui-tests`: up to `UI_WORKERS`.
+  - `ui-tests`: up to `UI_WORKERS` (1..3, default 2; `scripts/_sim_concurrency.sh`).
   - The size check's `run.sh`: up to `WORKERS`.
   - The screenshot lane: 1, held for the whole capture, its builds included: fastlane's snapshot
     builds and tests in one step.
 - **How a run uses them:** it builds first, then takes whatever is free, at least 1. With 2 or
   more, it runs that many parallel clones of this checkout's device; the clones boot fresh, without
-  the warm-up a one-slot run gets.
+  the warm-up a one-slot run gets, and a failed test gets one retry (`UI_RETRY_ON_FAILURE`:
+  `auto`, the default, retries only on 2+ clones; `1` always; `0` never). A pass that needed the
+  retry prints a `PASSED-ON-RETRY:` line: a flake for FLAKY_TESTS.md.
 - **Fewer simulators for a task:** when Jimmy asks for fewer simulators for a task, prefix the
   command with `SIMULATOR_SLOTS_FEWER=N`. The run then leaves N of the free slots unused; N must be
   smaller than the pool.
@@ -354,9 +357,8 @@ Markdown outside `scripts/` and `fastlane/`, plus `core-docs/`, `releases/` and 
 dirs, are docs; the app folder, Swift, the Makefile, scripts, fastlane and workflows are code).
 Pushes to `main` and manual runs always count as code. A skipped required check counts as passing,
 so don't replace this with a workflow-level `paths-ignore`: the required checks would never report.
-Required checks in the `main` ruleset: `lint`, `secrets`, `check-large-files`, `i18n-gates`.
-`tests` belongs there too but is temporarily off while CI's UI tests stabilize (#428): until it's
-back, a red `tests` doesn't block a merge, so check it before merging.
+Required checks in the `main` ruleset: `lint`, `secrets`, `check-large-files`, `i18n-gates`,
+`tests`.
 
 A manual run on a branch shows as checks on that commit's PR, under the same names as the
 automatic run, and the ruleset reads the newest check of each name. So a narrowed run can turn a red
@@ -380,3 +382,11 @@ The same runs without a comment trail (`only` empty means gates + build):
 gh workflow run ci.yml --ref <branch> -f only=lint,build -f tests=ui
 gh workflow run ci.yml --ref <branch> -f only=build -f test=checklistsUITests/ChecklistItemsUITest -f iterations=5
 ```
+
+Every run ends with the `summary` job (`scripts/ci/ci_summary.py`), which writes the run's job
+summary and comments on its PR: the verdict, every job and shard with its time, failed tests with
+`file:line`, tests that passed only on retry, the top annotations, and the `/ci test` tally. A PR's
+automatic runs keep one comment up to date; a `/ci` or `gh workflow run` run posts a new one, and so
+does the push to `main` after a merge, on the merged PR. The test jobs feed it through a
+`test-report-<job>` artifact (`TEST_REPORT_JSON`, `report_test_failures`). It isn't a required
+check, and a failure to post only warns.

@@ -78,10 +78,10 @@ The unit and UI suites (`make unit-tests`, `make ui-tests`) are opt-in and not p
 
 The test scripts can draw on a shared simulator pool at `~/dev/simulator-slots`. That pool exists only on the maintainer's machine, where it caps how many simulators all of their repos run at once (`scripts/simulator-slots/` is that tool's vendored copy). You don't need it, and you shouldn't create its directories. Without the pool, test runs go serially on this checkout's own simulator.
 
-To run UI tests on parallel simulator clones instead, set `SIMULATOR_WORKERS_WITHOUT_POOL`:
+To run UI tests on parallel simulator clones instead, set `UI_WORKERS`:
 
 - Unset (default) runs serially on one simulator, the lightest option.
-- `SIMULATOR_WORKERS_WITHOUT_POOL=2 make ui-tests` runs up to that many clones, also capped by `UI_WORKERS` (default 2). Each booted simulator takes about 2–3 GB of RAM.
+- `UI_WORKERS=2 make ui-tests` runs that many clones (1 to 3), and retries a failed test once. Each booted simulator takes about 2–3 GB of RAM.
 
 Details: [AGENTS.md](AGENTS.md) §"Simulator slots".
 
@@ -209,6 +209,6 @@ If you are an AI agent working in this codebase:
 - **Local secrets:** `config/Secrets.local.xcconfig` and `fastlane/.env` (gitignored), and the `.p8` key (outside the repo). Never read, print, or commit them; [core-docs/secrets-list.md](core-docs/secrets-list.md) names the keys.
 - **Ship guard:** `scripts/verify_release_secrets.sh`. Don't bypass it.
 - **Build & test:** `make gate` before a PR; app test suites are opt-in. See AGENTS.md §"Build and test".
-- **Simulators:** the simulator-slots pool is off outside the maintainer's machine. Run normally and don't create the pool's directories; choose concurrency with `SIMULATOR_WORKERS_WITHOUT_POOL`. See AGENTS.md §"Simulator slots".
+- **Simulators:** the simulator-slots pool is off outside the maintainer's machine. Run normally and don't create the pool's directories; choose concurrency with `UI_WORKERS`. See AGENTS.md §"Simulator slots".
 - **Translations:** new user-facing strings require the `translate-new-strings` skill. See [core-docs/localization-spec.md](core-docs/localization-spec.md).
 - **Branding:** unless you are deriving your own app with its own branding, do not alter the app icon, reChecklist name, or store metadata as part of code changes. See [TRADEMARK.md](TRADEMARK.md).

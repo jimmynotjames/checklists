@@ -4,6 +4,9 @@ name: iOS setup
 description: Select the pinned Xcode and, for test jobs, make sure its iOS simulator runtime is installed.
 
 inputs:
+  xcode-version:
+    description: "The Xcode to select; ci.yml passes its XCODE_VERSION"
+    required: true
   simulator:
     description: "'true' for a job that runs tests on a simulator; 'false' for the build job"
     required: false
@@ -12,10 +15,10 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Select Xcode 27.2
+    - name: Select Xcode ${{ inputs.xcode-version }}
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: "27.2"
+        xcode-version: ${{ inputs.xcode-version }}
 
     # The runner image can lag the pinned Xcode's simulator runtime, and the app's deployment
     # target needs that runtime, so fetch it when it's missing. The test scripts' simulator sandbox

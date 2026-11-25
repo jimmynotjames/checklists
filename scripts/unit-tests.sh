@@ -29,7 +29,7 @@ xcodebuild test-without-building "${TEST_ARGS[@]}" \
     -collect-test-diagnostics never \
     -skip-testing:checklistsUITests || RC=$?
 
-python3 "${ROOT}/scripts/list_test_failures.py" "${RESULT_BUNDLE}" || true
+report_test_failures "${RC}" "${RESULT_BUNDLE}"
 
 # The warm sentinel: ui-tests.sh's header.
 if [[ "${RC}" -eq 0 ]]; then

@@ -9,7 +9,11 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
-from list_test_failures import failures_from_tree  # noqa: E402
+from list_test_failures import (  # noqa: E402
+    build_report,
+    counts_from_tree,
+    failures_from_tree,
+)
 
 ROOT = Path("/repo")
 
@@ -21,9 +25,9 @@ def _failure(text: str, file: str | None = None, line: int | None = None) -> dic
     return node
 
 
-def _case(identifier: str, *children: dict) -> dict:
+def _case(identifier: str, *children: dict, result: str = "Passed") -> dict:
     return {"nodeType": "Test Case", "nodeIdentifier": identifier, "name": identifier.split("/")[-1],
-            "children": list(children)}
+            "result": result, "children": list(children)}
 
 
 def _tree(*cases: dict) -> dict:
@@ -67,6 +71,32 @@ class FailuresFromTreeTests(unittest.TestCase):
 
     def test_empty_or_unreadable_bundle_prints_nothing(self) -> None:
         self.assertEqual(failures_from_tree({}, ROOT), [])
+
+
+class BuildReportTests(unittest.TestCase):
+    TREE = _tree(
+        _case("A/testFlaky()", _failure("timed out", "/repo/A.swift", 4)),
+        _case("A/testFine()"),
+        _case("A/testOff()", result="Skipped"),
+    )
+
+    def test_a_failed_run_lists_its_failures(self) -> None:
+        report = build_report(self.TREE, 65, "ui-tests (rest)", ROOT)
+        self.assertEqual([f["test"] for f in report["failures"]], ["A/testFlaky()"])
+        self.assertEqual(report["retry_only_passes"], [])
+        self.assertEqual((report["job"], report["rc"]), ("ui-tests (rest)", 65))
+
+    def test_a_passed_run_lists_its_failures_as_retry_only_passes(self) -> None:
+        report = build_report(self.TREE, 0, "ui-tests (rest)", ROOT)
+        self.assertEqual(report["failures"], [])
+        self.assertEqual([f["location"] for f in report["retry_only_passes"]], ["A.swift:4"])
+
+    def test_without_an_exit_code_failures_stay_failures(self) -> None:
+        self.assertEqual(len(build_report(self.TREE, None, "unit-tests", ROOT)["failures"]), 1)
+
+    def test_counts_each_result_and_the_total(self) -> None:
+        self.assertEqual(counts_from_tree(self.TREE), {"total": 3, "passed": 2, "skipped": 1})
+        self.assertEqual(counts_from_tree({}), {"total": 0})
 
 
 if __name__ == "__main__":
