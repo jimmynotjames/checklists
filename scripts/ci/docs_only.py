@@ -16,12 +16,16 @@ import sys
 
 DOCS_DIRS = (".agents/", ".claude/", ".codex/", "core-docs/", "releases/")
 DOCS_ROOT_FILES = ("LICENSE", "NOTICE")
+# Docs inside a target folder, kept out of the target by the project's membershipExceptions.
+DOCS_IN_TARGET_FOLDERS = ("checklists/checklistsUITests/FLAKY_TESTS.md",)
 # Markdown here is input to code, not documentation.
 CODE_MARKDOWN_DIRS = ("scripts/", "fastlane/")
 
 
 def is_docs(path: str) -> bool:
     path = path.strip().strip('"')
+    if path in DOCS_IN_TARGET_FOLDERS:
+        return True
     if not path or path.startswith("checklists"):  # the app, its tests and UI tests
         return False
     if path.startswith(DOCS_DIRS) or path in DOCS_ROOT_FILES:
