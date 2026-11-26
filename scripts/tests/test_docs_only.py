@@ -25,6 +25,7 @@ class DocsOnlyTests(unittest.TestCase):
             ".codex/hooks.json",
             ".github/pull_request_template.md",
             "LICENSE",
+            "checklists/checklistsUITests/FLAKY_TESTS.md",
         ):
             with self.subTest(path=path):
                 self.assertFalse(has_code([path]))
@@ -33,7 +34,7 @@ class DocsOnlyTests(unittest.TestCase):
         for path in (
             "checklists/checklists/ChecklistView.swift",
             "checklists/checklistsTests/FooTests.swift",
-            "checklists/checklistsUITests/FLAKY_TESTS.md",
+            "checklists/checklistsUITests/README.md",
             "Makefile",
             "scripts/build.sh",
             "scripts/translate_catalog/PROMPT_TEMPLATE.md",
