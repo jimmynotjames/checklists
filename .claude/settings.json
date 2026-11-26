@@ -13,7 +13,7 @@
     ]
   },
   "permissions": {
-    "defaultMode": "acceptEdits",
+    "defaultMode": "auto",
     "allow": [
       "Skill",
       "Agent",
@@ -43,7 +43,38 @@
       "Bash(SIMULATOR_SLOTS_MASTER=* *)",
       "Bash(rm -f tmp/*)",
       "Bash(rm -rf tmp/*)",
-      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65"
+      "mcp__18cf5017-f11b-4601-92d4-9f346ebf3d65",
+      "Bash(SUBSET_ONLY=* *)",
+      "Bash(rm tmp/*)",
+      "Bash(rmdir *)",
+      "Bash(chmod +x *)",
+      "Bash(mv openspec/changes/* openspec/changes/archive/*)",
+      "Bash(tee tmp/*)",
+      "Bash(open fastlane/screenshots/*)",
+      "Bash(cd *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(echo *)",
+      "Bash(grep *)",
+      "Bash(egrep *)",
+      "Bash(rg *)",
+      "Bash(find *)",
+      "Bash(awk *)",
+      "Bash(tr *)",
+      "Bash(jq *)",
+      "Bash(sleep *)",
+      "Bash(ps *)",
+      "Bash(pgrep *)",
+      "Bash(kill *)",
+      "Bash(pkill *)",
+      "Bash(plutil *)",
+      "Bash(security find-identity *)",
+      "WebSearch",
+      "WebFetch",
+      "mcp__ccd_session__mark_chapter"
     ]
   }
 }
