@@ -64,7 +64,7 @@ python3 scripts/translate_catalog/dispatch_prompts.py
 ```
 
 Writes `tmp/translate-prompts/{locale}.md`, plus `{locale}.sample.md` for locales with pending
-`sample.*` keys (the transcreated demo checklists). It also deletes the manifest locales' old
+demo-content keys (i18n/app.json `transcreatedNamespaces`; none means no sample prompts). It also deletes the manifest locales' old
 outputs; `--no-clean` keeps them.
 
 ## 3. Translate each prompt file

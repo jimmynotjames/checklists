@@ -1,19 +1,19 @@
 # Translation audit — {LOCALE_NAME} ({LOCALE_CODE})
 
-You are a senior **native {LOCALE_NAME}** reviewer auditing the existing UI strings of **reChecklist**, a native iOS app for reusable checklists you tick through, reset, and run again. The strings were machine-translated from English. Judge their quality; don't re-translate everything. **Report only strings with a real problem, and omit the ones that are fine.**
+You are a senior **native {LOCALE_NAME}** reviewer auditing the existing UI strings of {AUDIT_APP_LINE} The strings were machine-translated from English. Judge their quality; don't re-translate everything. **Report only strings with a real problem, and omit the ones that are fine.**
 
 ## Rubric
 
-**Voice.** Plain, friendly, unhurried: a tidy utility that stays out of the way, "a clean sheet of paper", not a productivity dashboard. Quiet warmth is welcome, hype is not, and warmth comes from word choice, never from extra words or punctuation. No exclamation marks, no ALL-CAPS, no salesy superlatives, no celebrating routine actions. Never gamify or scold: no streak, trophy or "great job!" framing, no guilt about unfinished lists.
+**Voice.** {AUDIT_VOICE}
 
 **Register.** The voice is modern and respectful: current and unfussy, never stiff or old-fashioned, and never so casual that it would sound flippant to an older reader. The regional note below sets this locale's form of address; grade against the note, not your own preference. The wrong register is a real problem: forced informality where the note sets the polite form reads as rude, not friendly, and vice versa. Check that the address is consistent across the locale, especially in error messages, Settings footers and VoiceOver hints, where the other form most often creeps in. Short button and menu labels are exempt: a label in the glossary's form, or the platform's usual label form (often an infinitive or bare verb), is not a register error. If you believe the note itself is wrong for {LOCALE_NAME}, say so once in `locale_summary` rather than flagging strings that follow it.
 
 **Length.** These are terse strings in tight layouts. `enChars` is the English length and `currentChars` the translation's. Flag a translation as too long only when the extra length is avoidable (padding, verbosity, needless formality), never when {LOCALE_NAME} structurally needs it (compounding, agglutination, script width).
 
-**Accuracy and mechanics.** The translation keeps the English meaning (the `comment` gives context). Format specifiers (`%@`, `%lld`, `%1$@`, …) keep the same count and form, though their order may change for grammar; a dropped or added specifier is high severity. No grammar or spelling errors. "reChecklist" and "iCloud" stay as-is: not translated, transliterated, or re-cased. Domain nouns such as "Checklist" are translated; flag one left in English.
+**Accuracy and mechanics.** The translation keeps the English meaning (the `comment` gives context). Format specifiers (`%@`, `%lld`, `%1$@`, …) keep the same count and form, though their order may change for grammar; a dropped or added specifier is high severity. No grammar or spelling errors. {AUDIT_BRAND}
 
 <!-- if sample -->
-**Demo content (`sample.*` keys).** These are the three demo checklists a new install starts with, also shown in the App Store screenshots. They are transcreated, so the test is "would a local actually write this on their own list?", not fidelity to the English. Grade them on cultural fit (`category: cultural`): a coffee maker left where tea is the morning norm, a foreign social network, a postal or climate reference that doesn't apply here. Don't flag a `sample.*` string merely for departing from the English; that departure is the point. The structure is fixed, so never suggest merging, splitting, adding, or dropping an item. The lists are someone's own notes to self, so the regional note's form of address doesn't apply: grade an item's verb form by whether a local would write it that way on their own list, never by the note's address.
+{AUDIT_SAMPLE}
 
 <!-- end sample -->
 <!-- if plural -->
@@ -27,7 +27,7 @@ You are a senior **native {LOCALE_NAME}** reviewer auditing the existing UI stri
 <!-- if glossary -->
 ## Glossary: agreed {LOCALE_NAME} terms
 
-Flag (`category: consistency`) a string that renders one of these terms differently (a synonym, a different inflection) without a good contextual reason, including a term inside a longer string (the "Reset" in "Reset All"). Use the glossary rendering as the `suggestion`. Don't flag a deviation the string genuinely needs to read naturally. Entries are listed in standalone-label casing; a term capitalized mid-sentence where {LOCALE_NAME} would lowercase it is a finding too.
+Flag (`category: consistency`) a string that renders one of these terms differently (a synonym, a different inflection) without a good contextual reason, including a term inside a longer string {GLOSSARY_INLINE_EXAMPLE}. Use the glossary rendering as the `suggestion`. Don't flag a deviation the string genuinely needs to read naturally. Entries are listed in standalone-label casing; a term capitalized mid-sentence where {LOCALE_NAME} would lowercase it is a finding too.
 
 {GLOSSARY}
 <!-- end glossary -->

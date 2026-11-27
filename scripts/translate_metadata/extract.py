@@ -20,6 +20,8 @@ Modes:
   --fields F [F…]  also write manifest.json forcing those fields for every storefront,
                    translated or not (re-transcreate after a source edit). Each must be
                    non-blank in en-US.
+  --storefronts S [S…]  with --fields, limit the manifest to these storefronts (Apple codes,
+                   e.g. fr-FR de-DE): re-transcreate only the markets a notes change touched.
 """
 
 from __future__ import annotations
@@ -83,13 +85,23 @@ def find_missing(source: dict[str, dict]) -> dict[str, list[str]]:
     return missing
 
 
-def force_fields(source: dict[str, dict], fields: Sequence[str]) -> dict[str, list[str]]:
-    """Return {storefront: [fields...]} forcing every valid authored field in *fields* for all storefronts."""
+def force_fields(
+    source: dict[str, dict], fields: Sequence[str], storefronts: Sequence[str] | None = None
+) -> dict[str, list[str]]:
+    """Return {storefront: [fields...]} forcing every valid authored field in *fields*.
+
+    Covers every storefront, or only *storefronts* when given.
+    """
     invalid = [f for f in fields if f not in source]
     if invalid:
         print(f"ERROR: field(s) not in en-US source (blank or unknown): {invalid}", file=sys.stderr)
         sys.exit(1)
-    return {storefront: list(fields) for storefront in STOREFRONT_LOCALES}
+    unknown = sorted(set(storefronts or ()) - set(STOREFRONT_LOCALES))
+    if unknown:
+        print(f"ERROR: unknown storefront(s): {unknown}", file=sys.stderr)
+        sys.exit(1)
+    targets = [s for s in STOREFRONT_LOCALES if not storefronts or s in storefronts]
+    return {storefront: list(fields) for storefront in targets}
 
 
 def write_source(source: dict[str, dict]) -> None:
@@ -129,7 +141,15 @@ def main(argv: list[str]) -> int:
             "Field must be non-blank in en-US source."
         ),
     )
+    parser.add_argument(
+        "--storefronts",
+        nargs="+",
+        metavar="STOREFRONT",
+        help="With --fields, limit the manifest to these storefronts (Apple codes, e.g. fr-FR).",
+    )
     args = parser.parse_args(argv)
+    if args.storefronts and not args.fields:
+        parser.error("--storefronts needs --fields")
 
     if not METADATA_DIR.exists():
         print(f"ERROR: metadata dir not found at {METADATA_DIR}", file=sys.stderr)
@@ -151,7 +171,7 @@ def main(argv: list[str]) -> int:
         )
 
     if args.fields:
-        manifest = force_fields(source, args.fields)
+        manifest = force_fields(source, args.fields, args.storefronts)
         write_manifest(manifest)
     elif args.missing:
         manifest = find_missing(source)

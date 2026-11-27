@@ -20,111 +20,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "translate_catalog"))
 from paths import CATALOG_PATH  # noqa: E402
+import app_config  # noqa: E402
 
 SOURCE_LANGUAGE = "en"
 
-# Pairs that appear together and must stay distinguishable. Add a pair when a new
-# key is only meaningful next to another; keep the reason, it is what a future
-# reader needs to decide whether the pair still applies.
-DISTINCT_PAIRS: list[tuple[str, str, str]] = [
-    (
-        "checklist.action.discard",
-        "common.action.cancel",
-        "both buttons of the discard-checklist alert; identical words leave the person guessing",
-    ),
-    (
-        "checklist.action.discard",
-        "common.action.delete",
-        "discard means abandoning something new, delete means removing something kept; the "
-        "create sheet uses the first and the detail screen the second",
-    ),
-    (
-        "checklist.menu.discardChecklist",
-        "checklist.menu.deleteChecklist",
-        "the overflow-menu entries for the two cases above",
-    ),
-    (
-        "common.action.duplicate",
-        "common.action.delete",
-        "the two buttons one trailing swipe reveals on a checklist row, side by side and both "
-        "icon-only; the words are all VoiceOver has to tell them apart",
-    ),
-    (
-        "checklist.menu.copyCheckedItems",
-        "checklist.menu.duplicateChecklist",
-        "adjacent entries in the same section of the detail screen's overflow menu, and many "
-        "languages use one verb for duplicate and copy — one copies the whole list, the other only "
-        "the ticked items, into another list",
-    ),
-    (
-        "checklist.menu.duplicateChecklist",
-        "checklist.menu.deleteChecklist",
-        "the two entries of the detail screen's overflow menu; they share a noun, so only the "
-        "verb distinguishes a copy from a removal",
-    ),
-    (
-        "settings.icloud.unavailable",
-        "settings.icloud.restricted",
-        "both replace the Settings iCloud row's single title slot; one means no account, the "
-        "other a restricted one, and a reader must be able to tell which happened",
-    ),
-    (
-        "settings.icloud.unavailable",
-        "settings.icloud.couldNotCheck",
-        "both replace the Settings iCloud row's single title slot; one means no account, the "
-        "other a failed check, and a reader must be able to tell which happened",
-    ),
-    (
-        "settings.icloud.paused",
-        "settings.icloud.syncInterrupted",
-        "both replace the Settings iCloud row's single title slot; one means this launch fell "
-        "back to local storage, the other that a sync operation failed, and a reader must be "
-        "able to tell which happened",
-    ),
-    (
-        "settings.icloud.restricted",
-        "settings.icloud.needsAttention",
-        "both replace the Settings iCloud row's single title slot; one is a standing "
-        "restriction, the other a temporary problem the person can resolve, and a reader must "
-        "be able to tell which happened",
-    ),
-    (
-        "checklists.action.resetAll",
-        "checklists.action.edit",
-        "neighbouring rows of the checklist list's overflow menu",
-    ),
-    (
-        "checklists.action.resetSelected",
-        "common.action.delete",
-        "neighbours in the checklist list's Edit mode toolbar; one clears ticks, the other "
-        "removes lists",
-    ),
-    (
-        "checklists.action.resetSelected",
-        "common.action.duplicate",
-        "neighbours in the checklist list's Edit mode toolbar",
-    ),
-    (
-        "checklists.accessibilityAction.moveUp",
-        "checklists.accessibilityAction.moveToTop",
-        "both in one row's VoiceOver actions list; one moves a single place, the other all the way",
-    ),
-    (
-        "checklists.accessibilityAction.moveDown",
-        "checklists.accessibilityAction.moveToBottom",
-        "both in one row's VoiceOver actions list; one moves a single place, the other all the way",
-    ),
-    (
-        "item.accessibilityAction.moveUp",
-        "item.accessibilityAction.moveToTop",
-        "both in one item row's VoiceOver actions list; one moves a single place, the other all the way",
-    ),
-    (
-        "item.accessibilityAction.moveDown",
-        "item.accessibilityAction.moveToBottom",
-        "both in one item row's VoiceOver actions list; one moves a single place, the other all the way",
-    ),
-]
+# Pairs that appear together and must stay distinguishable, from i18n/distinct_pairs.json. Add a
+# pair there when a new key is only meaningful next to another; keep the reason, it is what a
+# future reader needs to decide whether the pair still applies.
+DISTINCT_PAIRS: list[tuple[str, str, str]] = app_config.distinct_pairs()
 
 
 def _values(catalog: dict, key: str) -> dict[str, str]:

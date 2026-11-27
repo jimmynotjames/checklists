@@ -31,8 +31,8 @@ python3 scripts/translate_audit/untranslated_copies.py    # English left in a tr
 `consistency_check.py` and `plural_completeness.py` take `--write-manifest` to emit the pairs for
 re-translation. `plural_completeness.py` reads the committed `plural_rules.py`; regenerate it with
 `_gen_plural_rules.py`. For each `untranslated_copies.py` finding, either force a re-translation
-(`invalidate_keys.py`, since the state is already `translated`) or add it to that script's
-`ALLOWLIST` with the reason.
+(`invalidate_keys.py`, since the state is already `translated`) or add it to
+`i18n/untranslated_allowlist.json` with the reason.
 
 ## 1. Extract current translations
 
@@ -80,7 +80,9 @@ python3 scripts/translate_audit/audit_report.py --write-manifest --min-severity 
 Writes `tmp/translate-inputs/{manifest,source}.json` from the `[llm]` findings only. Then run
 `translate-new-strings` from its step 2. These are strings the pinned model already got wrong, so
 this round may dispatch `translation-locale` with `model: opus` instead of its pinned Sonnet
-(`localization-spec.md §Models are pinned deliberately`).
+(`localization-spec.md §Models are pinned deliberately`). Name each locale's findings file in its
+dispatch ("…and fix what `<abs>/tmp/translate-audit-outputs/ja.json` flags"), so the translator
+sees what was wrong rather than translating blind.
 
 ## 6. Re-audit the fix
 

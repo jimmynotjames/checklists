@@ -1,7 +1,7 @@
 # Translation audit pipeline
 
-Audits the **existing** non-English translations in
-`checklists/checklists/Localizable.xcstrings` for **quality** — tone, formality
+Audits the **existing** non-English translations in the app's
+`Localizable.xcstrings` (i18n/app.json `paths.catalog`) for **quality** — tone, formality
 register, cultural appropriateness, length/truncation risk, and accuracy — and produces a
 triage report plus a re-translation manifest for the strings that need fixing.
 
@@ -13,15 +13,14 @@ This is the quality-audit sibling of `scripts/translate_catalog/` (which *create
 - `scripts/translate_audit/` (this folder) = grade the translations already in the catalog
   (the `audit-translations` skill).
 
-It imports the catalog pipeline's `locales.py` (`LOCALES`, `LOCALE_NAMES`) and
-`dispatch_prompts.py` (`REGIONAL_NOTES`, `_GENERIC_NOTE`), so the auditor grades against the
-same per-locale rubric the translator was given. Python 3 stdlib only. Why `REGIONAL_NOTES`
-and the metadata pipeline's `CULTURAL_NOTES` are separate maps:
-`localization-spec.md §Running the pipelines`.
+It imports the catalog pipeline's `locales.py` (`LOCALES`, `LOCALE_NAMES`) and the in-app
+notes (`i18n/regional_notes.json`, via `dispatch_prompts.py`), so the auditor grades against the
+same per-locale rubric the translator was given. Python 3 stdlib only. Why the in-app and store
+notes are separate maps: the repo's localization spec (i18n/app.json `spec`).
 
-Keys under `sample.*` are demo checklist content, transcreated rather than translated: the auditor
-grades them on cultural fit, not fidelity to the English (`AUDIT_PROMPT_TEMPLATE.md`,
-core-docs/localization-spec.md).
+Keys under an app's demo-content namespaces (i18n/app.json `transcreatedNamespaces`) are
+transcreated rather than translated: the auditor grades them on cultural fit, not fidelity to the
+English (`AUDIT_PROMPT_TEMPLATE.md`).
 
 ## Scripts
 
@@ -33,16 +32,16 @@ core-docs/localization-spec.md).
 | `audit_report.py` | Aggregate the per-locale findings into a triage report; deterministic length pre-filter; `--write-manifest` to feed the re-translation step. Categories are free-form, incl. `consistency`. |
 | `consistency_check.py` | **Deterministic** (no LLM): find keys that share the same English but got different translations within a locale. Tags `word-choice` vs `casing-only`; `--write-manifest` for the glossary-aware re-translation. Run it before the LLM fan-out. |
 | `plural_completeness.py` | **Deterministic** (no LLM): for every plural key, flag locales missing a CLDR-required plural category or carrying a spurious one; `--write-manifest` to re-translate. Required set = integer-reachable CLDR categories from the committed `plural_rules.py`. |
-| `untranslated_copies.py` | **Deterministic** (no LLM): flag a locale whose value is byte-identical to the English source on a key that's translated in nearly every other locale — i.e. English left in a non-English slot under a `translated` state (which `check_translations.py` can't see). Excludes en-* variants and broadly-kept loanwords/brand terms; residual legit cognates live in its `ALLOWLIST`. Triage each: translate (force) or allowlist. |
+| `untranslated_copies.py` | **Deterministic** (no LLM): flag a locale whose value is byte-identical to the English source on a key that's translated in nearly every other locale — i.e. English left in a non-English slot under a `translated` state (which `check_translations.py` can't see). Excludes en-* variants and broadly-kept loanwords/brand terms; residual legit cognates live in `i18n/untranslated_allowlist.json`. Triage each: translate (force) or allowlist. |
 | `plural_rules.py` | Generated per-locale CLDR plural categories (`required` integer-reachable + `valid` full set). Regenerate with `_gen_plural_rules.py` (needs `babel`); the check itself is dependency-free. |
 
 The per-locale auditor subagent is `.claude/agents/translation-audit-locale.md`
-(Read+Write only, **Opus** — it must out-class the model that produced the translations; the Opus-made
-`sample.*` keys are the exception, see `core-docs/localization-spec.md` §Models are pinned deliberately).
+(Read+Write only, **Opus** — it must out-class the model that produced the translations; Opus-made
+demo content is the exception, see the localization spec §Models are pinned deliberately).
 
 `consistency_check.py` is the deterministic complement to the LLM `consistency` finding: it catches
 exact divergences for free; the auditor catches subtler synonym/inflection drift against the glossary
-(`scripts/translate_catalog/glossary.json`, injected into the audit prompt as a `{GLOSSARY}` block).
+(`i18n/glossary.json`, injected into the audit prompt as a `{GLOSSARY}` block).
 
 ## Running it
 
@@ -80,7 +79,7 @@ that are much longer than the English, but character count is only a **proxy** f
 string actually truncates — that depends on each control's width, which this pipeline has no budget
 for. Treat `[ratio]` findings as "look at these," and rely on the auditor's `[llm]` length
 judgment (justified vs. avoidable) for the verdict. True truncation is a UI-level check:
-`localization-spec.md §Large-type layout check`.
+the localization spec §Large-type layout check.
 
 Because of this, **`--write-manifest` excludes `[ratio]` findings** and re-translates only the
 auditor's `[llm]`-judged subset. On German alone the ratio heuristic false-positives on standard

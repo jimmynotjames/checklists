@@ -1,14 +1,14 @@
-"""Repo paths shared by the localization pipelines. Import; never restate."""
+"""Repo paths shared by the localization pipelines, from i18n/app.json. Import; never restate."""
 
-from pathlib import Path
+from app_config import REPO_ROOT, repo_path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-
-# The app target's String Catalog (auto-included via the synchronized folder).
-CATALOG_PATH = REPO_ROOT / "checklists" / "checklists" / "Localizable.xcstrings"
+# The app target's String Catalog.
+CATALOG_PATH = repo_path("catalog")
 
 # Production Swift sources scanned for unkeyed copy.
-SOURCE_DIR = REPO_ROOT / "checklists" / "checklists"
+SOURCE_DIR = repo_path("source")
 
 # Per-locale screenshot seed catalogs (UI-test target only; never ships).
-SEEDS_DIR = REPO_ROOT / "checklists" / "checklistsUITests" / "ScreenshotSeeds"
+SEEDS_DIR = repo_path("seeds")
+
+__all__ = ["REPO_ROOT", "CATALOG_PATH", "SOURCE_DIR", "SEEDS_DIR"]

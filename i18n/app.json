@@ -1,0 +1,29 @@
+{
+  "brand": "reChecklist",
+  "protected": ["reChecklist", "iCloud"],
+  "paths": {
+    "catalog": "checklists/checklists/Localizable.xcstrings",
+    "source": "checklists/checklists",
+    "seeds": "checklists/checklistsUITests/ScreenshotSeeds"
+  },
+  "xcode": {"project": "checklists", "target": "checklists"},
+  "spec": "core-docs/localization-spec.md",
+  "sourceStrings": {
+    "skippedDirs": ["DesignExplorations"]
+  },
+  "transcreatedNamespaces": ["sample."],
+  "metadata": {
+    "nameMode": "passthrough",
+    "translatableFields": ["subtitle", "promotional_text", "keywords", "description", "release_notes"],
+    "passthroughFields": ["name", "marketing_url", "privacy_url", "support_url"],
+    "passthroughOverrides": {"ja": ["name"]},
+    "glossaryTerms": ["Checklist"],
+    "fieldGuidance": {
+      "subtitle": "Short tagline shown under the app name. Punchy and concrete, not a literal translation of the English. Say what the app is for — checklists you reuse, reset, and run again. Title-case or sentence-case per local convention.",
+      "promotional_text": "Short promotional banner (editable without shipping a new version). Lead with the most compelling current hook.",
+      "keywords": "Comma-separated search terms, not a translation; follow the Keywords section. Fill as much of the byte budget as natural terms allow, and no more.",
+      "description": "Full listing description. Transcreate into natural, native marketing prose — adapt idiom and flow, do not calque the English. Preserve the overall structure and the paragraph break.",
+      "release_notes": "The \"What's New\" text on the update sheet. Match the tone of the English; keep it plain and concise."
+    }
+  }
+}

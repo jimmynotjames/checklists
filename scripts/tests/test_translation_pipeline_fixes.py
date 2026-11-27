@@ -30,6 +30,8 @@ def _load(name: str, relative: str):
 metadata_merge = _load("translate_metadata_merge", "scripts/translate_metadata/merge.py")
 metadata_audit = _load("translate_metadata_audit", "scripts/translate_metadata/audit.py")
 metadata_validate = _load("translate_metadata_validate_fixes", "scripts/translate_metadata/validate.py")
+catalog_validate = _load("translate_catalog_validate_fixes", "scripts/translate_catalog/validate.py")
+metadata_extract = _load("translate_metadata_extract_fixes", "scripts/translate_metadata/extract.py")
 check_metadata = _load("translate_metadata_check_metadata", "scripts/translate_metadata/check_metadata.py")
 update_keys = _load("translate_catalog_update_keys", "scripts/translate_catalog/update_keys.py")
 
@@ -63,9 +65,16 @@ class MetadataMergeBlankFieldTests(unittest.TestCase):
     def tearDown(self) -> None:
         self._tmp.cleanup()
 
+    # A passthrough-name app with one storefront override, whatever this repo's i18n/app.json says.
+    CONFIG = {
+        "TRANSLATABLE_FIELDS": ["subtitle", "promotional_text", "keywords", "description", "release_notes"],
+        "PASSTHROUGH_FIELDS": ["name", "marketing_url", "privacy_url", "support_url"],
+        "PASSTHROUGH_OVERRIDES": {"ja": frozenset({"name"})},
+    }
+
     def _merge(self, storefront: str, output: dict) -> None:
         (self.outputs / f"{storefront}.json").write_text(json.dumps(output), encoding="utf-8")
-        with _patched(metadata_merge, METADATA_DIR=self.metadata, OUTPUTS_DIR=self.outputs), \
+        with _patched(metadata_merge, METADATA_DIR=self.metadata, OUTPUTS_DIR=self.outputs, **self.CONFIG), \
                 contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
             self.assertEqual(metadata_merge.main([storefront]), 0)
 
@@ -178,6 +187,45 @@ class MetadataValidateNameTests(unittest.TestCase):
                 errors, _warnings, _pending = metadata_validate.validate_storefront("de-DE", source)
         self.assertEqual(len(errors), 1)
         self.assertIn("Unexpected extra field", errors[0])
+
+
+class CatalogSpecifierReorderTests(unittest.TestCase):
+    """Plain `%@` may be numbered to reorder; anything else that changes the arguments fails."""
+
+    def test_numbering_plain_specifiers_to_reorder_matches(self) -> None:
+        source = catalog_validate.specifier_multiset("From %@ to %@, %lld left")
+        self.assertEqual(source, catalog_validate.specifier_multiset("%3$lld übrig, %2$@ bis %1$@"))
+
+    def test_dropped_or_retyped_specifier_fails(self) -> None:
+        source = catalog_validate.specifier_multiset("From %@ to %@")
+        self.assertNotEqual(source, catalog_validate.specifier_multiset("bis %1$@"))
+        self.assertNotEqual(source, catalog_validate.specifier_multiset("%1$@ bis %1$@"))
+        self.assertNotEqual(source, catalog_validate.specifier_multiset("%1$lld bis %2$@"))
+
+    def test_literal_percent_passes_through(self) -> None:
+        self.assertEqual(
+            catalog_validate.specifier_multiset("%lld%% done"),
+            catalog_validate.specifier_multiset("%1$lld %% erledigt"),
+        )
+
+
+class MetadataExtractStorefrontsTests(unittest.TestCase):
+    """--fields --storefronts forces the fields for just the named storefronts."""
+
+    SOURCE = {"description": {"value": "x", "charLimit": 4000}}
+
+    def test_storefronts_limit_the_forced_manifest(self) -> None:
+        targets = metadata_extract.STOREFRONT_LOCALES[:2]
+        manifest = metadata_extract.force_fields(self.SOURCE, ["description"], targets)
+        self.assertEqual(manifest, {s: ["description"] for s in targets})
+
+    def test_no_storefronts_means_every_storefront(self) -> None:
+        manifest = metadata_extract.force_fields(self.SOURCE, ["description"])
+        self.assertEqual(sorted(manifest), sorted(metadata_extract.STOREFRONT_LOCALES))
+
+    def test_unknown_storefront_exits(self) -> None:
+        with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            metadata_extract.force_fields(self.SOURCE, ["description"], ["xx-XX"])
 
 
 class UpdateKeysPluralTests(unittest.TestCase):

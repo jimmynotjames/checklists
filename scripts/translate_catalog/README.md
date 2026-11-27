@@ -8,7 +8,7 @@ is the authority for *when and how to invoke them*, and owns the step-by-step fl
 
 > **Auditing existing translations for quality** (tone, register, cultural fit, length) is a
 > separate pipeline: see `scripts/translate_audit/` (the `audit-translations` skill). It reads
-> this folder's `locales.py` and `REGIONAL_NOTES`/`_GENERIC_NOTE`, grades the translations
+> this folder's `locales.py` and the in-app notes (`i18n/regional_notes.json`), grades the translations
 > already in the catalog, and can emit a re-translation manifest that feeds back into this one.
 
 ## Scripts
@@ -16,7 +16,8 @@ is the authority for *when and how to invoke them*, and owns the step-by-step fl
 | Script | Purpose |
 |---|---|
 | `locales.py` | `LOCALES`, `LOCALE_NAMES`, runtime↔storefront maps — derived from the registry in `fastlane/screenshot-config.json` |
-| `paths.py` | `CATALOG_PATH`, `SOURCE_DIR`, `SEEDS_DIR` |
+| `app_config.py` | This app's data from `i18n/`: brand, protected terms, paths, notes, brief fragments, allowlists |
+| `paths.py` | `CATALOG_PATH`, `SOURCE_DIR`, `SEEDS_DIR` (from `i18n/app.json`) |
 | `extract.py` | Read the catalog → write `tmp/translate-inputs/source.json` (and, with `--missing`, `manifest.json`) |
 | `dispatch_prompts.py` | Compose per-locale prompt files in `tmp/translate-prompts/` from `manifest.json` + the prompt templates |
 | `validate.py` | Validate `tmp/translate-outputs/{locale}.json` and `{locale}.sample.json` against source |
@@ -24,22 +25,24 @@ is the authority for *when and how to invoke them*, and owns the step-by-step fl
 | `add_keys.py` / `update_keys.py` / `remove_keys.py` / `rename_keys.py` / `pluralize_keys.py` / `invalidate_keys.py` | Catalog key maintenance; each script's docstring gives its input shape |
 | `sync_catalog.py` | Merge the last `make build`'s extracted strings into the catalog as a build in Xcode does (`make i18n-sync`); `--check` is the gate's `make i18n-sync-check` |
 | `xcstrings_io.py` | The one catalog writer, in Xcode's exact bytes |
-| `glossary_build.py` / `glossary_sync.py` | Build and grow `glossary.json` (below) |
+| `glossary_build.py` / `glossary_sync.py` | Build and grow `i18n/glossary.json` (below) |
 | `inspect_xcstrings.py` | Read-only catalog inspector (`info` / `find` / `show`) — use instead of ad-hoc `python3 -c` against the catalog |
 | `inspect_glossary.py` | Read-only glossary inspector (`info` / `term`) — use instead of ad-hoc `python3 -c` against `glossary.json` |
 | `PROMPT_TEMPLATE.md` | UI-key template → `{locale}.md`, for the `translation-locale` agent |
-| `SAMPLE_PROMPT_TEMPLATE.md` | `sample.*` demo-checklist template → `{locale}.sample.md`, for the `sample-content-locale` agent (transcreated for cultural fit, structure fixed) |
+| `SAMPLE_PROMPT_TEMPLATE.md` | Demo-content template (keys under i18n/app.json `transcreatedNamespaces`) → `{locale}.sample.md`, for the `sample-content-locale` agent (transcreated for cultural fit, structure fixed) |
 
 No dependencies beyond Python 3 stdlib.
 
-The per-locale register notes (`REGIONAL_NOTES` here, `CULTURAL_NOTES` in the metadata
-pipeline) are duplicated on purpose: `localization-spec.md §Running the pipelines`.
+App-specific text never lives in this folder: the templates take their app prose from
+`i18n/brief.md`, and the per-locale notes live in `i18n/regional_notes.json` (in-app) and
+`i18n/cultural_notes.json` (store), kept apart on purpose. The locale registry's `register` field
+holds the formality call both must state.
 
 ## Full backfill
 
 `dispatch_prompts.py` needs the `manifest.json` that only `extract.py --missing` writes. To
 regenerate every locale (a systemic prompt or rule change, or recovery; never a model or alias
-bump on its own: `localization-spec.md §Models are pinned deliberately`), mark the keys
+bump on its own: the localization spec §Models are pinned deliberately), mark the keys
 `needs_review` with `invalidate_keys.py` (optionally `--locales`), then run the normal flow.
 Costs O(49 × all-keys).
 
@@ -83,7 +86,7 @@ Costs O(49 × all-keys).
 # Which keys mention "reset" anywhere, and the resulting comma list:
 python3 scripts/translate_catalog/inspect_xcstrings.py find reset
 # A specific key's value+state in a few locales:
-python3 scripts/translate_catalog/inspect_xcstrings.py show checklists.action.resetAll --locales de,fr,ja
+python3 scripts/translate_catalog/inspect_xcstrings.py show common.action.cancel --locales de,fr,ja
 # A glossary term's per-locale translations:
 python3 scripts/translate_catalog/inspect_glossary.py term "Reset All"
 ```
@@ -94,13 +97,13 @@ python3 scripts/translate_catalog/inspect_glossary.py term "Reset All"
 
 ## Glossary (terminology consistency)
 
-`glossary.json` pins **one canonical per-locale translation for recurring app terms** ("Reset",
-"Checklist", "Notes", "Reset All", …) so that two keys with the same English don't drift, and so a
-compound like "Reset All" reuses the agreed "Reset". It is **consulted automatically**:
+`i18n/glossary.json` pins **one canonical per-locale translation for recurring app terms** so that
+two keys with the same English don't drift, and so a compound reuses the agreed translation of its
+parts. It is **consulted automatically**:
 `dispatch_prompts.py` injects the relevant terms into each translation prompt as a `{GLOSSARY}` block
 (the template tells the model to use them but keep the full string coherent), and
 `audit_dispatch.py` injects the same block so the auditor can raise `consistency` findings. Protected
-nouns (reChecklist, iCloud) map to themselves.
+nouns (i18n/app.json `protected`) map to themselves.
 
 Build / grow it with **Opus** agents (the `glossary-locale` agent, pinned to `model: opus`):
 
@@ -111,7 +114,7 @@ python3 scripts/translate_catalog/glossary_build.py --write-curation-prompt # �
 #   dispatch ONE glossary-locale (Opus) agent → tmp/glossary/terms.json (the curated term set)
 python3 scripts/translate_catalog/glossary_build.py --dispatch              # → tmp/glossary/prompts/{locale}.md
 #   fan out one glossary-locale (Opus) agent per locale → tmp/glossary/outputs/{locale}.json
-python3 scripts/translate_catalog/glossary_build.py --merge                 # → glossary.json
+python3 scripts/translate_catalog/glossary_build.py --merge                 # → i18n/glossary.json
 
 # Grow it after new strings land:
 python3 scripts/translate_catalog/glossary_sync.py --detect                 # high-confidence repeats → terms.json

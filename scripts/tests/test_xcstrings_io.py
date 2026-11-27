@@ -11,9 +11,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "translate_catalog"))
 
+from paths import CATALOG_PATH as CATALOG  # noqa: E402
 from xcstrings_io import is_xcode_format, write_xcstrings, xcode_key_order  # noqa: E402
 
-CATALOG = REPO_ROOT / "checklists" / "checklists" / "Localizable.xcstrings"
 
 # Sorted by Swift's `localizedStandardCompare`, the comparison Xcode's catalog editor imports.
 LOCALIZED_STANDARD_ORDER = [
@@ -46,6 +46,8 @@ class WriteTests(unittest.TestCase):
     def test_format_check_rejects_code_point_order(self) -> None:
         self.assertTrue(is_xcode_format(CATALOG))
         catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+        # Keys whose code-point and Xcode orders differ, whatever keys this catalog has.
+        catalog["strings"].update({"zz.item10": {}, "zz.item9": {}})
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "Localizable.xcstrings"
             out.write_text(json.dumps(catalog, ensure_ascii=False, indent=2, separators=(",", " : "), sort_keys=True), encoding="utf-8")

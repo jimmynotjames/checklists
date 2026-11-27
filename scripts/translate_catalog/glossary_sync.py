@@ -34,9 +34,10 @@ import glossary_build as gb  # noqa: E402
 
 REVIEW_PATH = gb.GLOSSARY_DIR / "candidates_review.json"
 
-# Recurring exact English strings that are not terminology (placeholders, full sentences), with
-# the reason per entry. Matched whitespace- and case-insensitively; stale entries warn.
-IGNORED_NONTERMS: set[str] = set()
+# Recurring exact English strings that are not terminology (placeholders, full sentences), from
+# i18n/glossary_ignore.json, which gives the reason per entry. Matched whitespace- and
+# case-insensitively; stale entries warn.
+IGNORED_NONTERMS: set[str] = gb.app_config.glossary_ignore()
 
 
 def _normset(values) -> set[str]:

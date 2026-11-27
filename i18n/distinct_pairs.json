@@ -1,0 +1,121 @@
+[
+  {
+    "keys": [
+      "checklist.action.discard",
+      "common.action.cancel"
+    ],
+    "reason": "both buttons of the discard-checklist alert; identical words leave the person guessing"
+  },
+  {
+    "keys": [
+      "checklist.action.discard",
+      "common.action.delete"
+    ],
+    "reason": "discard means abandoning something new, delete means removing something kept; the create sheet uses the first and the detail screen the second"
+  },
+  {
+    "keys": [
+      "checklist.menu.discardChecklist",
+      "checklist.menu.deleteChecklist"
+    ],
+    "reason": "the overflow-menu entries for the two cases above"
+  },
+  {
+    "keys": [
+      "common.action.duplicate",
+      "common.action.delete"
+    ],
+    "reason": "the two buttons one trailing swipe reveals on a checklist row, side by side and both icon-only; the words are all VoiceOver has to tell them apart"
+  },
+  {
+    "keys": [
+      "checklist.menu.copyCheckedItems",
+      "checklist.menu.duplicateChecklist"
+    ],
+    "reason": "adjacent entries in the same section of the detail screen's overflow menu, and many languages use one verb for duplicate and copy — one copies the whole list, the other only the ticked items, into another list"
+  },
+  {
+    "keys": [
+      "checklist.menu.duplicateChecklist",
+      "checklist.menu.deleteChecklist"
+    ],
+    "reason": "the two entries of the detail screen's overflow menu; they share a noun, so only the verb distinguishes a copy from a removal"
+  },
+  {
+    "keys": [
+      "settings.icloud.unavailable",
+      "settings.icloud.restricted"
+    ],
+    "reason": "both replace the Settings iCloud row's single title slot; one means no account, the other a restricted one, and a reader must be able to tell which happened"
+  },
+  {
+    "keys": [
+      "settings.icloud.unavailable",
+      "settings.icloud.couldNotCheck"
+    ],
+    "reason": "both replace the Settings iCloud row's single title slot; one means no account, the other a failed check, and a reader must be able to tell which happened"
+  },
+  {
+    "keys": [
+      "settings.icloud.paused",
+      "settings.icloud.syncInterrupted"
+    ],
+    "reason": "both replace the Settings iCloud row's single title slot; one means this launch fell back to local storage, the other that a sync operation failed, and a reader must be able to tell which happened"
+  },
+  {
+    "keys": [
+      "settings.icloud.restricted",
+      "settings.icloud.needsAttention"
+    ],
+    "reason": "both replace the Settings iCloud row's single title slot; one is a standing restriction, the other a temporary problem the person can resolve, and a reader must be able to tell which happened"
+  },
+  {
+    "keys": [
+      "checklists.action.resetAll",
+      "checklists.action.edit"
+    ],
+    "reason": "neighbouring rows of the checklist list's overflow menu"
+  },
+  {
+    "keys": [
+      "checklists.action.resetSelected",
+      "common.action.delete"
+    ],
+    "reason": "neighbours in the checklist list's Edit mode toolbar; one clears ticks, the other removes lists"
+  },
+  {
+    "keys": [
+      "checklists.action.resetSelected",
+      "common.action.duplicate"
+    ],
+    "reason": "neighbours in the checklist list's Edit mode toolbar"
+  },
+  {
+    "keys": [
+      "checklists.accessibilityAction.moveUp",
+      "checklists.accessibilityAction.moveToTop"
+    ],
+    "reason": "both in one row's VoiceOver actions list; one moves a single place, the other all the way"
+  },
+  {
+    "keys": [
+      "checklists.accessibilityAction.moveDown",
+      "checklists.accessibilityAction.moveToBottom"
+    ],
+    "reason": "both in one row's VoiceOver actions list; one moves a single place, the other all the way"
+  },
+  {
+    "keys": [
+      "item.accessibilityAction.moveUp",
+      "item.accessibilityAction.moveToTop"
+    ],
+    "reason": "both in one item row's VoiceOver actions list; one moves a single place, the other all the way"
+  },
+  {
+    "keys": [
+      "item.accessibilityAction.moveDown",
+      "item.accessibilityAction.moveToBottom"
+    ],
+    "reason": "both in one item row's VoiceOver actions list; one moves a single place, the other all the way"
+  }
+]

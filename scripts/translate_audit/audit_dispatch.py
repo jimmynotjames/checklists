@@ -33,6 +33,7 @@ sys.path.insert(0, str(CATALOG_DIR))
 from locales import LOCALES, LOCALE_NAMES  # noqa: E402
 from dispatch_prompts import REGIONAL_NOTES, _GENERIC_NOTE, glossary_lines, is_transcreated  # noqa: E402
 from prompt_render import compact_json, render  # noqa: E402
+import app_config  # noqa: E402
 
 
 def build_slice(locale: str, source: dict) -> dict:
@@ -104,7 +105,7 @@ def main(argv: list[str]) -> int:
 
     with SOURCE_PATH.open(encoding="utf-8") as f:
         source: dict = json.load(f)
-    template = TEMPLATE_PATH.read_text(encoding="utf-8")
+    template = app_config.load_template(TEMPLATE_PATH)
 
     requested = args.locales if args.locales else LOCALES
     unknown = [loc for loc in requested if loc not in LOCALES]

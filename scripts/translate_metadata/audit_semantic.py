@@ -38,6 +38,7 @@ sys.path.insert(0, str(SCRIPT_DIR))
 # `dispatch_prompts` also exists in translate_catalog/, and metadata_locales' own path setup can
 # otherwise shadow it.
 from dispatch_prompts import CULTURAL_NOTES, _GENERIC_NOTE  # noqa: E402
+import app_config  # noqa: E402
 from metadata_locales import (  # noqa: E402
     FIELD_BYTE_LIMITS,
     FIELD_LIMITS,
@@ -94,6 +95,7 @@ def render_audit_prompt(template: str, storefront: str, source: dict, current: d
             "CURRENT_JSON": compact_json(current),
             "STORE_NAME": store_name(METADATA_DIR, storefront),
             "GLOSSARY": glossary,
+            "AUDIT_FIELDS": " | ".join(TRANSLATABLE_FIELDS),
         },
         sections,
         known={"rtl", "glossary"},
@@ -106,7 +108,7 @@ def cmd_dispatch(storefronts: list[str]) -> int:
     if not TEMPLATE_PATH.exists():
         print(f"ERROR: missing {TEMPLATE_PATH}", file=sys.stderr)
         return 1
-    template = TEMPLATE_PATH.read_text(encoding="utf-8")
+    template = app_config.load_template(TEMPLATE_PATH)
     source = {f: audit_field(read_field(SOURCE_LOCALE, f), f, measure=False)
               for f in TRANSLATABLE_FIELDS if read_field(SOURCE_LOCALE, f)}
     if not source:

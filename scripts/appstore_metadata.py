@@ -63,7 +63,16 @@ FIELDS = (
     Field("privacy_url.txt", required=True, url=True),
 )
 FIELD_BY_FILENAME = {field.filename: field for field in FIELDS}
-ROOT_FILES = {"copyright.txt"}
+# App-level files deliver reads from the metadata root; copyright.txt is the one every app needs.
+ROOT_FILES = {
+    "copyright.txt",
+    "primary_category.txt",
+    "secondary_category.txt",
+    "primary_first_sub_category.txt",
+    "primary_second_sub_category.txt",
+    "secondary_first_sub_category.txt",
+    "secondary_second_sub_category.txt",
+}
 
 
 class MetadataError(Exception):
@@ -269,7 +278,11 @@ def prepare_metadata(
 
     staging = Path(tempfile.mkdtemp(prefix=f".{output.name}-", dir=output.parent))
     try:
-        shutil.copyfile(source / "copyright.txt", staging / "copyright.txt")
+        for name in sorted(ROOT_FILES):
+            if (source / name).is_file():
+                if name != "copyright.txt":
+                    _read_text(source / name)  # an empty category file is an error, like any field
+                shutil.copyfile(source / name, staging / name)
         (staging / STAGING_MARKER).write_text(STAGING_MARKER_CONTENT, encoding="utf-8")
         for locale in locales:
             locale_dir = staging / locale
