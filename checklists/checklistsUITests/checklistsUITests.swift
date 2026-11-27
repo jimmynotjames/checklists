@@ -42,34 +42,76 @@ class checklistsUITests: XCTestCase {
   }
 
   /// The list screen's other swipe action. Delete keeps the outer edge, so both must be reachable
-  /// after one swipe, and this one must act without a confirmation.
+  /// after one swipe, and this one must act without a confirmation, opening the copy in the create
+  /// sheet as the checklist screen's ⋯ Duplicate does.
   func testChecklistDuplicationFromSwipe() {
     let listQuery = app.collectionViews
     let sourceName = "Weekend Getaway Essentials"
-    listQuery.staticTexts[sourceName].swipeLeft()
 
     // By identifier rather than by label: Delete sits beside this one, and the revealed buttons are
     // not reliably enumerable by position straight after a swipe.
     let duplicateAction = app.buttons["checklistRow.duplicate"]
-    XCTAssertTrue(duplicateAction.waitForExistence(timeout: 5), "Swipe-to-duplicate action didn't appear.")
-    duplicateAction.tap()
+    let duplicateBySwipe = { (expectedName: String) in
+      listQuery.staticTexts[sourceName].swipeLeft()
+      XCTAssertTrue(duplicateAction.waitForExistence(timeout: 5), "Swipe-to-duplicate action didn't appear.")
+      duplicateAction.tap()
+      XCTAssertFalse(self.app.alerts.firstMatch.exists, "Duplicating shouldn't raise a confirmation.")
+      self.assertCreateSheetShows(expectedName)
+      self.app.finishCreateSheet()
+    }
 
+    duplicateBySwipe("\(sourceName) copy")
     let copy = listQuery.staticTexts["\(sourceName) copy"]
-    XCTAssertTrue(copy.waitForExistence(timeout: 5), "The copy didn't appear in the list.")
-    // Nothing is confirmed and nothing is presented — the copy is simply there.
-    XCTAssertFalse(app.alerts.firstMatch.exists, "Duplicating shouldn't raise a confirmation.")
+    XCTAssertTrue(copy.waitForExistence(timeout: 5), "The copy didn't stay in the list after Done.")
     let source = listQuery.staticTexts[sourceName]
     XCTAssertTrue(source.exists, "The original should still be in the list.")
     XCTAssertGreaterThan(copy.frame.origin.y, source.frame.origin.y, "The copy should sit directly below the original.")
 
     // A second copy has to resolve its clash with the first rather than repeating the name.
-    source.swipeLeft()
-    XCTAssertTrue(duplicateAction.waitForExistence(timeout: 5), "Swipe-to-duplicate action didn't reappear.")
-    duplicateAction.tap()
+    duplicateBySwipe("\(sourceName) copy 2")
     XCTAssertTrue(
       listQuery.staticTexts["\(sourceName) copy 2"].waitForExistence(timeout: 5),
-      "The second copy didn't get a name of its own.",
+      "The second copy didn't stay in the list after Done.",
     )
+  }
+
+  /// The swipe action again, by long press. It opens the same sheet, whose Discard is the way back
+  /// out of an accidental duplicate. The sheet is presented as the menu closes, which this also pins.
+  ///
+  /// About two minutes locally, against under twenty seconds in CI: with animations on, XCTest waits
+  /// out its 60s idle timeout twice while the context menu is up. See `TestAnimationsOverride`.
+  func testChecklistDuplicationFromContextMenuCanBeDiscarded() {
+    let listQuery = app.collectionViews
+    let sourceName = "Morning Routine"
+    listQuery.staticTexts[sourceName].press(forDuration: 1.0)
+    let duplicateEntry = app.buttons["Duplicate"]
+    XCTAssertTrue(duplicateEntry.waitForExistence(timeout: 5), "The row's context menu didn't show Duplicate.")
+    duplicateEntry.tap()
+    assertCreateSheetShows("\(sourceName) copy")
+
+    let moreButton = app.navigationBars.buttons["checklist.more"]
+    XCTAssertTrue(moreButton.waitForExistence(timeout: 5), "The copy's overflow menu button didn't appear.")
+    moreButton.tap()
+    let discardEntry = app.buttons["Discard Checklist"]
+    XCTAssertTrue(discardEntry.waitForExistence(timeout: 5), "Discard Checklist menu entry didn't appear.")
+    discardEntry.tap()
+    let confirmDiscard = app.alerts.buttons["Discard"]
+    XCTAssertTrue(confirmDiscard.waitForExistence(timeout: 5), "Discard confirmation alert didn't appear.")
+    confirmDiscard.tap()
+
+    XCTAssertTrue(listQuery.staticTexts[sourceName].waitForExistence(timeout: 5), "The original should still be in the list.")
+    XCTAssertTrue(
+      listQuery.staticTexts["\(sourceName) copy"].waitForNonExistence(timeout: 5),
+      "The discarded copy should be gone.",
+    )
+  }
+
+  /// The create sheet is up over the list, showing `name`. Over the list there is no pushed
+  /// checklist screen, so its name field is the only one.
+  private func assertCreateSheetShows(_ name: String, file: StaticString = #filePath, line: UInt = #line) {
+    let nameField = app.textFields["checklistNameField"]
+    XCTAssertTrue(nameField.waitForExistence(timeout: 5), "The copy's sheet didn't appear.", file: file, line: line)
+    XCTAssertEqual(nameField.value as? String, name, "The sheet should show the copy.", file: file, line: line)
   }
 
   func testChecklistReordering() {
@@ -96,8 +138,8 @@ class checklistsUITests: XCTestCase {
     // instead of moving the row; one down the right third passes beside the menu.
     //
     // People do the same thing by accident sometimes, and that is accepted: they learn to drag
-    // clear of the menu, and both entries can be undone. A stray Duplicate leaves a copy to
-    // delete, and Delete asks for confirmation first.
+    // clear of the menu, and both entries can be undone. A stray Duplicate opens the copy in the
+    // create sheet, where Discard removes it, and Delete asks for confirmation first.
     //
     // Dragged once more if the first left the order as it was, as `dragRow` does.
     let rowPitch = text2.frame.midY - text1.frame.midY

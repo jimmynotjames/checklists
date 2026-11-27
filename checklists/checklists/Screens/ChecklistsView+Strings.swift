@@ -26,15 +26,6 @@ extension ChecklistsView {
     """,
   )
 
-  static let duplicatedAnnouncement = String(
-    localized: "checklists.accessibility.duplicated",
-    defaultValue: "Checklist duplicated",
-    comment: """
-    VoiceOver announcement after a checklist is duplicated with its swipe action. The copy appears \
-    directly below the original. Keep it short.
-    """,
-  )
-
   static let allResetAnnouncement = String(
     localized: "checklists.accessibility.allReset",
     defaultValue: "All checklists reset",
