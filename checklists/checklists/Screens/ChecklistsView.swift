@@ -573,7 +573,7 @@ struct ChecklistsView: View {
   // MARK: - Duplicating
 
   /// Opens the copy in the create sheet, as the detail screen's menu entry does: its name is focused
-  /// for renaming, and Discard undoes an accidental duplicate in one step. Edit mode's Duplicate stays
+  /// for renaming, and Discard is at hand for an accidental duplicate. Edit mode's Duplicate stays
   /// inline, since one sheet cannot hold several copies.
   private func duplicate(checklist: Checklist, source: ChecklistDuplicationSource = .swipe) {
     commitOpenEdit()
