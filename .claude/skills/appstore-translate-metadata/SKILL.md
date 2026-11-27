@@ -21,7 +21,7 @@ Before anything else, run `git fetch origin`. On `main`, fast-forward when behin
 ## Autonomy
 
 Run end to end without asking between steps, including retries and the step-5 fixes. There are two
-human checkpoints:
+human checkpoints, plus the sync step's stops above:
 
 1. **Source-ready confirmation**, before any step. It blocks the run.
 2. **Content questions** from step 4a. Surface them in one batch and keep going; they don't block.
