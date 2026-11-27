@@ -63,6 +63,21 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     copyEntry.tap()
   }
 
+  /// Taps New Checklist and waits for the create sheet that replaces the picker to focus its name
+  /// field, as `openCreateSheet` does for the list's Add button.
+  private func openNewChecklistFromPicker() {
+    let newChecklist = app.buttons["copyDestination.newChecklist"]
+    XCTAssertTrue(newChecklist.waitForExistence(timeout: 5), "The destination picker didn't appear.")
+    newChecklist.tap()
+    XCTAssertTrue(newChecklist.waitForNonExistence(timeout: 5), "The picker didn't give way to the create sheet.")
+    // Either of the two name fields in the tree, the source's behind the sheet and the new one's:
+    // only the sheet's can have focus.
+    let focusedName = app.textFields.matching(
+      NSPredicate(format: "identifier == 'checklistNameField' AND hasKeyboardFocus == true"),
+    ).firstMatch
+    XCTAssertTrue(focusedName.waitForExistence(timeout: 10), "The create sheet's name field never took focus.")
+  }
+
   /// Morning Routine is seeded with five of its six items checked, so the entry is offered without
   /// having to tick anything first.
   func testCopyCheckedItemsToANewUntitledChecklist() {
@@ -70,15 +85,16 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
 
     tapCopyCheckedItemsEntry()
+    openNewChecklistFromPicker()
+    // Leaving the name blank is legal: the new checklist takes the name an unnamed one carries
+    // everywhere else.
+    app.finishCreateSheet()
 
-    // Committing the name field blank is legal, which is why the button beside it is always
-    // enabled: the new checklist takes the name an unnamed one carries everywhere else.
-    let createButton = app.buttons["copyDestination.createNewChecklist"]
-    XCTAssertTrue(createButton.waitForExistence(timeout: 5), "The destination picker didn't appear.")
-    createButton.tap()
-
-    // Staying put is the point: the picker dismisses onto the checklist it was started from.
-    XCTAssertTrue(createButton.waitForNonExistence(timeout: 5), "The picker didn't dismiss.")
+    // Looked for first, as the move tests do: a toast stays up only briefly.
+    let toast = app.descendants(matching: .any)
+      .matching(NSPredicate(format: "label CONTAINS %@", "Copied items to untitled checklist")).firstMatch
+    XCTAssertTrue(toast.waitForExistence(timeout: 5), "The toast didn't appear.")
+    // Staying put is the point: closing the create sheet lands back on the source.
     XCTAssertTrue(app.tables["ChecklistTableView"].exists, "The copy shouldn't navigate away from the source.")
 
     detailBackButton.tap()
@@ -110,14 +126,11 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
 
     tapCopyCheckedItemsEntry()
+    openNewChecklistFromPicker()
+    app.typeText("Ferry Day")
+    app.finishCreateSheet()
 
-    let nameField = app.textFields["copyDestination.newChecklistName"]
-    XCTAssertTrue(nameField.waitForExistence(timeout: 5), "The destination picker didn't appear.")
-    nameField.tapForKeyboardFocus()
-    nameField.typeText("Ferry Day")
-    app.buttons["copyDestination.createNewChecklist"].tap()
-
-    XCTAssertTrue(nameField.waitForNonExistence(timeout: 5), "The picker didn't dismiss.")
+    XCTAssertTrue(app.createSheetDoneButton.waitForNonExistence(timeout: 5), "The create sheet didn't close.")
     detailBackButton.tap()
     XCTAssertTrue(checklistsList.staticTexts["Ferry Day"].waitForExistence(timeout: 5))
   }
@@ -169,74 +182,8 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
     let toast = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "No checked items.")).firstMatch
     XCTAssertTrue(toast.waitForExistence(timeout: 5), "The toast didn't appear.")
     XCTAssertFalse(
-      app.buttons["copyDestination.createNewChecklist"].exists,
+      app.buttons["copyDestination.newChecklist"].exists,
       "With nothing to copy there is nothing to pick a destination for.",
     )
-  }
-
-  // MARK: - Typing a name
-
-  private var editingDoneButton: XCUIElement {
-    app.navigationBars.buttons["copyDestination.editingDone"]
-  }
-
-  /// The ✓ ends typing and nothing else: the keyboard goes, the sheet stays, nothing is copied.
-  func testDoneEndsTypingWithoutCopying() {
-    checklistsList.staticTexts["Morning Routine"].tap()
-    XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
-    tapCopyCheckedItemsEntry()
-
-    let nameField = app.textFields["copyDestination.newChecklistName"]
-    XCTAssertTrue(nameField.waitForExistence(timeout: 5), "The destination picker didn't appear.")
-    XCTAssertFalse(editingDoneButton.exists, "Done should only show while the name is being typed.")
-    nameField.tapForKeyboardFocus()
-    XCTAssertTrue(editingDoneButton.waitForExistence(timeout: 5), "Focusing the name didn't bring Done into the bar.")
-
-    editingDoneButton.tap()
-
-    XCTAssertTrue(editingDoneButton.waitForNonExistence(timeout: 5), "Done stayed after ending typing.")
-    XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5), "The keyboard stayed up.")
-    XCTAssertTrue(nameField.exists, "Done should leave the picker up, with nothing copied.")
-  }
-
-  /// While the name is being typed, a destination row just above the keyboard still takes a tap:
-  /// nothing rides above the keyboard to swallow it.
-  @MainActor func testDestinationJustAboveKeyboardTakesTapWhileTyping() throws {
-    // Enough destinations that one reaches down to the keyboard; the seed alone has two.
-    for name in ["Packing A", "Packing B", "Packing C", "Packing D", "Packing E"] {
-      app.openCreateSheet()
-      app.typeText(name)
-      app.finishCreateSheet()
-      XCTAssertTrue(checklistsList.staticTexts[name].waitForExistence(timeout: 5))
-    }
-
-    checklistsList.staticTexts["Morning Routine"].tap()
-    XCTAssertTrue(app.tables["ChecklistTableView"].waitForExistence(timeout: 5))
-    tapCopyCheckedItemsEntry()
-
-    let nameField = app.textFields["copyDestination.newChecklistName"]
-    XCTAssertTrue(nameField.waitForExistence(timeout: 5), "The destination picker didn't appear.")
-    nameField.tapForKeyboardFocus()
-    let keyboard = app.waitForSoftwareKeyboard("Keyboard didn't appear for the name.")
-    XCTAssertTrue(editingDoneButton.waitForExistence(timeout: 5), "Focusing the name didn't bring Done into the bar.")
-
-    // A point in the band a keyboard toolbar occupies: centred 68pt above the keyboard, as the bar
-    // this replaced measured. Tapped there rather than at the row's centre, which can fall below it.
-    let bandY = keyboard.frame.minY - 68
-    let rows = app.buttons.matching(
-      NSPredicate(format: "identifier BEGINSWITH 'copyDestination.' AND NOT identifier IN %@", [
-        "copyDestination.createNewChecklist", "copyDestination.editingDone",
-      ]),
-    )
-    let rowInBand = (0 ..< rows.count)
-      .map { rows.element(boundBy: $0) }
-      .first { $0.frame.minY <= bandY && $0.frame.maxY >= bandY }
-    let row = try XCTUnwrap(rowInBand, "No destination reaches the band above the keyboard.")
-
-    row.coordinate(withNormalizedOffset: .zero)
-      .withOffset(CGVector(dx: 40, dy: bandY - row.frame.minY))
-      .tap()
-
-    XCTAssertTrue(nameField.waitForNonExistence(timeout: 5), "The tap above the keyboard didn't reach the destination.")
   }
 }

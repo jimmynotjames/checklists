@@ -92,6 +92,96 @@ class ChecklistMoveAndDeleteCheckedItemsUITest: XCTestCase {
     XCTAssertEqual(itemNames(in: morningTable).last, namesBefore.first, "The moved item should sit at the end.")
   }
 
+  /// The create sheet the picker's New Checklist opens on top of the source's screen. Both show a
+  /// `ChecklistTableView`, so it is the one whose name field isn't the source's.
+  private func createSheetTable(sourceName: String) -> XCUIElement {
+    app.tables.matching(identifier: "ChecklistTableView")
+      .containing(NSPredicate(format: "identifier == 'checklistNameField' AND NOT (value == %@)", sourceName))
+      .firstMatch
+  }
+
+  /// Opens Move's New Checklist and waits for the create sheet to focus its name field.
+  private func openNewChecklistForMove() {
+    tapMenuEntry("checklist.menu.moveCheckedItems")
+    let newChecklist = app.buttons["copyDestination.newChecklist"]
+    XCTAssertTrue(newChecklist.waitForExistence(timeout: 5), "The destination picker didn't appear.")
+    newChecklist.tap()
+    // See `ChecklistCopyCheckedItemsUITest.openNewChecklistFromPicker`: only the sheet's name field
+    // can have focus.
+    let focusedName = app.textFields.matching(
+      NSPredicate(format: "identifier == 'checklistNameField' AND hasKeyboardFocus == true"),
+    ).firstMatch
+    XCTAssertTrue(focusedName.waitForExistence(timeout: 10), "The create sheet's name field never took focus.")
+  }
+
+  /// Nothing leaves the source while the create sheet is up; Done is what takes it.
+  func testMoveCheckedItemsToANewChecklistOnDone() {
+    checklistsList.staticTexts["Pre-Trip Checklist"].tap()
+    let preTripTable = app.tables["ChecklistTableView"]
+    XCTAssertTrue(preTripTable.waitForExistence(timeout: 5))
+    let namesBefore = itemNames(in: preTripTable)
+    preTripTable.children(matching: .cell).element(boundBy: 0).buttons["itemCheckbox"].tap()
+
+    openNewChecklistForMove()
+    let sheetTable = createSheetTable(sourceName: "Pre-Trip Checklist")
+    XCTAssertTrue(sheetTable.waitForExistence(timeout: 5), "The create sheet's checklist didn't appear.")
+    XCTAssertEqual(itemNames(in: sheetTable), [namesBefore[0]], "The create sheet should open on the copied item.")
+    app.typeText("Ferry Day")
+    app.finishCreateSheet()
+
+    let toast = app.descendants(matching: .any)
+      .matching(NSPredicate(format: "label CONTAINS %@", "Moved items to Ferry Day")).firstMatch
+    XCTAssertTrue(toast.waitForExistence(timeout: 5), "The toast didn't appear.")
+    XCTAssertEqual(
+      itemNames(in: preTripTable),
+      Array(namesBefore.dropFirst()),
+      "Keeping the new checklist should take the moved item out of the source.",
+    )
+  }
+
+  /// Discard undoes the whole move, whatever was changed on the create sheet first: the source
+  /// keeps every checked item, under its own name and still ticked.
+  func testDiscardingAMoveAfterEditsLeavesTheSource() {
+    // Morning Routine is seeded with five of its six items checked; "Journaling" is the one that isn't.
+    checklistsList.staticTexts["Morning Routine"].tap()
+    let sourceTable = app.tables["ChecklistTableView"]
+    XCTAssertTrue(sourceTable.waitForExistence(timeout: 5))
+    let namesBefore = itemNames(in: sourceTable)
+
+    openNewChecklistForMove()
+    let sheetTable = createSheetTable(sourceName: "Morning Routine")
+    XCTAssertTrue(sheetTable.waitForExistence(timeout: 5), "The create sheet's checklist didn't appear.")
+    app.tapChecklistEditingDone()
+
+    // Rename the first copy, then delete the second.
+    let firstName = sheetTable.children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"]
+    firstName.tapForKeyboardFocus(at: CGVector(dx: 0.9, dy: 0.9))
+    firstName.typeText(" edited")
+    app.tapChecklistEditingDone()
+    sheetTable.children(matching: .cell).element(boundBy: 1).swipeLeft()
+    let deleteAction = sheetTable.buttons["Delete"]
+    XCTAssertTrue(deleteAction.waitForExistence(timeout: 5), "Swipe-to-delete action didn't appear.")
+    deleteAction.tap()
+
+    let moreButton = app.navigationBars.containing(
+      NSPredicate(format: "identifier == 'checklist.done'"),
+    ).firstMatch.buttons["checklist.more"]
+    XCTAssertTrue(moreButton.waitForExistence(timeout: 5), "The create sheet's overflow menu button didn't appear.")
+    moreButton.tap()
+    let discardEntry = app.buttons["Discard Checklist"]
+    XCTAssertTrue(discardEntry.waitForExistence(timeout: 5), "Discard Checklist menu entry didn't appear.")
+    discardEntry.tap()
+    let confirmDiscard = app.alerts.buttons["Discard"]
+    XCTAssertTrue(confirmDiscard.waitForExistence(timeout: 5), "Discard confirmation alert didn't appear.")
+    confirmDiscard.tap()
+
+    XCTAssertTrue(sheetTable.waitForNonExistence(timeout: 5), "The create sheet didn't close.")
+    XCTAssertEqual(itemNames(in: sourceTable), namesBefore, "Discard should leave every original in the source.")
+    let checkedCount = (0 ..< sourceTable.cells.count)
+      .count { sourceTable.cells.element(boundBy: $0).buttons["itemCheckbox"].isSelected }
+    XCTAssertEqual(checkedCount, 5, "The originals should still be ticked.")
+  }
+
   // MARK: - Delete
 
   /// Morning Routine is seeded with five of its six items checked; "Journaling" is the one that isn't.
@@ -131,7 +221,7 @@ class ChecklistMoveAndDeleteCheckedItemsUITest: XCTestCase {
       XCTAssertTrue(noCheckedItemsToast.waitForExistence(timeout: 5), "No toast for \(identifier).")
       XCTAssertFalse(app.alerts.firstMatch.exists, "With nothing checked there is nothing to confirm.")
       XCTAssertFalse(
-        app.buttons["copyDestination.createNewChecklist"].exists,
+        app.buttons["copyDestination.newChecklist"].exists,
         "With nothing checked there is nothing to pick a destination for.",
       )
       XCTAssertTrue(app.buttons[identifier].waitForNonExistence(timeout: 5), "The menu didn't close.")

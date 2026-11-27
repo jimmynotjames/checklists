@@ -254,8 +254,8 @@ Flat `snake_case`, `noun_pastTenseVerb`.
 | `settings_viewed` | Settings appears | — |
 | `checklist_created` | A checklist is created | — |
 | `checklist_duplicated` | Copied, from the list's swipe or context menu, or the checklist menu | `source` |
-| `checklist_items_copied` | Ticked items copied into another checklist, from the checklist menu | `destination` |
-| `checklist_items_moved` | Ticked items moved into another checklist and out of this one, from the checklist menu | `destination` |
+| `checklist_items_copied` | Ticked items copied into another checklist, from the checklist menu. Into a new one, sent when its create sheet closes with it kept; a discarded one sends nothing | `destination` |
+| `checklist_items_moved` | Ticked items moved into another checklist and out of this one, from the checklist menu. Into a new one, as `checklist_items_copied` | `destination` |
 | `checklist_checked_items_deleted` | The checklist menu's Delete Checked Items is confirmed | `items_count` |
 | `checklist_reset` | All items unchecked | — |
 | `checklist_deleted` | Deleted, from the list's swipe or context menu, or the checklist menu | — |
