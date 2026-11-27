@@ -3496,7 +3496,7 @@
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nouvelle liste de vérification"
+            "value" : "Nouvelle liste"
           }
         },
         "gu" : {
@@ -3610,7 +3610,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Novo Checklist"
+            "value" : "Novo checklist"
           }
         },
         "pt-PT" : {
@@ -3640,7 +3640,7 @@
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nov kontrolni seznam"
+            "value" : "Nov seznam"
           }
         },
         "sv" : {
