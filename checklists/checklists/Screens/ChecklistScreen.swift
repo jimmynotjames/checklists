@@ -40,8 +40,7 @@ struct ChecklistScreen: View {
       // A duplicate opens in the create sheet, not as a push: like `ChecklistsView.addChecklist`'s
       // row, it exists in the store but has not been kept yet. Everything the sheet does about that
       // is what a copy wants — Done instead of Reset, the name field focused for renaming, no
-      // history caption, and Discard as the way to undo an accidental duplicate. ChecklistsView's row
-      // Duplicate opens its copy the same way.
+      // history caption, and Discard as the way to undo an accidental duplicate.
       onRequestOpenDuplicate: { id in router.sheet = .newChecklist(id: id) },
       // The picker does the copying or moving itself and dismisses without navigating, so this and
       // `transferGeneration` are the whole of the host's involvement — see `CopyCheckedItemsView`.

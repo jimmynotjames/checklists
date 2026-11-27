@@ -110,7 +110,7 @@ long and which the user just acted on.
   the copy opens in the create sheet, and VoiceOver goes into it with the sheet.
 - **Checklist screen:** the swipe, context-menu, VoiceOver and ⌘ shortcut Delete and Duplicate, Reset (only when
   it unticked something) and Delete Checked Items (with a count, focus on the first row left)
-  announce. After a row's context menu, focus waits for the menu to close, as on the checklists list.
+  announce. After a row's context menu, focus waits for the menu to close.
   Backspace on an empty row doesn't: it moves editing to the row above.
 - **Reorder Items mode** swaps the bar item VoiceOver was on, so VoiceOver moves to Done on the way
   in and back to ⋯ on the way out, after the bar has relaid and the ⋯ menu has closed. Tapping the
@@ -132,7 +132,7 @@ long and which the user just acted on.
   and says nothing new.
 - **Checklists list:** a confirmed delete, Reset All (only when
   it unticked something) and Edit mode's Delete, Duplicate and Reset (with a count) announce. Focus
-  moves after a confirmation alert, the "•••" or a row's context menu, or Edit mode's entry or exit
+  moves after a confirmation alert, the "•••" menu, or Edit mode's entry or exit
   has finished, since the system moves VoiceOver itself as each closes. Entering Edit mode from "•••" moves it to Edit mode's ✓;
   leaving by ✓, or by an Edit mode action, moves it to "•••", because the button it was on is gone;
   when a delete leaves no checklists it goes to the Add button, since the list has no empty

@@ -42,8 +42,7 @@ class checklistsUITests: XCTestCase {
   }
 
   /// The list screen's other swipe action. Delete keeps the outer edge, so both must be reachable
-  /// after one swipe, and this one must act without a confirmation, opening the copy in the create
-  /// sheet as the checklist screen's ⋯ Duplicate does.
+  /// after one swipe, and this one must act without a confirmation.
   func testChecklistDuplicationFromSwipe() {
     let listQuery = app.collectionViews
     let sourceName = "Weekend Getaway Essentials"
@@ -78,8 +77,8 @@ class checklistsUITests: XCTestCase {
   /// The swipe action again, by long press. It opens the same sheet, whose Discard is the way back
   /// out of an accidental duplicate. The sheet is presented as the menu closes, which this also pins.
   ///
-  /// About two minutes locally, against under twenty seconds in CI: with animations on, XCTest waits
-  /// out its 60s idle timeout twice while the context menu is up. See `TestAnimationsOverride`.
+  /// Slow locally with animations on: XCTest's idle wait stalls while the context menu is up. See
+  /// `TestAnimationsOverride`.
   func testChecklistDuplicationFromContextMenuCanBeDiscarded() {
     let listQuery = app.collectionViews
     let sourceName = "Morning Routine"
