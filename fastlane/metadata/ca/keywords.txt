@@ -1,1 +1,1 @@
-checklist,recurrent,reutilitzable,equipatge,maleta,viatge,compra,rutina,plantilla,comprovació
+llista,checklist,reutilitzable,recurrent,repetir,maleta,equipatge,viatge,compra,rutina,plantilla

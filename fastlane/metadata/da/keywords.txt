@@ -1,1 +1,1 @@
-checkliste,liste,huskeliste,pakkeliste,indkøbsliste,gentagne,genbrug,rutine,checklist,rejse,ferie
+tjekliste,checkliste,huskeliste,pakkeliste,indkøbsliste,gentagne,genbrug,rutine,checklist,rejse

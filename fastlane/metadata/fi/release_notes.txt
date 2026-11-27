@@ -1,1 +1,1 @@
-Listat synkronoituvat nyt laitteillesi iCloudin kautta, ja sovellus toimii useilla kielillä. Monista listoja, siirrä rastimiasi kohtia listalta toiselle ja vie listat PDF-muotoon.
+Tarkistuslistat synkronoituvat nyt laitteillesi iCloudin kautta, ja sovellus toimii useilla kielillä. Monista tarkistuslistoja, siirrä rastimiasi kohtia listalta toiselle ja vie listat PDF-muotoon.

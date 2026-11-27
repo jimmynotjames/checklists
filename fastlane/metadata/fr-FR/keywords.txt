@@ -1,1 +1,1 @@
-checklist,récurrent,répéter,valise,bagages,courses,voyage,routine,modèle,vérification,vacances
+liste,checklist,récurrent,répéter,valise,bagages,courses,voyage,routine,modèle,vacances,départ

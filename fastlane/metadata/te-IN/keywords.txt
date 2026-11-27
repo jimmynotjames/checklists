@@ -1,1 +1,1 @@
-checklist,list,packing,repeat,recurring,shopping,travel,grocery,జాబితా,reuse,trip
+చెక్‌లిస్ట్,checklist,repeat,packing,shopping,grocery,travel,trip,routine

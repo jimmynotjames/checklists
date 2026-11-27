@@ -1,5 +1,5 @@
 Làm quen với một quy trình mới, hoặc luyện một việc phức tạp cho đến khi thành thạo. Không còn sót bước quan trọng nào nữa.
 
-Dùng được cả cho những danh sách lặp đi lặp lại, như đồ cần mang khi đi xa, danh sách đi chợ, việc ở chỗ làm hay những buổi cày game.
+Dùng được cả cho những danh sách kiểm tra lặp đi lặp lại, như đồ cần mang khi đi xa, đồ cần mua khi đi chợ, việc ở chỗ làm hay những buổi cày game.
 
-Đồng bộ giữa các thiết bị của bạn qua iCloud. Nhân bản một danh sách, hoặc chuyển những mục đã đánh dấu sang danh sách khác. Xuất ra PDF. Hỗ trợ nhiều ngôn ngữ, cùng VoiceOver và chữ cỡ lớn.
+Đồng bộ giữa các thiết bị của bạn qua iCloud. Nhân bản một danh sách kiểm tra, hoặc chuyển những mục đã đánh dấu sang danh sách khác. Xuất ra PDF. Hỗ trợ nhiều ngôn ngữ, cùng VoiceOver và chữ cỡ lớn.

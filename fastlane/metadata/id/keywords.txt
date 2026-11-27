@@ -1,1 +1,1 @@
-daftar,ceklis,berulang,rutinitas,packing,belanja,persiapan,bawaan,mudik,liburan,cek,centang,harian
+checklist,ceklis,berulang,ulang,rutinitas,packing,list,belanja,bawaan,mudik,liburan,centang,koper
