@@ -51,7 +51,7 @@ The app's own {LOCALE_NAME} interface names its core concept with these words. S
 
 - **Use the agreed word for every mention** in `subtitle`, `promotional_text`, `description` and `release_notes`, in whatever plural, case, article or compound form the sentence needs, and in this language's casing (a common noun stays lowercase mid-sentence, whatever the label casing above). A different word or synonym is wrong, and so is swapping between the local word and the English loanword (in either direction) or writing English "checklist" in Latin script where the agreed word isn't that.
 - **A shorter form only where this language would naturally use one.** In a longer field, a later mention may shorten the agreed term, much as English prose shortens "checklist" to "list", but only when native copy here really does that and the meaning stays unmistakable. Never shorten in `subtitle`, and never shorten to a different word.
-- **`keywords` must contain the agreed word** (base form). The Roman-script English "checklist" may also appear as an extra search term, but never in place of it.
+- **The agreed word must be searchable.** Put its base form in `keywords` unless `name` or `subtitle` already has that exact form (the Keywords section's same-form rule; a plural in the subtitle still leaves the base form a slot). The Roman-script English "checklist" may also appear as an extra search term, but never in place of the agreed word, and never a synonym in its place.
 
 <!-- end glossary -->
 

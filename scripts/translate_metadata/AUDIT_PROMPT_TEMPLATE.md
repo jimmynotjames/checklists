@@ -19,7 +19,7 @@ You are a senior **native {LOCALE_NAME}** App Store / ASO reviewer auditing the 
 
 {GLOSSARY}
 
-Flag (`category: terminology`, severity `medium`) any field that renders the term with a different word or synonym, swaps between the local word and the English loanword, or writes English "checklist" in Latin script where the agreed word isn't that. Required plural, case, article or compound forms of the agreed word are correct. In a longer field, a later shortened mention is fine only where native copy here really would shorten it and the meaning stays clear; a shortened `subtitle` is a finding. `keywords` must contain the agreed word, and may also add the Roman-script "checklist" as an extra term. Use the agreed word in your `suggestion`.
+Flag (`category: terminology`, severity `medium`) any field that renders the term with a different word or synonym, swaps between the local word and the English loanword, or writes English "checklist" in Latin script where the agreed word isn't that. Required plural, case, article or compound forms of the agreed word are correct. In a longer field, a later shortened mention is fine only where native copy here really would shorten it and the meaning stays clear; a shortened `subtitle` is a finding. The agreed word must be searchable: its base form belongs in `keywords` unless the name or subtitle already has that exact form (then repeating it is wasted budget, not a requirement). `keywords` may also add the Roman-script "checklist" as an extra term, never in place of the agreed word. Use the agreed word in your `suggestion`.
 
 <!-- end glossary -->
 
