@@ -11,9 +11,11 @@ Produce one binary for final TestFlight testing and later manual App Store submi
 
 For an interrupted attempt or requested retry, use the **Recovery** section of [appstore-push-testflight-build](../appstore-push-testflight-build/SKILL.md) before the new-release preflight. Retain the existing release branch and marketing-version commit.
 
-Read `AGENTS.md`, `fastlane/SETUP.md`, and any in-flight record under `releases/`. Resolve the new `MARKETING_VERSION` from the user's current instruction or a version they already chose in the active release record. Ask only when it is absent or conflicts with current state; do not make the user repeat an established choice.
+Fetch `origin` and require a clean checkout attached to `main`; fast-forward it (`git pull --ff-only`) when it is behind.
 
-Confirm the source checkout is clean, attached, and current with `origin/main`. Preserve an existing confirmation that release copy is final; ask only if that state is unknown. The active release record must already be committed and merged — persist any new/modified record through `create-pr` first (AGENTS.md §"Commit and PR style"). Then create `u/jimmyho/<tool>/release-vX.Y.Z` before editing any file.
+Then read `AGENTS.md`, `fastlane/SETUP.md`, and any in-flight record under `releases/`. Resolve the new `MARKETING_VERSION` from the user's current instruction or a version they already chose in the active release record. Ask only when it is absent or conflicts with current state; do not make the user repeat an established choice.
+
+Preserve an existing confirmation that release copy is final; ask only if that state is unknown. The active release record must already be committed and merged — persist any new/modified record through `create-pr` first (AGENTS.md §"Commit and PR style"). Then create `u/jimmyho/<tool>/release-vX.Y.Z` before editing any file.
 
 ## Version, upload, and PR
 

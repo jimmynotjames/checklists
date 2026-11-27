@@ -8,8 +8,12 @@ description: "Capture and review App Store screenshots locally, inspect existing
 The workflow captures two screens per active locale on each configured device.
 A full run is serial release-time work (timing: `fastlane/SETUP.md`) and is
 resumable by `run_id`; use a `locales:` subset while iterating. Run commands
-from the repository root. Read `fastlane/SETUP.md` and
-`fastlane/screenshot-config.json` first.
+from the repository root. After the sync below, read `fastlane/SETUP.md` and
+`fastlane/screenshot-config.json`.
+
+## Sync with `origin/main`
+
+Before anything else, run `git fetch origin`. On `main`, fast-forward when behind (`git pull --ff-only`); uncommitted edits may stay, and if git refuses, stop and ask. On another branch, don't switch or merge: say how far it is behind `origin/main` and confirm before continuing. Skip the pull for any command that names an existing `run_id` (resume, status, publish): the lane rejects a run whose source changed after capture.
 
 ## Capture and review
 
