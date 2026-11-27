@@ -46,6 +46,7 @@ from metadata_locales import (  # noqa: E402
     STOREFRONT_NAMES,
     STOREFRONT_TO_RUNTIME,
     TRANSLATABLE_FIELDS,
+    glossary_lines,
     store_name,
 )
 from prompt_render import compact_json, render  # noqa: E402
@@ -79,6 +80,10 @@ def audit_field(value: str, field: str, *, measure: bool) -> dict:
 
 def render_audit_prompt(template: str, storefront: str, source: dict, current: dict) -> str:
     rtl = STOREFRONT_TO_RUNTIME.get(storefront, storefront).split("-")[0] in RTL_LANGUAGES
+    sections = {"rtl"} if rtl else set()
+    glossary = glossary_lines(storefront)
+    if glossary:
+        sections.add("glossary")
     return render(
         template,
         {
@@ -88,9 +93,10 @@ def render_audit_prompt(template: str, storefront: str, source: dict, current: d
             "SOURCE_JSON": compact_json(source),
             "CURRENT_JSON": compact_json(current),
             "STORE_NAME": store_name(METADATA_DIR, storefront),
+            "GLOSSARY": glossary,
         },
-        {"rtl"} if rtl else set(),
-        known={"rtl"},
+        sections,
+        known={"rtl", "glossary"},
     )
 
 

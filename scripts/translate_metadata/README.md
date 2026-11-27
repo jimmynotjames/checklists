@@ -38,6 +38,10 @@ authored in that storefront's folder and `merge.py` leaves it alone. The catalog
 A translatable field that is blank or absent in `en-US` is unused; `merge.py` deletes it
 from every storefront.
 
+The core noun **"Checklist"** follows the in-app glossary (`METADATA_GLOSSARY_TERMS` in
+`metadata_locales.py`), so the listing and the app use the same word; both prompts render it as an
+"agreed terms" section. Rationale: `localization-spec.md §Transcreation vs translation`.
+
 The brand **"reChecklist"** is treated as a proper noun everywhere: never translated,
 transliterated, or glossed. (Decision: brand stays Latin in all locales — no
 localized home-screen icon name / `InfoPlist.xcstrings` is required.)
