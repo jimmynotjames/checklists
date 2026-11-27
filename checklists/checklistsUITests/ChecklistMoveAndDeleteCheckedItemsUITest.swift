@@ -132,6 +132,8 @@ class ChecklistMoveAndDeleteCheckedItemsUITest: XCTestCase {
     let toast = app.descendants(matching: .any)
       .matching(NSPredicate(format: "label CONTAINS %@", "Moved items to Ferry Day")).firstMatch
     XCTAssertTrue(toast.waitForExistence(timeout: 5), "The toast didn't appear.")
+    // The toast rises as the sheet starts to slide away, while its table is still in the tree.
+    XCTAssertTrue(sheetTable.waitForNonExistence(timeout: 5), "The create sheet didn't close.")
     XCTAssertEqual(
       itemNames(in: preTripTable),
       Array(namesBefore.dropFirst()),

@@ -51,6 +51,12 @@ class AccessibilityAuditUITest: XCTestCase {
 
   private static let knownIssues: [KnownIssue] = [
     KnownIssue(
+      screens: ["copyCheckedItemsSheet"],
+      types: .textClipped,
+      label: "New Checklist",
+      reason: "False positive: the button's title wraps at the largest sizes rather than clipping.",
+    ),
+    KnownIssue(
       screens: ["settings"],
       types: .textClipped,
       label: "iCloud Not Available",

@@ -52,8 +52,6 @@ ALLOWLIST: set[tuple[str, str]] = {
     # "Yoga" and "meditation" are the ordinary Danish and Swedish words, spelled as in English.
     ("sample.morningRoutine.item2", "da"),
     ("sample.morningRoutine.item2", "sv"),
-    # "Name (optional)" is ordinary German, spelled as in English.
-    ("checklist.copy.namePlaceholder", "de"),
     # "Edit" is the Edit button label in Apple's Malay UI.
     ("checklists.action.edit", "ms"),
     # "Checklists" is the ordinary Dutch and Brazilian Portuguese plural: the glossary keeps

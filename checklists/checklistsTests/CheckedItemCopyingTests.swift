@@ -12,7 +12,7 @@ import Testing
 /// `completeCheckedItemsTransfer` operations behind the detail screen's "Copy Checked Items to…" and "Move
 /// Checked Items to…" entries.
 ///
-/// The new checklist's name is chosen by the picker, not by these operations, so nothing here
+/// The new checklist's name is chosen on the create sheet, not by these operations, so nothing here
 /// asserts localized text — unlike `ChecklistDuplicationTests`, which has naming rules to cover.
 ///
 /// No isolation annotation — AGENTS.md §"Concurrency".
@@ -373,8 +373,6 @@ struct CheckedItemCopyingTests {
     #expect(try context.fetch(FetchDescriptor<Item>()).count == 3, "The copies go with the discarded checklist.")
   }
 
-  /// Renamed, deleted and added rows on the create sheet are edits to the new checklist; the
-  /// originals are found by id and go all the same.
   @Test("a kept move removes every original, whatever was done to the copies")
   func keptMoveIgnoresEditsToTheCopies() throws {
     let context = try TestModelContainer.makeContext()

@@ -133,9 +133,8 @@ struct CopyCheckedItemsView: View {
     return false
   }
 
-  /// Copies into a new, unnamed checklist and swaps this sheet for the create sheet on it. Copied
-  /// for a move too: the originals stay until the create sheet closes with the checklist kept.
-  /// Nothing is tracked or confirmed yet, since Discard may still undo it.
+  /// Copies into a new, unnamed checklist and swaps this sheet for the create sheet on it. Nothing
+  /// is tracked or confirmed yet, since Discard may still undo it.
   private func openNewChecklist() {
     guard hasSomethingToCopy() else { return }
     let itemIDs = source.checkedItems.map(\.id)

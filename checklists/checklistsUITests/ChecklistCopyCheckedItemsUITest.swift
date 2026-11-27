@@ -127,7 +127,9 @@ class ChecklistCopyCheckedItemsUITest: XCTestCase {
 
     tapCopyCheckedItemsEntry()
     openNewChecklistFromPicker()
-    app.typeText("Ferry Day")
+    // Return, not just Done: with several copied rows there is no seeded blank row for Return to
+    // move on to, as there is on a plain new checklist.
+    app.typeText("Ferry Day\n")
     app.finishCreateSheet()
 
     XCTAssertTrue(app.createSheetDoneButton.waitForNonExistence(timeout: 5), "The create sheet didn't close.")

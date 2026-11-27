@@ -35,9 +35,8 @@ class ChecklistViewController: UIViewController {
   var onRequestOpenDuplicate: ((String) -> Void)?
 
   /// Set by the SwiftUI host (`ChecklistScreen`). Called with *this* checklist's `id` when the
-  /// overflow menu's copy or move entry is tapped, for the host to present the destination picker,
-  /// which does the copying or moving (see `CopyCheckedItemsView`). Unset means the entries do
-  /// nothing.
+  /// overflow menu's copy or move entry is tapped, for the host to present the destination picker
+  /// (see `CopyCheckedItemsView`). Unset means the entries do nothing.
   var onRequestTransferCheckedItems: ((String, CheckedItemsTransferMode) -> Void)?
 
   /// Set by the SwiftUI host (`ChecklistScreen`). Called when Export as PDF… could not make or
@@ -274,7 +273,9 @@ class ChecklistViewController: UIViewController {
     super.viewDidAppear(animated)
     if isNewChecklist {
       isNewChecklist = false // safeguard against future times viewWillAppear/viewDidAppear might get called.
-      isJumpingToFirstItem = true
+      // Return in the name field moves on to the seeded blank row. A checklist that opens with
+      // items of its own, as one made from copied items does, has no such row to move to.
+      isJumpingToFirstItem = checklist.items.count == 1 && checklist.items[0].name.isEmpty
       checklistNameTextField.becomeFirstResponder()
     } else {
       tableView.flashScrollIndicators()
