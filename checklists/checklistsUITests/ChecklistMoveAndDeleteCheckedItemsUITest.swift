@@ -153,13 +153,12 @@ class ChecklistMoveAndDeleteCheckedItemsUITest: XCTestCase {
     openNewChecklistForMove()
     let sheetTable = createSheetTable(sourceName: "Morning Routine")
     XCTAssertTrue(sheetTable.waitForExistence(timeout: 5), "The create sheet's checklist didn't appear.")
-    app.tapChecklistEditingDone()
 
-    // Rename the first copy, then delete the second.
+    // Rename the first copy, then delete the second. The sheet's name field has the keyboard as it
+    // opens, and typing keeps it up throughout: the create sheet's bar has no editing Done.
     let firstName = sheetTable.children(matching: .cell).element(boundBy: 0).textViews["itemNameTextView"]
     firstName.tapForKeyboardFocus(at: CGVector(dx: 0.9, dy: 0.9))
     firstName.typeText(" edited")
-    app.tapChecklistEditingDone()
     sheetTable.children(matching: .cell).element(boundBy: 1).swipeLeft()
     let deleteAction = sheetTable.buttons["Delete"]
     XCTAssertTrue(deleteAction.waitForExistence(timeout: 5), "Swipe-to-delete action didn't appear.")

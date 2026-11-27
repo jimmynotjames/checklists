@@ -114,8 +114,10 @@ long and which the user just acted on.
   Backspace on an empty row doesn't: it moves editing to the row above.
 - **Reorder Items mode** swaps the bar item VoiceOver was on, so VoiceOver moves to Done on the way
   in and back to ⋯ on the way out, after the bar has relaid and the ⋯ menu has closed. Tapping the
-  Done that typing adds to the bar takes that Done away, so VoiceOver moves to what takes its place
-  at the outer edge: ⋯, or the create sheet's own Done. The controller asks through
+  Done that typing adds to an existing checklist's bar takes that Done away, so VoiceOver moves to
+  what takes its place at the outer edge, ⋯. The create sheet adds none: its own Done stays while
+  typing and closes the sheet, keeping what was typed, so Esc there ends typing with VoiceOver left
+  where it was. The controller asks through
   `ChecklistBar.focusRequest`, and `ChecklistScreen`'s toolbar moves VoiceOver with
   `AccessibilityFocusState`, as ChecklistsView does. On a narrow window Back is the split view's
   own, read as the list's title; Reorder Items mode hides it, which also blocks the back swipe. On

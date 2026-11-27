@@ -49,18 +49,22 @@ extension ChecklistViewController {
     }
   }
 
-  /// Typing in any field shows the editing Done at the outer edge, as Notes does. Reorder Items mode
+  /// Typing in any field shows the editing Done at the outer edge, as Notes does, except on the
+  /// create sheet, which keeps its own Done there (see `ChecklistBar.pinnedItem`). Reorder Items mode
   /// owns the bar while it is on.
   func updateBarMode(animated: Bool) {
     guard !isReordering else { return }
     bar.setMode(isEditingText ? .typing : .idle, animated: animated)
   }
 
+  /// The editing Done, and Esc on any field.
   func editingDoneTapped() {
     view.endEditing(true)
+    // On the create sheet only Esc gets here, and nothing in the bar changes, so VoiceOver stays put.
+    guard !showsDiscardWording else { return }
     // The button VoiceOver was on is about to go; VoiceOver moves to what takes its place at the
-    // outer edge: the create sheet's own Done, or ⋯.
-    moveVoiceOverAfterBarSwap(to: showsDiscardWording ? .primary : .more)
+    // outer edge.
+    moveVoiceOverAfterBarSwap(to: .more)
   }
 
   /// Straight to the share sheet, with no sheet of options first: the screen behind the menu is

@@ -253,7 +253,8 @@ class AccessibilityAuditUITest: XCTestCase {
   // intermittently flags a row caught mid-relayout as "partially unsupported": a flake, not a
   // finding, and the editing state goes unaudited anyway. What only that state shows, an item's
   // expanded empty notes field, is covered by functional UI tests that type into it, not by an
-  // audit; `testCreateSheet` audits the keyboard and the editing Done.
+  // audit; `testCreateSheet` audits the keyboard. So no audit sees the editing Done, which only an
+  // existing checklist shows; it is the same system `.confirm` button as the audited Dones.
 
   func testOverflowMenu() throws {
     launch()

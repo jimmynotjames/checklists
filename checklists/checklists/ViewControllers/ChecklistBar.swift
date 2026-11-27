@@ -62,10 +62,16 @@ final class ChecklistBar {
 
   /// The item pinned at the outer edge: at the top of iPhone Duo's vertical bar, under Back, and
   /// never in the overflow. Always the screen's Done of the moment.
+  ///
+  /// The create sheet keeps its own Done while typing rather than swapping in the editing Done: the
+  /// two are the same checkmark in the same place, so a tap meant to finish the checklist would only
+  /// hide the keyboard. There a tap on Done ends the typing and closes the sheet in one go. The
+  /// accepted cost: on a list too short to scroll, a drag down closes the sheet rather than the
+  /// keyboard, so typing into an item there keeps the keyboard up until Done.
   var pinnedItem: Item? {
     switch mode {
     case .reordering: .reorderDone
-    case .typing: .editingDone
+    case .typing: isNewChecklist ? .primary : .editingDone
     case .idle: isNewChecklist ? .primary : nil
     }
   }
