@@ -39,8 +39,21 @@ When a limit forces a choice, keep the higher-priority message and drop the lowe
 2. **Limits are hard.** Each field has a `charLimit` (`byteLimit` for `keywords`) that your output must not exceed. If a natural transcreation runs long, rewrite it shorter; never truncate mid-word or mid-sentence. Near-limit counting is where this pipeline fails most: for any field close to its limit, aim a few characters under and re-count the finished string. A sentence that feels short in a longer-running script can still be 175/170.
 3. **Follow each field's `guidance`** in the source JSON.
 4. **Native, not calqued.** Render each idea in native idiom, never word for word; restructure clause order and vary sentence length. Use this market's punctuation and emphasis conventions, not English habits (em-dashes, ALL-CAPS headers) that read as shouty or foreign here. Don't pad to fill a limit.
-5. **Apple terms.** Leave "iCloud" and other proper nouns Apple keeps in English in its own UI. Domain words like "checklist" are not protected; use the natural local term.
+5. **Apple terms.** Leave "iCloud" and other proper nouns Apple keeps in English in its own UI. Domain words like "checklist" are not protected: translate them, using the agreed term below wherever one is given.
 6. **Numbers and dates** follow local convention; don't invent specifics the source doesn't contain.
+
+<!-- if glossary -->
+## Agreed terms: say it the way the app does
+
+The app's own {LOCALE_NAME} interface names its core concept with these words. Someone who reads the listing and then opens the app must meet the same word, so these renderings override your own preference, a more searchable synonym, and any loanword hint in the market note:
+
+{GLOSSARY}
+
+- **Use the agreed word for every mention** in `subtitle`, `promotional_text`, `description` and `release_notes`, in whatever plural, case, article or compound form the sentence needs, and in this language's casing (a common noun stays lowercase mid-sentence, whatever the label casing above). A different word or synonym is wrong, and so is swapping between the local word and the English loanword (in either direction) or writing English "checklist" in Latin script where the agreed word isn't that.
+- **A shorter form only where this language would naturally use one.** In a longer field, a later mention may shorten the agreed term, much as English prose shortens "checklist" to "list", but only when native copy here really does that and the meaning stays unmistakable. Never shorten in `subtitle`, and never shorten to a different word.
+- **The agreed word must be searchable.** Put its base form in `keywords` unless `name` or `subtitle` already has that exact form (the Keywords section's same-form rule; a plural in the subtitle still leaves the base form a slot). The Roman-script English "checklist" may also appear as an extra search term, but never in place of the agreed word, and never a synonym in its place.
+
+<!-- end glossary -->
 
 <!-- if subtitle -->
 ## Subtitle

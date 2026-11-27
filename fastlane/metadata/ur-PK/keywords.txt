@@ -1,1 +1,1 @@
-checklist,list,packing,routine,repeat,travel,فہرست,دوبارہ,سامان,خریداری
+checklist,packing,routine,travel,چیک لسٹ,فہرست,دوبارہ,سامان,خریداری

@@ -1,1 +1,1 @@
-checklist,liste,tekrar,tekrarlayan,bavul,valiz,seyahat,alışveriş,market,rutin,hazırlık,sabah
+checklist,liste,listesi,tekrar,tekrarlayan,bavul,valiz,seyahat,alışveriş,market,rutin,sabah

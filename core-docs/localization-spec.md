@@ -121,6 +121,14 @@ done — because the screenshot seeds and the parity check depend on it.
 The glossary (`scripts/translate_catalog/glossary.json`) keeps recurring terms consistent across
 locales and protects `reChecklist` and `iCloud` from being translated.
 
+The App Store listing uses the app's own word for its core noun: someone who reads the store page
+and then opens the app should meet the same word. `METADATA_GLOSSARY_TERMS` in
+`translate_metadata/metadata_locales.py` names the glossary terms the listing must follow (today
+only "Checklist"), and both the transcreation and the listing-audit prompts carry them. Transcreation
+still owns everything else; a UI verb like "Reset" is deliberately not pinned in marketing prose.
+`keywords` may add the Roman-script "checklist" as an extra search term, never in place of the
+agreed word.
+
 ### Register
 
 The principle every locale's form of address follows:

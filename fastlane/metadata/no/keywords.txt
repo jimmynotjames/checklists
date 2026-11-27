@@ -1,1 +1,1 @@
-pakkeliste,handleliste,liste,huskeliste,gjentakende,gjenta,rutine,gjenbruk,checklist,mal,reise
+sjekkliste,pakkeliste,handleliste,huskeliste,gjentakende,gjenbruk,rutine,checklist,mal,reise,hytte

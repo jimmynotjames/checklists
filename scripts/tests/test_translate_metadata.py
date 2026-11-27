@@ -91,5 +91,39 @@ class KeywordByteLimitTests(unittest.TestCase):
         )
 
 
+class MetadataGlossaryTests(unittest.TestCase):
+    def _glossary(self, translations: dict[str, str]) -> Path:
+        tmp = Path(tempfile.mkdtemp())
+        path = tmp / "glossary.json"
+        terms = {
+            "Checklist": {"translations": translations},
+            "Reset": {"translations": {"nb": "Nullstill"}},
+        }
+        path.write_text(json.dumps({"terms": terms}), encoding="utf-8")
+        return path
+
+    def test_storefront_maps_to_the_runtime_locale(self) -> None:
+        path = self._glossary({"nb": "Sjekkliste", "de": "Checkliste"})
+        self.assertEqual(meta.glossary_terms("no", path), [("Checklist", "Sjekkliste")])
+        self.assertEqual(meta.glossary_terms("de-DE", path), [("Checklist", "Checkliste")])
+
+    def test_only_pinned_terms_reach_the_listing(self) -> None:
+        path = self._glossary({"nb": "Sjekkliste"})
+        self.assertNotIn("Nullstill", meta.glossary_lines("no", path))
+
+    def test_untranslated_storefront_renders_no_section(self) -> None:
+        path = self._glossary({"nb": "Sjekkliste"})
+        self.assertEqual(meta.glossary_lines("en-US", path), "")
+        self.assertEqual(meta.glossary_lines("no", Path(tempfile.mkdtemp()) / "missing.json"), "")
+
+    def test_every_target_storefront_has_the_pinned_terms(self) -> None:
+        for storefront in meta.STOREFRONT_LOCALES:
+            with self.subTest(storefront=storefront):
+                self.assertEqual(
+                    [en for en, _ in meta.glossary_terms(storefront)],
+                    list(meta.METADATA_GLOSSARY_TERMS),
+                )
+
+
 if __name__ == "__main__":
     unittest.main()

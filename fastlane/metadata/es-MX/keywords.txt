@@ -1,1 +1,1 @@
-checklist,verificación,repetir,reutilizable,empacar,maleta,viaje,compras,rutina,despensa,pasos
+checklist,lista,repetir,reutilizable,empacar,maleta,viaje,compras,rutina,despensa,verificación

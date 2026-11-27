@@ -1,1 +1,1 @@
-lista,repetir,recorrente,reutilizável,mala,viagem,bagagem,compras,mercado,rotina,organizar
+checklist,lista,repetir,recorrente,reutilizável,mala,viagem,bagagem,compras,mercado,rotina

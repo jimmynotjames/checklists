@@ -1,1 +1,1 @@
-repeat,reusable,recurring,packing,list,shopping,travel,routine,reset,check,holiday,tick,trip
+checklist,repeat,reusable,recurring,packing,list,shopping,travel,routine,reset,holiday,tick,trip

@@ -68,14 +68,15 @@ def load_glossary() -> dict:
 
 def glossary_lines(values, locale: str) -> str:
     """Bullet list of the agreed `locale` rendering of every glossary term that appears
-    (whole word or phrase) in any English `values`; "" when none match, which drops the
-    template's glossary section. audit_dispatch.py uses it too."""
+    (whole word or phrase, singular or a regular -s/-es plural) in any English `values`; ""
+    when none match, which drops the template's glossary section. audit_dispatch.py uses it
+    too. The plural matters: a string that only says "checklists" still needs "Checklist"."""
     terms = load_glossary().get("terms", {})
     haystack = "\n".join(values)
     matched: list[tuple[str, str]] = []
     for term_en in sorted(terms, key=lambda t: (-len(t), t.casefold())):  # longest-first
         translation = terms[term_en].get("translations", {}).get(locale)
-        if translation and re.search(rf"\b{re.escape(term_en)}\b", haystack, flags=re.IGNORECASE):
+        if translation and re.search(rf"\b{re.escape(term_en)}(?:e?s)?\b", haystack, flags=re.IGNORECASE):
             matched.append((term_en, translation))
     return "\n".join(f'- "{en}" → "{tr}"' for en, tr in matched)
 
@@ -153,7 +154,7 @@ REGIONAL_NOTES: dict[str, str] = {
     "or": "Natural Odia in Odia script. Keep the polite \"ଆପଣ\" — Odia app copy stays polite across audiences; the casual \"ତୁମେ\"/\"ତୁ\" reads as overfamiliar. The modern feel comes from warmth, brevity, and natural English loanwords (e.g. \"checklist\"), not informal pronouns.",
     "pa": "Conversational Punjabi in Gurmukhi (Indian Punjabi) script. Keep the polite \"ਤੁਸੀਂ\" — Punjabi app copy stays polite across audiences; \"ਤੂੰ\" reads as overfamiliar. The modern feel comes from warmth, brevity, and natural English loanwords (e.g. \"checklist\"), not informal pronouns.",
     "pl": "Use the informal second-person singular (imperatives like \"Dodaj\", and the courtesy capital \"Twój/Twoja\" when a possessive is needed) — the standard address in Polish software, Apple's included, and mainstream banking apps, for readers of every age; \"Pan/Pani\" is clumsy in UI. Friendly, natural, not stiff.",
-    "pt-BR": "Brazilian Portuguese; use \"você\" — Brazil's natural, respectful everyday address, used by Apple and mainstream apps for readers of every age (\"o senhor/a senhora\" is ceremonious, \"tu\" regional). Warm, not slangy. Brazilian orthography and vocabulary.",
+    "pt-BR": "Brazilian Portuguese; use \"você\" — Brazil's natural, respectful everyday address, used by Apple and mainstream apps for readers of every age (\"o senhor/a senhora\" is ceremonious, \"tu\" regional). Warm, not slangy. Brazilian orthography and vocabulary. \"Checklist\" is masculine throughout (\"o checklist\", \"os checklists\", \"Novo checklist\", \"Seus checklists\") and lowercase mid-sentence.",
     "pt-PT": "European Portuguese; use polite third-person address — third-person verbs with \"o seu/a sua\", leaving the pronoun \"você\" out (it can read curt) — as Apple Portugal and mainstream Portuguese banks and retailers do; \"tu\" reads overfamiliar to older readers. Warmth comes from light, direct phrasing, not tutear. European orthography and vocabulary; avoid Brazilian-specific terms.",
     "ro": "Use the polite second-person plural (dumneavoastră verb forms, e.g. \"Adăugați\"; write the pronoun out, not \"dvs.\", and only when unavoidable) — the respectful norm in Apple's Romanian UI and mainstream Romanian apps and banks; \"tu\" reads overfamiliar to older readers. Warmth comes from modern, natural phrasing, not informality.",
     "ru": "Use the polite \"вы\" (lowercase, as in UI copy) — Apple's Russian UI and mainstream Russian apps and banks address readers with \"вы\"; \"ты\" from an app reads overfamiliar. Warmth comes from natural, light, non-calque Russian, not bureaucratic канцелярит.",
@@ -165,7 +166,7 @@ REGIONAL_NOTES: dict[str, str] = {
     "th": "Polite, friendly Thai — address the reader as \"คุณ\" or leave the pronoun out, and get politeness from polite phrasing (e.g. โปรด/กรุณา where natural), not from the speaker-gendered particles ครับ/ค่ะ, which UI strings don't use; the modern feel comes from light, contemporary phrasing, not from dropping politeness. Follow normal Thai spacing conventions.",
     "tr": "Use the polite \"siz\" (plural verb forms and suffixes, e.g. \"Ekleyin\", \"listeniz\"); short button labels may use the bare stem (\"Ekle\", \"Sil\") as Turkish UI normally does. Apple's Turkish UI and mainstream Turkish banks and retailers address readers with \"siz\"; \"sen\" reads overfamiliar to older readers. Warmth comes from friendly, natural phrasing, not from \"sen\".",
     "uk": "Use the polite \"ви\" (lowercase, as in UI copy) — the respectful norm in Apple's Ukrainian UI and most mainstream Ukrainian apps and services; \"ти\" reads overfamiliar to older readers. Warmth comes from modern, natural phrasing, not calqued from Russian or English.",
-    "ur": "Conversational Urdu in Nastaliq (Arabic) script. Keep the polite \"آپ\" — Urdu app copy uses \"آپ\" across audiences; \"تم\"/\"تو\" reads as overfamiliar or rude, not young. Right-to-left: keep punctuation and any Latin tokens (e.g. \"iCloud\") correctly placed for RTL, and never start a string or sentence with a Latin token, which renders flung to the visual end of the line; lead with a native word. The modern feel comes from warm, light phrasing and natural English loanwords (e.g. \"checklist\"), not informal pronouns.",
+    "ur": "Conversational Urdu in Nastaliq (Arabic) script. Keep the polite \"آپ\" — Urdu app copy uses \"آپ\" across audiences; \"تم\"/\"تو\" reads as overfamiliar or rude, not young. Right-to-left: keep punctuation and any Latin tokens (e.g. \"iCloud\") correctly placed for RTL, and never start a string or sentence with a Latin token, which renders flung to the visual end of the line; lead with a native word. The modern feel comes from warm, light phrasing and natural English loanwords (e.g. \"checklist\"), not informal pronouns. Pluralize \"چیک لسٹ\" the Urdu way: \"چیک لسٹیں\" (oblique \"چیک لسٹوں\"), never the English -s plural \"چیک لسٹس\".",
     "vi": "Address the reader as \"bạn\", or leave the pronoun out — the neutral, respectful address of Apple's Vietnamese UI and mainstream Vietnamese apps for readers of every age; never casual pronouns like \"cậu\"/\"mày\", and not the service-counter \"quý khách\". Friendly, natural Vietnamese as used in popular consumer apps.",
     "zh-Hans": "Simplified Chinese, mainland China conventions. Address the reader as \"你\" consistently, as Apple's mainland UI and mainstream apps do for readers of every age; \"您\" reads like a bank or customer-service script. Concise, modern app tone; avoid Taiwan-specific vocabulary. Mainland copy is punchy and benefit-dense — short rhythms land well, but keep it calm and avoid exclamation-heavy hype.",
     "zh-Hant": "Traditional Chinese, Taiwan conventions. Address the reader as \"你\" consistently, as Apple Taiwan's UI does for readers of every age; don't drift into \"您\" (e.g. in iCloud or sync messages), which reads like a bank or customer-service script. Concise, modern app tone; avoid mainland-specific vocabulary.",

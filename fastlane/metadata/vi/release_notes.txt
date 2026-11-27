@@ -1,1 +1,1 @@
-Giờ đây ứng dụng đồng bộ giữa các thiết bị của bạn qua iCloud và hỗ trợ nhiều ngôn ngữ. Bạn có thể nhân bản danh sách, chuyển các mục đã đánh dấu qua lại giữa chúng và xuất chúng ra PDF.
+Giờ đây ứng dụng đồng bộ giữa các thiết bị của bạn qua iCloud và hỗ trợ nhiều ngôn ngữ. Bạn có thể nhân bản danh sách kiểm tra, chuyển các mục đã đánh dấu sang danh sách khác và xuất ra PDF.

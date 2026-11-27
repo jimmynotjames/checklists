@@ -27,7 +27,7 @@ You are a senior **native {LOCALE_NAME}** reviewer auditing the existing UI stri
 <!-- if glossary -->
 ## Glossary: agreed {LOCALE_NAME} terms
 
-Flag (`category: consistency`) a string that renders one of these terms differently (a synonym, a different inflection) without a good contextual reason, including a term inside a longer string (the "Reset" in "Reset All"). Use the glossary rendering as the `suggestion`. Don't flag a deviation the string genuinely needs to read naturally.
+Flag (`category: consistency`) a string that renders one of these terms differently (a synonym, a different inflection) without a good contextual reason, including a term inside a longer string (the "Reset" in "Reset All"). Use the glossary rendering as the `suggestion`. Don't flag a deviation the string genuinely needs to read naturally. Entries are listed in standalone-label casing; a term capitalized mid-sentence where {LOCALE_NAME} would lowercase it is a finding too.
 
 {GLOSSARY}
 <!-- end glossary -->

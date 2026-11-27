@@ -1,1 +1,1 @@
-checklist,kiểm tra,lặp lại,tái sử dụng,soạn đồ,hành lý,đi chợ,du lịch,list
+checklist,lặp lại,tái sử dụng,soạn đồ,hành lý,đi chợ,du lịch,định kỳ

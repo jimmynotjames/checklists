@@ -22,6 +22,7 @@ keyword list reaches the cap at roughly a third of the character count.
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -98,6 +99,34 @@ PASSTHROUGH_FIELDS: list[str] = [
 PASSTHROUGH_OVERRIDES: dict[str, frozenset[str]] = {
     "ja": frozenset({"name"}),
 }
+
+
+# In-app glossary terms (scripts/translate_catalog/glossary.json) the listing must render the same
+# way the app does. Only the core domain noun: the glossary's UI verbs ("Reset", "Cancel") would
+# straitjacket marketing prose. Add a term here to pin it in the listing too.
+METADATA_GLOSSARY_TERMS: tuple[str, ...] = ("Checklist",)
+
+GLOSSARY_PATH = REPO_ROOT / "scripts" / "translate_catalog" / "glossary.json"
+
+
+def glossary_terms(storefront: str, glossary_path: Path = GLOSSARY_PATH) -> list[tuple[str, str]]:
+    """(English, agreed translation) for each METADATA_GLOSSARY_TERMS entry the in-app glossary
+    translates for this storefront's runtime locale; [] when there are none."""
+    if not glossary_path.exists():
+        return []
+    terms = json.loads(glossary_path.read_text(encoding="utf-8")).get("terms", {})
+    runtime = STOREFRONT_TO_RUNTIME.get(storefront, storefront)
+    pairs: list[tuple[str, str]] = []
+    for term in METADATA_GLOSSARY_TERMS:
+        translation = terms.get(term, {}).get("translations", {}).get(runtime)
+        if translation:
+            pairs.append((term, translation))
+    return pairs
+
+
+def glossary_lines(storefront: str, glossary_path: Path = GLOSSARY_PATH) -> str:
+    """Bullet list of glossary_terms() for a prompt; "" drops the template's glossary section."""
+    return "\n".join(f'- "{en}" → "{tr}"' for en, tr in glossary_terms(storefront, glossary_path))
 
 
 def store_name(metadata_dir: Path, storefront: str) -> str:

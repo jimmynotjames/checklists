@@ -28,7 +28,7 @@ An entry with a `plural` object instead of `value` is count-dependent. Map its k
 <!-- if glossary -->
 ## Glossary: agreed {LOCALE_NAME} terms
 
-Render these terms exactly as listed so they read identically across the app, including inside a longer string: for "Delete Checklist", reuse "Delete" and "Checklist". If the whole string is a glossary term, use that entry. Coherence wins: if stitching terms together reads awkwardly or ungrammatically, write the natural rendering and keep the key terms recognizable.
+Render these terms exactly as listed so they read identically across the app, including inside a longer string: for "Delete Checklist", reuse "Delete" and "Checklist". If the whole string is a glossary term, use that entry. Entries are listed in standalone-label casing: inside a sentence or a sentence-case label, case them the way {LOCALE_NAME} does there (a common noun stays lowercase mid-sentence), and copy an English Title Case only where {LOCALE_NAME} UI uses title case too. Coherence wins: if stitching terms together reads awkwardly or ungrammatically, write the natural rendering and keep the key terms recognizable.
 
 {GLOSSARY}
 <!-- end glossary -->
