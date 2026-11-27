@@ -24,8 +24,11 @@ struct ChecklistScreen: View {
 
   @Environment(Router.self) private var router
   @Environment(AnalyticsSettings.self) private var settings
-  /// Bumped when a move out of this checklist's items finishes. The picker edits the store while
-  /// the controller sits under it, and a sheet's dismissal gives a UIKit screen no appearance
+  @Environment(\.modelContext) private var modelContext
+  @Environment(\.analytics) private var analytics
+  @Environment(ToastPresenter.self) private var toasts: ToastPresenter?
+  /// Bumped when a move out of this checklist's items finishes. The store is edited while the
+  /// controller sits under a sheet, and a sheet's dismissal gives a UIKit screen no appearance
   /// callback to reload on, so this is what tells it.
   @State private var transferGeneration = 0
   @State private var bar = ChecklistBar()
@@ -42,8 +45,8 @@ struct ChecklistScreen: View {
       // is what a copy wants — Done instead of Reset, the name field focused for renaming, no
       // history caption, and Discard as the way to undo an accidental duplicate.
       onRequestOpenDuplicate: { id in router.sheet = .newChecklist(id: id) },
-      // The picker does the copying or moving itself and dismisses without navigating, so this and
-      // `transferGeneration` are the whole of the host's involvement — see `CopyCheckedItemsView`.
+      // The picker copies or moves into an existing checklist itself. A new checklist goes through
+      // the create sheet, and this screen finishes it once that closes — see `finishTransfer`.
       onRequestTransferCheckedItems: { id, mode in router.sheet = .transferCheckedItems(sourceID: id, mode: mode) },
       transferGeneration: transferGeneration,
       bar: bar,
@@ -71,12 +74,19 @@ struct ChecklistScreen: View {
       }
     }
     .onChange(of: router.sheet) { oldSheet, newSheet in
-      // Matched before `checklist` is read: on the create sheet, Discard clears the sheet after
-      // deleting the checklist. A cancelled move counts too: a reload of an unchanged list is
-      // invisible.
-      guard newSheet == nil, case let .transferCheckedItems(sourceID, .move) = oldSheet,
-            sourceID == checklist.id else { return }
-      transferGeneration += 1
+      // Only a close counts: the picker's New Checklist swaps it for the create sheet, and nothing
+      // has left this checklist yet. On the create sheet itself, Discard deletes the checklist as
+      // the sheet clears, so its `id` must not be read.
+      guard newSheet == nil, !checklist.isDeleted else { return }
+      switch oldSheet {
+      case let .transferCheckedItems(sourceID, .move) where sourceID == checklist.id:
+        // A cancelled move counts too: a reload of an unchanged list is invisible.
+        transferGeneration += 1
+      case let .checkedItemsChecklist(id, transfer) where transfer.sourceID == checklist.id:
+        finishTransfer(transfer, intoChecklistWithID: id)
+      default:
+        break
+      }
     }
     // The view controller does its own keyboard avoidance via contentInset; opt out of SwiftUI's so
     // they don't stack.
@@ -96,6 +106,24 @@ struct ChecklistScreen: View {
             ConsentJurisdiction.kind(for: Locale.current.region?.identifier) == .required,
             !settings.analyticsOptInExplicitlySet else { return }
       router.sheet = .analyticsConsent
+    }
+  }
+
+  /// A copy or move into a new checklist, finished once its create sheet has closed. Here rather
+  /// than on the create sheet, because this screen outlives it however it closes — Done, Discard or
+  /// a swipe down — and is the one a move edits and the toast belongs on.
+  private func finishTransfer(_ transfer: CheckedItemsTransfer, intoChecklistWithID id: String) {
+    guard case let .kept(destination) = modelContext.completeCheckedItemsTransfer(transfer, intoChecklistWithID: id)
+    else { return } // Discarded: nothing left this checklist, and nothing is counted.
+    CopyCheckedItemsView.confirmTransfer(
+      transfer.mode,
+      into: destination,
+      destination: .newChecklist,
+      analytics: analytics,
+      toasts: toasts,
+    )
+    if transfer.mode == .move {
+      transferGeneration += 1
     }
   }
 

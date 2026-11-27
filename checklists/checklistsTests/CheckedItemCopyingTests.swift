@@ -8,11 +8,11 @@ import Foundation
 import SwiftData
 import Testing
 
-/// Covers `Checklist.checkedItems` and the `ModelContext.copyCheckedItems` and
-/// `moveCheckedItems` operations behind the detail screen's "Copy Checked Items to…" and "Move
+/// Covers `Checklist.checkedItems` and the `ModelContext.copyCheckedItems`, `moveCheckedItems` and
+/// `completeCheckedItemsTransfer` operations behind the detail screen's "Copy Checked Items to…" and "Move
 /// Checked Items to…" entries.
 ///
-/// The new checklist's name is chosen by the picker, not by these operations, so nothing here
+/// The new checklist's name is chosen on the create sheet, not by these operations, so nothing here
 /// asserts localized text — unlike `ChecklistDuplicationTests`, which has naming rules to cover.
 ///
 /// No isolation annotation — AGENTS.md §"Concurrency".
@@ -238,18 +238,6 @@ struct CheckedItemCopyingTests {
 
   // MARK: - Moving
 
-  @Test("moving into a new checklist takes the ticked items out of the source")
-  func moveIntoANewChecklist() throws {
-    let context = try TestModelContainer.makeContext()
-    let source = try makeChecklist(itemCount: 4, checkedIndices: [1, 3], in: context)
-
-    let destination = try context.moveCheckedItems(of: source, intoChecklistNamed: "Ferry", among: [source])
-
-    #expect(destination.items.map(\.name) == ["Item 1", "Item 3"])
-    #expect(destination.items.allSatisfy { $0.status == .unchecked })
-    #expect(source.items.map(\.name) == ["Item 0", "Item 2"])
-  }
-
   @Test("moving into an existing checklist appends there and removes here")
   func moveIntoAnExistingChecklist() throws {
     let context = try TestModelContainer.makeContext()
@@ -268,13 +256,14 @@ struct CheckedItemCopyingTests {
   func moveLeavesTheBlankRow() throws {
     let context = try TestModelContainer.makeContext()
     let source = try makeChecklist(itemCount: 1, checkedIndices: [0], in: context)
+    let destination = try makeChecklist(name: "Groceries", itemCount: 0, sortKey: 2.0, in: context)
     let blank = Item(sortKey: 99.0)
     blank.status = .checked
     context.insert(blank)
     blank.checklist = source
     try context.saveChanges(operation: .sampleSeed)
 
-    try context.moveCheckedItems(of: source, intoChecklistNamed: "Ferry", among: [source])
+    try context.moveCheckedItems(of: source, into: destination)
 
     #expect(source.items.count == 1)
     #expect(source.items.first?.isBlank == true)
@@ -285,10 +274,11 @@ struct CheckedItemCopyingTests {
   func moveLeavesTheSourceStampsAlone() throws {
     let context = try TestModelContainer.makeContext()
     let source = try makeChecklist(itemCount: 2, checkedIndices: [0], in: context)
+    let destination = try makeChecklist(name: "Groceries", itemCount: 0, sortKey: 2.0, in: context)
     let updatedAt = Date(timeIntervalSinceReferenceDate: 1000.0)
     source.recordUpdate(at: updatedAt)
 
-    try context.moveCheckedItems(of: source, intoChecklistNamed: "Ferry", among: [source])
+    try context.moveCheckedItems(of: source, into: destination)
 
     #expect(source.lastUpdated == updatedAt)
     #expect(source.lastCompleted == nil)
@@ -309,5 +299,131 @@ struct CheckedItemCopyingTests {
     #expect(persisted.filter { $0.checklist?.id == sourceId }.map(\.name) == ["Item 1"])
     #expect(persisted.filter { $0.checklist?.id == destinationId }.map(\.name) == ["Item 0"])
     #expect(persisted.count == 2, "The moved original is deleted, not orphaned.")
+  }
+
+  // MARK: - Finishing a transfer into a new checklist
+
+  /// The picker's New Checklist path: copies made up front, the create sheet opened on them, and
+  /// the transfer finished once that sheet closes.
+  private func startTransfer(
+    _ mode: CheckedItemsTransferMode,
+    from source: Checklist,
+    in context: ModelContext,
+  ) throws -> (destination: Checklist, transfer: CheckedItemsTransfer) {
+    let transfer = CheckedItemsTransfer(sourceID: source.id, mode: mode, itemIDs: source.checkedItems.map(\.id))
+    let destination = try context.copyCheckedItems(of: source, intoChecklistNamed: "", among: [source])
+    return (destination, transfer)
+  }
+
+  /// Discard on the create sheet, as `ChecklistViewController.deleteChecklist` does it.
+  private func discard(_ checklist: Checklist, in context: ModelContext) throws {
+    context.delete(checklist)
+    try context.saveChanges(operation: .delete)
+  }
+
+  @Test("a kept move takes exactly the originals out of the source")
+  func keptMoveRemovesTheOriginals() throws {
+    let context = try TestModelContainer.makeContext()
+    let source = try makeChecklist(itemCount: 4, checkedIndices: [1, 3], in: context)
+    let (destination, transfer) = try startTransfer(.move, from: source, in: context)
+    #expect(source.items.count == 4, "Nothing leaves the source until the sheet closes.")
+
+    let outcome = context.completeCheckedItemsTransfer(transfer, intoChecklistWithID: destination.id)
+
+    guard case let .kept(kept) = outcome else {
+      Issue.record("Expected the new checklist to count as kept.")
+      return
+    }
+    #expect(kept.id == destination.id)
+    #expect(source.items.map(\.name) == ["Item 0", "Item 2"])
+    #expect(destination.items.map(\.name) == ["Item 1", "Item 3"])
+  }
+
+  @Test("a kept copy leaves the source alone")
+  func keptCopyLeavesTheSource() throws {
+    let context = try TestModelContainer.makeContext()
+    let source = try makeChecklist(itemCount: 3, checkedIndices: [0, 2], in: context)
+    let (destination, transfer) = try startTransfer(.copy, from: source, in: context)
+
+    let outcome = context.completeCheckedItemsTransfer(transfer, intoChecklistWithID: destination.id)
+
+    guard case .kept = outcome else {
+      Issue.record("Expected the new checklist to count as kept.")
+      return
+    }
+    #expect(source.items.map(\.name) == ["Item 0", "Item 1", "Item 2"])
+    #expect(source.checkedItems.map(\.name) == ["Item 0", "Item 2"])
+  }
+
+  @Test("a discarded move leaves the source alone")
+  func discardedMoveLeavesTheSource() throws {
+    let context = try TestModelContainer.makeContext()
+    let source = try makeChecklist(itemCount: 3, checkedIndices: [0, 2], in: context)
+    let (destination, transfer) = try startTransfer(.move, from: source, in: context)
+    let destinationID = destination.id
+    try discard(destination, in: context)
+
+    let outcome = context.completeCheckedItemsTransfer(transfer, intoChecklistWithID: destinationID)
+
+    guard case .discarded = outcome else {
+      Issue.record("Expected a discarded checklist to count as discarded.")
+      return
+    }
+    #expect(source.checkedItems.map(\.name) == ["Item 0", "Item 2"])
+    #expect(try context.fetch(FetchDescriptor<Item>()).count == 3, "The copies go with the discarded checklist.")
+  }
+
+  @Test("a kept move removes every original, whatever was done to the copies")
+  func keptMoveIgnoresEditsToTheCopies() throws {
+    let context = try TestModelContainer.makeContext()
+    let source = try makeChecklist(itemCount: 4, checkedIndices: [0, 1, 2], in: context)
+    let (destination, transfer) = try startTransfer(.move, from: source, in: context)
+    let copies = destination.items.sorted { $0.sortKey < $1.sortKey }
+    copies[0].name = "Renamed"
+    copies[1].status = .checked
+    copies[2].checklist = nil
+    context.delete(copies[2])
+    let added = Item(name: "Added", sortKey: 99.0)
+    context.insert(added)
+    added.checklist = destination
+    try context.saveChanges(operation: .itemEdit)
+
+    _ = context.completeCheckedItemsTransfer(transfer, intoChecklistWithID: destination.id)
+
+    #expect(source.items.map(\.name) == ["Item 3"])
+    #expect(Set(destination.items.map(\.name)) == ["Renamed", "Item 1", "Added"])
+  }
+
+  @Test("a discarded move after edits leaves every original as it was")
+  func discardedMoveAfterEditsLeavesTheOriginals() throws {
+    let context = try TestModelContainer.makeContext()
+    let source = try makeChecklist(itemCount: 3, checkedIndices: [0, 1], in: context)
+    let (destination, transfer) = try startTransfer(.move, from: source, in: context)
+    let copies = destination.items.sorted { $0.sortKey < $1.sortKey }
+    copies[0].name = "Renamed"
+    copies[1].checklist = nil
+    context.delete(copies[1])
+    try context.saveChanges(operation: .itemEdit)
+    let destinationID = destination.id
+    try discard(destination, in: context)
+
+    _ = context.completeCheckedItemsTransfer(transfer, intoChecklistWithID: destinationID)
+
+    #expect(source.items.map(\.name) == ["Item 0", "Item 1", "Item 2"])
+    #expect(source.checkedItems.map(\.name) == ["Item 0", "Item 1"])
+  }
+
+  /// Another device may delete an original while the sheet is up; the rest still go.
+  @Test("a kept move tolerates an original that has already gone")
+  func keptMoveToleratesAMissingOriginal() throws {
+    let context = try TestModelContainer.makeContext()
+    let source = try makeChecklist(itemCount: 3, checkedIndices: [0, 1], in: context)
+    let (destination, transfer) = try startTransfer(.move, from: source, in: context)
+    let gone = try #require(source.items.first { $0.name == "Item 0" })
+    context.deleteItems([gone], from: source)
+
+    _ = context.completeCheckedItemsTransfer(transfer, intoChecklistWithID: destination.id)
+
+    #expect(source.items.map(\.name) == ["Item 2"])
   }
 }

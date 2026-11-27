@@ -101,26 +101,10 @@ extension ModelContext {
     return copies
   }
 
-  /// `copyCheckedItems(of:intoChecklistNamed:among:)`, then removes the originals from `source`.
+  /// `copyCheckedItems(of:into:)`, then removes the originals from `source`.
   ///
   /// The removal is a second save, after the copy has landed: if it fails, the items sit in both
   /// lists rather than in neither.
-  ///
-  /// - Returns: the new checklist, inserted and saved.
-  @discardableResult
-  func moveCheckedItems(
-    of source: Checklist,
-    intoChecklistNamed name: String,
-    among siblings: [Checklist],
-  ) throws -> Checklist {
-    let originals = source.checkedItems
-    let destination = try copyCheckedItems(of: source, intoChecklistNamed: name, among: siblings)
-    deleteItems(originals, from: source)
-    return destination
-  }
-
-  /// `copyCheckedItems(of:into:)`, then removes the originals from `source`, in the same order as
-  /// `moveCheckedItems(of:intoChecklistNamed:among:)` for the same reason.
   ///
   /// - Returns: the copies, inserted and saved.
   @discardableResult
@@ -129,6 +113,37 @@ extension ModelContext {
     let copies = try copyCheckedItems(of: source, into: destination)
     deleteItems(originals, from: source)
     return copies
+  }
+
+  /// Finishes a copy or move into a new checklist once its create sheet has closed.
+  ///
+  /// The copies were made before the sheet opened (`copyCheckedItems(of:intoChecklistNamed:among:)`),
+  /// so the sheet could show them; a move takes the originals out of the source only now, and only
+  /// if the new checklist was kept — Done or a swipe down. Discard deletes the new checklist, which
+  /// leaves nothing to find here, and the source is left exactly as it was.
+  ///
+  /// Edits made on the create sheet don't change what a kept move removes: every original in
+  /// `transfer.itemIDs` goes, whether its copy was renamed, deleted or ticked there. The move was
+  /// decided in the picker; the sheet only shapes the new checklist. The originals are found by id
+  /// rather than by re-reading `checkedItems`, so a tick another device makes meanwhile is neither
+  /// taken nor protected.
+  ///
+  /// Two cases leave a move as a copy, items in both lists rather than in neither: the app ending
+  /// while the sheet is up, and the source being deleted elsewhere, which stops this from being
+  /// called — the originals went with it anyway.
+  func completeCheckedItemsTransfer(
+    _ transfer: CheckedItemsTransfer,
+    intoChecklistWithID id: String,
+  ) -> CheckedItemsTransferOutcome {
+    guard let destination = checklist(id: id), !destination.isDeleted else { return .discarded }
+    if transfer.mode == .move, let source = checklist(id: transfer.sourceID) {
+      let ids = Set(transfer.itemIDs)
+      let originals = source.items.filter { ids.contains($0.id) }
+      if !originals.isEmpty {
+        deleteItems(originals, from: source)
+      }
+    }
+    return .kept(destination)
   }
 
   /// Deletes `items` from `checklist` in one save.
@@ -153,4 +168,12 @@ extension ModelContext {
     copy.checklist = destination
     return copy
   }
+}
+
+/// What `completeCheckedItemsTransfer` found when the create sheet closed.
+enum CheckedItemsTransferOutcome {
+  /// Done or a swipe down; carries the new checklist, under whatever name it was given.
+  case kept(Checklist)
+  /// Discarded: the new checklist and its copies are gone, and the source is untouched.
+  case discarded
 }

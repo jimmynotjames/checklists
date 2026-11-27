@@ -18,6 +18,10 @@ enum SheetRoute: Hashable, Identifiable {
   /// The destination picker for "Copy Checked Items to…" and "Move Checked Items to…", carrying
   /// the id of the checklist the items are leaving.
   case transferCheckedItems(sourceID: String, mode: CheckedItemsTransferMode)
+  /// The create sheet, opened from that picker's New Checklist button on a checklist that already
+  /// holds copies of the checked items. Presented exactly like `newChecklist`; the transfer is what
+  /// the source screen finishes once the sheet closes (`completeCheckedItemsTransfer`).
+  case checkedItemsChecklist(id: String, transfer: CheckedItemsTransfer)
 
   var id: Self {
     self
@@ -28,4 +32,14 @@ enum SheetRoute: Hashable, Identifiable {
 enum CheckedItemsTransferMode: Hashable {
   case copy
   case move
+}
+
+/// A copy or move into a new checklist, pending until its create sheet closes.
+///
+/// `itemIDs` are the originals in the source, captured when the copies were made. The copies carry
+/// new ids, so nothing done to them on the create sheet can change which originals a move removes.
+struct CheckedItemsTransfer: Hashable {
+  let sourceID: String
+  let mode: CheckedItemsTransferMode
+  let itemIDs: [String]
 }

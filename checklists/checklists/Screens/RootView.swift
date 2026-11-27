@@ -51,7 +51,7 @@ struct RootView: View {
           SettingsView()
         case .analyticsConsent:
           AnalyticsConsentSheet()
-        case let .newChecklist(id):
+        case let .newChecklist(id), let .checkedItemsChecklist(id, _):
           if let checklist = context.checklist(id: id) {
             // A stack of its own, for the screen's toolbar.
             NavigationStack {

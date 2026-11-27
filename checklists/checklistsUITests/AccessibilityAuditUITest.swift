@@ -53,11 +53,8 @@ class AccessibilityAuditUITest: XCTestCase {
     KnownIssue(
       screens: ["copyCheckedItemsSheet"],
       types: .textClipped,
-      identifier: "copyDestination.newChecklistName",
-      reason: """
-      Accepted: at the largest sizes a long translation of the placeholder may truncate. Wrapping it \
-      would take a vertical field, where Return adds a line instead of committing.
-      """,
+      label: "New Checklist",
+      reason: "False positive: the button's title wraps at the largest sizes rather than clipping.",
     ),
     KnownIssue(
       screens: ["settings"],
@@ -283,7 +280,7 @@ class AccessibilityAuditUITest: XCTestCase {
     let copyEntry = app.buttons["Copy Checked Items to…"]
     XCTAssertTrue(copyEntry.waitForExistence(timeout: 5), "Copy Checked Items menu entry didn't appear.")
     copyEntry.tap()
-    XCTAssertTrue(app.buttons["copyDestination.createNewChecklist"].waitForExistence(timeout: 5), "The destination picker didn't open.")
+    XCTAssertTrue(app.buttons["copyDestination.newChecklist"].waitForExistence(timeout: 5), "The destination picker didn't open.")
     try audit("copyCheckedItemsSheet")
   }
 
