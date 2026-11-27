@@ -66,9 +66,8 @@ final class ChecklistBar {
   /// The create sheet keeps its own Done while typing rather than swapping in the editing Done: the
   /// two are the same checkmark in the same place, so a tap meant to finish the checklist would only
   /// hide the keyboard. There a tap on Done ends the typing and closes the sheet in one go. The
-  /// accepted cost: with the software keyboard, nothing hides it on the sheet short of leaving, since
-  /// a drag down at the top of a short list closes the sheet rather than the keyboard. Esc on a
-  /// hardware keyboard still ends typing.
+  /// accepted cost: on a list too short to scroll, a drag down closes the sheet rather than the
+  /// keyboard, so typing into an item there keeps the keyboard up until Done.
   var pinnedItem: Item? {
     switch mode {
     case .reordering: .reorderDone

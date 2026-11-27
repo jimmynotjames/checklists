@@ -8,8 +8,8 @@ import Foundation
 import Testing
 import UIKit
 
-/// Covers the navigation bar's editing Done: added at the outer edge while a field on the checklist
-/// screen is being typed into, as Notes does it.
+/// Covers the navigation bar's editing Done: added at the outer edge while a field on an existing
+/// checklist is being typed into, as Notes does it. The create sheet keeps its own Done instead.
 ///
 /// `.serialized` for the reason `ChecklistMenuActionTests` gives: the harness controller registers a
 /// `RemoteChangeObserver`.
@@ -64,8 +64,6 @@ struct ChecklistEditingDoneTests {
     }
   }
 
-  /// The two would be the same checkmark in the same place, so a tap meant to finish the checklist
-  /// would only hide the keyboard.
   @Test("on the create sheet, typing keeps the sheet's own Done at the outer edge")
   func createSheetKeepsItsDoneWhileTyping() throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: true) { harness in
@@ -135,8 +133,8 @@ struct ChecklistEditingDoneTests {
   /// The button VoiceOver was on goes with the edit, so VoiceOver moves to what takes its place at
   /// the outer edge, the menu. On the create sheet only Esc ends typing this way, and the bar does
   /// not change, so VoiceOver stays where it was.
-  @Test("tapping the editing Done moves VoiceOver to what takes its place", arguments: [false, true])
-  func editingDoneMovesVoiceOverToItsReplacement(isNewChecklist: Bool) throws {
+  @Test("ending typing moves VoiceOver off the vanishing editing Done, and leaves it alone on the create sheet", arguments: [false, true])
+  func endingTypingMovesVoiceOverOnlyWhenTheBarSwaps(isNewChecklist: Bool) throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: isNewChecklist) { harness in
       let controller = harness.viewController
       controller.barSwapFocusDelay = nil
