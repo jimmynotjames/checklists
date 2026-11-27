@@ -7,6 +7,10 @@ description: "Start or resume the file-backed App Store release record, routing 
 
 Drive one release across sessions using a small record under `releases/`. Conversation memory is never the release state. Keep the workflow focused on metadata, one candidate binary, manual testing, and manual App Store Connect submission.
 
+## Sync with `origin/main`
+
+Before anything else, run `git fetch origin`. On `main`, fast-forward when behind (`git pull --ff-only`); uncommitted edits may stay, and if git refuses, stop and ask. On another branch, don't switch or merge: say how far it is behind `origin/main` and confirm before continuing.
+
 ## Start or resume
 
 1. Read `AGENTS.md`, `fastlane/SETUP.md`, and every `releases/app-store-v*.md` whose status is not `complete` or `abandoned`. If more than one is active, ask which is authoritative.

@@ -7,6 +7,10 @@ description: "Validate, resolve, review, and upload App Store listing copy to an
 
 Publish the repository metadata as a resolved, reviewable staging tree. Every App Store listing locale has transcreated copy; English remains the fallback for any field a locale does not override.
 
+## Sync with `origin/main`
+
+Before anything else, run `git fetch origin`. On `main`, fast-forward when behind (`git pull --ff-only`); uncommitted edits may stay, and if git refuses, stop and ask. On another branch, don't switch or merge: say how far it is behind `origin/main` and confirm before continuing.
+
 ## Prepare and review
 
 1. Run `python3 scripts/translate_metadata/check_metadata.py`. Every storefront must be transcreated and within Apple's limits before anything else happens. If it fails, run the `appstore-translate-metadata` skill and come back; do not hand-edit a storefront file to get past it.

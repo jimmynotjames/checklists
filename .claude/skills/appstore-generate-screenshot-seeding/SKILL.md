@@ -9,6 +9,10 @@ The seeds under `checklists/checklistsUITests/ScreenshotSeeds/` are generated, n
 `make gate` checks them against the catalog. What they are and why:
 `core-docs/localization-spec.md §Screenshot seeds`.
 
+## Sync with `origin/main`
+
+Before anything else, run `git fetch origin`. On `main`, fast-forward when behind (`git pull --ff-only`); uncommitted edits may stay, and if git refuses, stop and ask. On another branch, don't switch or merge: say how far it is behind `origin/main` and confirm before continuing.
+
 ## Changing demo content
 
 1. Edit the English value in `checklists/checklists/DataModels/SampleData.swift` and the matching

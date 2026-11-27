@@ -11,6 +11,10 @@ resumable by `run_id`; use a `locales:` subset while iterating. Run commands
 from the repository root. Read `fastlane/SETUP.md` and
 `fastlane/screenshot-config.json` first.
 
+## Sync with `origin/main`
+
+Before anything else, run `git fetch origin`. On `main`, fast-forward when behind (`git pull --ff-only`); uncommitted edits may stay, and if git refuses, stop and ask. On another branch, don't switch or merge: say how far it is behind `origin/main` and confirm before continuing. A resumed `run_id` skips the pull, since it must match its recorded source.
+
 ## Capture and review
 
 1. A refresh request reuses the committed seed catalog. Run
