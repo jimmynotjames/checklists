@@ -118,7 +118,7 @@ struct ChecklistsView: View {
             .accessibilityIdentifier("checklistRow.delete")
 
             // Declared after Delete, so Delete keeps the outer edge and the full-swipe slot.
-            // Unconfirmed: a copy takes nothing away, and the way to undo one is to delete it.
+            // Unconfirmed: a copy takes nothing away, and the sheet it opens in offers Discard.
             Button {
               duplicate(checklist: checklist)
             } label: {
@@ -572,12 +572,14 @@ struct ChecklistsView: View {
 
   // MARK: - Duplicating
 
-  /// The detail screen's menu entry opens the copy; this one does not, because here the result is
-  /// already on screen.
+  /// Opens the copy in the create sheet, as the detail screen's menu entry does: its name is focused
+  /// for renaming, and Discard is at hand for an accidental duplicate. Edit mode's Duplicate stays
+  /// inline, since one sheet cannot hold several copies.
   private func duplicate(checklist: Checklist, source: ChecklistDuplicationSource = .swipe) {
     commitOpenEdit()
+    let copy: Checklist
     do {
-      try context.duplicate(checklist: checklist, among: Array(checklists))
+      copy = try context.duplicate(checklist: checklist, among: Array(checklists))
     } catch {
       return // Already logged and reported by `saveChanges`; nothing was added, so nothing is tracked.
     }
@@ -585,7 +587,8 @@ struct ChecklistsView: View {
       AnalyticsEvent.checklistDuplicated,
       properties: [AnalyticsProperty.source: source.rawValue],
     )
-    postAccessibilityFeedback(Self.duplicatedAnnouncement, afterAlert: source == .contextMenu)
+    // No announcement: presenting the sheet moves VoiceOver into it.
+    router.sheet = .newChecklist(id: copy.id)
   }
 
   // MARK: - Edit mode actions
