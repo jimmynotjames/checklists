@@ -12,7 +12,7 @@
 | --- | --- |
 | **In-app strings** | 50 locales (English source + 49), fully translated, audited |
 | **First-launch sample data** | Localized through the catalog, transcreated per locale |
-| **App Store listing** | 49 storefronts transcreated; `name` and URLs copied from English except where `PASSTHROUGH_OVERRIDES` lets a storefront author its own |
+| **App Store listing** | 49 storefronts transcreated; `name` and URLs copied from English except where `metadata.passthroughOverrides` in `i18n/app.json` lets a storefront author its own |
 | **Screenshot seeds** | Generated for all 50 from the catalog |
 | **Screenshot capture** | All 50 active; a full run is release-time work |
 | **Plurals** | Plural variants in the catalog where a count is shown (`pluralize_keys.py`) |
@@ -51,8 +51,8 @@ Rules:
 - **A key that only makes sense next to another is declared as a pair.** "Discard" sits beside
   "Cancel" on one alert; in eight languages the natural word for discard *is* the word for cancel,
   and a translator who sees one key at a time cannot know they will meet. Name the neighbour in the
-  translator comment, and add the pair to `DISTINCT_PAIRS` in
-  `scripts/translate_audit/distinct_pairs.py` so the gate fails if a locale ever collapses them.
+  translator comment, and add the pair to `i18n/distinct_pairs.json`, with the reason, so `distinct_pairs.py` fails the gate
+  if a locale ever collapses them.
 
 ### Strings that are also data
 
@@ -65,14 +65,16 @@ data is theirs, not a view of the catalog. The call sites carry this in their co
 ## Locale registry
 
 `fastlane/screenshot-config.json` `locales[]` is the single source of truth: 50 rows of
-`{runtime, storefront, region, name}`. Everything else derives from it.
+`{runtime, storefront, region, name}`, plus each target's `register` (§Register). Everything else
+derives from it.
 
 - `scripts/translate_catalog/locales.py` reads it and exposes the runtime set, the display names,
   and the runtime/storefront maps. It raises at import if a row is malformed or a code is duplicated.
 - `scripts/translate_metadata/metadata_locales.py` imports those maps rather than keeping its own,
   and takes Apple's field limits from `scripts/appstore_metadata.py`, the validator that actually
   gates the upload. There is one statement of those limits in the repo.
-- `scripts/tests/test_locale_registry.py` pins `fastlane/metadata-locales.json` and
+- `scripts/tests/test_locale_registry.py` checks that every target has a `register` whose `form`
+  both note maps state, and pins `fastlane/metadata-locales.json` and
   `appstore_metadata.FASTLANE_LOCALES` to the registry; `check_metadata.py` re-asserts it at runtime.
 
 Runtime codes are the catalog's codes (`de`, `nb`, `zh-Hans`). Storefront codes are Apple's
@@ -96,6 +98,27 @@ All four follow the same shape: extract what is missing, compose one prompt per 
 subagent per locale, validate, merge. Outputs land in `tmp/`, never in the repo, until the merge step
 writes them.
 
+### Shared code, per-app data
+
+The pipeline code (`scripts/translate_catalog/`, `translate_audit/`, `translate_metadata/`,
+`appstore_metadata.py`, `check_translations.py`, `check_source_strings.py`, `pipeline_tmp.py`, and
+the `*-locale` agents) is byte-identical with the sibling app, simple-recurring-budgets. Change a
+shared file in both repos, in the same session where possible. Everything app-specific lives in
+`i18n/`, read through `scripts/translate_catalog/app_config.py`:
+
+| File | Holds |
+| --- | --- |
+| `i18n/app.json` | Brand, protected terms, paths, Xcode names, demo-content namespaces, store fields, overrides, pinned listing terms, field guidance |
+| `i18n/brief.md` | The app's prose for the prompt templates, one fragment per template placeholder |
+| `i18n/regional_notes.json` / `i18n/cultural_notes.json` | In-app and store-listing notes per locale |
+| `i18n/glossary.json` | Agreed per-locale renderings of recurring terms |
+| `i18n/glossary_ignore.json` | Repeated English strings that are not terms, each with its reason |
+| `i18n/untranslated_allowlist.json` | Deliberately English-identical `(key, locale)` pairs, each with its reason |
+| `i18n/distinct_pairs.json` | Key pairs that must never render identically, each with its reason |
+
+A template placeholder with no value raises before any prompt is written, so a missing fragment
+can't reach a subagent.
+
 ### Models are pinned deliberately
 
 Sonnet translates ordinary UI strings. Opus does the glossary, the audits, the App Store metadata, and
@@ -118,12 +141,12 @@ English opens with a coffee maker, and the social-network joke swaps to whicheve
 dominant there. Structure is preserved exactly — same item count, same order, same items reading as
 done — because the screenshot seeds and the parity check depend on it.
 
-The glossary (`scripts/translate_catalog/glossary.json`) keeps recurring terms consistent across
-locales and protects `reChecklist` and `iCloud` from being translated.
+The glossary (`i18n/glossary.json`) keeps recurring terms consistent across locales and protects
+`reChecklist` and `iCloud` from being translated.
 
 The App Store listing uses the app's own word for its core noun: someone who reads the store page
-and then opens the app should meet the same word. `METADATA_GLOSSARY_TERMS` in
-`translate_metadata/metadata_locales.py` names the glossary terms the listing must follow (today
+and then opens the app should meet the same word. `metadata.glossaryTerms` in
+`i18n/app.json` names the glossary terms the listing must follow (today
 only "Checklist"), and both the transcreation and the listing-audit prompts carry them. Transcreation
 still owns everything else; a UI verb like "Reset" is deliberately not pinned in marketing prose.
 `keywords` may add the Roman-script "checklist" as an extra search term, never in place of the
@@ -141,8 +164,10 @@ The principle every locale's form of address follows:
 Audience age is not the test: the reader might be anyone's grandmother, and the app speaks to her
 the way a well-made mainstream app in her language does.
 
-The call is made **once per locale, by Opus**, and written into that locale's note (see below) as
-the concrete form (*vous*, *vy*, 해요체) plus where warmth comes from instead. Translators follow the
+The call is made **once per locale, by Opus**, and recorded twice over: as the registry's
+`register` field (`{"level": "polite", "form": "vous"}`), and in that locale's notes as the concrete
+form (*vous*, *vy*, 해요체) plus where warmth comes from instead. `test_locale_registry.py` fails if
+either note map stops stating the registry's form. Translators follow the
 note; they never re-decide it string by string, which is how a locale ends up mixing both forms.
 The recurring failure is system text (error messages, Settings footers, VoiceOver hints) drifting
 formal, so the prompts name it. Short button labels are exempt: they keep the glossary's form.
@@ -157,11 +182,11 @@ addressed and the note's form of address doesn't apply.
 - **Clean `tmp/` between runs** with `scripts/pipeline_tmp.py clean <group>`. The merge step reads
   every file in an outputs dir, so a stale `tmp/translate-outputs/de.json` from a previous run
   merges silently: last week's translation with this week's keys.
-- **The per-locale notes are duplicated on purpose.** `REGIONAL_NOTES` in
-  `translate_catalog/dispatch_prompts.py` and `CULTURAL_NOTES` in
-  `translate_metadata/dispatch_prompts.py` are separate because in-app and marketing register are
-  different decisions — not a DRY violation to fix. But change a locale's formality call in both, or
-  the app and its listing address the same person two different ways.
+- **The per-locale notes are two maps on purpose.** `i18n/regional_notes.json` (in-app) and
+  `i18n/cultural_notes.json` (store listing) differ in wording and market advice, so they are not a
+  DRY violation to fix. The formality call itself is one decision: change the registry's `register`
+  first, then both notes; the registry test fails until the three agree, so the app and its listing
+  never address the same person two different ways.
 - **No ad-hoc Python.** Every step, inspection included, is a flag on a pipeline script. Reaching
   for `python3 -c` or a throwaway `tmp/*.py` means a script is missing a flag: extend the script, so
   the permission surface stays narrow and the next run gets the primitive too.

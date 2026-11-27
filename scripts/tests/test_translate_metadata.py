@@ -41,10 +41,15 @@ class MetadataLocaleTests(unittest.TestCase):
             appstore_metadata.FIELD_BY_FILENAME["keywords.txt"].max_utf8_bytes,
         )
 
-    def test_name_is_passthrough_not_transcreated(self) -> None:
-        # This app's store name is the bare brand, so there is no descriptor to localize.
-        self.assertIn("name", meta.PASSTHROUGH_FIELDS)
-        self.assertNotIn("name", meta.TRANSLATABLE_FIELDS)
+    def test_name_follows_the_name_mode(self) -> None:
+        # passthrough: the store name is the bare brand, copied from en-US; descriptor: the
+        # descriptor after the brand is transcreated.
+        if meta.NAME_MODE == "passthrough":
+            self.assertIn("name", meta.PASSTHROUGH_FIELDS)
+            self.assertNotIn("name", meta.TRANSLATABLE_FIELDS)
+        else:
+            self.assertEqual(meta.TRANSLATABLE_FIELDS[0], "name")
+            self.assertNotIn("name", meta.PASSTHROUGH_FIELDS)
 
     def test_passthrough_overrides_name_real_storefronts_and_fields(self) -> None:
         for storefront, fields in meta.PASSTHROUGH_OVERRIDES.items():
@@ -92,6 +97,14 @@ class KeywordByteLimitTests(unittest.TestCase):
 
 
 class MetadataGlossaryTests(unittest.TestCase):
+    def setUp(self) -> None:
+        # Pin one listing term, whatever this repo's i18n/app.json pins.
+        self._pinned = meta.METADATA_GLOSSARY_TERMS
+        meta.METADATA_GLOSSARY_TERMS = ("Checklist",)
+
+    def tearDown(self) -> None:
+        meta.METADATA_GLOSSARY_TERMS = self._pinned
+
     def _glossary(self, translations: dict[str, str]) -> Path:
         tmp = Path(tempfile.mkdtemp())
         path = tmp / "glossary.json"
@@ -117,6 +130,7 @@ class MetadataGlossaryTests(unittest.TestCase):
         self.assertEqual(meta.glossary_lines("no", Path(tempfile.mkdtemp()) / "missing.json"), "")
 
     def test_every_target_storefront_has_the_pinned_terms(self) -> None:
+        meta.METADATA_GLOSSARY_TERMS = self._pinned  # this repo's real pins, against its real glossary
         for storefront in meta.STOREFRONT_LOCALES:
             with self.subTest(storefront=storefront):
                 self.assertEqual(

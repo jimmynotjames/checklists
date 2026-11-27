@@ -25,6 +25,11 @@ class AppStoreMetadataTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         self.source = self.root / "metadata"
         shutil.copytree(REPO_ROOT / "fastlane" / "metadata", self.source)
+        # Release notes are per version: between releases an app may have none authored yet,
+        # which `validate` rightly refuses. The fixture needs a complete tree either way.
+        notes = self.source / "en-US" / "release_notes.txt"
+        if not notes.is_file():
+            notes.write_text("Bug fixes and improvements.\n", encoding="utf-8")
         self.manifest = self.root / "metadata-locales.json"
         shutil.copyfile(REPO_ROOT / "fastlane" / "metadata-locales.json", self.manifest)
 
@@ -32,6 +37,8 @@ class AppStoreMetadataTests(unittest.TestCase):
         self.temporary.cleanup()
 
     def test_repository_metadata_validates_without_authentication(self) -> None:
+        if not (REPO_ROOT / "fastlane" / "metadata" / "en-US" / "release_notes.txt").is_file():
+            self.skipTest("no en-US release notes authored for the next version yet; validate runs before upload")
         result = subprocess.run(
             [sys.executable, str(SCRIPT), "validate"],
             cwd=REPO_ROOT,
@@ -49,6 +56,8 @@ class AppStoreMetadataTests(unittest.TestCase):
         french.mkdir(exist_ok=True)
         (french / "name.txt").write_text("reListe", encoding="utf-8")
         (french / "description.txt").unlink(missing_ok=True)
+        # de-DE authors no name of its own here, whether or not this app localizes the name.
+        (self.source / "de-DE" / "name.txt").unlink(missing_ok=True)
         output = self.root / "stage"
 
         prepared, count = metadata.prepare_metadata(output, self.source, self.manifest)

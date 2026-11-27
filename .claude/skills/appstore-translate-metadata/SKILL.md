@@ -30,10 +30,11 @@ human checkpoints, plus the sync step's stops above:
 
 A slip in the source reaches every storefront, so confirm it first.
 
-1. List `fastlane/metadata/en-US/`. The translatable fields are `subtitle`, `promotional_text`,
-   `keywords`, `description` and `release_notes` (`TRANSLATABLE_FIELDS` in
-   `metadata_locales.py`). Read whichever of those files exist. `name.txt` and the `*_url.txt`
-   files are copied verbatim, not translated; leave them out.
+1. List `fastlane/metadata/en-US/`. The translatable fields are `TRANSLATABLE_FIELDS` in
+   `metadata_locales.py` (i18n/app.json `metadata.translatableFields`, plus `name` when
+   `nameMode` is `descriptor`). Read whichever of those files exist. Passthrough files (the URLs,
+   and `name.txt` under `nameMode: passthrough`) are copied verbatim, not translated; leave them
+   out.
 2. Run the voice check:
    ```bash
    python3 scripts/translate_metadata/check_source_voice.py
@@ -64,7 +65,8 @@ python3 scripts/translate_metadata/extract.py --fields description   # after edi
 
 Writes `tmp/metadata-inputs/source.json` and `manifest.json` (`{storefront: [fields]}`).
 `--missing` finds only absent fields, so after editing an existing en-US field name it with
-`--fields` (several allowed).
+`--fields` (several allowed). After a register or notes change in a few markets, add
+`--storefronts fr-FR ru …` to force the fields there only.
 
 If the manifest is empty, skip steps 2–5 but still run `merge.py` before step 6: it applies any
 field removed from en-US.

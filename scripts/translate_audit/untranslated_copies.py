@@ -35,30 +35,22 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 CATALOG_DIR = REPO_ROOT / "scripts" / "translate_catalog"
 sys.path.insert(0, str(CATALOG_DIR))
 from paths import CATALOG_PATH  # noqa: E402
-GLOSSARY_PATH = CATALOG_DIR / "glossary.json"
+import app_config  # noqa: E402
+GLOSSARY_PATH = app_config.GLOSSARY_PATH
 
 from locales import LOCALES  # noqa: E402
 
-# The glossary (scripts/translate_catalog/glossary.json) is the authority on which whole-string
-# terms are *deliberately* kept in English per locale — protected brands (reChecklist, iCloud)
+# The glossary (i18n/glossary.json) is the authority on which whole-string
+# terms are *deliberately* kept in English per locale — protected terms (i18n/app.json `protected`)
 # and genuine cognates the language uses verbatim (de "Name"). load_glossary_kept_english()
 # turns it into {locale: {kept-English terms}}
 # so those are auto-allowed without hand-maintenance; re-run the glossary pipeline to change them.
 #
 # ALLOWLIST only carries the residue the glossary can't speak to: identical-to-English values that
 # aren't whole glossary terms (a phrase, a cognate on a key with no glossary term). Each is a
-# deliberate human call — add here, with the reason, when triage confirms a flag is fine.
-ALLOWLIST: set[tuple[str, str]] = {
-    # "Yoga" and "meditation" are the ordinary Danish and Swedish words, spelled as in English.
-    ("sample.morningRoutine.item2", "da"),
-    ("sample.morningRoutine.item2", "sv"),
-    # "Edit" is the Edit button label in Apple's Malay UI.
-    ("checklists.action.edit", "ms"),
-    # "Checklists" is the ordinary Dutch and Brazilian Portuguese plural: the glossary keeps
-    # "Checklist" in English for both, but the plural isn't a glossary term.
-    ("checklists.title", "nl"),
-    ("checklists.title", "pt-BR"),
-}
+# deliberate human call — add it to i18n/untranslated_allowlist.json, with the reason, when
+# triage confirms a flag is fine.
+ALLOWLIST: set[tuple[str, str]] = app_config.untranslated_allowlist()
 
 
 def load_glossary_kept_english() -> dict[str, set[str]]:
@@ -163,7 +155,7 @@ def print_report(findings: list[dict]) -> None:
         print(f"    {f['key']}  =  {f['value']!r}   "
               f"[translated in {f['translated_elsewhere']} other locales{also}]")
     print("\nTriage each: translate it (force, since state is already `translated`), "
-          "or add (key, locale) to ALLOWLIST with the reason if the match is a real cognate.")
+          "or add (key, locale) to i18n/untranslated_allowlist.json with the reason if the match is a real cognate.")
 
 
 def main(argv: list[str]) -> int:

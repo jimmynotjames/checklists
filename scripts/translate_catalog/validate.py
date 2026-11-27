@@ -48,8 +48,27 @@ def output_files(locale: str) -> list[Path]:
     return [OUTPUTS_DIR / f"{locale}.json", OUTPUTS_DIR / f"{locale}.sample.json"]
 
 
+_POSITIONAL_RE = re.compile(r"%(\d+)\$(.*)")
+
+
 def specifier_multiset(value: str) -> collections.Counter:
-    return collections.Counter(FORMAT_SPEC_RE.findall(value))
+    """Count each specifier in its positional form, so `%@ … %@` matches `%2$@ … %1$@`.
+
+    A plain specifier takes the next argument, so the nth plain one is written `%n$…`; `%%`
+    passes through. A translation may reorder arguments only by numbering them, which this
+    keeps equal to the source while still catching a dropped, added or retyped one.
+    """
+    out: list[str] = []
+    plain = 0
+    for spec in FORMAT_SPEC_RE.findall(value):
+        if spec == "%%":
+            out.append(spec)
+        elif m := _POSITIONAL_RE.fullmatch(spec):
+            out.append(f"%{int(m.group(1))}${m.group(2)}")
+        else:
+            plain += 1
+            out.append(f"%{plain}${spec[1:]}")
+    return collections.Counter(out)
 
 
 def has_translatable_content(value: str) -> bool:
@@ -153,7 +172,7 @@ def validate_locale(locale: str, source: dict, subset: bool = False) -> Tuple[li
 
         # Identical-to-source is a WARNING only (not a hard error): many short
         # technical terms are legitimate loanwords, brand names, or product
-        # concepts intentionally kept in English (e.g. "iCloud", "reChecklist",
+        # concepts intentionally kept in English (e.g. "iCloud", the app's brand,
         # "Version" in languages that use these words).
         if (
             not is_english_variant

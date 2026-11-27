@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Build (and extend) the app translation glossary: scripts/translate_catalog/glossary.json.
+Build (and extend) the app translation glossary: i18n/glossary.json.
 
 The glossary gives each recurring app term ONE canonical translation per locale, so two
 keys with the same English ("Share Anonymous Usage Data") stay consistent, and so that
@@ -38,7 +38,6 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parents[1]
-GLOSSARY_PATH = SCRIPT_DIR / "glossary.json"
 GLOSSARY_DIR = REPO_ROOT / "tmp" / "glossary"
 CANDIDATES_PATH = GLOSSARY_DIR / "candidates.json"
 TERMS_PATH = GLOSSARY_DIR / "terms.json"
@@ -52,8 +51,11 @@ sys.path.insert(0, str(SCRIPT_DIR))
 from paths import CATALOG_PATH  # noqa: E402
 from locales import LOCALES, LOCALE_NAMES  # noqa: E402
 from dispatch_prompts import REGIONAL_NOTES, _GENERIC_NOTE  # noqa: E402
+from prompt_render import render  # noqa: E402
+import app_config  # noqa: E402
 
-PROTECTED = ["reChecklist", "iCloud"]
+GLOSSARY_PATH = app_config.GLOSSARY_PATH
+PROTECTED = app_config.PROTECTED
 
 # Small English stopword set — enough to keep the frequent-word candidate pool to content words.
 STOPWORDS = {
@@ -185,11 +187,13 @@ def cmd_write_curation_prompt() -> int:
         return 1
     candidates = json.loads(CANDIDATES_PATH.read_text(encoding="utf-8"))
     inventory = _string_inventory(load_catalog())
-    prompt = (
-        CURATION_TEMPLATE.read_text(encoding="utf-8")
-        .replace("{CANDIDATES_JSON}", json.dumps(candidates, ensure_ascii=False, indent=2))
-        .replace("{STRING_INVENTORY_JSON}", json.dumps(inventory, ensure_ascii=False, indent=2))
-        .replace("{TERMS_OUT_PATH}", str(TERMS_PATH))
+    prompt = render(
+        app_config.load_template(CURATION_TEMPLATE),
+        {
+            "CANDIDATES_JSON": json.dumps(candidates, ensure_ascii=False, indent=2),
+            "STRING_INVENTORY_JSON": json.dumps(inventory, ensure_ascii=False, indent=2),
+            "TERMS_OUT_PATH": str(TERMS_PATH),
+        },
     )
     GLOSSARY_DIR.mkdir(parents=True, exist_ok=True)
     CURATION_PROMPT_OUT.write_text(prompt, encoding="utf-8")
@@ -228,7 +232,7 @@ def cmd_dispatch(locales: list[str]) -> int:
         return 1
     terms = _load_terms()
     strings = load_catalog()
-    template = TRANSLATE_TEMPLATE.read_text(encoding="utf-8")
+    template = app_config.load_template(TRANSLATE_TEMPLATE)
     requested = locales if locales else LOCALES
     unknown = [loc for loc in requested if loc not in LOCALES]
     if unknown:
@@ -252,12 +256,15 @@ def cmd_dispatch(locales: list[str]) -> int:
     for locale in sorted(requested):
         # Protected nouns need no translation; the agent is told to keep them as-is, but we
         # also force them at merge time. Still include them so the agent sees the full set.
-        prompt = (
-            template.replace("{LOCALE_NAME}", LOCALE_NAMES.get(locale, locale))
-            .replace("{LOCALE_CODE}", locale)
-            .replace("{REGIONAL_NOTE}", REGIONAL_NOTES.get(locale, _GENERIC_NOTE))
-            .replace("{PROTECTED_JSON}", json.dumps(PROTECTED, ensure_ascii=False))
-            .replace("{TERMS_JSON}", json.dumps(term_payload, ensure_ascii=False, indent=2))
+        prompt = render(
+            template,
+            {
+                "LOCALE_NAME": LOCALE_NAMES.get(locale, locale),
+                "LOCALE_CODE": locale,
+                "REGIONAL_NOTE": REGIONAL_NOTES.get(locale, _GENERIC_NOTE),
+                "PROTECTED_JSON": json.dumps(PROTECTED, ensure_ascii=False),
+                "TERMS_JSON": json.dumps(term_payload, ensure_ascii=False, indent=2),
+            },
         )
         (PROMPTS_DIR / f"{locale}.md").write_text(prompt, encoding="utf-8")
     # Clear stale outputs for the locales we're dispatching.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Read-only inspector for scripts/translate_catalog/glossary.json.
+Read-only inspector for i18n/glossary.json.
 
 Glossary shape: {"meta": {...}, "protected": [...], "terms": {TERM: {
   "context", "en", "partOfSpeech", "sourceKeys", "translations": {locale: str}}}}.
@@ -25,7 +25,8 @@ import json
 import sys
 from pathlib import Path
 
-GLOSSARY_PATH = Path(__file__).resolve().parent / "glossary.json"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from app_config import GLOSSARY_PATH  # noqa: E402
 
 
 def load_glossary() -> dict:

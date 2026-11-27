@@ -6,8 +6,8 @@ prints `code=false` only when every path is docs-only, else `code=true`. An empt
 `code=true`: nothing known about the change means the tests run.
 
 Conservative by design: a path is docs only when it matches below and is not under the app folder.
-Swift, the Makefile, workflows, scripts (prompt templates in scripts/ feed tested code) and
-fastlane all count as code.
+Swift, the Makefile, workflows, scripts (prompt templates in scripts/ feed tested code), i18n/
+(the localization data those templates and checks read) and fastlane all count as code.
 """
 
 from __future__ import annotations
@@ -18,8 +18,8 @@ DOCS_DIRS = (".agents/", ".claude/", ".codex/", "core-docs/", "releases/")
 DOCS_ROOT_FILES = ("LICENSE", "NOTICE")
 # Docs inside a target folder, kept out of the target by the project's membershipExceptions.
 DOCS_IN_TARGET_FOLDERS = ("checklists/checklistsUITests/FLAKY_TESTS.md",)
-# Markdown here is input to code, not documentation.
-CODE_MARKDOWN_DIRS = ("scripts/", "fastlane/")
+# Markdown here is input to code, not documentation (i18n/brief.md fills the prompt templates).
+CODE_MARKDOWN_DIRS = ("scripts/", "fastlane/", "i18n/")
 
 
 def is_docs(path: str) -> bool:

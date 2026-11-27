@@ -15,36 +15,39 @@ code systems**:
 
 `metadata_locales.py` owns the `runtime → storefront` mapping so the two stay in lockstep.
 
-The per-storefront register notes (`CULTURAL_NOTES` here, `REGIONAL_NOTES` in the in-app
-pipeline) are duplicated on purpose: `localization-spec.md §Running the pipelines`.
+The per-storefront market notes (`i18n/cultural_notes.json`) are kept apart from the in-app notes
+(`i18n/regional_notes.json`) on purpose; the locale registry's `register` field holds the formality
+call both must state (the repo's localization spec, i18n/app.json `spec`).
 
 ## What it translates
 
-Transcreated per storefront (with App Store Connect limits):
+Transcreated per storefront (with App Store Connect limits); i18n/app.json `metadata` lists the
+app's fields:
 
 | Field | Limit | Notes |
 |-------|-------|-------|
+| `name` | 30 | Only with `nameMode: "descriptor"`: the brand plus a transcreated descriptor. |
 | `subtitle` | 30 | Punchy tagline. |
 | `promotional_text` | 170 | Editable without a new app version. |
 | `keywords` | 100 UTF-8 bytes | **Search terms**, not prose — comma-separated, no spaces, deduped. |
 | `description` | 4000 | Full persuasive listing copy; structure preserved. |
 | `release_notes` | 4000 | "What's New" text. |
 
-Passthrough fields, copied verbatim from `en-US` by `merge.py` and never sent to the model:
-`name`, `marketing_url`, `privacy_url`, `support_url`. `merge.py --skip-urls` skips all
-four. A field listed for a storefront in `PASSTHROUGH_OVERRIDES` (`metadata_locales.py`) is
-authored in that storefront's folder and `merge.py` leaves it alone. The catalog-level `copyright.txt` is left untouched.
+Passthrough fields (`metadata.passthroughFields`, plus `name` under `nameMode: "passthrough"`) are
+copied verbatim from `en-US` by `merge.py` and never sent to the model. `merge.py --skip-urls`
+skips them. A field listed for a storefront in `metadata.passthroughOverrides` is authored in that
+storefront's folder and `merge.py` leaves it alone. The root-level files (`copyright.txt`, the
+category files) are left untouched.
 
 A translatable field that is blank or absent in `en-US` is unused; `merge.py` deletes it
 from every storefront.
 
-The core noun **"Checklist"** follows the in-app glossary (`METADATA_GLOSSARY_TERMS` in
-`metadata_locales.py`), so the listing and the app use the same word; both prompts render it as an
-"agreed terms" section. Rationale: `localization-spec.md §Transcreation vs translation`.
+The core nouns in `metadata.glossaryTerms` follow the in-app glossary, so the listing and the app
+use the same words; both prompts render them as an "agreed terms" section.
 
-The brand **"reChecklist"** is treated as a proper noun everywhere: never translated,
-transliterated, or glossed. (Decision: brand stays Latin in all locales — no
-localized home-screen icon name / `InfoPlist.xcstrings` is required.)
+The brand (i18n/app.json `brand`) is treated as a proper noun everywhere: never translated,
+transliterated, or glossed. The app-specific prose in both prompts (voice, messaging brief,
+anti-positioning, brand rules) comes from `i18n/brief.md`.
 
 ## Running it
 
@@ -53,7 +56,8 @@ audit and remediation loop. `check_metadata.py` exiting 0 is the definition of d
 with the `appstore-push-metadata` skill.
 
 After an English copy edit, re-transcreate just the edited fields across every storefront
-with `extract.py --fields <field> ...`, then continue the normal flow.
+with `extract.py --fields <field> ...`, then continue the normal flow. After a notes or register
+change that touches only some markets, add `--storefronts S ...` to limit the manifest to them.
 
 ## Files
 
@@ -61,7 +65,7 @@ with `extract.py --fields <field> ...`, then continue the normal flow.
 scripts/translate_metadata/
   metadata_locales.py   # storefront list, runtime→storefront map, field limits, brand, names
   check_source_voice.py # pre-flight: warn on exclamation marks / ALL-CAPS / superlatives in en-US source (--json)
-  extract.py            # en-US/*.txt → tmp/metadata-inputs/source.json (--missing → absent-field manifest; --fields F… → force-re-translate edited field(s))
+  extract.py            # en-US/*.txt → tmp/metadata-inputs/source.json (--missing → absent-field manifest; --fields F… → force-re-translate edited field(s), --storefronts S… to limit them)
   dispatch_prompts.py   # source + manifest + PROMPT_TEMPLATE.md → tmp/metadata-prompts/{storefront}.md
   validate.py           # --subset; PASS/PENDING/FAIL; limits, keyword hygiene; --json
   audit.py              # inspect outputs: field length table, OVER flags, consolidated _questions; --questions/--json/--full

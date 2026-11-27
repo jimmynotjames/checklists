@@ -1,0 +1,27 @@
+[
+  {
+    "key": "sample.morningRoutine.item2",
+    "locale": "da",
+    "reason": "\"Yoga\" and \"meditation\" are the ordinary Danish words, spelled as in English."
+  },
+  {
+    "key": "sample.morningRoutine.item2",
+    "locale": "sv",
+    "reason": "\"Yoga\" and \"meditation\" are the ordinary Swedish words, spelled as in English."
+  },
+  {
+    "key": "checklists.action.edit",
+    "locale": "ms",
+    "reason": "\"Edit\" is the Edit button label in Apple's Malay UI."
+  },
+  {
+    "key": "checklists.title",
+    "locale": "nl",
+    "reason": "\"Checklists\" is the ordinary Dutch plural: the glossary keeps \"Checklist\" in English, but the plural isn't a glossary term."
+  },
+  {
+    "key": "checklists.title",
+    "locale": "pt-BR",
+    "reason": "\"Checklists\" is the ordinary Brazilian Portuguese plural: the glossary keeps \"Checklist\" in English, but the plural isn't a glossary term."
+  }
+]

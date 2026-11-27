@@ -1,6 +1,7 @@
 """
 Single source of truth for the localization locale set, derived from the registry in
-fastlane/screenshot-config.json (`locales[]`: runtime, storefront, region, name).
+fastlane/screenshot-config.json (`locales[]`: runtime, storefront, region, name, and for each
+translation target its `register`).
 
 Runtime codes are the app's BCP 47 codes (`de`, `nb`, `zh-Hans`) — the keys used in
 Localizable.xcstrings and ScreenshotSeeds/. Storefront codes are what App Store Connect
@@ -21,6 +22,10 @@ REGISTRY_PATH = REPO_ROOT / "fastlane" / "screenshot-config.json"
 
 SOURCE_RUNTIME = "en-US"
 
+# A locale's formality call: informal (T form), polite (V form), or neutral (no T-V choice, or one
+# unmarked form for everyone).
+REGISTER_LEVELS = ("informal", "polite", "neutral")
+
 
 def _load_rows() -> list[dict]:
     try:
@@ -35,6 +40,15 @@ def _load_rows() -> list[dict]:
             value = row.get(field) if isinstance(row, dict) else None
             if not isinstance(value, str) or not value.strip():
                 raise RuntimeError(f"{REGISTRY_PATH}: every locales entry needs a non-empty {field!r}")
+        register = row.get("register")
+        if register is not None and (
+            not isinstance(register, dict)
+            or register.get("level") not in REGISTER_LEVELS
+            or not isinstance(register.get("form", ""), str)
+        ):
+            raise RuntimeError(
+                f"{REGISTRY_PATH}: {row['runtime']}: register must be {{\"level\": one of {REGISTER_LEVELS}, \"form\": str}}"
+            )
     runtimes = [row["runtime"] for row in rows]
     storefronts = [row["storefront"] for row in rows]
     if len(set(runtimes)) != len(runtimes) or len(set(storefronts)) != len(storefronts):
@@ -54,6 +68,11 @@ LOCALE_NAMES: dict[str, str] = {row["runtime"]: row["name"] for row in _ROWS}
 
 RUNTIME_TO_STOREFRONT: dict[str, str] = {row["runtime"]: row["storefront"] for row in _ROWS}
 STOREFRONT_TO_RUNTIME: dict[str, str] = {row["storefront"]: row["runtime"] for row in _ROWS}
+
+# Each target's formality call, made once per locale: {"level": …, "form": the concrete address
+# form, e.g. "vous"}. Both prompt note maps (i18n/regional_notes.json, i18n/cultural_notes.json)
+# must state the same `form`; test_locale_registry holds them to it.
+REGISTER: dict[str, dict[str, str]] = {row["runtime"]: row["register"] for row in _ROWS if "register" in row}
 
 
 if __name__ == "__main__":
