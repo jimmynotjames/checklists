@@ -27,7 +27,7 @@ struct ChecklistEditingDoneTests {
   private static let pushedIdle: [ChecklistBar.Item] = [.more, .primary]
   private static let pushedTyping: [ChecklistBar.Item] = [.editingDone, .more, .primary]
   private static let createIdle: [ChecklistBar.Item] = [.primary, .more]
-  private static let createTyping: [ChecklistBar.Item] = [.editingDone, .more]
+  private static let createTyping: [ChecklistBar.Item] = [.primary, .more]
 
   /// Gives the deferred bar update its turn of the run loop.
   private func settle() {
@@ -64,8 +64,10 @@ struct ChecklistEditingDoneTests {
     }
   }
 
-  @Test("on the create sheet, the editing Done stands in for the sheet's own at the outer edge")
-  func createSheetDoneComesBack() throws {
+  /// The two would be the same checkmark in the same place, so a tap meant to finish the checklist
+  /// would only hide the keyboard.
+  @Test("on the create sheet, typing keeps the sheet's own Done at the outer edge")
+  func createSheetKeepsItsDoneWhileTyping() throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: true) { harness in
       let controller = harness.viewController
       #expect(bar(controller) == Self.createIdle)
@@ -81,9 +83,9 @@ struct ChecklistEditingDoneTests {
 
   /// Pinned, so on iPhone Duo's vertical bar it sits at the top of the column rather than among
   /// the other items, and never falls into the overflow.
-  @Test("typing pins the editing Done, and ending gives the pin back", arguments: [false, true])
-  func editingDoneIsPinned(isNewChecklist: Bool) throws {
-    try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: isNewChecklist) { harness in
+  @Test("typing pins the editing Done, and ending gives the pin back")
+  func editingDoneIsPinned() throws {
+    try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
       let controller = harness.viewController
       harness.header.nameTextField.becomeFirstResponder()
 
@@ -92,8 +94,25 @@ struct ChecklistEditingDoneTests {
 
       controller.view.endEditing(true)
       settle()
-      // The create sheet's own Done takes the pin back; an existing checklist pins nothing.
-      #expect(controller.bar.pinnedItem == (isNewChecklist ? .primary : nil))
+      #expect(controller.bar.pinnedItem == nil)
+    }
+  }
+
+  /// Done stays in the bar while typing, so one tap must keep what was typed before the sheet goes:
+  /// the source screen of a move names the new checklist in its toast as soon as the sheet closes.
+  @Test("the create sheet's Done tapped mid-typing keeps what was typed before closing")
+  func createSheetDoneCommitsBeforeClosing() throws {
+    try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: true) { harness in
+      let nameField = harness.header.nameTextField
+      nameField.becomeFirstResponder()
+      nameField.text = "Pantry"
+      var nameWhenClosing: String?
+      harness.viewController.onRequestDismiss = { nameWhenClosing = harness.checklist.name }
+
+      harness.viewController.perform(.primary)
+
+      #expect(nameWhenClosing == "Pantry")
+      #expect(!nameField.isFirstResponder)
     }
   }
 
@@ -114,7 +133,8 @@ struct ChecklistEditingDoneTests {
   }
 
   /// The button VoiceOver was on goes with the edit, so VoiceOver moves to what takes its place at
-  /// the outer edge: the menu, or on the create sheet, the sheet's own Done.
+  /// the outer edge, the menu. On the create sheet only Esc ends typing this way, and the bar does
+  /// not change, so VoiceOver stays where it was.
   @Test("tapping the editing Done moves VoiceOver to what takes its place", arguments: [false, true])
   func editingDoneMovesVoiceOverToItsReplacement(isNewChecklist: Bool) throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems, isNewChecklist: isNewChecklist) { harness in
@@ -124,7 +144,7 @@ struct ChecklistEditingDoneTests {
 
       controller.editingDoneTapped()
 
-      #expect(controller.bar.focusRequest == ChecklistBar.FocusRequest(item: isNewChecklist ? .primary : .more, generation: 1))
+      #expect(controller.bar.focusRequest == (isNewChecklist ? nil : ChecklistBar.FocusRequest(item: .more, generation: 1)))
     }
   }
 

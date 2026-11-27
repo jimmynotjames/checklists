@@ -375,6 +375,10 @@ class ChecklistViewController: UIViewController {
   }
 
   func doneButtonTapped() {
+    // Commits whatever is being typed before leaving, since the create sheet's Done stays in the bar
+    // while typing. Left to `viewWillDisappear`, it lands after the router has closed the sheet, and
+    // the source screen of a move has already named the new checklist in its toast by then.
+    view.endEditing(true)
     requestDismissal()
   }
 

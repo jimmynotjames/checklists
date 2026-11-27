@@ -91,12 +91,10 @@ class checklistCreateUITest: XCTestCase {
     // Create Item 3 via Add Button without dismissing keyboard from prior.
     checklistTable.buttons["Add"].tap()
     app.typeText(item3Name)
-    app.tapChecklistEditingDone()
 
-    // Create Item 4 via Add button after dismissing keyboard from prior.
+    // And Item 4 the same way.
     checklistTable.buttons["Add"].tap()
     app.typeText(item4Name)
-    app.tapChecklistEditingDone()
 
     // Add Checklist Notes back at the top
     checklistTable.textViews["checklistNotesTextView"].tap()
@@ -177,10 +175,9 @@ class checklistCreateUITest: XCTestCase {
     app.pressReturnKey()
     app.typeText(item3Name)
 
-    // Create Item 4 via Add button after dismissing keyboard from prior.
+    // Create Item 4 the same way.
     app.pressReturnKey()
     app.typeText(item4Name)
-    app.tapChecklistEditingDone()
 
     // Pop back in at Item 1 and insert something.
     checklistTable.children(matching: .cell).element(boundBy: 0).tap()
@@ -225,9 +222,7 @@ class checklistCreateUITest: XCTestCase {
     app.pressReturnKey()
 
     // Final state: { empty, item1, empty, empty }
-
-    app.tapChecklistEditingDone()
-    XCTAssert(checklistTable.children(matching: .cell).count == 4)
+    XCTAssertEqual(checklistTable.children(matching: .cell).count, 4)
 
     // Finish and dismiss modal, go back to check stuff
     app.finishCreateSheet()

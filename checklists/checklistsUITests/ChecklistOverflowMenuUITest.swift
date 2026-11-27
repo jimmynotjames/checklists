@@ -12,12 +12,10 @@ final class ChecklistOverflowMenuUITest: ChecklistDetailUITestCase {
   // MARK: - Duplicating from the overflow menu
 
   /// The sheet the copy opens in. Two navigation bars are in the tree once it is up, and only this
-  /// one carries a Done, its own or the editing one while the name is focused — the pushed screen
-  /// behind it carries Reset.
+  /// one carries the create sheet's Done, which stays even while the name is focused — the pushed
+  /// screen behind it carries Reset.
   private var duplicateSheetNavigationBar: XCUIElement {
-    app.navigationBars.containing(
-      NSPredicate(format: "identifier IN %@", ["checklist.done", "checklist.editingDone"]),
-    ).firstMatch
+    app.navigationBars.containing(NSPredicate(format: "identifier == 'checklist.done'")).firstMatch
   }
 
   private func tapDuplicateChecklistEntry() {
