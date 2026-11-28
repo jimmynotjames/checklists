@@ -146,10 +146,14 @@ struct ChecklistReorderModeTests {
     }
   }
 
-  @Test("a remote merge's reload keeps the rows frozen")
+  @Test("a remote merge's refresh keeps the rows frozen")
   func remoteMergeKeepsRowsFrozen() throws {
     try ChecklistScreenHarness.withController(items: Self.threeItems) { harness in
       harness.viewController.setEditing(true, animated: false)
+      // Changed elsewhere, so every row is refreshed: a merge that changes nothing touches no row.
+      for item in harness.checklist.items {
+        item.toggleStatus()
+      }
 
       harness.viewController.handleRemoteChange()
       harness.table.layoutIfNeeded()
