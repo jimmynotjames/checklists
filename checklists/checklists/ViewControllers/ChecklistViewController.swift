@@ -275,7 +275,7 @@ class ChecklistViewController: UIViewController {
     // tap-hold, reorder event. Here, we made the smallest fix, kept small to ship with the release.
     // A row-count change landing mid-press still reloads and can still glitch, and a real change to
     // the pressed row rewrites it mid-press. Holding refreshes back while a press, menu or drag is up
-    // would close that; worth proposing once there is time to test it on device.
+    // would close that; worth proposing once there is time to test it on device. See #461.
     let items = checklist.items
     if tableView.numberOfRows(inSection: itemsSection) == items.count {
       let staleRows = (tableView.indexPathsForVisibleRows ?? []).filter { indexPath in
