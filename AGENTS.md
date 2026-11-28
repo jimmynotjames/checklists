@@ -95,6 +95,7 @@ least 30 minutes. The tooling tests (`script-tests`) are in the gate.
 | Create PR (`/create-pr`, `/create-pr-for-issue`) | `make gate`; `make focused-tests` for tests you touched | 0 (1 for focused tests) |
 | Push | pre-push (lefthook): no push to `main`/`gh-pages`, the two repo-wide translation checks | 0 |
 | CI on the PR | lint, secrets, large files, i18n, tooling; build once (plus `sync_catalog --check`), then unit + 3 UI shards | CI only |
+| Local CI (`/run-local-ci`), optional | `make tests` (unit + UI) on the rebased commit, then the `local-tests-passed` mark: the PR's CI skips the build and tests | 2 (pool permitting) |
 | Merge (`/merge-pr`) | waits for the required checks, squash-merges; no local checks | 0 |
 | CI on `main` | the full PR run again on the squash commit | CI only |
 
@@ -163,6 +164,8 @@ Edit the canonical files only.
 Route branch → commit → PR → merge through the skills; don't hand-roll the pipeline:
 
 - Code written, no issue: `/create-pr`, then `/merge-pr <PR>` on a later turn.
+- Tests locally instead of on CI's macOS runners: `/run-local-ci [<PR>]`, before `/create-pr` or
+  on an open PR.
 - Issue → PR: `/create-pr-for-issue <N>`, then `/merge-pr <PR>`.
 - All fastlane work, including read-only diagnostics and archive-only validation, goes through the
   `appstore-*` skills. Never run an upload lane to test infrastructure. Publishing skills open their
@@ -372,7 +375,7 @@ A docs-only PR skips `build` and the test jobs: a `changes` job (ubuntu) lists t
 and they run only when one is code (`scripts/ci/docs_only.py` holds the rules:
 Markdown outside `scripts/` and `fastlane/`, plus `core-docs/`, `releases/` and the agent-config
 dirs, are docs; the app folder, Swift, the Makefile, scripts, fastlane and workflows are code).
-Manual runs always count as code. A push to `main` counts as code unless its PR's CI already
+Manual runs always count as code. A PR whose head commit the owner marked `local-tests-passed` also skips them: `/run-local-ci` (`make run-local-ci`, `scripts/run-local-ci.sh`) ran the unit and UI suites locally on that exact commit first, and `scripts/ci/local_tests_passed.py` checks the mark. A push to `main` counts as code unless its PR's CI already
 tested the same code: the PR was up to date with `main`, its head has the same tree as the merge,
 and an automatic PR run on that head passed (`scripts/ci/pr_tested.py`); otherwise every merge
 gets a full run. A skipped required check counts as passing, so don't replace this with a workflow-level `paths-ignore`: the required checks would never report.
