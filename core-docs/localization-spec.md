@@ -73,8 +73,8 @@ derives from it.
 - `scripts/translate_metadata/metadata_locales.py` imports those maps rather than keeping its own,
   and takes Apple's field limits from `scripts/appstore_metadata.py`, the validator that actually
   gates the upload. There is one statement of those limits in the repo.
-- `scripts/tests/test_locale_registry.py` checks that every target has a `register` whose `form`
-  both note maps state, and pins `fastlane/metadata-locales.json` and
+- `scripts/tests/test_locale_registry.py` checks that every target has a `register` (only a
+  neutral one may omit its `form`), and pins `fastlane/metadata-locales.json` and
   `appstore_metadata.FASTLANE_LOCALES` to the registry; `check_metadata.py` re-asserts it at runtime.
 
 Runtime codes are the catalog's codes (`de`, `nb`, `zh-Hans`). Storefront codes are Apple's
@@ -164,16 +164,16 @@ The principle every locale's form of address follows:
 Audience age is not the test: the reader might be anyone's grandmother, and the app speaks to her
 the way a well-made mainstream app in her language does.
 
-The call is made **once per locale, by Opus**, and recorded twice over: as the registry's
-`register` field (`{"level": "polite", "form": "vous"}`), and in that locale's notes as the concrete
-form (*vous*, *vy*, 해요체) plus where warmth comes from instead. `test_locale_registry.py` fails if
-either note map stops stating the registry's form. Translators follow the
-note; they never re-decide it string by string, which is how a locale ends up mixing both forms.
+The call is made **once per locale, by Opus**, and recorded once: the registry's `register` field
+(`{"level": "polite", "form": "vous"}`). Every translating and auditing prompt states it on its own
+line (`**Form of address:** vous (polite)`), and the notes say only how to apply it: where warmth
+comes from instead, gender handling, capitalisation. Translators follow the line; they never
+re-decide it string by string, which is how a locale ends up mixing both forms.
 The recurring failure is system text (error messages, Settings footers, VoiceOver hints) drifting
 formal, so the prompts name it. Short button labels are exempt: they keep the glossary's form.
 
 The `sample.*` lists are the exception: they are someone's own notes to self, so nobody is being
-addressed and the note's form of address doesn't apply.
+addressed and no form of address applies.
 
 ---
 
@@ -184,9 +184,8 @@ addressed and the note's form of address doesn't apply.
   merges silently: last week's translation with this week's keys.
 - **The per-locale notes are two maps on purpose.** `i18n/regional_notes.json` (in-app) and
   `i18n/cultural_notes.json` (store listing) differ in wording and market advice, so they are not a
-  DRY violation to fix. The formality call itself is one decision: change the registry's `register`
-  first, then both notes; the registry test fails until the three agree, so the app and its listing
-  never address the same person two different ways.
+  DRY violation to fix. The formality call is not in either: it is the registry's `register`, which
+  both prompts state, so the app and its listing never address the same person two different ways.
 - **No ad-hoc Python.** Every step, inspection included, is a flag on a pipeline script. Reaching
   for `python3 -c` or a throwaway `tmp/*.py` means a script is missing a flag: extend the script, so
   the permission surface stays narrow and the next run gets the primitive too.
