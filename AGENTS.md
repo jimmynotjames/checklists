@@ -372,8 +372,10 @@ A docs-only PR skips `build` and the test jobs: a `changes` job (ubuntu) lists t
 and they run only when one is code (`scripts/ci/docs_only.py` holds the rules:
 Markdown outside `scripts/` and `fastlane/`, plus `core-docs/`, `releases/` and the agent-config
 dirs, are docs; the app folder, Swift, the Makefile, scripts, fastlane and workflows are code).
-Pushes to `main` and manual runs always count as code. A skipped required check counts as passing,
-so don't replace this with a workflow-level `paths-ignore`: the required checks would never report.
+Manual runs always count as code. A push to `main` counts as code unless its PR's CI already
+tested the same code: the PR was up to date with `main`, its head has the same tree as the merge,
+and an automatic PR run on that head passed (`scripts/ci/pr_tested.py`); otherwise every merge
+gets a full run. A skipped required check counts as passing, so don't replace this with a workflow-level `paths-ignore`: the required checks would never report.
 The ubuntu `tooling` job runs the gate steps no other job does: `script-tests` (Python and the
 fastlane Ruby tests) and `uitest-check`. `build` also runs `sync_catalog.py --check` on the strings
 its compile extracted. Required checks in the `main` ruleset: `lint`, `secrets`,
