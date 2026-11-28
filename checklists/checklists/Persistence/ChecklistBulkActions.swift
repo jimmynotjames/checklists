@@ -59,8 +59,8 @@ extension ModelContext {
   }
 
   /// Posted after `resetChecklists` unchecks anything. On a wide window the open checklist sits
-  /// beside ChecklistsView, and a local save raises no `NSPersistentStoreRemoteChange`, so this is
-  /// how its screen hears to reload.
+  /// beside ChecklistsView, and a local save cannot be relied on to raise
+  /// `NSPersistentStoreRemoteChange` promptly, so this is how its screen hears to reload.
   static let didResetChecklists = Notification.Name("ModelContext.didResetChecklists")
 
   /// Unchecks every item in `checklists` with a single save.

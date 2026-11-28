@@ -244,8 +244,12 @@ class ChecklistViewController: UIViewController {
       // would let the user keep editing a record that no longer exists. Looked up by record, not
       // `id`: dedupe deletes one of two records sharing an `id`, and the twin must not count.
       // Said only for another device's delete, and once: dedupe leaves the same checklist under its
-      // twin, and this screen's own Delete Checklist has already asked to close.
-      let deletedElsewhere = !hasRequestedDismissal && checklistID.map { context.checklist(id: $0) == nil } ?? false
+      // twin, and this screen's own Delete Checklist has already asked to close. Nor once this
+      // screen is off screen: a delete from ChecklistsView closes it through the router alone,
+      // which never reaches `hasRequestedDismissal`, and the store change arrives after the
+      // screen has left the window but possibly before SwiftUI has released it.
+      let isOnScreen = viewIfLoaded?.window != nil
+      let deletedElsewhere = isOnScreen && !hasRequestedDismissal && checklistID.map { context.checklist(id: $0) == nil } ?? false
       requestDismissal()
       if deletedElsewhere {
         onRemoteDeletion?()
