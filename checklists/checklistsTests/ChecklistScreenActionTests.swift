@@ -208,6 +208,25 @@ struct ChecklistScreenActionTests {
     }
   }
 
+  /// ChecklistsView's swipe delete closes the open screen through the router alone, so the screen
+  /// never asks to close itself. The store change reaches it after it has left the window.
+  @Test("a delete that reaches a screen no longer on display is not reported as deleted elsewhere")
+  func deleteAfterLeavingTheWindowIsNotReported() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
+      var reported = false
+      harness.viewController.onRequestDismiss = {}
+      harness.viewController.onRemoteDeletion = { reported = true }
+
+      harness.viewController.view.window?.rootViewController = nil
+      #expect(harness.viewController.viewIfLoaded?.window == nil)
+      harness.modelContext.delete(harness.checklist)
+      try harness.modelContext.save()
+      harness.viewController.handleRemoteChange()
+
+      #expect(!reported)
+    }
+  }
+
   @Test("a still-present checklist is not dismissed")
   func remoteChangeToALivingChecklistDoesNotDismiss() throws {
     try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in

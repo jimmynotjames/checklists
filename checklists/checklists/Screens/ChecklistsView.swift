@@ -557,7 +557,8 @@ struct ChecklistsView: View {
   /// On a wide window the open checklist sits beside this screen, so it can be deleted from here.
   /// Closed first, with any edit in it committed while the record is still valid, the order its own
   /// Delete Checklist keeps (`ChecklistViewController.deleteChecklist`): no screen is left on a
-  /// deleted record, and no "deleted elsewhere" toast follows.
+  /// deleted record. No "deleted elsewhere" toast follows because the closed screen is off screen
+  /// by the time the delete's store change reaches it (`ChecklistViewController.handleRemoteChange`).
   private func closeIfOpen(_ ids: some Sequence<String>) {
     guard let openID = router.selectedChecklistID, ids.contains(openID) else { return }
     commitOpenEdit()
