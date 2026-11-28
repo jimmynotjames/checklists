@@ -42,6 +42,7 @@ class ItemContentView: UIView {
         updateCheckedStatus()
         refreshHeight()
       } else {
+        shownStatus = nil
         checkboxButton.setCheckboxState(with: .unchecked)
         checkboxButton.setItemName(nil)
         nameTextView.text = ""
@@ -230,8 +231,25 @@ class ItemContentView: UIView {
     nameTextView
   }
 
+  /// Whether this row already shows `item` as it stands: the same record, with its current name,
+  /// notes and checked state. A refresh skips rows that do, so it never rewrites a row the person
+  /// may be pressing for nothing.
+  ///
+  /// Keep in step with what `item`'s `didSet` draws: a field shown there but not compared here
+  /// would leave a row stale after another device changes it.
+  func isShowing(_ item: Item) -> Bool {
+    self.item === item
+      && nameTextView.text == item.name
+      && notesTextView.text == (item.notes ?? "")
+      && shownStatus == item.status
+  }
+
+  /// The checked state last drawn, for `isShowing`.
+  private var shownStatus: Item.Status?
+
   func updateCheckedStatus() {
     guard let status = item?.status else { return }
+    shownStatus = status
     checkboxButton.setCheckboxState(with: status)
     let textColor = status == .checked ? Colors.inactiveText : Colors.primaryText
     nameTextView.textColor = textColor

@@ -263,4 +263,118 @@ struct ChecklistScreenActionTests {
       #expect(harness.checklist.lastCompleted == nil)
     }
   }
+
+  /// A full reload hands the visible cells back out in reverse, so a long-press lift in progress
+  /// keeps drawing a cell that now shows another row, and that row appears on top of the pressed
+  /// one. A merge that leaves the row count alone must keep every cell where it is.
+  @Test("a remote change keeps every visible cell on its row")
+  func remoteChangeKeepsCellsOnTheirRows() throws {
+    try ChecklistScreenHarness.withController(
+      items: [("One", false), ("Two", false), ("Three", false), ("Four", false), ("Five", false)],
+    ) { harness in
+      let before = try cellIdentities(in: harness.table, rows: 5)
+
+      harness.viewController.handleRemoteChange()
+      harness.table.layoutIfNeeded()
+
+      #expect(try cellIdentities(in: harness.table, rows: 5) == before)
+    }
+  }
+
+  @Test("a merged item name reaches its row")
+  func mergedItemNameReachesItsRow() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false), ("Bread", false)]) { harness in
+      harness.checklist.items[1].name = "Sourdough"
+
+      harness.viewController.handleRemoteChange()
+      harness.table.layoutIfNeeded()
+
+      let cell = try #require(harness.table.cellForRow(at: IndexPath(row: 1, section: 0)) as? ItemTableViewCell)
+      let nameField = try #require(findTextView(identifier: "itemNameTextView", in: cell.itemContentView))
+      #expect(nameField.text == "Sourdough")
+    }
+  }
+
+  /// Refreshing the row being pressed cancels the press, so a merge that changes nothing, such as
+  /// CloudKit echoing this screen's own save, must leave every row alone. `cellForRowAt` issues new
+  /// VoiceOver action objects, so the same ones afterwards mean the row was not rebuilt.
+  @Test("a merge touches only the rows it changed")
+  func mergeTouchesOnlyChangedRows() throws {
+    try ChecklistScreenHarness.withController(
+      items: [("Milk", false), ("Bread", false), ("Eggs", false)],
+    ) { harness in
+      let before = try (0 ..< 3).map { try firstAccessibilityAction(in: harness.table, row: $0) }
+
+      harness.viewController.handleRemoteChange()
+      harness.table.layoutIfNeeded()
+
+      let afterEcho = try (0 ..< 3).map { try firstAccessibilityAction(in: harness.table, row: $0) }
+      #expect(zip(before, afterEcho).allSatisfy { $0 === $1 }, "Nothing changed, so no row is rebuilt.")
+
+      harness.checklist.items[1].status = .checked
+      harness.viewController.handleRemoteChange()
+      harness.table.layoutIfNeeded()
+
+      let afterTick = try (0 ..< 3).map { try firstAccessibilityAction(in: harness.table, row: $0) }
+      #expect(afterTick[0] === before[0])
+      #expect(afterTick[1] !== before[1], "The ticked row is refreshed.")
+      #expect(afterTick[2] === before[2])
+    }
+  }
+
+  @Test("merged notes grow their row")
+  func mergedNotesGrowTheirRow() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false), ("Bread", false)]) { harness in
+      let heightBefore = harness.table.rectForRow(at: IndexPath(row: 0, section: 0)).height
+      harness.checklist.items[0].notes = "Semi-skimmed, two litres, from the shop on the corner."
+
+      harness.viewController.handleRemoteChange()
+      harness.table.layoutIfNeeded()
+
+      #expect(harness.table.rectForRow(at: IndexPath(row: 0, section: 0)).height > heightBefore)
+    }
+  }
+
+  @Test("an item added elsewhere appears")
+  func itemAddedElsewhereAppears() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false)]) { harness in
+      let added = Item()
+      added.name = "Eggs"
+      added.sortKey = 2
+      harness.modelContext.insert(added)
+      added.checklist = harness.checklist
+      try harness.modelContext.save()
+
+      harness.viewController.handleRemoteChange()
+
+      #expect(harness.table.numberOfRows(inSection: 0) == 2)
+    }
+  }
+
+  // MARK: - Helpers
+
+  private func cellIdentities(in table: UITableView, rows: Int) throws -> [ObjectIdentifier] {
+    try (0 ..< rows).map { row in
+      try ObjectIdentifier(#require(table.cellForRow(at: IndexPath(row: row, section: 0))))
+    }
+  }
+
+  private func firstAccessibilityAction(in table: UITableView, row: Int) throws -> UIAccessibilityCustomAction {
+    let cell = try #require(table.cellForRow(at: IndexPath(row: row, section: 0)) as? ItemTableViewCell)
+    let nameField = try #require(findTextView(identifier: "itemNameTextView", in: cell.itemContentView))
+    return try #require(nameField.accessibilityCustomActions?.first)
+  }
+
+  /// The item fields are private; each carries its own `accessibilityIdentifier`.
+  private func findTextView(identifier: String, in view: UIView) -> UITextView? {
+    if let textView = view as? UITextView, textView.accessibilityIdentifier == identifier {
+      return textView
+    }
+    for subview in view.subviews {
+      if let found = findTextView(identifier: identifier, in: subview) {
+        return found
+      }
+    }
+    return nil
+  }
 }
