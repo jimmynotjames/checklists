@@ -269,10 +269,13 @@ class ChecklistViewController: UIViewController {
     // Only rows that no longer match the store are refreshed, in place. A reload re-deals every
     // visible cell to a different row, so a long-press lift in progress draws a second row on top
     // of the pressed one. CloudKit echoing this screen's own save back touches no row at all.
-    // TECH DEBT: the smallest fix, kept small to ship with the release. A row-count change landing
-    // mid-press still reloads and can still glitch, and a real change to the pressed row rewrites
-    // it mid-press. Holding refreshes back while a press, menu or drag is up would close that;
-    // worth proposing once there is time to test it on device.
+    // TECH DEBT: We should come up with a more holistic way to handle to inbound iCloud sync changes
+    // in a way that minimally interferes with the user's experience. While still fixing the original
+    // issue of iCloud updates from reordering causing glitchy UI behaviors on an immediate, second
+    // tap-hold, reorder event. Here, we made the smallest fix, kept small to ship with the release.
+    // A row-count change landing mid-press still reloads and can still glitch, and a real change to
+    // the pressed row rewrites it mid-press. Holding refreshes back while a press, menu or drag is up
+    // would close that; worth proposing once there is time to test it on device.
     let items = checklist.items
     if tableView.numberOfRows(inSection: itemsSection) == items.count {
       let staleRows = (tableView.indexPathsForVisibleRows ?? []).filter { indexPath in
