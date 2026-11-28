@@ -295,9 +295,9 @@ struct ChecklistScreenActionTests {
     }
   }
 
-  /// Refreshing the row being pressed cancels the press, so a merge that changes nothing, such as
-  /// CloudKit echoing this screen's own save, must leave every row alone. `cellForRowAt` issues new
-  /// VoiceOver action objects, so the same ones afterwards mean the row was not rebuilt.
+  /// A merge that changes nothing, such as CloudKit echoing this screen's own save, must leave every
+  /// row alone, so a row under a long-press is never rewritten for nothing. `cellForRowAt` issues
+  /// new VoiceOver action objects, so the same ones afterwards mean the row was not rebuilt.
   @Test("a merge touches only the rows it changed")
   func mergeTouchesOnlyChangedRows() throws {
     try ChecklistScreenHarness.withController(
@@ -319,6 +319,24 @@ struct ChecklistScreenActionTests {
       #expect(afterTick[0] === before[0])
       #expect(afterTick[1] !== before[1], "The ticked row is refreshed.")
       #expect(afterTick[2] === before[2])
+    }
+  }
+
+  /// The same count with the items in a new order: each row must show the item now at its place.
+  @Test("a reorder made elsewhere reaches the rows")
+  func reorderMadeElsewhereReachesTheRows() throws {
+    try ChecklistScreenHarness.withController(items: [("Milk", false), ("Bread", false)]) { harness in
+      let items = harness.checklist.items
+      (items[0].sortKey, items[1].sortKey) = (items[1].sortKey, items[0].sortKey)
+
+      harness.viewController.handleRemoteChange()
+      harness.table.layoutIfNeeded()
+
+      let shown = try (0 ..< 2).map { row in
+        let cell = try #require(harness.table.cellForRow(at: IndexPath(row: row, section: 0)) as? ItemTableViewCell)
+        return try #require(findTextView(identifier: "itemNameTextView", in: cell.itemContentView)).text
+      }
+      #expect(shown == ["Bread", "Milk"])
     }
   }
 
